@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBT-V8 技术审计与实现方案</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-900);
+            background: var(--gray-50);
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary), #1d4ed8);
+            color: white;
+            padding: 3rem;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 3rem;
+        }
+        .section {
+            margin-bottom: 3rem;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--gray-900);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--primary);
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .metric-card {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+        .metric-card.success { border-left-color: var(--success); }
+        .metric-card.warning { border-left-color: var(--warning); }
+        .metric-card.danger { border-left-color: var(--danger); }
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--gray-900);
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: var(--gray-100);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--gray-200);
+        }
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        tr:hover {
+            background: var(--gray-50);
+        }
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        .timeline-step {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+        .timeline-step::before {
+            content: '';
+            position: absolute;
+            left: -2.4rem;
+            top: 0.5rem;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+        .timeline-step h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--gray-900);
+        }
+        .timeline-step ul {
+            list-style: none;
+            padding: 0;
+        }
+        .timeline-step li {
+            padding: 0.3rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .timeline-step li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+        .code-block {
+            background: var(--gray-900);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+            font-size: 0.9rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .badge-blue { background: #dbeafe; color: #1e40af; }
+        .badge-green { background: #d1fae5; color: #065f46; }
+        .badge-yellow { background: #fef3c7; color: #92400e; }
+        .badge-red { background: #fee2e2; color: #991b1b; }
+        .stars {
+            color: #fbbf24;
+            letter-spacing: 2px;
+        }
+        footer {
+            background: var(--gray-100);
+            padding: 2rem 3rem;
+            text-align: center;
+            color: var(--gray-700);
+            border-top: 1px solid var(--gray-200);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 GBT-V8 技术审计与实现方案</h1>
+            <p>基于 GitHub Copilot 深度审计的生产就绪度评估</p>
+        </header>
+
+        <div class="content">
+            <!-- 核心指标 -->
+            <section class="section">
+                <h2 class="section-title">核心审计结论</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card success">
+                        <div class="metric-label">架构设计</div>
+                        <div class="metric-value"><span class="stars">⭐⭐⭐⭐⭐</span> 优秀</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray-700);">
+                            审计日志流式架构、钢印机制、统一接口设计都是亮点
+                        </div>
+                    </div>
+                    <div class="metric-card danger">
+                        <div class="metric-label">实现完整度</div>
+                        <div class="metric-value"><span class="stars">⭐</span> 15%</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray-700);">
+                            api.py 声称 77 项能力，但核心模块缺失
+                        </div>
+                    </div>
+                    <div class="metric-card success">
+                        <div class="metric-label">安全设计</div>
+                        <div class="metric-value"><span class="stars">⭐⭐⭐⭐⭐</span> 优秀</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray-700);">
+                            caps_registry.py 黑名单机制完善
+                        </div>
+                    </div>
+                    <div class="metric-card warning">
+                        <div class="metric-label">代码质量</div>
+                        <div class="metric-value"><span class="stars">⭐⭐⭐</span> 中等</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray-700);">
+                            run_task() 循环复杂度 60+，需重构
+                        </div>
+                    </div>
+                    <div class="metric-card danger">
+                        <div class="metric-label">测试覆盖</div>
+                        <div class="metric-value"><span class="stars">⭐</span> 缺失</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray-700);">
+                            声称 52 项测试，但 test_framework.py 未实现
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 问题清单 -->
+            <section class="section">
+                <h2 class="section-title">🔴 高优先级问题</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>问题</th>
+                                <th>影响</th>
+                                <th>缓解方案</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>模块缺失</strong><br><span style="font-size: 0.85rem; color: var(--gray-700);">recon/、llm/、tentacle/ 等核心模块未在代码库中</span></td>
+                                <td><span class="badge badge-red">框架不可用</span></td>
+                                <td>立即从 Autoclaw/archived 迁移 60+ 个模块</td>
+                            </tr>
+                            <tr>
+                                <td><strong>能力标注 vs 实现不同步</strong><br><span style="font-size: 0.85rem; color: var(--gray-700);">caps_registry 声称 77 项，实际实现 3-5 项</span></td>
+                                <td><span class="badge badge-yellow">调用方困惑</span></td>
+                                <td>清理 caps_registry，未实现的标 <code>status: "stub"</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>测试覆盖缺失</strong><br><span style="font-size: 0.85rem; color: var(--gray-700);">声称 52 项回归测试，但 test_framework.py 缺失</span></td>
+                                <td><span class="badge badge-red">质量无法保证</span></td>
+                                <td>实现 test_framework.py，52 项回归测试全绿</td>
+                            </tr>
+                            <tr>
+                                <td><strong>内网保护绕过风险</strong><br><span style="font-size: 0.85rem; color: var(--gray-700);">auth_gate 模块是否真实实现待验证</span></td>
+                                <td><span class="badge badge-red">安全漏洞</span></td>
+                                <td>单测覆盖 + 代码审查 + 追踪 auth_gate 实现</td>
+                            </tr>
+                            <tr>
+                                <td><strong>钢印篡改风险</strong><br><span style="font-size: 0.85rem; color: var(--gray-700);">signature_guard 能力未实现</span></td>
+                                <td><span class="badge badge-yellow">版权冒用</span></td>
+                                <td>实现 signature_guard + 定期巡检</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 实现路线图 -->
+            <section class="section">
+                <h2 class="section-title">🗺️ 实现路线图</h2>
+                <div class="timeline">
+                    <div class="timeline-step">
+                        <h4>Phase 1：关键路径（Week 1）</h4>
+                        <ul>
+                            <li>文件迁移：从 Autoclaw/archived 导入 60+ 个模块</li>
+                            <li>清理能力表：caps_registry 只注册已实现的能力</li>
+                            <li>基础验证：<code>python -c "import gbt_allinone as g; g.run_task('health')"</code></li>
+                        </ul>
+                    </div>
+                    <div class="timeline-step">
+                        <h4>Phase 2：核心能力（Week 2-3）</h4>
+                        <ul>
+                            <li>实现关键 5 个能力：osint_scan、wf_define、llm_chat、brain_unify、pipeline_submit</li>
+                            <li>每个能力的单测：成功路径、失败路径、参数验证、审计记录</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-step">
+                        <h4>Phase 3：质量保障（Week 4）</h4>
+                        <ul>
+                            <li>集成测试：52 项回归测试全绿</li>
+                            <li>安全审计：sec_scan 检查自有代码</li>
+                            <li>压力测试：160 路并发验证 store.py 的声称（1694 行零损坏）</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 必填代码位点 -->
+            <section class="section">
+                <h2 class="section-title">📁 必填代码位点（未实现）</h2>
+                <div class="code-block">
+gbt_allinone/
+├── recon/
+│   ├── scanner.py      → scan_target()
+│   └── guard.py        → classify_target()
+├── engine/
+│   ├── engine.py       → define_workflow(), run_workflow()
+│   └── cache.py        → wf_cache_clear()
+├── llm/
+│   └── bridge.py       → chat()
+├── tentacle/
+│   └── bridge.py       → invoke(), get_manifest()
+└── security/
+    └── security_brain.py → HackerBrain class
+
+<span style="color: #9ca3af; margin-top: 1rem; display: block;">
+优先级排序：
+1. recon/scanner.py - OSINT 扫描核心
+2. engine/engine.py - 工作流引擎
+3. llm/bridge.py - LLM 网关
+4. pipeline.py - 生产管线
+5. 其他 50+ 个模块
+</span>
+                </div>
+            </section>
+
+            <!-- 架构改进建议 -->
+            <section class="section">
+                <h2 class="section-title">💡 架构改进建议</h2>
+                
+                <h3 style="margin: 2rem 0 1rem 0; font-size: 1.2rem;">1. 重构 run_task() 为策略模式</h3>
+                <div class="code-block">
+# 当前：60+ 个 if-elif 分支，循环复杂度太高
+if kind == "osint_scan":
+    from .recon.scanner import scan_target
+    ...
+
+# 建议：策略模式
+HANDLERS = {
+    "osint_scan": osint_handler,
+    "wf_define": engine_handler,
+    "llm_chat": llm_handler,
+    ...
+}
+result = HANDLERS[kind](payload)
+                </div>
+
+                <h3 style="margin: 2rem 0 1rem 0; font-size: 1.2rem;">2. 增强异常分类</h3>
+                <div class="code-block">
+# 增加 ImportError 分类
+except ImportError as e:
+    audit("capability_incomplete", {"kind": kind, "module": str(e)})
+    return {"status": "stub", "kind": kind, 
+            "message": f"Capability not implemented: {e}"}
+                </div>
+            </section>
+
+            <!-- 启动前 Checklist -->
+            <section class="section">
+                <h2 class="section-title">✅ 启动前 Checklist</h2>
+                <div class="code-block">
+# 1️⃣ 依赖检查
+pip install -r requirements.txt
+python -c "import sys; sys.path.insert(0, '.'); import gbt_allinone"
+
+# 2️⃣ 核心接口验证
+python -c "
+import gbt_allinone as g
+result = g.run_task('health')
+assert result['status'] == 'ok', 'health check failed'
+print('✓ run_task 接口正常')
+"
+
+# 3️⃣ 审计日志验证
+python -c "
+import gbt_allinone as g
+logs = g.query_log(limit=5)
+assert len(logs) > 0, 'audit log empty'
+print(f'✓ Audit log: {len(logs)} records')
+"
+
+# 4️⃣ 能力清单验证
+python -c "
+import gbt_allinone as g
+caps = g.list_capabilities()
+enabled = [c for c in caps if c.get('status') == 'enabled']
+disabled = [c for c in caps if c.get('status') == 'disabled']
+print(f'✓ {len(enabled)} enabled / {len(disabled)} disabled')
+"
+
+# 5️⃣ 运行全量测试（Phase 3 后）
+pytest gbt_allinone/tests/test_framework.py -v
+                </div>
+            </section>
+
+            <!-- 总结 -->
+            <section class="section">
+                <h2 class="section-title">🎯 总结</h2>
+                <div style="background: var(--gray-50); padding: 2rem; border-radius: 8px; border-left: 4px solid var(--primary);">
+                    <p style="font-size: 1.1rem; line-height: 1.8;">
+                        这个框架的<strong>架构与理念非常优秀</strong>（审计日志设计、钢印机制、安全策略），但<strong>实现完整度仅 15%</strong>。
+                        生产部署前必须完成文件迁移与关键能力实现。目前最适合用作<strong>架构参考</strong>而不是生产系统。
+                    </p>
+                </div>
+                
+                <h3 style="margin: 2rem 0 1rem 0; font-size: 1.2rem;">下一步行动</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>优先级</th>
+                                <th>行动</th>
+                                <th>预期结果</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-red">P0</span></td>
+                                <td>从 <code>C:\Users\ADMIN\Desktop\Autoclaw\archived_logs\</code> 迁移 60+ 个模块到 <code>gbt_allinone/</code></td>
+                                <td>import 不出错，77 项能力可路由</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-red">P0</span></td>
+                                <td>清理 <code>caps_registry.py</code>，只注册已实现的能力</td>
+                                <td>调用方不再困惑，未实现的标 <code>status: "stub"</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-yellow">P1</span></td>
+                                <td>运行健康检查验证基础接口</td>
+                                <td><code>run_task('health')</code> 返回 <code>{"status": "ok"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-yellow">P1</span></td>
+                                <td>按优先级逐个实现核心能力</td>
+                                <td>osint_scan、wf_define、llm_chat 等 5 个关键能力可用</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-blue">P2</span></td>
+                                <td>实现 52 项回归测试</td>
+                                <td>pytest 全绿，selfscan 五维扫描通过</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>生成时间：2026-09-13 | 基于 GitHub Copilot 深度审计分享会话</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">开发者：自由的风 · GBT 小土豆 V8</p>
+        </footer>
+    </div>
+</body>
+</html>

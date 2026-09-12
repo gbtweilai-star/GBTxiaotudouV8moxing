@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBT-V8 生产能力审计指引</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { color: var(--muted); font-size: 1.1rem; margin-bottom: 2rem; }
+        .section {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .badge-blue { background: rgba(99,102,241,0.2); color: #818cf8; }
+        .badge-green { background: rgba(16,185,129,0.2); color: #34d399; }
+        .badge-yellow { background: rgba(245,158,11,0.2); color: #fbbf24; }
+        .badge-red { background: rgba(239,68,68,0.2); color: #f87171; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            border-left: 4px solid var(--primary);
+        }
+        .card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .card ul { margin-left: 1.5rem; color: var(--muted); }
+        .card li { margin: 0.25rem 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        th { background: rgba(99,102,241,0.1); font-weight: 600; }
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 1rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary);
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.4rem;
+            top: 0.25rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid var(--bg);
+        }
+        .timeline-title { font-weight: 600; margin-bottom: 0.25rem; }
+        .timeline-time { color: var(--muted); font-size: 0.875rem; }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .metric {
+            background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1));
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #818cf8, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .metric-label { color: var(--muted); margin-top: 0.5rem; }
+        .link {
+            color: #818cf8;
+            text-decoration: none;
+        }
+        .link:hover { text-decoration: underline; }
+        .footer {
+            text-align: center;
+            color: var(--muted);
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 GBT-V8 生产能力审计指引</h1>
+        <p class="subtitle">基于 GitHub Copilot 分享对话 · 生产能力全量审计 + 缺口实现路线图</p>
+        
+        <!-- 核心指标 -->
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-value">10</div>
+                <div class="metric-label">审计维度</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">4</div>
+                <div class="metric-label">审计步骤</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">2-3 天</div>
+                <div class="metric-label">完成周期</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">3</div>
+                <div class="metric-label">优先级层级</div>
+            </div>
+        </div>
+
+        <!-- 审计目标 -->
+        <div class="section">
+            <div class="section-title">🎯 一、审计目标（先对齐）</div>
+            <div class="grid">
+                <div class="card">
+                    <h3>1. 盘点现有能力</h3>
+                    <p>这个框架"已经能稳定产出什么"</p>
+                </div>
+                <div class="card">
+                    <h3>2. 识别未实现能力</h3>
+                    <p>技术上可实现但当前缺失/半成品</p>
+                </div>
+                <div class="card">
+                    <h3>3. 判断生产可用性</h3>
+                    <p>是否可上线、可回归、可观测、可扩展</p>
+                </div>
+                <div class="card">
+                    <h3>4. 输出落地计划</h3>
+                    <p>按优先级给出"先补什么、怎么补、补到什么验收标准"</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 审计维度 -->
+        <div class="section">
+            <div class="section-title">📐 二、审计维度（全框架，不漏项）</div>
+            <div class="grid">
+                <div class="card">
+                    <h3>1. 能力域</h3>
+                    <ul>
+                        <li>已实现功能清单（用户可见能力）</li>
+                        <li>隐式能力（脚本、任务链、自动化流程）</li>
+                        <li>能力边界（做不到什么）</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>2. 流程编排域</h3>
+                    <ul>
+                        <li>主流程、分流、回退机制</li>
+                        <li>异常分支（超时/失败/重试/降级）</li>
+                        <li>任务状态机是否闭环</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>3. 模型与推理域</h3>
+                    <ul>
+                        <li>Prompt/规则加载链是否可控</li>
+                        <li>工具调用成功率、重试策略、幂等</li>
+                        <li>上下文注入与记忆机制有效性</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>4. 工程质量域</h3>
+                    <ul>
+                        <li>模块边界、耦合度、重复逻辑</li>
+                        <li>配置管理、环境隔离、密钥治理</li>
+                        <li>静态检查、类型约束、lint/test 覆盖</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>5. 数据与状态域</h3>
+                    <ul>
+                        <li>输入输出 schema 是否稳定</li>
+                        <li>缓存、会话、持久化一致性</li>
+                        <li>数据迁移与回滚机制</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>6. 可观测性域</h3>
+                    <ul>
+                        <li>日志结构化程度</li>
+                        <li>指标（成功率/延迟/成本/错误类型）</li>
+                        <li>Trace（一次任务全链路可追踪）</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>7. 发布与运维域</h3>
+                    <ul>
+                        <li>CI/CD 完整性、环境一致性</li>
+                        <li>灰度/回滚/热修复能力</li>
+                        <li>依赖与供应链安全（SCA）</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>8. 性能与容量域</h3>
+                    <ul>
+                        <li>峰值并发能力</li>
+                        <li>冷启动与关键链路时延</li>
+                        <li>大输入（长文档/多文件）稳定性</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>9. 安全与合规域</h3>
+                    <ul>
+                        <li>权限最小化、Token 生命周期</li>
+                        <li>输入注入/越权/路径穿越等风险</li>
+                        <li>隐私数据脱敏与日志泄露控制</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>10. 产品化域</h3>
+                    <ul>
+                        <li>组件复用、页面模板化、资源构建链、错误边界</li>
+                        <li>服务入口、任务编排、异常处理、配置/密钥加载</li>
+                        <li>API 契约、错误码规范、超时重试、降级策略</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 审计方法 -->
+        <div class="section">
+            <div class="section-title">🔄 三、审计方法（四步闭环）</div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-title">Step 1：资产清点（Inventory）</div>
+                    <div class="timeline-time">半天</div>
+                    <p>代码目录、配置、脚本、Actions、文档、规则文件、技能文件 → 输出《能力清单 v0》</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-title">Step 2：证据采集（Evidence）</div>
+                    <div class="timeline-time">半天</div>
+                    <p>静态证据（代码、配置、工作流、测试）+ 动态证据（运行日志、Actions 失败记录、时延/错误分布）→ 结果必须"有证据链接/文件路径"</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-title">Step 3：能力评级（Scoring）</div>
+                    <div class="timeline-time">1 天</div>
+                    <p>每个能力按 0–5 分评级：</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li><span class="badge badge-red">0</span> 不存在</li>
+                        <li><span class="badge badge-yellow">1</span> 概念验证</li>
+                        <li><span class="badge badge-yellow">2</span> 可运行但不稳定</li>
+                        <li><span class="badge badge-green">3</span> 稳定可用（基础生产）</li>
+                        <li><span class="badge badge-green">4</span> 可规模化（监控/回滚齐全）</li>
+                        <li><span class="badge badge-green">5</span> 最佳实践（自动化完备）</li>
+                    </ul>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-title">Step 4：改造路线图（Roadmap）</div>
+                    <div class="timeline-time">1 天</div>
+                    <p>按优先级分三层：</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li><span class="badge badge-red">P0（立即）</span> 影响可用性/安全/数据正确性</li>
+                        <li><span class="badge badge-yellow">P1（短期）</span> 影响效率和规模化</li>
+                        <li><span class="badge badge-blue">P2（中期）</span> 体验优化与架构演进</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 判定标准 -->
+        <div class="section">
+            <div class="section-title">🔍 四、重点：如何定义"技术上能做到但没实现"</div>
+            <div class="grid">
+                <div class="card">
+                    <h3>1. 有明确实现路径</h3>
+                    <p>已有依赖或可引入成熟方案</p>
+                </div>
+                <div class="card">
+                    <h3>2. 改造成本可控</h3>
+                    <p>人天可估，非科研级不确定性</p>
+                </div>
+                <div class="card">
+                    <h3>3. 收益可量化</h3>
+                    <p>成功率、时延、错误率、维护成本</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 输出模板 -->
+        <div class="section">
+            <div class="section-title">📋 五、审计输出模板</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>能力名称</th>
+                        <th>当前状态</th>
+                        <th>证据</th>
+                        <th>生产等级</th>
+                        <th>风险等级</th>
+                        <th>建议动作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>示例能力 A</td>
+                        <td><span class="badge badge-red">Missing</span></td>
+                        <td>文件/工作流/日志</td>
+                        <td>0-5 分</td>
+                        <td><span class="badge badge-red">高</span></td>
+                        <td>实现</td>
+                    </tr>
+                    <tr>
+                        <td>示例能力 B</td>
+                        <td><span class="badge badge-yellow">Partial</span></td>
+                        <td>文件/工作流/日志</td>
+                        <td>0-5 分</td>
+                        <td><span class="badge badge-yellow">中</span></td>
+                        <td>重构</td>
+                    </tr>
+                    <tr>
+                        <td>示例能力 C</td>
+                        <td><span class="badge badge-green">Ready</span></td>
+                        <td>文件/工作流/日志</td>
+                        <td>0-5 分</td>
+                        <td><span class="badge badge-blue">低</span></td>
+                        <td>下线</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 90 天路线图 -->
+        <div class="section">
+            <div class="section-title">📅 六、90 天路线图</div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-title">0-2 周：P0 稳定性与安全兜底</div>
+                    <p>影响可用性/安全/数据正确性的关键缺口</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-title">3-6 周：P1 自动化与可观测完善</div>
+                    <p>影响效率和规模化的能力建设</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-title">7-12 周：P2 体验和架构升级</div>
+                    <p>体验优化与架构演进</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 优先审计建议 -->
+        <div class="section">
+            <div class="section-title">⚡ 七、优先审计建议（HTML/Python 混合项目）</div>
+            <div class="grid">
+                <div class="card">
+                    <h3>1. 前端生产能力</h3>
+                    <p>组件复用、页面模板化、资源构建链、错误边界</p>
+                </div>
+                <div class="card">
+                    <h3>2. Python 侧能力</h3>
+                    <p>服务入口、任务编排、异常处理、配置/密钥加载</p>
+                </div>
+                <div class="card">
+                    <h3>3. 前后联动</h3>
+                    <p>API 契约、错误码规范、超时重试、降级策略</p>
+                </div>
+                <div class="card">
+                    <h3>4. CI/CD 与质量门禁</h3>
+                    <p>lint/test/build/release 是否强制门禁</p>
+                </div>
+                <div class="card">
+                    <h3>5. 运行可观测</h3>
+                    <p>失败定位是否能在 5 分钟内完成</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 执行顺序 -->
+        <div class="section">
+            <div class="section-title">🚀 八、执行顺序（最实用版）</div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-title">1. 先出《能力清单 v0》</div>
+                    <div class="timeline-time">半天</div>
+                    <p>盘点现有能力</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-title">2. 再出《生产等级评分》</div>
+                    <div class="timeline-time">半天</div>
+                    <p>识别未实现能力</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-title">3. 拉出《Top 20 缺口》</div>
+                    <div class="timeline-time">1 天</div>
+                    <p>判断生产可用性</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-title">4. 定《P0/P1/P2 路线图》</div>
+                    <div class="timeline-time">半天</div>
+                    <p>输出落地计划</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-title">5. 最后定《每个缺口的验收测试》</div>
+                    <div class="timeline-time">半天</div>
+                    <p>确保可验证</p>
+                </div>
+            </div>
+            <p style="margin-top: 1rem; color: var(--muted);">
+                <strong>总计：</strong>2-3 天内完成一份可直接开干的"全框架生产能力审计报告 + 实施清单"
+            </p>
+        </div>
+
+        <!-- 源链接 -->
+        <div class="section">
+            <div class="section-title">🔗 来源</div>
+            <p>
+                GitHub Copilot 分享对话：<a href="https://github.com/copilot/share/c05b413a-0044-8c14-a100-4a0c001008b3" class="link" target="_blank">https://github.com/copilot/share/c05b413a-0044-8c14-a100-4a0c001008b3</a>
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>生成时间：2026-09-13 · 开发者：自由的风 · GBT 小土豆 V8</p>
+        </div>
+    </div>
+</body>
+</html>
