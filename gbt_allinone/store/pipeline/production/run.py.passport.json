@@ -1,0 +1,19 @@
+{
+  "gbt_stamp": {
+    "framework": "GBT小土豆",
+    "version": "8.0.0",
+    "mark": "GBT",
+    "developer": "自由的风",
+    "ownership": "independent-personal",
+    "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"
+  },
+  "publish": {
+    "rec_id": "run.py-2660ebf1-1789126070",
+    "sha256": "2660ebf1a42e31215e4c093994f6161b192ab909ee24f89b53990fe88015a7fa",
+    "published_at": "2026-09-11T18:27:50",
+    "actor": "devour_tentacle",
+    "purpose": "吞噬产物: devour_github_repo:sindresorhus/slugify:scaffold",
+    "version": 2,
+    "refined_rounds": 0
+  }
+}

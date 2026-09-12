@@ -1,0 +1,35 @@
+{
+  "rec_id": "truth-probe.txt-42719df0-1789078131",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "truth-probe.txt",
+      "passed": true,
+      "detail": "11 bytes",
+      "ts": "2026-09-11T05:08:51"
+    },
+    {
+      "dimension": "ownership",
+      "item": "truth-probe.txt",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T05:08:51"
+    },
+    {
+      "dimension": "audit",
+      "item": "truth-probe.txt",
+      "passed": true,
+      "detail": "actor=audit, purpose=verify",
+      "ts": "2026-09-11T05:08:51"
+    },
+    {
+      "dimension": "policy",
+      "item": "truth-probe.txt",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T05:08:51"
+    }
+  ],
+  "blocked_by": []
+}

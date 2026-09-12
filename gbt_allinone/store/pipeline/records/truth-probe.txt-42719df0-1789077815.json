@@ -1,0 +1,100 @@
+{
+  "rec_id": "truth-probe.txt-42719df0-1789077815",
+  "name": "truth-probe.txt",
+  "sha256": "42719df0e4bea9c803793c22577f4feb0dde2773082d40ffa489355ae166488c",
+  "size": 11,
+  "submitted_at": "2026-09-11T05:03:35",
+  "meta": {
+    "actor": "audit",
+    "purpose": "verify"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\truth-probe.txt-42719df0-1789077815.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "truth-probe.txt",
+        "passed": true,
+        "detail": "11 bytes",
+        "ts": "2026-09-11T05:03:35"
+      },
+      {
+        "dimension": "ownership",
+        "item": "truth-probe.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T05:03:35"
+      },
+      {
+        "dimension": "audit",
+        "item": "truth-probe.txt",
+        "passed": true,
+        "detail": "actor=audit, purpose=verify",
+        "ts": "2026-09-11T05:03:35"
+      },
+      {
+        "dimension": "policy",
+        "item": "truth-probe.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T05:03:35"
+      }
+    ]
+  },
+  "stage2_gate": {
+    "rec_id": "truth-probe.txt-42719df0-1789077815",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "truth-probe.txt",
+        "passed": true,
+        "detail": "11 bytes",
+        "ts": "2026-09-11T05:03:35"
+      },
+      {
+        "dimension": "ownership",
+        "item": "truth-probe.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T05:03:35"
+      },
+      {
+        "dimension": "audit",
+        "item": "truth-probe.txt",
+        "passed": true,
+        "detail": "actor=audit, purpose=verify",
+        "ts": "2026-09-11T05:03:35"
+      },
+      {
+        "dimension": "policy",
+        "item": "truth-probe.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T05:03:35"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\truth-probe.txt",
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "truth-probe.txt-42719df0-1789077815",
+        "sha256": "42719df0e4bea9c803793c22577f4feb0dde2773082d40ffa489355ae166488c",
+        "published_at": "2026-09-11T05:03:35",
+        "actor": "audit",
+        "purpose": "verify"
+      }
+    }
+  },
+  "status": "published"
+}

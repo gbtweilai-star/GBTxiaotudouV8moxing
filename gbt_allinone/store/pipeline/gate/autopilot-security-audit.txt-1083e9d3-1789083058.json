@@ -1,0 +1,35 @@
+{
+  "rec_id": "autopilot-security-audit.txt-1083e9d3-1789083058",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "autopilot-security-audit.txt",
+      "passed": true,
+      "detail": "58 bytes",
+      "ts": "2026-09-11T06:30:58"
+    },
+    {
+      "dimension": "ownership",
+      "item": "autopilot-security-audit.txt",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T06:30:58"
+    },
+    {
+      "dimension": "audit",
+      "item": "autopilot-security-audit.txt",
+      "passed": true,
+      "detail": "actor=autopilot, purpose=security-audit",
+      "ts": "2026-09-11T06:30:58"
+    },
+    {
+      "dimension": "policy",
+      "item": "autopilot-security-audit.txt",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T06:30:58"
+    }
+  ],
+  "blocked_by": []
+}

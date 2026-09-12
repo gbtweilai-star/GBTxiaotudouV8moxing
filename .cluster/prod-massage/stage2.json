@@ -1,0 +1,6 @@
+{
+  "caps_syntax_bad": 0,
+  "brain_syntax_bad": 0,
+  "daemon_heal": true,
+  "e2e": true
+}

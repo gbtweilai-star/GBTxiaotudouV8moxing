@@ -1,0 +1,35 @@
+{
+  "rec_id": "absorbed_knowledge.md-4baf1f74-1789098633",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "absorbed_knowledge.md",
+      "passed": true,
+      "detail": "570 bytes",
+      "ts": "2026-09-11T10:50:33"
+    },
+    {
+      "dimension": "ownership",
+      "item": "absorbed_knowledge.md",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T10:50:33"
+    },
+    {
+      "dimension": "audit",
+      "item": "absorbed_knowledge.md",
+      "passed": true,
+      "detail": "actor=devour_tentacle, purpose=吞噬产物: devour_github_repo:PyCQA/bandit",
+      "ts": "2026-09-11T10:50:33"
+    },
+    {
+      "dimension": "policy",
+      "item": "absorbed_knowledge.md",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T10:50:33"
+    }
+  ],
+  "blocked_by": []
+}

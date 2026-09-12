@@ -1,0 +1,46 @@
+{
+ "name": "ai碳排放追踪",
+ "version": "1.0.0",
+ "description": "[创新] AI碳排放追踪 — GBT创新引擎生成",
+ "language": "python",
+ "risk_level": "safe",
+ "auto_exec": null,
+ "category": "AI",
+ "innovation": true,
+ "innovated_from": "general",
+ "entry": null,
+ "triggers": {
+  "keywords": [
+   "AI碳排放追踪"
+  ],
+  "intent": "use_ai碳排放追踪",
+  "examples": [
+   "用AI碳排放追踪实现创新"
+  ]
+ },
+ "actions": {
+  "run": {
+   "description": "执行AI碳排放追踪",
+   "args": [
+    "--action",
+    "run"
+   ],
+   "input": "stdin",
+   "timeout_ms": 120000,
+   "output": "json"
+  },
+  "research": {
+   "description": "研究AI碳排放追踪",
+   "args": [
+    "--action",
+    "research"
+   ],
+   "input": "stdin",
+   "timeout_ms": 60000,
+   "output": "json"
+  }
+ },
+ "domains": [
+  "创新实验室"
+ ]
+}

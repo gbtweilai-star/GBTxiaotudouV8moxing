@@ -1,0 +1,33 @@
+{
+  "audit": {
+    "deep_scan_verdict": "🔴 408处断连",
+    "deep_scan_issues": 408,
+    "health_pct": 100.0,
+    "topology_caps": 360,
+    "disk_caps": 523,
+    "disk_brains": 227,
+    "cross_ok": false
+  },
+  "topology_domains": [
+    "AI推理",
+    "AI记忆",
+    "AI知识",
+    "AI编程",
+    "AI创作",
+    "AI协作",
+    "感知域",
+    "攻击域",
+    "侦察域",
+    "桌面域",
+    "运维域",
+    "信息域",
+    "媒体域",
+    "安全域",
+    "特殊域",
+    "金融域",
+    "设备感知层",
+    "量子邻域",
+    "远程域",
+    "🧠 多脑域"
+  ]
+}

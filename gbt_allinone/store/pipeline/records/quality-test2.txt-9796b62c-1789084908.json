@@ -1,0 +1,102 @@
+{
+  "rec_id": "quality-test2.txt-9796b62c-1789084908",
+  "name": "quality-test2.txt",
+  "sha256": "9796b62cbc5a29501997dd9edf2f9a24cc82d996296c826e58377b584d7bf959",
+  "size": 45,
+  "submitted_at": "2026-09-11T07:01:48",
+  "meta": {
+    "actor": "owner",
+    "purpose": "正式产品发布会材料"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\quality-test2.txt-9796b62c-1789084908.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "quality-test2.txt",
+        "passed": true,
+        "detail": "45 bytes",
+        "ts": "2026-09-11T07:01:48"
+      },
+      {
+        "dimension": "ownership",
+        "item": "quality-test2.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T07:01:48"
+      },
+      {
+        "dimension": "audit",
+        "item": "quality-test2.txt",
+        "passed": true,
+        "detail": "actor=owner, purpose=正式产品发布会材料",
+        "ts": "2026-09-11T07:01:48"
+      },
+      {
+        "dimension": "policy",
+        "item": "quality-test2.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T07:01:48"
+      },
+      {
+        "dimension": "quality",
+        "item": "quality-test2.txt",
+        "passed": false,
+        "detail": "score=0/100, issues=['产物内容为垃圾文本/乱码凑字数，完全无可读内容', '内容与声明用途『正式产品发布会材料』完全不符，缺乏任何产品信息', '存在中文拼音式占位符（xxx）与自述无效表述『完全无价值』，无实质交付物']",
+        "ts": "2026-09-11T07:01:51"
+      }
+    ],
+    "refine_lineage": []
+  },
+  "stage2_gate": {
+    "rec_id": "quality-test2.txt-9796b62c-1789084908",
+    "passed": false,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "quality-test2.txt",
+        "passed": true,
+        "detail": "45 bytes",
+        "ts": "2026-09-11T07:01:48"
+      },
+      {
+        "dimension": "ownership",
+        "item": "quality-test2.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T07:01:48"
+      },
+      {
+        "dimension": "audit",
+        "item": "quality-test2.txt",
+        "passed": true,
+        "detail": "actor=owner, purpose=正式产品发布会材料",
+        "ts": "2026-09-11T07:01:48"
+      },
+      {
+        "dimension": "policy",
+        "item": "quality-test2.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T07:01:48"
+      },
+      {
+        "dimension": "quality",
+        "item": "quality-test2.txt",
+        "passed": false,
+        "detail": "score=0/100, issues=['产物内容为垃圾文本/乱码凑字数，完全无可读内容', '内容与声明用途『正式产品发布会材料』完全不符，缺乏任何产品信息', '存在中文拼音式占位符（xxx）与自述无效表述『完全无价值』，无实质交付物']",
+        "ts": "2026-09-11T07:01:51"
+      }
+    ],
+    "blocked_by": [
+      "quality"
+    ]
+  },
+  "stage3_publish": {
+    "status": "blocked",
+    "quarantine": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\quarantine\\quality-test2.txt-9796b62c-1789084908.bin",
+    "reason": "门禁未过: ['quality']"
+  },
+  "status": "blocked"
+}

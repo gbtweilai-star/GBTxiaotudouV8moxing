@@ -1,0 +1,19 @@
+{
+  "gbt_stamp": {
+    "framework": "GBT小土豆",
+    "version": "8.0.0",
+    "mark": "GBT",
+    "developer": "自由的风",
+    "ownership": "independent-personal",
+    "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"
+  },
+  "publish": {
+    "rec_id": "capability.json-de7c7bf4-1789103592",
+    "sha256": "de7c7bf4a5ed70eff917be200f00b7ed7e6123237396700856dbadadeefcf31f",
+    "published_at": "2026-09-11T12:13:12",
+    "actor": "devour_tentacle",
+    "purpose": "吞噬产物: devour_github_repo:tastejs/todomvc:scaffold",
+    "version": 2,
+    "refined_rounds": 0
+  }
+}

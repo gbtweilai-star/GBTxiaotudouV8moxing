@@ -1,0 +1,18 @@
+{
+  "summary": {
+    "total_dimensions": 5,
+    "enhanced_dimensions": 5,
+    "enhancement_rate": "100%",
+    "capabilities_count": 10,
+    "voice_engine": "Windows SAPI (System.Speech)",
+    "total_spoken": 3,
+    "dimensions": [
+      "🧠 脑 - 认知维",
+      "👁️ 眼 - 视觉维",
+      "👂 耳 - 听觉维",
+      "👄 嘴 - 表达维",
+      "🖐️ 手 - 执行维"
+    ]
+  },
+  "dimensions_count": 5
+}

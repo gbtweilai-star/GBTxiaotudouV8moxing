@@ -1,0 +1,19 @@
+{
+  "gbt_stamp": {
+    "framework": "GBT小土豆",
+    "version": "8.0.0",
+    "mark": "GBT",
+    "developer": "自由的风",
+    "ownership": "independent-personal",
+    "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"
+  },
+  "publish": {
+    "rec_id": "autopilot-产出名.txt-0f9237bc-1789106717",
+    "sha256": "0f9237bc52fdd86e76730303f66c79e79f303ebd8e7a529a8ec4be0bda360e01",
+    "published_at": "2026-09-11T13:05:17",
+    "actor": "autopilot",
+    "purpose": "统计一句话词数并回显结果",
+    "version": 2,
+    "refined_rounds": 0
+  }
+}

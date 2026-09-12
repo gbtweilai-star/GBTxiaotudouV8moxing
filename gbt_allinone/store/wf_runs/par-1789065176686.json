@@ -1,0 +1,90 @@
+{
+  "record": {
+    "run_id": "par-1789065176686",
+    "workflow": "par",
+    "params": {},
+    "status": "ok",
+    "nodes": {
+      "a": "ok",
+      "b": "ok",
+      "c": "ok",
+      "d": "ok"
+    },
+    "elapsed_s": 0.003,
+    "finished_at": "2026-09-11T01:32:56"
+  },
+  "results": {
+    "a": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "echo",
+        "result": {
+          "echo": {
+            "text": "1"
+          }
+        }
+      }
+    },
+    "b": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "echo",
+        "result": {
+          "echo": {
+            "text": "2"
+          }
+        }
+      }
+    },
+    "c": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "echo",
+        "result": {
+          "echo": {
+            "text": "3"
+          }
+        }
+      }
+    },
+    "d": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "echo",
+        "result": {
+          "echo": {
+            "text": "4"
+          }
+        }
+      }
+    }
+  }
+}

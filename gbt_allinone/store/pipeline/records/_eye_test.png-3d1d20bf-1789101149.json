@@ -1,0 +1,105 @@
+{
+  "rec_id": "_eye_test.png-3d1d20bf-1789101149",
+  "name": "_eye_test.png",
+  "sha256": "3d1d20bfaa54fd013208fa6f357a18d4b7b814c2c0522f842675371a7871513c",
+  "size": 140184,
+  "submitted_at": "2026-09-11T11:32:29",
+  "meta": {
+    "actor": "tentacle_vision",
+    "purpose": "omni_tentacle_screenshot"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\pipeline\\mirror\\_eye_test.png-3d1d20bf-1789101149.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "_eye_test.png",
+        "passed": true,
+        "detail": "140184 bytes",
+        "ts": "2026-09-11T11:32:29"
+      },
+      {
+        "dimension": "ownership",
+        "item": "_eye_test.png",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T11:32:29"
+      },
+      {
+        "dimension": "audit",
+        "item": "_eye_test.png",
+        "passed": true,
+        "detail": "actor=tentacle_vision, purpose=omni_tentacle_screenshot",
+        "ts": "2026-09-11T11:32:29"
+      },
+      {
+        "dimension": "policy",
+        "item": "_eye_test.png",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T11:32:29"
+      }
+    ],
+    "refine_lineage": []
+  },
+  "stage2_gate": {
+    "rec_id": "_eye_test.png-3d1d20bf-1789101149",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "_eye_test.png",
+        "passed": true,
+        "detail": "140184 bytes",
+        "ts": "2026-09-11T11:32:29"
+      },
+      {
+        "dimension": "ownership",
+        "item": "_eye_test.png",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T11:32:29"
+      },
+      {
+        "dimension": "audit",
+        "item": "_eye_test.png",
+        "passed": true,
+        "detail": "actor=tentacle_vision, purpose=omni_tentacle_screenshot",
+        "ts": "2026-09-11T11:32:29"
+      },
+      {
+        "dimension": "policy",
+        "item": "_eye_test.png",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T11:32:29"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\pipeline\\production\\_eye_test.png",
+    "version": 2,
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "developer": "自由的风",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "_eye_test.png-3d1d20bf-1789101149",
+        "sha256": "3d1d20bfaa54fd013208fa6f357a18d4b7b814c2c0522f842675371a7871513c",
+        "published_at": "2026-09-11T11:32:29",
+        "actor": "tentacle_vision",
+        "purpose": "omni_tentacle_screenshot",
+        "version": 2,
+        "refined_rounds": 0
+      }
+    }
+  },
+  "status": "published"
+}

@@ -1,0 +1,46 @@
+{
+ "name": "agent梦境模拟",
+ "version": "1.0.0",
+ "description": "[创新] Agent梦境模拟 — GBT创新引擎生成",
+ "language": "python",
+ "risk_level": "safe",
+ "auto_exec": null,
+ "category": "AI",
+ "innovation": true,
+ "innovated_from": "ai_agent",
+ "entry": null,
+ "triggers": {
+  "keywords": [
+   "Agent梦境模拟"
+  ],
+  "intent": "use_agent梦境模拟",
+  "examples": [
+   "用Agent梦境模拟实现创新"
+  ]
+ },
+ "actions": {
+  "run": {
+   "description": "执行Agent梦境模拟",
+   "args": [
+    "--action",
+    "run"
+   ],
+   "input": "stdin",
+   "timeout_ms": 120000,
+   "output": "json"
+  },
+  "research": {
+   "description": "研究Agent梦境模拟",
+   "args": [
+    "--action",
+    "research"
+   ],
+   "input": "stdin",
+   "timeout_ms": 60000,
+   "output": "json"
+  }
+ },
+ "domains": [
+  "创新实验室"
+ ]
+}

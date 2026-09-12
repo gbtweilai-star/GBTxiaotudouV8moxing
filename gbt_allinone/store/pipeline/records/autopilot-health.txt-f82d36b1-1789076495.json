@@ -1,0 +1,100 @@
+{
+  "rec_id": "autopilot-health.txt-f82d36b1-1789076495",
+  "name": "autopilot-health.txt",
+  "sha256": "f82d36b10f8cf5dce640517a87c55fd4550753705c098b5fc5474afa5a5aa60f",
+  "size": 403,
+  "submitted_at": "2026-09-11T04:41:35",
+  "meta": {
+    "actor": "autopilot",
+    "purpose": "framework full health check and publish 3-sentence conclusion for review"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\autopilot-health.txt-f82d36b1-1789076495.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "403 bytes",
+        "ts": "2026-09-11T04:41:35"
+      },
+      {
+        "dimension": "ownership",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T04:41:35"
+      },
+      {
+        "dimension": "audit",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "actor=autopilot, purpose=framework full health check and publish 3-sentence conclusion for review",
+        "ts": "2026-09-11T04:41:35"
+      },
+      {
+        "dimension": "policy",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T04:41:35"
+      }
+    ]
+  },
+  "stage2_gate": {
+    "rec_id": "autopilot-health.txt-f82d36b1-1789076495",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "403 bytes",
+        "ts": "2026-09-11T04:41:35"
+      },
+      {
+        "dimension": "ownership",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T04:41:35"
+      },
+      {
+        "dimension": "audit",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "actor=autopilot, purpose=framework full health check and publish 3-sentence conclusion for review",
+        "ts": "2026-09-11T04:41:35"
+      },
+      {
+        "dimension": "policy",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T04:41:35"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\autopilot-health.txt",
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "autopilot-health.txt-f82d36b1-1789076495",
+        "sha256": "f82d36b10f8cf5dce640517a87c55fd4550753705c098b5fc5474afa5a5aa60f",
+        "published_at": "2026-09-11T04:41:35",
+        "actor": "autopilot",
+        "purpose": "framework full health check and publish 3-sentence conclusion for review"
+      }
+    }
+  },
+  "status": "published"
+}

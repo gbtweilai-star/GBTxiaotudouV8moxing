@@ -1,0 +1,8 @@
+{
+ "brain": true,
+ "brain_s": 19,
+ "hand": "success",
+ "voice": "success",
+ "engine": "edge-tts",
+ "total_s": 23
+}

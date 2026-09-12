@@ -1,0 +1,33 @@
+{
+  "record": {
+    "run_id": "v2-verify-1789066686214",
+    "workflow": "v2-verify",
+    "params": {},
+    "status": "ok",
+    "nodes": {
+      "h": "ok"
+    },
+    "elapsed_s": 0.002,
+    "finished_at": "2026-09-11T01:58:06"
+  },
+  "results": {
+    "h": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "health",
+        "result": {
+          "platform": "Windows-11-10.0.26200-SP0",
+          "python": "3.13.12",
+          "time": "2026-09-11T01:58:06"
+        }
+      }
+    }
+  }
+}

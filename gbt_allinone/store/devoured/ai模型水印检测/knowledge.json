@@ -1,0 +1,46 @@
+{
+ "name": "ai模型水印检测",
+ "version": "1.0.0",
+ "description": "[创新] AI模型水印检测 — GBT创新引擎生成",
+ "language": "python",
+ "risk_level": "safe",
+ "auto_exec": null,
+ "category": "AI",
+ "innovation": true,
+ "innovated_from": "security",
+ "entry": null,
+ "triggers": {
+  "keywords": [
+   "AI模型水印检测"
+  ],
+  "intent": "use_ai模型水印检测",
+  "examples": [
+   "用AI模型水印检测实现创新"
+  ]
+ },
+ "actions": {
+  "run": {
+   "description": "执行AI模型水印检测",
+   "args": [
+    "--action",
+    "run"
+   ],
+   "input": "stdin",
+   "timeout_ms": 120000,
+   "output": "json"
+  },
+  "research": {
+   "description": "研究AI模型水印检测",
+   "args": [
+    "--action",
+    "research"
+   ],
+   "input": "stdin",
+   "timeout_ms": 60000,
+   "output": "json"
+  }
+ },
+ "domains": [
+  "创新实验室"
+ ]
+}

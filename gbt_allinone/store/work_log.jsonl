@@ -1,0 +1,16 @@
+{"at": "2026-09-11T19:39:11", "action": "done", "title": "根治环 v2：开工查看/坑册/工作日志/源码保护", "detail": "债6 测试84绿 坑册8条", "debt_total": 6}
+{"at": "2026-09-11T19:43:16", "action": "lesson", "title": "测试日志", "detail": ""}
+{"at": "2026-09-11T19:54:20", "action": "lesson", "title": "测试日志", "detail": ""}
+{"at": "2026-09-11T19:56:06", "action": "done", "title": "开工纪律落地：pre_work四看 + 坑册 + 工作日志 + 源码保护 + 恢复语义", "detail": "债6 测试86绿 坑册11条", "debt_total": 6}
+{"at": "2026-09-11T20:18:21", "action": "lesson", "title": "测试日志", "detail": ""}
+{"at": "2026-09-11T20:36:48", "action": "lesson", "title": "测试日志", "detail": ""}
+{"at": "2026-09-11T20:40:25", "action": "lesson", "title": "测试日志", "detail": ""}
+{"at": "2026-09-11T20:47:54", "action": "lesson", "title": "测试日志", "detail": ""}
+{"at": "2026-09-11T20:49:36", "action": "done", "title": "观察者效应三形态根治 + 性能热路径修复", "detail": "探针标记全链路 / quiet 探活 / devour_pulse 副作用隔离 / recombine 防级联 / 恢复判定 TTL。回归 87 绿", "debt_total": 5}
+{"at": "2026-09-12T06:00:07", "action": "done", "title": "接入桌面指挥官触手（Desktop Commander MCP）", "detail": "local stdio 26 工具 + remote 设备管理（start/status/stop，PID 跨进程）；坑册 +2；测试 +1", "debt_total": 5}
+{"at": "2026-09-12T06:01:08", "action": "lesson", "title": "测试日志", "detail": ""}
+{"at": "2026-09-12T06:08:19", "action": "lesson", "title": "测试日志", "detail": ""}
+{"at": "2026-09-12T06:09:34", "action": "done", "title": "桌面指挥官接入 + 双身份家根识别根治", "detail": "触手 26 工具 local/remote 双形态；inventory 认识工作区宿主；回归 88 绿", "debt_total": 5}
+{"at": "2026-09-12T06:14:21", "action": "lesson", "title": "测试日志", "detail": ""}
+{"at": "2026-09-12T06:19:17", "action": "done", "title": "remote 设备品牌注入（GBT小土豆V8 上线云端设备列表）", "detail": "preload 覆写 os.hostname；设备名上报 GBT 品牌；测试 +1", "debt_total": 5}
+{"at": "2026-09-12T06:19:58", "action": "lesson", "title": "测试日志", "detail": ""}

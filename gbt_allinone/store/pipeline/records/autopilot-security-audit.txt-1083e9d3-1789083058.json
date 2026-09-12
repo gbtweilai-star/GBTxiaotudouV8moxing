@@ -1,0 +1,100 @@
+{
+  "rec_id": "autopilot-security-audit.txt-1083e9d3-1789083058",
+  "name": "autopilot-security-audit.txt",
+  "sha256": "1083e9d3ee9b1ee80bed87b78c917b735b7868ff55b1a45a6871c0c63ff61d03",
+  "size": 58,
+  "submitted_at": "2026-09-11T06:30:58",
+  "meta": {
+    "actor": "autopilot",
+    "purpose": "security-audit"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\autopilot-security-audit.txt-1083e9d3-1789083058.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "autopilot-security-audit.txt",
+        "passed": true,
+        "detail": "58 bytes",
+        "ts": "2026-09-11T06:30:58"
+      },
+      {
+        "dimension": "ownership",
+        "item": "autopilot-security-audit.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T06:30:58"
+      },
+      {
+        "dimension": "audit",
+        "item": "autopilot-security-audit.txt",
+        "passed": true,
+        "detail": "actor=autopilot, purpose=security-audit",
+        "ts": "2026-09-11T06:30:58"
+      },
+      {
+        "dimension": "policy",
+        "item": "autopilot-security-audit.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T06:30:58"
+      }
+    ]
+  },
+  "stage2_gate": {
+    "rec_id": "autopilot-security-audit.txt-1083e9d3-1789083058",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "autopilot-security-audit.txt",
+        "passed": true,
+        "detail": "58 bytes",
+        "ts": "2026-09-11T06:30:58"
+      },
+      {
+        "dimension": "ownership",
+        "item": "autopilot-security-audit.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T06:30:58"
+      },
+      {
+        "dimension": "audit",
+        "item": "autopilot-security-audit.txt",
+        "passed": true,
+        "detail": "actor=autopilot, purpose=security-audit",
+        "ts": "2026-09-11T06:30:58"
+      },
+      {
+        "dimension": "policy",
+        "item": "autopilot-security-audit.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T06:30:58"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\autopilot-security-audit.txt",
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "autopilot-security-audit.txt-1083e9d3-1789083058",
+        "sha256": "1083e9d3ee9b1ee80bed87b78c917b735b7868ff55b1a45a6871c0c63ff61d03",
+        "published_at": "2026-09-11T06:30:58",
+        "actor": "autopilot",
+        "purpose": "security-audit"
+      }
+    }
+  },
+  "status": "published"
+}

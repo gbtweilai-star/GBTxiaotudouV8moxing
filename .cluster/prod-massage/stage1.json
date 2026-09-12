@@ -1,0 +1,20 @@
+{
+  "stress": {
+    "ok": true,
+    "rate": 100.0
+  },
+  "isolation": {
+    "ok": true,
+    "isolated": true
+  },
+  "resilience": {
+    "ok": true,
+    "rate": 100.0
+  },
+  "breaker": {
+    "ok": true
+  },
+  "persist": {
+    "ok": true
+  }
+}

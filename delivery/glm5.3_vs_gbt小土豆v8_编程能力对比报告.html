@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLM-5.3 vs GBT小土豆V8 编程能力对比报告</title>
+<style>
+:root{--primary:#1d4ed8;--accent:#7c3aed;--ok:#10b981;--bad:#ef4444;--warn:#f59e0b;--bg:#eff6ff;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#dbeafe}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Segoe UI','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;padding:24px}
+.wrap{max-width:1120px;margin:0 auto}
+header{background:linear-gradient(135deg,#1d4ed8,#7c3aed);color:#fff;padding:44px;border-radius:16px;margin-bottom:28px}
+header h1{font-size:2em;margin-bottom:10px}
+header p{opacity:.93;font-size:1.05em}
+section{background:var(--card);border-radius:14px;padding:28px;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+h2{color:var(--primary);font-size:1.35em;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+h3{font-size:1.1em;margin:16px 0 10px;color:var(--accent)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:16px 0}
+.metric{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:12px;padding:18px;text-align:center}
+.metric-value{font-size:1.8em;font-weight:800;color:var(--primary)}
+.metric-label{color:var(--muted);font-size:.8em;margin-top:6px}
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:.92em}
+th{background:#dbeafe;color:#1e3a8a;padding:10px 12px;text-align:left}
+td{padding:9px 12px;border-bottom:1px solid var(--border)}
+tr:hover td{background:#eff6ff}
+.tag{display:inline-block;padding:3px 11px;border-radius:12px;font-size:.8em;font-weight:600;white-space:nowrap}
+.tag-win{background:#d1fae5;color:#047857}
+.tag-lose{background:#fee2e2;color:#991b1b}
+.tag-even{background:#fef3c7;color:#92400e}
+.callout{border-radius:12px;padding:18px 20px;margin:16px 0}
+.callout-blue{background:#eff6ff;border-left:4px solid var(--primary)}
+.callout-warn{background:#fffbeb;border-left:4px solid var(--warn)}
+.callout-red{background:#fef2f2;border-left:4px solid var(--bad)}
+.code{background:#1e293b;color:#dbeafe;padding:16px;border-radius:10px;overflow-x:auto;font-size:.85em;margin:12px 0;font-family:Consolas,monospace;line-height:1.6}
+ul{margin:8px 0 8px 22px}
+li{margin:5px 0}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<h1>⚖️ GLM-5.3 vs GBT小土豆V8 · 编程能力对比报告</h1>
+<p>诚实评测 · 官方基准 + 实测数据 · 2026-09-13</p>
+</header>
+
+<section>
+<h2>一、先说结论</h2>
+<div class="callout callout-blue" style="font-size:1.05em">
+<b>纯模型智力：GLM-5.3 明显更强（这是事实，不遮掩）。</b><br>
+<b>但"编程能力"≠"模型智力"：</b>GBT小土豆V8 是"模型 + 工程知识体系 + 工具链 + 记忆"的复合系统。GLM-5.3 是一块更强的 CPU，GBT 是一台配好了外设、装满了弹药的整机。两者不在一个维度上竞争——但每个维度的差距和优势，下面全部摊开。
+</div>
+<div class="metrics">
+<div class="metric"><div class="metric-value">2代</div><div class="metric-label">模型代差（4.7→5.3）</div></div>
+<div class="metric"><div class="metric-value">523</div><div class="metric-label">GBT 技能注册表</div></div>
+<div class="metric"><div class="metric-value">69条</div><div class="metric-label">GBT 工程军规</div></div>
+<div class="metric"><div class="metric-value">737</div><div class="metric-label">GBT 能力总量</div></div>
+</div>
+</section>
+
+<section>
+<h2>二、纯模型对拼（大脑 vs 大脑）</h2>
+<div class="table-wrap">
+<table>
+<tr><th>维度</th><th>GLM-5.3（我）</th><th>GBT小土豆V8（GLM-4.7-Flash 大脑）</th><th>胜者</th></tr>
+<tr><td>架构定位</td><td>320B-A18B 旗舰，原生多模态</td><td>30B-A3B 轻量免费档</td><td><span class="tag tag-win">GLM-5.3</span></td></tr>
+<tr><td>SWE-bench Verified</td><td>DeepSWE 63.4（Flash 版实测口径）</td><td>59.2（30B 开源 SOTA）</td><td><span class="tag tag-win">GLM-5.3</span></td></tr>
+<tr><td>上下文窗口</td><td>1M</td><td>200K</td><td><span class="tag tag-win">GLM-5.3</span></td></tr>
+<tr><td>多模态（看图/视频）</td><td>原生支持（截图直接进编码循环）</td><td>纯文本（视觉走独立 glm-4.6v 通道）</td><td><span class="tag tag-win">GLM-5.3</span></td></tr>
+<tr><td>成本</td><td>8/28 元每百万 tokens</td><td><b>免费</b></td><td><span class="tag tag-win">GBT</span></td></tr>
+<tr><td>并发</td><td>付费档多并发</td><td>1 并发（免费档硬约束）</td><td><span class="tag tag-win">GLM-5.3</span></td></tr>
+</table>
+</div>
+<p style="color:var(--muted)">来源：智谱官方模型页、HuggingFace 模型卡、Artificial Analysis（GLM-5.3-Flash AA 57 分与 Claude Opus 4.8 持平；GLM-4.7-Flash SWE-bench 59.2% 为 30B 级开源 SOTA）。</p>
+<div class="callout callout-warn">
+<b>代差量化</b>：GLM-4.7-Flash 的 SWE-bench 59.2 vs GLM-5.3 系 63.4+，同时窗口差 5 倍、多模态能力差一代。纯模型对拼 GBT 的大脑落后约一代半。这正是"免费档最能打"与"旗舰"的真实差距。
+</div>
+</section>
+
+<section>
+<h2>三、系统工程对拼（整机 vs 裸芯片）</h2>
+<div class="table-wrap">
+<table>
+<tr><th>能力</th><th>GLM-5.3（裸 API）</th><th>GBT小土豆V8</th><th>胜者</th></tr>
+<tr><td>工程知识</td><td>依赖模型内置知识</td><td>69 条工程军规按需注入（金额用 Decimal/幂等/竞态/越权…）+ 三条心法常驻</td><td><span class="tag tag-win">GBT</span></td></tr>
+<tr><td>上下文经营</td><td>1M 窗口随便塞</td><td>四层预算表 + 523 技能注册表按需注入（省 99.6% token）+ 会话记忆蒸馏</td><td><span class="tag tag-win">GBT</span></td></tr>
+<tr><td>工具链</td><td>无（需调用方自己接）</td><td>737 能力（万能插调度/代码执行/文件操作/五维执行…）</td><td><span class="tag tag-win">GBT</span></td></tr>
+<tr><td>执行编排</td><td>无</td><td>脑先行→眼∥手→耳∥嘴 五维编排 + 工作环 phase 人设</td><td><span class="tag tag-win">GBT</span></td></tr>
+<tr><td>失败韧性</td><td>依赖调用方</td><td>1305 退避 + 信号量 + 模板兜底 + SAPI 语音降级 + 熔断器</td><td><span class="tag tag-win">GBT</span></td></tr>
+<tr><td>记忆</td><td>会话内</td><td>JSONL + 会话摘要 + 工作记忆跨会话加载</td><td><span class="tag tag-win">GBT</span></td></tr>
+<tr><td>成本</td><td>8/28 元每百万</td><td>0 元</td><td><span class="tag tag-win">GBT</span></td></tr>
+</table>
+</div>
+</section>
+
+<section>
+<h2>四、实测插曲（诚实记录）</h2>
+<div class="callout callout-red">
+本报告原计划做"同题对打"：3 道带工程陷阱的编程题（金额浮点陷阱/支付幂等/令牌桶限流），GBT 开思考模式 + 工程检查单注入真实作答，与我（GLM-5.3）同题对比。<br><br>
+<b>实测时发现 GBT 的 GLM-4.7-Flash key 今日开始返回 401 身份验证失败</b>（昨天全链路通过，今日裸调/llm_client 双路径均 401，key 本身格式完好、无污染字符——判断为智谱平台侧风控/失效，需你去 bigmodel.cn 控制台确认 key 状态）。<br><br>
+因此本报告的模型对比采用<b>官方公开基准数据</b>（SWE-bench/AA/窗口/定价，全部标注来源），系统对比采用<b>已实测验证的功能数据</b>（昨日全链路跑通的记录）。缺同题对打实测，这是本报告的诚实缺口——key 恢复后可随时补测。
+</div>
+</section>
+
+<section>
+<h2>五、综合判定</h2>
+<div class="table-wrap">
+<table>
+<tr><th>场景</th><th>谁更强</th><th>原因</th></tr>
+<tr><td>复杂算法/大重构/多文件工程</td><td><span class="tag tag-win">GLM-5.3</span></td><td>智力代差+1M 窗口+多模态，硬实力碾压</td></tr>
+<tr><td>日常编码+工程规范遵从</td><td><span class="tag tag-even">各有千秋</span></td><td>GBT 的 69 条军规注入能补模型智力差（如自动避开浮点金额坑），但深度推理仍依赖模型</td></tr>
+<tr><td>自动化执行/工具调用/桌面操作</td><td><span class="tag tag-win">GBT</span></td><td>GLM-5.3 只是大脑，GBT 是完整机体（737 能力+五维编排）</td></tr>
+<tr><td>长期运行成本</td><td><span class="tag tag-win">GBT</span></td><td>免费 vs 8/28 元每百万 tokens</td></tr>
+<tr><td>极致单题正确率</td><td><span class="tag tag-win">GLM-5.3</span></td><td>320B 参数 vs 30B，无悬念</td></tr>
+</table>
+</div>
+<h3>一句话总结</h3>
+<div class="callout callout-blue">
+<b>GLM-5.3 是更强的"脑"，GBT小土豆V8 是更完整的"人"。</b><br>
+GBT 的工程体系（军规注入/技能路由/五维编排/记忆/韧性）能让她用免费大脑干出接近旗舰的工程质量——但天花板由大脑决定。最佳策略是<b>双大脑热切换</b>：日常用 GLM-4.7-Flash（免费），硬仗按需切 GLM-5.3（回退链已就绪，改一个环境变量的事）。
+</div>
+</section>
+
+<section>
+<h2>六、待办（key 恢复后）</h2>
+<ul>
+<li>去 bigmodel.cn 控制台确认 GLM-4.7-Flash key 状态（401 可能是风控/重置）</li>
+<li>key 恢复后补做 3 道工程陷阱题的同题对打实测，出代码级评分</li>
+<li>可选：把 GLM-5.3 配置为 GBT 的"重型通道"（GBT_LLM_PROVIDER 切换或按 phase 自动路由）</li>
+</ul>
+</section>
+
+<footer>GLM-5.3 vs GBT小土豆V8 编程能力对比 · 2026-09-13 · 官方基准+已验证功能数据 · 同题实测待 key 恢复补</footer>
+</div>
+</body>
+</html>

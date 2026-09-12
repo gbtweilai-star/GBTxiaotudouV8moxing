@@ -1,0 +1,69 @@
+{
+  "version": 8,
+  "promoted_at": "2026-09-11T20:19:24",
+  "purpose": "",
+  "files": 14,
+  "manifest": {
+    "app.js": {
+      "sha": "7ef1da4526e688f4",
+      "size": 620
+    },
+    "backbone-min.js": {
+      "sha": "f4754afbc1707c63",
+      "size": 25201
+    },
+    "base.css": {
+      "sha": "1a35d01487da7546",
+      "size": 1959
+    },
+    "base.js": {
+      "sha": "1def4b500df39764",
+      "size": 7502
+    },
+    "collections/todos.js": {
+      "sha": "534fe89dce4a66f3",
+      "size": 1201
+    },
+    "index.css": {
+      "sha": "8b19c96c44f8c1f3",
+      "size": 7666
+    },
+    "index.html": {
+      "sha": "ce2673618edf94be",
+      "size": 3109
+    },
+    "jquery.min.js": {
+      "sha": "4da87c258eca460d",
+      "size": 89797
+    },
+    "models/todo.js": {
+      "sha": "eabef483ad3c0afd",
+      "size": 709
+    },
+    "routers/router.js": {
+      "sha": "bed6165dd86921d9",
+      "size": 666
+    },
+    "sync/backbone.sync.js": {
+      "sha": "806c4fa50bb1bf8e",
+      "size": 4009
+    },
+    "underscore-min.js": {
+      "sha": "07ce91b5cf8de7a1",
+      "size": 19531
+    },
+    "views/app-view.js": {
+      "sha": "3116d8be6a2c5fe4",
+      "size": 4927
+    },
+    "views/todo-view.js": {
+      "sha": "5fd8b546a75622aa",
+      "size": 4447
+    }
+  },
+  "validate": {
+    "passed": 5,
+    "total": 5
+  },
+  "law": "生产零修改：本次晋升后 production 任何变动即视为漂移"
+}

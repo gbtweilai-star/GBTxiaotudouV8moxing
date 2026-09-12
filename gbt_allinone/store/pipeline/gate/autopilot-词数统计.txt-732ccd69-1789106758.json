@@ -1,0 +1,35 @@
+{
+  "rec_id": "autopilot-词数统计.txt-732ccd69-1789106758",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "autopilot-词数统计.txt",
+      "passed": true,
+      "detail": "83 bytes",
+      "ts": "2026-09-11T13:05:58"
+    },
+    {
+      "dimension": "ownership",
+      "item": "autopilot-词数统计.txt",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T13:05:58"
+    },
+    {
+      "dimension": "audit",
+      "item": "autopilot-词数统计.txt",
+      "passed": true,
+      "detail": "actor=autopilot, purpose=统计一句话的词数并回显结果",
+      "ts": "2026-09-11T13:05:58"
+    },
+    {
+      "dimension": "policy",
+      "item": "autopilot-词数统计.txt",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T13:05:58"
+    }
+  ],
+  "blocked_by": []
+}

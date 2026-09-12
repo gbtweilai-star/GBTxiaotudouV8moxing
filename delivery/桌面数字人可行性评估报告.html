@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBT小土豆V8 桌面数字人 · 可行性评估报告</title>
+<style>
+:root{--primary:#e11d48;--accent:#8b5cf6;--ok:#10b981;--bad:#ef4444;--bg:#fdf2f8;--card:#fff;--text:#1f2937;--muted:#6b7280;--border:#fbcfe8}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Segoe UI','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;padding:24px}
+.wrap{max-width:1120px;margin:0 auto}
+header{background:linear-gradient(135deg,#e11d48,#8b5cf6);color:#fff;padding:44px;border-radius:16px;margin-bottom:28px}
+header h1{font-size:2.1em;margin-bottom:10px}
+header p{opacity:.93;font-size:1.05em}
+section{background:var(--card);border-radius:14px;padding:28px;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+h2{color:var(--primary);font-size:1.35em;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+h3{font-size:1.12em;margin:18px 0 10px;color:var(--accent)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:16px 0}
+.metric{background:linear-gradient(135deg,#fdf2f8,#fae8ff);border-radius:12px;padding:18px;text-align:center}
+.metric-value{font-size:2em;font-weight:800;color:var(--primary)}
+.metric-label{color:var(--muted);font-size:.82em;margin-top:6px}
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:.93em}
+th{background:#fae8ff;color:#6b21a8;padding:10px 12px;text-align:left}
+td{padding:9px 12px;border-bottom:1px solid var(--border)}
+tr:hover td{background:#fdf4ff}
+.tag{display:inline-block;padding:3px 11px;border-radius:12px;font-size:.8em;font-weight:600;white-space:nowrap}
+.tag-ok{background:#d1fae5;color:#047857}
+.tag-bad{background:#fee2e2;color:#991b1b}
+.tag-warn{background:#fef3c7;color:#92400e}
+.callout{border-radius:12px;padding:18px 20px;margin:16px 0}
+.callout-green{background:#ecfdf5;border-left:4px solid var(--ok)}
+.callout-red{background:#fef2f2;border-left:4px solid var(--bad)}
+.callout-blue{background:#eff6ff;border-left:4px solid var(--accent)}
+.code{background:#1f2937;color:#fbcfe8;padding:16px;border-radius:10px;overflow-x:auto;font-size:.86em;margin:12px 0;font-family:Consolas,monospace;line-height:1.6}
+.arch{background:#18122e;color:#e9d5ff;padding:22px;border-radius:12px;font-family:Consolas,monospace;font-size:.84em;line-height:1.7;overflow-x:auto;margin:14px 0}
+ul{margin:8px 0 8px 22px}
+li{margin:5px 0}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:20px}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<h1>👧 桌面数字人「GBT小土豆V8」· 可行性评估</h1>
+<p>住在电脑桌面的可爱美少女 · 来自未来的全栈编程 AI · 三层架构（会动/会聊/会干活）· 2026-09-12</p>
+</header>
+
+<section>
+<h2>一、最终结论</h2>
+<div class="callout callout-green" style="font-size:1.05em">
+<b>✅ 能实现 —— 三层全部可行，且有成熟开源先例验证，0 元起步。</b><br>
+「住在桌面、随意走动、调皮撒娇的美少女 + 全息悬空对话面板 + 语音对话 + 替你干活」这套完整体验，技术上每一环都有现成方案。本机硬件（AMD 独显/8GB 内存/无 N 卡）反而是筛选条件——它天然排除了错误的路线，指向了最合适的那条。
+</div>
+<div class="metrics">
+<div class="metric"><div class="metric-value">✅</div><div class="metric-label">形象层可行</div></div>
+<div class="metric"><div class="metric-value">✅</div><div class="metric-label">对话层可行</div></div>
+<div class="metric"><div class="metric-value">✅</div><div class="metric-label">行动层可行</div></div>
+<div class="metric"><div class="metric-value">¥0</div><div class="metric-label">起步成本</div></div>
+</div>
+
+<h3>关键澄清：「2D 显示不出特别之处」的担心，方向反了</h3>
+<p>调研结论很明确：<b>"活的感"不来自 2D 还是 3D，而来自动作质量、物理反馈和性格设计。</b></p>
+<ul>
+<li><b>真·写实数字人</b>（DUIX/EchoMimic/HeyGem 这类"视频流数字人"）：本质是视频帧生成管线——常驻 GPU 推理风扇狂转、<b>必须 NVIDIA 显卡</b>（本机是 AMD RX 6500M，直接出局）、真人数据训练做不出二次元美少女、Windows 桌面端连现成 SDK 都没有。这是"能走但没必要"的路。</li>
+<li><b>Live2D 骨骼动画</b>：呼吸、眨眼、头发裙子物理摆动、撒娇动作、部件级点击反应（点她头会有专门反应）、情绪表情——全部有现成 API；渲染几乎不吃 GPU；全球 13.7k star 的 Open-LLM-VTuber 已用这条路线做出了完整的桌宠模式，证明"住在桌面的活人感"完全成立。</li>
+<li>她"来自未来的小孩 + 顶尖编程 AI"的气质，靠<b>人设 Prompt + 动作编排 + 专属音色</b>塑造，而不是靠渲染管线。</li>
+</ul>
+</section>
+
+<section>
+<h2>二、推荐架构（三层全栈）</h2>
+<div class="arch">┌─────────────────────────────────────────────────┐
+│  形象层（会动）PySide6 + live2d-py（C 扩展·官方 Cubism 5 内核）      │
+│  · 透明无边框窗口 + 置顶 + 点击穿透（Win32 原生）                   │
+│  · 自动呼吸 SetAutoBreath / 自动眨眼 SetAutoBlink                  │
+│  · 头发裙子物理摆动 / 部件级点击 HitTest（点哪反应哪）              │
+│  · 撒娇动作 StartRandomMotion / 情绪表情 SetExpression             │
+│  · 桌面走动 = 窗口坐标移动 + 走路摆动 motion                       │
+│  · 全息面板 = DWM Acrylic 毛玻璃 + 辉光描边 + 扫描线 + 淡入淡出     │
+│  · 行为引擎 = 分层状态机（待机/闲逛/互动/对话/睡眠）+ 加权随机调度  │
+├─────────────────────────────────────────────────┤
+│  对话层（会聊）GLM-4.7-Flash（免费 API·OpenAI 兼容）               │
+│  · 打字聊天 + 按住说话（FunASR 本地中文语音识别，CPU 实时）         │
+│  · TTS 三级：SAPI(已有✅) → edge-tts(免费跃升) → GLM-TTS 音色复刻   │
+│  · 记忆：JSONL 会话日志 + persona 人设 + MEMORY.md 摘要（同构 OpenClaw）│
+├─────────────────────────────────────────────────┤
+│  行动层（会干活）GLM function calling + 本地工具集                  │
+│  · 开软件/查天气/定提醒/整理文件（白名单 + 危险操作两步确认）        │
+│  · 接 OpenClaw：v1 CLI 转发 → v2 WebSocket RPC（ws://localhost:18789）│
+│  · 她能替你跑代码、管项目，审批事件实时推给她播报                  │
+└─────────────────────────────────────────────────┘</div>
+
+<h3>为什么选 PySide6 + live2d-py 而不是 Open-LLM-VTuber 直接用？</h3>
+<div class="table-wrap">
+<table>
+<tr><th>方案</th><th>内存常驻</th><th>定制自由度</th><th>结论</th></tr>
+<tr><td>Open-LLM-VTuber（Electron 前端）</td><td>80–250MB</td><td>受前端自定义许可限制（非商业）</td><td><span class="tag tag-warn">备选·快速验证</span></td></tr>
+<tr><td><b>PySide6 + live2d-py 自研</b></td><td><b>30–80MB</b></td><td>形象/面板/行为/工具全链路自主</td><td><span class="tag tag-ok">主方案·推荐</span></td></tr>
+</table>
+</div>
+<p style="color:var(--muted)">本机 8GB 内存 + 已有大量常驻服务，轻量是硬指标；且全息面板、行为编排这些你的核心诉求都需要深度定制，自研壳子 + MIT 开源渲染库是自由度最高的组合。Open-LLM-VTuber 作为参考实现与兜底方案保留。</p>
+</section>
+
+<section>
+<h2>三、三层逐项可行性明细</h2>
+
+<h3>形象层：会动（最强验证）</h3>
+<div class="table-wrap">
+<table>
+<tr><th>你的需求</th><th>实现路径</th><th>验证状态</th></tr>
+<tr><td>待机呼吸、眨眼</td><td>live2d-py <code>SetAutoBreath</code> / <code>SetAutoBlinkEnable</code>（源码确认存在）</td><td><span class="tag tag-ok">API 现成</span></td></tr>
+<tr><td>点击有反应</td><td><code>HitTest</code> 部件级命中（点头/摸头不同反应）+ 点击 motion 组</td><td><span class="tag tag-ok">API 现成</span></td></tr>
+<tr><td>调皮爱撒娇</td><td><code>StartRandomMotion(interact组)</code> 随机撒娇动作 + 情绪表情</td><td><span class="tag tag-ok">API 现成</span></td></tr>
+<tr><td>头发裙子摆动</td><td>Cubism 物理引擎自动计算（模型自带 physics 配置）</td><td><span class="tag tag-ok">自动</span></td></tr>
+<tr><td>桌面随意走动</td><td>窗口坐标插值移动 + wander 摆动 motion + 屏幕边界转向</td><td><span class="tag tag-ok">成熟做法</span></td></tr>
+<tr><td>透明置顶不挡干活</td><td>WS_EX_LAYERED + WS_EX_TRANSPARENT + SetWindowPos，待机时开穿透</td><td><span class="tag tag-ok">Win32 原生</span></td></tr>
+<tr><td>拖到任意位置</td><td>拖拽跟随 + <code>Drag(x,y)</code> 物理惯性</td><td><span class="tag tag-ok">API 现成</span></td></tr>
+<tr><td><b>全息悬空对话面板</b></td><td>DWM Acrylic/Mica 毛玻璃 + 辉光描边 + 扫描线纹理 + QPropertyAnimation 淡入淡出</td><td><span class="tag tag-ok">可行·电影感的关键在视觉设计</span></td></tr>
+<tr><td>开机自启</td><td>注册表 Run 键 / 启动文件夹快捷方式</td><td><span class="tag tag-ok">标准做法</span></td></tr>
+<tr><td>免费美少女模型</td><td>Live2D 官方样本（Hiyori/Haru，个人免费）起步；后续可换商业模型或定制</td><td><span class="tag tag-ok">资源充足</span></td></tr>
+</table>
+</div>
+
+<h3>对话层：会聊</h3>
+<div class="table-wrap">
+<table>
+<tr><th>环节</th><th>选型</th><th>成本</th><th>备注</th></tr>
+<tr><td>大脑</td><td><b>GLM-4.7-Flash</b>（比原计划 glm-4-flash 更新更强）</td><td>免费</td><td>OpenAI 兼容 + function calling 成熟；备选 GLM-5.3-Flash</td></tr>
+<tr><td>语音识别</td><td><b>FunASR paraformer-zh</b> 本地离线</td><td>免费</td><td>中文准确率远超 Whisper，CPU 可实时；先"按住说话"，后期加"小土豆"唤醒词</td></tr>
+<tr><td>语音合成</td><td>SAPI（<b>本机已实测出声✅</b>）→ edge-tts → GLM-TTS 音色复刻</td><td>免费→低价</td><td>三级梯队自动降级；<b>3 秒样本给"她"克隆专属音色</b></td></tr>
+<tr><td>记忆</td><td>JSONL + persona.md + MEMORY.md 摘要</td><td>免费</td><td>与 OpenClaw 记忆同构，天然互通</td></tr>
+</table>
+</div>
+<p style="color:var(--muted)">注：GPT-SoVITS 本地声音克隆需要 NVIDIA 显卡（本机 AMD 出局）——用 GLM-TTS 音色复刻 API 替代，效果同級且免硬件。</p>
+
+<h3>行动层：会干活</h3>
+<div class="badge-row">
+<span class="tag tag-ok">开软件（白名单）</span>
+<span class="tag tag-ok">查天气（wttr.in 免key）</span>
+<span class="tag tag-ok">定提醒（接 OpenClaw cron）</span>
+<span class="tag tag-ok">整理文件（两步确认）</span>
+<span class="tag tag-ok">联网搜索</span>
+<span class="tag tag-ok">替你跑代码管项目（OpenClaw 通道）</span>
+</div>
+<ul>
+<li><b>安全设计</b>：工具白名单制、删除/覆盖类操作"计划预览→口头复述→确认"两步制、危险命令黑名单直接拒绝、全程审计日志</li>
+<li><b>OpenClaw 集成双通道</b>：v1 用 CLI 转发（一天跑通"她替你管项目"）→ v2 WebSocket 长连接（任务完成/审批请求实时推给她，她口头播报"代码跑完了/需要你批准这个命令"）</li>
+</ul>
+</section>
+
+<section>
+<h2>四、本机硬件适配结论</h2>
+<div class="table-wrap">
+<table>
+<tr><th>硬件</th><th>规格</th><th>影响</th></tr>
+<tr><td>GPU</td><td>AMD Radeon RX 6500M 4GB（无 NVIDIA CUDA）</td><td>排除写实数字人/GPT-SoVITS；Live2D 路线零影响 ✅</td></tr>
+<tr><td>内存</td><td>约 8GB</td><td>轻量是硬指标 → PySide6（30-80MB）而非 Electron（80-250MB）；ASR 按需加载</td></tr>
+<tr><td>CPU</td><td>Ryzen 5 5600H 6核12线程</td><td>FunASR CPU 实时识别充足 ✅</td></tr>
+<tr><td>屏幕</td><td>1536×864</td><td>全息面板与走动范围充足 ✅</td></tr>
+</table>
+</div>
+</section>
+
+<section>
+<h2>五、风险与未知项（诚实清单）</h2>
+<ul>
+<li><b>Live2D 商用授权</b>：个人自用完全免费；未来若商业化，Cubism SDK 对中大型企业有授权门槛（年销售额 ≥1000 万日元）——当前场景无风险</li>
+<li><b>edge-tts 属非官方接口</b>：有 403 风险 → 设计三级自动降级，SAPI 永久兜底</li>
+<li><b>逐像素点击穿透</b>：整窗穿透是原生能力，"只穿透明像素、身体可点"需 HitTest + 动态切换验证（预计可解，列为实测项）</li>
+<li><b>GLM 免费政策变动</b>：模型名做成配置项，主备热切换（4.5/4.7/5.3-Flash 三选一）</li>
+<li><b>60fps 与内存实测</b>：live2d-py 性能基于架构推断，开工第一步就在本机实测</li>
+<li><b>音画同步延迟</b>：TTS 流式与口型对齐需要缓冲设计，属打磨期问题</li>
+</ul>
+</section>
+
+<section>
+<h2>六、开工前只差一件事</h2>
+<div class="callout callout-blue">
+<b>API key</b>：对话层需要一个大模型 key。推荐<b>智谱 bigmodel.cn 免费注册</b>（GLM-4.7-Flash 免费额度，注册即得，5 分钟搞定）。<br>
+你有现成的智谱/DeepSeek/OpenAI key 任意一个都行——填进配置文件即可（别贴聊天里）。<br>
+<b>其余全部就绪</b>：写代码、下模型、装依赖、自启动、测试全包，形象先用免费美少女模型跑通，看了效果不满意随时换（壳子不动）。
+</div>
+<p>调研来源：Open-LLM-VTuber（13.7k★）、live2d-py（MIT，官方 Cubism 5 内核）、FunASR（阿里达摩）、智谱 bigmodel.cn 官方文档、OpenClaw 网关协议文档等 40+ 来源，全部经 2026-09-12 核实（明细见 .cluster/digital-human/ 三份调研报告）。</p>
+</section>
+
+<footer>GBT小土豆V8 桌面数字人 · 可行性评估 · 2026-09-12 · 三层全通 · 等一声开工</footer>
+</div>
+</body>
+</html>

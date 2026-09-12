@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GBT小土豆量化收益平台 — 数字资产量化与兑换基础设施</title>
+<meta name="description" content="GBT小土豆量化收益平台 · 数字资产量化与兑换基础设施 · 平台收款地址统一收付 · 费率透明 · 单据可审计">
+<meta property="og:title" content="GBT小土豆量化收益平台">
+<meta property="og:description" content="数字资产量化与兑换基础设施 · 平台收款地址统一收付 · 费率透明 · 单据可审计">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://wallet-api.gbtxiaotudou.com/ui/index.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/ui/favicon.svg" type="image/svg+xml">
+<style>
+/* ============================================================
+   GBT 门户 v6 · 静谧奢华 · 账本质感
+   原则: 金=等级色(1px线/关键数字/主CTA) · 发光≤1 · 零渐变文字
+        零emoji图标 · 入场动效一次≤600ms · 4级字号阶梯
+   ============================================================ */
+:root{
+  --bg:#05070d; --panel:#0b1220; --panel2:#0f1a2e; --inset:#070c17;
+  --line:rgba(148,163,184,.14); --hair:rgba(148,163,184,.09);
+  --gold:#f6c76a; --gold-dim:rgba(246,199,106,.10); --gold-line:rgba(246,199,106,.32);
+  --cy:#38e1ff; --cy-dim:rgba(56,225,255,.08);
+  --txt:#eef2fb; --mut:#93a4c0; --dim:#7285a1;
+  --mono:ui-monospace,'SFMono-Regular',Consolas,monospace;
+  --serif:'Georgia','Times New Roman','Songti SC','SimSun',serif;
+  --sans:'Segoe UI','PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font:400 15px/1.85 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--cy);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---------- 顶栏 ---------- */
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 28px;background:rgba(5,7,13,.88);border-bottom:1px solid var(--hair);backdrop-filter:blur(10px)}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-weight:800;font-size:12px;color:#04121a;background:linear-gradient(140deg,var(--cy),#0ea5e9 52%,var(--gold));flex:none}
+.brand .t1{font-size:14.5px;font-weight:700;letter-spacing:.2px}
+.brand .t2{font-size:10px;color:var(--dim);letter-spacing:1.4px;margin-top:1px}
+.top-links{display:flex;gap:6px;align-items:center}
+.top-links a{color:var(--mut);font-size:12.5px;padding:7px 13px;border-radius:9px}
+.top-links a:hover{color:var(--txt);background:rgba(148,163,184,.08);text-decoration:none}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;min-height:88vh;display:flex;align-items:center;padding:64px 28px 72px;overflow:hidden}
+.hero-art{position:absolute;inset:0;background:url('gbt_hero_facade.jpeg') center/cover no-repeat;opacity:.5}
+.hero-veil{position:absolute;inset:0;background:linear-gradient(90deg,var(--bg) 0%,rgba(5,7,13,.92) 34%,rgba(5,7,13,.55) 60%,rgba(5,7,13,.25) 100%),linear-gradient(0deg,var(--bg) 0%,transparent 30%)}
+.hero-in{position:relative;z-index:2;max-width:640px;margin:0 auto;width:100%}
+.hero-kick{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.hero-kick .k{font-size:11px;letter-spacing:2.5px;color:var(--gold);font-family:var(--mono)}
+.hero-kick .ln{width:44px;height:1px;background:var(--gold-line)}
+h1{font-family:var(--serif);font-size:clamp(30px,5.2vw,50px);font-weight:600;line-height:1.22;letter-spacing:.5px;margin-bottom:20px}
+h1 .gd{color:var(--gold)}
+.hero-sub{font-size:15.5px;color:var(--mut);max-width:34em;margin-bottom:30px;line-height:1.9}
+.hero-sub b{color:var(--txt);font-weight:600}
+/* CTA: 一主一副 */
+.cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:34px}
+.btn-main{display:inline-flex;align-items:center;gap:9px;min-height:52px;padding:10px 30px;border-radius:10px;font-size:15.5px;font-weight:700;color:#1a1204;background:linear-gradient(135deg,var(--gold),#e0a94f);box-shadow:0 8px 28px rgba(246,199,106,.22);transition:transform .15s ease,box-shadow .15s ease}
+.btn-main:hover{transform:translateY(-1px);box-shadow:0 12px 34px rgba(246,199,106,.30);text-decoration:none}
+.btn-sub{display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:10px 24px;border-radius:10px;font-size:14px;color:var(--txt);border:1px solid var(--line);transition:border-color .15s ease}
+.btn-sub:hover{border-color:var(--cy);color:var(--cy);text-decoration:none}
+/* 信任条 */
+.trust{display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--hair);border-radius:12px;background:rgba(7,12,23,.72);overflow:hidden}
+.trust .t{flex:1;min-width:150px;padding:13px 18px;border-right:1px solid var(--hair);display:flex;align-items:center;gap:10px}
+.trust .t:last-child{border-right:0}
+.trust svg{flex:none;opacity:.9}
+.trust .tk{font-size:12px;color:var(--mut);line-height:1.5}
+.trust .tk b{display:block;color:var(--txt);font-weight:600;font-size:12.5px}
+
+/* ---------- 数字带 ---------- */
+.stats{border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);background:var(--inset)}
+.stats-in{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);}
+.stat{padding:30px 22px;border-right:1px solid var(--hair);text-align:left}
+.stat:last-child{border-right:0}
+.stat .n{font-family:var(--mono);font-size:30px;font-weight:700;color:var(--gold);letter-spacing:.5px}
+.stat .n small{font-size:13px;color:var(--mut);font-weight:400;margin-left:3px}
+.stat .l{font-size:12px;color:var(--dim);margin-top:6px;letter-spacing:.6px}
+
+/* ---------- 区块通用 ---------- */
+section{padding:72px 28px}
+.sec-in{max-width:1080px;margin:0 auto}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px}
+.sec-no{font-family:var(--mono);font-size:13px;color:var(--gold);letter-spacing:1px}
+h2{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.3}
+.sec-sub{color:var(--dim);font-size:13px;margin-bottom:38px;max-width:38em}
+
+/* ---------- 产品入口: 非对称 1大2小 ---------- */
+.prod-grid{display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:auto auto;gap:14px}
+.prod{position:relative;display:block;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px 28px;color:inherit;transition:border-color .15s ease,transform .15s ease}
+.prod:hover{border-color:var(--gold-line);transform:translateY(-2px);text-decoration:none}
+.prod.big{grid-row:1/3;display:flex;flex-direction:column;justify-content:space-between;min-height:320px}
+.prod .p-k{font-size:10.5px;letter-spacing:2px;color:var(--dim);font-family:var(--mono);margin-bottom:10px}
+.prod h3{font-size:19px;font-weight:700;margin-bottom:8px}
+.prod.big h3{font-size:24px}
+.prod p{font-size:13px;color:var(--mut);line-height:1.8;max-width:30em}
+.prod .p-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.prod .p-tag{font-size:11px;font-family:var(--mono);padding:4px 12px;border-radius:7px;background:var(--inset);border:1px solid var(--hair);color:var(--mut)}
+.prod .p-tag.gd{color:var(--gold);border-color:var(--gold-line)}
+.prod .go{position:absolute;top:24px;right:24px;color:var(--dim);font-size:16px;transition:color .15s ease,transform .15s ease}
+.prod:hover .go{color:var(--gold);transform:translateX(3px)}
+.prod svg{margin-bottom:14px}
+
+/* ---------- 流程: 编号行 ---------- */
+.flow{border:1px solid var(--hair);border-radius:14px;overflow:hidden}
+.f-row{display:grid;grid-template-columns:64px 200px 1fr;gap:0;align-items:baseline;padding:22px 26px;border-bottom:1px solid var(--hair);background:transparent;transition:background .15s ease}
+.f-row:last-child{border-bottom:0}
+.f-row:hover{background:rgba(148,163,184,.03)}
+.f-no{font-family:var(--mono);font-size:15px;color:var(--gold)}
+.f-t{font-size:15px;font-weight:700}
+.f-d{font-size:13px;color:var(--mut);line-height:1.8}
+
+/* ---------- 官网方向: 单行三条 ---------- */
+.dir{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.dir a{display:block;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:20px 22px;color:inherit;transition:border-color .15s ease}
+.dir a:hover{border-color:var(--gold-line);text-decoration:none}
+.dir .d-k{font-size:10.5px;letter-spacing:1.6px;color:var(--dim);font-family:var(--mono);margin-bottom:8px}
+.dir .d-t{font-size:15px;font-weight:700;margin-bottom:5px}
+.dir .d-d{font-size:12px;color:var(--mut);line-height:1.7}
+
+/* ---------- 合规章 ---------- */
+.comp{background:var(--inset);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.comp-in{max-width:1080px;margin:0 auto;display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start;justify-content:space-between}
+.comp .c{flex:1;min-width:220px}
+.comp .c .ck{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-bottom:8px}
+.comp .c p{font-size:12.5px;color:var(--dim);line-height:1.8}
+.comp a{color:var(--mut);border-bottom:1px solid var(--gold-line)}
+.comp a:hover{color:var(--gold)}
+
+/* ---------- 页脚 ---------- */
+footer{padding:48px 28px 40px}
+.foot-in{max-width:1080px;margin:0 auto}
+.foot-top{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--hair);margin-bottom:22px}
+.foot-links{display:flex;gap:20px;flex-wrap:wrap}
+.foot-links a{color:var(--dim);font-size:12.5px}
+.foot-links a:hover{color:var(--txt)}
+.foot-note{font-size:11.5px;color:var(--dim);line-height:1.9}
+
+/* ---------- 入场动效(一次) ---------- */
+.rv{opacity:0;transform:translateY(16px);animation:rv .55s cubic-bezier(.22,.61,.36,1) forwards}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}
+@keyframes rv{to{opacity:1;transform:translateY(0)}}
+
+/* ---------- 响应式 ---------- */
+@media (max-width:900px){
+  .prod-grid{grid-template-columns:1fr}
+  .prod.big{grid-row:auto;min-height:0;gap:18px}
+  .stats-in{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(2){border-right:0}
+  .stat{border-bottom:1px solid var(--hair)}
+  .stat:nth-child(3),.stat:nth-child(4){border-bottom:0}
+  .dir{grid-template-columns:1fr}
+  .f-row{grid-template-columns:48px 1fr;grid-template-rows:auto auto}
+  .f-d{grid-column:1/3}
+  .top-links{display:none}
+}
+@media (max-width:640px){
+  body{font-size:14px}
+  .hero{min-height:0;padding:56px 20px 56px}
+  .hero-in{max-width:100%}
+  section{padding:54px 20px}
+  .top{padding:12px 20px}
+  .cta-row{flex-direction:column;align-items:stretch}
+  .btn-main,.btn-sub{width:100%;justify-content:center}
+  .trust{flex-direction:column}
+  .trust .t{border-right:0;border-bottom:1px solid var(--hair)}
+  .trust .t:last-child{border-bottom:0}
+  .stats-in{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:rgba(148,163,184,.22);border-radius:999px}
+:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="mark" aria-hidden="true">GBT</div>
+    <div><div class="t1">GBT小土豆量化收益平台</div><div class="t2">数字资产量化与兑换基础设施</div></div>
+  </div>
+  <nav class="top-links">
+    <a href="#products">平台服务</a>
+    <a href="#flow">资金链路</a>
+    <a href="#fees">费率</a>
+    <a href="/ui/terms.html">条款与风险披露</a>
+  </nav>
+</header>
+
+<!-- ================= HERO ================= -->
+<div class="hero">
+  <div class="hero-art" aria-hidden="true"></div>
+  <div class="hero-veil" aria-hidden="true"></div>
+  <div class="hero-in">
+    <div class="hero-kick rv"><span class="ln"></span><span class="k">GBT QUANT INFRASTRUCTURE</span></div>
+    <h1 class="rv d1">数字资产量化与兑换<br>基础设施<span class="gd">。</span></h1>
+    <p class="hero-sub rv d2"><b>一个平台，三个入口</b>——数字资产钱包、量化交易、消息中心。全程资金由平台收款地址统一收付，费率透明，单据可审计可对账。</p>
+    <div class="cta-row rv d2">
+      <a class="btn-main" href="/ui/exchange.html">开始兑换 →</a>
+      <a class="btn-sub" href="#flow">了解资金链路</a>
+    </div>
+    <div class="trust rv d3">
+      <div class="t">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f6c76a" stroke-width="1.6"><path d="M12 3l7 4v5c0 4.4-3 8.4-7 9-4-.6-7-4.6-7-9V7l7-4z"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="tk"><b>费率透明</b>币→币 1.5% · 法币→币 10% · 量化收益 5%</div>
+      </div>
+      <div class="t">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38e1ff" stroke-width="1.6"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 018 0v2" stroke-linecap="round"/></svg>
+        <div class="tk"><b>单据可审计</b>每笔技术费生成 TF 单据，先单后扣</div>
+      </div>
+      <div class="t">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3ddc97" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" stroke-linecap="round"/></svg>
+        <div class="tk"><b>18+ · 区域合规</b>服务仅面向年满 18 周岁用户</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 数字带 ================= -->
+<div class="stats" id="fees">
+  <div class="stats-in">
+    <div class="stat"><div class="n">3<small>入口</small></div><div class="l">钱包 · 量化 · 消息 一体化</div></div>
+    <div class="stat"><div class="n">12<small>确认</small></div><div class="l">链上确认 ≥ 12 后自动入账</div></div>
+    <div class="stat"><div class="n">100<small>%</small></div><div class="l">技术费单据化 先单后扣</div></div>
+    <div class="stat"><div class="n">3<small>项费率</small></div><div class="l">1.5% / 10% / 5% 全程明示</div></div>
+  </div>
+</div>
+
+<!-- ================= 平台服务 ================= -->
+<section id="products">
+  <div class="sec-in">
+    <div class="sec-head rv"><span class="sec-no">01</span><h2>平台服务</h2></div>
+    <p class="sec-sub rv">三个入口，一套账本。资金全程由平台收款地址统一收付，到账以平台确认及链上记录为准。</p>
+    <div class="prod-grid">
+      <a class="prod big rv" href="/ui/exchange.html">
+        <div>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f6c76a" stroke-width="1.6"><path d="M4 8h13M4 8l4-4M4 8l4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 16H7M20 16l-4-4M20 16l-4 4" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/></svg>
+          <div class="p-k">EXCHANGE</div>
+          <h3>数字资产兑换</h3>
+          <p>数字币兑换数字币；平台收款地址统一收付，技术费 1.5%（币→币）。AI 后台优选路由，费率与规则在订单与单据中明示。</p>
+        </div>
+        <div class="p-tags"><span class="p-tag gd">币→币 1.5%</span><span class="p-tag">法币→币 10%</span><span class="p-tag">TRON 主链</span></div>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+      <a class="prod rv d1" href="/ui/wallet_v2.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38e1ff" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M3 10h18" /><path d="M7 15h4" stroke-linecap="round"/></svg>
+        <div class="p-k">WALLET</div>
+        <h3>数字资产钱包</h3>
+        <p>收款、二维码、订单历史；链上直转（TRON），到账自动确认。收款不产生平台技术费。</p>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+      <a class="prod rv d2" href="/ui/messages.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3ddc97" stroke-width="1.6"><path d="M4 5h16v11H9l-5 4V5z" stroke-linejoin="round"/><path d="M8 9h8M8 12h5" stroke-linecap="round"/></svg>
+        <div class="p-k">MESSAGES</div>
+        <h3>消息中心</h3>
+        <p>AI 客服、平台公告频道、用户私信；服务与到账通知第一时间触达。</p>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 资金链路 ================= -->
+<section id="flow" style="background:var(--inset);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)">
+  <div class="sec-in">
+    <div class="sec-head rv"><span class="sec-no">02</span><h2>资金链路与单据闭环</h2></div>
+    <p class="sec-sub rv">五步链路，每一步可核验。技术费先单后扣，全程可对账可审计。</p>
+    <div class="flow rv d1">
+      <div class="f-row"><span class="f-no">01</span><span class="f-t">统一收款</span><span class="f-d">付款方将数字资产转入平台收款地址（TRON 主链）。</span></div>
+      <div class="f-row"><span class="f-no">02</span><span class="f-t">链上校验</span><span class="f-d">链上确认 ≥ 12 后自动入账；到账以平台确认及链上记录为准。</span></div>
+      <div class="f-row"><span class="f-no">03</span><span class="f-t">平台处理</span><span class="f-d">按订单类型处理兑换或量化；费率与规则在订单中明示。</span></div>
+      <div class="f-row"><span class="f-no">04</span><span class="f-t">先单后扣</span><span class="f-d">每笔技术费先生成 TF 单据，再执行资金动作；亏损不抽成。</span></div>
+      <div class="f-row"><span class="f-no">05</span><span class="f-t">单据对账</span><span class="f-d">净额转至用户指定地址；单据全程可对账可审计。</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 合规章 ================= -->
+<div class="comp">
+  <div class="comp-in">
+    <div class="c rv">
+      <div class="ck"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f6c76a" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg>风险提示</div>
+      <p>量化收益不保证，存在市场风险与本金损失风险。数字资产价格波动与链上转账均存在风险，请理性评估后参与。</p>
+    </div>
+    <div class="c rv d1">
+      <div class="ck"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38e1ff" stroke-width="1.8"><path d="M12 3l7 4v5c0 4.4-3 8.4-7 9-4-.6-7-4.6-7-9V7l7-4z"/></svg>合规要求</div>
+      <p>服务仅面向年满 18 周岁用户；请确认并遵守您所在地区的适用法律法规。<a href="/ui/terms.html">条款与风险披露</a></p>
+    </div>
+    <div class="c rv d2">
+      <div class="ck"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3ddc97" stroke-width="1.8"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>到账口径</div>
+      <p>到账与结算以平台确认及链上记录为准；费率与规则如有调整，以页面实时展示为准。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 页脚 ================= -->
+<footer>
+  <div class="foot-in">
+    <div class="foot-top">
+      <div class="brand" style="gap:10px">
+        <div class="mark" style="width:30px;height:30px;border-radius:9px;font-size:9px" aria-hidden="true">GBT</div>
+        <div><div class="t1" style="font-size:12.5px">GBT小土豆量化收益平台</div></div>
+      </div>
+      <div class="foot-links">
+        <a href="/ui/wallet_v2.html">钱包</a>
+        <a href="/ui/exchange.html">兑换</a>
+        <a href="/ui/messages.html">消息</a>
+        <a href="/ui/terms.html">条款与风险披露</a>
+        <a href="/ui/site_a.html">品牌视觉 · 深蓝</a>
+        <a href="/ui/site_b.html">品牌视觉 · 账本</a>
+        <a href="/ui/site_c.html">品牌视觉 · 吉祥物</a>
+      </div>
+    </div>
+    <p class="foot-note">本页面所载内容仅为信息展示与服务说明，不构成任何要约、要约邀请或投资建议。数字资产价格波动与链上转账均存在风险，请理性评估后参与。本平台服务仅面向年满 18 周岁的用户；请确认并遵守您所在地区的适用法律法规。到账与结算以平台确认及链上记录为准。费率与规则如有调整，以页面实时展示为准。</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "rec_id": "capability.json-f17522a7-1789093096",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "capability.json",
+      "passed": true,
+      "detail": "798 bytes",
+      "ts": "2026-09-11T09:18:16"
+    },
+    {
+      "dimension": "ownership",
+      "item": "capability.json",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T09:18:16"
+    },
+    {
+      "dimension": "audit",
+      "item": "capability.json",
+      "passed": true,
+      "detail": "actor=devour_tentacle, purpose=吞噬产物: devour_github_repo:sindresorhus/slugify:scaffold",
+      "ts": "2026-09-11T09:18:16"
+    },
+    {
+      "dimension": "policy",
+      "item": "capability.json",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T09:18:16"
+    }
+  ],
+  "blocked_by": []
+}

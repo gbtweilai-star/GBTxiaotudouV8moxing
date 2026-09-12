@@ -1,0 +1,35 @@
+{
+  "rec_id": "ver-test.txt-4a3cc669-1789084780",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "ver-test.txt",
+      "passed": true,
+      "detail": "13 bytes",
+      "ts": "2026-09-11T06:59:40"
+    },
+    {
+      "dimension": "ownership",
+      "item": "ver-test.txt",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T06:59:40"
+    },
+    {
+      "dimension": "audit",
+      "item": "ver-test.txt",
+      "passed": true,
+      "detail": "actor=owner, purpose=版本化验证",
+      "ts": "2026-09-11T06:59:40"
+    },
+    {
+      "dimension": "policy",
+      "item": "ver-test.txt",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T06:59:40"
+    }
+  ],
+  "blocked_by": []
+}

@@ -1,0 +1,35 @@
+{
+  "rec_id": "capability.json-d4477343-1789098633",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "capability.json",
+      "passed": true,
+      "detail": "826 bytes",
+      "ts": "2026-09-11T10:50:33"
+    },
+    {
+      "dimension": "ownership",
+      "item": "capability.json",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T10:50:33"
+    },
+    {
+      "dimension": "audit",
+      "item": "capability.json",
+      "passed": true,
+      "detail": "actor=devour_tentacle, purpose=吞噬产物: devour_github_repo:PyCQA/bandit:scaffold",
+      "ts": "2026-09-11T10:50:33"
+    },
+    {
+      "dimension": "policy",
+      "item": "capability.json",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T10:50:33"
+    }
+  ],
+  "blocked_by": []
+}

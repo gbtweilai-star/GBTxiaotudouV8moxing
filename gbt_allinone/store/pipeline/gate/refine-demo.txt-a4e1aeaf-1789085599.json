@@ -1,0 +1,44 @@
+{
+  "rec_id": "refine-demo.txt-a4e1aeaf-1789085599",
+  "passed": false,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "refine-demo.txt",
+      "passed": true,
+      "detail": "4413 bytes",
+      "ts": "2026-09-11T07:14:10"
+    },
+    {
+      "dimension": "ownership",
+      "item": "refine-demo.txt",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T07:14:10"
+    },
+    {
+      "dimension": "audit",
+      "item": "refine-demo.txt",
+      "passed": true,
+      "detail": "actor=autopilot, purpose=面向用户的产品介绍文档，需包含框架定位、核心能力、使用方式",
+      "ts": "2026-09-11T07:14:10"
+    },
+    {
+      "dimension": "policy",
+      "item": "refine-demo.txt",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T07:14:10"
+    },
+    {
+      "dimension": "quality",
+      "item": "refine-demo.txt",
+      "passed": false,
+      "detail": "LLM 评审输出无 JSON: \n\n{\n  \"score\": 75,\n  \"verdict\": \"fail\",\n  \"issues\": [\n    \"声明用途要求包含“使用方式”，但当前文档内",
+      "ts": "2026-09-11T07:15:02"
+    }
+  ],
+  "blocked_by": [
+    "quality"
+  ]
+}

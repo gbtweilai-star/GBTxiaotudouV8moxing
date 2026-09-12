@@ -1,0 +1,37 @@
+{
+  "name": "bandit_x_capsule-form-test",
+  "version": "1.0.0",
+  "description": "杂交: bandit x capsule-form-test",
+  "language": "python",
+  "risk_level": "safe",
+  "auto_exec": false,
+  "category": "AI",
+  "recombined_from": [
+    "bandit",
+    "capsule-form-test"
+  ],
+  "entry": null,
+  "triggers": {
+    "keywords": [
+      "bandit",
+      "sindresorhus",
+      "slugify",
+      "pycqa"
+    ],
+    "intent": "use_bandit_x_capsule-form-test",
+    "examples": []
+  },
+  "actions": {
+    "bandit_status": {
+      "description": "胶囊状态",
+      "origin": "bandit"
+    },
+    "capsule-form-test_status": {
+      "description": "胶囊状态",
+      "origin": "capsule-form-test"
+    }
+  },
+  "domains": [
+    "AI域"
+  ]
+}

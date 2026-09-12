@@ -1,0 +1,38 @@
+# ===== GBT小土豆V8 .gitignore =====
+
+# --- 敏感信息（绝不入库）---
+.env
+*.env
+.env.*
+secrets/
+*_key*.json
+credentials*.json
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# --- 大体积二进制库（gbt_allinone 内嵌运行时，269MB，不入库）---
+gbt_allinone/.pylibs/
+gbt_allinone/archived_logs/
+gbt_allinone/__pycache__/
+
+# --- OpenClaw / 系统目录（本机状态，不属于源码）---
+.openclaw/
+.autoclaw/
+.opencode/
+.openclaw-attachments/
+agent-gvmz-gbtv8/
+.cluster/*.py
+archive/
+
+# --- 媒体缓存与临时文件 ---
+potato_pet/potato_state.json
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

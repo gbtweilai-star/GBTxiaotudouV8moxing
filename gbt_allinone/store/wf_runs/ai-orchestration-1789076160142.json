@@ -1,0 +1,275 @@
+{
+  "record": {
+    "run_id": "ai-orchestration-1789076160142",
+    "workflow": "ai-orchestration",
+    "params": {},
+    "status": "ok",
+    "nodes": {
+      "scan": "ok",
+      "analyze": "ok",
+      "publish": "ok"
+    },
+    "elapsed_s": 2.694,
+    "finished_at": "2026-09-11T04:36:00"
+  },
+  "results": {
+    "scan": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "selfscan",
+        "result": {
+          "verdict": "clean",
+          "checked_at": "2026-09-11T04:35:58",
+          "findings": [],
+          "sections": {
+            "routing": {
+              "registered": 61,
+              "routed": 61,
+              "unrouted": [],
+              "ghost_routes": [],
+              "ok": true
+            },
+            "modules": {
+              "checked": 30,
+              "failed": [],
+              "ok": true
+            },
+            "store": {
+              "json_files": 348,
+              "missing_dirs": [],
+              "corrupted": [],
+              "ok": true
+            },
+            "audit": {
+              "window": 500,
+              "anomalies": 28,
+              "runtime_faults": 0,
+              "by_event": {
+                "error": 19,
+                "longrun_failed": 3,
+                "pipeline_blocked": 3,
+                "svc_down": 3
+              },
+              "by_signal": {
+                "runtime": 0,
+                "guard": 10,
+                "trace": 18,
+                "recovered": 0
+              },
+              "errors_by_kind": {
+                "osint_scan": {
+                  "runtime": 0,
+                  "guard": 7,
+                  "trace": 0,
+                  "recovered": 0
+                },
+                "T0026": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 1,
+                  "recovered": 0
+                },
+                "lr_submit": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "t-bad.txt": {
+                  "runtime": 0,
+                  "guard": 3,
+                  "trace": 0,
+                  "recovered": 0
+                },
+                "sched_define": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "t-dead": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "tentacle": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "no_such_capability_xyz": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "T0028": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 1,
+                  "recovered": 0
+                },
+                "T0030": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 1,
+                  "recovered": 0
+                }
+              },
+              "recent_runtime": [],
+              "ok": true
+            },
+            "stub_gaps": [
+              "browser",
+              "vision",
+              "voice"
+            ]
+          },
+          "capabilities_total": 61,
+          "note": "P0=断连/损坏必须修；P1=异常在发生；clean=五维全过（桩缺口如实列出不算病）"
+        }
+      }
+    },
+    "analyze": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "llm_chat",
+        "result": {
+          "ok": true,
+          "reply": "",
+          "provider": "deepseek",
+          "model": "deepseek-v4-flash"
+        }
+      }
+    },
+    "publish": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "pipeline_submit",
+        "result": {
+          "rec_id": "v8-ai-analysis-v2.txt-3a014ec5-1789076160",
+          "name": "v8-ai-analysis-v2.txt",
+          "sha256": "3a014ec59280ffa9f50e5c8b748c6c5f506251569d6a6616acac1edb396c0792",
+          "size": 28,
+          "submitted_at": "2026-09-11T04:36:00",
+          "meta": {
+            "actor": "engine-ai-orchestration",
+            "purpose": "语义修正后的AI质检"
+          },
+          "stage1_mirror": {
+            "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\v8-ai-analysis-v2.txt-3a014ec5-1789076160.bin",
+            "dimensions": [
+              {
+                "dimension": "integrity",
+                "item": "v8-ai-analysis-v2.txt",
+                "passed": true,
+                "detail": "28 bytes",
+                "ts": "2026-09-11T04:36:00"
+              },
+              {
+                "dimension": "ownership",
+                "item": "v8-ai-analysis-v2.txt",
+                "passed": true,
+                "detail": "GBT 钢印可用",
+                "ts": "2026-09-11T04:36:00"
+              },
+              {
+                "dimension": "audit",
+                "item": "v8-ai-analysis-v2.txt",
+                "passed": true,
+                "detail": "actor=engine-ai-orchestration, purpose=语义修正后的AI质检",
+                "ts": "2026-09-11T04:36:00"
+              },
+              {
+                "dimension": "policy",
+                "item": "v8-ai-analysis-v2.txt",
+                "passed": true,
+                "detail": "无高风险标签",
+                "ts": "2026-09-11T04:36:00"
+              }
+            ]
+          },
+          "stage2_gate": {
+            "rec_id": "v8-ai-analysis-v2.txt-3a014ec5-1789076160",
+            "passed": true,
+            "tokens": [
+              {
+                "dimension": "integrity",
+                "item": "v8-ai-analysis-v2.txt",
+                "passed": true,
+                "detail": "28 bytes",
+                "ts": "2026-09-11T04:36:00"
+              },
+              {
+                "dimension": "ownership",
+                "item": "v8-ai-analysis-v2.txt",
+                "passed": true,
+                "detail": "GBT 钢印可用",
+                "ts": "2026-09-11T04:36:00"
+              },
+              {
+                "dimension": "audit",
+                "item": "v8-ai-analysis-v2.txt",
+                "passed": true,
+                "detail": "actor=engine-ai-orchestration, purpose=语义修正后的AI质检",
+                "ts": "2026-09-11T04:36:00"
+              },
+              {
+                "dimension": "policy",
+                "item": "v8-ai-analysis-v2.txt",
+                "passed": true,
+                "detail": "无高风险标签",
+                "ts": "2026-09-11T04:36:00"
+              }
+            ],
+            "blocked_by": []
+          },
+          "stage3_publish": {
+            "status": "published",
+            "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\v8-ai-analysis-v2.txt",
+            "passport": {
+              "gbt_stamp": {
+                "framework": "GBT小土豆",
+                "version": "8.0.0",
+                "mark": "GBT",
+                "ownership": "independent-personal",
+                "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+              },
+              "publish": {
+                "rec_id": "v8-ai-analysis-v2.txt-3a014ec5-1789076160",
+                "sha256": "3a014ec59280ffa9f50e5c8b748c6c5f506251569d6a6616acac1edb396c0792",
+                "published_at": "2026-09-11T04:36:00",
+                "actor": "engine-ai-orchestration",
+                "purpose": "语义修正后的AI质检"
+              }
+            }
+          },
+          "status": "published"
+        }
+      }
+    }
+  }
+}

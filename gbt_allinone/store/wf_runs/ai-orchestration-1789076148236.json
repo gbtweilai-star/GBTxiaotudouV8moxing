@@ -1,0 +1,275 @@
+{
+  "record": {
+    "run_id": "ai-orchestration-1789076148236",
+    "workflow": "ai-orchestration",
+    "params": {},
+    "status": "ok",
+    "nodes": {
+      "scan": "ok",
+      "analyze": "ok",
+      "publish": "ok"
+    },
+    "elapsed_s": 2.713,
+    "finished_at": "2026-09-11T04:35:48"
+  },
+  "results": {
+    "scan": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "selfscan",
+        "result": {
+          "verdict": "clean",
+          "checked_at": "2026-09-11T04:35:46",
+          "findings": [],
+          "sections": {
+            "routing": {
+              "registered": 61,
+              "routed": 61,
+              "unrouted": [],
+              "ghost_routes": [],
+              "ok": true
+            },
+            "modules": {
+              "checked": 30,
+              "failed": [],
+              "ok": true
+            },
+            "store": {
+              "json_files": 344,
+              "missing_dirs": [],
+              "corrupted": [],
+              "ok": true
+            },
+            "audit": {
+              "window": 500,
+              "anomalies": 28,
+              "runtime_faults": 0,
+              "by_event": {
+                "error": 19,
+                "longrun_failed": 3,
+                "pipeline_blocked": 3,
+                "svc_down": 3
+              },
+              "by_signal": {
+                "runtime": 0,
+                "guard": 10,
+                "trace": 18,
+                "recovered": 0
+              },
+              "errors_by_kind": {
+                "osint_scan": {
+                  "runtime": 0,
+                  "guard": 7,
+                  "trace": 0,
+                  "recovered": 0
+                },
+                "T0026": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 1,
+                  "recovered": 0
+                },
+                "lr_submit": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "t-bad.txt": {
+                  "runtime": 0,
+                  "guard": 3,
+                  "trace": 0,
+                  "recovered": 0
+                },
+                "sched_define": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "t-dead": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "tentacle": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "no_such_capability_xyz": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "T0028": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 1,
+                  "recovered": 0
+                },
+                "T0030": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 1,
+                  "recovered": 0
+                }
+              },
+              "recent_runtime": [],
+              "ok": true
+            },
+            "stub_gaps": [
+              "browser",
+              "vision",
+              "voice"
+            ]
+          },
+          "capabilities_total": 61,
+          "note": "P0=断连/损坏必须修；P1=异常在发生；clean=五维全过（桩缺口如实列出不算病）"
+        }
+      }
+    },
+    "analyze": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "llm_chat",
+        "result": {
+          "ok": true,
+          "reply": "**判断**：能力注册了61个但体检数据主体为空的`[]`，说明这是一次\"只登记、未执行\"的空跑，框架结构在线但实际调用链未产生任何运行证据。\n\n**最值得注意的点**：`runtime=0`且`recovered=0`，意味着零运行时命中、零异常恢复，而`guard=10`/`trace=18`说明护栏和链路日志在写——信号全在\"外围防护\"层，没有任何一条来自真实业务执行，这是典型的能力虚挂/入口未接通症状，同时也和自认知的\"119个能力\"对不上，存在注册表漂移。\n\n**改进建议**：立即跑一次最小端到端冒烟（挑1个cap走完run.py→返回结果），用真实`runtime>0`替代空数组",
+          "provider": "deepseek",
+          "model": "deepseek-v4-flash"
+        }
+      }
+    },
+    "publish": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "pipeline_submit",
+        "result": {
+          "rec_id": "v8-ai-analysis.txt-a668a8c8-1789076148",
+          "name": "v8-ai-analysis.txt",
+          "sha256": "a668a8c8c5426d5810ead12ec1944caa7a120620c09f172655fc07f3afac9fcb",
+          "size": 727,
+          "submitted_at": "2026-09-11T04:35:48",
+          "meta": {
+            "actor": "engine-ai-orchestration",
+            "purpose": "万能插操控AI质检"
+          },
+          "stage1_mirror": {
+            "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\v8-ai-analysis.txt-a668a8c8-1789076148.bin",
+            "dimensions": [
+              {
+                "dimension": "integrity",
+                "item": "v8-ai-analysis.txt",
+                "passed": true,
+                "detail": "727 bytes",
+                "ts": "2026-09-11T04:35:48"
+              },
+              {
+                "dimension": "ownership",
+                "item": "v8-ai-analysis.txt",
+                "passed": true,
+                "detail": "GBT 钢印可用",
+                "ts": "2026-09-11T04:35:48"
+              },
+              {
+                "dimension": "audit",
+                "item": "v8-ai-analysis.txt",
+                "passed": true,
+                "detail": "actor=engine-ai-orchestration, purpose=万能插操控AI质检",
+                "ts": "2026-09-11T04:35:48"
+              },
+              {
+                "dimension": "policy",
+                "item": "v8-ai-analysis.txt",
+                "passed": true,
+                "detail": "无高风险标签",
+                "ts": "2026-09-11T04:35:48"
+              }
+            ]
+          },
+          "stage2_gate": {
+            "rec_id": "v8-ai-analysis.txt-a668a8c8-1789076148",
+            "passed": true,
+            "tokens": [
+              {
+                "dimension": "integrity",
+                "item": "v8-ai-analysis.txt",
+                "passed": true,
+                "detail": "727 bytes",
+                "ts": "2026-09-11T04:35:48"
+              },
+              {
+                "dimension": "ownership",
+                "item": "v8-ai-analysis.txt",
+                "passed": true,
+                "detail": "GBT 钢印可用",
+                "ts": "2026-09-11T04:35:48"
+              },
+              {
+                "dimension": "audit",
+                "item": "v8-ai-analysis.txt",
+                "passed": true,
+                "detail": "actor=engine-ai-orchestration, purpose=万能插操控AI质检",
+                "ts": "2026-09-11T04:35:48"
+              },
+              {
+                "dimension": "policy",
+                "item": "v8-ai-analysis.txt",
+                "passed": true,
+                "detail": "无高风险标签",
+                "ts": "2026-09-11T04:35:48"
+              }
+            ],
+            "blocked_by": []
+          },
+          "stage3_publish": {
+            "status": "published",
+            "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\v8-ai-analysis.txt",
+            "passport": {
+              "gbt_stamp": {
+                "framework": "GBT小土豆",
+                "version": "8.0.0",
+                "mark": "GBT",
+                "ownership": "independent-personal",
+                "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+              },
+              "publish": {
+                "rec_id": "v8-ai-analysis.txt-a668a8c8-1789076148",
+                "sha256": "a668a8c8c5426d5810ead12ec1944caa7a120620c09f172655fc07f3afac9fcb",
+                "published_at": "2026-09-11T04:35:48",
+                "actor": "engine-ai-orchestration",
+                "purpose": "万能插操控AI质检"
+              }
+            }
+          },
+          "status": "published"
+        }
+      }
+    }
+  }
+}

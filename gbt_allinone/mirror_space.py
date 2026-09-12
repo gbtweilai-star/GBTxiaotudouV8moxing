@@ -1,0 +1,270 @@
+"""GBT小土豆V8 · 镜像多维度空间（部署维度）——所有假设与架构虚拟的最终归宿。
+
+Owner 定调（2026-09-11）：镜像多维度空间是生产最后的防线（与 pipeline 同源同律）。
+任何项目要上线，必须先在镜像空间的一个维度里成形、打磨、验证——
+维度内随便改（假设/推翻/重来，生产永远无感知），跨维晋升才写生产：
+一次性全量、不修改一次、不污染文件、一步到位（打败"Claude 式生产边改边崩"）。
+
+维度语义（与 pipeline 的镜像→门禁→生产同构，升维到整项目部署）：
+  store/mirror_space/dimension/     镜像维度（随便改：假设/架构虚拟/反复打磨全在这里）
+  store/mirror_space/reality/       生产现实（唯一真实：只经跨维晋升一次性写入）
+  store/mirror_space/timelines/     时间线（每次晋升的全量快照——回滚=回到过去的时间线）
+  store/mirror_space/passports/     跨维护照（清单+逐文件指纹+验证矩阵+版本）
+
+能力（维度操作）：
+  mirror_shape     维度成形（写镜像维度——可反复、可覆盖、不设限）
+  mirror_scan      维度体检（完整性/署名/纪律/入口——跨维晋升前置）
+  mirror_ascend    跨维晋升（验证全绿才放行；一次性全量写入现实+护照+时间线）
+  mirror_status    维度状态（镜像/现实指纹、现实漂移检测、时间线史）
+  mirror_rewind    时间线回滚（同样一次性全量替换，不改现实单文件）
+"""
+import hashlib
+import json
+import shutil
+import time
+from pathlib import Path
+
+_BASE = Path(__file__).resolve().parent
+_STORE = _BASE / "store"
+_MIRROR = _STORE / "mirror_space"
+_DIM = _MIRROR / "dimension"
+_REALITY = _MIRROR / "reality"
+_TIMELINES = _MIRROR / "timelines"
+_PASSPORTS = _MIRROR / "passports"
+
+
+def _audit(event, meta):
+    try:
+        from .store import audit
+        audit(event, meta)
+    except Exception:
+        pass
+
+
+def _sha_file(p: Path) -> str:
+    return hashlib.sha256(p.read_bytes()).hexdigest()[:16]
+
+
+def _tree_fingerprint(root: Path) -> dict:
+    """全量清单：{相对路径: {sha, size}}（仅文件，跳过空目录）。"""
+    out = {}
+    if not root.exists():
+        return out
+    for f in sorted(root.rglob("*")):
+        if f.is_file():
+            rel = f.relative_to(root).as_posix()
+            out[rel] = {"sha": _sha_file(f), "size": f.stat().st_size}
+    return out
+
+
+# ── 镜像部署区（沙箱：随便改）──
+
+def shape(path: str, content: str, note: str = "") -> dict:
+    """写镜像部署区（可反复覆盖——假设/试验/打磨全在这里，永不触碰生产）。"""
+    p = _DIM / path
+    # 防越界（stage 内相对路径）
+    resolved = p.resolve()
+    if not str(resolved).startswith(str(_DIM.resolve())):
+        return {"ok": False, "error": "路径越界：只允许 stage 内相对路径"}
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(str(content), encoding="utf-8")
+    _audit("deploy_stage_write", {"path": path, "bytes": len(str(content)), "note": note[:60]})
+    return {"ok": True, "path": path, "sha": _sha_file(p), "stage": True}
+
+
+def unshape(path: str) -> dict:
+    p = _DIM / path
+    resolved = p.resolve()
+    if not str(resolved).startswith(str(_DIM.resolve())):
+        return {"ok": False, "error": "路径越界"}
+    if p.is_file():
+        p.unlink()
+    elif p.is_dir():
+        shutil.rmtree(p)
+    else:
+        return {"ok": False, "error": f"stage 不存在: {path}"}
+    _audit("deploy_stage_delete", {"path": path})
+    return {"ok": True, "deleted": path}
+
+
+def dimension_tree() -> dict:
+    return {"ok": True, "stage": _tree_fingerprint(_DIM)}
+
+
+# ── 验证（晋升前置条件）──
+
+def scan() -> dict:
+    """验证镜像部署区：晋升生产前的全量检查矩阵。"""
+    t0 = time.time()
+    checks = {}
+
+    # 1) 非空
+    tree = _tree_fingerprint(_DIM)
+    checks["non_empty"] = {"ok": len(tree) > 0,
+                            "detail": f"{len(tree)} 文件"}
+
+    # 2) 完整性：无空文件（0 字节 = 半成品）
+    empty = [r for r, v in tree.items() if v["size"] == 0]
+    checks["no_empty_files"] = {"ok": not empty, "detail": f"空文件: {empty[:5]}" if empty else "无"}
+
+    # 3) 署名：文本页面须带开发者署名（html/md/txt）
+    from . import signature as _sig
+    missing_sig = []
+    for r in tree:
+        p = _DIM / r
+        if p.suffix.lower() in (".html", ".htm", ".md", ".txt"):
+            try:
+                if not _sig.has_signature(p.read_text(encoding="utf-8", errors="replace")):
+                    missing_sig.append(r)
+            except Exception:
+                pass
+    checks["signature"] = {"ok": not missing_sig,
+                            "detail": f"缺署名: {missing_sig[:5]}" if missing_sig else "全部携带"}
+
+    # 4) 纪律：无临时残留（_*.py / *.tmp / __pycache__）
+    junk = [r for r in tree if r.split("/")[-1].startswith("_") and r.endswith(".py")
+            or r.endswith(".tmp") or "__pycache__" in r]
+    checks["discipline"] = {"ok": not junk,
+                             "detail": f"残留: {junk[:5]}" if junk else "干净"}
+
+    # 5) 结构：至少一个入口（index.html / main.py / app.py 之一）
+    entries = [r for r in tree if r.split("/")[-1] in ("index.html", "main.py", "app.py", "start.ps1")]
+    checks["entry_point"] = {"ok": bool(entries), "detail": f"入口: {entries[:3]}" if entries else "缺入口文件"}
+
+    passed = sum(1 for c in checks.values() if c["ok"])
+    result = {"ok": passed == len(checks), "passed": passed, "total": len(checks),
+              "checks": checks, "files": len(tree),
+              "elapsed_ms": round((time.time() - t0) * 1000, 1)}
+    _audit("deploy_validate", {"passed": passed, "total": len(checks), "files": len(tree)})
+    return result
+
+
+# ── 生产晋升（唯一生产写入口）──
+
+def ascend(purpose: str = "") -> dict:
+    """一次性全量晋升：验证全绿 → stage 全量复制到 production → 护照 + 版本快照。
+
+    生产区零修改纪律：本函数是唯一写 production 的路径；
+    晋升 = 全量替换（不是增量打补丁）——一步到位，不存在"改一半"。
+    """
+    v = scan()
+    if not v.get("ok"):
+        _audit("deploy_promote_blocked", {"failed": [k for k, c in v["checks"].items() if not c["ok"]]})
+        return {"ok": False, "blocked": True, "reason": "验证未全绿，禁止晋升",
+                "validate": v}
+
+    tree = _tree_fingerprint(_DIM)
+    version = _next_version()
+    ts = time.strftime("%Y-%m-%dT%H:%M:%S")
+
+    # 版本快照（晋升前先存档当前 stage 全量）
+    vdir = _TIMELINES / f"v{version}"
+    if vdir.exists():
+        shutil.rmtree(vdir)
+    shutil.copytree(_DIM, vdir)
+
+    # 生产全量替换（先清后拷——一步到位）
+    if _REALITY.exists():
+        shutil.rmtree(_REALITY)
+    shutil.copytree(_DIM, _REALITY)
+
+    # 部署护照
+    passport = {
+        "version": version,
+        "promoted_at": ts,
+        "purpose": purpose[:120],
+        "files": len(tree),
+        "manifest": tree,          # 逐文件指纹（生产漂移检测基准）
+        "validate": {"passed": v["passed"], "total": v["total"]},
+        "law": "生产零修改：本次晋升后 production 任何变动即视为漂移",
+    }
+    _PASSPORTS.mkdir(parents=True, exist_ok=True)
+    (_PASSPORTS / f"v{version}.json").write_text(
+        json.dumps(passport, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    _audit("deploy_promoted", {"version": version, "files": len(tree), "purpose": purpose[:60]})
+    return {"ok": True, "version": version, "files": len(tree),
+            "promoted_at": ts, "passport": str(_PASSPORTS / f"v{version}.json"),
+            "law": passport["law"]}
+
+
+def _next_version() -> int:
+    if not _TIMELINES.exists():
+        return 1
+    nums = [int(d.name[1:]) for d in _TIMELINES.glob("v*") if d.name[1:].isdigit()]
+    return (max(nums) + 1) if nums else 1
+
+
+# ── 状态与漂移检测 ──
+
+def mirror_status() -> dict:
+    """部署门状态：stage/production 指纹 + 漂移检测 + 版本史。"""
+    stage_tree_ = _tree_fingerprint(_DIM)
+    prod_tree = _tree_fingerprint(_REALITY)
+    drift = []
+    all_keys = set(stage_tree_) | set(prod_tree)
+    for k in sorted(all_keys):
+        s = stage_tree_.get(k)
+        p = prod_tree.get(k)
+        if s is None:
+            drift.append({"file": k, "kind": "production_extra", "detail": "生产多出（未走晋升）"})
+        elif p is None:
+            drift.append({"file": k, "kind": "not_yet_promoted", "detail": "镜像有、生产无（待晋升）"})
+        elif s["sha"] != p["sha"]:
+            drift.append({"file": k, "kind": "diverged", "detail": "镜像与生产分叉"})
+
+    # 生产自身漂移（对照最近护照）
+    prod_drift = []
+    passports = sorted(_PASSPORTS.glob("v*.json")) if _PASSPORTS.exists() else []
+    if passports:
+        latest = json.loads(passports[-1].read_text(encoding="utf-8"))
+        manifest = latest.get("manifest", {})
+        for k in set(manifest) | set(prod_tree):
+            m = manifest.get(k)
+            p = prod_tree.get(k)
+            if m is None:
+                prod_drift.append({"file": k, "kind": "added_after_promote", "detail": "晋升后新增"})
+            elif p is None:
+                prod_drift.append({"file": k, "kind": "deleted_after_promote", "detail": "晋升后被删"})
+            elif m.get("sha") != p.get("sha"):
+                prod_drift.append({"file": k, "kind": "modified_after_promote", "detail": "晋升后被改（违反零修改纪律）"})
+
+    return {"ok": True,
+            "dimension": {"files": len(stage_tree_)},
+            "reality": {"files": len(prod_tree),
+                         "version": (len(passports) if passports else 0)},
+            "dimension_vs_reality": drift[:20],
+            "reality_drift": prod_drift[:20],
+            "clean": not prod_drift,
+            "timelines": len(passports),
+            # 旧键兼容（镜像多维度空间话语统一前的名称）
+            "stage": {"files": len(stage_tree_)},
+            "production": {"files": len(prod_tree), "version": (len(passports) if passports else 0)},
+            "stage_vs_prod": drift[:20],
+            "production_drift": prod_drift[:20],
+            "versions": len(passports)}
+
+
+# ── 回滚（同样一步到位）──
+
+def rewind(version: int) -> dict:
+    """回滚生产到历史版本（全量替换，不改单文件）。"""
+    vdir = _TIMELINES / f"v{version}"
+    if not vdir.exists():
+        return {"ok": False, "error": f"版本不存在: v{version}"}
+    if _REALITY.exists():
+        shutil.rmtree(_REALITY)
+    shutil.copytree(vdir, _REALITY)
+    _audit("deploy_rollback", {"to": version})
+    return {"ok": True, "rolled_back_to": version,
+            "note": "回滚同样是一次性全量替换，不改生产单文件"}
+
+
+# ── 旧名兼容别名（镜像多维度空间话语统一前的名称）──
+stage_write = shape
+stage_delete = unshape
+stage_tree = dimension_tree
+validate = scan
+promote = ascend
+rollback = rewind
+status = mirror_status

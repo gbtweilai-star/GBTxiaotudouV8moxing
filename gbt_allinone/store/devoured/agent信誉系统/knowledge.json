@@ -1,0 +1,46 @@
+{
+ "name": "agent信誉系统",
+ "version": "1.0.0",
+ "description": "[创新] Agent信誉系统 — GBT创新引擎生成",
+ "language": "python",
+ "risk_level": "safe",
+ "auto_exec": null,
+ "category": "AI",
+ "innovation": true,
+ "innovated_from": "ai_agent",
+ "entry": null,
+ "triggers": {
+  "keywords": [
+   "Agent信誉系统"
+  ],
+  "intent": "use_agent信誉系统",
+  "examples": [
+   "用Agent信誉系统实现创新"
+  ]
+ },
+ "actions": {
+  "run": {
+   "description": "执行Agent信誉系统",
+   "args": [
+    "--action",
+    "run"
+   ],
+   "input": "stdin",
+   "timeout_ms": 120000,
+   "output": "json"
+  },
+  "research": {
+   "description": "研究Agent信誉系统",
+   "args": [
+    "--action",
+    "research"
+   ],
+   "input": "stdin",
+   "timeout_ms": 60000,
+   "output": "json"
+  }
+ },
+ "domains": [
+  "创新实验室"
+ ]
+}

@@ -1,0 +1,35 @@
+{
+  "rec_id": "absorbed_knowledge.md-442742a5-1789093619",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "absorbed_knowledge.md",
+      "passed": true,
+      "detail": "12814 bytes",
+      "ts": "2026-09-11T09:26:59"
+    },
+    {
+      "dimension": "ownership",
+      "item": "absorbed_knowledge.md",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T09:26:59"
+    },
+    {
+      "dimension": "audit",
+      "item": "absorbed_knowledge.md",
+      "passed": true,
+      "detail": "actor=devour_tentacle, purpose=吞噬产物: devour_recombine_abs",
+      "ts": "2026-09-11T09:26:59"
+    },
+    {
+      "dimension": "policy",
+      "item": "absorbed_knowledge.md",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T09:26:59"
+    }
+  ],
+  "blocked_by": []
+}

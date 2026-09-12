@@ -1,0 +1,42 @@
+{
+  "rec_id": "mock-refine.txt-6320b4a8-1789086570",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "mock-refine.txt",
+      "passed": true,
+      "detail": "46 bytes",
+      "ts": "2026-09-11T07:29:30"
+    },
+    {
+      "dimension": "ownership",
+      "item": "mock-refine.txt",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T07:29:30"
+    },
+    {
+      "dimension": "audit",
+      "item": "mock-refine.txt",
+      "passed": true,
+      "detail": "actor=test, purpose=技术状态报告",
+      "ts": "2026-09-11T07:29:30"
+    },
+    {
+      "dimension": "policy",
+      "item": "mock-refine.txt",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T07:29:30"
+    },
+    {
+      "dimension": "quality",
+      "item": "mock-refine.txt",
+      "passed": true,
+      "detail": "score=85/100, issues=[]",
+      "ts": "2026-09-11T07:29:30"
+    }
+  ],
+  "blocked_by": []
+}

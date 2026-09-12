@@ -1,0 +1,35 @@
+{
+  "rec_id": "v8-ai-analysis-v2.txt-9a13808d-1789076186",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "v8-ai-analysis-v2.txt",
+      "passed": true,
+      "detail": "716 bytes",
+      "ts": "2026-09-11T04:36:26"
+    },
+    {
+      "dimension": "ownership",
+      "item": "v8-ai-analysis-v2.txt",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T04:36:26"
+    },
+    {
+      "dimension": "audit",
+      "item": "v8-ai-analysis-v2.txt",
+      "passed": true,
+      "detail": "actor=engine-ai-orchestration, purpose=语义修正后的AI质检",
+      "ts": "2026-09-11T04:36:26"
+    },
+    {
+      "dimension": "policy",
+      "item": "v8-ai-analysis-v2.txt",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T04:36:26"
+    }
+  ],
+  "blocked_by": []
+}

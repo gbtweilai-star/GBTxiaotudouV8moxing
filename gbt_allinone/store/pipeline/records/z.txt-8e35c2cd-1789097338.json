@@ -1,0 +1,87 @@
+{
+  "rec_id": "z.txt-8e35c2cd-1789097338",
+  "name": "z.txt",
+  "sha256": "8e35c2cd3bf6641bdb0e2050b76932cbb2e6034a0ddacc1d9bea82a6ba57f7cf",
+  "size": 1,
+  "submitted_at": "2026-09-11T10:28:58",
+  "meta": {
+    "actor": "a"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\pipeline\\mirror\\z.txt-8e35c2cd-1789097338.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "z.txt",
+        "passed": true,
+        "detail": "1 bytes",
+        "ts": "2026-09-11T10:28:58"
+      },
+      {
+        "dimension": "ownership",
+        "item": "z.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T10:28:58"
+      },
+      {
+        "dimension": "audit",
+        "item": "z.txt",
+        "passed": false,
+        "detail": "actor=a, purpose=None",
+        "ts": "2026-09-11T10:28:58"
+      },
+      {
+        "dimension": "policy",
+        "item": "z.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T10:28:58"
+      }
+    ],
+    "refine_lineage": []
+  },
+  "stage2_gate": {
+    "rec_id": "z.txt-8e35c2cd-1789097338",
+    "passed": false,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "z.txt",
+        "passed": true,
+        "detail": "1 bytes",
+        "ts": "2026-09-11T10:28:58"
+      },
+      {
+        "dimension": "ownership",
+        "item": "z.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T10:28:58"
+      },
+      {
+        "dimension": "audit",
+        "item": "z.txt",
+        "passed": false,
+        "detail": "actor=a, purpose=None",
+        "ts": "2026-09-11T10:28:58"
+      },
+      {
+        "dimension": "policy",
+        "item": "z.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T10:28:58"
+      }
+    ],
+    "blocked_by": [
+      "audit"
+    ]
+  },
+  "stage3_publish": {
+    "status": "blocked",
+    "quarantine": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\pipeline\\quarantine\\z.txt-8e35c2cd-1789097338.bin",
+    "reason": "门禁未过: ['audit']"
+  },
+  "status": "blocked"
+}

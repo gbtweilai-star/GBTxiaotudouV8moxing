@@ -1,0 +1,46 @@
+{
+ "name": "太赫兹成像",
+ "version": "1.0.0",
+ "description": "[创新] 太赫兹成像 — GBT创新引擎生成",
+ "language": "python",
+ "risk_level": "safe",
+ "auto_exec": null,
+ "category": "AI",
+ "innovation": true,
+ "innovated_from": "wireless",
+ "entry": null,
+ "triggers": {
+  "keywords": [
+   "太赫兹成像"
+  ],
+  "intent": "use_太赫兹成像",
+  "examples": [
+   "用太赫兹成像实现创新"
+  ]
+ },
+ "actions": {
+  "run": {
+   "description": "执行太赫兹成像",
+   "args": [
+    "--action",
+    "run"
+   ],
+   "input": "stdin",
+   "timeout_ms": 120000,
+   "output": "json"
+  },
+  "research": {
+   "description": "研究太赫兹成像",
+   "args": [
+    "--action",
+    "research"
+   ],
+   "input": "stdin",
+   "timeout_ms": 60000,
+   "output": "json"
+  }
+ },
+ "domains": [
+  "创新实验室"
+ ]
+}

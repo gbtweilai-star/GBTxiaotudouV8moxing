@@ -1,0 +1,100 @@
+{
+  "rec_id": "autopilot-health.txt-0ecba218-1789076532",
+  "name": "autopilot-health.txt",
+  "sha256": "0ecba218d3a18080ea3ff4545260e5dc367e3e768f75ae98135d92278d747d37",
+  "size": 429,
+  "submitted_at": "2026-09-11T04:42:12",
+  "meta": {
+    "actor": "autopilot",
+    "purpose": "第2轮框架全面健康检查，聚焦上轮遗留问题并发布三句话结论"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\autopilot-health.txt-0ecba218-1789076532.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "429 bytes",
+        "ts": "2026-09-11T04:42:12"
+      },
+      {
+        "dimension": "ownership",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T04:42:12"
+      },
+      {
+        "dimension": "audit",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "actor=autopilot, purpose=第2轮框架全面健康检查，聚焦上轮遗留问题并发布三句话结论",
+        "ts": "2026-09-11T04:42:12"
+      },
+      {
+        "dimension": "policy",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T04:42:12"
+      }
+    ]
+  },
+  "stage2_gate": {
+    "rec_id": "autopilot-health.txt-0ecba218-1789076532",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "429 bytes",
+        "ts": "2026-09-11T04:42:12"
+      },
+      {
+        "dimension": "ownership",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T04:42:12"
+      },
+      {
+        "dimension": "audit",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "actor=autopilot, purpose=第2轮框架全面健康检查，聚焦上轮遗留问题并发布三句话结论",
+        "ts": "2026-09-11T04:42:12"
+      },
+      {
+        "dimension": "policy",
+        "item": "autopilot-health.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T04:42:12"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\autopilot-health.txt",
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "autopilot-health.txt-0ecba218-1789076532",
+        "sha256": "0ecba218d3a18080ea3ff4545260e5dc367e3e768f75ae98135d92278d747d37",
+        "published_at": "2026-09-11T04:42:12",
+        "actor": "autopilot",
+        "purpose": "第2轮框架全面健康检查，聚焦上轮遗留问题并发布三句话结论"
+      }
+    }
+  },
+  "status": "published"
+}

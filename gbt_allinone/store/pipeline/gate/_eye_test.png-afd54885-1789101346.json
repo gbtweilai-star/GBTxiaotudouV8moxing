@@ -1,0 +1,35 @@
+{
+  "rec_id": "_eye_test.png-afd54885-1789101346",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "_eye_test.png",
+      "passed": true,
+      "detail": "946100 bytes",
+      "ts": "2026-09-11T11:35:46"
+    },
+    {
+      "dimension": "ownership",
+      "item": "_eye_test.png",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T11:35:46"
+    },
+    {
+      "dimension": "audit",
+      "item": "_eye_test.png",
+      "passed": true,
+      "detail": "actor=tentacle_vision, purpose=omni_tentacle_screenshot",
+      "ts": "2026-09-11T11:35:46"
+    },
+    {
+      "dimension": "policy",
+      "item": "_eye_test.png",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T11:35:46"
+    }
+  ],
+  "blocked_by": []
+}

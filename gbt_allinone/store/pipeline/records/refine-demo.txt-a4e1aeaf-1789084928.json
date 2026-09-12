@@ -1,0 +1,117 @@
+{
+  "rec_id": "refine-demo.txt-a4e1aeaf-1789084928",
+  "name": "refine-demo.txt",
+  "sha256": "cf6ee91307676715b10cc1c13f7d1f0c339baed4d591aba5b45c75941f10a8fd",
+  "size": 5157,
+  "submitted_at": "2026-09-11T07:02:08",
+  "meta": {
+    "actor": "autopilot",
+    "purpose": "面向用户的产品介绍文档，需包含框架定位、核心能力、使用方式"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\refine-demo.txt-a4e1aeaf-1789084928.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "refine-demo.txt",
+        "passed": true,
+        "detail": "5157 bytes",
+        "ts": "2026-09-11T07:02:43"
+      },
+      {
+        "dimension": "ownership",
+        "item": "refine-demo.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T07:02:43"
+      },
+      {
+        "dimension": "audit",
+        "item": "refine-demo.txt",
+        "passed": true,
+        "detail": "actor=autopilot, purpose=面向用户的产品介绍文档，需包含框架定位、核心能力、使用方式",
+        "ts": "2026-09-11T07:02:43"
+      },
+      {
+        "dimension": "policy",
+        "item": "refine-demo.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T07:02:43"
+      },
+      {
+        "dimension": "quality",
+        "item": "refine-demo.txt",
+        "passed": false,
+        "detail": "LLM 评审不可用: LLM 返回空回复（重试2次后仍为空）",
+        "ts": "2026-09-11T07:02:55"
+      }
+    ],
+    "refine_lineage": [
+      {
+        "round": 1,
+        "refine": "ok",
+        "snapshot": "refine-demo.txt-a4e1aeaf-1789084928.r1.bin",
+        "sha256_before": "a4e1aeafbbb7",
+        "sha256_after": "ab997b64bd3a"
+      },
+      {
+        "round": 2,
+        "refine": "ok",
+        "snapshot": "refine-demo.txt-a4e1aeaf-1789084928.r2.bin",
+        "sha256_before": "ab997b64bd3a",
+        "sha256_after": "cf6ee9130767"
+      }
+    ]
+  },
+  "stage2_gate": {
+    "rec_id": "refine-demo.txt-a4e1aeaf-1789084928",
+    "passed": false,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "refine-demo.txt",
+        "passed": true,
+        "detail": "5157 bytes",
+        "ts": "2026-09-11T07:02:43"
+      },
+      {
+        "dimension": "ownership",
+        "item": "refine-demo.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T07:02:43"
+      },
+      {
+        "dimension": "audit",
+        "item": "refine-demo.txt",
+        "passed": true,
+        "detail": "actor=autopilot, purpose=面向用户的产品介绍文档，需包含框架定位、核心能力、使用方式",
+        "ts": "2026-09-11T07:02:43"
+      },
+      {
+        "dimension": "policy",
+        "item": "refine-demo.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T07:02:43"
+      },
+      {
+        "dimension": "quality",
+        "item": "refine-demo.txt",
+        "passed": false,
+        "detail": "LLM 评审不可用: LLM 返回空回复（重试2次后仍为空）",
+        "ts": "2026-09-11T07:02:55"
+      }
+    ],
+    "blocked_by": [
+      "quality"
+    ]
+  },
+  "stage3_publish": {
+    "status": "blocked",
+    "quarantine": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\quarantine\\refine-demo.txt-a4e1aeaf-1789084928.bin",
+    "reason": "门禁未过: ['quality']"
+  },
+  "status": "blocked"
+}

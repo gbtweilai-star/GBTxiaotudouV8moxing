@@ -1,0 +1,104 @@
+{
+  "rec_id": "absorbed_knowledge.md-d33e8df2-1789093625",
+  "name": "absorbed_knowledge.md",
+  "sha256": "d33e8df2a526e3577db044f57dffd64991a5ca6203746a001fa8429a1440ad31",
+  "size": 6387,
+  "submitted_at": "2026-09-11T09:27:05",
+  "meta": {
+    "actor": "devour_tentacle",
+    "purpose": "吞噬产物: devour_github_repo:sindresorhus/slugify"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\absorbed_knowledge.md-d33e8df2-1789093625.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "6387 bytes",
+        "ts": "2026-09-11T09:27:05"
+      },
+      {
+        "dimension": "ownership",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T09:27:05"
+      },
+      {
+        "dimension": "audit",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "actor=devour_tentacle, purpose=吞噬产物: devour_github_repo:sindresorhus/slugify",
+        "ts": "2026-09-11T09:27:05"
+      },
+      {
+        "dimension": "policy",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T09:27:05"
+      }
+    ],
+    "refine_lineage": []
+  },
+  "stage2_gate": {
+    "rec_id": "absorbed_knowledge.md-d33e8df2-1789093625",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "6387 bytes",
+        "ts": "2026-09-11T09:27:05"
+      },
+      {
+        "dimension": "ownership",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T09:27:05"
+      },
+      {
+        "dimension": "audit",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "actor=devour_tentacle, purpose=吞噬产物: devour_github_repo:sindresorhus/slugify",
+        "ts": "2026-09-11T09:27:05"
+      },
+      {
+        "dimension": "policy",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T09:27:05"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\absorbed_knowledge.md",
+    "version": 2,
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "absorbed_knowledge.md-d33e8df2-1789093625",
+        "sha256": "d33e8df2a526e3577db044f57dffd64991a5ca6203746a001fa8429a1440ad31",
+        "published_at": "2026-09-11T09:27:05",
+        "actor": "devour_tentacle",
+        "purpose": "吞噬产物: devour_github_repo:sindresorhus/slugify",
+        "version": 2,
+        "refined_rounds": 0
+      }
+    }
+  },
+  "status": "published"
+}

@@ -1,0 +1,115 @@
+{
+  "file_hits": {
+    "aesthetic_brain": [
+      "C:\\Users\\ADMIN\\.openclaw-autoclaw\\workspace\\gbt\\brain\\aesthetic_brain.py"
+    ],
+    "common_sense": [
+      "C:\\Users\\ADMIN\\.openclaw-autoclaw\\workspace\\gbt\\brain\\common_sense_brain.py"
+    ],
+    "emotion_brain": [
+      "C:\\Users\\ADMIN\\.openclaw-autoclaw\\workspace\\gbt\\brain\\emotion_brain.py"
+    ],
+    "exploration": [
+      "C:\\Users\\ADMIN\\.openclaw-autoclaw\\workspace\\gbt\\brain\\exploration_engine.py"
+    ],
+    "heuristic": [
+      "C:\\Users\\ADMIN\\.openclaw-autoclaw\\workspace\\gbt\\brain\\heuristic_brain.py"
+    ],
+    "insight": [
+      "C:\\Users\\ADMIN\\.openclaw-autoclaw\\workspace\\gbt\\brain\\insight_brain.py"
+    ],
+    "intuition_brain": [
+      "C:\\Users\\ADMIN\\.openclaw-autoclaw\\workspace\\gbt\\brain\\intuition_brain.py"
+    ],
+    "temporal": [
+      "C:\\Users\\ADMIN\\.openclaw-autoclaw\\workspace\\gbt\\brain\\temporal_brain.py",
+      "C:\\Users\\ADMIN\\.openclaw-autoclaw\\workspace\\gbt\\brain\\temporal_processing.py"
+    ]
+  },
+  "desc_hits": {
+    "汇报": [
+      "Devin AI 自主软件工程师"
+    ],
+    "合成": [
+      "ai_drama",
+      "chain_of_thought"
+    ],
+    "洞察": [
+      "ai_visual_trends"
+    ],
+    "价值": [
+      "alignment_gate"
+    ],
+    "模式": [
+      "ast_rewriter",
+      "code_scanner",
+      "dater",
+      "deep_reasoner",
+      "mind_visual_light",
+      "prompt注入防火墙",
+      "security_scan",
+      "video_gen"
+    ],
+    "社交": [
+      "auto_register",
+      "devoured_domains",
+      "eigenflux",
+      "osint_master"
+    ],
+    "决策": [
+      "autonomous_engine",
+      "brain_executive",
+      "brain_scan",
+      "deep_cognition",
+      "deep_reasoner",
+      "domain_cyborg",
+      "investigation_brain",
+      "ponytail",
+      "project_state"
+    ],
+    "图谱": [
+      "codebase_memory"
+    ],
+    "状态": [
+      "context_gate",
+      "dev_cpu",
+      "dev_disk",
+      "dev_gpu",
+      "dev_network",
+      "dev_ports",
+      "dev_ram",
+      "health_dashboard",
+      "health_monitor",
+      "project_state",
+      "service_restarter",
+      "state_space",
+      "super_arsenal"
+    ],
+    "校准": [
+      "deep_cognition",
+      "human_feedback_integrator"
+    ],
+    "评估": [
+      "deep_cognition",
+      "prompt_brain",
+      "secer"
+    ],
+    "风险": [
+      "deep_cognition"
+    ],
+    "探索": [
+      "eigenflux",
+      "research_brain"
+    ],
+    "预测": [
+      "reflex_control"
+    ],
+    "建议": [
+      "self_diagnostic"
+    ],
+    "恢复": [
+      "session_resume",
+      "system_backup"
+    ]
+  }
+}

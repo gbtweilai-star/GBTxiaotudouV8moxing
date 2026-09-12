@@ -1,0 +1,100 @@
+{
+  "rec_id": "v-verify-prod.txt-bf5ed907-1789065734",
+  "name": "v-verify-prod.txt",
+  "sha256": "bf5ed90753749a08772ba72ba4bc8958898d142aeca3bbb67d62c051c189f4e5",
+  "size": 21,
+  "submitted_at": "2026-09-11T01:42:14",
+  "meta": {
+    "actor": "verifier",
+    "purpose": "v8 acceptance publish path"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\v-verify-prod.txt-bf5ed907-1789065734.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "v-verify-prod.txt",
+        "passed": true,
+        "detail": "21 bytes",
+        "ts": "2026-09-11T01:42:14"
+      },
+      {
+        "dimension": "ownership",
+        "item": "v-verify-prod.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T01:42:14"
+      },
+      {
+        "dimension": "audit",
+        "item": "v-verify-prod.txt",
+        "passed": true,
+        "detail": "actor=verifier, purpose=v8 acceptance publish path",
+        "ts": "2026-09-11T01:42:14"
+      },
+      {
+        "dimension": "policy",
+        "item": "v-verify-prod.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T01:42:14"
+      }
+    ]
+  },
+  "stage2_gate": {
+    "rec_id": "v-verify-prod.txt-bf5ed907-1789065734",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "v-verify-prod.txt",
+        "passed": true,
+        "detail": "21 bytes",
+        "ts": "2026-09-11T01:42:14"
+      },
+      {
+        "dimension": "ownership",
+        "item": "v-verify-prod.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T01:42:14"
+      },
+      {
+        "dimension": "audit",
+        "item": "v-verify-prod.txt",
+        "passed": true,
+        "detail": "actor=verifier, purpose=v8 acceptance publish path",
+        "ts": "2026-09-11T01:42:14"
+      },
+      {
+        "dimension": "policy",
+        "item": "v-verify-prod.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T01:42:14"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\v-verify-prod.txt",
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "v-verify-prod.txt-bf5ed907-1789065734",
+        "sha256": "bf5ed90753749a08772ba72ba4bc8958898d142aeca3bbb67d62c051c189f4e5",
+        "published_at": "2026-09-11T01:42:14",
+        "actor": "verifier",
+        "purpose": "v8 acceptance publish path"
+      }
+    }
+  },
+  "status": "published"
+}

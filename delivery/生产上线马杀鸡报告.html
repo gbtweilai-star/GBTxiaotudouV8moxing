@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBT小土豆V8 生产上线马杀鸡报告</title>
+<style>
+:root{--primary:#059669;--accent:#0ea5e9;--ok:#10b981;--bad:#ef4444;--bg:#ecfdf5;--card:#fff;--text:#064e3b;--muted:#64748b;--border:#d1fae5}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Segoe UI','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;padding:24px}
+.wrap{max-width:1120px;margin:0 auto}
+header{background:linear-gradient(135deg,#059669,#0ea5e9);color:#fff;padding:44px;border-radius:16px;margin-bottom:28px}
+header h1{font-size:2.1em;margin-bottom:10px}
+header p{opacity:.93;font-size:1.05em}
+section{background:var(--card);border-radius:14px;padding:28px;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+h2{color:var(--primary);font-size:1.35em;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+h3{font-size:1.12em;margin:18px 0 10px;color:var(--accent)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin:16px 0}
+.metric{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-radius:12px;padding:18px;text-align:center}
+.metric-value{font-size:1.9em;font-weight:800;color:var(--primary)}
+.metric-label{color:var(--muted);font-size:.82em;margin-top:6px}
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:.93em}
+th{background:#d1fae5;color:#065f46;padding:10px 12px;text-align:left}
+td{padding:9px 12px;border-bottom:1px solid var(--border)}
+tr:hover td{background:#ecfdf5}
+.tag{display:inline-block;padding:3px 11px;border-radius:12px;font-size:.8em;font-weight:600;white-space:nowrap}
+.tag-ok{background:#d1fae5;color:#047857}
+.tag-bad{background:#fee2e2;color:#991b1b}
+.callout{border-radius:12px;padding:18px 20px;margin:16px 0}
+.callout-green{background:#ecfdf5;border-left:4px solid var(--ok)}
+.callout-red{background:#fef2f2;border-left:4px solid var(--bad)}
+.code{background:#064e3b;color:#d1fae5;padding:16px;border-radius:10px;overflow-x:auto;font-size:.86em;margin:12px 0;font-family:Consolas,monospace;line-height:1.6}
+ul{margin:8px 0 8px 22px}
+li{margin:5px 0}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<h1>🩺 GBT小土豆V8 生产上线马杀鸡报告</h1>
+<p>触手 + 万能插 全身排雷 · 两阶段十项全绿 · 2026-09-12</p>
+</header>
+
+<section>
+<h2>一、总判定</h2>
+<div class="callout callout-green" style="font-size:1.05em">
+<b>✅ 生产就绪，细节全清</b> —— 触手穿透扫描 + 万能插三件套 + 全量语法体检 + 自愈验证 + 端到端业务流，两阶段十项检查全部通过。过程中揪出并修复 3 个真雷。
+</div>
+<div class="metrics">
+<div class="metric"><div class="metric-value">100%</div><div class="metric-label">压测通过率</div></div>
+<div class="metric"><div class="metric-value">100%</div><div class="metric-label">隔离通过率</div></div>
+<div class="metric"><div class="metric-value">100%</div><div class="metric-label">韧性通过率</div></div>
+<div class="metric"><div class="metric-value">523+227</div><div class="metric-label">全量语法通过</div></div>
+<div class="metric"><div class="metric-value">🟢</div><div class="metric-label">deep_scan 终审</div></div>
+</div>
+</section>
+
+<section>
+<h2>二、两阶段十项检查明细</h2>
+
+<h3>第一阶段：核心韧性（万能插三件套 + 触手体检）</h3>
+<div class="table-wrap">
+<table>
+<tr><th>检查项</th><th>结果</th><th>指标</th></tr>
+<tr><td>A 压力测试</td><td><span class="tag tag-ok">PASS</span></td><td>5项目×4指令并发，100% 成功，587ms</td></tr>
+<tr><td>B 隔离测试</td><td><span class="tag tag-ok">PASS</span></td><td>3项目数据/状态完全隔离，零串扰</td></tr>
+<tr><td>C 韧性测试</td><td><span class="tag tag-ok">PASS</span></td><td>故障项目异常注入→恢复，健康项目独立完成</td></tr>
+<tr><td>D 熔断器</td><td><span class="tag tag-ok">PASS</span></td><td>未误触发，测完自动恢复生产配置</td></tr>
+<tr><td>E 扫描持久化</td><td><span class="tag tag-ok">PASS</span></td><td>737 能力全量落盘，重启不丢</td></tr>
+</table>
+</div>
+
+<h3>第二阶段：细节大扫除</h3>
+<div class="table-wrap">
+<table>
+<tr><th>检查项</th><th>结果</th><th>指标</th></tr>
+<tr><td>F caps 语法编译</td><td><span class="tag tag-ok">PASS</span></td><td>523 个 run.py 全部通过（修复 1 个 BOM）</td></tr>
+<tr><td>G brain 语法编译</td><td><span class="tag tag-ok">PASS</span></td><td>227 个模块全部通过</td></tr>
+<tr><td>H 守护进程自愈</td><td><span class="tag tag-ok">PASS</span></td><td>杀旧进程→自动复活→ping 通</td></tr>
+<tr><td>I 端到端业务流</td><td><span class="tag tag-ok">PASS</span></td><td>定义→执行→2/2 节点完成，438ms</td></tr>
+<tr><td>J 端口健康</td><td><span class="tag tag-ok">PASS</span></td><td>万能插守护 ping→pong 正常</td></tr>
+</table>
+</div>
+</section>
+
+<section>
+<h2>三、排掉的 3 个真雷</h2>
+<div class="callout callout-red"><b>雷 1 · 韧性测试熔断验证失效</b><br>
+根因：熔断统计的是"入队→取件"调度延迟，不是执行时长——测试里 slow 指令 2500ms 是执行时长，队列秒取走，调度延迟≈0，熔断永远不触发。<br>
+修复：改为积压触发——victim 快速塞 10 条 sleep 制造排队延迟，第 11 条被限流 → 熔断真实触发 + 测完自动恢复生产配置。</div>
+
+<div class="callout callout-red"><b>雷 2 · penetration_scan run.py 带 UTF-8 BOM</b><br>
+根因：文件头 U+FEFF（BOM）导致 compile 报"invalid non-printable character"，该能力在生产环境无法被 import。<br>
+修复：去 BOM + 语法验证通过（406B→403B）。</div>
+
+<div class="callout callout-red"><b>雷 3 · 韧性测试阈值不匹配</b><br>
+根因：韧性测试需要激进熔断阈值（100ms）才能验证 breaker_engaged，但生产默认 600ms 下 2500ms 慢指令不触发。<br>
+修复：测试自带阈值配置（开头存当前值→设激进值→结尾恢复生产配置），不再污染生产状态。</div>
+</section>
+
+<section>
+<h2>四、生产就绪终审</h2>
+<div class="code">deep_scan 穿透终审: 🟢 全连接完好 (0 issues)
+  · 连接层: 356 路由 0 断
+  · 交叉引用: defined=714 = actual=714 (0 孤儿 0 缺失)
+  · 完整性: 0 broken
+  · 文件: 737/737 全量在位
+
+diagnose 自排查: 所有核心模块就绪 (health 100%)
+
+最终判定: ✅ 可快速步入生产上线</div>
+</section>
+
+<section>
+<h2>五、改动文件</h2>
+<div class="table-wrap">
+<table>
+<tr><th>文件</th><th>改动</th></tr>
+<tr><td><code>caps/universal_plugin/run.py</code></td><td>韧性测试熔断验证改积压触发 + 阈值自动存取恢复</td></tr>
+<tr><td><code>caps/penetration_scan/run.py</code></td><td>去 UTF-8 BOM</td></tr>
+</table>
+</div>
+</section>
+
+<footer>GBT小土豆V8 生产上线马杀鸡 · 2026-09-12 · 两阶段十项全绿 · 3 雷已排</footer>
+</div>
+</body>
+</html>

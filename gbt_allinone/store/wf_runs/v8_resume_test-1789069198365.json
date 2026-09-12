@@ -1,0 +1,52 @@
+{
+  "record": {
+    "run_id": "v8_resume_test-1789069198365",
+    "workflow": "v8_resume_test",
+    "params": {},
+    "status": "ok",
+    "nodes": {
+      "n1": "ok",
+      "n2": "ok"
+    },
+    "elapsed_s": 0.005,
+    "finished_at": "2026-09-11T02:39:58"
+  },
+  "results": {
+    "n1": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "echo",
+        "result": {
+          "echo": {
+            "value": "step1"
+          }
+        }
+      }
+    },
+    "n2": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "echo",
+        "result": {
+          "echo": {
+            "value": "step2"
+          }
+        }
+      }
+    }
+  }
+}

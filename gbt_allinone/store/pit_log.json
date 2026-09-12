@@ -1,0 +1,187 @@
+{
+  "pits": [
+    {
+      "pit": "内联 python -c 带嵌套引号 -> SyntaxError: unterminated string literal",
+      "root_cause": "PowerShell/CMD 对双引号转义与 Python 字面量冲突",
+      "lesson": "严禁内联 python -c 写含引号代码",
+      "guard": "写 _*.py 辅助脚本用后即删",
+      "at": "2026-09-11T19:39:11"
+    },
+    {
+      "pit": "GBK 控制台把中文输出成 乱码/???? -> 误判为代码 bug",
+      "root_cause": "Windows 控制台默认 GBK，Python 输出 UTF-8 被错解",
+      "lesson": "判断真实内容必须显式 UTF-8",
+      "guard": "sys.stdout.reconfigure(encoding='utf-8')",
+      "at": "2026-09-11T19:39:11"
+    },
+    {
+      "pit": "utf-8-sig(BOM) 文件用 utf-8 读 -> 首个 key 前混入 \\ufeff -> json 解析失败",
+      "root_cause": "BOM 文件当无 BOM 读",
+      "lesson": "读写编码规则固定：读 utf-8-sig、写 utf-8-sig（BOM 文件）",
+      "guard": "统一 io.open(encoding='utf-8-sig')",
+      "at": "2026-09-11T19:39:11"
+    },
+    {
+      "pit": "测试把数据写进家根 store -> 家根被污染",
+      "root_cause": "测试与生产共用物理目录，无隔离",
+      "lesson": "测试必须走隔离 store",
+      "guard": "_paths.py 单一来源 + GBT_STORE_DIR 环境变量",
+      "at": "2026-09-11T19:39:11"
+    },
+    {
+      "pit": "Windows 下 relative_to(ROOT)+CWD 解析漂移 -> 静默创建家根 store/ 孤儿目录",
+      "root_cause": "路径解析依赖 CWD，未锚定 ROOT",
+      "lesson": "store 路径一律基于 __file__ 的 ROOT 绝对解析",
+      "guard": "全部模块引用 _paths.STORE_DIR",
+      "at": "2026-09-11T19:39:11"
+    },
+    {
+      "pit": "多线程并发写审计 JSONL 无锁 -> 出现半行损坏（第 34 行中断）",
+      "root_cause": "JSONL 追加写非原子，无进程内锁",
+      "lesson": "审计写入必须加锁",
+      "guard": "store.py 用 threading.Lock 保护 audit+flush",
+      "at": "2026-09-11T19:39:11"
+    },
+    {
+      "pit": "审计 error 事件语义过载（用法错误与真故障混记）-> 下游只能判例法猜",
+      "root_cause": "错误未在源头分类，ValueError 与真 bug 同为 error",
+      "lesson": "错误必须在产生处分类",
+      "guard": "api.run_task 源头分流 user_error / error",
+      "at": "2026-09-11T19:39:11"
+    },
+    {
+      "pit": "扫描器扫到自己的临时产物（观察者效应）-> 误报游离文件",
+      "root_cause": "扫描器与运行环境共用目录，不区分自身足迹",
+      "lesson": "扫描器必须跳过自身与瞬态文件",
+      "guard": "inventory._classify 归类 transient + 自身跳过",
+      "at": "2026-09-11T19:39:11"
+    },
+    {
+      "pit": "测试坑-锁号A",
+      "root_cause": "测试",
+      "lesson": "测试",
+      "guard": "",
+      "at": "2026-09-11T19:43:16"
+    },
+    {
+      "pit": "新模块扩展函数时漏依赖导入 -> NameError 真故障进审计",
+      "root_cause": "扩展 api 分发时只加分支不验依赖，模块级 import 清单没随功能扩展同步",
+      "lesson": "扩展模块时同步补 import；新 op 分发必须有回归覆盖",
+      "guard": "test_root_fix_pit_and_prework 覆盖全部 op 分发路径",
+      "at": "2026-09-11T19:46:15"
+    },
+    {
+      "pit": "selfscan 只数 error 事件数，无恢复语义 -> 已修复的故障永远报 P1",
+      "root_cause": "判定只看历史 error 存在，不看之后有无成功证据",
+      "lesson": "健康判定必须有恢复语义：error+同kind有ok=recovered",
+      "guard": "test_selfscan_recovered_semantics",
+      "at": "2026-09-11T19:53:55"
+    },
+    {
+      "pit": "测试坑-1789131260608",
+      "root_cause": "测试",
+      "lesson": "测试",
+      "guard": "",
+      "at": "2026-09-11T19:54:20"
+    },
+    {
+      "pit": "测试坑-1789132701024",
+      "root_cause": "测试",
+      "lesson": "测试",
+      "guard": "",
+      "at": "2026-09-11T20:18:21"
+    },
+    {
+      "pit": "测试坑-1789133807769",
+      "root_cause": "测试",
+      "lesson": "测试",
+      "guard": "",
+      "at": "2026-09-11T20:36:47"
+    },
+    {
+      "pit": "测试坑-1789134024911",
+      "root_cause": "测试",
+      "lesson": "测试",
+      "guard": "",
+      "at": "2026-09-11T20:40:24"
+    },
+    {
+      "pit": "测试坑-1789134474250",
+      "root_cause": "测试",
+      "lesson": "测试",
+      "guard": "",
+      "at": "2026-09-11T20:47:54"
+    },
+    {
+      "pit": "cross_scan H 维探测调用 devour_pulse -> 无参即完整认知循环 -> 每次深扫真实创建杂交胶囊",
+      "root_cause": "探测性调用允许触达副作用能力；devour_pulse 无参即执行 quick_devour+recombine+innovate",
+      "lesson": "探测必须零副作用：副作用能力进探测 skip 名单；recombine 拒绝以 _x_ 为源级联",
+      "guard": "recombine 防级联拒绝 + H 维 skip devour_pulse + ghost 杂交链级联口径",
+      "at": "2026-09-11T20:49:36"
+    },
+    {
+      "pit": "selfscan 恢复判定每次都真实探活(0.6s) -> 窗口 41 条同 kind svc_down -> 热路径 600ms 超基线",
+      "root_cause": "恢复判定无缓存，O(N) 次网络探活线性叠加进热路径",
+      "lesson": "热路径的恢复判定必须 TTL 缓存（30s 内同 kind 只探一次）+ 查询级短超时（0.15s）",
+      "guard": "_RECOVERED_CACHE 30s TTL + timeout=0.15",
+      "at": "2026-09-11T20:49:36"
+    },
+    {
+      "pit": "npx/cmd 包装层缓冲 stdout -> remote 设备日志落盘为空，无法诊断/判定在线",
+      "root_cause": "Windows 下 npx.cmd->cmd.exe 转发 node 输出时被块缓冲；node 直跑文件才同步",
+      "lesson": "长驻子进程优先 node 直跑（绕过 npx/cmd 层），日志才即时可读可判",
+      "guard": "_resolve_dc_entry() 定位 dist/index.js + _remote_cmd() node 直跑、回退 npx",
+      "at": "2026-09-12T06:00:07"
+    },
+    {
+      "pit": "PTY kill 只杀 shell，npx->node 子进程链残留（同 device 双实例风险）",
+      "root_cause": "Windows 进程树：kill 父不自动递归（除非 /T 或 job object）",
+      "lesson": "长驻进程链清理要 taskkill /T 杀子树；PID 落盘便于跨进程管理",
+      "guard": "remote_stop 用 taskkill /T /F + dc_remote.pid 落盘",
+      "at": "2026-09-12T06:00:07"
+    },
+    {
+      "pit": "测试坑-1789167668655",
+      "root_cause": "测试",
+      "lesson": "测试",
+      "guard": "",
+      "at": "2026-09-12T06:01:08"
+    },
+    {
+      "pit": "测试坑-1789168099056",
+      "root_cause": "测试",
+      "lesson": "测试",
+      "guard": "",
+      "at": "2026-09-12T06:08:19"
+    },
+    {
+      "pit": "回归红：hygiene messy + inventory foreign_found——家根 7 项散落被判异物",
+      "root_cause": "框架家根 = OpenClaw 工作区（双身份）；inventory 未识别宿主，把邻居 agent 家/工作区 skill/用户自有文档全判 foreign",
+      "lesson": "分类器必须理解容器语境：同一路径在\"独占家\"与\"工作区宿主\"下归属不同；判定要按结构性特征规则化，不是枚举名字",
+      "guard": "inventory _HOME_IS_WORKSPACE 双身份兜底 + 垃圾后缀归 transient",
+      "at": "2026-09-12T06:09:34"
+    },
+    {
+      "pit": "测试坑-1789168461215",
+      "root_cause": "测试",
+      "lesson": "测试",
+      "guard": "",
+      "at": "2026-09-12T06:14:21"
+    },
+    {
+      "pit": "desktop-commander remote 的设备名写死取自 os.hostname()，无配置项可改",
+      "root_cause": "device.js / device-authenticator.js 直接用 os.hostname() 作为 device_name 上报云端",
+      "lesson": "要品牌化外部服务的上报字段：优先 preload 注入覆写（不改源码/不改系统 hostname），而非改系统或 patch 依赖",
+      "guard": "tentacle/dc_brand_preload.js + _remote_cmd 加 --require（品牌名可 GBT_DEVICE_NAME 覆盖）",
+      "at": "2026-09-12T06:19:17"
+    },
+    {
+      "pit": "测试坑-1789168798182",
+      "root_cause": "测试",
+      "lesson": "测试",
+      "guard": "",
+      "at": "2026-09-12T06:19:58"
+    }
+  ],
+  "note": "坑册：踩过的坑与防复发锁——开工先查，一个坑不踩两次"
+}

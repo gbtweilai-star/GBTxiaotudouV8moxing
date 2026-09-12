@@ -1,0 +1,104 @@
+{
+  "rec_id": "absorbed_knowledge.md-152fb8f3-1789093992",
+  "name": "absorbed_knowledge.md",
+  "sha256": "152fb8f384a020676f9e1a2405037591ce6575a17748dfe404bdb3525f3149b9",
+  "size": 12814,
+  "submitted_at": "2026-09-11T09:33:12",
+  "meta": {
+    "actor": "devour_tentacle",
+    "purpose": "吞噬产物: devour_recombine_abs"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\absorbed_knowledge.md-152fb8f3-1789093992.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "12814 bytes",
+        "ts": "2026-09-11T09:33:12"
+      },
+      {
+        "dimension": "ownership",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T09:33:12"
+      },
+      {
+        "dimension": "audit",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "actor=devour_tentacle, purpose=吞噬产物: devour_recombine_abs",
+        "ts": "2026-09-11T09:33:12"
+      },
+      {
+        "dimension": "policy",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T09:33:12"
+      }
+    ],
+    "refine_lineage": []
+  },
+  "stage2_gate": {
+    "rec_id": "absorbed_knowledge.md-152fb8f3-1789093992",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "12814 bytes",
+        "ts": "2026-09-11T09:33:12"
+      },
+      {
+        "dimension": "ownership",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T09:33:12"
+      },
+      {
+        "dimension": "audit",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "actor=devour_tentacle, purpose=吞噬产物: devour_recombine_abs",
+        "ts": "2026-09-11T09:33:12"
+      },
+      {
+        "dimension": "policy",
+        "item": "absorbed_knowledge.md",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T09:33:12"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\absorbed_knowledge.md",
+    "version": 2,
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "absorbed_knowledge.md-152fb8f3-1789093992",
+        "sha256": "152fb8f384a020676f9e1a2405037591ce6575a17748dfe404bdb3525f3149b9",
+        "published_at": "2026-09-11T09:33:12",
+        "actor": "devour_tentacle",
+        "purpose": "吞噬产物: devour_recombine_abs",
+        "version": 2,
+        "refined_rounds": 0
+      }
+    }
+  },
+  "status": "published"
+}

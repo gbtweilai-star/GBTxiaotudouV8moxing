@@ -1,0 +1,19 @@
+{
+  "gbt_stamp": {
+    "framework": "GBT小土豆",
+    "version": "8.0.0",
+    "mark": "GBT",
+    "developer": "自由的风",
+    "ownership": "independent-personal",
+    "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"
+  },
+  "publish": {
+    "rec_id": "sig-demo.md-300d9b73-1789097245",
+    "sha256": "300d9b7372eec2c5c3eb056316a332b094bffd24450d84b3394c977768273cd9",
+    "published_at": "2026-09-11T10:27:25",
+    "actor": "signature_test",
+    "purpose": "署名注入验证",
+    "version": 1,
+    "refined_rounds": 0
+  }
+}

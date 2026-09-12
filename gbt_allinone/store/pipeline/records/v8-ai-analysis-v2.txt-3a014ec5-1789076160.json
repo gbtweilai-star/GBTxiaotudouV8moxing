@@ -1,0 +1,100 @@
+{
+  "rec_id": "v8-ai-analysis-v2.txt-3a014ec5-1789076160",
+  "name": "v8-ai-analysis-v2.txt",
+  "sha256": "3a014ec59280ffa9f50e5c8b748c6c5f506251569d6a6616acac1edb396c0792",
+  "size": 28,
+  "submitted_at": "2026-09-11T04:36:00",
+  "meta": {
+    "actor": "engine-ai-orchestration",
+    "purpose": "语义修正后的AI质检"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\v8-ai-analysis-v2.txt-3a014ec5-1789076160.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "v8-ai-analysis-v2.txt",
+        "passed": true,
+        "detail": "28 bytes",
+        "ts": "2026-09-11T04:36:00"
+      },
+      {
+        "dimension": "ownership",
+        "item": "v8-ai-analysis-v2.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T04:36:00"
+      },
+      {
+        "dimension": "audit",
+        "item": "v8-ai-analysis-v2.txt",
+        "passed": true,
+        "detail": "actor=engine-ai-orchestration, purpose=语义修正后的AI质检",
+        "ts": "2026-09-11T04:36:00"
+      },
+      {
+        "dimension": "policy",
+        "item": "v8-ai-analysis-v2.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T04:36:00"
+      }
+    ]
+  },
+  "stage2_gate": {
+    "rec_id": "v8-ai-analysis-v2.txt-3a014ec5-1789076160",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "v8-ai-analysis-v2.txt",
+        "passed": true,
+        "detail": "28 bytes",
+        "ts": "2026-09-11T04:36:00"
+      },
+      {
+        "dimension": "ownership",
+        "item": "v8-ai-analysis-v2.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T04:36:00"
+      },
+      {
+        "dimension": "audit",
+        "item": "v8-ai-analysis-v2.txt",
+        "passed": true,
+        "detail": "actor=engine-ai-orchestration, purpose=语义修正后的AI质检",
+        "ts": "2026-09-11T04:36:00"
+      },
+      {
+        "dimension": "policy",
+        "item": "v8-ai-analysis-v2.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T04:36:00"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\v8-ai-analysis-v2.txt",
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "v8-ai-analysis-v2.txt-3a014ec5-1789076160",
+        "sha256": "3a014ec59280ffa9f50e5c8b748c6c5f506251569d6a6616acac1edb396c0792",
+        "published_at": "2026-09-11T04:36:00",
+        "actor": "engine-ai-orchestration",
+        "purpose": "语义修正后的AI质检"
+      }
+    }
+  },
+  "status": "published"
+}

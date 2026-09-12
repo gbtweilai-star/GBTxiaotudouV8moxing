@@ -1,0 +1,358 @@
+{
+  "rows": [
+    [
+      "推理",
+      "brain层",
+      "reasoning_brain",
+      "brain/reasoning_brain.py -- 推理脑 · DeepSeek实时对话通道 ===========",
+      23554
+    ],
+    [
+      "编程",
+      "brain层",
+      "code_generator",
+      "brain/code_generator.py — 代码生成引擎 v1.0 ━━━━━━━━━━━━━━━━━━━━━━",
+      11728
+    ],
+    [
+      "设计",
+      "cap层",
+      "design_brain(cap)",
+      "调度层能力",
+      0
+    ],
+    [
+      "视觉",
+      "brain层",
+      "visual_cortex",
+      "brain/visual_cortex.py -- 视觉皮层 · 三层结构视觉引擎 ==================",
+      27877
+    ],
+    [
+      "认知",
+      "brain层",
+      "cognition",
+      "brain/cognition.py — 自我认知引擎 ================================",
+      8702
+    ],
+    [
+      "进化",
+      "brain层",
+      "self_evolve",
+      "brain/self_evolve.py — 自进化引擎 ===============================",
+      13477
+    ],
+    [
+      "镜像",
+      "brain层",
+      "mirror_fusion",
+      "brain/mirror_fusion.py — 镜像多维度空间 ===========================",
+      67975
+    ],
+    [
+      "审计",
+      "brain层",
+      "audit_trail",
+      "brain/audit_trail.py — 执行审计追踪器 =============================",
+      9074
+    ],
+    [
+      "意图",
+      "brain层",
+      "intent_broker",
+      "brain/intent_broker.py — 意图识别引擎 ============================",
+      35492
+    ],
+    [
+      "触手",
+      "brain层",
+      "action_tentacle",
+      "brain/action_tentacle.py — 触手行动层 v1.0 ======================",
+      8606
+    ],
+    [
+      "黑客",
+      "brain层",
+      "hacker_brain",
+      "brain/hacker_brain.py — 黑客大脑 ===============================",
+      17168
+    ],
+    [
+      "本体感知",
+      "brain层",
+      "neural_proprioception",
+      "brain/neural_proprioception.py — 神经本体感知层 v1.0 ==============",
+      20608
+    ],
+    [
+      "鞭策",
+      "brain层",
+      "self_discipline_brain",
+      "",
+      2754
+    ],
+    [
+      "灵感",
+      "brain层",
+      "inspiration_brain",
+      "",
+      2062
+    ],
+    [
+      "循环",
+      "brain层",
+      "autonomous_loop",
+      "brain/autonomous_loop.py — 自主执行主控引擎 ========================",
+      32696
+    ],
+    [
+      "Gaia",
+      "brain层",
+      "gaia_gateway",
+      "brain/gaia_gateway.py — Gaia 通用AI框架网关 (多脑域) ================",
+      2436
+    ],
+    [
+      "元认知",
+      "brain层",
+      "meta_cognition_brain",
+      "meta_cognition_brain.py — 元认知大脑: 自我监控/校准/反思",
+      2202
+    ],
+    [
+      "直觉",
+      "brain层",
+      "intuition_brain",
+      "intuition_brain.py — 直觉大脑: 毫秒级启发式判断 (无LLM)",
+      2331
+    ],
+    [
+      "审美",
+      "brain层",
+      "aesthetic_brain",
+      "aesthetic_brain.py — 审美大脑: 设计/文案质量评估 (启发式)",
+      1188
+    ],
+    [
+      "记忆",
+      "brain层",
+      "memory_brain",
+      "memory_brain.py — 记忆大脑: 多源记忆统一聚合检索",
+      1940
+    ],
+    [
+      "时序",
+      "brain层",
+      "temporal_brain",
+      "temporal_brain.py — 时序大脑: 时间感知/时间线/时效评估",
+      1820
+    ],
+    [
+      "社交",
+      "brain层",
+      "social_brain",
+      "social_brain.py — 社交大脑: 沟通风格/协作感知",
+      1785
+    ],
+    [
+      "学习",
+      "brain层",
+      "learning_brain",
+      "learning_brain.py — 学习大脑: 知识缺口/学习路径/技能评估",
+      1776
+    ],
+    [
+      "策略",
+      "brain层",
+      "strategy_brain",
+      "strategy_brain.py — 策略大脑: 方案权衡/策略推荐",
+      1800
+    ],
+    [
+      "风险",
+      "brain层",
+      "risk_brain",
+      "risk_brain.py — 风险大脑: 深度风险评估/缓解建议",
+      1523
+    ],
+    [
+      "执行",
+      "brain层",
+      "execution_brain",
+      "execution_brain.py — 执行大脑: 任务优先级/资源分配/调度",
+      1905
+    ],
+    [
+      "解释",
+      "brain层",
+      "explanation_brain",
+      "explanation_brain.py — 解释大脑: 通俗化/推理链/教学解释",
+      1639
+    ],
+    [
+      "想象",
+      "brain层",
+      "imagination_brain",
+      "imagination_brain.py — 想象大脑: 场景推演/假设分析/联想",
+      1515
+    ],
+    [
+      "价值",
+      "brain层",
+      "value_brain",
+      "value_brain.py — 价值大脑: 价值对齐/护栏检查",
+      1456
+    ],
+    [
+      "状态",
+      "brain层",
+      "state_brain",
+      "state_brain.py — 状态大脑: 系统健康/负载/就绪度",
+      1516
+    ],
+    [
+      "平衡",
+      "brain层",
+      "balance_brain",
+      "balance_brain.py — 平衡大脑: 多目标权衡/约束平衡",
+      1719
+    ],
+    [
+      "模式",
+      "brain层",
+      "pattern_brain",
+      "pattern_brain.py — 模式大脑: 行为模式/习惯/异常检测",
+      1973
+    ],
+    [
+      "情绪",
+      "brain层",
+      "emotion_brain",
+      "emotion_brain.py — 情绪大脑: 情绪识别/强度/应对",
+      1641
+    ],
+    [
+      "汇报",
+      "brain层",
+      "report_brain",
+      "report_brain.py — 汇报大脑: 状态聚合/摘要报告",
+      1950
+    ],
+    [
+      "建议",
+      "brain层",
+      "advice_brain",
+      "advice_brain.py — 建议大脑: 下一步/优化/风险提示",
+      1588
+    ],
+    [
+      "任务",
+      "brain层",
+      "task_brain",
+      "task_brain.py — 任务大脑: 任务生命周期状态机",
+      2048
+    ],
+    [
+      "技能",
+      "brain层",
+      "skill_brain",
+      "skill_brain.py — 技能大脑: 技能注册/调用/推荐",
+      1219
+    ],
+    [
+      "预测",
+      "brain层",
+      "predict_brain",
+      "predict_brain.py — 预测大脑: 趋势预测/变化检测",
+      1734
+    ],
+    [
+      "校准",
+      "brain层",
+      "calibrate_brain",
+      "calibrate_brain.py — 校准大脑: 参数校准/漂移检测",
+      1750
+    ],
+    [
+      "图谱",
+      "brain层",
+      "graph_brain",
+      "graph_brain.py — 图谱大脑: 知识图谱 实体/关系记忆",
+      1264
+    ],
+    [
+      "决策记录",
+      "brain层",
+      "journal_brain",
+      "journal_brain.py — 决策记录大脑: 归档/复盘/教训",
+      1589
+    ],
+    [
+      "评估",
+      "brain层",
+      "evaluate_brain",
+      "evaluate_brain.py — 评估大脑: 效果度量/评分/对比",
+      1707
+    ],
+    [
+      "合成",
+      "brain层",
+      "synthesis_brain",
+      "synthesis_brain.py — 合成大脑: 结果融合/冲突消解",
+      1850
+    ],
+    [
+      "协调",
+      "brain层",
+      "orchestrator",
+      "brain/orchestrator.py — 任务编排引擎 =============================",
+      13836
+    ],
+    [
+      "恢复",
+      "brain层",
+      "recovery_brain",
+      "recovery_brain.py — 恢复大脑: 故障恢复/重试/回滚",
+      1727
+    ],
+    [
+      "洞察",
+      "brain层",
+      "insight_brain",
+      "insight_brain.py — 洞察大脑: 洞察提取/关键信息",
+      1696
+    ],
+    [
+      "常识",
+      "brain层",
+      "common_sense_brain",
+      "common_sense_brain.py — 常识大脑: 常识校验/推理/护栏",
+      1601
+    ],
+    [
+      "启发",
+      "brain层",
+      "heuristic_brain",
+      "heuristic_brain.py — 启发大脑: 启发式策略/快速制胜",
+      1604
+    ],
+    [
+      "探索",
+      "brain层",
+      "exploration_engine",
+      "brain/exploration_engine.py — 探索引擎 · 自主发现 ==================",
+      14222
+    ],
+    [
+      "意识",
+      "brain层",
+      "mind_brain",
+      "mind_brain.py — 意识脑: 全脑统合/自我报告",
+      1257
+    ]
+  ],
+  "brain_total": 227,
+  "hit_direct": 49,
+  "hit_cap": 1,
+  "no_match": 0
+}

@@ -1,0 +1,44 @@
+{
+  "rec_id": "refine-final.txt-a4e1aeaf-1789086298",
+  "passed": false,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "refine-final.txt",
+      "passed": true,
+      "detail": "4311 bytes",
+      "ts": "2026-09-11T07:25:18"
+    },
+    {
+      "dimension": "ownership",
+      "item": "refine-final.txt",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T07:25:18"
+    },
+    {
+      "dimension": "audit",
+      "item": "refine-final.txt",
+      "passed": true,
+      "detail": "actor=autopilot, purpose=面向用户的产品介绍文档，需包含框架定位、核心能力、使用方式",
+      "ts": "2026-09-11T07:25:18"
+    },
+    {
+      "dimension": "policy",
+      "item": "refine-final.txt",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T07:25:18"
+    },
+    {
+      "dimension": "quality",
+      "item": "refine-final.txt",
+      "passed": false,
+      "detail": "score=65/100, issues=['声明用途要求包含『使用方式』，但节选内容仅覆盖框架定位与部分核心能力，未见任何安装/调用/配置说明，无法验证是否满足该要求', '核心能力表格在『| 2 | AI』处截断，章节完整性无法核验，关键信息缺失', '通篇为营销式描述，缺乏可执行的具体示例（如命令、配置文件、调用路径），不满足『可验证』的生产文档标准']",
+      "ts": "2026-09-11T07:25:29"
+    }
+  ],
+  "blocked_by": [
+    "quality"
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "rec_id": "run.py-a03c4013-1789093625",
+  "name": "run.py",
+  "sha256": "a03c4013aab7a3d85a84fc9e58b99be389c566716af83eb5c98f10a1b07eefbe",
+  "size": 900,
+  "submitted_at": "2026-09-11T09:27:05",
+  "meta": {
+    "actor": "devour_tentacle",
+    "purpose": "吞噬产物: devour_github_repo:sindresorhus/slugify:scaffold"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\run.py-a03c4013-1789093625.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "run.py",
+        "passed": true,
+        "detail": "900 bytes",
+        "ts": "2026-09-11T09:27:05"
+      },
+      {
+        "dimension": "ownership",
+        "item": "run.py",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T09:27:05"
+      },
+      {
+        "dimension": "audit",
+        "item": "run.py",
+        "passed": true,
+        "detail": "actor=devour_tentacle, purpose=吞噬产物: devour_github_repo:sindresorhus/slugify:scaffold",
+        "ts": "2026-09-11T09:27:05"
+      },
+      {
+        "dimension": "policy",
+        "item": "run.py",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T09:27:05"
+      }
+    ],
+    "refine_lineage": []
+  },
+  "stage2_gate": {
+    "rec_id": "run.py-a03c4013-1789093625",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "run.py",
+        "passed": true,
+        "detail": "900 bytes",
+        "ts": "2026-09-11T09:27:05"
+      },
+      {
+        "dimension": "ownership",
+        "item": "run.py",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T09:27:05"
+      },
+      {
+        "dimension": "audit",
+        "item": "run.py",
+        "passed": true,
+        "detail": "actor=devour_tentacle, purpose=吞噬产物: devour_github_repo:sindresorhus/slugify:scaffold",
+        "ts": "2026-09-11T09:27:05"
+      },
+      {
+        "dimension": "policy",
+        "item": "run.py",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T09:27:05"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\run.py",
+    "version": 1,
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "run.py-a03c4013-1789093625",
+        "sha256": "a03c4013aab7a3d85a84fc9e58b99be389c566716af83eb5c98f10a1b07eefbe",
+        "published_at": "2026-09-11T09:27:05",
+        "actor": "devour_tentacle",
+        "purpose": "吞噬产物: devour_github_repo:sindresorhus/slugify:scaffold",
+        "version": 1,
+        "refined_rounds": 0
+      }
+    }
+  },
+  "status": "published"
+}

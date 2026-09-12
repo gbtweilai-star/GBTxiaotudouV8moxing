@@ -1,0 +1,21 @@
+{
+  "record": {
+    "run_id": "v-ff-1789065808745",
+    "workflow": "v-ff",
+    "params": {},
+    "status": "failed",
+    "nodes": {
+      "boom": "error",
+      "after": "skipped"
+    },
+    "elapsed_s": 0.086,
+    "finished_at": "2026-09-11T01:43:28"
+  },
+  "results": {
+    "boom": {
+      "status": "error",
+      "kind": "osint_scan",
+      "message": "缺少 target：请提供要扫描的域名或 IP"
+    }
+  }
+}

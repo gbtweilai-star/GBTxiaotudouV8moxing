@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全量穿透式交叉扫描 · 持久化打磨确认报告</title>
+<style>
+:root{--primary:#4338ca;--ok:#10b981;--bg:#eef2ff;--card:#fff;--text:#1e1b4b;--muted:#64748b;--border:#e0e7ff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Segoe UI','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding:24px}
+.wrap{max-width:1100px;margin:0 auto}
+header{background:linear-gradient(135deg,#4338ca,#0ea5e9);color:#fff;padding:40px;border-radius:14px;margin-bottom:28px}
+header h1{font-size:2em;margin-bottom:10px}
+header p{opacity:.92;font-size:1.05em}
+section{background:var(--card);border-radius:12px;padding:26px;margin-bottom:22px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+h2{color:var(--primary);font-size:1.3em;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+h3{font-size:1.08em;margin:14px 0 8px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:14px 0}
+.metric{background:linear-gradient(135deg,#eef2ff,#e0e7ff);border-radius:10px;padding:16px;text-align:center}
+.metric-value{font-size:1.8em;font-weight:700;color:#4338ca}
+.metric-label{color:var(--muted);font-size:.8em;margin-top:4px}
+.table-wrap{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:.92em}
+th{background:#e0e7ff;color:#3730a3;padding:9px 12px;text-align:left}
+td{padding:8px 12px;border-bottom:1px solid var(--border)}
+tr:hover td{background:#eef2ff}
+.tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.8em;font-weight:600;white-space:nowrap}
+.tag-ok{background:#d1fae5;color:#047857}
+.callout{border-radius:10px;padding:16px 18px;margin:14px 0}
+.callout-green{background:#ecfdf5;border-left:4px solid var(--ok)}
+.callout-red{background:#fef2f2;border-left:4px solid #ef4444}
+.code{background:#1e1b4b;color:#e0e7ff;padding:14px;border-radius:8px;overflow-x:auto;font-size:.85em;margin:10px 0;font-family:Consolas,monospace;line-height:1.55}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<h1>💾 全量穿透式交叉扫描 · 持久化打磨确认</h1>
+<p>GBT小土豆V8 · 扫描结果落盘 + scan_history 工具 + 终审全绿 · 2026-09-12</p>
+</header>
+
+<section>
+<h2>一、持久化打磨确认（本轮核心）</h2>
+<div class="callout callout-green"><b>✅ 扫描结果从此落盘持久化</b> —— 重启不丢、历史可查、scan_history 工具上线。终审三关全过：落盘 → 重启读回 → 全量复扫。</div>
+<div class="metrics">
+<div class="metric"><div class="metric-value">20.9KB</div><div class="metric-label">持久化文件</div></div>
+<div class="metric"><div class="metric-value">23 域</div><div class="metric-label">域明细保留</div></div>
+<div class="metric"><div class="metric-value">186</div><div class="metric-label">脑模块名留档</div></div>
+<div class="metric"><div class="metric-value">13</div><div class="metric-label">MCP 工具（+1）</div></div>
+</div>
+<h3>打磨前 vs 打磨后</h3>
+<div class="table-wrap">
+<table>
+<tr><th>能力</th><th>打磨前</th><th>打磨后</th></tr>
+<tr><td>扫描结果存储</td><td>纯内存缓存，30 秒过期，重启即失忆</td><td><span class="tag tag-ok">落盘 .gbt/scan/scan_result.json</span></td></tr>
+<tr><td>重启后历史</td><td>全部丢失，无处可查</td><td><span class="tag tag-ok">自动读回，重启不丢</span></td></tr>
+<tr><td>历史查询工具</td><td>无</td><td><span class="tag tag-ok">scan_history（13 工具之一）</span></td></tr>
+<tr><td>落盘内容</td><td>—</td><td>23 域计数 + 全部能力名明细（含脑模块层 186 个模块名）</td></tr>
+</table>
+</div>
+</section>
+
+<section>
+<h2>二、持久化终审三关实录</h2>
+<div class="code">[第 1 关] 落盘:  scan(force) → scan_result.json 生成 ✅ 20.9KB
+         persisted_at=2026-09-12 07:08:08 | total=737 | 域数=23
+         caps_detail: 23 域全量能力名（脑模块层 186 个模块名在档）
+[第 2 关] 重启读回: 杀进程 → 新进程 → scan_history 读回 ✅
+         ok=True | 最新记录 07:08:08 | total=737 | health=100.0%
+         域数 23 | 域明细保留 23 个
+[第 3 关] 全量复扫: scan 737/737 ✅ | topology 737 一致 ✅
+         deep_scan 🟢 0 issues ✅ | 交叉引用 714=714 ✅
+         quick_health 100% ✅ | 中文路由 zh_semantic ✅
+         持久化文件仍在 ✅</div>
+</section>
+
+<section>
+<h2>三、打磨中灭杀的实现层根因（2 个）</h2>
+<div class="callout callout-red"><b>根因 7 · schema 插错作用域</b><br>tools/list 声明与工具分发用的是 <code>_serve_mcp</code> 局部的 TOOLS/TOOL_IMPLS，而文件里存在模块级与函数级两套同名定义——首次补丁插进了模块级（不影响 tools/list），修正后插进函数级 schema + 分发表。</div>
+<div class="callout callout-red"><b>根因 8 · 双 TOOL_IMPLS 覆盖</b><br>文件里有两个 TOOL_IMPLS（前一个带 scan_history，后一个是分发实际用的）——前一个被后一个覆盖，工具调用报 Unknown tool。修正：给分发用的那个块补上 scan_history 绑定，Unknown tool 消除。</div>
+</section>
+
+<section>
+<h2>四、累计修复全景（8 根因）</h2>
+<div class="table-wrap">
+<table>
+<tr><th>#</th><th>根因</th><th>状态</th></tr>
+<tr><td>1</td><td>scan() 只认硬编码邻域清单（brain 227 模块只登记 34）</td><td><span class="tag tag-ok">全量兜底归集</span></td></tr>
+<tr><td>2</td><td>topology() 与 scan() 口径分裂（360 vs 737）</td><td><span class="tag tag-ok">口径统一</span></td></tr>
+<tr><td>3</td><td>交叉引用孤儿误判（221 个被误报）</td><td><span class="tag tag-ok">动态域计入</span></td></tr>
+<tr><td>4</td><td>integrity 脑模块层误检（188 处假断连）</td><td><span class="tag tag-ok">is_brain 扩展</span></td></tr>
+<tr><td>5</td><td>3 个 capability.json 真实损坏（BOM/缺字段）</td><td><span class="tag tag-ok">逐个修复</span></td></tr>
+<tr><td>6</td><td>中文意图路由零覆盖（全走 default）</td><td><span class="tag tag-ok">ZH 语义映射层</span></td></tr>
+<tr><td>7</td><td>scan_history schema 插错作用域</td><td><span class="tag tag-ok">函数级修正</span></td></tr>
+<tr><td>8</td><td>双 TOOL_IMPLS 覆盖致 Unknown tool</td><td><span class="tag tag-ok">分发块补绑定</span></td></tr>
+</table>
+</div>
+</section>
+
+<section>
+<h2>五、终态架构</h2>
+<div class="code">scan() 全量 737 ──落盘──→ .gbt/scan/scan_result.json
+    │                          （23 域计数 + 全量能力名明细）
+    │ 重启读回 ↑ scan_history 工具查询
+    ├── 23 域: 硬编码 20 域 360 + 脑模块层 186 + 未归类 35 + 吞噬衍生 156
+    ├── route() 三层: EN 精确 356 条 → ZH 语义 100+ 条 → fuzzy/default
+    └── deep_scan() 四层穿透: 连接 356 路由 → 交叉引用 714=714 → 完整性 0 → 健康 100%
+
+MCP 工具 13 个: scan / scan_history / quick_health / topology / diagnose /
+               deep_scan / connection_map / route / bridge / quantum_extension /
+               quantum_topology / entanglement_route / watch</div>
+</section>
+
+<section>
+<h2>六、本轮改动文件</h2>
+<div class="table-wrap">
+<table>
+<tr><th>文件</th><th>改动</th></tr>
+<tr><td><code>gbt/brain/nexus.py</code></td><td>scan 落盘 + 启动读回 + scan_history 方法/工具/schema/分发绑定（含 2 个作用域根因修正）</td></tr>
+<tr><td><code>gbt/.gbt/scan/scan_result.json</code></td><td>新生成：持久化扫描记录（20.9KB，自动刷新）</td></tr>
+</table>
+</div>
+</section>
+
+<footer>全量穿透式交叉扫描 · 持久化打磨确认 · 2026-09-12 · 8 根因全灭</footer>
+</div>
+</body>
+</html>

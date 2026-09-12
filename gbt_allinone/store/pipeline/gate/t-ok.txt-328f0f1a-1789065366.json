@@ -1,0 +1,35 @@
+{
+  "rec_id": "t-ok.txt-328f0f1a-1789065366",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "t-ok.txt",
+      "passed": true,
+      "detail": "6 bytes",
+      "ts": "2026-09-11T01:36:06"
+    },
+    {
+      "dimension": "ownership",
+      "item": "t-ok.txt",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T01:36:06"
+    },
+    {
+      "dimension": "audit",
+      "item": "t-ok.txt",
+      "passed": true,
+      "detail": "actor=test, purpose=unit",
+      "ts": "2026-09-11T01:36:06"
+    },
+    {
+      "dimension": "policy",
+      "item": "t-ok.txt",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T01:36:06"
+    }
+  ],
+  "blocked_by": []
+}

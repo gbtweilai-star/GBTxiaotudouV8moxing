@@ -1,0 +1,40 @@
+{
+  "record": {
+    "run_id": "honesty-test-1789075877537",
+    "workflow": "honesty-test",
+    "params": {},
+    "status": "failed",
+    "nodes": {
+      "ok_step": "ok",
+      "bad_step": "error",
+      "publish": "skipped"
+    },
+    "elapsed_s": 0.199,
+    "finished_at": "2026-09-11T04:31:17"
+  },
+  "results": {
+    "ok_step": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "health",
+        "result": {
+          "platform": "Windows-11-10.0.26200-SP0",
+          "python": "3.13.12",
+          "time": "2026-09-11T04:31:17"
+        }
+      }
+    },
+    "bad_step": {
+      "status": "error",
+      "kind": "osint_scan",
+      "message": "目标属于本机/内网/保留地址段。私人框架默认不扫内网；确需扫描自有内网资产时，请在调用中显式传 allow_private=True。"
+    }
+  }
+}

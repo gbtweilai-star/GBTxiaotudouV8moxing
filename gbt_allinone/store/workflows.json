@@ -1,0 +1,387 @@
+{
+  "self-polish": {
+    "name": "self-polish",
+    "nodes": [
+      {
+        "id": "scan",
+        "kind": "selfscan",
+        "params": {
+          "autofix": true
+        }
+      },
+      {
+        "id": "guard",
+        "kind": "ghost_guard",
+        "params": {}
+      },
+      {
+        "id": "svc",
+        "kind": "svc_inspect",
+        "params": {}
+      },
+      {
+        "id": "publish",
+        "kind": "pipeline_submit",
+        "params": {
+          "name": "v8-self-polish-report.txt",
+          "content": "V8自检报告: scan={{scan.gbt_result.result.verdict}} guard={{guard.gbt_result.result.clean}} 服务={{svc.gbt_result.result.up}}/{{svc.gbt_result.result.total}}",
+          "meta": {
+            "actor": "engine-self-polish",
+            "purpose": "万能插自检"
+          }
+        },
+        "depends_on": [
+          "scan",
+          "guard",
+          "svc"
+        ]
+      }
+    ],
+    "defined_at": "2026-09-11T04:30:59"
+  },
+  "honesty-test": {
+    "name": "honesty-test",
+    "nodes": [
+      {
+        "id": "ok_step",
+        "kind": "health",
+        "params": {}
+      },
+      {
+        "id": "bad_step",
+        "kind": "osint_scan",
+        "params": {
+          "target": "127.0.0.1"
+        },
+        "depends_on": [
+          "ok_step"
+        ]
+      },
+      {
+        "id": "publish",
+        "kind": "pipeline_submit",
+        "params": {
+          "name": "should-never-publish.txt",
+          "content": "{{bad_step.gbt_result.status}}"
+        },
+        "depends_on": [
+          "bad_step"
+        ]
+      }
+    ],
+    "defined_at": "2026-09-11T04:31:17"
+  },
+  "ai-orchestration": {
+    "name": "ai-orchestration",
+    "nodes": [
+      {
+        "id": "scan",
+        "kind": "selfscan",
+        "params": {
+          "autofix": true
+        }
+      },
+      {
+        "id": "analyze",
+        "kind": "llm_chat",
+        "params": {
+          "prompt": "你是框架质检员。体检语义说明：findings 为空数组=五维全过无任何问题；guard=护栏正常拦截次数；trace=测试足迹数；runtime=0=零运行时故障。基于此语义解读体检数据：能力数={{scan.gbt_result.result.capabilities_total}}，findings={{scan.gbt_result.result.findings}}，审计信号={{scan.gbt_result.result.sections.audit.by_signal}}。用三句话给出总体判断、最值得注意的点、改进建议。",
+          "max_tokens": 300,
+          "timeout": 90
+        },
+        "depends_on": [
+          "scan"
+        ]
+      },
+      {
+        "id": "publish",
+        "kind": "pipeline_submit",
+        "params": {
+          "name": "v8-ai-analysis-v2.txt",
+          "content": "AI质检分析v2(DeepSeek): {{analyze.gbt_result.result.reply}}",
+          "meta": {
+            "actor": "engine-ai-orchestration",
+            "purpose": "语义修正后的AI质检"
+          }
+        },
+        "depends_on": [
+          "analyze"
+        ]
+      }
+    ],
+    "defined_at": "2026-09-11T04:35:57"
+  },
+  "autopilot-r1": {
+    "name": "autopilot-r1",
+    "nodes": [
+      {
+        "id": "a",
+        "kind": "echo",
+        "params": {
+          "text": "统计一句话的词数并回显结果"
+        },
+        "depends_on": []
+      },
+      {
+        "id": "b",
+        "kind": "count_words",
+        "params": {
+          "text": "{{a.gbt_result.result.echo}}"
+        },
+        "depends_on": [
+          "a"
+        ]
+      },
+      {
+        "id": "c",
+        "kind": "pipeline_submit",
+        "params": {
+          "name": "autopilot-词数统计.txt",
+          "content": "原文：{{a.gbt_result.result.echo}}\n词数：{{b.gbt_result.result.words}}\n字符数：{{b.gbt_result.result.chars}}",
+          "meta": {
+            "actor": "autopilot",
+            "purpose": "统计一句话词数并回显结果"
+          }
+        },
+        "depends_on": [
+          "b"
+        ]
+      }
+    ],
+    "defined_at": "2026-09-11T13:07:27"
+  },
+  "autopilot-r2": {
+    "name": "autopilot-r2",
+    "nodes": [
+      {
+        "id": "a",
+        "kind": "echo",
+        "params": {
+          "text": "统计一句话的词数并回显结果"
+        },
+        "depends_on": []
+      },
+      {
+        "id": "b",
+        "kind": "count_words",
+        "params": {
+          "text": "{{a.gbt_result.result.echo}}"
+        },
+        "depends_on": [
+          "a"
+        ]
+      },
+      {
+        "id": "c",
+        "kind": "pipeline_submit",
+        "params": {
+          "name": "autopilot-产出名.txt",
+          "content": "回显：{{a.gbt_result.result.echo}}\n词数：{{b.gbt_result.result.words}}\n字符数：{{b.gbt_result.result.chars}}",
+          "meta": {
+            "actor": "autopilot",
+            "purpose": "统计一句话词数并回显结果"
+          }
+        },
+        "depends_on": [
+          "a",
+          "b"
+        ]
+      }
+    ],
+    "defined_at": "2026-09-11T13:05:56"
+  },
+  "gbt_polish_v1": {
+    "name": "gbt_polish_v1",
+    "nodes": [
+      {
+        "id": "health",
+        "kind": "health",
+        "params": {}
+      },
+      {
+        "id": "llm_status",
+        "kind": "llm_status",
+        "params": {}
+      },
+      {
+        "id": "tentacle_status",
+        "kind": "tentacle_status",
+        "params": {}
+      },
+      {
+        "id": "svc_inspect",
+        "kind": "svc_inspect",
+        "params": {}
+      },
+      {
+        "id": "sched_status",
+        "kind": "sched_status",
+        "params": {}
+      },
+      {
+        "id": "wf_status",
+        "kind": "wf_status",
+        "params": {}
+      },
+      {
+        "id": "selfscan",
+        "kind": "selfscan",
+        "params": {
+          "autofix": true
+        },
+        "depends_on": [
+          "health"
+        ]
+      },
+      {
+        "id": "truth_scan",
+        "kind": "truth_scan",
+        "params": {},
+        "depends_on": [
+          "health"
+        ]
+      },
+      {
+        "id": "ghost_guard",
+        "kind": "ghost_guard",
+        "params": {},
+        "depends_on": [
+          "health"
+        ]
+      },
+      {
+        "id": "devour_scan",
+        "kind": "devour_scan",
+        "params": {},
+        "depends_on": [
+          "health"
+        ]
+      },
+      {
+        "id": "sec_surface",
+        "kind": "sec_surface",
+        "params": {},
+        "depends_on": [
+          "health"
+        ]
+      },
+      {
+        "id": "sec_scan",
+        "kind": "sec_scan",
+        "params": {
+          "severity": "low"
+        },
+        "depends_on": [
+          "sec_surface"
+        ]
+      },
+      {
+        "id": "sec_defenses",
+        "kind": "sec_defenses",
+        "params": {},
+        "depends_on": [
+          "sec_surface"
+        ]
+      },
+      {
+        "id": "devour_reflect",
+        "kind": "devour_reflect",
+        "params": {},
+        "depends_on": [
+          "devour_scan"
+        ]
+      },
+      {
+        "id": "devour_pulse",
+        "kind": "devour_pulse",
+        "params": {},
+        "depends_on": [
+          "devour_scan"
+        ]
+      },
+      {
+        "id": "pipeline_status",
+        "kind": "pipeline_status",
+        "params": {},
+        "depends_on": [
+          "sec_scan",
+          "sec_defenses"
+        ]
+      },
+      {
+        "id": "audit_query",
+        "kind": "audit_query",
+        "params": {
+          "event": "error"
+        },
+        "depends_on": [
+          "selfscan",
+          "truth_scan",
+          "ghost_guard"
+        ]
+      },
+      {
+        "id": "alerts",
+        "kind": "alerts",
+        "params": {},
+        "depends_on": [
+          "selfscan",
+          "truth_scan",
+          "ghost_guard"
+        ]
+      },
+      {
+        "id": "health_final",
+        "kind": "health",
+        "params": {},
+        "depends_on": [
+          "pipeline_status",
+          "audit_query",
+          "alerts",
+          "devour_pulse",
+          "devour_reflect"
+        ]
+      }
+    ],
+    "defined_at": "2026-09-11T09:41:10"
+  },
+  "autopilot-r3": {
+    "name": "autopilot-r3",
+    "nodes": [
+      {
+        "id": "a",
+        "kind": "echo",
+        "params": {
+          "text": "统计一句话的词数并回显结果"
+        },
+        "depends_on": []
+      },
+      {
+        "id": "b",
+        "kind": "count_words",
+        "params": {
+          "text": "统计一句话的词数并回显结果"
+        },
+        "depends_on": [
+          "a"
+        ]
+      },
+      {
+        "id": "c",
+        "kind": "pipeline_submit",
+        "params": {
+          "name": "autopilot-词数统计.txt",
+          "content": "句子: {{a.gbt_result.result.echo}}\n词数: {{b.gbt_result.result.words}}\n字符数: {{b.gbt_result.result.chars}}",
+          "meta": {
+            "actor": "autopilot",
+            "purpose": "统计一句话的词数并回显结果"
+          }
+        },
+        "depends_on": [
+          "b"
+        ]
+      }
+    ],
+    "defined_at": "2026-09-11T13:05:58"
+  }
+}

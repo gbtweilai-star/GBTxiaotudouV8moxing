@@ -1,0 +1,35 @@
+{
+  "rec_id": "run.py-a03c4013-1789093625",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "run.py",
+      "passed": true,
+      "detail": "900 bytes",
+      "ts": "2026-09-11T09:27:05"
+    },
+    {
+      "dimension": "ownership",
+      "item": "run.py",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T09:27:05"
+    },
+    {
+      "dimension": "audit",
+      "item": "run.py",
+      "passed": true,
+      "detail": "actor=devour_tentacle, purpose=吞噬产物: devour_github_repo:sindresorhus/slugify:scaffold",
+      "ts": "2026-09-11T09:27:05"
+    },
+    {
+      "dimension": "policy",
+      "item": "run.py",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T09:27:05"
+    }
+  ],
+  "blocked_by": []
+}

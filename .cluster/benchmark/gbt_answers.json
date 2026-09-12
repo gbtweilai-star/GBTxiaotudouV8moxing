@@ -1,0 +1,17 @@
+{
+ "task1_金额陷阱": {
+  "answer": "",
+  "time_s": 0.4,
+  "error": "HTTP 401 {\"error\":{\"code\":\"1000\",\"message\":\"身份验证失败。\"}}"
+ },
+ "task2_支付幂等": {
+  "answer": "",
+  "time_s": 0.2,
+  "error": "HTTP 401 {\"error\":{\"code\":\"1000\",\"message\":\"身份验证失败。\"}}"
+ },
+ "task3_接口限流": {
+  "answer": "",
+  "time_s": 0.2,
+  "error": "HTTP 401 {\"error\":{\"code\":\"1000\",\"message\":\"身份验证失败。\"}}"
+ }
+}

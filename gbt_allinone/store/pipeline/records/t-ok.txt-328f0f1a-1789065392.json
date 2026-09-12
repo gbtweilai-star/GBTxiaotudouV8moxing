@@ -1,0 +1,100 @@
+{
+  "rec_id": "t-ok.txt-328f0f1a-1789065392",
+  "name": "t-ok.txt",
+  "sha256": "328f0f1a28be8a1225d0ebff3e07f70c705aa85318981a7c17f5c83178801f34",
+  "size": 6,
+  "submitted_at": "2026-09-11T01:36:32",
+  "meta": {
+    "actor": "test",
+    "purpose": "unit"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\t-ok.txt-328f0f1a-1789065392.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "t-ok.txt",
+        "passed": true,
+        "detail": "6 bytes",
+        "ts": "2026-09-11T01:36:32"
+      },
+      {
+        "dimension": "ownership",
+        "item": "t-ok.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T01:36:32"
+      },
+      {
+        "dimension": "audit",
+        "item": "t-ok.txt",
+        "passed": true,
+        "detail": "actor=test, purpose=unit",
+        "ts": "2026-09-11T01:36:32"
+      },
+      {
+        "dimension": "policy",
+        "item": "t-ok.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T01:36:32"
+      }
+    ]
+  },
+  "stage2_gate": {
+    "rec_id": "t-ok.txt-328f0f1a-1789065392",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "t-ok.txt",
+        "passed": true,
+        "detail": "6 bytes",
+        "ts": "2026-09-11T01:36:32"
+      },
+      {
+        "dimension": "ownership",
+        "item": "t-ok.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T01:36:32"
+      },
+      {
+        "dimension": "audit",
+        "item": "t-ok.txt",
+        "passed": true,
+        "detail": "actor=test, purpose=unit",
+        "ts": "2026-09-11T01:36:32"
+      },
+      {
+        "dimension": "policy",
+        "item": "t-ok.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T01:36:32"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\t-ok.txt",
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "t-ok.txt-328f0f1a-1789065392",
+        "sha256": "328f0f1a28be8a1225d0ebff3e07f70c705aa85318981a7c17f5c83178801f34",
+        "published_at": "2026-09-11T01:36:32",
+        "actor": "test",
+        "purpose": "unit"
+      }
+    }
+  },
+  "status": "published"
+}

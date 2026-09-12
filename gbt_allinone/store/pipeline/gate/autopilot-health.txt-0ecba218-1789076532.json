@@ -1,0 +1,35 @@
+{
+  "rec_id": "autopilot-health.txt-0ecba218-1789076532",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "autopilot-health.txt",
+      "passed": true,
+      "detail": "429 bytes",
+      "ts": "2026-09-11T04:42:12"
+    },
+    {
+      "dimension": "ownership",
+      "item": "autopilot-health.txt",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T04:42:12"
+    },
+    {
+      "dimension": "audit",
+      "item": "autopilot-health.txt",
+      "passed": true,
+      "detail": "actor=autopilot, purpose=第2轮框架全面健康检查，聚焦上轮遗留问题并发布三句话结论",
+      "ts": "2026-09-11T04:42:12"
+    },
+    {
+      "dimension": "policy",
+      "item": "autopilot-health.txt",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T04:42:12"
+    }
+  ],
+  "blocked_by": []
+}

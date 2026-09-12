@@ -1,0 +1,37 @@
+{
+  "rec_id": "x.txt-a1fce436-1789097338",
+  "passed": false,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "x.txt",
+      "passed": true,
+      "detail": "1 bytes",
+      "ts": "2026-09-11T10:28:58"
+    },
+    {
+      "dimension": "ownership",
+      "item": "x.txt",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T10:28:58"
+    },
+    {
+      "dimension": "audit",
+      "item": "x.txt",
+      "passed": false,
+      "detail": "actor=a, purpose=None",
+      "ts": "2026-09-11T10:28:58"
+    },
+    {
+      "dimension": "policy",
+      "item": "x.txt",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T10:28:58"
+    }
+  ],
+  "blocked_by": [
+    "audit"
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "rec_id": "test.md-02cd1bbe-1789092565",
+  "name": "test.md",
+  "sha256": "02cd1bbec9b1feb85a448e53288adef640ad2b37c368723629117c3d425e0dda",
+  "size": 20,
+  "submitted_at": "2026-09-11T09:09:25",
+  "meta": {
+    "actor": "devour_tentacle",
+    "purpose": "吞噬产物: 吞噬测试"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\test.md-02cd1bbe-1789092565.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "test.md",
+        "passed": true,
+        "detail": "20 bytes",
+        "ts": "2026-09-11T09:09:25"
+      },
+      {
+        "dimension": "ownership",
+        "item": "test.md",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T09:09:25"
+      },
+      {
+        "dimension": "audit",
+        "item": "test.md",
+        "passed": true,
+        "detail": "actor=devour_tentacle, purpose=吞噬产物: 吞噬测试",
+        "ts": "2026-09-11T09:09:25"
+      },
+      {
+        "dimension": "policy",
+        "item": "test.md",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T09:09:25"
+      }
+    ],
+    "refine_lineage": []
+  },
+  "stage2_gate": {
+    "rec_id": "test.md-02cd1bbe-1789092565",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "test.md",
+        "passed": true,
+        "detail": "20 bytes",
+        "ts": "2026-09-11T09:09:25"
+      },
+      {
+        "dimension": "ownership",
+        "item": "test.md",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T09:09:25"
+      },
+      {
+        "dimension": "audit",
+        "item": "test.md",
+        "passed": true,
+        "detail": "actor=devour_tentacle, purpose=吞噬产物: 吞噬测试",
+        "ts": "2026-09-11T09:09:25"
+      },
+      {
+        "dimension": "policy",
+        "item": "test.md",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T09:09:25"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\test.md",
+    "version": 1,
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "test.md-02cd1bbe-1789092565",
+        "sha256": "02cd1bbec9b1feb85a448e53288adef640ad2b37c368723629117c3d425e0dda",
+        "published_at": "2026-09-11T09:09:25",
+        "actor": "devour_tentacle",
+        "purpose": "吞噬产物: 吞噬测试",
+        "version": 1,
+        "refined_rounds": 0
+      }
+    }
+  },
+  "status": "published"
+}

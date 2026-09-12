@@ -1,0 +1,193 @@
+{
+  "record": {
+    "run_id": "autopilot-r3-1789106720305",
+    "workflow": "autopilot-r3",
+    "params": {},
+    "status": "ok",
+    "nodes": {
+      "a": "ok",
+      "b": "ok",
+      "c": "ok",
+      "d": "ok"
+    },
+    "elapsed_s": 0.012,
+    "finished_at": "2026-09-11T13:05:20"
+  },
+  "results": {
+    "a": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "developer": "自由的风",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "echo",
+        "result": {
+          "echo": {
+            "text": "统计一句话的词数并回显结果"
+          }
+        }
+      }
+    },
+    "b": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "developer": "自由的风",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "count_words",
+        "result": {
+          "words": 1,
+          "chars": 13
+        }
+      }
+    },
+    "c": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "developer": "自由的风",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "echo",
+        "result": {
+          "echo": {
+            "text": "词数=1 字符数=13 回显={'text': '统计一句话的词数并回显结果'}"
+          }
+        }
+      }
+    },
+    "d": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "developer": "自由的风",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "pipeline_submit",
+        "result": {
+          "rec_id": "autopilot-词数统计.txt-7791e6a9-1789106720",
+          "name": "autopilot-词数统计.txt",
+          "sha256": "7791e6a96e993bb3fee57e4b2533ed5c0013afc1c8719d5c28b2a5025f3de603",
+          "size": 188,
+          "submitted_at": "2026-09-11T13:05:20",
+          "meta": {
+            "actor": "autopilot",
+            "purpose": "统计一句话词数并回显结果"
+          },
+          "stage1_mirror": {
+            "path": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\pipeline\\mirror\\autopilot-词数统计.txt-7791e6a9-1789106720.bin",
+            "dimensions": [
+              {
+                "dimension": "integrity",
+                "item": "autopilot-词数统计.txt",
+                "passed": true,
+                "detail": "188 bytes",
+                "ts": "2026-09-11T13:05:20"
+              },
+              {
+                "dimension": "ownership",
+                "item": "autopilot-词数统计.txt",
+                "passed": true,
+                "detail": "GBT 钢印可用",
+                "ts": "2026-09-11T13:05:20"
+              },
+              {
+                "dimension": "audit",
+                "item": "autopilot-词数统计.txt",
+                "passed": true,
+                "detail": "actor=autopilot, purpose=统计一句话词数并回显结果",
+                "ts": "2026-09-11T13:05:20"
+              },
+              {
+                "dimension": "policy",
+                "item": "autopilot-词数统计.txt",
+                "passed": true,
+                "detail": "无高风险标签",
+                "ts": "2026-09-11T13:05:20"
+              }
+            ],
+            "refine_lineage": []
+          },
+          "stage2_gate": {
+            "rec_id": "autopilot-词数统计.txt-7791e6a9-1789106720",
+            "passed": true,
+            "tokens": [
+              {
+                "dimension": "integrity",
+                "item": "autopilot-词数统计.txt",
+                "passed": true,
+                "detail": "188 bytes",
+                "ts": "2026-09-11T13:05:20"
+              },
+              {
+                "dimension": "ownership",
+                "item": "autopilot-词数统计.txt",
+                "passed": true,
+                "detail": "GBT 钢印可用",
+                "ts": "2026-09-11T13:05:20"
+              },
+              {
+                "dimension": "audit",
+                "item": "autopilot-词数统计.txt",
+                "passed": true,
+                "detail": "actor=autopilot, purpose=统计一句话词数并回显结果",
+                "ts": "2026-09-11T13:05:20"
+              },
+              {
+                "dimension": "policy",
+                "item": "autopilot-词数统计.txt",
+                "passed": true,
+                "detail": "无高风险标签",
+                "ts": "2026-09-11T13:05:20"
+              }
+            ],
+            "blocked_by": []
+          },
+          "stage3_publish": {
+            "status": "published",
+            "production": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\pipeline\\production\\autopilot-词数统计.txt",
+            "version": 2,
+            "passport": {
+              "gbt_stamp": {
+                "framework": "GBT小土豆",
+                "version": "8.0.0",
+                "mark": "GBT",
+                "developer": "自由的风",
+                "ownership": "independent-personal",
+                "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"
+              },
+              "publish": {
+                "rec_id": "autopilot-词数统计.txt-7791e6a9-1789106720",
+                "sha256": "7791e6a96e993bb3fee57e4b2533ed5c0013afc1c8719d5c28b2a5025f3de603",
+                "published_at": "2026-09-11T13:05:20",
+                "actor": "autopilot",
+                "purpose": "统计一句话词数并回显结果",
+                "version": 2,
+                "refined_rounds": 0
+              }
+            }
+          },
+          "status": "published"
+        }
+      }
+    }
+  }
+}

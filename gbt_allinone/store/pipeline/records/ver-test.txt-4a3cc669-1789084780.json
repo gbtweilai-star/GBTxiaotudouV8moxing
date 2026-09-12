@@ -1,0 +1,104 @@
+{
+  "rec_id": "ver-test.txt-4a3cc669-1789084780",
+  "name": "ver-test.txt",
+  "sha256": "4a3cc66972f678b8b19653aa2151cd8c68b1d47392e7d8769513ec3c00c645e4",
+  "size": 13,
+  "submitted_at": "2026-09-11T06:59:40",
+  "meta": {
+    "actor": "owner",
+    "purpose": "版本化验证"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\ver-test.txt-4a3cc669-1789084780.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "ver-test.txt",
+        "passed": true,
+        "detail": "13 bytes",
+        "ts": "2026-09-11T06:59:40"
+      },
+      {
+        "dimension": "ownership",
+        "item": "ver-test.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T06:59:40"
+      },
+      {
+        "dimension": "audit",
+        "item": "ver-test.txt",
+        "passed": true,
+        "detail": "actor=owner, purpose=版本化验证",
+        "ts": "2026-09-11T06:59:40"
+      },
+      {
+        "dimension": "policy",
+        "item": "ver-test.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T06:59:40"
+      }
+    ],
+    "refine_lineage": []
+  },
+  "stage2_gate": {
+    "rec_id": "ver-test.txt-4a3cc669-1789084780",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "ver-test.txt",
+        "passed": true,
+        "detail": "13 bytes",
+        "ts": "2026-09-11T06:59:40"
+      },
+      {
+        "dimension": "ownership",
+        "item": "ver-test.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T06:59:40"
+      },
+      {
+        "dimension": "audit",
+        "item": "ver-test.txt",
+        "passed": true,
+        "detail": "actor=owner, purpose=版本化验证",
+        "ts": "2026-09-11T06:59:40"
+      },
+      {
+        "dimension": "policy",
+        "item": "ver-test.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T06:59:40"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\ver-test.txt",
+    "version": 2,
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "ver-test.txt-4a3cc669-1789084780",
+        "sha256": "4a3cc66972f678b8b19653aa2151cd8c68b1d47392e7d8769513ec3c00c645e4",
+        "published_at": "2026-09-11T06:59:40",
+        "actor": "owner",
+        "purpose": "版本化验证",
+        "version": 2,
+        "refined_rounds": 0
+      }
+    }
+  },
+  "status": "published"
+}

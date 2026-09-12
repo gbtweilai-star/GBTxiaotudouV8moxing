@@ -1,0 +1,11 @@
+{
+  "scan_total": 737,
+  "scan_health": 100.0,
+  "topology_total": 737,
+  "topology_domains": 23,
+  "deep_scan_verdict": "🟢 全连接完好",
+  "deep_scan_issues": 0,
+  "cross_defined": 714,
+  "cross_actual": 714,
+  "quick_health": true
+}

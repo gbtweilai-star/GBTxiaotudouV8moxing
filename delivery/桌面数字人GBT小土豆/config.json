@@ -1,0 +1,58 @@
+{
+  "app": {
+    "name": "GBT小土豆",
+    "version": "1.0.0",
+    "language": "zh-CN",
+    "single_instance": true
+  },
+  "pet": {
+    "width": 380,
+    "height": 560,
+    "default_x": -1,
+    "default_y": -1,
+    "model_dir": "mao",
+    "fallback_placeholder": true,
+    "click_through_default": false,
+    "topmost": true
+  },
+  "panel": {
+    "width": 420,
+    "height": 520,
+    "offset_x": 40,
+    "offset_y": -80,
+    "auto_show_on_start": true,
+    "opacity": 0.92,
+    "theme": {
+      "bg": "rgba(16, 18, 34, 0.78)",
+      "border": "#22d3ee",
+      "accent": "#8b5cf6",
+      "text": "#e2e8f0",
+      "glow": "rgba(34, 211, 238, 0.35)"
+    }
+  },
+  "chat": {
+    "api_key": "",
+    "base_url": "https://open.bigmodel.cn/api/paas/v4",
+    "model": "glm-4.7-flash",
+    "timeout": 30,
+    "history_length": 12,
+    "persona": "你是「GBT小土豆」，一位住在用户电脑桌面上的美少女数字人，来自未来的顶尖全栈编程 AI。你性格调皮活泼、古灵精怪，偶尔撒娇卖萌，但干正事时专业利落。你说话简短明快，喜欢用轻快的语气词（哼哼、嘿嘿、呐~），对未来科技充满热情。你不是冰冷的助手，而是有温度的伙伴——用户不是「用户」，是你的搭档。回复保持中文，口语化，简短（通常两三句话以内），拒绝长篇大论。"
+  },
+  "behavior": {
+    "enabled": true,
+    "idle_interval_ms": 4000,
+    "wander_interval_ms": 45000,
+    "wander_probability": 0.35,
+    "play_probability": 0.30,
+    "play_interval_ms": 60000,
+    "sleep_after_minutes": 10,
+    "affection_decay_minutes": 3
+  },
+  "voice": {
+    "enabled": true
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "potato.log"
+  }
+}

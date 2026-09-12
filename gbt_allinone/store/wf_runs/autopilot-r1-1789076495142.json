@@ -1,0 +1,429 @@
+{
+  "record": {
+    "run_id": "autopilot-r1-1789076495142",
+    "workflow": "autopilot-r1",
+    "params": {},
+    "status": "ok",
+    "nodes": {
+      "a": "ok",
+      "b": "ok",
+      "c": "ok",
+      "d": "ok",
+      "e": "ok"
+    },
+    "elapsed_s": 1.526,
+    "finished_at": "2026-09-11T04:41:35"
+  },
+  "results": {
+    "a": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "selfscan",
+        "result": {
+          "verdict": "P1",
+          "checked_at": "2026-09-11T04:41:34",
+          "findings": [
+            "P1 运行时故障 2 起: {'autopilot-health.txt': 2}"
+          ],
+          "sections": {
+            "routing": {
+              "registered": 62,
+              "routed": 62,
+              "unrouted": [],
+              "ghost_routes": [],
+              "ok": true
+            },
+            "modules": {
+              "checked": 30,
+              "failed": [],
+              "ok": true
+            },
+            "store": {
+              "json_files": 384,
+              "missing_dirs": [],
+              "corrupted": [],
+              "ok": true
+            },
+            "audit": {
+              "window": 500,
+              "anomalies": 25,
+              "runtime_faults": 2,
+              "by_event": {
+                "error": 16,
+                "svc_down": 3,
+                "longrun_failed": 2,
+                "pipeline_blocked": 4
+              },
+              "by_signal": {
+                "runtime": 2,
+                "guard": 7,
+                "trace": 16,
+                "recovered": 0
+              },
+              "errors_by_kind": {
+                "sched_define": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "t-dead": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "tentacle": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "no_such_capability_xyz": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 3,
+                  "recovered": 0
+                },
+                "osint_scan": {
+                  "runtime": 0,
+                  "guard": 5,
+                  "trace": 0,
+                  "recovered": 0
+                },
+                "T0033": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 1,
+                  "recovered": 0
+                },
+                "lr_submit": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 2,
+                  "recovered": 0
+                },
+                "t-bad.txt": {
+                  "runtime": 0,
+                  "guard": 2,
+                  "trace": 0,
+                  "recovered": 0
+                },
+                "autopilot-health.txt": {
+                  "runtime": 2,
+                  "guard": 0,
+                  "trace": 0,
+                  "recovered": 0
+                },
+                "T0035": {
+                  "runtime": 0,
+                  "guard": 0,
+                  "trace": 1,
+                  "recovered": 0
+                }
+              },
+              "recent_runtime": [
+                {
+                  "event": "pipeline_blocked",
+                  "kind": "autopilot-health.txt",
+                  "reason": "",
+                  "at": "2026-09-11T04:40:08"
+                },
+                {
+                  "event": "pipeline_blocked",
+                  "kind": "autopilot-health.txt",
+                  "reason": "",
+                  "at": "2026-09-11T04:40:12"
+                }
+              ],
+              "ok": false
+            },
+            "stub_gaps": [
+              "browser",
+              "vision",
+              "voice"
+            ]
+          },
+          "capabilities_total": 62,
+          "note": "P0=断连/损坏必须修；P1=异常在发生；clean=五维全过（桩缺口如实列出不算病）"
+        }
+      }
+    },
+    "b": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "health",
+        "result": {
+          "platform": "Windows-11-10.0.26200-SP0",
+          "python": "3.13.12",
+          "time": "2026-09-11T04:41:33"
+        }
+      }
+    },
+    "c": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "svc_inspect",
+        "result": {
+          "services": {
+            "payment_gateway": {
+              "host": "127.0.0.1",
+              "port": 8081,
+              "owner": "GBT小土豆",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "blockchain_bridge": {
+              "host": "127.0.0.1",
+              "port": 8082,
+              "owner": "GBT小土豆",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "social_trading_v2": {
+              "host": "127.0.0.1",
+              "port": 8084,
+              "owner": "GBT小土豆",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "monitor_service": {
+              "host": "127.0.0.1",
+              "port": 8085,
+              "owner": "GBT小土豆",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "backtest_api_v2": {
+              "host": "127.0.0.1",
+              "port": 8089,
+              "owner": "量化收割引擎",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "cis_harvesting_v2": {
+              "host": "127.0.0.1",
+              "port": 8090,
+              "owner": "量化收割引擎",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "quant_api": {
+              "host": "127.0.0.1",
+              "port": 8091,
+              "owner": "量化收割引擎",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "cis_v42_trader": {
+              "host": "127.0.0.1",
+              "port": 8092,
+              "owner": "量化收割引擎",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "crypto_gateway": {
+              "host": "127.0.0.1",
+              "port": 8094,
+              "owner": "GBT小土豆",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "gbt_wallet_api": {
+              "host": "127.0.0.1",
+              "port": 8097,
+              "owner": "GBT小土豆",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "gbt_cap_bridge": {
+              "host": "127.0.0.1",
+              "port": 18900,
+              "owner": "GBT小土豆",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "hcl_control": {
+              "host": "127.0.0.1",
+              "port": 19090,
+              "owner": "GBT小土豆",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "gate_daemon": {
+              "host": "127.0.0.1",
+              "port": 25485,
+              "owner": "GBT小土豆",
+              "up": true,
+              "checked_at": "2026-09-11T04:41:33"
+            },
+            "v8_isolated": {
+              "host": "127.0.0.1",
+              "port": 8098,
+              "owner": "GBT小土豆V8",
+              "up": false,
+              "checked_at": "2026-09-11T04:41:35"
+            }
+          },
+          "total": 14,
+          "up": 13,
+          "down": [
+            "v8_isolated"
+          ]
+        }
+      }
+    },
+    "d": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "ghost_guard",
+        "result": {
+          "clean": true,
+          "findings": [],
+          "checked_at": "2026-09-11T04:41:34"
+        }
+      }
+    },
+    "e": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "gbt_result": {
+        "status": "ok",
+        "kind": "pipeline_submit",
+        "result": {
+          "rec_id": "autopilot-health.txt-f82d36b1-1789076495",
+          "name": "autopilot-health.txt",
+          "sha256": "f82d36b10f8cf5dce640517a87c55fd4550753705c098b5fc5474afa5a5aa60f",
+          "size": 403,
+          "submitted_at": "2026-09-11T04:41:35",
+          "meta": {
+            "actor": "autopilot",
+            "purpose": "framework full health check and publish 3-sentence conclusion for review"
+          },
+          "stage1_mirror": {
+            "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\autopilot-health.txt-f82d36b1-1789076495.bin",
+            "dimensions": [
+              {
+                "dimension": "integrity",
+                "item": "autopilot-health.txt",
+                "passed": true,
+                "detail": "403 bytes",
+                "ts": "2026-09-11T04:41:35"
+              },
+              {
+                "dimension": "ownership",
+                "item": "autopilot-health.txt",
+                "passed": true,
+                "detail": "GBT 钢印可用",
+                "ts": "2026-09-11T04:41:35"
+              },
+              {
+                "dimension": "audit",
+                "item": "autopilot-health.txt",
+                "passed": true,
+                "detail": "actor=autopilot, purpose=framework full health check and publish 3-sentence conclusion for review",
+                "ts": "2026-09-11T04:41:35"
+              },
+              {
+                "dimension": "policy",
+                "item": "autopilot-health.txt",
+                "passed": true,
+                "detail": "无高风险标签",
+                "ts": "2026-09-11T04:41:35"
+              }
+            ]
+          },
+          "stage2_gate": {
+            "rec_id": "autopilot-health.txt-f82d36b1-1789076495",
+            "passed": true,
+            "tokens": [
+              {
+                "dimension": "integrity",
+                "item": "autopilot-health.txt",
+                "passed": true,
+                "detail": "403 bytes",
+                "ts": "2026-09-11T04:41:35"
+              },
+              {
+                "dimension": "ownership",
+                "item": "autopilot-health.txt",
+                "passed": true,
+                "detail": "GBT 钢印可用",
+                "ts": "2026-09-11T04:41:35"
+              },
+              {
+                "dimension": "audit",
+                "item": "autopilot-health.txt",
+                "passed": true,
+                "detail": "actor=autopilot, purpose=framework full health check and publish 3-sentence conclusion for review",
+                "ts": "2026-09-11T04:41:35"
+              },
+              {
+                "dimension": "policy",
+                "item": "autopilot-health.txt",
+                "passed": true,
+                "detail": "无高风险标签",
+                "ts": "2026-09-11T04:41:35"
+              }
+            ],
+            "blocked_by": []
+          },
+          "stage3_publish": {
+            "status": "published",
+            "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\autopilot-health.txt",
+            "passport": {
+              "gbt_stamp": {
+                "framework": "GBT小土豆",
+                "version": "8.0.0",
+                "mark": "GBT",
+                "ownership": "independent-personal",
+                "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+              },
+              "publish": {
+                "rec_id": "autopilot-health.txt-f82d36b1-1789076495",
+                "sha256": "f82d36b10f8cf5dce640517a87c55fd4550753705c098b5fc5474afa5a5aa60f",
+                "published_at": "2026-09-11T04:41:35",
+                "actor": "autopilot",
+                "purpose": "framework full health check and publish 3-sentence conclusion for review"
+              }
+            }
+          },
+          "status": "published"
+        }
+      }
+    }
+  }
+}

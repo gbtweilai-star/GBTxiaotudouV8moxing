@@ -1,0 +1,35 @@
+{
+  "rec_id": "v-verify-prod.txt-bf5ed907-1789065734",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "v-verify-prod.txt",
+      "passed": true,
+      "detail": "21 bytes",
+      "ts": "2026-09-11T01:42:14"
+    },
+    {
+      "dimension": "ownership",
+      "item": "v-verify-prod.txt",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T01:42:14"
+    },
+    {
+      "dimension": "audit",
+      "item": "v-verify-prod.txt",
+      "passed": true,
+      "detail": "actor=verifier, purpose=v8 acceptance publish path",
+      "ts": "2026-09-11T01:42:14"
+    },
+    {
+      "dimension": "policy",
+      "item": "v-verify-prod.txt",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T01:42:14"
+    }
+  ],
+  "blocked_by": []
+}

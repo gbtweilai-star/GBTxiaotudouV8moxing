@@ -1,0 +1,104 @@
+{
+  "rec_id": "quality-test.txt-e56ec741-1789084791",
+  "name": "quality-test.txt",
+  "sha256": "e56ec7419e70783a5597fcd39e867847470026ebb270243f5b6e3a8fe5239a30",
+  "size": 72,
+  "submitted_at": "2026-09-11T06:59:51",
+  "meta": {
+    "actor": "owner",
+    "purpose": "正式对外发布的产品说明"
+  },
+  "stage1_mirror": {
+    "path": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\mirror\\quality-test.txt-e56ec741-1789084791.bin",
+    "dimensions": [
+      {
+        "dimension": "integrity",
+        "item": "quality-test.txt",
+        "passed": true,
+        "detail": "72 bytes",
+        "ts": "2026-09-11T06:59:51"
+      },
+      {
+        "dimension": "ownership",
+        "item": "quality-test.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T06:59:51"
+      },
+      {
+        "dimension": "audit",
+        "item": "quality-test.txt",
+        "passed": true,
+        "detail": "actor=owner, purpose=正式对外发布的产品说明",
+        "ts": "2026-09-11T06:59:51"
+      },
+      {
+        "dimension": "policy",
+        "item": "quality-test.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T06:59:51"
+      }
+    ],
+    "refine_lineage": []
+  },
+  "stage2_gate": {
+    "rec_id": "quality-test.txt-e56ec741-1789084791",
+    "passed": true,
+    "tokens": [
+      {
+        "dimension": "integrity",
+        "item": "quality-test.txt",
+        "passed": true,
+        "detail": "72 bytes",
+        "ts": "2026-09-11T06:59:51"
+      },
+      {
+        "dimension": "ownership",
+        "item": "quality-test.txt",
+        "passed": true,
+        "detail": "GBT 钢印可用",
+        "ts": "2026-09-11T06:59:51"
+      },
+      {
+        "dimension": "audit",
+        "item": "quality-test.txt",
+        "passed": true,
+        "detail": "actor=owner, purpose=正式对外发布的产品说明",
+        "ts": "2026-09-11T06:59:51"
+      },
+      {
+        "dimension": "policy",
+        "item": "quality-test.txt",
+        "passed": true,
+        "detail": "无高风险标签",
+        "ts": "2026-09-11T06:59:51"
+      }
+    ],
+    "blocked_by": []
+  },
+  "stage3_publish": {
+    "status": "published",
+    "production": "C:\\Users\\ADMIN\\Desktop\\Autoclaw\\gbt_allinone\\store\\pipeline\\production\\quality-test.txt",
+    "version": 1,
+    "passport": {
+      "gbt_stamp": {
+        "framework": "GBT小土豆",
+        "version": "8.0.0",
+        "mark": "GBT",
+        "ownership": "independent-personal",
+        "note": "本作品由 GBT小土豆V8 框架生成 · 独立私人框架，与任何企业公司无关"
+      },
+      "publish": {
+        "rec_id": "quality-test.txt-e56ec741-1789084791",
+        "sha256": "e56ec7419e70783a5597fcd39e867847470026ebb270243f5b6e3a8fe5239a30",
+        "published_at": "2026-09-11T06:59:51",
+        "actor": "owner",
+        "purpose": "正式对外发布的产品说明",
+        "version": 1,
+        "refined_rounds": 0
+      }
+    }
+  },
+  "status": "published"
+}

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBT主模型 Harness 进化报告</title>
+<style>
+:root{--primary:#7c3aed;--accent:#0ea5e9;--ok:#10b981;--bg:#faf5ff;--card:#fff;--text:#1f2937;--muted:#6b7280;--border:#ede9fe}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Segoe UI','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;padding:24px}
+.wrap{max-width:1120px;margin:0 auto}
+header{background:linear-gradient(135deg,#7c3aed,#0ea5e9);color:#fff;padding:44px;border-radius:16px;margin-bottom:28px}
+header h1{font-size:2.1em;margin-bottom:10px}
+header p{opacity:.93;font-size:1.05em}
+section{background:var(--card);border-radius:14px;padding:28px;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+h2{color:var(--primary);font-size:1.35em;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+h3{font-size:1.12em;margin:18px 0 10px;color:var(--accent)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin:16px 0}
+.metric{background:linear-gradient(135deg,#faf5ff,#ede9fe);border-radius:12px;padding:18px;text-align:center}
+.metric-value{font-size:1.9em;font-weight:800;color:var(--primary)}
+.metric-label{color:var(--muted);font-size:.82em;margin-top:6px}
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:.93em}
+th{background:#ede9fe;color:#5b21b6;padding:10px 12px;text-align:left}
+td{padding:9px 12px;border-bottom:1px solid var(--border)}
+tr:hover td{background:#faf5ff}
+.tag{display:inline-block;padding:3px 11px;border-radius:12px;font-size:.8em;font-weight:600;white-space:nowrap}
+.tag-ok{background:#d1fae5;color:#047857}
+.callout{border-radius:12px;padding:18px 20px;margin:16px 0}
+.callout-green{background:#ecfdf5;border-left:4px solid var(--ok)}
+.callout-blue{background:#eff6ff;border-left:4px solid var(--accent)}
+.callout-purple{background:#faf5ff;border-left:4px solid var(--primary)}
+.code{background:#1f2937;color:#ede9fe;padding:16px;border-radius:10px;overflow-x:auto;font-size:.86em;margin:12px 0;font-family:Consolas,monospace;line-height:1.6}
+ul{margin:8px 0 8px 22px}
+li{margin:5px 0}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<h1>🧠 GBT 主模型 Harness 进化报告</h1>
+<p>DeepSeek/ECC Harness 方法论深度研究 · 六项进化落地 · 2026-09-12</p>
+</header>
+
+<section>
+<h2>一、结论</h2>
+<div class="callout callout-green" style="font-size:1.05em">
+<b>✅ Harness 进化已完成并落地</b> —— 用 ECC 的方法论（"Optimize the context window. Persist everything else."）对 GBT 主模型调用层做了六项进化，全部写入 <code>brain/llm_client.py</code>（26KB → 31KB），冒烟测试全绿。主模型已预切 <code>glm-4.7-flash</code>，等你注册的 key 到位即可真连。
+</div>
+<div class="metrics">
+<div class="metric"><div class="metric-value">6 项</div><div class="metric-label">进化全部落地</div></div>
+<div class="metric"><div class="metric-value">99.6%</div><div class="metric-label">技能注入省 token</div></div>
+<div class="metric"><div class="metric-value">522</div><div class="metric-label">技能注册表条目</div></div>
+<div class="metric"><div class="metric-value">200K</div><div class="metric-label">GLM-4.7 上下文窗口</div></div>
+</div>
+</section>
+
+<section>
+<h2>二、六项进化落地明细</h2>
+<div class="table-wrap">
+<table>
+<tr><th>#</th><th>进化项</th><th>落地内容</th><th>实测</th></tr>
+<tr><td>①</td><td><b>上下文预算管理</b></td><td>四层预算表（人设2K/技能4K/记忆8K/预留4K）+ 128K 保守硬上限 + <code>_assemble_system</code> 分层拼装 + <code>_estimate_tokens</code> 中英文粗算</td><td><span class="tag tag-ok">✅</span></td></tr>
+<tr><td>②</td><td><b>技能按需注入</b></td><td><code>skills_index.json</code> 522 条注册表 + <code>route_skills</code> 词法粗筛（中文子串友好，tag 命中权重×2），top-K 只注入 10 条；286 技能全量注入≈286K token → 注册表仅 ~1K，省 99.6%</td><td><span class="tag tag-ok">✅</span></td></tr>
+<tr><td>③</td><td><b>工作环接入</b></td><td><code>phase</code> 参数（plan/implement/review/verify/remember）+ 5 个阶段人设，review 阶段可 fresh-context</td><td><span class="tag tag-ok">✅</span></td></tr>
+<tr><td>④</td><td><b>思考模式开关</b></td><td>GLM-4.7 默认关 thinking（官方默认开会烧 token）+ <code>_thinking_policy</code> 可 env 强制开 + reasoning_content 独立字段剥离</td><td><span class="tag tag-ok">✅</span></td></tr>
+<tr><td>⑤</td><td><b>回退链升级</b></td><td>主模型 glm-5.2→<b>glm-4.7-flash</b> + <code>_GLM_SEM</code> 1 并发信号量 + 429 识别 1302/1305 + 纯文本黑名单路由到视觉通道</td><td><span class="tag tag-ok">✅</span></td></tr>
+<tr><td>⑥</td><td><b>记忆持久化</b></td><td><code>persist_session</code>（摘要常驻 + transcript 外置 JSONL）+ <code>load_workmem</code>（跨会话加载，受预算约束），不碰 MEMORY.md 保护文件</td><td><span class="tag tag-ok">✅</span></td></tr>
+</table>
+</div>
+</section>
+
+<section>
+<h2>三、GLM-4.7-Flash 关键结论（40+ 来源实锤）</h2>
+<div class="callout callout-purple">
+<b>你注册的这个 key 会得到什么</b>：永久免费、200K 上下文、SWE-bench Verified <b>59.2%</b>（30B 开源 SOTA）、τ²-Bench 79.5（工具调用全模型最强之一）、AIME 91.6。但 <b>1 并发硬约束</b> + 默认强制开思考（需显式关）。
+</div>
+<h3>三档模型推荐</h3>
+<div class="table-wrap">
+<table>
+<tr><th>档位</th><th>模型</th><th>成本</th><th>用途</th></tr>
+<tr><td>主力</td><td><b>glm-4.7-flash</b></td><td>免费（1并发）</td><td>日常对话/编码/推理</td></tr>
+<tr><td>备胎</td><td>glm-4.5-flash → glm-4.7-flashx</td><td>免费 → 0.5/3元</td><td>429 回退 / 需并发时</td></tr>
+<tr><td>重型</td><td>glm-5.3-flash</td><td>0.8/2.8元（1M上下文·原生多模态）</td><td>复杂工程/多模态/长上下文</td></tr>
+</table>
+</div>
+<p style="color:var(--muted)">诚实提醒：GLM-4.7-Flash 的 SWE-bench 59.2 低于 GLM-4.6 旗舰（≈68）和 DeepSeek-V4-Flash（79）——它是"免费档里最能打"，复杂工程任务建议按需上 glm-5.3-flash。</p>
+</section>
+
+<section>
+<h2>四、与 ECC 方法论的对齐</h2>
+<div class="code">ECC 核心: "Optimize the context window. Persist everything else."
+        └─ 工作环 plan→test→implement→review→verify→remember→improve
+
+GBT 落地映射:
+  上下文优化 → ① 四层预算表 + ② 技能按需注入（省99.6%）
+  工作环    → ③ phase 参数接入（不重写 brain_ring，只加参数）
+  思考成本  → ④ 默认关 thinking（隐藏 token 是成本大头）
+  持久化    → ⑥ 会话摘要 + transcript 外置（记忆=结构化笔记，非transcript）
+  通道韧性  → ⑤ glm-4.7-flash 升主 + 1并发信号量 + 1302/1305 识别</div>
+</section>
+
+<section>
+<h2>五、落地文件</h2>
+<div class="table-wrap">
+<table>
+<tr><th>文件</th><th>改动</th></tr>
+<tr><td><code>brain/llm_client.py</code></td><td>六项进化（26KB→31KB），主模型预切 glm-4.7-flash</td></tr>
+<tr><td><code>brain/skills_index.json</code></td><td>新建：522 条技能注册表（按需注入用）</td></tr>
+<tr><td><code>.cluster/harness-evolution/subagent_01.md</code></td><td>Harness 进化架构师报告（六项方案+来源）</td></tr>
+<tr><td><code>.cluster/harness-evolution/subagent_02.md</code></td><td>GLM 接入实战调研（40+ 来源，API 参数/限速/模型对比）</td></tr>
+</table>
+</div>
+</section>
+
+<section>
+<h2>六、等你 key 到位后要做的事</h2>
+<div class="callout callout-blue">
+<b>三步实测</b>：① 把 key 填进 <code>GBT 工作区的 .env</code>（ZHIPU_API_KEY=xxx，别贴聊天里）② 跑一次真实调用验证 glm-4.7-flash 连通 + 思考开关生效 ③ 若 429 见 1302（并发超限）→ 信号量已兜底，见 1305（平台过载）→ 自动降级 agnes/deepseek。整个回退链无需人工干预。
+</div>
+</section>
+
+<footer>GBT 主模型 Harness 进化 · 2026-09-12 · 六项落地 · 冒烟全绿</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "rec_id": "test.md-02cd1bbe-1789092565",
+  "passed": true,
+  "tokens": [
+    {
+      "dimension": "integrity",
+      "item": "test.md",
+      "passed": true,
+      "detail": "20 bytes",
+      "ts": "2026-09-11T09:09:25"
+    },
+    {
+      "dimension": "ownership",
+      "item": "test.md",
+      "passed": true,
+      "detail": "GBT 钢印可用",
+      "ts": "2026-09-11T09:09:25"
+    },
+    {
+      "dimension": "audit",
+      "item": "test.md",
+      "passed": true,
+      "detail": "actor=devour_tentacle, purpose=吞噬产物: 吞噬测试",
+      "ts": "2026-09-11T09:09:25"
+    },
+    {
+      "dimension": "policy",
+      "item": "test.md",
+      "passed": true,
+      "detail": "无高风险标签",
+      "ts": "2026-09-11T09:09:25"
+    }
+  ],
+  "blocked_by": []
+}
