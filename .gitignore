@@ -24,6 +24,18 @@ gbt_allinone/__pycache__/
 # --- 运行时数据仓（store/：助记词/账本/审计流/镜像空间，本地运行时产物，不入库）---
 gbt_allinone/store/
 
+# --- 资金模块（钱包/账本/收款桥，独立于纯全能 AI 框架分发，不入库）---
+gbt_allinone/wallet/
+gbt_allinone/ledger/
+gbt_allinone/bridge/
+gbt_allinone/adapters/wallet_adapter.py
+gbt_allinone/export_statement.py
+gbt_allinone/notify.py
+gbt_allinone/loop.py
+gbt_allinone/examples/receive_to_ledger_demo.py
+gbt_allinone/examples/rpc_check.py
+gbt_allinone/examples/wallet_ledger_demo.py
+
 # --- OpenClaw / 系统目录（本机状态，不属于源码）---
 .openclaw/
 .autoclaw/

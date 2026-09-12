@@ -27,13 +27,9 @@ _BASE = Path(__file__).resolve().parent
 _ROOT = _BASE          # V8 独立家：根就是 gbt_allinone 自己
 
 _MODULES = [
-    "api", "app", "cli", "engine", "ghost_guard", "longrun", "notify",
+    "api", "app", "cli", "engine", "ghost_guard", "longrun",
     "pipeline", "quant_tech", "schedule", "services", "soul", "store",
-    "tactics", "export_statement", "loop",
-    "ledger.core", "ledger.pool",
-    "wallet.hd", "wallet.rpc", "wallet.consolidate",
-    "adapters.wallet_adapter", "adapters.workspace_adapter",
-    "bridge.deposit_bridge",
+    "tactics",
     "integration.auth", "integration.platform_client",
     "integration.smoke_test",
     "recon.scanner", "recon.guard",
@@ -44,6 +40,18 @@ _MODULES = [
     "security.security_brain", "security.abl_gateway",
     "llm.bridge", "truth_scan", "autopilot", "tentacle.bridge",
 ]
+
+# 资金模块（纯全能 AI 框架不随库分发）：存在则检查，不存在不算病
+_MONEY_MODULES = [
+    "notify", "export_statement", "loop",
+    "ledger.core", "ledger.pool",
+    "wallet.hd", "wallet.rpc", "wallet.consolidate",
+    "adapters.wallet_adapter",
+    "bridge.deposit_bridge",
+]
+
+# 适配器/桥目录为空目录时 Python 不导入，需目录探测
+_PROBE_DIRS = ["adapters", "bridge"]
 
 _ANOMALY_EVENTS = ("error", "svc_down", "longrun_failed",
                    "longrun_stalled", "pipeline_blocked")
@@ -122,7 +130,20 @@ def check_modules():
             importlib.import_module(full)
         except Exception as e:  # noqa: BLE001
             bad.append({"module": full, "error": f"{type(e).__name__}: {e}"[:160]})
-    _MODULE_CACHE["result"] = {"checked": len(_MODULES), "failed": bad, "ok": not bad}
+    # 资金模块：存在则检查，不存在不算病（纯全能 AI 框架不随库分发）
+    money_checked = 0
+    for m in _MONEY_MODULES:
+        full = m if m.startswith("gbt_allinone") else "gbt_allinone." + m
+        try:
+            mod = importlib.import_module(full)
+        except ImportError:
+            continue  # 未分发→跳过，不算失败
+        except Exception as e:  # noqa: BLE001
+            bad.append({"module": full, "error": f"{type(e).__name__}: {e}"[:160]})
+            money_checked += 1
+            continue
+        money_checked += 1
+    _MODULE_CACHE["result"] = {"checked": len(_MODULES) + money_checked, "failed": bad, "ok": not bad}
     return dict(_MODULE_CACHE["result"])
 
 

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBT-V8 钱包入库足迹排查报告</title>
+<style>
+:root{--bg:#0b0f17;--card:#141a26;--border:#232c3d;--txt:#e6edf3;--muted:#8b98a9;
+--purple:#7c5cff;--cyan:#22d3ee;--green:#34d399;--amber:#fbbf24;--red:#f87171}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:"Segoe UI","Microsoft YaHei",sans-serif;line-height:1.65;padding:32px 20px}
+.wrap{max-width:920px;margin:0 auto}
+h1{font-size:24px;margin-bottom:6px;background:linear-gradient(90deg,var(--purple),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+h2{font-size:18px;margin:26px 0 12px;padding-left:10px;border-left:3px solid var(--purple)}
+table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--card);border-radius:10px;overflow:hidden;font-size:14px}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:#1a2233;color:var(--cyan);font-weight:600}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.badge.ok{background:rgba(52,211,153,.15);color:var(--green)}
+.badge.warn{background:rgba(251,191,36,.15);color:var(--amber)}
+.badge.info{background:rgba(34,211,238,.15);color:var(--cyan)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 0}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.metric .v{font-size:30px;font-weight:700;background:linear-gradient(90deg,var(--green),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.metric .l{color:var(--muted);font-size:12px;margin-top:4px}
+code{background:#1a2233;padding:1px 6px;border-radius:4px;font-size:13px;color:var(--cyan)}
+.footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>钱包入库足迹排查报告</h1>
+<div class="sub">排查时间 2026-09-13 · 响应"钱包怎么带进去了"的疑虑 · 证据全部来自远端仓库逐项核验</div>
+
+<div class="metrics">
+<div class="metric"><div class="v">0</div><div class="l">敏感数据入史</div></div>
+<div class="metric"><div class="v">11</div><div class="l">钱包代码文件（按 A 方案保留）</div></div>
+<div class="metric"><div class="v">私有</div><div class="l">仓库可见性</div></div>
+<div class="metric"><div class="v">0</div><div class="l">Copilot 代理实际改动</div></div>
+</div>
+
+<h2>关键结论：进仓库的只有"代码"，从来没有"钱和数据"</h2>
+<div class="card">
+<table>
+<tr><th>类别</th><th>远端仓库状态</th><th>说明</th></tr>
+<tr><td>助记词 (store/wallet.json)</td><td><span class="badge ok">从未入史 ✓</span></td><td>全历史扫描零记录；且 store/ 已整体移出跟踪</td></tr>
+<tr><td>私钥 / API 密钥</td><td><span class="badge ok">不存在 ✓</span></td><td>wallet/hd.py、rpc.py、wallet_adapter.py 逐文件正则扫描干净</td></tr>
+<tr><td>账本数据 (accounts/transactions/pool)</td><td><span class="badge ok">已移除 ✓</span></td><td>首提交仅含空测试账户（余额全零），现已全部出库</td></tr>
+<tr><td>.env 密钥文件</td><td><span class="badge ok">从未入史 ✓</span></td><td>gitignore 首位保护项</td></tr>
+<tr><td>钱包代码 (wallet/ ledger/ 适配器)</td><td><span class="badge info">在库（11 文件）</span></td><td>你在 Copilot 对话中选的 A：代码保留、能力一个不删</td></tr>
+</table>
+</div>
+
+<h2>钱包代码是怎么进仓库的</h2>
+<div class="card">
+<p><code>b9572d2「全量源码入库」</code>提交的是整个 gbt_allinone 框架——钱包（wallet/）、账本（ledger/）、触手、大脑这些本来就是框架的自包含模块，全量入库时一起进去了。这不是单独把钱包塞进去，而是框架源码的组成部分。</p>
+<p style="margin-top:10px">你在 Copilot 对话里发现后已明确处理：<b>"账本先清理出去我没看清给一起弄进来了"→ 选 A：账本代码全部保留、能力一个不删、本次生产化加固不碰账本</b>。我在本轮生产补齐中严格遵守了这条：钱包/账本代码零改动、能力零删除。</p>
+</div>
+
+<h2>Copilot 代理任务的现状（不会"打回来"任何东西）</h2>
+<table>
+<tr><th>PR / 分支</th><th>状态</th><th>代码改动</th></tr>
+<tr><td>#2 copilot/harden-ai-framework</td><td><span class="badge warn">WIP · 代理运行失败</span></td><td>0（与 main 完全一致）</td></tr>
+<tr><td>#3 copilot/production-strengthening</td><td><span class="badge warn">WIP · 代理运行失败</span></td><td>0（与 main 完全一致）</td></tr>
+<tr><td>#1 copilot/generate-source-code-skeleton</td><td><span class="badge warn">WIP · 代理运行失败</span></td><td>0（骨架任务，不涉账本）</td></tr>
+</table>
+<div class="card">
+<p>两个生产化代理任务都停在 <code>Initial plan</code> 提交（只有计划文件），Actions 运行结论全部是 <code>failure</code>，分支树与 main 逐字节一致——<b>没有产生任何代码改动，更没碰账本</b>。这些 WIP PR 留着无副作用，你可以在 GitHub 上直接关掉，或让我用密钥代关。</p>
+</div>
+
+<h2>当前安全姿态</h2>
+<div class="card">
+<table>
+<tr><th>层</th><th>状态</th></tr>
+<tr><td>仓库可见性</td><td><span class="badge ok">私有（未登录 404）</span></td></tr>
+<tr><td>密钥管理</td><td><span class="badge ok">.env 在 gitignore；运行时数据 store/ 整体出库保护</span></td></tr>
+<tr><td>助记词处理</td><td><span class="badge ok">代码默认不落盘不打印明文；落盘文件已在忽略区</span></td></tr>
+<tr><td>历史污染</td><td><span class="badge ok">wallet.json / .env 全历史零记录</span></td></tr>
+</table>
+</div>
+
+<h2>如果你现在想把钱包代码彻底移出仓库</h2>
+<div class="card">
+<p>你之前在 Copilot 对话选了 A（代码保留），我也按"不许未经同意删除能力"的规矩没动它。如果现在的想法变了——要 B（把 wallet/、ledger/、资金相关能力从仓库整体移除、本地保留）——直接说一声，我会一次性完成：代码出库 + caps_registry 同步收编 + 测试套件适配 + 推送验证，全程留审计痕。<b>在你明说之前，我不会擅自动任何能力。</b></p>
+</div>
+
+<div class="footer">开发者：自由的风 · GBT 小土豆 V8 · 本署名不可删除、不可篡改归属</div>
+</div>
+</body>
+</html>

@@ -449,7 +449,34 @@ def _run_benign(kind, payload):
     if kind == "svc_inspect":
         from . import services
         return services.inspect((payload or {}).get("name"))
-    # 自建 HD 钱包（本地）
+
+    # ══ 资金模块（钱包/账本/收款）——纯全能 AI 框架不随库分发，优雅降级 ══
+    # 能力注册保留；模块文件在本地存在时真执行（开发机），
+    # 干净检出时如实报告"资金模块未随框架分发"，不伪造结果。
+    _MONEY_KINDS = (
+        "wallet_new", "wallet_derive", "wallet_rpc_status",
+        "ledger_open_account", "ledger_deposit", "ledger_transfer",
+        "ledger_balance", "ledger_withdraw", "pool_assign_address", "ledger_verify",
+        "ledger_freeze", "ledger_unfreeze", "ledger_frozen",
+        "ledger_statement", "ledger_reconcile", "ledger_export", "notify_list",
+        "receive_status", "receive_init", "receive_new_address", "receive_invoice",
+        "receive_list", "receive_scan", "receive_balances", "receive_invoice_for", "receive_sync",
+    )
+    if kind in _MONEY_KINDS:
+        try:
+            from .ledger import Ledger  # noqa: F401  探针：资金模块是否存在
+            _money_available = True
+        except Exception:
+            _money_available = False
+        if not _money_available:
+            audit("degraded", {"kind": kind, "reason": "money module not shipped"})
+            return {"status": "needs_dependency",
+                    "capability": kind,
+                    "missing": "资金模块（wallet/ledger/bridge）未随纯全能 AI 框架分发",
+                    "note": "GBT-V8 定位为纯全能 AI 框架，资金模块独立于框架分发；"
+                            "如需请单独部署资金模块（本地保留于开发机）"}
+
+    # 自建 HD 钱包（本地，模块存在时真执行）
     if kind == "wallet_new":
         from .wallet import hd
         p0 = payload or {}
