@@ -451,8 +451,10 @@ def _run_benign(kind, payload):
         return services.inspect((payload or {}).get("name"))
 
     # ══ 资金模块（钱包/账本/收款）——纯全能 AI 框架不随库分发，优雅降级 ══
-    # 能力注册保留；模块文件在本地存在时真执行（开发机），
-    # 干净检出时如实报告"资金模块未随框架分发"，不伪造结果。
+    # 定位：GBT-V8 是纯全能 AI 框架，资金模块归家 Workspace/03_收款钱包与支付/。
+    # 框架内只留本降级占位；模块实体 + 真执行路由在 _money_route.py（可选文件，不入库）。
+    # 模块在家（本地有 _money_route.py 且实体模块存在）时动态加载真执行，
+    # 否则如实报告"资金模块未随框架分发"，不伪造结果。
     _MONEY_KINDS = (
         "wallet_new", "wallet_derive", "wallet_rpc_status",
         "ledger_open_account", "ledger_deposit", "ledger_transfer",
@@ -464,128 +466,16 @@ def _run_benign(kind, payload):
     )
     if kind in _MONEY_KINDS:
         try:
-            from .ledger import Ledger  # noqa: F401  探针：资金模块是否存在
-            _money_available = True
-        except Exception:
-            _money_available = False
-        if not _money_available:
+            from . import _money_route as _mr  # 可选适配层（gitignore，不入库）
+            return _mr.route(kind, payload or {})
+        except ImportError:
             audit("degraded", {"kind": kind, "reason": "money module not shipped"})
             return {"status": "needs_dependency",
                     "capability": kind,
                     "missing": "资金模块（wallet/ledger/bridge）未随纯全能 AI 框架分发",
-                    "note": "GBT-V8 定位为纯全能 AI 框架，资金模块独立于框架分发；"
-                            "如需请单独部署资金模块（本地保留于开发机）"}
-
-    # 自建 HD 钱包（本地，模块存在时真执行）
-    if kind == "wallet_new":
-        from .wallet import hd
-        p0 = payload or {}
-        w = hd.new_wallet()
-        out = {"address_0": w["address_0"], "mnemonic_masked": hd.mask_mnemonic(w["mnemonic"]),
-               "note": "助记词未打印明文；需保存请传 save=true 或用 hd.save_wallet()"}
-        if p0.get("save"):
-            # 显式要求才落盘（store/wallet.json，已 gitignore；仅用户自己的机器）
-            out["saved_to"] = hd.save_wallet(w["mnemonic"])
-            out["note"] = "助记词已保存到本地 store/wallet.json（未打印明文）"
-        return out
-    if kind == "wallet_derive":
-        from .wallet import hd
-        n = int((payload or {}).get("count", 5))
-        try:
-            m = hd.load_wallet()
-        except Exception:
-            return {"error": "本地无钱包：先调用 wallet_new 或保存助记词到 store/wallet.json"}
-        return {"count": n, "addresses": hd.derive_many(m, n)}
-    if kind == "wallet_rpc_status":
-        from .wallet import rpc
-        return rpc.network_info()
-
-    # 内部账本 / 资金池（交易所式）
-    if kind in ("ledger_open_account", "ledger_deposit", "ledger_transfer",
-                "ledger_balance", "ledger_withdraw", "pool_assign_address", "ledger_verify",
-                "ledger_freeze", "ledger_unfreeze", "ledger_frozen",
-                "ledger_statement", "ledger_reconcile", "ledger_export", "notify_list"):
-        from .ledger import Ledger, Pool
-        p = payload or {}
-        L = Ledger()
-        if kind == "ledger_open_account":
-            return L.open_account(p.get("user"), p.get("meta"))
-        if kind == "ledger_deposit":
-            r = L.deposit(p.get("user"), p.get("asset"), p.get("amount"), p.get("ref"))
-            try:  # 入金即通知（本地事件流 + 可选 Webhook）
-                from . import notify as _n
-                _n.deposit_credited(p.get("user"), (p.get("asset") or "").upper(),
-                                    p.get("amount"), invoice_id=(p.get("ref") or ""),
-                                    balance=r.get("balance"))
-            except Exception:  # noqa: BLE001
-                pass
-            return r
-        if kind == "ledger_transfer":
-            return L.transfer(p.get("from"), p.get("to"), p.get("asset"), p.get("amount"), p.get("ref"))
-        if kind == "ledger_balance":
-            u = p.get("user")
-            if p.get("asset"):
-                return {"user": u, "asset": p["asset"], "balance": str(L.balance(u, p["asset"]))}
-            return {"user": u, "balances": L.balances(u)}
-        if kind == "ledger_withdraw":
-            return L.withdraw(p.get("user"), p.get("asset"), p.get("amount"),
-                              p.get("address"), broadcast=bool(p.get("broadcast", False)))
-        if kind == "pool_assign_address":
-            try:
-                return Pool(ledger=L).assign_deposit_address(p.get("user"))
-            except Exception as _e:  # noqa: BLE001
-                # 无本地钱包时给出闭环指引而不是裸错误
-                return {"error": str(_e),
-                        "hint": "先 wallet_new {save: true} 生成本地钱包，或传入 mnemonic 参数（离线/测试）"}
-        if kind == "ledger_verify":
-            return L.verify()
-        if kind == "ledger_freeze":
-            return L.freeze(p.get("user"), p.get("asset"), p.get("amount"),
-                            p.get("case_id", ""), p.get("reason", ""), p.get("actor", "system"))
-        if kind == "ledger_unfreeze":
-            return L.unfreeze(p.get("user"), p.get("asset"), p.get("amount"),
-                              p.get("case_id", ""), p.get("reason", ""), p.get("actor", "system"))
-        if kind == "ledger_frozen":
-            return {"user": p.get("user"), "holdings": L.holdings(p.get("user"))}
-        if kind == "ledger_statement":
-            return {"user": p.get("user"),
-                    "entries": L.statement(p.get("user"), p.get("asset"), p.get("since_seq"))}
-        if kind == "ledger_reconcile":
-            return L.reconcile(p.get("user"))
-        if kind == "ledger_export":
-            return {"user": p.get("user"), "csv": L.export_csv(p.get("user"), p.get("asset"))}
-        if kind == "notify_list":
-            from . import notify as _n
-            return {"notifications": _n.list_notifications(p.get("user"), int(p.get("limit", 200)))}
-
-    # 收款钱包（gbt_wallet 集成）
-    if kind in ("receive_status", "receive_init", "receive_new_address", "receive_invoice",
-                "receive_list", "receive_scan", "receive_balances", "receive_invoice_for", "receive_sync"):
-        from .adapters import wallet_adapter as WA
-        p = payload or {}
-        if kind == "receive_status":
-            return WA.status()
-        if kind == "receive_init":
-            return WA.ensure_init(p.get("password", ""))
-        if kind == "receive_new_address":
-            return WA.new_address()
-        if kind == "receive_invoice":
-            return WA.create_invoice(p.get("amount"), p.get("currency", "USDT"),
-                                     p.get("label", ""), p.get("expires_hours", 72))
-        if kind == "receive_list":
-            return WA.list_invoices(p.get("status"))
-        if kind == "receive_scan":
-            return WA.scan(p.get("max_blocks", 1500))
-        if kind == "receive_balances":
-            return WA.balances()
-        if kind == "receive_invoice_for":
-            from .bridge import deposit_bridge as DB
-            return DB.bind_invoice(p.get("user"), p.get("amount"),
-                                   p.get("currency", "USDT"), p.get("label", ""),
-                                   p.get("expires_hours", 72))
-        if kind == "receive_sync":
-            from .bridge import deposit_bridge as DB
-            return DB.sync(scan=bool(p.get("scan", True)))
+                    "note": "GBT-V8 定位为纯全能 AI 框架，资金模块已归家 "
+                            "Workspace/03_收款钱包与支付/；如需恢复请从归档复制回 "
+                            "gbt_allinone/ 并放入 _money_route.py 路由适配层"}
 
     # 预留型能力（vision/voice/browser）：真实后端接入（V8 补齐）
     # quant：真实能力（合并平台画像 + 引擎参数）

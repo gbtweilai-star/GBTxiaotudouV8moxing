@@ -88,6 +88,11 @@ def _routed_kinds():
     kinds = set(re.findall(r'kind == "(\w+)"', src))
     for tup in re.findall(r'if kind in \((.*?)\)', src, re.DOTALL):
         kinds.update(re.findall(r'"(\w+)"', tup))
+    # 变量形式元组：_XXX_KINDS = (...) / _MONEY_KINDS = (...) ——赋值后 `if kind in _XXX`
+    # （降级占位路由也算有效路由：能力有明确的分派路径与响应语义）
+    for var, tup in re.findall(r'(_\w*KINDS\w*)\s*=\s*\((.*?)\)', src, re.DOTALL):
+        if f"if kind in {var}" in src:
+            kinds.update(re.findall(r'"(\w+)"', tup))
     prefixes = set(re.findall(r'kind\.startswith\("(\w+)"\)', src))
     # _STUB_DEPS 桩家族（如实缺口，不算断连）
     stubs = set()

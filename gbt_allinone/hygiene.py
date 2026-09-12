@@ -151,6 +151,28 @@ def scan(fix: bool = False) -> dict:
     except Exception:
         pass
 
+    # ── 铁律 10：源码入库边界（纯全能 AI 框架，不接纳无关业务模块）──
+    # 定位：GBT-V8 是单纯的全能 AI 框架。资金/钱包/支付类业务模块不属于框架本体，
+    # 其独立归档地是 Workspace/03_收款钱包与支付/。框架内只允许能力路由的优雅降级占位，
+    # 不允许实体模块混入。检测到实体存在时报告 foreign_module，不自动删（人工确认）。
+    FOREIGN_MODULE_MARKERS = {
+        "wallet": "资金/钱包模块（归家：Workspace/03_收款钱包与支付/）",
+        "ledger": "账本/交易所式记账模块（归家：Workspace/03_收款钱包与支付/）",
+        "bridge": "链上入账桥模块（归家：Workspace/03_收款钱包与支付/）",
+        "payment": "支付网关模块（归家：Workspace/03_收款钱包与支付/）",
+    }
+    for marker, why in FOREIGN_MODULE_MARKERS.items():
+        d = _BASE / marker
+        if d.is_dir() and any(d.iterdir()):
+            # 白名单：框架自身必需的转发壳（仅 __init__.py 且不含业务逻辑）不算混入
+            inner = [f for f in d.iterdir() if f.name != "__init__.py" and f.name != "__pycache__"]
+            if inner:
+                findings.append({"rule": "foreign_module", "path": marker + "/",
+                                 "why": f"非框架本体模块混入源码：{why}。"
+                                        f"GBT-V8 是纯全能 AI 框架，业务模块应物归原主，"
+                                        f"框架内只保留能力降级占位"})
+                # 不自动删——迁移需人工确认（防误删）
+
     elapsed = round(time.time() - t0, 3) * 1000
     verdict = "clean" if not findings else ("fixed" if (fix and fixed) else "messy")
     result = {
@@ -161,7 +183,7 @@ def scan(fix: bool = False) -> dict:
         "cache_cleared": n_cache,
         "checked_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "elapsed_ms": elapsed,
-        "rules": "LAYOUT.md 八条铁律",
+        "rules": "LAYOUT.md 铁律 + 源码入库边界（纯全能 AI 框架定位）",
     }
     _audit("file_hygiene", {"verdict": verdict, "findings": len(findings), "fixed": len(fixed)})
     return result
