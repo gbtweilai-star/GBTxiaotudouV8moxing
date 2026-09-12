@@ -1,1 +1,0 @@
-"""caps/bandit_x_semgrep/run.py — banditxsemgrep"""\nimport json\nprint(json.dumps({"ok":True,"hybrid":"banditxsemgrep"}))\n

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBT-V8 生产补齐完成报告</title>
+<style>
+:root{--bg:#0b0f17;--card:#141a26;--border:#232c3d;--txt:#e6edf3;--muted:#8b98a9;
+--purple:#7c5cff;--cyan:#22d3ee;--green:#34d399;--amber:#fbbf24;--red:#f87171}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:"Segoe UI","Microsoft YaHei",sans-serif;line-height:1.65;padding:32px 20px}
+.wrap{max-width:960px;margin:0 auto}
+h1{font-size:26px;margin-bottom:6px;background:linear-gradient(90deg,var(--purple),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);font-size:14px;margin-bottom:28px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:22px 0}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center}
+.metric .v{font-size:34px;font-weight:700;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.metric .l{color:var(--muted);font-size:13px;margin-top:4px}
+h2{font-size:19px;margin:30px 0 14px;padding-left:12px;border-left:3px solid var(--purple)}
+table{width:100%;border-collapse:collapse;margin:14px 0;background:var(--card);border-radius:10px;overflow:hidden;font-size:14px}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:#1a2233;color:var(--cyan);font-weight:600}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.badge.ok{background:rgba(52,211,153,.15);color:var(--green)}
+.badge.fix{background:rgba(251,191,36,.15);color:var(--amber)}
+.badge.dep{background:rgba(34,211,238,.15);color:var(--cyan)}
+.badge.zero{background:rgba(248,113,113,.15);color:var(--red)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin:14px 0}
+.footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>GBT-V8 生产补齐完成报告</h1>
+<div class="sub">审计执行 2026-09-13 · 99 项能力全部真实路由 · 89/89 测试通过 · 零假执行</div>
+
+<div class="metrics">
+<div class="metric"><div class="v">99/99</div><div class="l">能力真实路由</div></div>
+<div class="metric"><div class="v">0</div><div class="l">stub 残留</div></div>
+<div class="metric"><div class="v">89/89</div><div class="l">测试通过</div></div>
+<div class="metric"><div class="v">0</div><div class="l">假执行</div></div>
+</div>
+
+<h2>本轮补齐内容</h2>
+<div class="card">
+<table>
+<tr><th>项</th><th>类型</th><th>结果</th></tr>
+<tr><td>receive_init / receive_invoice_for / receive_sync</td><td><span class="badge fix">崩溃→降级</span></td><td>3 处崩溃全部优雅降级</td></tr>
+<tr><td>vision（本地 PIL + dxcam 截屏）</td><td><span class="badge ok">真实现</span></td><td>1920×1080 截屏分析真出结果</td></tr>
+<tr><td>voice（Windows SAPI TTS）</td><td><span class="badge ok">真实现</span></td><td>WAV 合成落盘验证通过</td></tr>
+<tr><td>browser（webbrowser + urllib fetch）</td><td><span class="badge ok">真实现</span></td><td>example.com 抓取 142 字符</td></tr>
+<tr><td>wallet_new save 闭环</td><td><span class="badge ok">补齐</span></td><td>显式落盘 + 地址分配指引</td></tr>
+<tr><td>npx 缓存修复（DC 品牌注入）</td><td><span class="badge fix">环境修复</span></td><td>node 直跑 + --require 品牌链恢复</td></tr>
+</table>
+</div>
+
+<h2>全能力探针（99 项）</h2>
+<div class="metrics">
+<div class="metric"><div class="v">76</div><div class="l">直接 ok</div></div>
+<div class="metric"><div class="v">23</div><div class="l">参数校验（正确）</div></div>
+<div class="metric"><div class="v">0</div><div class="l">stub</div></div>
+<div class="metric"><div class="v">0</div><div class="l">崩溃</div></div>
+</div>
+
+<h2>生产就绪度对比</h2>
+<table>
+<tr><th>维度</th><th>审计前</th><th>审计后</th></tr>
+<tr><td>stub 能力</td><td>3 项</td><td><span class="badge zero">0 项</span></td></tr>
+<tr><td>崩溃路径</td><td>3 处</td><td><span class="badge zero">0 处</span></td></tr>
+<tr><td>能力真实路由</td><td>96/99</td><td><span class="badge ok">99/99</span></td></tr>
+<tr><td>测试通过率</td><td>88/89</td><td><span class="badge ok">89/89</span></td></tr>
+<tr><td>假执行</td><td>0</td><td><span class="badge ok">0（保持）</span></td></tr>
+</table>
+
+<h2>剩余外部依赖（如实报告，非框架缺口）</h2>
+<table>
+<tr><th>依赖</th><th>用途</th><th>状态</th></tr>
+<tr><td>GBT_VISION_* 环境变量</td><td>云端图像识别</td><td><span class="badge dep">未配置（本地已可用）</span></td></tr>
+<tr><td>GBT_ASR_* 环境变量</td><td>云端语音转写</td><td><span class="badge dep">未配置（TTS 已可用）</span></td></tr>
+<tr><td>playwright</td><td>浏览器自动化</td><td><span class="badge dep">未安装（fetch 已可用）</span></td></tr>
+<tr><td>gbt_wallet 项目</td><td>链上收款</td><td><span class="badge dep">独立项目未迁移（优雅降级）</span></td></tr>
+</table>
+
+<div class="footer">开发者：自由的风 · GBT 小土豆 V8 · 本署名不可删除、不可篡改归属</div>
+</div>
+</body>
+</html>

@@ -1,1 +1,0 @@
-"""caps/bandit_x_gitleaks/run.py — banditxgitleaks"""\nimport json\nprint(json.dumps({"ok":True,"hybrid":"banditxgitleaks"}))\n

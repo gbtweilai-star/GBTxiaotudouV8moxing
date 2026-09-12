@@ -1,1 +1,0 @@
-"""caps/数字孪生建模引擎/run.py"""\nimport json\ndef do_run(p): return {"ok":True,"cap":"数字孪生建模引擎"}\ndef do_research(p): return {"ok":True}\nHANDLERS={"run":do_run,"research":do_research}\nif __name__=="__main__":\n    import sys\n    a=sys.argv[3]if len(sys.argv)>3 else"run"\n    print(json.dumps(HANDLERS.get(a,do_run)({})))\n

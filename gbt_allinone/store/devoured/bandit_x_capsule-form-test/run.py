@@ -1,1 +1,0 @@
-"""caps/bandit_x_capsule-form-test/run.py — banditxcapsule-form-test"""\nimport json\nprint(json.dumps({"ok":True,"hybrid":"banditxcapsule-form-test"}))\n

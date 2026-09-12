@@ -452,9 +452,15 @@ def _run_benign(kind, payload):
     # 自建 HD 钱包（本地）
     if kind == "wallet_new":
         from .wallet import hd
+        p0 = payload or {}
         w = hd.new_wallet()
-        return {"address_0": w["address_0"], "mnemonic_masked": hd.mask_mnemonic(w["mnemonic"]),
-                "note": "助记词未打印明文；需保存请用 hd.save_wallet()"}
+        out = {"address_0": w["address_0"], "mnemonic_masked": hd.mask_mnemonic(w["mnemonic"]),
+               "note": "助记词未打印明文；需保存请传 save=true 或用 hd.save_wallet()"}
+        if p0.get("save"):
+            # 显式要求才落盘（store/wallet.json，已 gitignore；仅用户自己的机器）
+            out["saved_to"] = hd.save_wallet(w["mnemonic"])
+            out["note"] = "助记词已保存到本地 store/wallet.json（未打印明文）"
+        return out
     if kind == "wallet_derive":
         from .wallet import hd
         n = int((payload or {}).get("count", 5))
@@ -498,7 +504,12 @@ def _run_benign(kind, payload):
             return L.withdraw(p.get("user"), p.get("asset"), p.get("amount"),
                               p.get("address"), broadcast=bool(p.get("broadcast", False)))
         if kind == "pool_assign_address":
-            return Pool(ledger=L).assign_deposit_address(p.get("user"))
+            try:
+                return Pool(ledger=L).assign_deposit_address(p.get("user"))
+            except Exception as _e:  # noqa: BLE001
+                # 无本地钱包时给出闭环指引而不是裸错误
+                return {"error": str(_e),
+                        "hint": "先 wallet_new {save: true} 生成本地钱包，或传入 mnemonic 参数（离线/测试）"}
         if kind == "ledger_verify":
             return L.verify()
         if kind == "ledger_freeze":
@@ -549,23 +560,34 @@ def _run_benign(kind, payload):
             from .bridge import deposit_bridge as DB
             return DB.sync(scan=bool(p.get("scan", True)))
 
-    # 预留型能力（vision/voice/browser/quant）：如实报告依赖缺口，不伪造结果（V8 纪律）
+    # 预留型能力（vision/voice/browser）：真实后端接入（V8 补齐）
     # quant：真实能力（合并平台画像 + 引擎参数）
     if kind == "quant":
         from . import quant_tech
         return {"profile": quant_tech.platform_profile(),
                 "engine_params": quant_tech.quant_params().get("engine_params", {})}
-    _STUB_DEPS = {
-        "vision": "需图像模型接入（AutoGLM 视觉接口）",
-        "voice": "需 TTS/ASR 接入",
-        "browser": "需浏览器自动化后端（Playwright/AutoGLM）",
-    }
-    if kind in _STUB_DEPS:
-        return {"status": "needs_dependency", "capability": kind,
-                "missing": _STUB_DEPS[kind],
-                "note": "依赖未接入，如实报告而非伪造结果"}
-    return {"status": "stub", "capability": kind,
-            "note": "预留入口：接入对应良性后端后可用（不伪造结果）"}
+    if kind == "vision":
+        from . import vision_cap
+        p = payload or {}
+        return vision_cap.run(p.get("op", "analyze"),
+                              image=p.get("image"), region=p.get("region"),
+                              grid=p.get("grid", 4), prompt=p.get("prompt"))
+    if kind == "voice":
+        from . import voice_cap
+        p = payload or {}
+        return voice_cap.run(p.get("op", "tts"),
+                             text=p.get("text"), voice=p.get("voice"),
+                             rate=p.get("rate", 0), out=p.get("out"),
+                             audio=p.get("audio"))
+    if kind == "browser":
+        from . import browser_cap
+        p = payload or {}
+        return browser_cap.run(p.get("op", "open"),
+                               url=p.get("url"), query=p.get("query"),
+                               engine=p.get("engine", "bing"),
+                               timeout=p.get("timeout", 20),
+                               max_chars=p.get("max_chars", 20000),
+                               **{k: v for k, v in p.items() if k in ("act", "selector", "value", "out", "headless")})
 
 
 # 用法错误基类导入（源头分类用——这些异常类全部继承 Exception，语义=调用方问题）

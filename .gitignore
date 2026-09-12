@@ -21,6 +21,9 @@ gbt_allinone/.pylibs/
 gbt_allinone/archived_logs/
 gbt_allinone/__pycache__/
 
+# --- 运行时数据仓（store/：助记词/账本/审计流/镜像空间，本地运行时产物，不入库）---
+gbt_allinone/store/
+
 # --- OpenClaw / 系统目录（本机状态，不属于源码）---
 .openclaw/
 .autoclaw/

@@ -41,6 +41,11 @@ def save_map(m: dict) -> None:
 def bind_invoice(user, amount, currency="USDT", label="", expires_hours=72):
     """为用户开收款发票，并登记 发票->用户 映射（供自动记账）。"""
     inv = WA.create_invoice(amount, currency, label, expires_hours)
+    if not isinstance(inv, dict) or inv.get("unavailable") or "invoice_id" not in (inv or {}):
+        # 旧钱包不可用时如实降级：不开票、不登记，返回降级信息
+        return {"ok": False, "unavailable": True,
+                "error": "收款发票不可用：旧收款钱包未迁移或调用失败",
+                "detail": inv if isinstance(inv, dict) else str(inv)[:160]}
     m = load_map()
     m[inv["invoice_id"]] = {"user": user, "asset": currency.upper(),
                             "decimals": int(inv.get("decimals", 6)), "credited_int": 0}
@@ -50,9 +55,15 @@ def bind_invoice(user, amount, currency="USDT", label="", expires_hours=72):
 
 def credit_from_invoices():
     """把发票"新增已付金额"记账到账本（逐发票幂等）。"""
+    invoices = WA.list_invoices()
+    if not isinstance(invoices, list):
+        # 旧钱包不可用（降级字典）→ 无发票可记，如实返回
+        return {"count": 0, "credited": [],
+                "unavailable": bool(isinstance(invoices, dict) and invoices.get("unavailable")),
+                "detail": invoices if isinstance(invoices, dict) else None}
     ledger = Ledger()
     m = load_map()
-    by_id = {i["invoice_id"]: i for i in WA.list_invoices()}
+    by_id = {i["invoice_id"]: i for i in invoices}
     credited = []
     for inv_id, rec in m.items():
         inv = by_id.get(inv_id)

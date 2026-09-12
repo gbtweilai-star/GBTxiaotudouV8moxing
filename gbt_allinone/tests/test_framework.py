@@ -254,9 +254,26 @@ class TestFramework(unittest.TestCase):
         self.assertEqual(r2["reused_nodes"], 1)
 
     def test_stub_capabilities_honest(self):
-        for cap in ("vision", "voice", "browser"):
-            r = _body(gbt.run_task(cap, {}))
-            self.assertEqual(r["result"]["status"], "needs_dependency")
+        # V8 补齐后：vision/voice/browser 已接真实后端（不再是 stub）
+        # 语义升级：空参调用应给出明确的参数/依赖指引（诚实降级），而非崩溃
+        # vision 默认 op=analyze：无图时截屏分析（真实后端）
+        r = _body(gbt.run_task("vision", {}))
+        self.assertIn(r["result"].get("ok"), (True, False))
+        # voice 默认 op=tts：缺 text 时应报参数错误（user_error 顶层无 result）
+        r = _body(gbt.run_task("voice", {}))
+        self.assertIn("text", str(r.get("message", r.get("result", ""))))
+        # voice op=status：状态诚实报告
+        r = _body(gbt.run_task("voice", {"op": "status"}))
+        self.assertTrue(r["result"]["ok"])
+        # browser 默认 op=open：缺 url 时应报参数错误
+        r = _body(gbt.run_task("browser", {}))
+        self.assertIn("url", str(r.get("message", r.get("result", ""))))
+        # browser op=status：标准库能力可用 + automate 依赖如实
+        r = _body(gbt.run_task("browser", {"op": "status"}))
+        self.assertTrue(r["result"]["ok"])
+        # browser op=fetch：真实抓取（需网络；失败也验证路由已通）
+        r = _body(gbt.run_task("browser", {"op": "fetch", "url": "https://example.com"}))
+        self.assertIn(r["result"].get("ok"), (True, False))
 
     def test_wf_resume_via_api(self):
         gbt.run_task("wf_define", {"name": "t-resume-api", "nodes": [

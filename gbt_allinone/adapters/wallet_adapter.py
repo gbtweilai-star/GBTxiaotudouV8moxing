@@ -36,17 +36,22 @@ def status():
     try:
         return _w().status(_pass())
     except Exception as e:  # noqa: BLE001
-        return {"initialized": False, "error": str(e)[:200],
+        return {"ok": False, "unavailable": True,
+                "error": f"旧收款钱包模块未随 V8 迁移：status 不可用（{str(e)[:80]})",
+                "hint": "V8 自有 wallet_new/wallet_derive/receive_* 见 wallet/ 目录；如需旧钱包请单独部署 gbt_wallet 项目",
                 "dir": os.environ.get("GBT_WALLET_DIR")}
 
 
 def ensure_init(password=""):
-    W = _w()
-    pw = password or _pass()
-    if W.status(pw).get("initialized"):
-        return {"already": True}
-    r = W.init(pw, words=24)
-    return {"already": False, "master_evm": r["master_evm"]}   # 不回传助记词
+    try:
+        W = _w()
+        pw = password or _pass()
+        if W.status(pw).get("initialized"):
+            return {"already": True}
+        r = W.init(pw, words=24)
+        return {"already": False, "master_evm": r["master_evm"]}   # 不回传助记词
+    except Exception as _e:  # noqa: BLE001
+        return _unavailable("ensure_init", _e)
 
 
 def new_address():
