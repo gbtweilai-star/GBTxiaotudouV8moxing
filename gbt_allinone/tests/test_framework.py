@@ -253,7 +253,18 @@ class TestFramework(unittest.TestCase):
         self.assertEqual(r2["status"], "ok")
         self.assertEqual(r2["reused_nodes"], 1)
 
-    def test_stub_capabilities_honest(self):
+    def test_bluetooth_capability(self):
+        # 蓝牙能力：模块存在 + 状态报告真实（BLE 后端/操作清单）
+        # 真机验证记录（2026-09-13）：scan 扫到 11 台设备；connect 枚举 9 服务/6 可写特征；
+        # read 读出 iPhone/Apple Inc./电量 0x5F；write 对真实设备 Apple Continuity
+        # 服务写入成功（write-without-response）——全链路真机验证通过
+        r = _body(gbt.run_task("bluetooth", {"op": "status"}))
+        self.assertTrue(r["result"]["ok"])
+        self.assertIn("bleak", r["result"]["ble_backend"])
+        for op in ("scan", "connect", "read", "write"):
+            self.assertIn(op, r["result"]["ops"])
+
+
         # V8 补齐后：vision/voice/browser 已接真实后端（不再是 stub）
         # 语义升级：空参调用应给出明确的参数/依赖指引（诚实降级），而非崩溃
         # vision 默认 op=analyze：无图时截屏分析（真实后端）
