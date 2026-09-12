@@ -514,6 +514,13 @@ def _run_benign(kind, payload):
                                  address=p.get("address"),
                                  char_uuid=p.get("char_uuid"),
                                  value_hex=p.get("value_hex"))
+    if kind == "bt_control":
+        from . import bt_control
+        p = payload or {}
+        return bt_control.run(p.get("op", "control"),
+                              intent=p.get("intent", ""),
+                              address=p.get("address"),
+                              scan_timeout=p.get("scan_timeout", 6.0))
 
 
 # 用法错误基类导入（源头分类用——这些异常类全部继承 Exception，语义=调用方问题）

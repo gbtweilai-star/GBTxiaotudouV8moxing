@@ -469,6 +469,12 @@ BENIGN_CAPS = {
         "handler": "bluetooth",
         "safe": True,
     },
+    "bt_control": {
+        "domain": "device",
+        "desc": "AI 智能蓝牙操控：自然语言意图→扫描识别设备→协议匹配→组装指令→写入执行→验证（协议库只收公开文档协议，未知如实报告）",
+        "handler": "bt_control",
+        "safe": True,
+    },
     "quant": {
         "domain": "finance",
         "desc": "量化/回测入口（自有金融模块，可并入）",
