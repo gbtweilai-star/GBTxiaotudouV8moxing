@@ -463,6 +463,12 @@ BENIGN_CAPS = {
         "handler": "placeholder",
         "safe": True,
     },
+    "bluetooth": {
+        "domain": "device",
+        "desc": "蓝牙设备控制：扫描附近 BLE 设备、连接读写 GATT 特征（操控空调/灯/音箱等家居设备）、经典蓝牙状态报告",
+        "handler": "bluetooth",
+        "safe": True,
+    },
     "quant": {
         "domain": "finance",
         "desc": "量化/回测入口（自有金融模块，可并入）",

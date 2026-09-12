@@ -505,6 +505,15 @@ def _run_benign(kind, payload):
                                timeout=p.get("timeout", 20),
                                max_chars=p.get("max_chars", 20000),
                                **{k: v for k, v in p.items() if k in ("act", "selector", "value", "out", "headless")})
+    if kind == "bluetooth":
+        from . import bluetooth_cap
+        p = payload or {}
+        return bluetooth_cap.run(p.get("op", "scan"),
+                                 timeout=p.get("timeout", 5.0),
+                                 name_filter=p.get("name_filter"),
+                                 address=p.get("address"),
+                                 char_uuid=p.get("char_uuid"),
+                                 value_hex=p.get("value_hex"))
 
 
 # 用法错误基类导入（源头分类用——这些异常类全部继承 Exception，语义=调用方问题）
