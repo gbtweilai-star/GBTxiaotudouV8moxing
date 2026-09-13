@@ -73,10 +73,15 @@ def main() -> int:
     behavior = None
     if config.get("behavior", {}).get("enabled", True):
         behavior = BehaviorEngine(config)
+
+        def _move_pet_keep_on_top(x, y):
+            pet.move(int(x), int(y))
+            pet.raise_()   # 移动后仍保持在面板之上
+
         behavior.set_callbacks(
             get_pet_rect=pet.window_rect,
             get_panel_rect=lambda: panel.panel_rect() if panel.isVisible() else None,
-            move_pet_to=lambda x, y: pet.move(int(x), int(y)),
+            move_pet_to=_move_pet_keep_on_top,
             set_panel_visible=lambda on: (panel.show_panel() if on else panel.hide_panel()),
             play_motion=lambda group, priority=1: pet.start_motion(group, priority),
             set_expression=lambda name: pet.set_expression(name),
@@ -230,6 +235,16 @@ def main() -> int:
     if config["panel"].get("auto_show_on_start", True):
         panel.move_near(pet.window_rect())
         panel.show_panel()
+        pet.raise_()          # V8 层叠规则：形象永远在面板之上（站得住看得见）
+
+    # V8 层叠保障：面板每次显示后把形象提前（防 wander 后被压底）
+    _orig_show_panel = panel.show_panel
+
+    def _show_panel_keep_pet_on_top():
+        _orig_show_panel()
+        pet.raise_()
+
+    panel.show_panel = _show_panel_keep_pet_on_top
 
     # ---- v2: 全息遥测条（HoloJarvis 风格，每 5 秒刷新）----
     import tools as tools_mod

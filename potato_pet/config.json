@@ -21,9 +21,9 @@
     "offset_x": 40,
     "offset_y": -80,
     "auto_show_on_start": true,
-    "opacity": 0.92,
+    "opacity": 0.97,
     "theme": {
-      "bg": "rgba(16, 18, 34, 0.78)",
+      "bg": "rgba(11,11,15,0.95)",
       "border": "#22d3ee",
       "accent": "#8b5cf6",
       "text": "#e2e8f0",
@@ -43,7 +43,7 @@
     "idle_interval_ms": 4000,
     "wander_interval_ms": 45000,
     "wander_probability": 0.35,
-    "play_probability": 0.30,
+    "play_probability": 0.3,
     "play_interval_ms": 60000,
     "sleep_after_minutes": 10,
     "affection_decay_minutes": 3

@@ -24,7 +24,7 @@ import os
 import re
 import time
 
-from PySide6.QtCore import QEvent, QObject, Qt, QTimer, Signal
+from PySide6.QtCore import QEvent, QObject, QPoint, Qt, QTimer, Signal
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QScrollArea, QFrame, QTextEdit,
@@ -278,7 +278,7 @@ class HoloPanel(QWidget):
 
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
         self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setWindowOpacity(panel_cfg.get("opacity", 0.94))
+        self.setWindowOpacity(panel_cfg.get("opacity", 0.97))
         self.resize(panel_cfg.get("width", 560), panel_cfg.get("height", 720))
 
         self._build_ui()
@@ -552,9 +552,27 @@ class HoloPanel(QWidget):
         return (g.x(), g.y(), g.width(), g.height())
 
     def move_near(self, pet_rect):
+        """面板紧贴角色右侧站立，重叠一点营造『站在边上』的层次感。
+
+        V8 屏幕边界钳制：角色在屏幕右半时面板改到左侧站立，
+        避免被推出屏幕外。"""
         px, py, pw, ph = pet_rect
         overlap = 26
-        self.move(px + pw - overlap, py - 20)
+        candidate_x = px + pw - overlap
+        # 屏幕可用区（含任务栏避让）
+        from PySide6.QtWidgets import QApplication
+        from PySide6.QtGui import QScreen  # QScreen 在 QtGui（V8 修正）
+        screen = QApplication.screenAt(QPoint(px, py)) or QApplication.primaryScreen()
+        avail = screen.availableGeometry()
+        panel_w, panel_h = self.width(), self.height()
+        # 右侧放不下 → 改左侧站立（镜像重叠）
+        if candidate_x + panel_w > avail.right():
+            candidate_x = px - panel_w + overlap
+        # 水平钳在屏内
+        candidate_x = max(avail.left(), min(candidate_x, avail.right() - panel_w))
+        # 垂直钳在屏内（顶部对齐角色 - 20，但不越界）
+        candidate_y = max(avail.top(), min(py - 20, avail.bottom() - panel_h))
+        self.move(candidate_x, candidate_y)
 
     def show_panel(self):
         self.show()
@@ -581,7 +599,7 @@ class HoloPanel(QWidget):
 
     def _apply_qss(self, theme: dict):
         text = theme.get("text", "#e2e8f0")
-        bg = theme.get("bg", "rgba(11,11,15,0.86)")
+        bg = theme.get("bg", "rgba(11,11,15,0.95)")
         self.setStyleSheet(f"""
             QFrame#holoFrame {{
                 background: {bg};
