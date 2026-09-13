@@ -186,6 +186,7 @@ def main() -> int:
     if behavior:
         pet.clicked.connect(behavior.on_pet_clicked)
         pet.drag_pos_changed.connect(lambda *_: behavior.note_activity())
+        pet.drag_finished.connect(behavior.on_drag_end)  # v3: 拖拽落定
 
     # ---- 形象多选：把可用模型注入右键菜单 ----
     models = list_available_models()

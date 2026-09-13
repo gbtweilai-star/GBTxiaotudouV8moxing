@@ -79,6 +79,7 @@ class PetWindow(QWidget):
 
     clicked = Signal(str)
     drag_pos_changed = Signal(int, int)
+    drag_finished = Signal()          # v3: 拖拽落定（行为引擎 on_drag_end 接线）
     panel_toggle_requested = Signal()
     quit_requested = Signal()
 
@@ -180,6 +181,8 @@ class PetWindow(QWidget):
         super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event):  # noqa: N802
+        if self._drag_offset is not None:
+            self.drag_finished.emit()  # v3: 拖拽落定通知行为引擎
         self._drag_offset = None
         super().mouseReleaseEvent(event)
 
