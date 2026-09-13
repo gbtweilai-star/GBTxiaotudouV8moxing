@@ -22,7 +22,8 @@ from __future__ import annotations
 
 import os
 import time
-import urllib.request
+
+from .security import net_guard, policy
 
 BASE = os.environ.get("TRIPO_BASE_URL", "https://openapi.tripo3d.ai/v3")
 
@@ -37,17 +38,32 @@ def _headers():
 
 
 def _post(path, body):
-    req = urllib.request.Request(
-        BASE + path, data=__import__("json").dumps(body).encode("utf-8"),
-        headers=_headers(), method="POST")
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        return __import__("json").loads(resp.read().decode("utf-8"))
+    import json
+
+    response = net_guard.safe_request_json(
+        BASE + path, method="POST", headers=_headers(),
+        body=json.dumps(body).encode("utf-8"), timeout=60,
+        max_bytes=8_000_000, allow_private=policy.is_trusted(),
+    )
+    if response["status"] >= 400:
+        raise RuntimeError(f"HTTP {response['status']}: {response.get('text', '')[:300]}")
+    data = response.get("json")
+    if not isinstance(data, dict):
+        raise RuntimeError("Tripo 返回非 JSON 对象")
+    return data
 
 
 def _get(path):
-    req = urllib.request.Request(BASE + path, headers=_headers())
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        return __import__("json").loads(resp.read().decode("utf-8"))
+    response = net_guard.safe_request_json(
+        BASE + path, headers=_headers(), timeout=60,
+        max_bytes=8_000_000, allow_private=policy.is_trusted(),
+    )
+    if response["status"] >= 400:
+        raise RuntimeError(f"HTTP {response['status']}: {response.get('text', '')[:300]}")
+    data = response.get("json")
+    if not isinstance(data, dict):
+        raise RuntimeError("Tripo 返回非 JSON 对象")
+    return data
 
 
 def balance():
@@ -85,13 +101,17 @@ def image_to_model(image_path, out_format="glb"):
             f"filename=\"{os.path.basename(image_path)}\"\r\n"
             f"Content-Type: image/png\r\n\r\n").encode() + img_data + \
         f"\r\n--{boundary}--\r\n".encode()
-    req = urllib.request.Request(
-        BASE + "/files", data=body,
+    response = net_guard.safe_request_json(
+        BASE + "/files", method="POST", body=body,
         headers={"Authorization": f"Bearer {_key()}",
                  "Content-Type": f"multipart/form-data; boundary={boundary}"},
-        method="POST")
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        up = __import__("json").loads(resp.read().decode("utf-8"))
+        timeout=120, max_bytes=8_000_000,
+        allow_private=policy.is_trusted(),
+    )
+    if response["status"] >= 400:
+        return {"ok": False,
+                "error": f"HTTP {response['status']}: {response.get('text', '')[:300]}"}
+    up = response.get("json") or {}
     image_token = up.get("data", {}).get("image_token")
     if not image_token:
         return {"ok": False, "error": "上传失败", "raw": up}

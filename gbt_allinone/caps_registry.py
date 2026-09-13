@@ -40,26 +40,30 @@ BENIGN_CAPS = {
     },
     "quant_strategy": {
         "domain": "finance",
-        "desc": "读取真实量化引擎，返回策略信号/仓位模型",
+        "desc": "读取真实量化引擎，返回策略信号/仓位模型（外部业务模块 quant_tech，未挂载则如实报缺口）",
         "handler": "quant_strategy",
+        "external": "quant_tech",
         "safe": True,
     },
     "quant_backtest": {
         "domain": "finance",
-        "desc": "读取真实回测 API，返回类/函数/默认参数",
+        "desc": "读取真实回测 API，返回类/函数/默认参数（外部业务模块 quant_tech，未挂载则如实报缺口）",
         "handler": "quant_backtest",
+        "external": "quant_tech",
         "safe": True,
     },
     "platform_profile": {
         "domain": "project",
-        "desc": "读取 Workspace 量化项目结构（真实测绘）",
+        "desc": "读取量化项目结构（真实测绘；外部业务模块 quant_tech，未挂载则如实报缺口）",
         "handler": "platform_profile",
+        "external": "quant_tech",
         "safe": True,
     },
     "quant_params": {
         "domain": "finance",
-        "desc": "读取真实量化引擎的数值型策略参数（动量/ATR/止损）",
+        "desc": "读取真实量化引擎的数值型策略参数（动量/ATR/止损；外部业务模块 quant_tech）",
         "handler": "quant_params",
+        "external": "quant_tech",
         "safe": True,
     },
     "osint_scan": {
@@ -266,6 +270,36 @@ BENIGN_CAPS = {
         "handler": "deploy_validate",
         "safe": True,
     },
+    "mirror_plan": {
+        "domain": "pipeline",
+        "desc": "镜像空间：生产前排练计划（假设/架构/步骤/服务与环境契约/验收/回滚）",
+        "handler": "mirror_plan",
+        "safe": True,
+    },
+    "mirror_simulate": {
+        "domain": "pipeline",
+        "desc": "镜像空间：静态推演（文件/依赖图/端口/入口/契约/闭环定义，不碰生产）",
+        "handler": "mirror_simulate",
+        "safe": True,
+    },
+    "mirror_parity": {
+        "domain": "pipeline",
+        "desc": "镜像空间：沙盒与生产环境契约一致性（平台/Python/依赖/工具/密钥存在性/路径）",
+        "handler": "mirror_parity",
+        "safe": True,
+    },
+    "mirror_rehearse": {
+        "domain": "pipeline",
+        "desc": "镜像空间：生产前排练（静态推演→环境一致性→沙盒闭环→指纹绑定报告）",
+        "handler": "mirror_rehearse",
+        "safe": True,
+    },
+    "mirror_release": {
+        "domain": "pipeline",
+        "desc": "镜像空间：排练全绿后一次性全量晋升生产（树/计划指纹绑定，失败即阻断）",
+        "handler": "mirror_release",
+        "safe": True,
+    },
     "mirror_ascend": {
         "domain": "pipeline",
         "desc": "镜像空间：跨维晋升（验证全绿才放行；一次性全量写入现实+护照+时间线；现实零修改）",
@@ -460,8 +494,9 @@ BENIGN_CAPS = {
     },
     "quant": {
         "domain": "finance",
-        "desc": "量化/回测入口（自有金融模块，可并入）",
+        "desc": "量化/回测入口（外部业务模块 quant_tech，未挂载则如实报缺口）",
         "handler": "placeholder",
+        "external": "quant_tech",
         "safe": True,
     },
 }

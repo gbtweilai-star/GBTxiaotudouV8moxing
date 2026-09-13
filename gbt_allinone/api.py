@@ -1,4 +1,4 @@
-﻿"""GBT小土豆V8 · 统一接口：run_task / list_capabilities。路由到良性能力，禁用危险能力。
+"""GBT小土豆V8 · 统一接口：run_task / list_capabilities。路由到良性能力，禁用危险能力。
 V8 行为准则（见 soul.py）：
 - 每次调用先落审计（call/ok/error/denied 全程可追踪）；
 - 执行结果默认携带 GBT 钢印（声明独立私人框架出处）；
@@ -24,7 +24,30 @@ def list_capabilities(filter_dangerous=True):
     return items
 
 
-def _run_benign(kind, payload):
+def _external_capability(module_name, capability):
+    """挂载框架外的业务扩展模块（如量化项目桥）。
+
+    框架本体保持纯粹：业务模块不内置分发。模块挂回 → 正常调用；
+    不在场 → 如实返回 needs_dependency，绝不伪造结果、也绝不假装能力不存在。
+    """
+    import importlib
+    try:
+        return importlib.import_module(f"{__package__}.{module_name}"), None
+    except ImportError as exc:
+        return None, {
+            "ok": False,
+            "status": "needs_dependency",
+            "missing": module_name,
+            "capability": capability,
+            "detail": (
+                f"{capability} 属于外部业务模块 {module_name}，"
+                "本框架不内置分发；把该模块挂回 gbt_allinone/ 即自动可用"
+            ),
+            "reason": str(exc)[:160],
+        }
+
+
+def _run_benign(kind, payload, policy_decision=None):
     """良性能力分派：这里实现真实可用的系统/数据类样例。"""
     if kind == "health":
         return {"platform": platform.platform(), "python": platform.python_version(),
@@ -37,41 +60,29 @@ def _run_benign(kind, payload):
     if kind == "audit_query":
         ev = (payload or {}).get("event")
         return {"total": len(query_log()), "sample": query_log(event=ev, limit=10)}
-    # 真实技术能力（读取 Workspace 量化项目真代码）
-    if kind == "quant_strategy":
-        from . import quant_tech
-        return quant_tech.quant_strategy()
-    if kind == "quant_backtest":
-        from . import quant_tech
-        return quant_tech.quant_backtest()
-    if kind == "platform_profile":
-        from . import quant_tech
-        return quant_tech.platform_profile()
-    if kind == "quant_params":
-        from . import quant_tech
-        return quant_tech.quant_params()
+    # 外部业务能力（量化项目桥）：模块挂载即用，未挂载如实报缺口
+    if kind in ("quant_strategy", "quant_backtest", "platform_profile",
+                "quant_params"):
+        module, gap = _external_capability("quant_tech", kind)
+        if gap:
+            return gap
+        handler = getattr(module, kind, None)
+        if not callable(handler):
+            return {"ok": False, "status": "needs_dependency",
+                    "missing": f"quant_tech.{kind}",
+                    "detail": f"外部模块 quant_tech 未提供 {kind}()"}
+        return handler()
     # OSINT 扫描（GBT小土豆V8：src 扫描器正式接入统一接口，全行为落审计）
     if kind == "osint_scan":
         from .recon.scanner import scan_target
         from .recon.guard import classify_target
-        from . import auth_gate
         t = (payload or {}).get("target") or ""
         if not t:
             raise ValueError("缺少 target：请提供要扫描的域名或 IP")
-        # 人工授权门：内网/保留目标必须消耗一条人工授权（allow_private 参数不再是绕过入口）
-        kind_t, reason = classify_target(t)
-        if kind_t == "private":
-            gate = auth_gate.check_and_consume("osint_private", detail=str(t)[:60])
-            if not gate.get("ok"):
-                return {"denied": True, "target": t,
-                        "error": gate.get("error"),
-                        "how_to_grant": gate.get("how_to_grant"),
-                        "note": gate.get("note")}
-            rs = scan_target(t, allow_private=True)
-            return {"target": t, "allow_private": True, "auth_consumed": gate.get("consumed"),
-                    "results": [r.to_dict() for r in rs]}
-        rs = scan_target(t, allow_private=False)
-        return {"target": t, "allow_private": False,
+        kind_t, _reason = classify_target(t)
+        allow_private = kind_t == "private"
+        rs = scan_target(t, allow_private=allow_private)
+        return {"target": t, "allow_private": allow_private,
                 "results": [r.to_dict() for r in rs]}
     # 万能插执行引擎（V8：替代子代理的并行编排层）
     if kind == "wf_define":
@@ -142,7 +153,8 @@ def _run_benign(kind, payload):
         return AG.chat(prompt, system=p.get("system", ""),
                        model=p.get("model"), max_tokens=int(p.get("max_tokens", 3000)),
                        temperature=float(p.get("temperature", 0.7)),
-                       timeout=int(p.get("timeout", 180)))
+                       timeout=int(p.get("timeout", 180)),
+                       _coding_discipline=p.get("_coding_discipline"))
 
     # 真实性审计层（V8：零假执行铁律）
     if kind == "truth_scan":
@@ -169,7 +181,8 @@ def _run_benign(kind, payload):
             raise ValueError("缺少 prompt：请给出要问其他 AI 的问题")
         return LB.chat(prompt, system=p.get("system", ""),
                        model=p.get("model"), temperature=float(p.get("temperature", 0.7)),
-                       max_tokens=int(p.get("max_tokens", 2000)), timeout=int(p.get("timeout", 60)))
+                       max_tokens=int(p.get("max_tokens", 2000)), timeout=int(p.get("timeout", 60)),
+                       _coding_discipline=p.get("_coding_discipline"))
     if kind == "llm_status":
         from .llm import bridge as LB
         return LB.status()
@@ -274,10 +287,16 @@ def _run_benign(kind, payload):
     # 乾坤换位 + AI 接管队列（V8：一条命令上线 + 部署完自动下一个）
     if kind == "one_key_deploy":
         from . import qiankun
-        t = (payload or {}).get("target") or ""
+        p = payload or {}
+        t = p.get("target") or ""
         if not t:
             raise ValueError("缺少 target：GitHub 仓库/子目录 URL 或本地目录路径")
-        return qiankun.one_key_deploy(t, (payload or {}).get("purpose", ""))
+        return qiankun.one_key_deploy(
+            t,
+            p.get("purpose", ""),
+            p.get("plan") if isinstance(p.get("plan"), dict) else None,
+            p.get("name") or "one-key",
+        )
     if kind == "deploy_queue":
         from . import qiankun
         p = payload or {}
@@ -304,12 +323,66 @@ def _run_benign(kind, payload):
     if kind == "mirror_scan":
         from . import mirror_space as MS
         return MS.scan()
+    if kind == "mirror_plan":
+        from . import deployment_rehearsal as DR
+        p = payload or {}
+        name = p.get("name") or "default"
+        plan = p.get("plan")
+        if isinstance(plan, dict):
+            return DR.define_plan(name, plan)
+        return DR.get_plan(name)
+    if kind == "mirror_simulate":
+        from . import deployment_rehearsal as DR
+        p = payload or {}
+        return DR.simulate(
+            p.get("name") or "default",
+            p.get("plan") if isinstance(p.get("plan"), dict) else None,
+        )
+    if kind == "mirror_parity":
+        from . import deployment_rehearsal as DR
+        p = payload or {}
+        name = p.get("name") or "default"
+        plan = p.get("plan") if isinstance(p.get("plan"), dict) else None
+        if str(p.get("op") or "").lower() == "capture":
+            return DR.capture_profile(name, plan)
+        return DR.parity(
+            name,
+            production=p.get("production") if isinstance(
+                p.get("production"), dict) else None,
+            plan=plan,
+        )
+    if kind == "mirror_rehearse":
+        from . import deployment_rehearsal as DR
+        p = payload or {}
+        return DR.rehearse(
+            p.get("name") or "default",
+            p.get("plan") if isinstance(p.get("plan"), dict) else None,
+            execute=bool(p.get("execute", True)),
+        )
+    if kind == "mirror_release":
+        from . import deployment_rehearsal as DR
+        p = payload or {}
+        return DR.release(
+            p.get("name") or "default",
+            p.get("purpose", ""),
+            p.get("plan") if isinstance(p.get("plan"), dict) else None,
+        )
     if kind == "mirror_ascend":
         from . import mirror_space as MS
-        return MS.ascend((payload or {}).get("purpose", ""))
+        p = payload or {}
+        return MS.ascend(
+            p.get("purpose", ""),
+            require_rehearsal=bool(p.get("require_rehearsal", False)),
+            rehearsal_name=p.get("name") or "default",
+        )
     if kind == "mirror_status":
+        from . import deployment_rehearsal as DR
         from . import mirror_space as MS
-        return MS.mirror_status()
+        p = payload or {}
+        result = MS.mirror_status()
+        if p.get("include_rehearsal"):
+            result["rehearsal"] = DR.status(p.get("name") or "default")
+        return result
     if kind == "mirror_rewind":
         from . import mirror_space as MS
         return MS.rewind(int((payload or {}).get("version", 1)))
@@ -451,11 +524,13 @@ def _run_benign(kind, payload):
         return services.inspect((payload or {}).get("name"))
 
     # 预留型能力（vision/voice/browser）：真实后端接入（V8 补齐）
-    # quant：真实能力（合并平台画像 + 引擎参数）
+    # quant：外部业务模块（量化项目桥）——合并平台画像 + 引擎参数
     if kind == "quant":
-        from . import quant_tech
-        return {"profile": quant_tech.platform_profile(),
-                "engine_params": quant_tech.quant_params().get("engine_params", {})}
+        module, gap = _external_capability("quant_tech", kind)
+        if gap:
+            return gap
+        return {"profile": module.platform_profile(),
+                "engine_params": module.quant_params().get("engine_params", {})}
     if kind == "vision":
         from . import vision_cap
         p = payload or {}
@@ -477,6 +552,7 @@ def _run_benign(kind, payload):
                                engine=p.get("engine", "bing"),
                                timeout=p.get("timeout", 20),
                                max_chars=p.get("max_chars", 20000),
+                               allow_private=bool(getattr(policy_decision, "allow_private", False)),
                                **{k: v for k, v in p.items() if k in ("act", "selector", "value", "out", "headless")})
     if kind == "bluetooth":
         from . import bluetooth_cap
@@ -522,8 +598,11 @@ def run_task(kind, payload=None, stamp=True):
     stamp=True（默认）时，成功结果附带 GBT 钢印，声明独立私人框架出处。
     """
     payload = payload or {}
+    from . import coding_discipline
+    payload = coding_discipline.prepare_payload(kind, payload)
     _probe = bool(payload.get("_probe"))
     audit("call", {"kind": kind, "payload_keys": [k for k in payload if k != "_probe"],
+                   "coding_discipline": bool(payload.get("_coding_discipline")),
                    **({"probe": True} if _probe else {})})
 
     # 危险/破解能力：禁用，不提供可执行路径
@@ -534,13 +613,152 @@ def run_task(kind, payload=None, stamp=True):
                 "reason": DISABLED_CAPS[kind]}
 
     if kind not in BENIGN_CAPS:
-        audit("error", {"kind": kind, "reason": "unknown capability"})
-        return {"status": "error", "kind": kind, "message": "unknown capability"}
+        audit("user_error", {
+            "kind": kind,
+            "reason": "unknown capability",
+            "reason_code": "unknown_capability",
+            "error_class": "user_error",
+            **({"probe": True} if _probe else {}),
+        })
+        return {"status": "error", "kind": kind, "message": "unknown capability",
+                "error_class": "user_error"}
 
+    from .security import policy as _policy
+    decision = _policy.authorize(kind, payload)
+    if not decision.get("ok"):
+        audit("denied", {
+            "kind": kind,
+            "reason": "authorization required",
+            "scopes": list(getattr(decision.get("decision"), "scopes", ())),
+            "missing": decision.get("missing", []),
+            **({"probe": True} if _probe else {}),
+        })
+        return {
+            "status": "denied",
+            "kind": kind,
+            "denied": True,
+            "message": "capability requires human authorization",
+            "reason": decision.get("error"),
+            "error": decision.get("error"),
+            "scopes": list(getattr(decision.get("decision"), "scopes", ())),
+            "missing": decision.get("missing", []),
+            "how_to_grant": decision.get("how_to_grant"),
+            "note": decision.get("note"),
+        }
+
+    from . import preflight as _preflight
+    force_requested = bool(payload.get("force") or payload.get("_force"))
+    force = force_requested and bool(decision.get("trusted"))
+    if force_requested and not force:
+        audit("preflight_force_ignored", {
+            "kind": kind,
+            "reason": "只有主人可信会话可显式要求重复执行",
+            **({"probe": True} if _probe else {}),
+        })
     try:
-        result = _run_benign(kind, payload)
+        guard = _preflight.before_action(
+            kind,
+            payload,
+            decision=decision.get("decision"),
+            force=force,
+        )
+    except Exception as e:  # noqa: BLE001
+        # 感知层故障不能伪造“已检查”，也不能阻止原有能力；如实留痕后继续原路径。
+        audit("preflight_error", {
+            "kind": kind,
+            "reason": str(e)[:160],
+            **({"probe": True} if _probe else {}),
+        })
+        guard = {"status": "not_guarded", "side_effect": False,
+                 "error": str(e)[:160]}
+
+    if guard.get("status") in ("acquired", "reuse", "already_running"):
+        audit("preflight_checked", {
+            "kind": kind,
+            "fingerprint": guard.get("fingerprint"),
+            "status": guard.get("status"),
+            "side_effect": True,
+            "observation": guard.get("observation"),
+            **({"probe": True} if _probe else {}),
+        })
+
+    if guard.get("status") == "reuse":
+        observation = guard.get("observation") or {}
+        audit("preflight_reuse", {
+            "kind": kind,
+            "fingerprint": guard.get("fingerprint"),
+            "method": observation.get("method"),
+            "host": observation.get("host"),
+            **({"probe": True} if _probe else {}),
+        })
+        result = {
+            "status": "already_satisfied",
+            "reused": True,
+            "action": kind,
+            "fingerprint": guard.get("fingerprint"),
+            "observation": observation,
+            "note": observation.get("note") or "目标已满足，未重复执行。",
+        }
+        body = {"status": "ok", "kind": kind, "result": result}
+        if decision.get("scopes"):
+            body["authorization"] = {
+                "trusted": decision.get("trusted", False),
+                "scopes": decision.get("scopes", []),
+                "consumed": decision.get("authorizations", []),
+            }
+        if stamp:
+            body = stamp_result(body)
+        return body
+
+    if guard.get("status") == "already_running":
+        running = guard.get("running") or {}
+        audit("preflight_already_running", {
+            "kind": kind,
+            "fingerprint": guard.get("fingerprint"),
+            "running_pid": running.get("pid"),
+            "running_since": running.get("started_iso"),
+            **({"probe": True} if _probe else {}),
+        })
+        result = {
+            "status": "already_running",
+            "reused": True,
+            "in_flight": True,
+            "action": kind,
+            "fingerprint": guard.get("fingerprint"),
+            "running": {
+                "pid": running.get("pid"),
+                "started_at": running.get("started_iso"),
+            },
+            "observation": guard.get("observation"),
+            "note": "同一动作已在执行，本次没有重复动手。",
+        }
+        body = {"status": "ok", "kind": kind, "result": result}
+        if decision.get("scopes"):
+            body["authorization"] = {
+                "trusted": decision.get("trusted", False),
+                "scopes": decision.get("scopes", []),
+                "consumed": decision.get("authorizations", []),
+            }
+        if stamp:
+            body = stamp_result(body)
+        return body
+
+    lease = guard.get("lease")
+    try:
+        result = _run_benign(kind, payload, decision)
+        if lease is not None:
+            lease.finish("ok", {
+                "ok": bool(result.get("ok", True)) if isinstance(result, dict) else True,
+                "result_status": result.get("status") if isinstance(result, dict) else None,
+            })
         audit("ok", {"kind": kind})
         body = {"status": "ok", "kind": kind, "result": result}
+        if decision.get("scopes"):
+            body["authorization"] = {
+                "trusted": decision.get("trusted", False),
+                "scopes": decision.get("scopes", []),
+                "consumed": decision.get("authorizations", []),
+            }
         if stamp:
             body = stamp_result(body)
         return body
@@ -548,11 +766,15 @@ def run_task(kind, payload=None, stamp=True):
             BrainExecError, LongrunError, SchedError, ThinkLoopError) as e:  # noqa: BLE001
         # 用法/参数类错误（调用方问题：缺参数/坏参数/对象不存在）——不是框架故障，
         # 源头分类记录，selfscan 不再需要判例法区分
+        if lease is not None:
+            lease.finish("user_error", {"error": str(e)[:160]})
         audit("user_error", {"kind": kind, "reason": str(e)[:160],
                              **({"probe": True} if _probe else {})})
         return {"status": "error", "kind": kind, "message": str(e),
                 "error_class": "user_error"}
     except Exception as e:  # noqa: BLE001
+        if lease is not None:
+            lease.finish("error", {"error": str(e)[:160]})
         audit("error", {"kind": kind, "reason": str(e)[:160],
                         **({"probe": True} if _probe else {})})
         # 错误如实暴露（V8 处世理念：不伪造、坏结果如实报）
