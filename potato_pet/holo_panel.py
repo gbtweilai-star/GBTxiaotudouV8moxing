@@ -144,7 +144,7 @@ class _MarkdownBubble(QFrame):
         self.doc.setFrameShape(QFrame.NoFrame)
         self.doc.setStyleSheet(
             "QTextBrowser{background:transparent;border:none;"
-            "color:#e2e8f0;font-size:13px;selection-background-color:"
+            "color:#e2e8f0;font-size:15px;selection-background-color:"
             "rgba(139,92,246,0.55);}")
         self.doc.document().setDefaultStyleSheet(_DOC_CSS)
         self.doc.setMarkdown(text)
@@ -279,7 +279,7 @@ class HoloPanel(QWidget):
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowOpacity(panel_cfg.get("opacity", 0.94))
-        self.resize(panel_cfg.get("width", 520), panel_cfg.get("height", 680))
+        self.resize(panel_cfg.get("width", 560), panel_cfg.get("height", 720))
 
         self._build_ui()
         self._apply_qss(theme)
@@ -386,7 +386,7 @@ class HoloPanel(QWidget):
         self.input.setObjectName("holoInput")
         self.input.setPlaceholderText("输入消息（支持 Markdown / 代码），"
                                       "Enter 发送 / Shift+Enter 换行")
-        self.input.setFixedHeight(64)
+        self.input.setFixedHeight(72)
         self.input.installEventFilter(self)
         mic = QPushButton("🎤")
         mic.setObjectName("inputBtn")
@@ -573,7 +573,7 @@ class HoloPanel(QWidget):
     def _nav_btn(self, icon: str, tip: str, cb) -> QPushButton:
         b = QPushButton(icon)
         b.setObjectName("navBtn")
-        b.setFixedSize(34, 34)
+        b.setFixedSize(36, 36)
         b.setToolTip(tip)
         b.setCursor(Qt.PointingHandCursor)
         b.clicked.connect(cb)
@@ -597,7 +597,7 @@ class HoloPanel(QWidget):
                 border: 1px solid rgba(34,211,238,0.22);
                 border-radius: 12px;
             }}
-            QLabel#msgTime {{ color:#94a3b8; font-size:10px; }}
+            QLabel#msgTime {{ color:#94a3b8; font-size:11px; }}
             QLabel#badge {{
                 background: qlineargradient(x1:0,y1:0,x2:1,y2:1,
                     stop:0 rgba(139,92,246,0.45), stop:1 rgba(34,211,238,0.35));
@@ -605,19 +605,19 @@ class HoloPanel(QWidget):
                 border-radius: 12px; font-size: 19px;
             }}
             QLabel#charName {{
-                color:#ede9fe; font-size:15px; font-weight:800; letter-spacing:0.5px;
+                color:#ede9fe; font-size:17px; font-weight:800; letter-spacing:0.5px;
             }}
-            QLabel#online {{ color:#67e8f9; font-size:11px; }}
+            QLabel#online {{ color:#67e8f9; font-size:12px; }}
             QLabel#reactor {{ color:#22d3ee; font-size:13px; font-weight:800; }}
             QLabel#banner {{
                 background: rgba(139,92,246,0.14);
                 border: 1px solid rgba(139,92,246,0.3);
                 border-radius: 10px; color:#ddd6fe;
-                padding: 8px 12px; font-size: 12px;
+                padding: 8px 12px; font-size: 13px;
             }}
-            QLabel#telemetry {{ color:#67e8f9; font-size:11px; font-family:Consolas; }}
-            QLabel#affection {{ color:#f472b6; font-size:12px; font-weight:700; }}
-            QLabel#holoThinking {{ color:#22d3ee; font-size: 12px; }}
+            QLabel#telemetry {{ color:#67e8f9; font-size:12px; font-family:Consolas; }}
+            QLabel#affection {{ color:#f472b6; font-size:13px; font-weight:700; }}
+            QLabel#holoThinking {{ color:#22d3ee; font-size: 13px; }}
             QPushButton#navBtn {{
                 background: rgba(42,47,58,0.75); color:{text};
                 border: none; border-radius: 9px; font-size: 15px;
@@ -628,7 +628,7 @@ class HoloPanel(QWidget):
                     stop:0 rgba(42,47,58,0.9), stop:1 rgba(42,47,58,0.6));
                 color:{text};
                 border: 1px solid rgba(139,92,246,0.35);
-                border-radius: 9px; padding: 6px 9px; font-size: 11px;
+                border-radius: 9px; padding: 6px 10px; font-size: 12px;
                 font-weight: 600;
             }}
             QPushButton#featureBtn:hover {{
@@ -639,8 +639,8 @@ class HoloPanel(QWidget):
             QTextEdit#holoInput {{
                 background: rgba(255,255,255,0.07);
                 border: 1px solid rgba(139,92,246,0.5);
-                border-radius: 12px; padding: 9px 12px;
-                color:{text}; font-size: 13px;
+                border-radius: 12px; padding: 10px 14px;
+                color:{text}; font-size: 15px;
             }}
             QTextEdit#holoInput:focus {{ border-color:#a78bfa; }}
             QPushButton#inputBtn {{
