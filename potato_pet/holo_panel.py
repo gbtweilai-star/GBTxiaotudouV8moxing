@@ -1,6 +1,10 @@
 """全息悬浮对话面板（GBT小土豆V8）：全能编程 AI 级对话客户端。
 
-V8 迭代记录：
+V8 视觉：全息 HUD 风（对照用户参考图）——青蓝发光边框 + 四角括弧 +
+代码窗标题栏 + 扫描线，暗蓝底半透明悬浮。数字人保持 Live2D 美少女不变。
+
+迭代记录：
+- 全息 HUD 面板：青蓝发光边 + 四角括弧 + 代码窗标题栏（参考图风）
 - 对话框重写：Markdown 富文本渲染（代码块/表格/列表/行内代码）
 - 代码块可提取复制（右键菜单列出全部代码块，一键复制）
 - 流式显示 API：begin_stream / append_stream_chunk / end_stream（80ms 合批上屏）
@@ -598,83 +602,107 @@ class HoloPanel(QWidget):
         return b
 
     def _apply_qss(self, theme: dict):
-        text = theme.get("text", "#e2e8f0")
-        bg = theme.get("bg", "rgba(11,11,15,0.95)")
+        text = theme.get("text", "#cfefff")
         self.setStyleSheet(f"""
             QFrame#holoFrame {{
-                background: {bg};
-                border: 1px solid rgba(139,92,246,0.45);
-                border-radius: 16px;
+                background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
+                    stop:0 rgba(6,20,38,0.94), stop:1 rgba(4,12,26,0.96));
+                border: 2px solid rgba(34,211,238,0.75);
+                border-radius: 6px;
             }}
             QFrame#bubbleUser {{
-                background: rgba(139,92,246,0.38);
-                border-radius: 12px;
+                background: rgba(34,211,238,0.16);
+                border: 1px solid rgba(34,211,238,0.35);
+                border-radius: 8px;
             }}
             QFrame#bubbleBot {{
-                background: rgba(34,211,238,0.14);
-                border: 1px solid rgba(34,211,238,0.22);
-                border-radius: 12px;
+                background: rgba(8,32,54,0.72);
+                border: 1px solid rgba(34,211,238,0.28);
+                border-radius: 8px;
             }}
-            QLabel#msgTime {{ color:#94a3b8; font-size:11px; }}
+            QLabel#msgTime {{ color:#5fa8c4; font-size:11px; font-family:Consolas; }}
             QLabel#badge {{
-                background: qlineargradient(x1:0,y1:0,x2:1,y2:1,
-                    stop:0 rgba(139,92,246,0.45), stop:1 rgba(34,211,238,0.35));
-                border: 1px solid rgba(167,139,250,0.6);
-                border-radius: 12px; font-size: 19px;
+                background: rgba(34,211,238,0.14);
+                border: 1px solid rgba(80,230,255,0.65);
+                border-radius: 6px; font-size: 18px;
             }}
             QLabel#charName {{
-                color:#ede9fe; font-size:17px; font-weight:800; letter-spacing:0.5px;
+                color:#9ff0ff; font-size:17px; font-weight:800;
+                letter-spacing:1px; font-family:Consolas;
             }}
-            QLabel#online {{ color:#67e8f9; font-size:12px; }}
-            QLabel#reactor {{ color:#22d3ee; font-size:13px; font-weight:800; }}
+            QLabel#online {{ color:#4fd8f0; font-size:12px; font-family:Consolas; }}
+            QLabel#reactor {{ color:#3ddcff; font-size:13px; font-weight:800; }}
             QLabel#banner {{
-                background: rgba(139,92,246,0.14);
-                border: 1px solid rgba(139,92,246,0.3);
-                border-radius: 10px; color:#ddd6fe;
+                background: rgba(34,211,238,0.08);
+                border: 1px solid rgba(34,211,238,0.25);
+                border-left: 3px solid #22d3ee;
+                border-radius: 4px; color:#a8e8f8;
                 padding: 8px 12px; font-size: 13px;
             }}
-            QLabel#telemetry {{ color:#67e8f9; font-size:12px; font-family:Consolas; }}
-            QLabel#affection {{ color:#f472b6; font-size:13px; font-weight:700; }}
-            QLabel#holoThinking {{ color:#22d3ee; font-size: 13px; }}
+            QLabel#telemetry {{ color:#4fd8f0; font-size:12px; font-family:Consolas; }}
+            QLabel#affection {{ color:#ff7ab8; font-size:13px; font-weight:700; font-family:Consolas; }}
+            QLabel#holoThinking {{ color:#3ddcff; font-size: 13px; font-family:Consolas; }}
             QPushButton#navBtn {{
-                background: rgba(42,47,58,0.75); color:{text};
-                border: none; border-radius: 9px; font-size: 15px;
+                background: rgba(10,40,62,0.85); color:#7fe6ff;
+                border: 1px solid rgba(34,211,238,0.35);
+                border-radius: 6px; font-size: 15px;
             }}
-            QPushButton#navBtn:hover {{ background: rgba(139,92,246,0.35); }}
+            QPushButton#navBtn:hover {{
+                background: rgba(34,211,238,0.25); border-color:#3ddcff; color:#e6fbff;
+            }}
             QPushButton#featureBtn {{
-                background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
-                    stop:0 rgba(42,47,58,0.9), stop:1 rgba(42,47,58,0.6));
-                color:{text};
-                border: 1px solid rgba(139,92,246,0.35);
-                border-radius: 9px; padding: 6px 10px; font-size: 12px;
-                font-weight: 600;
+                background: rgba(10,40,62,0.8);
+                color:#8fe8ff;
+                border: 1px solid rgba(34,211,238,0.4);
+                border-radius: 6px; padding: 6px 10px; font-size: 12px;
+                font-weight: 600; font-family:Consolas;
             }}
             QPushButton#featureBtn:hover {{
-                background: rgba(139,92,246,0.28); border-color:#a78bfa; color:#ede9fe;
+                background: rgba(34,211,238,0.22); border-color:#3ddcff; color:#e6fbff;
             }}
-            QPushButton#featureBtn:pressed {{ background: rgba(139,92,246,0.45); }}
+            QPushButton#featureBtn:pressed {{ background: rgba(34,211,238,0.38); }}
             QScrollArea#holoScroll {{ background: transparent; border: none; }}
             QTextEdit#holoInput {{
-                background: rgba(255,255,255,0.07);
-                border: 1px solid rgba(139,92,246,0.5);
-                border-radius: 12px; padding: 10px 14px;
-                color:{text}; font-size: 15px;
+                background: rgba(6,26,44,0.9);
+                border: 1px solid rgba(34,211,238,0.55);
+                border-radius: 6px; padding: 10px 14px;
+                color:#d8f6ff; font-size: 15px;
+                selection-background-color: rgba(34,211,238,0.45);
             }}
-            QTextEdit#holoInput:focus {{ border-color:#a78bfa; }}
+            QTextEdit#holoInput:focus {{ border-color:#3ddcff; background: rgba(8,32,54,0.95); }}
             QPushButton#inputBtn {{
-                background: rgba(42,47,58,0.85); color:{text};
-                border: 1px solid rgba(139,92,246,0.35);
-                border-radius: 10px; font-size: 15px;
+                background: rgba(10,40,62,0.9); color:#7fe6ff;
+                border: 1px solid rgba(34,211,238,0.4);
+                border-radius: 6px; font-size: 15px;
             }}
-            QPushButton#inputBtn:hover {{ background: rgba(139,92,246,0.3); }}
+            QPushButton#inputBtn:hover {{ background: rgba(34,211,238,0.25); }}
             QPushButton#holoSend {{
                 background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
-                    stop:0 #8b5cf6, stop:1 #7c3aed);
-                color: white; border: none;
-                border-radius: 10px; font-size: 15px; font-weight: 700;
+                    stop:0 #22d3ee, stop:1 #0891b2);
+                color: #03212e; border: 1px solid #3ddcff;
+                border-radius: 6px; font-size: 15px; font-weight: 800;
             }}
             QPushButton#holoSend:hover {{
                 background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
-                    stop:0 #a78bfa, stop:1 #8b5cf6);
+                    stop:0 #67e8f9, stop:1 #22d3ee);
             }}
         """)
+
+    def paintEvent(self, event):  # noqa: N802 — 全息 HUD 四角括弧
+        super().paintEvent(event)
+        from PySide6.QtGui import QPainter, QPen, QColor
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+        g = self.frame.geometry()
+        x0, y0 = g.x() + 2, g.y() + 2
+        x1, y1 = g.right() - 1, g.bottom() - 1
+        L = 20            # 括弧臂长
+        pen = QPen(QColor(90, 235, 255, 235), 3)
+        pen.setCapStyle(Qt.FlatCap)
+        p.setPen(pen)
+        # 四角 L 形亮弧（参考图的全息边框特征）
+        for (cx, cy, dx, dy) in ((x0, y0, 1, 1), (x1, y0, -1, 1),
+                                 (x0, y1, 1, -1), (x1, y1, -1, -1)):
+            p.drawLine(cx, cy, cx + dx * L, cy)
+            p.drawLine(cx, cy, cx, cy + dy * L)
+        p.end()
