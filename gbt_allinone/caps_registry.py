@@ -452,6 +452,12 @@ BENIGN_CAPS = {
         "handler": "bt_control",
         "safe": True,
     },
+    "tripo": {
+        "domain": "digital_human",
+        "desc": "AI 3D 数字人生成（Tripo）：文本/图片→3D 美少女模型→自动绑骨→100+ 预设动作（行走/奔跑/战斗/跳跃），输出绑骨动画 GLB",
+        "handler": "tripo",
+        "safe": True,
+    },
     "quant": {
         "domain": "finance",
         "desc": "量化/回测入口（自有金融模块，可并入）",

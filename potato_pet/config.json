@@ -10,7 +10,7 @@
     "height": 560,
     "default_x": -1,
     "default_y": -1,
-    "model_dir": "mao",
+    "model_dir": "haru",
     "fallback_placeholder": true,
     "click_through_default": false,
     "topmost": true
@@ -46,7 +46,22 @@
     "play_probability": 0.3,
     "play_interval_ms": 60000,
     "sleep_after_minutes": 10,
-    "affection_decay_minutes": 3
+    "affection_decay_minutes": 3,
+    "motion_aliases": {
+      "interact": "TapBody",
+      "head": "TapBody",
+      "wander": "TapBody",
+      "play": "TapBody",
+      "sleep": "Idle",
+      "talk": "Idle"
+    },
+    "expression_map": {
+      "happy": "exp_01",
+      "surprised": "exp_04",
+      "shy": "exp_03",
+      "bored": "exp_06",
+      "sad": "exp_07"
+    }
   },
   "voice": {
     "enabled": true

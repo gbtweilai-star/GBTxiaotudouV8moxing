@@ -193,6 +193,14 @@ class BehaviorEngine(QObject):
         self._motion_aliases = {
             str(k): str(v) for k, v in dict(self.cfg.get("motion_aliases", {})).items()
         }
+        # V8 稳定性： Mao 等模型只有 Idle/TapBody 组，wander/play/sleep 请求
+        # 会静默失败（角色不动的主因）。默认映射到真实存在的组：
+        self._motion_aliases.setdefault("wander", "TapBody")
+        self._motion_aliases.setdefault("play", "TapBody")
+        self._motion_aliases.setdefault("sleep", "Idle")
+        self._motion_aliases.setdefault("interact", "TapBody")
+        self._motion_aliases.setdefault("talk", "Idle")
+        self._motion_aliases.setdefault("head", "TapBody")
         self._expression_map = {
             str(k): str(v) for k, v in dict(self.cfg.get("expression_map", {})).items()
         }

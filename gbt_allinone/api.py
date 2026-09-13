@@ -494,6 +494,14 @@ def _run_benign(kind, payload):
                               intent=p.get("intent", ""),
                               address=p.get("address"),
                               scan_timeout=p.get("scan_timeout", 6.0))
+    if kind == "tripo":
+        from . import tripo
+        p = payload or {}
+        fn = getattr(tripo, p.get("op", "status"), None)
+        if fn is None:
+            return {"status": "error", "message": f"未知 op: {p.get('op')}"}
+        kwargs = {k: v for k, v in p.items() if k not in ("op", "_probe")}
+        return fn(**kwargs)
 
 
 # 用法错误基类导入（源头分类用——这些异常类全部继承 Exception，语义=调用方问题）
