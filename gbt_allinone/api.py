@@ -450,33 +450,6 @@ def _run_benign(kind, payload):
         from . import services
         return services.inspect((payload or {}).get("name"))
 
-    # ══ 资金模块（钱包/账本/收款）——纯全能 AI 框架不随库分发，优雅降级 ══
-    # 定位：GBT-V8 是纯全能 AI 框架，资金模块归家 Workspace/03_收款钱包与支付/。
-    # 框架内只留本降级占位；模块实体 + 真执行路由在 _money_route.py（可选文件，不入库）。
-    # 模块在家（本地有 _money_route.py 且实体模块存在）时动态加载真执行，
-    # 否则如实报告"资金模块未随框架分发"，不伪造结果。
-    _MONEY_KINDS = (
-        "wallet_new", "wallet_derive", "wallet_rpc_status",
-        "ledger_open_account", "ledger_deposit", "ledger_transfer",
-        "ledger_balance", "ledger_withdraw", "pool_assign_address", "ledger_verify",
-        "ledger_freeze", "ledger_unfreeze", "ledger_frozen",
-        "ledger_statement", "ledger_reconcile", "ledger_export", "notify_list",
-        "receive_status", "receive_init", "receive_new_address", "receive_invoice",
-        "receive_list", "receive_scan", "receive_balances", "receive_invoice_for", "receive_sync",
-    )
-    if kind in _MONEY_KINDS:
-        try:
-            from . import _money_route as _mr  # 可选适配层（gitignore，不入库）
-            return _mr.route(kind, payload or {})
-        except ImportError:
-            audit("degraded", {"kind": kind, "reason": "money module not shipped"})
-            return {"status": "needs_dependency",
-                    "capability": kind,
-                    "missing": "资金模块（wallet/ledger/bridge）未随纯全能 AI 框架分发",
-                    "note": "GBT-V8 定位为纯全能 AI 框架，资金模块已归家 "
-                            "Workspace/03_收款钱包与支付/；如需恢复请从归档复制回 "
-                            "gbt_allinone/ 并放入 _money_route.py 路由适配层"}
-
     # 预留型能力（vision/voice/browser）：真实后端接入（V8 补齐）
     # quant：真实能力（合并平台画像 + 引擎参数）
     if kind == "quant":
