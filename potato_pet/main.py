@@ -109,6 +109,16 @@ def main() -> int:
                 panel.begin_stream("assistant")
                 self._streaming = True
             panel.append_stream_chunk(delta)
+            # V8：编程时逐字显示 AI 行动（随内容长度切阶段文案）
+            n = len(panel._stream_buf and "".join(panel._stream_buf) or "")
+            if n < 60:
+                panel.set_activity("◌ 正在分析需求…")
+            elif n < 200:
+                panel.set_activity("⚙ 正在构建方案…")
+            elif n < 500:
+                panel.set_activity("✎ 正在编写代码…")
+            else:
+                panel.set_activity("✓ 正在整理输出…")
 
         def _on_replied(self, text):
             if getattr(self, "_streaming", False):
@@ -135,6 +145,7 @@ def main() -> int:
 
     def on_submit(text: str) -> None:
         panel.add_message("user", text)
+        panel.set_activity("◌ 正在理解你的需求…")
         panel.set_thinking(True)
         if behavior:
             behavior.on_message("user", text)

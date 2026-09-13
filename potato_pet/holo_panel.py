@@ -289,6 +289,12 @@ class HoloPanel(QWidget):
         self._apply_qss(theme)
         self._render_messages()
 
+        # V8：面板可拖动（按住头部/空白处拖拽；避开按钮和输入区）
+        self._drag_pos = None
+        self.frame.setMouseTracking(True)
+        self.frame.installEventFilter(self)
+
+
     # ---------------- UI 构建 ----------------
     def _build_ui(self):
         outer = QVBoxLayout(self)
@@ -326,7 +332,7 @@ class HoloPanel(QWidget):
         badge.setAlignment(Qt.AlignCenter)
         name_col = QVBoxLayout()
         name_col.setSpacing(0)
-        name = QLabel("GBT小土豆")
+        name = QLabel("GBT小土豆V8")
         name.setObjectName("charName")
         status_row = QHBoxLayout()
         status_row.setSpacing(6)
@@ -429,6 +435,19 @@ class HoloPanel(QWidget):
                     not event.modifiers() & Qt.ShiftModifier:
                 self._submit()
                 return True
+        # 面板头部拖拽：按下记录起点，移动拖动，松开清零
+        if obj is self.frame:
+            if event.type() == QEvent.MouseButtonPress and event.button() == Qt.LeftButton:
+                # 只允许头部区（y < 90）拖拽，避免挡住消息区/输入区的鼠标交互
+                if event.position().y() < 90:
+                    self._drag_pos = (event.globalPosition().toPoint()
+                                      - self.frameGeometry().topLeft())
+            elif event.type() == QEvent.MouseMove and self._drag_pos is not None:
+                if event.buttons() & Qt.LeftButton:
+                    self.move(event.globalPosition().toPoint() - self._drag_pos)
+                    return True
+            elif event.type() == QEvent.MouseButtonRelease:
+                self._drag_pos = None
         return super().eventFilter(obj, event)
 
     # ---------------- 会话 ----------------
@@ -507,6 +526,10 @@ class HoloPanel(QWidget):
         self._update_session_label()
 
     # ---------------- 流式显示（编程 AI 核心体验）----------------
+    def set_activity(self, text: str):
+        """V8：活动状态行——编程时逐字显示 AI 每一步在干嘛（如这个对话框）。"""
+        self.thinking.setText(text)
+
     def begin_stream(self, role: str = "assistant"):
         """开始一次流式回复：占位气泡 + 合批定时器。"""
         self.end_stream()  # 兜底：上次未闭合先落盘

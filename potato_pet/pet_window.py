@@ -67,8 +67,91 @@ class _PlaceholderBody(QWidget):
         p.end()
 
 
+class _AuraLayer(QWidget):
+    """V8 活跃光环层：角色周围的呼吸光圈 + 环绕全息粒子 + 底座光晕。
+
+    透明覆盖在 Live2D 之上，让角色看起来是“活的、在发光”，而非遗照。
+    鼠标穿透：setAttribute WA_TransparentForMouseEvents。
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)   # 不挡点击
+        self._t = 0.0
+        self._timer = QTimer(self)
+        self._timer.setInterval(50)   # 20fps 够轻
+        self._timer.timeout.connect(self._tick)
+
+    def start(self):
+        self._timer.start()
+
+    def stop(self):
+        self._timer.stop()
+
+    def _tick(self):
+        self._t += 1
+        self.update()
+
+    def paintEvent(self, event):  # noqa: N802
+        import math
+        from PySide6.QtGui import QRadialGradient, QPainter, QColor, QBrush
+        from PySide6.QtCore import QPointF, Qt
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+        w, h = self.width(), self.height()
+        cx = w / 2
+        # 角色主体大约在窗口中间偏下
+        body_cy = h * 0.5
+
+        # 1. 呼吸光晕（围绕角色主体的椭圆光环，缓慢脉动）
+        pulse = 0.5 + 0.5 * math.sin(self._t * 0.08)
+        for i in range(3):
+            rr_x = w * (0.42 + i * 0.08 + pulse * 0.03)
+            rr_y = h * (0.5 + i * 0.07 + pulse * 0.02)
+            grad = QRadialGradient(QPointF(cx, body_cy), rr_x)
+            grad.setColorAt(0.0, QColor(34, 211, 238, 0))
+            grad.setColorAt(0.72, QColor(34, 211, 238, 0))
+            grad.setColorAt(0.9, QColor(80, 230, 255, int(28 - i * 8 + pulse * 14)))
+            grad.setColorAt(1.0, QColor(34, 211, 238, 0))
+            p.setBrush(QBrush(grad))
+            p.setPen(Qt.NoPen)
+            p.drawEllipse(QPointF(cx, body_cy), rr_x, rr_y)
+
+        # 2. 底座光晕（角色脚下椭圆）
+        base_y = h * 0.9
+        for i in range(2):
+            grad = QRadialGradient(QPointF(cx, base_y), w * (0.3 + i * 0.12))
+            grad.setColorAt(0, QColor(80, 230, 255, int(40 - i * 14)))
+            grad.setColorAt(1, QColor(34, 211, 238, 0))
+            p.setBrush(QBrush(grad))
+            p.setPen(Qt.NoPen)
+            p.drawEllipse(QPointF(cx, base_y), w * (0.3 + i * 0.12), h * 0.05)
+
+        # 3. 环绕全息粒子（向上漂浮，循环）
+        import random
+        if not hasattr(self, "_ps"):
+            random.seed(11)
+            self._ps = [{"x": random.uniform(0.15, 0.85),
+                         "y": random.uniform(0, 1.0),
+                         "sp": random.uniform(0.003, 0.010),
+                         "sz": random.uniform(1.2, 2.8),
+                         "ph": random.uniform(0, 6.28)} for _ in range(20)]
+        for pt in self._ps:
+            py = (pt["y"] - self._t * pt["sp"]) % 1.0
+            px = pt["x"] + math.sin(self._t * 0.03 + pt["ph"]) * 0.02
+            alpha = int(120 + 100 * math.sin(self._t * 0.1 + pt["ph"]))
+            p.setBrush(QBrush(QColor(140, 245, 255, max(0, min(200, alpha)))))
+            p.setPen(Qt.NoPen)
+            p.drawEllipse(QPointF(px * w, py * h), pt["sz"], pt["sz"])
+        p.end()
+
+
 class PetWindow(QWidget):
     """透明置顶的 Live2D 桌宠窗口。
+
+    V8 活跃感：叠加透明光环层（呼吸光圈 + 环绕全息粒子），
+    解决角色旁边一圈死白、像遗照的问题。
 
     信号：
         clicked(str part)              -- 点击角色某部件（Head/Body）
@@ -111,6 +194,12 @@ class PetWindow(QWidget):
         self.gl_widget.model_failed.connect(self._show_placeholder)
         self.gl_widget.model_ready.connect(self._on_model_ready)
         layout.addWidget(self.gl_widget)
+
+        # V8：活跃光环层（透明覆盖，呼吸光圈+粒子，消除遗照感）
+        self.aura = _AuraLayer(self)
+        self.aura.setGeometry(0, 0, w, h)
+        self.aura.raise_()
+        self.aura.start()
 
         self._placeholder = None
 
@@ -276,8 +365,9 @@ class _Live2DCanvas(QOpenGLWidget):
         if self.model is None:
             return
         try:
-            # 先清屏：透明背景（0,0,0,0），否则上一帧残影叠加成鬼影
-            live2d.clearBuffer(1.0, 1.0, 1.0, 0.0)
+            # V8 透明修复：清成透明黑（0,0,0,0）——之前清白 (1,1,1,0) 在某些
+            # 合成路径下 alpha 丢失会漏白底（遗照感的根因）
+            live2d.clearBuffer(0.0, 0.0, 0.0, 0.0)
             self.model.Update()
             self.model.Draw()
         except Exception:
