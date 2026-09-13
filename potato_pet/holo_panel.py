@@ -1,22 +1,34 @@
-"""全息悬浮对话面板 v4：完整多功能聊天客户端。
+"""全息悬浮对话面板 v6：全能编程 AI 级对话客户端。
 
-参照用户当前使用的对话客户端形态（AutoClaw 聊天界面）：
-左侧图标导航栏 + 消息流（头像/气泡/时间戳）+ 多行输入区（附件/语音/发送）
-+ 功能入口栏 + 底部状态栏（遥测/好感度），Neon Noir 半透明悬浮。
-会话持久化到 sessions.json，支持多会话切换。
+v5→v6 重写动机（以"全能编程 AI 对话框"标准）：
+- Markdown 富文本渲染：代码块/表格/列表/行内代码，QTextBrowser.setMarkdown
+- 代码块可提取复制（右键菜单列出全部代码块，一键复制）
+- 流式显示 API：begin_stream / append_stream_chunk / end_stream（80ms 合批上屏）
+- 消息操作：右键复制消息；气泡内文本原生可选（Ctrl+C 可用）
+- 架构分层：_SessionStore（持久化）/ _MarkdownBubble（渲染）/ HoloPanel（装配）
+- 修复 v5 缺陷：孤儿 nav 按钮重复创建、QLabel 无选择能力、全量重建气泡
+
+对外契约与 v5 完全兼容（main.py 无需改动）：
+    message_submitted(str) / close_requested() / feature_clicked(str)
+    session_switched(list) / persona_change_requested(str)
+    add_message / set_thinking / set_affection / update_telemetry
+    panel_rect / move_near / show_panel / hide_panel / toggle
+新增：
+    begin_stream() / append_stream_chunk(text) / end_stream()  流式回复
 """
 from __future__ import annotations
 
 import json
 import logging
 import os
+import re
 import time
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import QEvent, QObject, Qt, QTimer, Signal
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QScrollArea, QFrame, QTextEdit,
-                               QMenu, QListWidget, QListWidgetItem)
+                               QTextBrowser, QMenu)
 
 from chat_client import ChatClient, offline_reply  # noqa: F401
 
@@ -25,13 +37,92 @@ logger = logging.getLogger("potato.panel")
 _SESSIONS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                               "sessions.json")
 
+# Markdown 代码块提取（流式容错：未闭合的 ``` 也算一块）
+_CODE_BLOCK_RE = re.compile(r"```[^\n]*\n(.*?)(?:```|$)", re.DOTALL)
 
-class _MessageBubble(QFrame):
-    """一条消息：头像 + 气泡 + 时间戳。"""
+# 气泡内文档默认样式：暗色主题下的 Markdown 元素（含代码块）
+_DOC_CSS = """
+pre { background-color: rgba(15,18,30,0.92); color: #a5f3fc;
+      font-family: Consolas, 'Cascadia Mono', monospace; font-size: 12px; }
+code { color: #fbbf24; font-family: Consolas, monospace; }
+h1, h2, h3 { color: #ede9fe; }
+a { color: #67e8f9; }
+table { color: #e2e8f0; }
+"""
+
+# ══════════════════════════════════════════════════════════════ 持久化层
+class _SessionStore:
+    """会话存储：JSON 读写 + 当前会话指针。纯逻辑，无 Qt 依赖。"""
+
+    def __init__(self, path: str):
+        self.path = path
+        self.sessions = self._load()
+        if not self.sessions:
+            self.sessions = [{"id": int(time.time()), "title": "新对话",
+                              "messages": []}]
+        self.current = 0
+
+    def _load(self):
+        try:
+            with open(self.path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return []
+
+    def save(self):
+        try:
+            with open(self.path, "w", encoding="utf-8") as f:
+                json.dump(self.sessions, f, ensure_ascii=False, indent=1)
+        except Exception as e:
+            logger.warning("save sessions failed: %s", e)
+
+    @property
+    def session(self):
+        return self.sessions[self.current]
+
+    def new(self):
+        self.sessions.insert(0, {"id": int(time.time()), "title": "新对话",
+                                 "messages": []})
+        self.current = 0
+        self.save()
+
+    def switch(self, idx: int) -> bool:
+        if not (0 <= idx < len(self.sessions)):
+            return False
+        self.current = idx
+        return True
+
+    def add(self, role: str, text: str, ts: str):
+        s = self.session
+        s["messages"].append({"role": role, "text": text, "ts": ts})
+        if role == "user" and len(s["messages"]) == 1:
+            s["title"] = text[:12]
+        self.save()
+
+    def history_for_chat(self, idx=None):
+        """当前（或指定）会话的 chat 历史格式。"""
+        s = self.sessions[idx if idx is not None else self.current]
+        return [{"role": m["role"], "content": m["text"]}
+                for m in s.get("messages", [])
+                if m["role"] in ("user", "assistant")]
+
+
+# ══════════════════════════════════════════════════════════════ 渲染层
+class _MarkdownBubble(QFrame):
+    """Markdown 富文本气泡：QTextBrowser 渲染 + 复制/代码提取操作。
+
+    - assistant 消息走 setMarkdown（代码块/表格/列表/行内代码全支持）
+    - user 消息同样支持 Markdown（粘贴代码提问是编程 AI 高频场景）
+    - 文本原生可选择（拖选 + Ctrl+C）
+    - 右键菜单：复制消息 / 复制全部代码 / 逐个代码块复制
+    """
 
     def __init__(self, role: str, text: str, ts: str, parent=None):
         super().__init__(parent)
+        self._role = role
+        self._raw = text
         self.setFrameShape(QFrame.NoFrame)
+
         row = QHBoxLayout(self)
         row.setContentsMargins(0, 0, 0, 0)
         row.setSpacing(8)
@@ -43,45 +134,116 @@ class _MessageBubble(QFrame):
 
         bubble = QFrame()
         bubble.setObjectName("bubbleUser" if role == "user" else "bubbleBot")
-        bl = QVBoxLayout(bubble)
-        bl.setContentsMargins(10, 7, 10, 7)
-        msg = QLabel(text)
-        msg.setWordWrap(True)
-        msg.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        msg.setObjectName("msgText")
-        bl.addWidget(msg)
+        col = QVBoxLayout(bubble)
+        col.setContentsMargins(10, 7, 10, 7)
+        col.setSpacing(4)
+
+        self.doc = QTextBrowser()
+        self.doc.setObjectName("mdDoc")
+        self.doc.setOpenExternalLinks(True)
+        self.doc.setFrameShape(QFrame.NoFrame)
+        self.doc.setStyleSheet(
+            "QTextBrowser{background:transparent;border:none;"
+            "color:#e2e8f0;font-size:13px;selection-background-color:"
+            "rgba(139,92,246,0.55);}")
+        self.doc.document().setDefaultStyleSheet(_DOC_CSS)
+        self.doc.setMarkdown(text)
+        self.doc.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.doc.customContextMenuRequested.connect(self._show_menu)
+        # 高度随内容：禁滚动条，容器气泡自适应
+        self.doc.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.doc.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.doc.setFixedHeight(self._doc_height())
+        col.addWidget(self.doc)
+
         t = QLabel(ts)
         t.setObjectName("msgTime")
         t.setAlignment(Qt.AlignRight)
-        bl.addWidget(t)
+        col.addWidget(t)
 
         if role == "user":
             row.addStretch(1)
             row.addWidget(bubble)
             row.addWidget(avatar)
-            bubble.setStyleSheet(
-                "QFrame#bubbleUser{background:rgba(139,92,246,0.38);"
-                "border-radius:12px;} QLabel#msgText{color:#f1f5f9;font-size:13px;}"
-                "QLabel#msgTime{color:#94a3b8;font-size:10px;}")
         else:
             row.addWidget(avatar)
             row.addWidget(bubble)
             row.addStretch(1)
-            bubble.setStyleSheet(
-                "QFrame#bubbleBot{background:rgba(34,211,238,0.14);"
-                "border-radius:12px;} QLabel#msgText{color:#e2e8f0;font-size:13px;}"
-                "QLabel#msgTime{color:#94a3b8;font-size:10px;}")
+
+    def _doc_height(self) -> int:
+        doc = self.doc.document()
+        doc.setTextWidth(self.doc.viewport().width() or 380)
+        h = int(doc.documentLayout().documentSize().height()) + 8
+        return max(24, min(h, 520))  # 超长代码块内部滚动，不撑爆面板
+
+    def update_markdown(self, text: str):
+        """流式刷新：重设 Markdown 并重算高度。"""
+        self._raw = text
+        self.doc.setMarkdown(text)
+        self.doc.setFixedHeight(self._doc_height())
+
+    def _code_blocks(self):
+        return [m.strip() for m in _CODE_BLOCK_RE.findall(self._raw) if m.strip()]
+
+    def _show_menu(self, pos):
+        menu = QMenu(self.doc)
+        menu.setStyleSheet(_MENU_QSS)
+        act_copy = menu.addAction("📋 复制消息（Markdown 原文）")
+        blocks = self._code_blocks()
+        if blocks:
+            if len(blocks) == 1:
+                act_code = menu.addAction("📋 复制代码块")
+            else:
+                act_code = menu.addAction(f"📋 复制全部代码（{len(blocks)} 块）")
+        else:
+            act_code = None
+        chosen = menu.exec(self.doc.mapToGlobal(pos))
+        if chosen is act_copy:
+            from PySide6.QtWidgets import QApplication
+            QApplication.clipboard().setText(self._raw)
+        elif act_code is not None and chosen is act_code:
+            from PySide6.QtWidgets import QApplication
+            QApplication.clipboard().setText("\n\n".join(blocks))
+
+    def copy_message(self):
+        from PySide6.QtWidgets import QApplication
+        QApplication.clipboard().setText(self._raw)
 
 
+_MENU_QSS = ("QMenu{background:#121629;color:#e2e8f0;border:1px solid #2b3350;"
+             "border-radius:8px;padding:6px;} QMenu::item{padding:6px 18px;}"
+             "QMenu::item:selected{background:#8b5cf6;border-radius:6px;}")
+
+
+class _ThinkingBar(QLabel):
+    """动态思考指示：三点呼吸动画。"""
+
+    def __init__(self, parent=None):
+        super().__init__("小土豆思考中", parent)
+        self.setObjectName("holoThinking")
+        self._n = 0
+        self._timer = QTimer(self)
+        self._timer.setInterval(360)
+        self._timer.timeout.connect(self._tick)
+
+    def _tick(self):
+        self._n = (self._n + 1) % 4
+        self.setText("小土豆思考中" + " ·" * self._n)
+
+    def start(self):
+        self._timer.start()
+        self.setVisible(True)
+
+    def stop(self):
+        self._timer.stop()
+        self.setVisible(False)
+
+
+# ══════════════════════════════════════════════════════════════ 面板
 class HoloPanel(QWidget):
-    """完整多功能全息对话客户端（半透明悬浮）。
+    """全能编程 AI 全息对话客户端（半透明悬浮）。
 
-    信号：
-        message_submitted(str)  用户发送消息
-        close_requested()       关闭面板
-        feature_clicked(str)    功能入口（voice/tools/browser/agent/model/settings）
-        session_switched(list)  切换会话（携带该会话消息列表，供 chat 同步历史）
-        persona_change_requested(str) 换形象请求（模型目录名）
+    信号与公共方法与 v5 完全兼容；新增流式 API。
     """
 
     message_submitted = Signal(str)
@@ -104,17 +266,27 @@ class HoloPanel(QWidget):
         panel_cfg = config.get("panel", {})
         theme = panel_cfg.get("theme", {})
 
-        self._sessions = self._load_sessions()      # [{id,title,messages:[{role,text,ts}]}]
-        self._current = 0
+        self.store = _SessionStore(_SESSIONS_FILE)
+
+        # 流式状态
+        self._stream_role = None
+        self._stream_buf = []
+        self._stream_timer = QTimer(self)          # 80ms 合批刷新，避免每 token 重排
+        self._stream_timer.setInterval(80)
+        self._stream_timer.timeout.connect(self._flush_stream)
+        self._stream_bubble = None
 
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowOpacity(panel_cfg.get("opacity", 0.94))
-        self.resize(panel_cfg.get("width", 500), panel_cfg.get("height", 640))
+        self.resize(panel_cfg.get("width", 520), panel_cfg.get("height", 680))
 
-        if not self._sessions:
-            self._sessions = [{"id": int(time.time()), "title": "新对话", "messages": []}]
+        self._build_ui()
+        self._apply_qss(theme)
+        self._render_messages()
 
+    # ---------------- UI 构建 ----------------
+    def _build_ui(self):
         outer = QVBoxLayout(self)
         outer.setContentsMargins(2, 2, 2, 2)
         self.frame = QFrame(self)
@@ -125,11 +297,10 @@ class HoloPanel(QWidget):
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(0)
 
-        # ================= 左侧图标导航栏 =================
+        # ---- 左侧图标导航栏（v6 修复：无重复创建）----
         nav = QVBoxLayout()
         nav.setContentsMargins(6, 10, 6, 10)
         nav.setSpacing(8)
-        self._nav_btn("➕", "新建会话", self._new_session).setObjectName("navBtn")
         nav.addWidget(self._nav_btn("➕", "新建会话", self._new_session))
         nav.addWidget(self._nav_btn("💬", "历史会话", self._show_history))
         nav.addWidget(self._nav_btn("🎭", "切换形象", self._pick_persona))
@@ -138,12 +309,11 @@ class HoloPanel(QWidget):
         nav.addWidget(self._nav_btn("✕", "隐藏面板", lambda: self.close_requested.emit()))
         root.addLayout(nav)
 
-        # ================= 主区 =================
+        # ---- 主区 ----
         main = QVBoxLayout()
         main.setContentsMargins(12, 12, 14, 12)
         main.setSpacing(8)
 
-        # 头部：角色徽章 + 名字 + 状态点 + 隐藏键
         header = QHBoxLayout()
         header.setSpacing(10)
         badge = QLabel("👧")
@@ -158,7 +328,7 @@ class HoloPanel(QWidget):
         status_row.setSpacing(6)
         self.reactor = QLabel("◉")
         self.reactor.setObjectName("reactor")
-        online = QLabel("在线 · 悬浮全息模式")
+        online = QLabel("在线 · 编程全能源")
         online.setObjectName("online")
         status_row.addWidget(self.reactor)
         status_row.addWidget(online)
@@ -167,17 +337,16 @@ class HoloPanel(QWidget):
         header.addWidget(badge)
         header.addLayout(name_col)
         header.addStretch(1)
-        hide_btn = self._nav_btn("✕", "隐藏面板", lambda: self.close_requested.emit())
-        header.addWidget(hide_btn)
+        header.addWidget(self._nav_btn("✕", "隐藏面板",
+                                       lambda: self.close_requested.emit()))
         main.addLayout(header)
 
-        # 欢迎横幅
-        self.banner = QLabel("嗨～我是小土豆，点下面的入口或直接打字找我！")
+        self.banner = QLabel("嗨～我是小土豆。代码块、表格、Markdown 我都能排好；"
+                             "右键气泡可复制代码。Enter 发送，Shift+Enter 换行。")
         self.banner.setObjectName("banner")
         self.banner.setWordWrap(True)
         main.addWidget(self.banner)
 
-        # 功能入口栏
         feature_bar = QHBoxLayout()
         feature_bar.setSpacing(6)
         for icon, label, key in self.FEATURES:
@@ -200,24 +369,24 @@ class HoloPanel(QWidget):
         self.scroll.setWidget(self.msg_container)
         main.addWidget(self.scroll, 1)
 
-        # 思考指示
-        self.thinking = QLabel("小土豆思考中 ·  ·  ·")
-        self.thinking.setObjectName("holoThinking")
-        self.thinking.setVisible(False)
+        # 思考指示（动态）
+        self.thinking = _ThinkingBar(self)
         main.addWidget(self.thinking)
 
-        # 输入区：附件 | 多行输入 | 语音 | 发送
+        # 输入区
         input_row = QHBoxLayout()
         input_row.setSpacing(6)
         attach = QPushButton("📎")
         attach.setObjectName("inputBtn")
         attach.setFixedSize(36, 36)
         attach.setToolTip("附件（即将上线）")
-        attach.clicked.connect(lambda: self._assistant_hint("附件功能在路上啦，v4.1 就能发文件给我看～"))
+        attach.clicked.connect(lambda: self.add_message(
+            "assistant", "附件功能在路上啦，v6.1 就能发文件给我看～"))
         self.input = QTextEdit(self)
         self.input.setObjectName("holoInput")
-        self.input.setPlaceholderText("输入消息，Enter 发送 / Shift+Enter 换行")
-        self.input.setFixedHeight(56)
+        self.input.setPlaceholderText("输入消息（支持 Markdown / 代码），"
+                                      "Enter 发送 / Shift+Enter 换行")
+        self.input.setFixedHeight(64)
         self.input.installEventFilter(self)
         mic = QPushButton("🎤")
         mic.setObjectName("inputBtn")
@@ -235,7 +404,6 @@ class HoloPanel(QWidget):
         input_row.addWidget(send)
         main.addLayout(input_row)
 
-        # 底部状态栏：遥测 + 好感度 + 会话数
         status = QHBoxLayout()
         self.telemetry_text = QLabel("")
         self.telemetry_text.setObjectName("telemetry")
@@ -250,48 +418,26 @@ class HoloPanel(QWidget):
 
         root.addLayout(main)
 
-        self._apply_qss(theme)
-        self._render_messages()
-
     # ---------------- 事件过滤：Enter 发送 ----------------
     def eventFilter(self, obj, event):
-        from PySide6.QtCore import QEvent
         if obj is self.input and event.type() == QEvent.KeyPress:
-            if event.key() in (Qt.Key_Return, Qt.Key_Enter) and not event.modifiers() & Qt.ShiftModifier:
+            if event.key() in (Qt.Key_Return, Qt.Key_Enter) and \
+                    not event.modifiers() & Qt.ShiftModifier:
                 self._submit()
                 return True
         return super().eventFilter(obj, event)
 
-    # ---------------- 会话管理 ----------------
-    def _load_sessions(self):
-        try:
-            with open(_SESSIONS_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            return []
-
-    def _save_sessions(self):
-        try:
-            with open(_SESSIONS_FILE, "w", encoding="utf-8") as f:
-                json.dump(self._sessions, f, ensure_ascii=False, indent=1)
-        except Exception as e:
-            logger.warning("save sessions failed: %s", e)
-
+    # ---------------- 会话 ----------------
     def _new_session(self):
-        self._sessions.insert(0, {"id": int(time.time()), "title": "新对话", "messages": []})
-        self._current = 0
-        self._save_sessions()
+        self.store.new()
         self._render_messages()
         self.session_switched.emit([])
         self._update_session_label()
 
     def _show_history(self):
         menu = QMenu(self)
-        menu.setStyleSheet(
-            "QMenu{background:#121629;color:#e2e8f0;border:1px solid #2b3350;"
-            "border-radius:8px;padding:6px;} QMenu::item{padding:6px 18px;}"
-            "QMenu::item:selected{background:#8b5cf6;border-radius:6px;}")
-        for i, s in enumerate(self._sessions[:10]):
+        menu.setStyleSheet(_MENU_QSS)
+        for i, s in enumerate(self.store.sessions[:10]):
             title = s.get("title", "对话")
             n = len(s.get("messages", []))
             act = menu.addAction(f"💬 {title}（{n} 条）")
@@ -299,35 +445,27 @@ class HoloPanel(QWidget):
         menu.exec(self.mapToGlobal(self.rect().topLeft() + self.rect().center()))
 
     def _switch_session(self, idx: int):
-        if not (0 <= idx < len(self._sessions)):
-            return
-        self._current = idx
-        self._render_messages()
-        msgs = self._sessions[idx].get("messages", [])
-        self.session_switched.emit([{"role": m["role"], "content": m["text"]}
-                                    for m in msgs if m["role"] in ("user", "assistant")])
-        self._update_session_label()
+        if self.store.switch(idx):
+            self._render_messages()
+            self.session_switched.emit(self.store.history_for_chat(idx))
+            self._update_session_label()
 
     def _pick_persona(self):
         models = getattr(self, "_available_models", ["haru", "mao", "llny", "nn"])
         menu = QMenu(self)
-        menu.setStyleSheet(
-            "QMenu{background:#121629;color:#e2e8f0;border:1px solid #2b3350;"
-            "border-radius:8px;padding:6px;} QMenu::item{padding:6px 18px;}"
-            "QMenu::item:selected{background:#8b5cf6;border-radius:6px;}")
+        menu.setStyleSheet(_MENU_QSS)
         for m in models:
             act = menu.addAction(f"🎭 {m}")
-            act.triggered.connect(lambda checked=False, name=m: self.persona_change_requested.emit(name))
+            act.triggered.connect(lambda checked=False, name=m:
+                                  self.persona_change_requested.emit(name))
         menu.exec(self.mapToGlobal(self.rect().center()))
 
     def _show_settings(self):
         self.feature_clicked.emit("settings")
 
     def _update_session_label(self):
-        self.session_label.setText(f"会话 {self._current + 1}/{len(self._sessions)}")
-
-    def _assistant_hint(self, text: str):
-        self.add_message("assistant", text)
+        self.session_label.setText(
+            f"会话 {self.store.current + 1}/{len(self.store.sessions)}")
 
     # ---------------- 消息渲染 ----------------
     def _render_messages(self):
@@ -336,12 +474,12 @@ class HoloPanel(QWidget):
             w = item.widget()
             if w:
                 w.deleteLater()
-        for m in self._sessions[self._current].get("messages", []):
+        for m in self.store.session.get("messages", []):
             self._append_bubble(m["role"], m["text"], m.get("ts", ""))
         self._scroll_bottom()
 
     def _append_bubble(self, role, text, ts):
-        b = _MessageBubble(role, text, ts)
+        b = _MarkdownBubble(role, text, ts)
         self.msg_layout.insertWidget(self.msg_layout.count() - 1, b, 0)
         return b
 
@@ -359,18 +497,49 @@ class HoloPanel(QWidget):
 
     def add_message(self, role: str, text: str):
         ts = time.strftime("%H:%M")
-        sess = self._sessions[self._current]
-        sess["messages"].append({"role": role, "text": text, "ts": ts})
-        if role == "user" and len(sess["messages"]) == 1:
-            sess["title"] = text[:12]
-        self._save_sessions()
+        self.store.add(role, text, ts)
         self._append_bubble(role, text, ts)
+        self._scroll_bottom()
+        self._update_session_label()
+
+    # ---------------- 流式显示（编程 AI 核心体验）----------------
+    def begin_stream(self, role: str = "assistant"):
+        """开始一次流式回复：占位气泡 + 合批定时器。"""
+        self.end_stream()  # 兜底：上次未闭合先落盘
+        self._stream_role = role
+        self._stream_buf = []
+        ts = time.strftime("%H:%M")
+        self._stream_bubble = self._append_bubble(role, "", ts)
+        self._stream_timer.start()
+
+    def append_stream_chunk(self, text: str):
+        """追加一个 token/片段（80ms 合批后统一重排 Markdown）。"""
+        if self._stream_bubble is None:
+            self.begin_stream()
+        self._stream_buf.append(text)
+
+    def _flush_stream(self):
+        if self._stream_bubble is not None and self._stream_buf:
+            self._stream_bubble.update_markdown("".join(self._stream_buf))
+            self._scroll_bottom()
+
+    def end_stream(self):
+        """结束流式：最终 Markdown 落盘进会话存储。"""
+        if self._stream_bubble is None:
+            return
+        self._stream_timer.stop()
+        final = "".join(self._stream_buf)
+        self._stream_bubble.update_markdown(final)
+        self.store.add(self._stream_role or "assistant", final,
+                       time.strftime("%H:%M"))
+        self._stream_bubble = None
+        self._stream_buf = []
         self._scroll_bottom()
         self._update_session_label()
 
     # ---------------- 状态 ----------------
     def set_thinking(self, on: bool):
-        self.thinking.setVisible(on)
+        self.thinking.start() if on else self.thinking.stop()
 
     def update_telemetry(self, text: str) -> None:
         self.telemetry_text.setText(text)
@@ -383,9 +552,8 @@ class HoloPanel(QWidget):
         return (g.x(), g.y(), g.width(), g.height())
 
     def move_near(self, pet_rect):
-        """面板紧贴角色右侧站立，重叠一点营造『站在边上』的层次感。"""
         px, py, pw, ph = pet_rect
-        overlap = 26  # 与角色重叠的像素，让她看起来站在面板旁边
+        overlap = 26
         self.move(px + pw - overlap, py - 20)
 
     def show_panel(self):
@@ -401,7 +569,7 @@ class HoloPanel(QWidget):
         else:
             self.show_panel()
 
-    # ---------------- 样式与控件工厂 ----------------
+    # ---------------- 工厂 ----------------
     def _nav_btn(self, icon: str, tip: str, cb) -> QPushButton:
         b = QPushButton(icon)
         b.setObjectName("navBtn")
@@ -412,7 +580,6 @@ class HoloPanel(QWidget):
         return b
 
     def _apply_qss(self, theme: dict):
-        accent = theme.get("border", "#8b5cf6")
         text = theme.get("text", "#e2e8f0")
         bg = theme.get("bg", "rgba(11,11,15,0.86)")
         self.setStyleSheet(f"""
@@ -421,6 +588,16 @@ class HoloPanel(QWidget):
                 border: 1px solid rgba(139,92,246,0.45);
                 border-radius: 16px;
             }}
+            QFrame#bubbleUser {{
+                background: rgba(139,92,246,0.38);
+                border-radius: 12px;
+            }}
+            QFrame#bubbleBot {{
+                background: rgba(34,211,238,0.14);
+                border: 1px solid rgba(34,211,238,0.22);
+                border-radius: 12px;
+            }}
+            QLabel#msgTime {{ color:#94a3b8; font-size:10px; }}
             QLabel#badge {{
                 background: qlineargradient(x1:0,y1:0,x2:1,y2:1,
                     stop:0 rgba(139,92,246,0.45), stop:1 rgba(34,211,238,0.35));
@@ -440,6 +617,7 @@ class HoloPanel(QWidget):
             }}
             QLabel#telemetry {{ color:#67e8f9; font-size:11px; font-family:Consolas; }}
             QLabel#affection {{ color:#f472b6; font-size:12px; font-weight:700; }}
+            QLabel#holoThinking {{ color:#22d3ee; font-size: 12px; }}
             QPushButton#navBtn {{
                 background: rgba(42,47,58,0.75); color:{text};
                 border: none; border-radius: 9px; font-size: 15px;
@@ -461,7 +639,7 @@ class HoloPanel(QWidget):
             QTextEdit#holoInput {{
                 background: rgba(255,255,255,0.07);
                 border: 1px solid rgba(139,92,246,0.5);
-                border-radius: 12px; padding: 8px 12px;
+                border-radius: 12px; padding: 9px 12px;
                 color:{text}; font-size: 13px;
             }}
             QTextEdit#holoInput:focus {{ border-color:#a78bfa; }}
@@ -481,5 +659,4 @@ class HoloPanel(QWidget):
                 background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
                     stop:0 #a78bfa, stop:1 #8b5cf6);
             }}
-            QLabel#holoThinking {{ color:#22d3ee; font-size: 12px; }}
         """)

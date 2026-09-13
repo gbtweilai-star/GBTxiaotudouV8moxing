@@ -88,16 +88,30 @@ def main() -> int:
     from PySide6.QtCore import QObject, Signal
 
     class _Relay(QObject):
-        """跨线程中继：工作线程的聊天回复经信号投递到 GUI 线程。"""
+        """跨线程中继：流式 chunk / 完整回复经信号投递到 GUI 线程。"""
+        chunk = Signal(str)      # 流式增量（v6）
         replied = Signal(str)
 
         def __init__(self):
             super().__init__()
+            self.chunk.connect(self._on_chunk)
             self.replied.connect(self._on_replied)
 
+        def _on_chunk(self, delta: str):
+            # 首个 chunk：结束思考指示，开启流式气泡
+            if not getattr(self, "_streaming", False):
+                panel.set_thinking(False)
+                panel.begin_stream("assistant")
+                self._streaming = True
+            panel.append_stream_chunk(delta)
+
         def _on_replied(self, text):
-            panel.add_message("assistant", text)
-            panel.set_thinking(False)
+            if getattr(self, "_streaming", False):
+                panel.end_stream()          # 流式收尾（含落盘）
+                self._streaming = False
+            else:
+                panel.set_thinking(False)
+                panel.add_message("assistant", text)
             if behavior:
                 behavior.on_message("assistant", text)
             # v2: 语音说话
@@ -107,8 +121,11 @@ def main() -> int:
 
     relay = _Relay()
 
+    def on_chunk(delta: str, _full: str) -> None:
+        # 工作线程 → GUI 线程（信号中继）
+        relay.chunk.emit(delta)
+
     def on_reply(text: str) -> None:
-        # 可能从工作线程调用，用信号切回 GUI 线程
         relay.replied.emit(text)
 
     def on_submit(text: str) -> None:
@@ -126,7 +143,7 @@ def main() -> int:
                 import voice
                 voice.speak(result)
             return
-        chat.send(text, on_reply)
+        chat.send(text, on_reply, on_chunk=on_chunk)
 
     panel.message_submitted.connect(on_submit)
     panel.close_requested.connect(panel.hide_panel)

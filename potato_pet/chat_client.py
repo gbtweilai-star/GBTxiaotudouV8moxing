@@ -21,14 +21,62 @@ class ChatClient:
         self._history = []
         self._lock = threading.Lock()
 
-    def send(self, text: str, on_reply):
-        """异步发送；on_reply(text) 在回复完成时回调一次（工作线程内）。"""
+    def send(self, text: str, on_reply, on_chunk=None):
+        """异步发送；on_reply(text) 在回复完成时回调一次（工作线程内）。
+
+        on_chunk(delta, full_so_far) 可选：流式模式逐段回调（也在工作线程）。
+        提供时走 SSE 流式（编程 AI 体验：代码逐字上屏）。
+        """
         if self.api_key:
-            threading.Thread(target=self._call_glm, args=(text, on_reply),
-                             daemon=True).start()
+            threading.Thread(target=self._call_glm_stream if on_chunk else self._call_glm,
+                             args=(text, on_reply, on_chunk), daemon=True).start()
         else:
             threading.Thread(target=self._offline_reply, args=(text, on_reply),
                              daemon=True).start()
+
+    def _call_glm_stream(self, text: str, on_reply, on_chunk):
+        """SSE 流式调用：逐 token on_chunk(delta, full)，末尾 on_reply(full)。"""
+        full = []
+        try:
+            import requests
+            with self._lock:
+                self._history.append({"role": "user", "content": text})
+                history = list(self._history[-12:])
+            messages = []
+            if self.persona:
+                messages.append({"role": "system", "content": self.persona})
+            messages.extend(history)
+            with requests.post(
+                self.base_url.rstrip("/") + "/chat/completions",
+                json={"model": self.model, "messages": messages, "stream": True},
+                headers={"Authorization": f"Bearer {self.api_key}"},
+                timeout=self.timeout, stream=True,
+            ) as resp:
+                resp.raise_for_status()
+                for line in resp.iter_lines(decode_unicode=True):
+                    if not line or not line.startswith("data:"):
+                        continue
+                    payload = line[5:].strip()
+                    if payload == "[DONE]":
+                        break
+                    try:
+                        import json as _json
+                        delta = (_json.loads(payload)["choices"][0]
+                                 .get("delta", {}).get("content"))
+                    except Exception:
+                        continue
+                    if delta:
+                        full.append(delta)
+                        on_chunk(delta, "".join(full))
+            reply = "".join(full).strip()
+            if not reply:
+                raise RuntimeError("empty stream reply")
+            with self._lock:
+                self._history.append({"role": "assistant", "content": reply})
+            on_reply(reply)
+        except Exception as e:  # noqa: BLE001
+            logger.warning("GLM stream failed: %s — fallback offline", e)
+            self._offline_reply(text, on_reply, _prefix="".join(full))
 
     def replace_history(self, history):
         """会话切换时同步历史（[{role, content}] 格式）。"""
@@ -61,8 +109,9 @@ class ChatClient:
             logger.warning("GLM call failed (%s), fallback offline", e)
             self._offline_reply(text, on_reply)
 
-    def _offline_reply(self, text: str, on_reply):
-        on_reply(offline_reply(text))
+    def _offline_reply(self, text: str, on_reply, _prefix=""):
+        reply = (_prefix + "\n" if _prefix else "") + offline_reply(text)
+        on_reply(reply)
 
 
 # ---- 离线俏皮应答器（纯本地） ----
