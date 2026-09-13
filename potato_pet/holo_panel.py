@@ -1,14 +1,14 @@
-"""全息悬浮对话面板 v6：全能编程 AI 级对话客户端。
+"""全息悬浮对话面板（GBT小土豆V8）：全能编程 AI 级对话客户端。
 
-v5→v6 重写动机（以"全能编程 AI 对话框"标准）：
-- Markdown 富文本渲染：代码块/表格/列表/行内代码，QTextBrowser.setMarkdown
+V8 迭代记录：
+- 对话框重写：Markdown 富文本渲染（代码块/表格/列表/行内代码）
 - 代码块可提取复制（右键菜单列出全部代码块，一键复制）
 - 流式显示 API：begin_stream / append_stream_chunk / end_stream（80ms 合批上屏）
 - 消息操作：右键复制消息；气泡内文本原生可选（Ctrl+C 可用）
 - 架构分层：_SessionStore（持久化）/ _MarkdownBubble（渲染）/ HoloPanel（装配）
-- 修复 v5 缺陷：孤儿 nav 按钮重复创建、QLabel 无选择能力、全量重建气泡
+- 修复旧版缺陷：孤儿 nav 按钮重复创建、QLabel 无选择能力、全量重建气泡
 
-对外契约与 v5 完全兼容（main.py 无需改动）：
+对外契约与旧版完全兼容（main.py 无需改动）：
     message_submitted(str) / close_requested() / feature_clicked(str)
     session_switched(list) / persona_change_requested(str)
     add_message / set_thinking / set_affection / update_telemetry
@@ -243,7 +243,7 @@ class _ThinkingBar(QLabel):
 class HoloPanel(QWidget):
     """全能编程 AI 全息对话客户端（半透明悬浮）。
 
-    信号与公共方法与 v5 完全兼容；新增流式 API。
+    信号与公共方法与旧版完全兼容；新增流式 API。
     """
 
     message_submitted = Signal(str)
@@ -297,7 +297,7 @@ class HoloPanel(QWidget):
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(0)
 
-        # ---- 左侧图标导航栏（v6 修复：无重复创建）----
+        # ---- 左侧图标导航栏（V8：无重复创建）----
         nav = QVBoxLayout()
         nav.setContentsMargins(6, 10, 6, 10)
         nav.setSpacing(8)

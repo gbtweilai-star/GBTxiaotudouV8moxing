@@ -89,7 +89,7 @@ def main() -> int:
 
     class _Relay(QObject):
         """跨线程中继：流式 chunk / 完整回复经信号投递到 GUI 线程。"""
-        chunk = Signal(str)      # 流式增量（v6）
+        chunk = Signal(str)      # 流式增量（V8）
         replied = Signal(str)
 
         def __init__(self):
@@ -148,14 +148,14 @@ def main() -> int:
     panel.message_submitted.connect(on_submit)
     panel.close_requested.connect(panel.hide_panel)
 
-    # ---- v4: 会话切换同步聊天历史 ----
+    # ---- V8: 会话切换同步聊天历史 ----
     def on_session_switch(history):
         chat.replace_history(history)
         panel.add_message("assistant", "已切换会话，上下文同步完成～")
 
     panel.session_switched.connect(on_session_switch)
 
-    # ---- v4: 面板内直接换形象 ----
+    # ---- V8: 面板内直接换形象 ----
     import win_utils  # noqa: F401
     models = list_available_models()
 
@@ -188,7 +188,7 @@ def main() -> int:
             webbrowser.open("https://www.bing.com")
             panel.add_message("assistant", "已为你打开联网搜索窗口～")
         elif key == "agent":
-            panel.add_message("assistant", "委托任务功能路上啦，v4 接入 OpenClaw 网关后我就能替你干活了～")
+            panel.add_message("assistant", "委托任务功能路上啦，V8 后续接入 OpenClaw 网关后我就能替你干活了～")
         elif key == "model":
             model = config.get("chat", {}).get("model", "离线模式")
             api = "已接 GLM" if config.get("chat", {}).get("api_key") else "离线俏皮模式（无 API key）"
