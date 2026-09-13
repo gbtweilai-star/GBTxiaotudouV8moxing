@@ -45,6 +45,8 @@ def audit(event, meta=None):
         try:
             with open(_LOG, "a", encoding="utf-8") as f:
                 f.write(line)
+                f.flush()
+                os.fsync(f.fileno())   # 强制落盘：降低进程崩溃丢失窗口
         except (PermissionError, OSError):
             # gatekeeper 或其他原因导致写入失败时，存入内存缓冲区
             _memory_log.append(rec)
@@ -68,6 +70,8 @@ def flush_memory_log() -> int:
                     except (PermissionError, OSError):
                         _memory_log.insert(0, rec)
                         break
+                f.flush()
+                os.fsync(f.fileno())   # 批量回写后统一落盘
         except (PermissionError, OSError):
             pass
     return written
@@ -131,3 +135,9 @@ def log_count():
                 if line.strip():
                     n += 1
     return n + len(_memory_log)
+
+
+import atexit as _atexit
+
+# 进程退出时兑底：把内存缓冲里没落盘的审计尽量回写，减少崩溃/退出丢失
+_atexit.register(flush_memory_log)
