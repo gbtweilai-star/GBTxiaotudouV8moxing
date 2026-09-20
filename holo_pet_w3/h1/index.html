@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'" />
+<title>GBT小土豆V8 · 赏金台</title>
+<link rel="stylesheet" href="../window.css" />
+<link rel="stylesheet" href="h1.css" />
+</head>
+<body class="gbt-body">
+
+<header class="gbt-topbar" id="topbar">
+  <span class="gbt-brand">GBT小土豆V8 · 赏金台</span>
+  <span class="gbt-grow"></span>
+  <span class="gbt-badge" id="h1-badge" data-state="gray" title="连接态">未探测</span>
+  <span class="gbt-actions">
+    <button type="button" id="btn-h1-refresh" class="gbt-btn">刷新本机状态</button>
+  </span>
+</header>
+
+<main class="gbt-main">
+  <article class="gbt-card gbt-wide">
+    <h2>① 连接态（阶段一 · 本机只读）</h2>
+    <p class="gbt-dim" id="h1-note">只读：不调 HackerOne API、不起子进程、不写文件；凭据只报「已配置 / 未配置」，不回显值，也不回显用户名。</p>
+    <div class="h1-kv" id="h1-binary">未取</div>
+    <table class="gbt-matrix">
+      <thead><tr><th>变量</th><th>用途</th><th>状态</th><th>说明</th></tr></thead>
+      <tbody id="h1-cred-body"><tr><td colspan="4" class="gbt-dim">未取</td></tr></tbody>
+    </table>
+    <p class="gbt-dim" id="h1-sensitive">敏感档动作不接。</p>
+  </article>
+
+  <article class="gbt-card gbt-wide">
+    <h2>② 程序与 scope</h2>
+    <div class="h1-pending" id="h1-programs_scope">阶段二未接入</div>
+  </article>
+
+  <article class="gbt-card gbt-wide">
+    <h2>③ 我的报告</h2>
+    <div class="h1-pending" id="h1-reports">阶段二未接入</div>
+  </article>
+
+  <article class="gbt-card gbt-wide">
+    <h2>④ 收益</h2>
+    <div class="h1-pending" id="h1-earnings">阶段二未接入</div>
+  </article>
+
+  <article class="gbt-card gbt-wide">
+    <h2>⑤ 草稿收件箱（本地只读）</h2>
+    <div class="h1-kv" id="h1-drafts">未取</div>
+    <table class="gbt-matrix">
+      <thead><tr><th>文件</th><th>标题</th><th>程序</th><th>字节</th><th>更新时间</th></tr></thead>
+      <tbody id="h1-draft-body"><tr><td colspan="5" class="gbt-dim">未取</td></tr></tbody>
+    </table>
+  </article>
+</main>
+
+<footer class="gbt-statusbar">
+  <span id="h1-stage">阶段一 · 本机只读</span>
+  <span class="gbt-grow"></span>
+  <span class="gbt-badge" id="h1-foot-badge" data-state="gray">未探测</span>
+</footer>
+
+<footer class="gbt-signature" data-developer="自由的风">开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属</footer>
+
+<script src="h1.js"></script>
+</body>
+</html>

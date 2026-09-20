@@ -47,6 +47,43 @@ def _external_capability(module_name, capability):
         }
 
 
+# codex thread/start 的官方 Schema（app-server v2）参数白名单：effort 只属于 turn/start。
+CODEX_THREAD_PARAMS = ("model", "sandbox", "approval_policy", "approvals_reviewer",
+                       "developer_instructions", "base_instructions", "ephemeral",
+                       "runtime_workspace_roots", "dynamic_tools")
+
+
+def _codex_thread_params(payload, kind):
+    """thread/start 白名单透传；effort 显式拒绝并落审计，不再盲传导致静默降级。"""
+    params = {k: payload[k] for k in CODEX_THREAD_PARAMS if k in payload}
+    if "effort" in payload:
+        audit("codex_param_deprecated", {
+            "kind": kind,
+            "param": "effort",
+            "raw_value": payload.get("effort"),
+            "type": type(payload.get("effort")).__name__,
+            "note": "thread/start（app-server v2）无 effort；已拒绝下发，"
+                    "推理强度请放到 codex_turn_send",
+        })
+    return params
+
+def _policy_allow_private(policy_decision) -> bool:
+    """从策略判定里取 allow_private —— 调用面两形都认，缺省 False。
+
+    R114 实测根因：`run_task` 传下来的是 `policy.authorize()` 的**整包字典**，
+    真正的 `PolicyDecision` 在 `decision["decision"]`。旧代码把 `getattr` 直接作用在
+    dict 上 -> 恒 False，于是**策略层已经放行的内网目标，到传输层又被 net_guard 拒**：
+    授权拿到手也打不通（与 R113「作用域登记了却不可授权」同族，都是判据在、链路断）。
+    缺省 False = 内网目标默认拒绝，不放宽任何边界。
+    """
+    if policy_decision is None:
+        return False
+    inner = policy_decision
+    if isinstance(policy_decision, dict):
+        inner = policy_decision.get("decision") or policy_decision
+    return bool(getattr(inner, "allow_private", False))
+
+
 def _run_benign(kind, payload, policy_decision=None):
     """良性能力分派：这里实现真实可用的系统/数据类样例。"""
     if kind == "health":
@@ -84,6 +121,27 @@ def _run_benign(kind, payload, policy_decision=None):
         rs = scan_target(t, allow_private=allow_private)
         return {"target": t, "allow_private": allow_private,
                 "results": [r.to_dict() for r in rs]}
+    # 行式记录网格（数据域：陌生文本先画像、再解析、可回写自证）
+    if kind == "record_grid":
+        from . import record_grid as RG
+        p = payload or {}
+        return RG.run_op(str(p.get("op") or "profile"), p)
+    # 话题追踪（topic_watch）：只做发现与命中；技能本体留在技能目录，不复制实现。
+    if kind == "topic_watch":
+        from . import topic_watch
+        p = payload or {}
+        return topic_watch.run(str(p.get("op") or "route"), p)
+    # R116 · 生命档案 / 心智引擎 / 项目上下文（三个模块都自带 run(op, **params) 统一入口）。
+    # 为什么补在这里：codex_bridge 早已把它们挂成 gbt_life / gbt_mind / gbt_project_context
+    # 三个动态工具，但 caps_registry 没登记、本分派也没有分支 —— 工具挂出去了、入口没接上，
+    # 调一次就返回 "unknown capability"（死工具）。语义与模块自身一致，不新增授权边界。
+    if kind in ("life", "mind", "project_context"):
+        from . import life_archive, mind_engine, project_context
+        p = dict(payload or {})
+        op = p.pop("op", None) or p.pop("action", None)
+        mod = {"life": life_archive, "mind": mind_engine,
+               "project_context": project_context}[kind]
+        return mod.run(op, **p) if op else mod.run(**p)
     # 万能插执行引擎（V8：替代子代理的并行编排层）
     if kind == "wf_define":
         from . import engine
@@ -98,7 +156,8 @@ def _run_benign(kind, payload, policy_decision=None):
     if kind == "wf_status":
         from . import engine
         return engine.list_runs((payload or {}).get("name"),
-                                int((payload or {}).get("limit", 20)))
+                                int((payload or {}).get("limit", 20)),
+                                include_workflows=bool((payload or {}).get("include_workflows", False)))
     if kind == "wf_resume":
         from . import engine
         p = payload or {}
@@ -174,14 +233,19 @@ def _run_benign(kind, payload, policy_decision=None):
 
     # LLM 网关（V8：操控其他 AI；输出是数据不是指令）
     if kind == "llm_chat":
-        from .llm import bridge as LB
+        # 统一口（Owner 2026-09-19：全部统一大模型）——本处只做**入口与授权**，
+        # 通道实现在 llm/unified.py 一处。旧写法直连 bridge 且多传了一个
+        # bridge.chat 不认识的 `_coding_discipline` ⇒ 一旦过了授权门就 TypeError；
+        # 因为授权门默认拦在前面，这个错**从来没露过面**（统一时抓出）。
+        from .llm import unified as LLM
         p = payload or {}
         prompt = p.get("prompt") or p.get("q") or p.get("message") or ""
         if not prompt:
             raise ValueError("缺少 prompt：请给出要问其他 AI 的问题")
-        return LB.chat(prompt, system=p.get("system", ""),
+        return LLM.ask(prompt, system=p.get("system", ""),
                        model=p.get("model"), temperature=float(p.get("temperature", 0.7)),
                        max_tokens=int(p.get("max_tokens", 2000)), timeout=int(p.get("timeout", 60)),
+                       purpose="llm_chat",
                        _coding_discipline=p.get("_coding_discipline"))
     if kind == "llm_status":
         from .llm import bridge as LB
@@ -191,11 +255,22 @@ def _run_benign(kind, payload, policy_decision=None):
     if kind == "tentacle":
         from .tentacle import bridge as TB
         p = payload or {}
-        action = p.get("action") or p.get("method") or ""
+        # 2026-09-19（Owner：触手全部都可以调用本体的全部能力）：
+        #   op=caps → 报出触手视野里的本体全部能力（清单读 caps_registry，不复制）
+        #   只给 intent 不给 action → 走 auto 自动路由（§2.2 意图默认接线）
+        op = str(p.get("op") or "").strip().lower()
+        if op in ("caps", "capabilities"):
+            return TB.capabilities()
+        action = (p.get("action") or p.get("method")
+                  or ("auto" if str(p.get("intent") or "").strip() else ""))
         if not action:
-            raise ValueError("缺少 action：请给出要调用的触手能力名（清单见 tentacle_manifest）")
+            raise ValueError("缺少 action：给触手能力名（tentacle_manifest）、"
+                             "给 intent 走自动路由、或 op=caps 看全部能力")
         args = p.get("args") or []
         kwargs = p.get("kwargs") or {}
+        # auto 路由要把 intent 送到 invoke 手里（此前只转 args/kwargs，intent 被吞掉）
+        if str(p.get("intent") or "").strip():
+            kwargs = {**kwargs, "intent": p.get("intent")}
         if not isinstance(args, (list, tuple)):
             args = [args]
         r = TB.invoke(action, *args, **kwargs)
@@ -237,6 +312,131 @@ def _run_benign(kind, payload, policy_decision=None):
         return brain_exec.unify(p.get("goal", ""), {k: v for k, v in p.items() if k != "goal"})
 
     # 根治环（V8：发现→追根→彻底修复→防复发的原生纪律）
+    # ── 只读能力（R-H162）：今日 5 个新模块接进万能插（全部只读，无执行能力）──
+    if kind == "projection_card":
+        from .tools import projection_skill
+        return projection_skill.skill_card()
+    if kind == "trace_store":
+        from . import trace_store
+        return trace_store.status()
+    if kind == "wave_probe":
+        from .tools import wave_probe
+        return wave_probe.measure()          # 只读：默认只量不写
+    if kind == "dream_replay":
+        from .tools import dream_replay
+        return dream_replay.dream_once()     # 只读重演：不写、不执行
+    if kind == "meta_cognition":
+        from .tools import meta_cognition as _mc
+        p = payload or {}
+        return _mc.run(p.get("op", "law"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "model_key_pool":
+        from .tools import model_key_pool as _mkp
+        p = payload or {}
+        return _mkp.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "coverage_auditor":
+        from .tools import coverage_auditor as _cov
+        p = payload or {}
+        return _cov.run(p.get("op", "matrix"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "tentacle_cognition":
+        from .tools import tentacle_cognition as _tc
+        p = payload or {}
+        return _tc.run(p.get("op", "redlines"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "caps_called_audit":
+        from .tools import caps_called_audit as _ca
+        p = payload or {}
+        return _ca.run(p.get("op", "audit"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "render_evolution":
+        from .tools import render_evolution as _rv
+        p = payload or {}
+        return _rv.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "orchestration_kernel":
+        from .tools import orchestration_kernel as _ok
+        p = payload or {}
+        return _ok.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "code_art":
+        from .tools import code_art_kernel as _ca
+        p = payload or {}
+        return _ca.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "scene_anchor":
+        from .tools import scene_anchor as _sa
+        p = payload or {}
+        return _sa.run(p.get("op", "classes"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "hook_registry":
+        from .tools import hook_registry as _hr
+        p = payload or {}
+        return _hr.run(p.get("op", "catalogue"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "emotion_projection":
+        from .tools import emotion_projection as _ep
+        p = payload or {}
+        return _ep.run(p.get("op", "model"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "brand_outro":
+        from .tools import brand_outro as _bo
+        p = payload or {}
+        return _bo.run(p.get("op", "render"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "shared_resources":
+        from .tools import shared_resources as _sr
+        p = payload or {}
+        return _sr.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "verification_watch":
+        from .tools import verification_watch as _vw
+        p = payload or {}
+        return _vw.run(p.get("op", "status"), group=p.get("group"),
+                       **{k: v for k, v in p.items() if k not in ("op", "group")})
+    if kind == "account_registry":
+        from .tools import account_registry as _ar
+        p = payload or {}
+        return _ar.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind in ("music_intel", "video_intel", "film_intel"):
+        from .tools import research_intel as _ri
+        p = payload or {}
+        return _ri.run(p.get("op", "group"), group=kind)   # 只读骨架：不联网、不抓数、不写盘
+    if kind == "music_publishing":
+        from .tools import music_publishing as _mp
+        p = payload or {}
+        return _mp.run(p.get("op", "status"))      # 只读：不写盘、不出网
+    if kind == "director_mood":
+        from .tools import director_mood as _dm
+        p = payload or {}
+        return _dm.run(p.get("op", "status"),
+                       **{k: v for k, v in p.items() if k != "op"})   # 只读：不写盘、不执行
+    if kind == "libtv_skill":
+        # 只读骨架：**不装技能包、不调 API、不出网**；密钥只能从密钥池借
+        from .tools import libtv_skill as _lt
+        p = payload or {}
+        return _lt.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "a1art_skill":
+        # 只读骨架：**不调 API、不出网、不落盘**；密钥只能从 DPAPI/密钥池借
+        from .tools import a1art_skill as _a1
+        p = payload or {}
+        return _a1.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "energy_pool":
+        # 只读骨架：**不调模型、不出网、不落盘、不发密钥**（模型=燃料）
+        from .tools import energy_pool as _ep
+        p = payload or {}
+        return _ep.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "local_brain":
+        # 只读骨架：**不加载模型、不起服务、不出网、不落盘**
+        from .tools import local_brain as _lb
+        p = payload or {}
+        return _lb.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "auto_switch":
+        # 只读骨架：**不调模型、不出网、不落盘**（接线点只有 Intent JSON）
+        from .tools import auto_switch as _as
+        p = payload or {}
+        return _as.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "context_vault":
+        # 只读骨架：**不写盘、不建真索引、不出网**（只索引与引用，不复制正文）
+        from .tools import context_vault as _cv
+        p = payload or {}
+        return _cv.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "capability_net":
+        from .tools import ai_capability_net as _net
+        _b = _net.build_net()
+        return {"ok": True, "readonly": True, "seven_columns": _b["seven_columns"],
+                "needs_review": _b["needs_review"],
+                "counts": {"total": len(_b["nodes"]), "local": len(_b["local"]),
+                           "external": len(_b["external"])},
+                "honest_boundary": _b["honest_boundary"]}
     if kind == "root_fix":
         from . import root_fix
         p = payload or {}
@@ -275,6 +475,20 @@ def _run_benign(kind, payload, policy_decision=None):
         from . import inventory
         return inventory.scan(bool((payload or {}).get("fix", False)))
 
+    # 脑库接入（R-H94）：把 Obsidian 记忆库接成"跟着一起上线"的记忆
+    if kind == "brain_vault":
+        from . import brain_vault
+        p = payload or {}
+        op = str(p.get("op") or "status").strip().lower()
+        if op == "status":
+            return brain_vault.status()
+        if op == "recall":
+            return brain_vault.recall(int(p.get("limit", 10)))
+        if op == "remember":
+            return brain_vault.remember(p.get("text", ""))
+        return {"status": "error", "kind": kind, "message": "未知动作: %s" % op,
+                "error_class": "user_error"}
+
     # 推演环（V8：完整心智循环——理解/推演/执行/纠错/延伸/反思/整理）
     if kind == "think_loop":
         from . import think_loop
@@ -296,6 +510,8 @@ def _run_benign(kind, payload, policy_decision=None):
             p.get("purpose", ""),
             p.get("plan") if isinstance(p.get("plan"), dict) else None,
             p.get("name") or "one-key",
+            p.get("room") or "",
+            bool(p.get("into_global_production", False)),
         )
     if kind == "deploy_queue":
         from . import qiankun
@@ -370,11 +586,22 @@ def _run_benign(kind, payload, policy_decision=None):
     if kind == "mirror_ascend":
         from . import mirror_space as MS
         p = payload or {}
-        return MS.ascend(
-            p.get("purpose", ""),
-            require_rehearsal=bool(p.get("require_rehearsal", False)),
-            rehearsal_name=p.get("name") or "default",
-        )
+        # R113 · 修法甲：mirror_space.ascend() 真身签名是 ascend(purpose: str = "")，
+        # 只有单形参。旧代码把 require_rehearsal / rehearsal_name 直接透传，走能力层
+        # 必抛 TypeError（R110 实测带出）。现改为：本层只做真实调用；调用方要演练
+        # 前置门时 fail-closed 返回指引，不静默忽略。演练门由 mirror_rehearse +
+        # mirror_release 承担，不塞进"唯一写 production 的函数"。
+        if bool(p.get("require_rehearsal", False)):
+            return {
+                "ok": False,
+                "blocked": True,
+                "reason": "本层不支持演练前置门（require_rehearsal）",
+                "how_to": "先调 mirror_rehearse 取演练结论，通过后再调 mirror_ascend；"
+                          "正式发布走 mirror_release(name=...)。",
+                "name": p.get("name") or "default",
+                "cap": "mirror_ascend",
+            }
+        return MS.ascend(p.get("purpose", ""))
     if kind == "mirror_status":
         from . import deployment_rehearsal as DR
         from . import mirror_space as MS
@@ -467,6 +694,28 @@ def _run_benign(kind, payload, policy_decision=None):
             return DC.remote_stop()
         return DC.status()   # 默认只读（探测安全）
 
+    # 通信域（R104 · 刀一 coze_mail）：对主人自有单一地址做收发与整理。
+    if kind == "coze_mail":
+        from . import coze_mail_cap as CM
+        return CM.run((payload or {}).get("op") or "status", payload or {})
+
+    # 创作出口（R104 · 刀二 create）：意图/产物登记 ＋ 仅限 outputs/ 的写入。
+    if kind == "create":
+        from . import file_operation as FO
+        return FO.run((payload or {}).get("op") or "status", payload or {})
+
+    # 短剧/影视链路 · 模块1 剧本理解引擎（接口1 剧本→分镜）
+    if kind == "drama":
+        from . import drama as DR
+        p = dict(payload or {})
+        return DR.run(p.pop("op", "status"), **p)
+
+    # 爆火作品观察 + 用户偏好台账（Owner 2026-09-19）
+    if kind == "trend_watch":
+        from . import trend_watch as TWD
+        p = dict(payload or {})
+        return TWD.run(p.pop("op", "status"), **p)
+
     if kind == "tentacle_status":
         from .tentacle import bridge as TB
         return {"diagnose": TB.self_diagnose(), "coverage": TB.coverage()}
@@ -476,8 +725,55 @@ def _run_benign(kind, payload, policy_decision=None):
         from . import tactics
         p = payload or {}
         return tactics.advise(p.get("user_text", ""), p.get("situation", ""))
+    # ── 官方 Codex 能力化（B 档 · 注册与路由是同一个原子单元，一次落地）──
+    # R122：补 codex_chat / codex_models —— 作用域在 policy.py、实现在 codex_bridge.py，
+    # 注册与路由两环从未接上，统一入口此前一律 unknown capability。
+    if kind in ("codex_status", "codex_tools", "codex_thread_new",
+                "codex_turn_send", "codex_interrupt",
+                "codex_chat", "codex_models"):
+        from . import codex_bridge as _CB
+        p = payload or {}
+        if kind == "codex_status":
+            return _CB.status()
+        if kind == "codex_tools":
+            return {"ok": True, "tools": [t.get("name") for t in _CB.dynamic_tool_specs()]}
+        if kind == "codex_models":
+            return {"models": _CB.get_shared_server().list_models()}
+        if kind == "codex_chat":
+            message = str(p.get("message") or p.get("text") or "").strip()
+            if not message:
+                raise ValueError("缺少 message：请给出要发送给 Codex 的文本")
+            opt = {}
+            if p.get("model"):
+                opt["model"] = str(p["model"])
+            if p.get("cwd"):
+                opt["cwd"] = str(p["cwd"])
+            if p.get("thread_id"):
+                opt["thread_id"] = str(p["thread_id"])
+            if p.get("timeout"):
+                opt["timeout"] = float(p["timeout"])
+            return _CB.run_once(message, **opt)
+        thread_id = str(p.get("thread_id") or "").strip()
+        if kind == "codex_thread_new":
+            # thread/start 只认白名单（app-server v2 无 effort），effort 显式拒绝 + 落审计；
+            # 盲传会在出网前一帧都发不出就 TypeError，并被上层 except 静默降级。
+            return _CB.get_shared_server().start_thread(**_codex_thread_params(p, kind))
+        if not thread_id:
+            raise ValueError("缺少 thread_id：请先调用 codex_thread_new")
+        if kind == "codex_turn_send":
+            return _CB.get_shared_server().start_turn(
+                thread_id, str(p.get("text") or ""), effort=p.get("effort"))
+        return _CB.get_shared_server().interrupt(thread_id, p.get("turn_id"))
+
     # 生产管线（V8：唯一交付通道）
     if kind == "pipeline_submit":
+        from . import pipeline
+        p = payload or {}
+        return pipeline.submit(p.get("name", ""),
+                               p.get("content", ""),
+                               p.get("meta") or {},
+                               review=bool(p.get("review", False)),
+                               refine_rounds=int(p.get("refine_rounds", 0)))
         from . import pipeline
         p = payload or {}
         return pipeline.submit(p.get("name", ""),
@@ -537,6 +833,10 @@ def _run_benign(kind, payload, policy_decision=None):
         return vision_cap.run(p.get("op", "analyze"),
                               image=p.get("image"), region=p.get("region"),
                               grid=p.get("grid", 4), prompt=p.get("prompt"))
+    if kind == "prompt_bridge":
+        from . import prompt_bridge as _pb
+        p = payload or {}
+        return _pb.run(p.get("op", "compile"), text=p.get("text"))
     if kind == "voice":
         from . import voice_cap
         p = payload or {}
@@ -544,6 +844,11 @@ def _run_benign(kind, payload, policy_decision=None):
                              text=p.get("text"), voice=p.get("voice"),
                              rate=p.get("rate", 0), out=p.get("out"),
                              audio=p.get("audio"))
+    if kind == "voice_orchestra":
+        from . import voice_orchestra as _vo
+        p = payload or {}
+        return _vo.run(p.get("op", "list"), domain=p.get("domain"),
+                       keyword=p.get("keyword"), scene=p.get("scene"))
     if kind == "browser":
         from . import browser_cap
         p = payload or {}
@@ -552,7 +857,7 @@ def _run_benign(kind, payload, policy_decision=None):
                                engine=p.get("engine", "bing"),
                                timeout=p.get("timeout", 20),
                                max_chars=p.get("max_chars", 20000),
-                               allow_private=bool(getattr(policy_decision, "allow_private", False)),
+                               allow_private=_policy_allow_private(policy_decision),
                                **{k: v for k, v in p.items() if k in ("act", "selector", "value", "out", "headless")})
     if kind == "bluetooth":
         from . import bluetooth_cap
@@ -592,28 +897,109 @@ except Exception:  # pragma: no cover - 循环导入兜底
     EngineError = AutopilotError = BrainExecError = LongrunError = SchedError = ThinkLoopError = Exception
 
 
-def run_task(kind, payload=None, stamp=True):
+def _normalize_envelope(kind: str, raw) -> dict:
+    """把任意历史返回结构归一成统一契约。
+
+    统一契约（对外承诺，永远存在这四个字段）::
+
+        {"ok": bool, "kind": str, "result": Any, "error": str | None}
+
+    旧字段（``status`` / ``gbt_stamp`` / ``gbt_result`` / 分支专属字段）全部保留，
+    因此旧的调用方无需改动；新调用方只看 ``ok`` 与 ``result`` 即可。
+    """
+    if not isinstance(raw, dict):
+        raw = {"result": raw}
+    out = dict(raw)
+    inner = raw.get("gbt_result")
+    if inner is None:
+        inner = raw.get("result")
+    if inner is None:
+        # 错误 / 拒绝类信封：载荷就是信封自身（含 error / message / denied /
+        # missing / how_to_grant 等），不能只给"去掉 error 的残壳"——否则按
+        # r.get("result", r) 取值的调用方会拿到空 error，丢掉真实原因。
+        inner = dict(raw)
+    status = str(raw.get("status") or "").strip().lower()
+    ok = raw.get("ok")
+    if ok is None:
+        ok = status not in ("error", "denied", "failed", "needs_dependency")
+        if ok and raw.get("error"):
+            ok = False
+    out["ok"] = bool(ok)
+    out["kind"] = raw.get("kind") or kind
+    out["result"] = inner
+    out["error"] = None if out["ok"] else (raw.get("error") or raw.get("message")
+                                           or raw.get("reason") or status or "unknown error")
+    out.setdefault("status", "ok" if out["ok"] else "error")
+    return out
+
+
+def run_task(kind, payload=None, stamp=True, safe=False, probe=False):
+    """统一入口（契约层）。
+
+    无论能力内部走哪条分支（成功 / 未知 / 拒绝 / 异常），对外都返回同一信封::
+
+        {"ok": bool, "kind": str, "result": Any, "error": str | None, ...旧字段}
+
+    这层只做**形状归一化**，不改变任何能力的行为与安全检查顺序。
+
+    异常语义保持向后兼容：默认 ``safe=False`` 时，能力内部抛出的异常照旧向上传播
+    （既有调用方与测试依赖这个行为）；只有显式传 ``safe=True`` 时才把异常收敛成
+    ``{"ok": False, "error": ...}`` 信封，供面板/桥接层这类需要"永不炸"的调用方使用。
+
+    探针口径（O8 · 2026-09-17）：``probe=True`` 表示**这一次调用是内部状态探针**——
+    本次调用**一处审计都不写**（``call`` / ``ok`` / ``denied`` / ``user_error`` / ``error`` /
+    ``preflight_*`` 全免）。豁免按「**哪一次调用**」开关，**不按 kind 开关**：
+    同一个 kind 在别的调用方那里照旧留痕（否则等于给一个能力永久摘掉审计）。
+    默认 ``probe=False``（既有调用方零改动）；payload 里的 ``_probe`` 继续认。
+    """
+    if __import__("os").environ.get("GBT_CONTRACT_LEGACY") == "1":
+        # 基线对照开关：临时绕过归一化层，用于回归归因；默认关闭，不影响正常运行。
+        return _run_task_core(kind, payload, stamp=stamp, probe=probe)
+    if safe:
+        try:
+            raw = _run_task_core(kind, payload, stamp=stamp, probe=probe)
+        except Exception as exc:  # noqa: BLE001
+            if not probe:
+                audit("error", {"kind": kind, "error_class": "runtime_fault",
+                                "error": str(exc)[:200]})
+            raw = {"status": "error", "kind": kind, "error": str(exc)[:200],
+                   "error_class": "runtime_fault"}
+    else:
+        raw = _run_task_core(kind, payload, stamp=stamp, probe=probe)
+    return _normalize_envelope(kind, raw)
+
+
+def _run_task_core(kind, payload=None, stamp=True, probe=False):
     """统一入口：按 kind 调用能力。危险/未知能力一律安全拒绝。
 
     stamp=True（默认）时，成功结果附带 GBT 钢印，声明独立私人框架出处。
+
+    probe=True（O8 · 2026-09-17）时本次调用不写任何审计——这是**写账层唯一的合法豁免口**，
+    由调用方逐次声明，不做 kind 级白名单（见 :func:`run_task` 的探针口径）。
     """
     payload = payload or {}
     from . import coding_discipline
     payload = coding_discipline.prepare_payload(kind, payload)
-    _probe = bool(payload.get("_probe"))
-    audit("call", {"kind": kind, "payload_keys": [k for k in payload if k != "_probe"],
-                   "coding_discipline": bool(payload.get("_coding_discipline")),
-                   **({"probe": True} if _probe else {})})
+    _probe = bool(probe) or bool(payload.get("_probe"))
+
+    def _audit(event, meta=None):
+        """探针调用不写账；非探针调用与改动前逐字节等价。"""
+        if not _probe:
+            audit(event, meta)
+
+    _audit("call", {"kind": kind, "payload_keys": [k for k in payload if k != "_probe"],
+                    "coding_discipline": bool(payload.get("_coding_discipline")),
+                    **({"probe": True} if _probe else {})})
 
     # 危险/破解能力：禁用，不提供可执行路径
     if kind in DISABLED_CAPS:
-        audit("denied", {"kind": kind, "reason": DISABLED_CAPS[kind]})
+        _audit("denied", {"kind": kind, "reason": DISABLED_CAPS[kind]})
         return {"status": "denied", "kind": kind,
                 "message": "capability disabled by safety policy",
                 "reason": DISABLED_CAPS[kind]}
 
     if kind not in BENIGN_CAPS:
-        audit("user_error", {
+        _audit("user_error", {
             "kind": kind,
             "reason": "unknown capability",
             "reason_code": "unknown_capability",
@@ -626,7 +1012,7 @@ def run_task(kind, payload=None, stamp=True):
     from .security import policy as _policy
     decision = _policy.authorize(kind, payload)
     if not decision.get("ok"):
-        audit("denied", {
+        _audit("denied", {
             "kind": kind,
             "reason": "authorization required",
             "scopes": list(getattr(decision.get("decision"), "scopes", ())),
@@ -650,7 +1036,7 @@ def run_task(kind, payload=None, stamp=True):
     force_requested = bool(payload.get("force") or payload.get("_force"))
     force = force_requested and bool(decision.get("trusted"))
     if force_requested and not force:
-        audit("preflight_force_ignored", {
+        _audit("preflight_force_ignored", {
             "kind": kind,
             "reason": "只有主人可信会话可显式要求重复执行",
             **({"probe": True} if _probe else {}),
@@ -664,7 +1050,7 @@ def run_task(kind, payload=None, stamp=True):
         )
     except Exception as e:  # noqa: BLE001
         # 感知层故障不能伪造“已检查”，也不能阻止原有能力；如实留痕后继续原路径。
-        audit("preflight_error", {
+        _audit("preflight_error", {
             "kind": kind,
             "reason": str(e)[:160],
             **({"probe": True} if _probe else {}),
@@ -673,7 +1059,7 @@ def run_task(kind, payload=None, stamp=True):
                  "error": str(e)[:160]}
 
     if guard.get("status") in ("acquired", "reuse", "already_running"):
-        audit("preflight_checked", {
+        _audit("preflight_checked", {
             "kind": kind,
             "fingerprint": guard.get("fingerprint"),
             "status": guard.get("status"),
@@ -684,14 +1070,19 @@ def run_task(kind, payload=None, stamp=True):
 
     if guard.get("status") == "reuse":
         observation = guard.get("observation") or {}
-        audit("preflight_reuse", {
+        _audit("preflight_reuse", {
             "kind": kind,
             "fingerprint": guard.get("fingerprint"),
             "method": observation.get("method"),
             "host": observation.get("host"),
             **({"probe": True} if _probe else {}),
         })
+        # R-H170 · 契约补全（**不是把用例放宽**）：幂等命中同样是"这次调用达成了目标"，
+        # 旧返回体只有 status/reused、**没有 ok 键** ⇒ 调用方拿不到可判定的结论
+        # （用例 `r["result"]["ok"]` 直接 KeyError）。口径：ok=True = 目标达成
+        # （无论新做还是复用）；status 保留细分原因。
         result = {
+            "ok": True,
             "status": "already_satisfied",
             "reused": True,
             "action": kind,
@@ -706,13 +1097,15 @@ def run_task(kind, payload=None, stamp=True):
                 "scopes": decision.get("scopes", []),
                 "consumed": decision.get("authorizations", []),
             }
+            if isinstance(body.get("result"), dict):
+                body["result"]["auth_consumed"] = (decision.get("authorizations") or [None])[0]
         if stamp:
             body = stamp_result(body)
         return body
 
     if guard.get("status") == "already_running":
         running = guard.get("running") or {}
-        audit("preflight_already_running", {
+        _audit("preflight_already_running", {
             "kind": kind,
             "fingerprint": guard.get("fingerprint"),
             "running_pid": running.get("pid"),
@@ -739,6 +1132,9 @@ def run_task(kind, payload=None, stamp=True):
                 "scopes": decision.get("scopes", []),
                 "consumed": decision.get("authorizations", []),
             }
+            # 人环授权真正被消耗时，把授权 id 透传到能力载荷，供调用方与审计核对
+            if isinstance(body.get("result"), dict):
+                body["result"]["auth_consumed"] = (decision.get("authorizations") or [None])[0]
         if stamp:
             body = stamp_result(body)
         return body
@@ -751,7 +1147,7 @@ def run_task(kind, payload=None, stamp=True):
                 "ok": bool(result.get("ok", True)) if isinstance(result, dict) else True,
                 "result_status": result.get("status") if isinstance(result, dict) else None,
             })
-        audit("ok", {"kind": kind})
+        _audit("ok", {"kind": kind})
         body = {"status": "ok", "kind": kind, "result": result}
         if decision.get("scopes"):
             body["authorization"] = {
@@ -759,6 +1155,8 @@ def run_task(kind, payload=None, stamp=True):
                 "scopes": decision.get("scopes", []),
                 "consumed": decision.get("authorizations", []),
             }
+            if isinstance(body.get("result"), dict):
+                body["result"]["auth_consumed"] = (decision.get("authorizations") or [None])[0]
         if stamp:
             body = stamp_result(body)
         return body
@@ -768,14 +1166,14 @@ def run_task(kind, payload=None, stamp=True):
         # 源头分类记录，selfscan 不再需要判例法区分
         if lease is not None:
             lease.finish("user_error", {"error": str(e)[:160]})
-        audit("user_error", {"kind": kind, "reason": str(e)[:160],
-                             **({"probe": True} if _probe else {})})
+        _audit("user_error", {"kind": kind, "reason": str(e)[:160],
+                              **({"probe": True} if _probe else {})})
         return {"status": "error", "kind": kind, "message": str(e),
                 "error_class": "user_error"}
     except Exception as e:  # noqa: BLE001
         if lease is not None:
             lease.finish("error", {"error": str(e)[:160]})
-        audit("error", {"kind": kind, "reason": str(e)[:160],
-                        **({"probe": True} if _probe else {})})
+        _audit("error", {"kind": kind, "reason": str(e)[:160],
+                         **({"probe": True} if _probe else {})})
         # 错误如实暴露（V8 处世理念：不伪造、坏结果如实报）
         return {"status": "error", "kind": kind, "message": str(e)}

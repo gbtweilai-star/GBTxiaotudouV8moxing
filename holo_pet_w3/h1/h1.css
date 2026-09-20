@@ -1,0 +1,26 @@
+/* GBT小土豆V8 · 窗口 6 赏金台样式（W8 · 阶段一）
+ * 纪律：不新增裸色值，一律引用 window.css 的 §1 token。
+ * 开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属
+ */
+
+.h1-kv {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 4px 10px;
+  margin: 8px 0;
+  padding: 8px 10px;
+  border: 1px solid var(--gbt-line-soft);
+  border-radius: 8px;
+  background: var(--gbt-panel);
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 12px;
+}
+.h1-kv .h1-k { color: var(--gbt-dim); }
+.h1-kv .h1-v { color: var(--gbt-text); word-break: break-all; }
+.h1-pending {
+  margin: 8px 0;
+  padding: 10px;
+  border: 1px dashed var(--gbt-off);
+  border-radius: 8px;
+  color: var(--gbt-dim);
+}

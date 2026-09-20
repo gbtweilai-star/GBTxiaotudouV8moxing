@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'" />
+<title>GBT小土豆V8 · 上帝视角</title>
+<link rel="stylesheet" href="window.css" />
+</head>
+<body class="gbt-body">
+
+<header class="gbt-topbar" id="topbar">
+  <span class="gbt-brand">GBT小土豆V8 · 上帝视角</span>
+  <span class="gbt-grow"></span>
+  <span class="gbt-badge" id="health-badge" data-state="gray" title="整体健康度">健康度 —</span>
+  <span class="gbt-actions">
+    <button type="button" id="btn-refresh" class="gbt-btn">刷新</button>
+    <button type="button" id="btn-collapse" class="gbt-btn">折叠</button>
+    <button type="button" id="btn-selfcheck" class="gbt-btn">自检</button>
+    <input type="search" id="search-box" class="gbt-search" placeholder="搜索节点 / 故障点" />
+  </span>
+</header>
+
+<nav class="gbt-tabs" id="tabs">
+  <button type="button" class="gbt-tab" data-view="quad" data-active="true">四视图</button>
+  <button type="button" class="gbt-tab" data-view="tree">工作树</button>
+  <button type="button" class="gbt-tab" data-view="matrix">故障矩阵</button>
+  <button type="button" class="gbt-tab" data-view="cockpit">驾驶舱</button>
+  <button type="button" class="gbt-tab" data-view="tools">工具</button>
+  <button type="button" class="gbt-tab" data-view="pets">数字人</button>
+</nav>
+
+<main class="gbt-main">
+
+  <section class="gbt-view" id="view-quad" data-active="true">
+    <article class="gbt-card"><h2>看自己</h2><pre class="gbt-json" id="card-self">取不到</pre></article>
+    <article class="gbt-card"><h2>看任务</h2><pre class="gbt-json" id="card-tasks">取不到</pre></article>
+    <article class="gbt-card"><h2>看环境</h2><pre class="gbt-json" id="card-env">取不到</pre></article>
+    <article class="gbt-card"><h2>看账本</h2><pre class="gbt-json" id="card-ledger">取不到</pre></article>
+  </section>
+
+  <section class="gbt-view" id="view-tree" hidden>
+    <div class="gbt-tree-bar">
+      <span class="gbt-engine">引擎：<b id="tree-engine">—</b></span>
+      <span class="gbt-dim">视图 A · 结构 + 状态 + 数据流三层叠加</span>
+    </div>
+    <div class="gbt-tree" id="tree-host" data-engine="text"></div>
+  </section>
+
+  <section class="gbt-view" id="view-matrix" hidden>
+    <div class="gbt-matrix-bar">
+      <span>视图 B · 逐点对齐《GBT全故障点设计.md》§10.2 母表，本屏不另立判据</span>
+      <span class="gbt-dim" id="matrix-source">来源：—</span>
+    </div>
+    <div class="gbt-matrix-wrap">
+      <table class="gbt-matrix" id="matrix-table">
+        <thead><tr>
+          <th>故障点</th><th>探针</th><th>心跳</th><th>审计</th><th>用户</th><th>状态</th><th>判定</th>
+        </tr></thead>
+        <tbody id="matrix-body"><tr><td colspan="7" class="gbt-dim">取不到矩阵：母表未读到</td></tr></tbody>
+      </table>
+    </div>
+    <div class="gbt-matrix-foot">
+      <span>当前活跃故障：<b id="stat-active">—</b></span>
+      <span>历史故障（24h）：<b id="stat-history">—</b></span>
+      <span>盲区：<b id="stat-blind">—</b></span>
+      <button type="button" id="btn-blind-detail" class="gbt-btn">展开整改方案</button>
+    </div>
+  </section>
+
+  <section class="gbt-view" id="view-cockpit" hidden>
+    <div class="gbt-card gbt-wide">
+      <h2>驾驶舱（只读态）</h2>
+      <p class="gbt-dim">本页两个动作在 W3 阶段<b>不产生任何写操作</b>；写盘要等后台探针服务独立进程上线。</p>
+      <button type="button" id="btn-schedule" class="gbt-btn">全局调度</button>
+      <button type="button" id="btn-introspect" class="gbt-btn">全局自省</button>
+      <pre class="gbt-json" id="cockpit-out">未触发</pre>
+    </div>
+  </section>
+  <section class="gbt-view" id="view-tools" hidden>
+    <article class="gbt-card gbt-wide">
+      <h2>工具出口（只读态）</h2>
+      <p class="gbt-dim">本页只读：不落账、不建目录、不写健康通道。状态判定一律以能力层为准，面板只做展示映射；灰态一律带原因，不写「灰了不说」。</p>
+      <div class="gbt-tree-bar">
+        <span class="gbt-engine">账本：<b id="tools-store">—</b></span>
+        <span class="gbt-dim" id="tools-note">未取</span>
+        <span class="gbt-grow"></span>
+        <button type="button" id="btn-tools-refresh" class="gbt-btn">刷新出口状态</button>
+      </div>
+      <table class="gbt-matrix">
+        <thead><tr><th>能力</th><th>动作</th><th>状态</th><th>原因 / 说明</th></tr></thead>
+        <tbody id="tools-body"><tr><td colspan="4" class="gbt-dim">未取（点「刷新出口状态」，或再点一次本标签）</td></tr></tbody>
+      </table>
+      <p class="gbt-dim" id="tools-foot">敏感档动作不挂出口（物理上没有键）。</p>
+    </article>
+  </section>
+
+  <section class="gbt-view" id="view-pets" hidden>
+    <article class="gbt-card">
+      <h2>数字人召唤台</h2>
+      <p class="gbt-dim" id="pets-note">未取（点本标签才取，不做后台轮询）</p>
+      <div class="gbt-tree-bar">
+        <span class="gbt-engine">形象库：<b id="pets-count">—</b></span>
+        <span class="gbt-dim" id="pets-python">Python 腿：未探测</span>
+        <span class="gbt-grow"></span>
+        <button type="button" id="btn-pets-refresh" class="gbt-btn">刷新就绪态</button>
+      </div>
+      <div class="gbt-pet-grid" id="pets-carriers">
+        <span class="gbt-pet-reason">未取：点本标签即测，不猜。</span>
+      </div>
+      <p class="gbt-dim" id="pets-summon-out">未召唤</p>
+    </article>
+    <article class="gbt-card">
+      <h2>形象库（真扫盘）</h2>
+      <div class="gbt-pet-grid" id="pets-models"><span class="gbt-pet-reason">未取</span></div>
+    </article>
+    <article class="gbt-card">
+      <h2>AI 朋友圈 · 动态流</h2>
+      <p class="gbt-dim" id="ef-note">未取（数据来自本机 EigenFlux 缓存，本机只读）</p>
+      <div class="ef-list" id="ef-feed"><div class="ef-empty">未取</div></div>
+    </article>
+    <article class="gbt-card">
+      <h2>好友 / 私信 / 档案</h2>
+      <div class="gbt-ef-split">
+        <div class="gbt-ef-col"><h3>好友</h3><div class="ef-list" id="ef-friends"><div class="ef-empty">未取</div></div></div>
+        <div class="gbt-ef-col"><h3>私信</h3><div class="ef-list" id="ef-messages"><div class="ef-empty">未取</div></div></div>
+        <div class="gbt-ef-col"><h3>档案</h3><div class="ef-list" id="ef-profile"><div class="ef-empty">未取</div></div></div>
+      </div>
+    </article>
+  </section></main>
+
+<footer class="gbt-statusbar">
+  <span id="stat-edges">活跃连线 —</span>
+  <span id="stat-faults">故障链 —</span>
+  <span id="stat-sleep">休眠节点 —</span>
+  <span class="gbt-grow"></span>
+  <span class="gbt-badge" id="stream-badge" data-state="gray">实时流：未接</span>
+  <span class="gbt-dim" id="stat-clock">—</span>
+</footer>
+
+<aside class="gbt-sidebar" id="sidebar" hidden>
+  <header class="gbt-sidebar-head">
+    <b id="sidebar-title">详情</b>
+    <button type="button" id="btn-sidebar-close" class="gbt-btn">收起</button>
+  </header>
+  <pre class="gbt-json" id="sidebar-body">—</pre>
+</aside>
+
+<footer class="gbt-signature" data-developer="自由的风">开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属</footer>
+
+<script src="ef_render.js"></script>
+<script src="window.js"></script>
+</body>
+</html>

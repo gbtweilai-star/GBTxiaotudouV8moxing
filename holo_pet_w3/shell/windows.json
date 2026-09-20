@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "shell": "holo_pet_w3",
+  "registry_note": "窗口注册表数据。已登记窗口见 windows[]（不在本句里写死数量——写死一次就过期一次）；窗口号 N 指位置、批次号 W<n> 指施工序，两套编号见《holo_pet多窗口架构设计.md》§11.1.1。",
+  "id_convention": "窗口 N 指位置，W<n> 指施工批次（术语表见《holo_pet多窗口架构设计.md》§11.1.1）",
+  "windows": [
+    {
+      "id": "godview",
+      "title": "GBT小土豆V8 · 上帝视角",
+      "file": "../index.html",
+      "role": "child",
+      "alwaysOnTop": true,
+      "transparent": true,
+      "frame": false,
+      "resizable": true,
+      "default": { "x": 120, "y": 80, "w": 1120, "h": 720, "visible": true },
+      "note": "主控台 W1 仍在生产树 holo_pet/，本壳不动它；关一扇不影响其他（V4）。"
+    },
+    {
+      "id": "eigenflux",
+      "title": "GBT小土豆V8 · AI 朋友圈",
+      "file": "../eigenflux/index.html",
+      "role": "child",
+      "alwaysOnTop": true,
+      "transparent": true,
+      "frame": false,
+      "resizable": true,
+      "default": { "x": 560, "y": 120, "w": 900, "h": 640, "visible": false },
+      "note": "窗口 5 · 批次 W7（D2）。默认不开：由托盘菜单或口令唤起（《宿主不打扰律》）。同级置顶（风哥 2026-09-17 拍：甲案 true）。"
+    },
+    {
+      "id": "h1",
+      "title": "GBT小土豆V8 · 赏金台",
+      "file": "../h1/index.html",
+      "role": "child",
+      "alwaysOnTop": true,
+      "transparent": true,
+      "frame": false,
+      "resizable": true,
+      "default": { "x": 700, "y": 160, "w": 980, "h": 660, "visible": false },
+      "config": { "binary_path": "%LOCALAPPDATA%\\gbt_allinone\\bin\\h1mcp.exe", "drafts_path": "%APPDATA%\\h1mcp\\drafts" },
+      "note": "窗口 6 · 批次 W8。阶段一只读：默认不开，由托盘菜单唤起（《宿主不打扰律》，与 eigenflux 同款）。"
+    }
+  ]
+}
