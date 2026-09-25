@@ -59,6 +59,10 @@ JUDGMENTS = [
     # 任何"配置与代码对不上"都要等真部署那一刻才以 undefined 炸出来（那时已经在改远端了）。
     # 首跑就抓到两个真缺口（SANDBOX / AE：代码在读、配置里连名字都没出现过）。
     ("部署前接线对账", "gbt_allinone.tests.test_cloud_config_wiring"),
+    # 2026-09-25 加：**未清故障的前提还成立吗**。第 37 轮发现 F1/F6 两条高危故障的
+    # 前提（"4 批没部署"）早就不成立、却在账里挂了十几轮 ⇒ 故障清单会**无声腐烂**。
+    # 这条判据让"前提垮了"在开机时就红，逼人回去改账，而不是让它继续挂着。
+    ("未清故障前提复核", "gbt_allinone.tests.test_reverify_open_faults"),
 ]
 
 DRIFT_GATE = ROOT / "plugins" / "gbt-master" / "tools" / "verify-installed-copy.mjs"
