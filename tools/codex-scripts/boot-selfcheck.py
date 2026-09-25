@@ -63,6 +63,9 @@ JUDGMENTS = [
     # 前提（"4 批没部署"）早就不成立、却在账里挂了十几轮 ⇒ 故障清单会**无声腐烂**。
     # 这条判据让"前提垮了"在开机时就红，逼人回去改账，而不是让它继续挂着。
     ("未清故障前提复核", "gbt_allinone.tests.test_reverify_open_faults"),
+    # 2026-09-25 加：**部署漂移对账的牙齿**（离线自检；联网那一侧不进判据 —— 判据不该依赖外网）。
+    # 一个"比出来没差异"的对账器，很可能是因为它其实什么都没比 ⇒ 种五处差异看它逮不逮得住。
+    ("部署漂移尺子有牙", "gbt_allinone.tests.test_cloud_deploy_drift"),
 ]
 
 DRIFT_GATE = ROOT / "plugins" / "gbt-master" / "tools" / "verify-installed-copy.mjs"

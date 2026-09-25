@@ -1,0 +1,46 @@
+{
+  "base": "https://gbt-potato-cloud-10.lopaycn.workers.dev",
+  "drift": 0,
+  "rows": [
+    {
+      "name": "声明面一致 /",
+      "pass": true,
+      "reading": "整份比 · 无差异"
+    },
+    {
+      "name": "声明面一致 /mesh",
+      "pass": true,
+      "reading": "整份比 · 无差异"
+    },
+    {
+      "name": "声明面一致 /health",
+      "pass": true,
+      "reading": "只比 modules/alive · 无差异"
+    },
+    {
+      "name": "（明示不比）/health",
+      "pass": true,
+      "reading": "不比：rows（逐模块 wired 依赖绑定）"
+    },
+    {
+      "name": "声明面一致 /edges",
+      "pass": true,
+      "reading": "只比 declared/rule/form · 无差异"
+    },
+    {
+      "name": "（明示不比）/edges",
+      "pass": true,
+      "reading": "不比：observed（运行时计数） · verdict（含 observed）"
+    },
+    {
+      "name": "声明面一致 /v1/models",
+      "pass": true,
+      "reading": "只比 object/data · 无差异"
+    },
+    {
+      "name": "（明示不比）/v1/models",
+      "pass": true,
+      "reading": "不比：gbt（含密钥配置数/端点接线/令牌闸读数）"
+    }
+  ]
+}
