@@ -1,0 +1,90 @@
+{
+ "viewport": [
+  1234,
+  592
+ ],
+ "count": 9,
+ "rows": [
+  {
+   "y": -2,
+   "x": 46,
+   "w": 121,
+   "tag": "BUTTON",
+   "role": "",
+   "text": "GBT小土豆V8",
+   "cls": "inline-flex items-center justify-center whites"
+  },
+  {
+   "y": 6,
+   "x": 205,
+   "w": 120,
+   "tag": "A",
+   "role": "",
+   "text": "LUPING ZHANG's Workspace",
+   "cls": "max-w-[120px] truncate text-muted-foreground t"
+  },
+  {
+   "y": 6,
+   "x": 345,
+   "w": 72,
+   "tag": "A",
+   "role": "",
+   "text": "GBT小土豆V8",
+   "cls": "max-w-[160px] truncate font-heading text-[14px"
+  },
+  {
+   "y": 76,
+   "x": 52,
+   "w": 424,
+   "tag": "BUTTON",
+   "role": "",
+   "text": "Context (auto-compressed) 6,777 / 1,000,000 19 files",
+   "cls": "flex w-full items-center gap-2 px-3 py-1.5 tex"
+  },
+  {
+   "y": 113,
+   "x": 64,
+   "w": 154,
+   "tag": "BUTTON",
+   "role": "combobox",
+   "text": "AI DeepSeek V3",
+   "cls": "flex h-10 items-center justify-between rounded"
+  },
+  {
+   "y": 119,
+   "x": 226,
+   "w": 133,
+   "tag": "BUTTON",
+   "role": "",
+   "text": "Multi-Agent",
+   "cls": "inline-flex items-center justify-center whites"
+  },
+  {
+   "y": 161,
+   "x": 52,
+   "w": 424,
+   "tag": "BUTTON",
+   "role": "",
+   "text": "3.5 / 5 • 107 credits",
+   "cls": "flex w-full items-center gap-3 border-b border"
+  },
+  {
+   "y": 294,
+   "x": 77,
+   "w": 359,
+   "tag": "LI",
+   "role": "",
+   "text": "the / page would stop existing",
+   "cls": ""
+  },
+  {
+   "y": 430,
+   "x": 73,
+   "w": 82,
+   "tag": "BUTTON",
+   "role": "",
+   "text": "Build",
+   "cls": "inline-flex items-center justify-center whites"
+  }
+ ]
+}

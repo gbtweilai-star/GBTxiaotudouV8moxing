@@ -1,0 +1,162 @@
+{
+ "found": true,
+ "htmlLen": 137475,
+ "hasTitleTag": false,
+ "titleText": null,
+ "headHTML": " <meta charset=\"UTF-8\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> <script type=\"importmap\">{\"imports\":{\"react\":\"data:text/javascript,const%20R%3Dwindow.React%3Bexport%20default%20R%3Bexport%20const%20Children%3DR.Children%2CComponent%3DR.Component%2CFragment%3DR.Fragment%2CProfiler%3DR.Profiler%2CPureComponent%3DR.PureComponent%2CStrictMode%3DR.StrictMode%2CSuspense%3DR.Suspense%2CcloneElement%3DR.cloneElement%2CcreateContext%3DR.createContext%2CcreateElement%3DR.createElement%2CcreateFactory%3DR.createFactory%2CcreateRef%3DR.createRef%2CforwardRef%3DR.forwardRef%2CisValidElement%3DR.isValidElement%2Clazy%3DR.lazy%2Cmemo%3DR.memo%2CstartTransition%3DR.startTransition%2CuseCallback%3DR.useCallback%2CuseContext%3DR.useContext%2CuseDebugValue%3DR.useDebugValue%2CuseDeferredValue%3DR.useDeferredValue%2CuseEffect%3DR.useEffect%2CuseId%3DR.useId%2CuseImperativeHandle%3DR.useImperativeHandle%2CuseInsertionEffect%3DR.useInsertionEffect%2CuseLayoutEffect%3DR.useLayoutEffect%2CuseMemo%3DR.useMemo%2CuseReducer%3DR.useReducer%2CuseRef%3DR.useRef%2CuseState%3DR.useState%2CuseSyncExternalStore%3DR.useSyncExternalStore%2CuseTransition%3DR.useTransition%2Cversion%3DR.v",
+ "scripts": [
+  {
+   "src": "(内联)",
+   "len": 2310,
+   "type": "importmap"
+  },
+  {
+   "src": "(内联)",
+   "len": 699,
+   "type": ""
+  },
+  {
+   "src": "(内联)",
+   "len": 8494,
+   "type": ""
+  },
+  {
+   "src": "(内联)",
+   "len": 11597,
+   "type": ""
+  },
+  {
+   "src": "(内联)",
+   "len": 76481,
+   "type": ""
+  },
+  {
+   "src": "https://cdn.tailwindcss.com",
+   "len": 0,
+   "type": ""
+  },
+  {
+   "src": "https://unpkg.com/react@18/umd/react.development.js",
+   "len": 0,
+   "type": ""
+  },
+  {
+   "src": "https://unpkg.com/react-dom@18/umd/react-dom.development.js",
+   "len": 0,
+   "type": ""
+  },
+  {
+   "src": "https://unpkg.com/@babel/standalone@7.26.4/babel.min.js",
+   "len": 0,
+   "type": ""
+  },
+  {
+   "src": "https://unpkg.com/framer-motion@11/dist/framer-motion.js",
+   "len": 0,
+   "type": ""
+  },
+  {
+   "src": "(内联)",
+   "len": 1678,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 1698,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 1857,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 2350,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 1764,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 1391,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 1314,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 1085,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 2503,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 1185,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 953,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 654,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 1211,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 1737,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 1183,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 1190,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 2112,
+   "type": "text/plain"
+  },
+  {
+   "src": "(内联)",
+   "len": 1148,
+   "type": "text/plain"
+  }
+ ],
+ "stylesheets": [],
+ "bodyTag": "",
+ "rootChildCount": 19,
+ "routePathAttrs": [
+  "/"
+ ],
+ "candidateRoutes": [
+  "/a/b",
+  "/orders/new",
+  "/orders/:id",
+  "/src/",
+  "/login"
+ ]
+}

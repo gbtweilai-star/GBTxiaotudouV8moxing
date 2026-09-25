@@ -1,0 +1,60 @@
+{
+ "iframes": [
+  {
+   "src": "",
+   "sandbox": "allow-scripts allow-same-origin allow-pointer-lock allow-popups allow-modals allow-forms",
+   "title": "Preview",
+   "box": [
+    480,
+    113,
+    754,
+    471
+   ],
+   "visible": true,
+   "sameOrigin": true,
+   "note": ""
+  },
+  {
+   "src": "chrome-extension://ijchfbpdgeljmhnhokmekkecpbdkgabc/sandbox.html",
+   "sandbox": "",
+   "title": "",
+   "box": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "visible": false,
+   "sameOrigin": false,
+   "note": ""
+  }
+ ],
+ "chatScroller": {
+  "cls": "flex-1 overflow-y-auto px-3 py-2",
+  "box": [
+   52,
+   190,
+   424,
+   221
+  ],
+  "scrollTop": 758.4000244140625,
+  "scrollHeight": 979,
+  "clientHeight": 221,
+  "scrollable": true,
+  "hiddenRatio": 0.774
+ },
+ "duplicates": [
+  {
+   "outerHTML": "<div class=\"group relative py-3 border-b border-border/50 last:border-0\"><div class=\"flex items-start justify-between gap-2\"><p class=\"text-sm font-medium text-foreground leading-relaxed\">Fix security issue: No authentication checks found in codebase</p><div class=\"flex shrink-0 items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity\"><button class=\"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visibl",
+   "attrs": [
+    "class=group relative py-3 border-b border-border/50 last:border-0"
+   ]
+  },
+  {
+   "outerHTML": "<div class=\"group relative py-3 border-b border-border/50 last:border-0\"><div class=\"flex items-start justify-between gap-2\"><p class=\"text-sm font-medium text-foreground leading-relaxed\">Fix security issue: No authentication checks found in codebase</p><div class=\"flex shrink-0 items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity\"><button class=\"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visibl",
+   "attrs": [
+    "class=group relative py-3 border-b border-border/50 last:border-0"
+   ]
+  }
+ ]
+}

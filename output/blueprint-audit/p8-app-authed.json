@@ -1,0 +1,80 @@
+{
+ "found": true,
+ "href": "about:srcdoc",
+ "readyState": "complete",
+ "docTitle": "",
+ "viewport": [
+  754,
+  471
+ ],
+ "counts": {
+  "els": 77,
+  "buttons": 1,
+  "links": 3,
+  "inputs": 0,
+  "textareas": 0,
+  "imgs": 0,
+  "svgs": 0,
+  "canvases": 0,
+  "headings": 2
+ },
+ "bodyTextLen": 162,
+ "bodyText": "Dashboard\nOverview\nAnalytics\nSettings\nDashboard\nO\nowner\n\nTotal Users\n\n12,847\n+12.5%\n\nRevenue\n\n$48,295\n+8.2%\n\nActive Projects\n\n342\n+23.1%\n\nBounce Rate\n\n24.5%\n-3.2%",
+ "headings": [
+  "H1: Dashboard",
+  "H2: Dashboard"
+ ],
+ "images": [],
+ "brokenImages": 0,
+ "visibleControls": [
+  {
+   "tag": "A",
+   "type": "",
+   "text": "Overview",
+   "box": [
+    16,
+    77,
+    223,
+    40
+   ],
+   "disabled": false
+  },
+  {
+   "tag": "A",
+   "type": "",
+   "text": "Analytics",
+   "box": [
+    16,
+    121,
+    223,
+    40
+   ],
+   "disabled": false
+  },
+  {
+   "tag": "A",
+   "type": "",
+   "text": "Settings",
+   "box": [
+    16,
+    165,
+    223,
+    40
+   ],
+   "disabled": false
+  },
+  {
+   "tag": "BUTTON",
+   "type": "",
+   "text": "O owner",
+   "box": [
+    654,
+    16,
+    84,
+    32
+   ],
+   "disabled": false
+  }
+ ],
+ "emptyBlocks": []
+}

@@ -1,0 +1,185 @@
+{
+ "tsx": [
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    115,
+    332,
+    15
+   ],
+   "text": "/src/components/FooterModern.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    137,
+    332,
+    15
+   ],
+   "text": "/src/components/LoginForm.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    159,
+    332,
+    15
+   ],
+   "text": "/src/components/PricingTable.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    181,
+    332,
+    15
+   ],
+   "text": "/src/context/AuthContext.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    203,
+    332,
+    15
+   ],
+   "text": "/src/components/FAQSection.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    225,
+    332,
+    15
+   ],
+   "text": "/src/components/ChartDashboard.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    247,
+    332,
+    15
+   ],
+   "text": "/src/components/Testimonials.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    269,
+    332,
+    15
+   ],
+   "text": "/src/components/FeaturesGrid.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    291,
+    332,
+    15
+   ],
+   "text": "/src/components/RichTextEditor.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    313,
+    332,
+    15
+   ],
+   "text": "/src/components/DataGrid.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    335,
+    332,
+    15
+   ],
+   "text": "/src/components/CodeEditorWidget.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    357,
+    332,
+    15
+   ],
+   "text": "/src/components/KanbanBoard.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    379,
+    332,
+    15
+   ],
+   "text": "/src/components/TopBar.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    401,
+    332,
+    15
+   ],
+   "text": "/src/components/HeroGradient.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    423,
+    332,
+    15
+   ],
+   "text": "/src/App.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    445,
+    332,
+    15
+   ],
+   "text": "/src/components/Sidebar.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    467,
+    332,
+    15
+   ],
+   "text": "/src/components/DashboardStats.tsx"
+  },
+  {
+   "tag": "SPAN",
+   "box": [
+    82,
+    489,
+    332,
+    15
+   ],
+   "text": "/src/pages/Dashboard.tsx"
+  }
+ ],
+ "overlays": []
+}

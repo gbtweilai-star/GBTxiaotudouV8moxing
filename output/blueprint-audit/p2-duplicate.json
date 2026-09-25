@@ -1,0 +1,54 @@
+{
+ "leafMatchCount": 2,
+ "relation": "父节点或位置不同（= 需再看，可能是同一节点被渲染两次或分属不同区域）",
+ "rows": [
+  {
+   "tag": "P",
+   "cls": "text-sm font-medium text-foreground leading-relaxed",
+   "box": [
+    64,
+    -548,
+    301,
+    46
+   ],
+   "fullText": "Fix security issue: No authentication checks found in codebase",
+   "parentTag": "DIV",
+   "parentChildCount": 2,
+   "indexInParent": 0,
+   "path": [
+    "P.text-sm.font-medium[y=-548,h=46]",
+    "DIV.flex.items-start[y=-548,h=46]",
+    "DIV.group.relative[y=-560,h=70]",
+    "DIV.space-y-0.animate-fade-in[y=-560,h=963]",
+    "DIV.flex-1.overflow-y-auto[y=190,h=221]",
+    "DIV.flex.h-full[y=76,h=508]",
+    "DIV.flex-1.overflow-hidden[y=76,h=508]",
+    "DIV.flex.h-full[y=36,h=548]"
+   ]
+  },
+  {
+   "tag": "P",
+   "cls": "text-sm font-medium text-foreground leading-relaxed",
+   "box": [
+    64,
+    -478,
+    301,
+    46
+   ],
+   "fullText": "Fix security issue: No authentication checks found in codebase",
+   "parentTag": "DIV",
+   "parentChildCount": 2,
+   "indexInParent": 0,
+   "path": [
+    "P.text-sm.font-medium[y=-478,h=46]",
+    "DIV.flex.items-start[y=-478,h=46]",
+    "DIV.group.relative[y=-490,h=70]",
+    "DIV.space-y-0.animate-fade-in[y=-560,h=963]",
+    "DIV.flex-1.overflow-y-auto[y=190,h=221]",
+    "DIV.flex.h-full[y=76,h=508]",
+    "DIV.flex-1.overflow-hidden[y=76,h=508]",
+    "DIV.flex.h-full[y=36,h=548]"
+   ]
+  }
+ ]
+}

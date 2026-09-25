@@ -1133,59 +1133,221 @@ def wait_for(selector, tab_id=None, timeout=10.0, interval=0.2,
         client.close()
 
 
+def _element_point(client, selector, timeout):
+    """把选择器解析成「元素中心点（视口 CSS 坐标）+ 可读信息」。
+
+    返回 (info, point)。找不到元素时 point 为 None。
+    """
+    expression = (
+        "(() => {"
+        f"const e=document.querySelector({json.dumps(str(selector))});"
+        "if(!e)return {found:false};"
+        "e.scrollIntoView({block:'center',inline:'center'});"
+        "const r=e.getBoundingClientRect();"
+        "return {found:true,tag:e.tagName,"
+        "text:(e.innerText||e.textContent||'').trim().replace(/\\s+/g,' ').slice(0,120),"
+        "cx:r.left+r.width/2,cy:r.top+r.height/2,"
+        "w:Math.round(r.width),h:Math.round(r.height),"
+        "visible:!!(r.width||r.height)};"
+        "})()"
+    )
+    info = _eval_js(client, expression, timeout=timeout) or {}
+    if not info.get("found"):
+        return info, None
+    return info, (float(info.get("cx") or 0.0), float(info.get("cy") or 0.0))
+
+
+def _pointer_sequence(client, selector, timeout):
+    """退路：在页面里发**完整**指针/鼠标事件序列。
+
+    比 `e.click()` 强的地方：`e.click()` 只发一个 `click`，而挂在 `pointerdown` /
+    `mousedown` 上的触发器（Radix 一类）**根本收不到** ⇒ 点了没反应却报成功。
+    """
+    expression = (
+        "(() => {"
+        f"const e=document.querySelector({json.dumps(str(selector))});"
+        "if(!e)return {dispatched:false};"
+        "e.scrollIntoView({block:'center',inline:'center'});"
+        "const r=e.getBoundingClientRect();"
+        "const cx=r.left+r.width/2,cy=r.top+r.height/2;"
+        "const b={bubbles:true,cancelable:true,composed:true,view:window,"
+        "clientX:cx,clientY:cy,screenX:cx,screenY:cy,button:0,buttons:1,detail:1,"
+        "pointerId:1,pointerType:'mouse',isPrimary:true};"
+        "e.dispatchEvent(new PointerEvent('pointerover',b));"
+        "e.dispatchEvent(new PointerEvent('pointerenter',Object.assign({},b,{bubbles:false})));"
+        "e.dispatchEvent(new MouseEvent('mouseover',b));"
+        "e.dispatchEvent(new MouseEvent('mouseenter',Object.assign({},b,{bubbles:false})));"
+        "e.dispatchEvent(new MouseEvent('mousemove',b));"
+        "e.dispatchEvent(new PointerEvent('pointerdown',b));"
+        "e.dispatchEvent(new MouseEvent('mousedown',b));"
+        "e.dispatchEvent(new PointerEvent('pointerup',Object.assign({},b,{buttons:0})));"
+        "e.dispatchEvent(new MouseEvent('mouseup',Object.assign({},b,{buttons:0})));"
+        "e.dispatchEvent(new MouseEvent('click',Object.assign({},b,{buttons:0})));"
+        "return {dispatched:true};"
+        "})()"
+    )
+    return _eval_js(client, expression, timeout=timeout) or {}
+
+
 def click_element(selector, tab_id=None, port=None,
                   timeout=_DEFAULT_TIMEOUT) -> dict:
+    """点元素 —— **发真事件，不是 `e.click()`**。
+
+    🔴 2026-09-25 实测修复（不是理论风险）：本函数原来是纯 `e.click()`，于是
+       · 对挂在 `pointerdown`/`mousedown` 上的触发器（Radix 下拉菜单一类）**完全无效**，
+       · 却仍然返回 `clicked:true` ⇒ **报成功但界面毫无反应**（本仓最忌的那类读数）。
+       实测现场：projectaal builder 的 Build 菜单，`e.click()` 后
+       `document.querySelectorAll('*').length` 前后都是 528、`aria-expanded` 仍是 false；
+       换成真事件后菜单 6 项（Build/Plan/Fix/Edit/Clone/Component）当场出来。
+
+    现在的顺序：**CDP `Input.dispatchMouseEvent`（首选）→ 完整指针序列（退路）**。
+    CDP 走渲染器进程，**不经操作系统** ⇒ 窗口被遮挡、不在前台都不影响，
+    这正是「无视遮挡物操作」要的那条路。
+    """
     selector = str(selector or "")
     if not selector:
         raise NativeBrowserError("缺少 selector")
     tab, client = _with_tab(tab_id, port=port, timeout=timeout)
     try:
-        expression = (
-            "(() => {"
-            f"const e=document.querySelector({json.dumps(selector)});"
-            "if(!e)return {clicked:false};"
-            "e.scrollIntoView({block:'center',inline:'center'});"
-            "e.click();"
-            "return {clicked:true,tag:e.tagName,text:(e.innerText||e.textContent||'').trim().slice(0,200)};"
-            "})()"
-        )
-        value = _eval_js(client, expression, timeout=timeout) or {}
-        return {"ok": True, "tab_id": tab.get("id"),
-                "selector": selector, "result": value,
-                "clicked": bool(value.get("clicked"))}
+        info, point = _element_point(client, selector, timeout)
+        if point is None:
+            return {"ok": True, "tab_id": tab.get("id"), "selector": selector,
+                    "clicked": False, "via": None, "found": False,
+                    "note": "选择器在页面里没命中，什么都没发（不是「点了没反应」）"}
+        x, y = point
+        via = "cdp-input"
+        error = None
+        try:
+            client.call("Input.dispatchMouseEvent",
+                        {"type": "mouseMoved", "x": x, "y": y,
+                         "button": "none", "buttons": 0, "pointerType": "mouse"},
+                        timeout=timeout)
+            client.call("Input.dispatchMouseEvent",
+                        {"type": "mousePressed", "x": x, "y": y, "button": "left",
+                         "buttons": 1, "clickCount": 1, "pointerType": "mouse"},
+                        timeout=timeout)
+            client.call("Input.dispatchMouseEvent",
+                        {"type": "mouseReleased", "x": x, "y": y, "button": "left",
+                         "buttons": 0, "clickCount": 1, "pointerType": "mouse"},
+                        timeout=timeout)
+        except Exception as exc:  # noqa: BLE001 —— 退路必须真的能退
+            error = f"{type(exc).__name__}: {exc}"[:200]
+            via = "js-pointer-sequence"
+            _pointer_sequence(client, selector, timeout)
+        return {
+            "ok": True,
+            "tab_id": tab.get("id"),
+            "selector": selector,
+            "clicked": True,
+            "via": via,
+            "found": True,
+            "box": {"x": round(x), "y": round(y),
+                    "w": info.get("w"), "h": info.get("h")},
+            "tag": info.get("tag"),
+            "text": info.get("text"),
+            "fallback_reason": error,
+            "读法": "`clicked` 只说「事件已发出」，**不代表界面响应了** —— "
+                    "要断言生效请另发一次 dom_query/execute_script 复核（六铁律：每步亲眼验证）",
+        }
     finally:
         client.close()
 
 
 def type_text(selector, text, tab_id=None, clear=True, submit=False,
               port=None, timeout=_DEFAULT_TIMEOUT) -> dict:
+    """往输入框里打字 —— **走真输入，不是直接改 `e.value`**。
+
+    🔴 2026-09-25 实测修复：本函数原来是 `e.value = value` + 手工发 `input`/`change`。
+      对 **React 受控输入**这条是无效的：React 在 onChange 里用**自己缓存的 value**
+      回写，直接赋 `e.value` 要么被覆盖回去、要么让 React 的 value 追踪器失真
+      （经典表现：看着输进去了、但 state 没变、提交后是空的）。
+      而返回值照样是 `typed:true` ⇒ 又一次「报成功但什么都没干」。
+
+    现在的顺序：**CDP `Input.insertText`（首选，等于真实输入法插入，React 认得）
+      → 原生 value setter + input 事件（退路，绕开 React 的 value 追踪器）**。
+    CDP 不经操作系统 ⇒ 同样不受遮挡影响。
+    """
     selector = str(selector or "")
     if not selector:
         raise NativeBrowserError("缺少 selector")
     tab, client = _with_tab(tab_id, port=port, timeout=timeout)
     try:
-        expression = (
+        payload = str(text or "")
+        focus_js = (
             "(() => {"
             f"const e=document.querySelector({json.dumps(selector)});"
-            "if(!e)return {typed:false};"
+            "if(!e)return {found:false};"
+            "e.scrollIntoView({block:'center'});"
             "e.focus();"
-            f"const value={json.dumps(str(text or ''))};"
-            f"if({str(bool(clear)).lower()})e.value=value;else e.value=(e.value||'')+value;"
-            "e.dispatchEvent(new Event('input',{bubbles:true}));"
-            "e.dispatchEvent(new Event('change',{bubbles:true}));"
-            f"if({str(bool(submit)).lower()}){{"
-            "const key='Enter';"
-            "e.dispatchEvent(new KeyboardEvent('keydown',{key,bubbles:true}));"
-            "e.dispatchEvent(new KeyboardEvent('keyup',{key,bubbles:true}));"
-            "if(e.form)e.form.requestSubmit();"
+            f"if({str(bool(clear)).lower()}){{"
+            "  if(typeof e.select==='function')e.select();"
+            "  else if(typeof e.setSelectionRange==='function')e.setSelectionRange(0,(e.value||'').length);"
+            "} else if(typeof e.setSelectionRange==='function'){"
+            "  const n=(e.value||'').length;e.setSelectionRange(n,n);"
             "}"
-            "return {typed:true,tag:e.tagName,length:String(e.value||'').length};"
+            "return {found:true,tag:e.tagName,before:String(e.value==null?'':e.value).length};"
             "})()"
         )
-        value = _eval_js(client, expression, timeout=timeout) or {}
-        return {"ok": True, "tab_id": tab.get("id"),
-                "selector": selector, "result": value,
-                "typed": bool(value.get("typed"))}
+        info = _eval_js(client, focus_js, timeout=timeout) or {}
+        if not info.get("found"):
+            return {"ok": True, "tab_id": tab.get("id"), "selector": selector,
+                    "typed": False, "via": None, "found": False,
+                    "note": "选择器在页面里没命中，什么都没输入"}
+
+        via = "cdp-insert-text"
+        error = None
+        try:
+            client.call("Input.insertText", {"text": payload}, timeout=timeout)
+        except Exception as exc:  # noqa: BLE001
+            error = f"{type(exc).__name__}: {exc}"[:200]
+            via = "native-value-setter"
+            concat = "" if clear else "(e.value||'')+"
+            fallback_js = (
+                "(() => {"
+                f"const e=document.querySelector({json.dumps(selector)});"
+                "if(!e)return {ok:false};"
+                "const proto=(e instanceof HTMLTextAreaElement)"
+                "  ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;"
+                "const d=Object.getOwnPropertyDescriptor(proto,'value');"
+                f"const v={json.dumps(payload)};"
+                f"const next={concat}v;"
+                "if(d&&d.set)d.set.call(e,next);else e.value=next;"
+                "e.dispatchEvent(new Event('input',{bubbles:true}));"
+                "e.dispatchEvent(new Event('change',{bubbles:true}));"
+                "return {ok:true,length:String(e.value||'').length};"
+                "})()"
+            )
+            _eval_js(client, fallback_js, timeout=timeout)
+
+        submitted = False
+        if submit:
+            try:
+                for kind in ("keyDown", "keyUp"):
+                    client.call("Input.dispatchKeyEvent", {
+                        "type": kind, "key": "Enter", "code": "Enter",
+                        "windowsVirtualKeyCode": 13, "nativeVirtualKeyCode": 13,
+                        "text": "\r" if kind == "keyDown" else "",
+                    }, timeout=timeout)
+                submitted = True
+            except Exception as exc:  # noqa: BLE001
+                error = (error or "") + (" | Enter: %s: %s" % (type(exc).__name__, exc))[:160]
+
+        after = _eval_js(
+            client,
+            "(() => {const e=document.querySelector(%s);"
+            "return e?String(e.value==null?'':e.value).length:-1;})()" % json.dumps(selector),
+            timeout=timeout)
+        return {
+            "ok": True, "tab_id": tab.get("id"), "selector": selector,
+            "typed": True, "via": via, "found": True,
+            "chars_sent": len(payload),
+            "value_len_before": info.get("before"),
+            "value_len_after": after,
+            "submitted": submitted,
+            "fallback_reason": error,
+            "读法": "`typed` 只说「字已发出」；`value_len_after` 才是页面真实读数 —— "
+                    "**两者对不上就是没打进去**（六铁律：每步亲眼验证）",
+        }
     finally:
         client.close()
 

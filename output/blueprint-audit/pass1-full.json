@@ -1,0 +1,483 @@
+{
+ "url": "https://projectaal.com/builder/1ce4852b-eb26-4a1d-940b-cc6fa0673d19",
+ "title": "ProjectAAL – AI-Powered App Builder | Build Apps 10x Faster",
+ "viewport": [
+  978,
+  528
+ ],
+ "counts": {
+  "allEls": 522,
+  "buttons": 28,
+  "fields": 3,
+  "images": 1,
+  "iframes": 2
+ },
+ "bodyTextLen": 1734,
+ "bodyText": "GBT小土豆V8\nLUPING ZHANG's Workspace\nGBT小土豆V8\nPublish\nShare\nChat\nContext (auto-compressed)\n6,777 / 1,000,000\n19 files\nAI\nDeepSeek V3\nMulti-Agent\n5\n3.5 / 5\n•\n107 credits\n\nFix security issue: No authentication checks found in codebase\n\nFix security issue: No authentication checks found in codebase\n\nFeatherless\n·\ndeepseek-ai/DeepSeek-V3-0324\n\nAdded authentication layer with route protection, auth context, and persisted session checks. All protected routes now verify authentication status before rendering.\n\nHere is a screenshot of the app you just built, as it actually renders. Critique it as a senior product designer reviewing a colleague's work. Be specific and unsentimental — do not compliment it. 1. List the THREE most damaging visual problems you can see. For each, name the component or section and say precisely what is wrong (spacing, hierarchy, alignment, contrast, density, proportion, empty space, overflow). 2. Then fix them: return ONLY the files that need to change, in the normal build JSON format. Judge what is actually visible, not what the code intends. If a section looks empty, unbalanced, or unfinished, say so. If the visual hierarchy does not lead the eye to the primary action, say so. Note: the screenshot is rendered by html2canvas, which does not reproduce backdrop-blur or some gradients. Do not report those as defects.\n\nFeatherless\n·\ndeepseek-ai/DeepSeek-V3-0324\n\nThis change was not applied.\n\nIt would have broken something that already works in your app:\n\nthe / page would stop existing\n\nYour app is untouched. Try asking again more specifically, or turn off the protection for this in the checkpoints panel if the change was intentional.\n\nBuild\nPreview\nResponsive\nlocalhost:5173\nInstant\nOpen Files",
+ "buttons": [
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "GBT小土豆V8",
+   "al": "",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 46,
+    "y": 6,
+    "w": 121,
+    "h": 32
+   }
+  },
+  {
+   "tag": "A",
+   "role": "",
+   "text": "",
+   "al": "",
+   "title": "Dashboard",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 171,
+    "y": 15,
+    "w": 14,
+    "h": 14
+   }
+  },
+  {
+   "tag": "A",
+   "role": "",
+   "text": "LUPING ZHANG's Workspace",
+   "al": "",
+   "title": "LUPING ZHANG's Workspace",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 205,
+    "y": 14,
+    "w": 120,
+    "h": 16
+   }
+  },
+  {
+   "tag": "A",
+   "role": "",
+   "text": "GBT小土豆V8",
+   "al": "",
+   "title": "GBT小土豆V8",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 345,
+    "y": 14,
+    "w": 72,
+    "h": 16
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "Publish",
+   "al": "",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 766,
+    "y": 8,
+    "w": 84,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "Share",
+   "al": "",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 854,
+    "y": 8,
+    "w": 78,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "Collapse chat",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 348,
+    "y": 50,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "Context (auto-compressed) 6,777 / 1,000,000 19 files",
+   "al": "",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 52,
+    "y": 84,
+    "w": 332,
+    "h": 45
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "combobox",
+   "text": "AI DeepSeek V3",
+   "al": "",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 64,
+    "y": 138,
+    "w": 62,
+    "h": 40
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "Multi-Agent",
+   "al": "",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 134,
+    "y": 144,
+    "w": 133,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "",
+   "title": "Chat threads",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 312,
+    "y": 144,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "3.5 / 5 • 107 credits",
+   "al": "",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 52,
+    "y": 186,
+    "w": 332,
+    "h": 29
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "",
+   "title": "Copy prompt",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 281,
+    "y": -903,
+    "w": 24,
+    "h": 24
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "",
+   "title": "Edit prompt",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 307,
+    "y": -903,
+    "w": 24,
+    "h": 24
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "",
+   "title": "Copy prompt",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 281,
+    "y": -810,
+    "w": 24,
+    "h": 24
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "",
+   "title": "Edit prompt",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 307,
+    "y": -810,
+    "w": 24,
+    "h": 24
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "",
+   "title": "Copy prompt",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 281,
+    "y": -522,
+    "w": 24,
+    "h": 24
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "",
+   "title": "Edit prompt",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 307,
+    "y": -522,
+    "w": 24,
+    "h": 24
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "Build",
+   "al": "",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 73,
+    "y": 374,
+    "w": 82,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "Preview",
+   "al": "",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 400,
+    "y": 52,
+    "w": 52,
+    "h": 17
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "",
+   "title": "Responsive",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 400,
+    "y": 84,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "",
+   "title": "Tablet",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 432,
+    "y": 84,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "",
+   "title": "Mobile",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 464,
+    "y": 84,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "Responsive",
+   "al": "",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 500,
+    "y": 84,
+    "w": 126,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "Instant",
+   "al": "",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 961,
+    "y": 84,
+    "w": 75,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "Preview diagnostics",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 1044,
+    "y": 84,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "",
+   "al": "",
+   "title": "Open in new tab",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 1116,
+    "y": 84,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "BUTTON",
+   "role": "",
+   "text": "Open Files",
+   "al": "Open files",
+   "title": "",
+   "disabled": false,
+   "visible": true,
+   "box": {
+    "x": 857,
+    "y": 478,
+    "w": 106,
+    "h": 34
+   }
+  }
+ ],
+ "fields": [
+  {
+   "tag": "TEXTAREA",
+   "type": "",
+   "name": "",
+   "placeholder": "Describe what you want to build...",
+   "value": "",
+   "visible": true,
+   "box": {
+    "x": 65,
+    "y": 409,
+    "w": 306,
+    "h": 56
+   }
+  },
+  {
+   "tag": "INPUT",
+   "type": "file",
+   "name": "",
+   "placeholder": "",
+   "value": "",
+   "visible": false,
+   "box": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   }
+  },
+  {
+   "tag": "INPUT",
+   "type": "text",
+   "name": "",
+   "placeholder": "",
+   "value": "/",
+   "visible": true,
+   "box": {
+    "x": 756,
+    "y": 90,
+    "w": 169,
+    "h": 16
+   }
+  }
+ ]
+}

@@ -1,0 +1,67 @@
+{
+ "found": true,
+ "href": "about:srcdoc",
+ "readyState": "complete",
+ "docTitle": "",
+ "viewport": [
+  754,
+  471
+ ],
+ "counts": {
+  "els": 49,
+  "buttons": 1,
+  "links": 0,
+  "inputs": 2,
+  "textareas": 0,
+  "imgs": 0,
+  "svgs": 0,
+  "canvases": 0,
+  "headings": 1
+ },
+ "bodyTextLen": 61,
+ "bodyText": "Welcome back\n\nSign in to your account\n\nEmail\nPassword\nSign In",
+ "headings": [
+  "H1: Welcome back"
+ ],
+ "images": [],
+ "brokenImages": 0,
+ "visibleControls": [
+  {
+   "tag": "INPUT",
+   "type": "email",
+   "text": "you@example.com",
+   "box": [
+    153,
+    196,
+    448,
+    50
+   ],
+   "disabled": false
+  },
+  {
+   "tag": "INPUT",
+   "type": "password",
+   "text": "••••••••",
+   "box": [
+    153,
+    288,
+    448,
+    50
+   ],
+   "disabled": false
+  },
+  {
+   "tag": "BUTTON",
+   "type": "submit",
+   "text": "Sign In",
+   "box": [
+    153,
+    353,
+    448,
+    48
+   ],
+   "disabled": false
+  }
+ ],
+ "emptyBlocks": []
+}

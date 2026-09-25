@@ -1128,14 +1128,36 @@ def _run_benign(kind, payload, policy_decision=None):
         p = payload or {}
         # 原生浏览器（op=native/deep/controller/cdp）由 browser_cap 这一层门面转 native_browser，
         # 分发细节见 browser_cap.native()；作用域判定仍完全在 security/policy.py。
-        return browser_cap.run(p.get("op", "open"),
+        #
+        # 🔴 2026-09-25 **参数静默丢失修复**（实测踩到，不是理论风险）：
+        #    这里原来是一张**手写白名单**
+        #      `k in ("act","action","cmd","selector","value","out","headless")`
+        #    ⇒ 白名单之外的一切参数**被静默丢掉**，而且**不报错**（调用方只看到引擎报「缺参数」）。
+        #    实测后果（逐条真跑过）：
+        #      · execute_script / inject_script → `js` 被丢 ⇒ 连 `1+1` 都报
+        #        `execute_script() missing 1 required positional argument: 'js'`
+        #      · type_text → `text` 被丢
+        #      · activate_tab / close_tab → `tab_id` 被丢
+        #      · pin_window → `rect` / `topmost` 被丢（手动置顶落位失效）
+        #      · dom_query → `limit` 被丢（永远退回默认 50）
+        #    而 browser_cap.native() 的设计注释写着「按**目标动作的真实签名**裁剪」——
+        #    参数根本走不到它那儿就被这里砍了：**意图与实现脱节**。
+        #    ⇒ 修法：native 系**全量转发**（只排掉门面自己的键），把裁剪权交还给 native()
+        #      的真签名裁剪（它本来就是干这个的）；非 native 系保持原白名单，行为零变化。
+        op = p.get("op", "open")
+        facade = {"op", "url", "query", "engine", "max_chars", "timeout", "allow_private"}
+        if op in browser_cap.NATIVE_BROWSER_OPS:
+            extra = {k: v for k, v in p.items() if k not in facade}
+        else:
+            extra = {k: v for k, v in p.items()
+                     if k in ("act", "action", "cmd", "selector", "value", "out", "headless")}
+        return browser_cap.run(op,
                                url=p.get("url"), query=p.get("query"),
                                engine=p.get("engine", "bing"),
                                timeout=p.get("timeout", 20),
                                max_chars=p.get("max_chars", 20000),
                                allow_private=_policy_allow_private(policy_decision),
-                               **{k: v for k, v in p.items()
-                                  if k in ("act", "action", "cmd", "selector", "value", "out", "headless")})
+                               **extra)
     if kind == "bluetooth":
         from . import bluetooth_cap
         p = payload or {}

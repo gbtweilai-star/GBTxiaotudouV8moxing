@@ -1,0 +1,129 @@
+{
+ "found": true,
+ "scroller": {
+  "scrollTop": 0,
+  "scrollHeight": 548,
+  "clientHeight": 548
+ },
+ "entryCount": 8,
+ "entries": [
+  {
+   "i": 0,
+   "cls": "pointer-events-none absolute right-0 top-0 bottom-0 w-px",
+   "box": [
+    51,
+    36,
+    1,
+    548
+   ],
+   "childCount": 0,
+   "tailChildren": [],
+   "text": ""
+  },
+  {
+   "i": 1,
+   "cls": "flex h-7 w-9 items-center justify-center rounded-lg text-mut",
+   "box": [
+    8,
+    44,
+    36,
+    28
+   ],
+   "childCount": 1,
+   "tailChildren": [],
+   "text": ""
+  },
+  {
+   "i": 2,
+   "cls": "flex flex-col items-center gap-1",
+   "box": [
+    8,
+    80,
+    36,
+    89
+   ],
+   "childCount": 3,
+   "tailChildren": [
+    "",
+    ""
+   ],
+   "text": ""
+  },
+  {
+   "i": 3,
+   "cls": "flex flex-col items-center gap-1",
+   "box": [
+    8,
+    173,
+    36,
+    89
+   ],
+   "childCount": 3,
+   "tailChildren": [
+    "",
+    ""
+   ],
+   "text": ""
+  },
+  {
+   "i": 4,
+   "cls": "flex flex-col items-center gap-1",
+   "box": [
+    8,
+    266,
+    36,
+    89
+   ],
+   "childCount": 3,
+   "tailChildren": [
+    "",
+    ""
+   ],
+   "text": ""
+  },
+  {
+   "i": 5,
+   "cls": "flex flex-col items-center gap-1",
+   "box": [
+    8,
+    359,
+    36,
+    89
+   ],
+   "childCount": 3,
+   "tailChildren": [
+    "",
+    ""
+   ],
+   "text": ""
+  },
+  {
+   "i": 6,
+   "cls": "flex flex-col items-center gap-1",
+   "box": [
+    8,
+    452,
+    36,
+    49
+   ],
+   "childCount": 2,
+   "tailChildren": [
+    ""
+   ],
+   "text": ""
+  },
+  {
+   "i": 7,
+   "cls": "mt-1 flex h-9 w-9 items-center justify-center rounded-lg tex",
+   "box": [
+    8,
+    509,
+    36,
+    36
+   ],
+   "childCount": 1,
+   "tailChildren": [],
+   "text": ""
+  }
+ ]
+}

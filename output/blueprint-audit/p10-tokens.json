@@ -1,0 +1,64 @@
+{
+ "found": true,
+ "cssVarsOnRoot": {
+  "--background": "(未定义)",
+  "--foreground": "(未定义)",
+  "--border": "(未定义)",
+  "--surface": "(未定义)",
+  "--brand": "(未定义)",
+  "--primary": "(未定义)",
+  "--primary-foreground": "(未定义)",
+  "--card": "(未定义)",
+  "--muted-foreground": "(未定义)",
+  "--ring": "(未定义)"
+ },
+ "bodyComputed": {
+  "bg": "rgb(10, 10, 15)",
+  "color": "rgb(226, 232, 240)"
+ },
+ "classResolution": {
+  "bg_background": "rgb(12, 17, 29)",
+  "color_foreground": "rgb(248, 250, 252)",
+  "border_border": "rgb(31, 42, 61)",
+  "bg_surface": "rgb(12, 17, 29)",
+  "bg_brand": "rgb(12, 17, 29)",
+  "bg_primary": "rgb(12, 17, 29)",
+  "bg_card": "rgb(12, 17, 29)"
+ },
+ "probes": {
+  "bg_background_el": "(无此元素)",
+  "bg_primary_btn": "(无此元素)",
+  "bg_surface_el": {
+   "bg": "rgb(12, 17, 29)",
+   "color": "rgb(226, 232, 240)",
+   "borderTop": "rgb(31, 42, 61) 0px",
+   "radius": "0px"
+  },
+  "text_foreground_el": {
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(248, 250, 252)",
+   "borderTop": "rgb(229, 231, 235) 0px",
+   "radius": "8px"
+  },
+  "bg_brand_el": {
+   "bg": "rgb(60, 131, 246)",
+   "color": "rgb(255, 255, 255)",
+   "borderTop": "rgb(229, 231, 235) 0px",
+   "radius": "9999px"
+  }
+ },
+ "styleSheets": [
+  {
+   "i": 0,
+   "href": "(inline)",
+   "ruleCount": 3,
+   "sample": "* | body | body"
+  },
+  {
+   "i": 1,
+   "href": "(inline)",
+   "ruleCount": 105,
+   "sample": "*, ::before, ::after | ::backdrop | *, ::after, ::before | ::after, ::before | :host, html | body"
+  }
+ ]
+}

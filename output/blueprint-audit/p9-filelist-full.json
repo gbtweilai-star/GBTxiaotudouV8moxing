@@ -1,0 +1,225 @@
+{
+ "found": true,
+ "listTag": "DIV",
+ "listCls": "px-3 pb-2 space-y-0.5",
+ "listBox": [
+  52,
+  113,
+  424,
+  424
+ ],
+ "scrollHeight": 424,
+ "clientHeight": 424,
+ "childCount": 19,
+ "items": [
+  {
+   "i": 0,
+   "tag": "DIV",
+   "box": [
+    64,
+    113,
+    400,
+    20
+   ],
+   "text": "/src/components/FooterModern.tsx ~626t"
+  },
+  {
+   "i": 1,
+   "tag": "DIV",
+   "box": [
+    64,
+    135,
+    400,
+    20
+   ],
+   "text": "/src/components/LoginForm.tsx ~588t"
+  },
+  {
+   "i": 2,
+   "tag": "DIV",
+   "box": [
+    64,
+    157,
+    400,
+    20
+   ],
+   "text": "/src/components/PricingTable.tsx ~528t"
+  },
+  {
+   "i": 3,
+   "tag": "DIV",
+   "box": [
+    64,
+    179,
+    400,
+    20
+   ],
+   "text": "/src/context/AuthContext.tsx ~464t"
+  },
+  {
+   "i": 4,
+   "tag": "DIV",
+   "box": [
+    64,
+    201,
+    400,
+    20
+   ],
+   "text": "/src/components/FAQSection.tsx ~441t"
+  },
+  {
+   "i": 5,
+   "tag": "DIV",
+   "box": [
+    64,
+    223,
+    400,
+    20
+   ],
+   "text": "/src/components/ChartDashboard.tsx ~434t"
+  },
+  {
+   "i": 6,
+   "tag": "DIV",
+   "box": [
+    64,
+    245,
+    400,
+    20
+   ],
+   "text": "/src/components/Testimonials.tsx ~425t"
+  },
+  {
+   "i": 7,
+   "tag": "DIV",
+   "box": [
+    64,
+    267,
+    400,
+    20
+   ],
+   "text": "/src/components/FeaturesGrid.tsx ~420t"
+  },
+  {
+   "i": 8,
+   "tag": "DIV",
+   "box": [
+    64,
+    289,
+    400,
+    20
+   ],
+   "text": "/src/components/RichTextEditor.tsx ~348t"
+  },
+  {
+   "i": 9,
+   "tag": "DIV",
+   "box": [
+    64,
+    311,
+    400,
+    20
+   ],
+   "text": "/src/components/DataGrid.tsx ~329t"
+  },
+  {
+   "i": 10,
+   "tag": "DIV",
+   "box": [
+    64,
+    333,
+    400,
+    20
+   ],
+   "text": "/src/components/CodeEditorWidget.tsx ~303t"
+  },
+  {
+   "i": 11,
+   "tag": "DIV",
+   "box": [
+    64,
+    355,
+    400,
+    20
+   ],
+   "text": "/src/components/KanbanBoard.tsx ~298t"
+  },
+  {
+   "i": 12,
+   "tag": "DIV",
+   "box": [
+    64,
+    377,
+    400,
+    20
+   ],
+   "text": "/src/components/TopBar.tsx ~296t"
+  },
+  {
+   "i": 13,
+   "tag": "DIV",
+   "box": [
+    64,
+    399,
+    400,
+    20
+   ],
+   "text": "/src/components/HeroGradient.tsx ~296t"
+  },
+  {
+   "i": 14,
+   "tag": "DIV",
+   "box": [
+    64,
+    421,
+    400,
+    20
+   ],
+   "text": "/src/App.tsx ~287t"
+  },
+  {
+   "i": 15,
+   "tag": "DIV",
+   "box": [
+    64,
+    443,
+    400,
+    20
+   ],
+   "text": "/src/components/Sidebar.tsx ~271t"
+  },
+  {
+   "i": 16,
+   "tag": "DIV",
+   "box": [
+    64,
+    465,
+    400,
+    20
+   ],
+   "text": "/src/components/DashboardStats.tsx ~238t"
+  },
+  {
+   "i": 17,
+   "tag": "DIV",
+   "box": [
+    64,
+    487,
+    400,
+    20
+   ],
+   "text": "/src/pages/Dashboard.tsx ~164t"
+  },
+  {
+   "i": 18,
+   "tag": "DIV",
+   "box": [
+    64,
+    509,
+    400,
+    20
+   ],
+   "text": "/src/index.css ~24t"
+  }
+ ]
+}
