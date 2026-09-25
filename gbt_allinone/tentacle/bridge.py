@@ -897,6 +897,84 @@ def _invoke_core(method: str, *args, **kwargs) -> dict:
         return {"ok": False, "error": f"{type(ex).__name__}: {ex}"[:200], "method": m}
 
 
+def _vision_watch_ctl(cog=None, **kw) -> dict:
+    """她的原生视觉开关 —— **她自己驱动**（不是外部替她点）。
+
+    `op` 取值：
+      status      现在睁着眼没有 + 采集环境（显示器/交互桌面）
+      start       睁眼（起持续视觉流；此后她自己每 60s 理解一次画面）
+      stop        闭眼
+      frame       取当前焦点帧（DXGI 硬采，同显示屏同源）
+      events      取视觉事件队列（取走即清）
+      stats       采集读数（fps / 已捕 / 缓冲 / 推流）
+      understand  现在就理解一次（走她的视觉皮层：云端优先，本地兜底）
+
+    ⚠️ 诚实边界（与 `vision_watch` 的实现一致，别念成别的）：
+      · 流**活在本进程内**（新进程里 `running=False`）⇒ 要持续睁眼，
+        调用方必须**长驻**；短命进程里 start 完就随进程一起消失。
+      · 她的云端理解 = **画面出网**（发到 agnes 网关做识别）。本地那条腿
+        （`vision_cap.analyze`，PIL 像素级）**不出网**。
+    """
+    import importlib
+    vw = None
+    for _name in ("gbt_allinone.tentacle.vision_watch", "tentacle.vision_watch",
+                  "vision_watch"):
+        try:
+            vw = importlib.import_module(_name)
+            break
+        except Exception:                                     # noqa: BLE001
+            continue
+    if vw is None:                                            # 同目录兜底加载
+        try:
+            import importlib.util
+            from pathlib import Path as _P
+            _p = _P(__file__).resolve().parent / "vision_watch.py"
+            _spec = importlib.util.spec_from_file_location("vision_watch", _p)
+            vw = importlib.util.module_from_spec(_spec)
+            _spec.loader.exec_module(vw)
+        except Exception as e:                                # noqa: BLE001
+            return {"ok": False, "skill": "vision_watch",
+                    "error": "vision_watch 不可用：%s: %s" % (type(e).__name__, str(e)[:120]),
+                    "cognition": cog}
+
+    op = str(kw.get("op") or kw.get("sub") or "status").strip().lower()
+    try:
+        if op == "start":
+            r = vw.start(eye=kw.get("eye"), fps=int(kw.get("fps", 4)),
+                         stream_fps=int(kw.get("stream_fps", 3)),
+                         max_frames=int(kw.get("max_frames", 60)),
+                         wait_s=float(kw.get("wait_s", 1.0)))
+        elif op == "stop":
+            r = vw.stop()
+        elif op == "frame":
+            r = vw.frame()
+        elif op == "events":
+            r = vw.events()
+        elif op == "stats":
+            r = vw.stats()
+        elif op == "status":
+            r = vw.status()
+        elif op in ("understand", "see", "describe"):
+            from .brain.visual_cortex import VisualCortex
+            r = VisualCortex().understand_screen()
+        else:
+            return {"ok": False, "skill": "vision_watch", "op": op,
+                    "error": "未知 op：%s" % op,
+                    "known": ["status", "start", "stop", "frame", "events",
+                              "stats", "understand"],
+                    "cognition": cog}
+    except Exception as e:                                    # noqa: BLE001
+        return {"ok": False, "skill": "vision_watch", "op": op,
+                "error": "%s: %s" % (type(e).__name__, str(e)[:160]),
+                "cognition": cog}
+    if isinstance(r, dict):
+        r.setdefault("skill", "vision_watch")
+        r.setdefault("op", op)
+        r.setdefault("cognition", cog)
+        return r
+    return {"ok": True, "skill": "vision_watch", "op": op, "result": r, "cognition": cog}
+
+
 def invoke(method: str, *args, **kwargs) -> dict:
     """**所有触手调用的唯一入口** —— 每次调用都先注入认知包，再派单。
 
@@ -921,6 +999,19 @@ def invoke(method: str, *args, **kwargs) -> dict:
             return {"ok": False, "skill": "pulse",
                     "error": "%s: %s" % (type(e).__name__, str(e)[:160]),
                     "cognition": cog}
+    # ★ 主动技能 · 原生视觉开关（vision_watch）：**她自己的睁眼/闭眼/取帧/取理解**。
+    #   放这里而不是放硬件 mixin，理由与 `pulse` 同：睁眼闭眼管的是**她的视觉系统状态**，
+    #   不是某一只手的动作。
+    #
+    #   为什么必须给她这个入口（2026-09-25 全仓实测）：
+    #     · `vision_watch` 内部**本来就是自驱动闭环** —— 开眼后每 `UNDERSTAND_EVERY_S`(=60s)
+    #       自己调 `visual_cortex.understand_screen`，把描述回传 `visual` 通道 +
+    #       落 `vision_native` 视觉记忆（`_understand_loop`）；
+    #     · 但全仓 grep `vision_watch.start()`：**只有它自己的一句错误提示里提到过** ——
+    #       **没有任何地方替她睁眼**。闭环是现成的，缺的就是这把钥匙。
+    #   ⇒ 于是"她不能自己驱动原生视觉"的真因不是她不会，是**没人给她开眼的入口**。
+    if str(method or "").strip() in ("vision_watch", "vision_watch_ctl"):
+        return _vision_watch_ctl(cog=cog, **kwargs)
     try:
         result = _invoke_core(method, *args, **kwargs)
     except Exception as e:                                  # noqa: BLE001

@@ -215,8 +215,20 @@ def _run_benign(kind, payload, policy_decision=None):
             try:
                 _cand.relative_to(_base)
             except ValueError:
-                return {"status": "error", "kind": kind, "error_class": "user_error",
-                        "message": "wf_define 的 file 只允许仓内 state/ 下的相对路径（不许绝对路径或 ..）"}
+                # 🔴 配方 #5（`docs/无限制创作流水线.md §十三`）：拿到 `filesystem_write`
+                # 授权 ⇒ 越界校验**授权即过**；拿不到 ⇒ **逐字节走原分支**（这就是回滚面）。
+                # fail-closed 写死：门不可用（导入炸/抛异常）一律**不放行**。
+                _authz5 = False
+                try:
+                    from . import auth_gate as _ag5
+                    _authz5 = bool(_ag5.check_and_consume_many(
+                        ["filesystem_write"],
+                        detail="api._run_benign.wf_define_file").get("ok"))
+                except Exception:                            # noqa: BLE001
+                    _authz5 = False
+                if not _authz5:
+                    return {"status": "error", "kind": kind, "error_class": "user_error",
+                            "message": "wf_define 的 file 只允许仓内 state/ 下的相对路径（不许绝对路径或 ..）"}
             if not _cand.is_file():
                 return {"status": "error", "kind": kind, "error_class": "user_error",
                         "message": "工作流定义文件不存在: state/%s" % _rel}

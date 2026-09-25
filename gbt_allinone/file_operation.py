@@ -96,6 +96,13 @@ def _write_root_checked() -> Path:
     覆盖范围（不许有旁路）：`_resolve_target()`（目标文件）· `backup_root()`（备份目录）·
     `_op_write`（写入口前置）三处入口全部走这里；`write_root()` 只留给只读口。
     判据 `test_arm_f_no_write_path_bypasses_the_gate` 用 AST 钉死这条覆盖范围。
+
+    🔴 配方 #4 —— **本处不加"授权即过"短路，而且是刻意的**（2026-09-25 记）：
+    配方原文对这条写的是「`filesystem_write` + **仍要求显式落点**」。
+    而本函数的拒条件本来就是「隔离进程 **且** 写根仍是默认值」——
+    一旦"仍要求显式落点"成立，写根就已经不是默认值，**条件根本不成立、它自然放行**。
+    ⇒ 在这里加短路是个 **no-op**（改与不改行为完全一致）。
+    **不写没用的代码，只把这件事记下来** —— 免得下一个人以为"这里漏改了"。
     """
     root = write_root()
     if root == DEFAULT_WRITE_ROOT and _paths.STORE_DIR_ENV_AT_BIND is not None:
@@ -109,6 +116,29 @@ def _write_root_checked() -> Path:
 def channel_dir() -> Path:
     """通道目录 —— **调用时**由 `_paths.STORE_DIR` 拼（不 import 期绑定）。"""
     return Path(_paths.STORE_DIR) / "health" / CHANNEL
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# 「授权即过」短路（Owner 2026-09-25 令：「限制全改人工授权」· 配方 #1/#2/#3）
+# ══════════════════════════════════════════════════════════════════════════
+# 为什么要有它：`refusal-census.py scan` 现读「门面 15 处硬拒里 13 处**授权也绕不过**」——
+# 因为它们**根本不消费作用域**，`owner_control` 只能顶掉"缺作用域"，顶不掉
+# "路径不许绝对"这种校验。主人要的「限制全改人工授权」在这几处上原本不成立。
+#
+# 形状（每一处都一样，`docs/无限制创作流水线.md §十三`）：
+#     if _authorized(scope, purpose):  → 走"授权即过"的短路
+#     否则                             → **逐字节走原来的校验分支**
+# ⇒ **没授权时行为与改前完全一致**，这就是回滚面；撤掉那两行即还原。
+#
+# 🔴 失败方向写死 **fail-closed**：门不可用（导入炸 / 抛异常）一律**返回 False**，
+#    也就是**回到原来的校验分支**，绝不因为"门坏了"而放行。这条不许改。
+def _authorized(scope: str, purpose: str) -> bool:
+    """拿到该作用域的一次授权 ⇒ True；否则 False（含门不可用）。"""
+    try:
+        from . import auth_gate as _ag
+        return bool(_ag.check_and_consume_many([scope], detail=purpose).get("ok"))
+    except Exception:  # noqa: BLE001 —— fail-closed：门坏了不许放行
+        return False
 
 
 def events_path() -> Path:
@@ -242,11 +272,21 @@ def _token_ok(token, parts) -> bool:
 
 
 def _check_rel(value) -> str:
-    """相对路径闸门：越界一律拒（不靠"拼完再看一眼"）。"""
+    """相对路径闸门：越界一律拒（不靠"拼完再看一眼"）。
+
+    🔴 配方 #1（`docs/无限制创作流水线.md §十三`）：拿到 `filesystem_write` 授权 ⇒
+    **越界校验短路**（授权即过）；拿不到 ⇒ **逐字节走原分支**（回滚面）。
+    唯一保留的是"必须有有效段落"：空路径无从落盘 —— 那不是限制，那是无意义。
+    """
     raw = str(value or "").strip()
     if not raw:
         raise CreateError("缺少 path：写入必须给写入根下的相对路径")
     norm = raw.replace("\\", "/")
+    if _authorized("filesystem_write", "file_operation._check_rel"):
+        parts = [p for p in norm.split("/") if p not in ("", ".")]
+        if not parts:
+            raise CreateError("path 没有有效段落：%r" % raw)
+        return "/".join(parts)
     if len(norm) > REL_MAX:
         raise CreateError("path 过长：%d > %d" % (len(norm), REL_MAX))
     if norm.startswith("/"):
@@ -309,9 +349,17 @@ def _check_content(value, name="content") -> str:
 def _resolve_target_name(payload: dict, state: dict):
     """出口取值的三态（D4）：不指定 -> default；显式 user / agent_suggested -> 必须给 target。
     `target_source=default` **不许自带 target** —— 默认值只能来自设置页，不许被参数顶掉。
+
+    🔴 配方 #2：拿到 `filesystem_write` 授权 ⇒ 三态校验短路（授权即过）；
+    显式 target 优先，没给就用设置页默认值。拿不到 ⇒ **逐字节走原分支**（回滚面）。
     """
     source = str(payload.get("target_source") or "").strip().lower()
     target = str(payload.get("target") or "").strip()
+    if _authorized("filesystem_write", "file_operation._resolve_target_name"):
+        if target:
+            return target, (source or "user")
+        return (str(state.get("text_exit_target") or TEXT_EXIT_TARGET_DEFAULT),
+                (source or "default"))
     if source and source not in TARGET_SOURCES:
         raise CreateError("target_source 只允许 %s：%r" % ("/".join(TARGET_SOURCES), source))
     if source == "default":
@@ -443,7 +491,11 @@ def _op_write(payload: dict) -> dict:
         if not _token_ok(payload.get("confirm_token"), (rel, new_sha)):
             raise CreateError("confirm_token 不匹配（相对路径|新内容 sha256 改一个字即失效）")
     elif overwrite:
-        raise CreateError("overwrite=True 但目标不存在：%s（不许把「覆盖」当「新建」的暗门）" % rel)
+        # 🔴 配方 #3（"_op_write 覆盖当新建"）：拿到 `filesystem_write` 授权 ⇒ 该暗门**授权即过**；
+        # 拿不到 ⇒ 逐字节走原分支（回滚面）。
+        if not _authorized("filesystem_write",
+                           "file_operation._op_write.overwrite_as_create"):
+            raise CreateError("overwrite=True 但目标不存在：%s（不许把「覆盖」当「新建」的暗门）" % rel)
     try:
         _preflight_channel()
     except ChannelWriteError as exc:
