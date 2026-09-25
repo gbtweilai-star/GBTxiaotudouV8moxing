@@ -1,0 +1,74 @@
+[
+  {
+    "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+    "exists": true,
+    "dirs": 176,
+    "skill_md": 176,
+    "files": 2896,
+    "exec_files": 320
+  },
+  {
+    "root": "C:\\Users\\ADMIN\\.agents\\skills",
+    "exists": true,
+    "dirs": 131,
+    "skill_md": 131,
+    "files": 1251,
+    "exec_files": 73
+  },
+  {
+    "root": "C:\\Users\\ADMIN\\.claude\\skills",
+    "exists": true,
+    "dirs": 82,
+    "skill_md": 82,
+    "files": 1539,
+    "exec_files": 77
+  },
+  {
+    "root": "C:\\Users\\ADMIN\\.codex\\skills",
+    "exists": true,
+    "dirs": 33,
+    "skill_md": 32,
+    "files": 875,
+    "exec_files": 102
+  },
+  {
+    "root": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.autohand\\skills",
+    "exists": true,
+    "dirs": 4,
+    "skill_md": 4,
+    "files": 174,
+    "exec_files": 0
+  },
+  {
+    "root": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.codebuddy\\skills",
+    "exists": true,
+    "dirs": 4,
+    "skill_md": 4,
+    "files": 174,
+    "exec_files": 0
+  },
+  {
+    "root": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.cursor\\skills",
+    "exists": false
+  },
+  {
+    "root": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.windsurf\\skills",
+    "exists": true,
+    "dirs": 9,
+    "skill_md": 9,
+    "files": 71,
+    "exec_files": 0
+  },
+  {
+    "root": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills",
+    "exists": true,
+    "dirs": 73,
+    "skill_md": 73,
+    "files": 349,
+    "exec_files": 21
+  },
+  {
+    "root": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.openclaw-autoclaw\\skills",
+    "exists": false
+  }
+]

@@ -1,9 +1,16 @@
 {
   "_口径": "唯一进度真源。人读的详细账在 output/blueprint-audit/生产推进-故障清单.md；本文件只放『现在做到哪 / 哪没做 / 未清故障 / 等你拍板』，供宿主插件在重启后自动注入会话头。改了本文件，下一轮会话就看得见。",
   "_排班纪律": "每轮结束前更新本文件 + 时间点；不许只写『继续排查』这种没信息量的话。",
-  "updated_at": "2026-09-25T21:24:00+08:00",
-  "rounds_done": 34,
+  "updated_at": "2026-09-25T21:34:00+08:00",
+  "rounds_done": 35,
   "today_done": [
+    "🔴 **抓到一处机制性漏根（本仓「手写清单 = 漏根」的活样本）**：`skill-vet.py` 的技能根原来是**手写**的 7 条，里面有 3 条盘上根本不存在，同时又**漏掉 20 个真实存在的根**（`~/.codex·.trae·.workbuddy-ai·.zcode·.omp·.openclaw·.lingma·.continue·.copilot·.gemini·.aider-desk·.augment` 等，以及仓内 `.dsh/.agents/.claude/_upstream/data/审美相关skill`）。⇒ 手写 8 根 / 512 技能，实际 **28 根 / 1273 技能**。**「审过了」这句话在盘点这一步就是假的** ——已改成 `discover_roots()` 自动扫（家目录与仓根各下一层 `*/skills` + 仓内一层 `*/*/skills`），并且每个根都要能报出「它有 N 个技能」",
+    "**技能面全量审查做完**：新增 `--all-roots`（全量）与 `--roots`（只普查），现读 **根 28 · 在场 1273 · 实审 1273 · 未审 0 · 无法审查 0**。风险分布：MEDIUM 659 · LOW 其余 · **HIGH 97 · 有可执行命中 138**。新增 `tools/codex-scripts/skill-vet-report.py` 出人读报告 `output/skill-vet/全量审查报告.md`（1576 行），**覆盖率三个数全部从盘上现算**，不手写",
+    "🔴 **报告里把「HIGH 97」这句话的含义写死，不许念过头**：逐字读过两个样本，**都是良性**，而且原因是**结构性**的 ——① `turnstile-spin`（Cloudflare 官方仓的 Turnstile 技能）判 HIGH，而 `curl` 是调 Cloudflare 自己的 API、命中的 `TOKEN:`/`TOKEN=` 是脚本里的**用法占位文本**、`rm -rf` 是 `trap` 清它自己 `mktemp -d` 的目录；② `autoclaw-design-capability`（**我们托管根里自己的**）判 HIGH，命中全来自它**随附的第三方库** `last30days/scripts/lib/{bird_x,bluesky}.py`（社交平台客户端本来就要处理 token/cookie）与 `template.json` 里作为**表单文案**的 `credentials` 一词。⇒ **合法的 CLI 包装器/带库技能天然命中「外传数据/索要凭据/装包/curl」**，机器分不清「占位文本」与「真读凭据」，所以那 97 条是**线索不是名单**",
+    "**第五类假阳性（防御性写法）已剔出分级**：`trap 'rm -rf \"$TEMP_DIR\"' EXIT` 里清的是它自己 `mktemp -d` 的目录，不是删用户的东西 ⇒ 标 `defensive`、照旧列出、**不参与定级**（实测触发 10 处）",
+    "⚠️ **同一轮的自纠（先把前提验掉，救下半条规则）**：我原本还要给「洗凭据」（`unset CLOUDFLARE_API_TOKEN`）加一条防御性规则，写完用例才发现**它根本不会触发** —— 凭据规则的形状是 `(API_KEY|TOKEN|…)\\s*[:=]`，而 `unset A B` 既没 `:` 也没 `=`。⇒ 那条正则**没加**：加了也永远不触发，就是一条**死判据**（本仓自己的 `audit-dead-judgments.py` 专抓这种东西）。用例里改成**断言它确实不命中**，把假前提钉住",
+    "🔴 **抓到「盘上的技能在会话中途会自己变多」**：实审完 1268 之后，报告再算在场数变成 1273 —— 多出来的 5 个（`~/.workbuddy-ai/skills` 的 admapix · email-daily-summary · github-ai-trends · github-trending-cn · return-forecast-lite）是**这一轮进行中被技能系统装进来的**。⇒ 给报告加了 `--topup`：只补审**差集**（全量重扫太贵），并把风险分布/名单**一起重算**（免得'改了数没改账'）；复跑幂等，现读 **1273/1273**",
+    "**判据 15 条全绿**：`test_skill_vet` 从 10 → 15（新增防御性这一类 + 两条负控：真读凭据再外发必须照旧 🔴 HIGH · 删用户目录必须照旧被标；外加一条「假前提」用例，把'洗凭据会被误判'这句话钉成**不成立**）",
     "**顺手审了会话中途被装进来的两条第三方技能**：`chrome-extensions` 与 `modern-web-guidance`（源 `GoogleChrome/modern-web-guidance`，由技能系统自动落到 `.autohand/skills/` 与 `.codebuddy/skills/` 两个根，并写进 `skills-lock.json`）。按 skill-vetter 口径审：**高风险 0 · 无法审查 0 · 可执行命中 0**，两条都是 🟡MEDIUM —— 命中**全在文档位置**（`eval(`/`curl`/`fetch(`/`Password:` 是文档在**举例讲解**）。我按工具明确留给人的最后一步**抽查了最高信号的两条**：`Password:` 是无障碍指南里的一个 HTML 表单标签；`identity.md` 指的是扩展自己的 `references/extensions/auth-identity.md`，**不是**我们的记忆/身份件。两条技能目录里 **172 个文件全是 `.md`**（零脚本）⇒ 「可执行命中 0」这句站得住。两个根里的副本逐字节相同。⚠️ 这两条技能与 `skills-lock.json` 我都没提交（不是我装的、来源已由 lock 记录）—— 如实上报，处置归主人",
     "**D7 结掉（主人令：密钥跟双向插件一样、可以自动读取）**：把 `config/mcporter.json` 里那条**明文** ADP key 收进本仓自己的机制 —— `gbt_allinone/deepseek_key.py` 的 DPAPI 保险箱（新 profile `adp` · 独立熵值 `GBTxiaotudouV8:adp:v1` · 落盘 `store/secrets/adp_api.dpapi` 308 B），配置改成运行时自动读取：`command=python` + `args=[deepseek_key.py, inject, --profile, adp, --, cmd, /c, npx, -y, @laiye-adp/mcp]`，`env` 清空。**全程只印掩码**（明文只进内存，不进 argv/stdout/日志）；迁移脚本自带四条自证：JSON 可解析 · 明文在配置里出现 **0** 次 · 保险箱回读与原文一致 · **负控**（同一段明文在迁移前的原文里能搜到）",
     "**形状校验改成按 profile 各带一条**（原来是全库共用 `^(?:sk|ak)[-_]…`）：ADP 的 key 是纯十六进制长串、不带 sk-/ak- 前缀 ⇒ 共用一条会把合法密钥判成格式错。**既有两个 profile 的行为一字未变**（32 位十六进制进 deepseek/agnes 仍被拒，已用负控钉住）",
@@ -66,7 +73,7 @@
     "已修并带牙用例：voice 参数静默丢失 · voice_orchestra 未知场景假绿灯 · redteam FR-5/FR-8 · aesthetic_brain 静默写盘 · media-gen-slots 窄字符类 · isolation_sweep 超时假绿/假红",
     "已重建派生索引：state/skill_atlas.json（171→172，security 域 5→17，幽灵域 unimplemented 现形）"
   ],
-  "in_progress": "第 34 轮：把**云端那 4 批没部署的改动**在本机离线验掉了（端点闸 57 条 · 含 12 条负控 · 变异测试证明它会红）；接进开机自检成为第 8 条常设判据（10 步全绿）。下一轮：接着找不依赖主人的活（云上「形状 B 10 个独立 Worker」与 `wrangler.container.toml` 那条容器路还没验）。",
+  "in_progress": "第 35 轮：技能面全量审查做完 —— 根改成**自动发现**后现读 **28 个根 / 1273 个技能 / 1512 个可执行件**，**1273/1273 全部实审 · 0 个无法审查**（旧报告只审了 13 件）。下一步：把『HIGH 97 条』这件事按**人读样本**继续收敛（已手读 2 个，均良性），或转去别的面。",
   "not_done": [
     {
       "id": "N1",
@@ -190,6 +197,13 @@
       "severity": "低",
       "evidence": "git status 现读该目录是 ?? 未跟踪；而 config/mcporter.json 已提交并指向它 ⇒ 换台机器 clone 下来这条 MCP 是断的",
       "state": "该目录不是我建的、来源未确认 ⇒ 我没提交它。等主人一句话：入版本库 / 删掉这条 MCP / 保持未跟踪"
+    },
+    {
+      "id": "F9",
+      "what": "本机有 28 个技能根 / 1273 个第三方技能 / 1512 个可执行件，来自十几种别的 agent 工具（.trae/.workbuddy-ai/.zcode/.lingma/.continue/.copilot/.gemini/.omp/.trae…）—— 这是一个**没人管、还在自己长大**的面",
+      "severity": "中",
+      "evidence": "自动发现现读：28 根 1273 技能 1512 可执行件；本轮进行中还被装进 5 个新技能；旧报告只审了 13 件（手写根列表漏了 20 个根）",
+      "state": "已全量审完（1273/1273 · 0 无法审查）⇒ **不再是'没审过'**；但『要不要留这么多根/这么多技能』是主人的决定（不是我能删的）"
     }
   ],
   "owner_decisions": [
@@ -227,6 +241,11 @@
       "id": "D8",
       "ask": "要不要让 adp 这条 MCP 真跑起来（首次跑 `npx -y @laiye-adp/mcp` 大概率要**联网下载安装**）",
       "why": "装包与出网都属'先问主人'的动作；保险箱与注入链已验好（没密钥会拒启动），只差这一步真启动"
+    },
+    {
+      "id": "D9",
+      "ask": "28 个技能根（十几种别的 agent 工具的技能目录）要不要收敛？哪些根可以清掉不再由本机承载",
+      "why": "1273 个第三方技能 / 1512 个可执行件是一个持续长大的攻击面；已全部审过（HIGH 97 全为线索级），但『留不留』只主人能定；删技能件=改第三方安装物，我不擅自动"
     }
   ],
   "log": [
@@ -361,6 +380,30 @@
     {
       "at": "2026-09-25T21:23",
       "what": "技能系统中途装入 chrome-extensions / modern-web-guidance 两条第三方技能 ⇒ 已按 skill-vetter 审完（MEDIUM·文档性·可执行 0）"
+    },
+    {
+      "at": "2026-09-25T21:24",
+      "what": "盘点技能面：手写根列表漏 20 个根 ⇒ 改成自动发现（28 根 / 1273 技能）"
+    },
+    {
+      "at": "2026-09-25T21:25",
+      "what": "全量审 1268 件：MEDIUM 659 · HIGH 95 · 可执行命中 136"
+    },
+    {
+      "at": "2026-09-25T21:27",
+      "what": "手读样本 turnstile-spin（Cloudflare 官方）⇒ 良性；加防御性分类（触发 10 处）"
+    },
+    {
+      "at": "2026-09-25T21:29",
+      "what": "自纠：'洗凭据会被误判'前提不成立（规则形状是 \\s*[:=]）⇒ 不加那条死判据，改用例钉住"
+    },
+    {
+      "at": "2026-09-25T21:31",
+      "what": "手读样本 autoclaw-design-capability ⇒ 良性（随附第三方库 + 表单文案）"
+    },
+    {
+      "at": "2026-09-25T21:33",
+      "what": "报告成文（1576 行，覆盖率现算）；发现技能面本轮自己长大 5 个 ⇒ 加 --topup 补审差集"
     }
   ]
 }

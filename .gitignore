@@ -149,3 +149,8 @@ projects/**/_work/
 # --- 根目录残留（12 字节，内容 I have run，全仓 0 引用）---
 # 本轮整理时从索引摘出；**文件本体的删除要主人点头**，先把 status 噪音关掉。
 test_localsystem.txt
+
+# 技能全量审查的**原始机读读数**：7.8 MB，可 1 分钟重生成 ⇒ 不入版本库。
+# 人读报告（全量审查报告.md）入版本库 —— 要留痕的是结论，不是原始大件。
+# 重生成：python tools/codex-scripts/skill-vet.py --all-roots --json --out output/skill-vet/全量审查.json
+output/skill-vet/全量审查.json
