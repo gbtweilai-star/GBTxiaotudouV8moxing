@@ -1,9 +1,16 @@
 {
   "_口径": "唯一进度真源。人读的详细账在 output/blueprint-audit/生产推进-故障清单.md；本文件只放『现在做到哪 / 哪没做 / 未清故障 / 等你拍板』，供宿主插件在重启后自动注入会话头。改了本文件，下一轮会话就看得见。",
   "_排班纪律": "每轮结束前更新本文件 + 时间点；不许只写『继续排查』这种没信息量的话。",
-  "updated_at": "2026-09-25T21:47:00+08:00",
-  "rounds_done": 36,
+  "updated_at": "2026-09-25T22:00:00+08:00",
+  "rounds_done": 37,
   "today_done": [
+    "🔴🔴 **本轮最重要的一件事是纠错，不是新发现**：我此前把 F1（端点公网可达且无令牌门）与 F6（云端真读数缺失）当**高优先级未清故障**挂了整整十几轮，依据是「**4 批改动没部署**」——而那句话**是我推的，从来没验过**。本轮做了一次**只读探活**（`GET /v1/models`，免费、不发任何数据）：现读自报 `auth_scope={chat:bearer, models:public, tokens_configured:1, compare:sha256+timingSafeEqual}` 与 `llm_endpoint_wired` —— **这些字段正是那 4 批改动加进去的** ⇒ 云端**早就部署了**，而且**令牌闸是开着的**。⇒ 两个高危项当场结掉。教训：**「没部署」是个假设，不是读数**；假设不该以高危故障的名义挂十几轮",
+    "🔴 **决定性一测（零花费）**：`POST /v1/chat/completions` **不带 Authorization** ⇒ 现读 **401 `authentication_error`**（`{tokens_configured:1, scheme:Bearer}`）；**错令牌**同样 401（负控）。为什么说零花费：令牌闸在**解析 body 之前**执行 ⇒ 这两发**一次上游请求都没发出去**、不烧一个神经元。⇒ 「闸是开着的」从**自报**变成了**实测挡住**",
+    "**云端真跑验收 17/17 全过**（`cloud-mesh.py live --url https://gbt-potato-cloud-10.lopaycn.workers.dev`，只读）：根路由在册 · **10/10 模块在世** · 形态=单 isolate · 声明边 90=10×9 现算 · 无自环 · 双向对称 · **全互通实跑 90/90 全中且同一请求内取证** · **门挡住未授权作用域**（403 缺 process_execute，在册恰是配置里那 4 条）· **云上实例没有自发授权的口子（403）** · 01 如实标 `weights_ours=false` · 03 如实报未读到 · 08 没存过的键不拿 0 顶。证据留档 `output/cloud-live/2026-09-25-live-17of17.json`",
+    "**顺手验了一条生产安全性质**（跑 live 之前先读代码，不是先跑）：`/admin/grant` 在 `OWNER_TOKEN` **未配**时是 **fail-closed** —— `worker.js:582` 直接 403『未读到主人令牌：本实例没有发授权的口子』。若写成 `if (owner && given !== owner)` 就是**线上开门**。云上 403 读数与代码一致",
+    "**一条边界如实登记（不许念过头）**：我从外部**证不了**「云上那份与仓内 worker.js 字节级同源」——看不到构建物。能说的是：响应**逐字段**与仓内代码一致（错误文案、`gbt.tokens_configured`、`scheme`、`auth_scope.compare` 的取值都是仓内写死的那几个字符串）⇒ 行为同源，不是字节同源",
+    "**一条小观察（不是故障）**：`/v1/models` 是公开的，它会自报 `tokens_configured: 1` —— 等于告诉外面「开了闸、配了 1 把钥匙」。这是**有意的读数设计**（README 里写明该路公开），不泄漏令牌值；记在这里只是免得下次有人当成新发现",
+    "**还有两条 live 开关我故意没开**：`--expect-storage`（会往主人的 KV/R2 **真写**探针键）与 `--expect-llm`（会真打模型、烧神经元）—— 这两条属**写生产/花钱**，要主人点头才动，我不擅自开",
     "**新立一件生产向的闸：`tools/codex-scripts/cloud-config-wiring.py`（部署前接线对账 · 离线 · 不联网）**。理由：`deploy/cloud-10/` 是**生产落点**，而这个网一次都没部署过 ⇒ 任何「配置与代码对不上」都要等**真部署那一刻**才以 `undefined` 炸出来（那时已经在改远端了）。它查四类：A 读而未声明 · B 声明而未读 · C 形态 B 十个生成件的服务绑定/包名/入口 · D 容器面（编译/入口/明文密钥）",
     "🔴 **首跑就抓到两个真缺口**（同一类：代码在读、而配置里**连一次都没出现过**）：`SANDBOX`（`modules.js:583,596` —— 06 号命令面的容器绑定）与 `AE`（`modules.js:786` —— 10 号观测面的 Analytics Engine 绑定）。含义：**后来人要接这个能力，查不到『绑定该叫什么名』**。⚠️ 而这份配置的注释里明明写着「补声明缺口（机械扫出来的，不是猜）」—— 那次扫的是 `[vars]` 类（IMAGE_ENDPOINT 等 5 个），**漏了 binding 类的名字**。已按 binding 的形状补成**注释**（注释=没接线，不许写成已声明；但名字要查得到）",
     "**形态 B 与容器面首次对账，全过**：10 个生成件的 `[[services]]` 绑定**正好**是各自 9 个对等位、`name` 与目录名一致、`main` 指的文件都在；`container/server.py` 编译通过、`Dockerfile` 提到 server.py、`wrangler.container.toml` 无明文密钥。（以前只验过其中一个模块能不能加载，其余 9 个从没对过账）",
@@ -80,7 +87,7 @@
     "已修并带牙用例：voice 参数静默丢失 · voice_orchestra 未知场景假绿灯 · redteam FR-5/FR-8 · aesthetic_brain 静默写盘 · media-gen-slots 窄字符类 · isolation_sweep 超时假绿/假红",
     "已重建派生索引：state/skill_atlas.json（171→172，security 域 5→17，幽灵域 unimplemented 现形）"
   ],
-  "in_progress": "第 36 轮：新立「部署前接线对账」（生产落点 deploy/cloud-10 的配置↔代码逐名对账），首跑抓到 2 个真缺口（SANDBOX / AE：代码在读、配置里连名字都没出现过）并已补上落点；已接进开机自检，现读 **12 步全绿**。下一步：接着找不依赖主人的活。",
+  "in_progress": "第 37 轮：**现读证实云端早已部署**（/v1/models 自报 auth_scope · live 只读验收 **17/17 全过**）⇒ 结掉 F1（端点无令牌门）与 F6（云端真读数缺失）。⚠️ 两个此前挂着的高危项就此不再是问题 —— 但我必须记住教训：**F1/F6 是我按『没部署』推出来的，而那是没验过的假设**。下一步：接着找不依赖主人的活。",
   "not_done": [
     {
       "id": "N1",
@@ -157,13 +164,6 @@
   ],
   "open_faults": [
     {
-      "id": "F1",
-      "what": "gbt-potato 端点公网可达且无令牌门",
-      "severity": "高",
-      "evidence": "https://gbt-potato-cloud-10.lopaycn.workers.dev/v1 返 200；GBT_ENDPOINT_TOKEN(S) 未设",
-      "state": "修法已在 worker.js 备好（4 批），未部署 = 改远端，只主人能做"
-    },
-    {
       "id": "F2",
       "what": "密钥配在 User 作用域，当前进程与 python 子进程一个都看不到",
       "severity": "高",
@@ -190,13 +190,6 @@
       "severity": "中",
       "evidence": "工具自己声明的 dims_unimplemented",
       "state": "未排期"
-    },
-    {
-      "id": "F6",
-      "what": "云端 4 批改动未部署 ⇒ 云端真读数缺失（本机离线只验了代码行为 57 条）",
-      "severity": "中",
-      "evidence": "check-endpoint-gate.mjs 57/57 · 但云端 /v1/models 与 /v1/chat/completions 现读仍是旧行为",
-      "state": "部署=改远端，只主人能做；离线行为已验，部署后需另量云上真读数"
     },
     {
       "id": "F8",
@@ -253,6 +246,11 @@
       "id": "D9",
       "ask": "28 个技能根（十几种别的 agent 工具的技能目录）要不要收敛？哪些根可以清掉不再由本机承载",
       "why": "1273 个第三方技能 / 1512 个可执行件是一个持续长大的攻击面；已全部审过（HIGH 97 全为线索级），但『留不留』只主人能定；删技能件=改第三方安装物，我不擅自动"
+    },
+    {
+      "id": "D10",
+      "ask": "要不要把云端 live 验收开到底（两条开关：--expect-storage 会往您的 KV/R2 真写探针键；--expect-llm 会真打模型、烧神经元）",
+      "why": "这两条属『写生产 / 花钱』，要您点头我才动。现读只跑到只读的 17/17；开了才量得到『存储真写真读』与『模型面真答上』"
     }
   ],
   "log": [
@@ -435,6 +433,26 @@
     {
       "at": "2026-09-25T21:46",
       "what": "接进开机自检：常设判据 10 条，靴自检 12 步全绿"
+    },
+    {
+      "at": "2026-09-25T21:56",
+      "what": "只读探活 /v1/models ⇒ 发现云端早有 auth_scope 与 tokens_configured=1：4 批**已部署**"
+    },
+    {
+      "at": "2026-09-25T21:57",
+      "what": "cloud-mesh live 真跑验收 17/17 全过（只读）；证据留档 output/cloud-live/"
+    },
+    {
+      "at": "2026-09-25T21:58",
+      "what": "先读 worker.js:582 确认 /admin/grant 在无 OWNER_TOKEN 时 fail-closed，才敢让 live 发那条 grant 探针"
+    },
+    {
+      "at": "2026-09-25T21:59",
+      "what": "决定性一测：不带 Authorization / 错令牌打 chat ⇒ 都 401（零神经元消耗）"
+    },
+    {
+      "at": "2026-09-25T22:00",
+      "what": "结掉 F1 与 F6 —— 它们挂的依据（『没部署』）是我的假设，不是读数"
     }
   ]
 }

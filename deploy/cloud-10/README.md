@@ -80,10 +80,15 @@ node deploy/cloud-10/tools/run-mesh-local.mjs     # 本机形状验收 70 项
 node deploy/cloud-10/tools/check-endpoint-gate.mjs # 本机端点闸行为 57 项（离线 · 不出一字节网）
 
 # 上面这条为什么单独有：worker.js 里 2026-09-25 那 4 批改动（令牌闸 / `/v1/models`
-# 作用面读数 / `normalizeMessages` 拍平块数组 / 错误分档）因为**没部署**，云端一次都没跑过。
-# 这条闸用桩 AI 绑定把它们的行为在本机验掉，并且**逐条配负控**；
-# 变异测试（把修复打回病根）现读 49/57、退出码 1，红点正好落在对应两组 —— 判据是有牙的。
-# 口径：本机验的是**代码行为**，不替代云端真读数（未部署 ⇒ 云端真读数仍然缺，见 F6）。
+# 作用面读数 / `normalizeMessages` 拍平块数组 / 错误分档）当时还没部署，云端一次都没跑过，
+# 所以先在本机把**代码行为**验掉。这条闸现在仍然留着当**回归门**（改了 worker.js 就跑它）。
+#
+# ✅ 2026-09-25 22:00 现读更正（第 37 轮）：**云端早就部署了**，而且令牌闸是开着的 ——
+#    `GET /v1/models` 自报 auth_scope={chat:bearer, models:public, tokens_configured:1,
+#    compare:sha256+timingSafeEqual}（这些字段正是那 4 批加的）；不带 Authorization 打
+#    `/v1/chat/completions` 现读 401。`cloud-mesh.py live --url <真地址>` 真跑 **17/17 全过**。
+#    证据留档 output/cloud-live/2026-09-25-live-17of17.json。**下面那句"未部署"已作废。**
+# 口径（仍然成立）：本机验的是**代码行为**，与云端真读数是两件事，两个都要有。
 
 # 真跑验收（对一个**已经跑起来**的实例量 16 条判据；不部署、不改远端）
 wrangler dev -c deploy/cloud-10/wrangler.toml --port 8787 --local   # 本机 workerd 冒烟
