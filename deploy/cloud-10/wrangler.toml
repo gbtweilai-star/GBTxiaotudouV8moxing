@@ -41,6 +41,23 @@ binding = "AI"
 LLM_ENDPOINT = ""
 UNCENSORED_ENDPOINT = ""
 
+# 🔴 2026-09-25 **补声明缺口**（机械扫出来的，不是猜）：
+#    下面这几个变量 **`src/modules.js` 在读，而这份配置里从来没声明过**。
+#    后果：想"把无审查图像模型集成进来"的人，**在这份配置里找不到落点** ——
+#    代码的注释写着「只要那个模型被包成 OpenAI 兼容端点，这里就通」，
+#    可"往哪写"这件事一步之差没交代 ⇒ 承诺差半步才可用。
+#    实测落点（逐条 grep 过，不是推测）：
+#      IMAGE_ENDPOINT   modules.js:434,453  图像面（无审查出图）打 <base>/images/generations
+#      IMAGE_MODEL      modules.js:447      图像面模型名，默认 "gbt-potato-v8-image"
+#      UNCENSORED_MODEL modules.js:421      文本面（无审查通道）模型名，默认 "gbt-potato-v8-uncensored"
+#      LLM_MODEL        modules.js:350      常规网关模型名，默认 "gbt-potato-v8"
+#      GBT_IDENTITY     modules.js:155,275  身份文案覆盖（主人改口只改这一处）
+IMAGE_ENDPOINT = ""
+IMAGE_MODEL = ""
+UNCENSORED_MODEL = ""
+LLM_MODEL = ""
+GBT_IDENTITY = ""
+
 # 🔐 令牌闸（2026-09-25 主人令「生成专属密钥给我用其他框架测试」）
 #   ⚠️ **令牌绝不许写在这份文件里** —— 这里是入库的明文，写进来就是踩凭据红线。
 #   正确落法（**secret**，不进仓库）：
@@ -48,9 +65,15 @@ UNCENSORED_ENDPOINT = ""
 #       wrangler secret put GBT_ENDPOINT_TOKENS --config wrangler.toml
 #   取值：**逗号分隔的多个令牌**。为什么多令牌：单令牌下没有"专属"可言 ——
 #   给别的框架发的钥匙必须跟你自己 DSH 路由的 `GBT_POTATO_API_KEY` 逐字相同，
-#   想轮换测试钥就会连自己那条路由一起打断。多令牌才能一消费方一钥、各轮各的。
+#   想轮换测试钥就会连你自己那条路由一起打断。多令牌才能一消费方一钥、各轮各的。
 #   兼容旧的单值 `GBT_ENDPOINT_TOKEN`（两者任一非空即开启闸）。
 #   比较方式：两边各做 SHA-256 再 `timingSafeEqual`（常数时间），不是明文 `!==`。
+#
+#   📋 **代码在读、但必须走 secret 的名字**（列在这里只为"看得见"，**不许填值**）：
+#       GBT_ENDPOINT_TOKENS / GBT_ENDPOINT_TOKEN   chat 路径的令牌闸
+#       IMAGE_API_KEY                             modules.js:455 图像面的 Bearer
+#       UNCENSORED_API_KEY                        文本无审查通道的 Bearer
+#       OWNER_TOKEN                               /admin/grant 那一路的主人令牌
 # 本网落盘前缀（与 src/modules.js 的 NS_PREFIX 必须一致）
 NS_PREFIX = "mesh10/"
 # Workers AI 的模型 id：**现读**自 `wrangler ai models`（不编 id）。
