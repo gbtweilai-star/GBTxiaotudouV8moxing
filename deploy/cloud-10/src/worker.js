@@ -260,7 +260,10 @@ export function createMesh(env, sharedState) {
     // 为什么必须有：拼接网自家说的是 `/rpc/<模块>/<op>`，而"切换模型"要的是**客户端认得的协议**
     // （DSH 的模型适配器就是 OpenAI 兼容那一套）。所以这里把 01 号包成
     // `GET /v1/models` + `POST /v1/chat/completions`。
-    // 🔴 边界（不许念过头）：**流式还没实现** ⇒ 要 `stream:true` 的一律如实 501，不假装流式。
+    // ✅ 流式**已实现**（SSE 分片现测通过 —— 见 L313 起的分支与 L274 的 `stream: true` 读数）。
+    // 🔴 2026-09-25 更正：本行原文写的是「**流式还没实现** ⇒ 要 `stream:true` 的一律如实 501」，
+    //    而九行之下 L274 同时写着「已实现（SSE 分片现测通过）」—— **同一函数里自己打自己**。
+    //    代码事实站在 L274 那边（L313 起真有 SSE 分支）。**声明必须跟着事实走。**
     //    工具调用（tools）**原样透传**给上游，回包里的 tool_calls 也**原样带回来**，
     //    但"上游到底支不支持"要**量出来**再说，不许我先替它表态。
     if (method === "GET" && path === "/v1/models") {
@@ -269,7 +272,21 @@ export function createMesh(env, sharedState) {
         data: [{ id: "gbt-potato-v8", object: "model", created: 0, owned_by: "GBT小土豆V8" }],
         gbt: {
           upstream: e.WORKERS_AI_MODEL || null,
-          weights_ours: Boolean(e.LLM_ENDPOINT),
+          // 🔴 2026-09-25 **修「会说谎的指示灯」**（实测，不是理论风险）：
+          //    原来这里是 `Boolean(e.LLM_ENDPOINT)` —— 只要**配置**了 LLM_ENDPOINT
+          //    就报「权重是我们的」。而本文件 `e.AI.run` **只有一处**
+          //    （L329 流式路径，实测 grep），`LLM_ENDPOINT` **从来没有任何分支**
+          //    ⇒ 流量照旧烧 Workers AI 的神经元，读数却翻成 `true`。
+          //    **配置 ≠ 接线。** 现在按事实报：
+          //    **按「路径」分开报**（2026-09-25 自纠）：非流式那条转给 `gbt-c01-llm-gateway`，
+          //    模块里**真实现了**自托管分支（`callOpenAI(LLM_ENDPOINT)`，报 weights_ours=true）；
+          //    流式那条在本文件里**没有**该分支，恒走 Workers AI。
+          //    ⇒ 一个扁平的 `weights_ours` 说不清这件事，所以拆成两条路各报各的。
+          weights_ours: false,
+          llm_endpoint_wired: { non_stream: Boolean(e.LLM_ENDPOINT), stream: false },
+          llm_endpoint_note: e.LLM_ENDPOINT
+            ? "已配 LLM_ENDPOINT：**非流式**走自托管（模块里有分支）；**流式**没有分支，仍走 Workers AI"
+            : "未配 LLM_ENDPOINT ⇒ 两条路都走 Workers AI",
           identity: "GBT小土豆V8",
           stream: true,           // 已实现（SSE 分片现测通过）
           tools: true,            // 已实现（tools 原样转发 + tool_calls 原样带回，含第二轮工具结果）
@@ -310,6 +327,12 @@ export function createMesh(env, sharedState) {
       //    与 modules.js 那次是同一类错（那次被 try/catch 吞成了"模型没答"）。
       const msgs = Array.isArray(body.messages) ? body.messages : [];
       if (!msgs.length) return json({ error: { message: "messages 为空", type: "invalid_request_error" } }, 400);
+      // ⚠️ 2026-09-25 **自纠（第一版我放错了位置）**：我把「LLM_ENDPOINT 未接线」的守卫
+      //    放在了**全局**，那是错的 —— `modules.js`（`gbt-c01-llm-gateway`）里
+      //    **自托管分支是真实现了的**（`callOpenAI(ctx.env, ctx.env.LLM_ENDPOINT, …)`，
+      //    并如实报 `weights_ours: true`）。
+      //    ⇒ 真正缺分支的**只有本文件的流式路径**（非流式那条转给模块，是认 LLM_ENDPOINT 的）。
+      //    全局守卫会把**一条本来能用的配置**一起拦掉。守卫已下移到流式分支内。
       if (body.stream === true) {
         // 🔴 流式：客户端（含 DSH 的适配器）多数默认要 SSE，所以这条必须真做出来，
         //    不然"切换过去"会当场失败 —— 而不是模型不行。
@@ -317,6 +340,24 @@ export function createMesh(env, sharedState) {
         const verdict = await dispatch("gbt-c09-policy-guard", "evaluate", { scope: "external_llm" }, null);
         if (!(verdict.body || {}).allowed) {
           return json({ error: { message: "缺授权 external_llm", type: "permission_error" }, gbt: { missing_scopes: (verdict.body || {}).missing_scopes } }, 403);
+        }
+        // 🔴 fail-closed（2026-09-25 · 只在这条路上）：配了 `LLM_ENDPOINT` 却走流式时，
+        //    **不许静默烧 Workers AI** —— 那正是「配了就算自己权重」的读数来源。
+        //    非流式那条转给模块、模块里**有**自托管分支；流式这条在本文件里**没有**。
+        //    ⇒ 要么补上流式的自托管分支，要么让调用方走非流式；这里如实 501，不假装。
+        if (e.LLM_ENDPOINT) {
+          return json({
+            error: {
+              message: "流式路径没有自托管分支：LLM_ENDPOINT 已配，但 `stream:true` 这条"
+                       + "恒走 Workers AI（非流式那条走 `gbt-c01-llm-gateway`，是认 LLM_ENDPOINT 的）",
+              type: "not_implemented",
+            },
+            gbt: {
+              configured: "LLM_ENDPOINT", wired: { non_stream: true, stream: false },
+              how_to_fix: "补流式自托管分支；或用 stream:false 让请求走模块那条已接线的路",
+              why: "静默走 Workers AI 会烧免费神经元、还让人以为走的是自建端点",
+            },
+          }, 501);
         }
         const wid = (body.model && body.model !== "gbt-potato-v8") ? body.model : e.WORKERS_AI_MODEL;
         if (!e.AI) return json({ error: { message: "没有 AI 绑定，流式无从谈起", type: "upstream_error" } }, 502);
@@ -328,7 +369,28 @@ export function createMesh(env, sharedState) {
         try {
           upstream = await e.AI.run(wid, { messages: norm, max_tokens: body.max_tokens || body.max_completion_tokens || 512, stream: true });
         } catch (err) {
-          return json({ error: { message: String((err && err.message) || err), type: "upstream_error" } }, 502);
+          // 🔴 2026-09-25 **配额/限流不许混进通用 upstream_error**（实测踩到）。
+          //    现场：Workers AI 免费额度用尽时上游回
+          //      `4006: you have used up your daily free allocation of 10,000 neurons`
+          //    老版把它并进 `502 / upstream_error` ⇒ 调用方（含 DSH 的 llm 适配层，
+          //    它**认得 QUOTA / RATE_LIMIT 这两个稳定码**）完全分不清
+          //    「代码坏了」和「额度用完了」。主人也当场被这个读数绕住过（问"为什么还是 502"）。
+          //    ⇒ 按语义分档 + 给出可机读字段，别再让人从一串英文里猜。
+          const _msg = String((err && err.message) || err);
+          const _quota = /neuron|daily free allocation|quota|exceeded|4006|429|rate[ _-]?limit/i.test(_msg);
+          return json({
+            error: { message: _msg, type: _quota ? "quota_error" : "upstream_error" },
+            gbt: {
+              quota_exhausted: _quota,
+              upstream_model: wid,
+              via: "workers-ai",
+              upstream_code: (_msg.match(/\b\d{4}\b/) || [null])[0],
+              hint: _quota
+                ? "Workers AI 免费额度（10,000 neurons/日）用尽，按 00:00 UTC 重置；"
+                  + "要彻底绕开配额得先把 LLM_ENDPOINT 真接线（现在它只是个空声明）"
+                : null,
+            },
+          }, _quota ? 429 : 502);
         }
         const created = Math.floor(Date.now() / 1000);
         const cid = "chatcmpl-gbt-" + Date.now();
