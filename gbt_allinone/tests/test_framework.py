@@ -194,16 +194,34 @@ class LLMKeyVaultProfileTests(unittest.TestCase):
     """多 profile 保险箱 + 两条密钥链口径（Owner 2026-09-19 配 Agnes）。"""
 
     def test_profiles_are_isolated_by_entropy_and_path(self):
-        """熵值互不相同 ⇒ 甲库密文在乙库里解不开。这是**机制**，不是约定。"""
+        """熵值互不相同 ⇒ 甲库密文在乙库里解不开。这是**机制**，不是约定。
+
+        🔴 2026-09-25 改（**这是"改了判据"，所以把理由写在现场**）：
+        原文是 `assertEqual(set(dk._PROFILES), {"deepseek", "agnes"})` —— 那是
+        2026-09-19 那一刻的**快照**，不是不变量。主人当天令「密钥全部部署跟双向插件一样、
+        可以自动读取」，据此给 ADP 加了第三个 profile（各带自己的熵值与落盘），
+        这条快照就红了。修法是**把快照换成不变量、并且收紧**：
+          · 默认 profile 仍是 deepseek（这条是真正的钉子，一字未动）；
+          · 三个必有的 profile 名字都在；
+          · 熵值 / 落盘名 / **主环境变量名** 两两不许相同 ——
+            最后一条是**新加的**：新 profile 悄悄复用别人的环境变量名，就会互相顶掉，
+            这正是"加 profile"最容易犯又最不容易看出来的错。
+        """
         from gbt_allinone import deepseek_key as dk
 
         self.assertEqual(dk._DEFAULT_PROFILE, "deepseek", "默认 profile 不许变，免得打断既有调用方")
-        self.assertEqual(set(dk._PROFILES), {"deepseek", "agnes"})
+        self.assertTrue({"deepseek", "agnes", "adp"} <= set(dk._PROFILES),
+                        "在册 profile 少了：%s" % sorted(dk._PROFILES))
         entropies = [spec["entropy"] for spec in dk._PROFILES.values()]
         files = [spec["file"] for spec in dk._PROFILES.values()]
-        self.assertEqual(len(set(entropies)), len(entropies))
-        self.assertEqual(len(set(files)), len(files))
+        envs = [spec["env"] for spec in dk._PROFILES.values()]
+        self.assertEqual(len(set(entropies)), len(entropies), "有两个 profile 共用熵值")
+        self.assertEqual(len(set(files)), len(files), "有两个 profile 落到同一个文件")
+        self.assertEqual(len(set(envs)), len(envs), "有两个 profile 用同一个环境变量名")
+        self.assertTrue(all(ent.startswith(b"GBTxiaotudouV8:") for ent in entropies),
+                        "熵值前缀必须统一，否则不是同一套机制的库")
         self.assertEqual(dk._secret_file("agnes").name, "agnes_api.dpapi")
+        self.assertEqual(dk._secret_file("adp").name, "adp_api.dpapi")
 
     def test_cross_profile_decrypt_fails(self):
         """负对照：agnes 库写出来的密文，换到 deepseek 库的路径上必须解不开。"""

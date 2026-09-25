@@ -27,6 +27,34 @@
       "type": "streamablehttp",
       "url": "https://mcp.vercel.com",
       "auth": "oauth"
+    },
+    "shortvideo-music": {
+      "enabled": true,
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "C:/Users/ADMIN/Desktop/GBT小土豆V8/tools/shortvideo-music-mcp/server.js"
+      ],
+      "env": {}
+    },
+    "adp": {
+      "enabled": true,
+      "type": "stdio",
+      "command": "C:\\Users\\ADMIN\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+      "args": [
+        "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\deepseek_key.py",
+        "inject",
+        "--profile",
+        "adp",
+        "--",
+        "cmd",
+        "/c",
+        "npx",
+        "-y",
+        "@laiye-adp/mcp"
+      ],
+      "env": {},
+      "_comment": "密钥不在本文件里：走 gbt_allinone/deepseek_key.py 的 DPAPI 保险箱（profile=adp），运行时解密注入 ADP_API_KEY。改密钥请用 `deepseek_key set --profile adp`（stdin，不回显）。"
     }
   },
   "imports": []

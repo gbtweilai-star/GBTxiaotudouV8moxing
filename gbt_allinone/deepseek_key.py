@@ -40,8 +40,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from gbt_allinone._paths import STORE_DIR  # noqa: E402
 from gbt_allinone.safe_io import atomic_write_bytes  # noqa: E402
 
-# 一个 profile 一套（熵值 · 落盘文件名 · 主环境变量 · 代理环境变量 · 覆盖落盘路径的环境变量）。
+# 一个 profile 一套（熵值 · 落盘文件名 · 主环境变量 · 代理环境变量 · 覆盖落盘路径的环境变量
+#                · 可选的密钥形状正则）。
 # 熵值互不相同 ⇒ 甲库密文在乙库里解不开，这是"互不可解"的**机制**，不是约定。
+#
+# `pattern` 为什么做成**每个 profile 各带一条**（2026-09-25 主人令「密钥全部部署跟双向插件一样、
+# 可以自动读取」时加）：原来全库共用一条 `^(?:sk|ak)[-_]…`，而不同上游的密钥形状本来就不同 ——
+# ADP（来也）的 key 是纯十六进制长串，**不以 sk-/ak- 开头** ⇒ 共用一条就会把合法密钥判成格式错。
+# 给 profile 各带一条（不写就落回下面那条默认的），既收得住"贴错东西/多行粘贴"，又不误杀。
 _PROFILES: dict[str, dict] = {
     "deepseek": {
         "entropy": b"GBTxiaotudouV8:deepseek:v1",
@@ -57,8 +63,18 @@ _PROFILES: dict[str, dict] = {
         "proxy": "",
         "file_env": "GBT_AGNES_SECRET_FILE",
     },
+    "adp": {
+        "entropy": b"GBTxiaotudouV8:adp:v1",
+        "file": "adp_api.dpapi",
+        "env": "ADP_API_KEY",
+        "proxy": "",
+        "file_env": "GBT_ADP_SECRET_FILE",
+        # 来也 ADP 的 key 是纯十六进制长串，不带 sk-/ak- 前缀 ⇒ 这条只保证"是单行长串"
+        "pattern": r"^[A-Za-z0-9_\-]{20,}$",
+    },
 }
 _DEFAULT_PROFILE = "deepseek"
+# 默认形状：sk-/ak- 开头的单行长串（deepseek / agnes 用它，**行为与加多 profile 之前一字不差**）
 _KEY_PATTERN = re.compile(r"^(?:sk|ak)[-_][A-Za-z0-9_\-]{16,}$")
 
 
@@ -182,10 +198,12 @@ def mask(value: str) -> str:
     return f"{text[:5]}****" if len(text) >= 5 else ""
 
 
-def _validate(key: str) -> str:
+def _validate(key: str, profile: str | None = None) -> str:
     text = str(key or "").strip().strip('"').strip("'")
-    if not _KEY_PATTERN.match(text):
-        raise DeepseekKeyError("密钥格式不符（应为 sk-/ak- 开头且长度足够的单行字符串）")
+    name, spec = _profile(profile)
+    pattern = spec.get("pattern") or _KEY_PATTERN.pattern
+    if not re.match(pattern, text):
+        raise DeepseekKeyError("密钥格式不符（profile=%s 的形状是 %s）" % (name, pattern))
     return text
 
 
@@ -193,7 +211,7 @@ def store_key(key: str, profile: str | None = None) -> dict:
     """把密钥加密落到 DPAPI 文件，返回报告；任何路径都不返回明文。"""
     name, spec = _profile(profile)
     try:
-        safe = _validate(key)
+        safe = _validate(key, name)
     except DeepseekKeyError as exc:
         return {"ok": False, "error": str(exc)}
     try:

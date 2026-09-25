@@ -52,6 +52,9 @@ JUDGMENTS = [
     # 2026-09-25 加：云端那 4 批改动（令牌闸 / 作用面读数 / 拍平块数组 / 错误分档）
     # 因为**没部署**，云端一次都没跑过。本机离线验它，0.3 秒，不出一字节网。
     ("云端点闸行为", "gbt_allinone.tests.test_endpoint_gate"),
+    # 2026-09-25 加：凭据红线（密钥不许明文落盘 · 没有密钥必须拒绝启动子进程）。
+    # 起因是真出过事：config/mcporter.json 里被人直接写了一条明文 API key。
+    ("密钥不许明文落盘", "gbt_allinone.tests.test_key_vault_autoread"),
 ]
 
 DRIFT_GATE = ROOT / "plugins" / "gbt-master" / "tools" / "verify-installed-copy.mjs"

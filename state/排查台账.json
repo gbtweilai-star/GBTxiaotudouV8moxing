@@ -1,9 +1,14 @@
 {
   "_口径": "唯一进度真源。人读的详细账在 output/blueprint-audit/生产推进-故障清单.md；本文件只放『现在做到哪 / 哪没做 / 未清故障 / 等你拍板』，供宿主插件在重启后自动注入会话头。改了本文件，下一轮会话就看得见。",
   "_排班纪律": "每轮结束前更新本文件 + 时间点；不许只写『继续排查』这种没信息量的话。",
-  "updated_at": "2026-09-25T21:02:00+08:00",
+  "updated_at": "2026-09-25T21:20:00+08:00",
   "rounds_done": 34,
   "today_done": [
+    "**D7 结掉（主人令：密钥跟双向插件一样、可以自动读取）**：把 `config/mcporter.json` 里那条**明文** ADP key 收进本仓自己的机制 —— `gbt_allinone/deepseek_key.py` 的 DPAPI 保险箱（新 profile `adp` · 独立熵值 `GBTxiaotudouV8:adp:v1` · 落盘 `store/secrets/adp_api.dpapi` 308 B），配置改成运行时自动读取：`command=python` + `args=[deepseek_key.py, inject, --profile, adp, --, cmd, /c, npx, -y, @laiye-adp/mcp]`，`env` 清空。**全程只印掩码**（明文只进内存，不进 argv/stdout/日志）；迁移脚本自带四条自证：JSON 可解析 · 明文在配置里出现 **0** 次 · 保险箱回读与原文一致 · **负控**（同一段明文在迁移前的原文里能搜到）",
+    "**形状校验改成按 profile 各带一条**（原来是全库共用 `^(?:sk|ak)[-_]…`）：ADP 的 key 是纯十六进制长串、不带 sk-/ak- 前缀 ⇒ 共用一条会把合法密钥判成格式错。**既有两个 profile 的行为一字未变**（32 位十六进制进 deepseek/agnes 仍被拒，已用负控钉住）",
+    "🔴 **顺手纠正我自己的一个假负控**：验 fail-closed 时我拿 `agnes` 当'没有密钥的库'，结果子进程照跑起来 —— **前提是我猜的、没验**（agnes 库其实有密钥 `sk-HX****`）。改成用工具自己的落盘路径覆盖把库指到不存在的路径，**先证前提**（`status` 报 `configured:false · source:missing`）**再判行为** ⇒ `inject` 退 **3**、明确说『拒绝在没有密钥的情况下启动子进程』、子进程一次都没跑",
+    "**新判据 `test_key_vault_autoread.py`（7 条）+ 接进开机自检**（常设判据 8 → 9 条）：profile 各有独立熵值 · 形状校验不许被放松 · 配置里**不许有任何明文密钥**（三条靶向规则 + 规则自己有牙的反向自证）· MCP 必须走保险箱注入器且 `env` 为空 · **没有密钥必须拒绝启动子进程**（真起一次验）",
+    "**改掉一条快照式判据（理由写在现场）**：`test_framework` 里 `assertEqual(set(_PROFILES), {deepseek, agnes})` 是 2026-09-19 的快照、不是不变量 ⇒ 加第三个 profile 就红。换成不变量**并收紧**：默认 profile 仍是 deepseek · 三个名字都在 · 熵值/落盘名/**主环境变量名**两两不同（最后一条是新加的，防新 profile 悄悄复用别人的环境变量名互相顶掉）⇒ `test_framework` 148 条 **OK · skipped 5**",
     "🔴 **提交前拦下一条明文凭据**：`config/mcporter.json` 被别人改过（新增 `shortvideo-music` 与 `adp` 两个 MCP 服务），其中 `adp` 的 `env` 里**直接写了 API key 明文**。按『凭据不许明文落盘』红线：**不提交、不代改**（改配置=主人权限），只掩码登记为 F7 + 拍板项 D7。顺带说明：同一批里 `tools/shortvideo-music-mcp/`、`my-project/` 也不是我建的，来源未确认 ⇒ 一并没提交",
     "**云端 4 批改动首次被真验（离线）**：新增 `deploy/cloud-10/tools/check-endpoint-gate.mjs` —— 把 worker.js 里那 4 批（令牌闸 / `/v1/models` 作用面读数 / `normalizeMessages` 拍平 / 错误分档）逐条用**桩 AI 绑定**跑真行为，**0.31 秒、不出一字节网**。现读 **57/57 通过 · 0 红**",
     "**端点闸里 12 条是负控**（『该红的必须红』）：没配令牌时不许 401 · 长度不同的令牌必须 401 而不是 500 · `/v1/models` 无认证=200 而同一发 chat 无认证=401（声明『公开』必须与事实成对量）· 报文里同时有 exceeded 与 5021 时只能归上下文 · 没配 LLM_ENDPOINT 时同一发不许 501 · 上游零字符不许编内容",
@@ -179,11 +184,11 @@
       "state": "部署=改远端，只主人能做；离线行为已验，部署后需另量云上真读数"
     },
     {
-      "id": "F7",
-      "what": "config/mcporter.json 里有一条**明文 API key**（ADP_API_KEY，值 b3f4****）",
-      "severity": "高",
-      "evidence": "git diff config/mcporter.json 现读：新增 shortvideo-music 与 adp 两个 MCP 服务，adp 的 env 里直接写了密钥明文；该文件**已被改但未提交**",
-      "state": "我没提交它（按『凭据不许明文落盘』红线），也没改它（改配置=主人权限）。等主人：① 确认这条 key 是不是有意放这儿 ② 要不要挪进环境变量 ③ 要不要轮换（它已进过本机 diff 输出）"
+      "id": "F8",
+      "what": "config/mcporter.json 里 adp 那条引用的 tools/shortvideo-music-mcp/server.js **没进版本库**（未跟踪）",
+      "severity": "低",
+      "evidence": "git status 现读该目录是 ?? 未跟踪；而 config/mcporter.json 已提交并指向它 ⇒ 换台机器 clone 下来这条 MCP 是断的",
+      "state": "该目录不是我建的、来源未确认 ⇒ 我没提交它。等主人一句话：入版本库 / 删掉这条 MCP / 保持未跟踪"
     }
   ],
   "owner_decisions": [
@@ -218,9 +223,9 @@
       "why": "没源装不了"
     },
     {
-      "id": "D7",
-      "ask": "config/mcporter.json 里那条明文 ADP_API_KEY 怎么处置（挪进环境变量 / 保留 / 轮换）",
-      "why": "凭据明文落盘是红线；且该文件不是我改的、也没提交；改配置只主人能做"
+      "id": "D8",
+      "ask": "要不要让 adp 这条 MCP 真跑起来（首次跑 `npx -y @laiye-adp/mcp` 大概率要**联网下载安装**）",
+      "why": "装包与出网都属'先问主人'的动作；保险箱与注入链已验好（没密钥会拒启动），只差这一步真启动"
     }
   ],
   "log": [
@@ -327,6 +332,30 @@
     {
       "at": "2026-09-25T20:57",
       "what": "靴自检 10 步全绿（含新增第 8 条判据『云端点闸行为』）"
+    },
+    {
+      "at": "2026-09-25T21:09",
+      "what": "主人答 D7：密钥跟双向插件一样、可以自动读取 ⇒ 决定走本仓 DPAPI 保险箱机制"
+    },
+    {
+      "at": "2026-09-25T21:12",
+      "what": "保险箱加 adp profile + 形状校验按 profile 分；迁移：明文进保险箱、配置改成 inject 自动读取"
+    },
+    {
+      "at": "2026-09-25T21:13",
+      "what": "验自动读取：status 掩码 / inject 子进程真读到 / 无密钥退 3 拒启动 / cmd→npx 通路可解析"
+    },
+    {
+      "at": "2026-09-25T21:14",
+      "what": "纠正假负控（拿 agnes 当空库，实际它有 key）⇒ 改用落盘路径覆盖并先证前提"
+    },
+    {
+      "at": "2026-09-25T21:17",
+      "what": "新判据 7 条；test_framework 那条快照式断言换成不变量并收紧 ⇒ 148 条 OK"
+    },
+    {
+      "at": "2026-09-25T21:20",
+      "what": "F7/D7 结掉；新开 F8（配置引用的目录未入版本库）与 D8（adp MCP 首跑要联网装包）"
     }
   ]
 }
