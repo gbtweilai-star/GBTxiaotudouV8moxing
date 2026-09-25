@@ -226,8 +226,64 @@ def probe_f10() -> tuple:
     }
 
 
+# ── F11：同一个密钥两份存量已分叉（agnes）─────────────────────────────────
+def probe_f11() -> tuple:
+    """可机检：逐 profile 比「保险箱」与「User 作用域注册表」。
+
+    主人一旦把分叉同步掉，本探针会自己报 `已不成立`，提醒回台账结条目 —— 不用谁记得回来关。
+    只印掩码与指纹，明文只在内存里比。
+    """
+    try:
+        import hashlib
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as k:
+            i, reg = 0, {}
+            while True:
+                try:
+                    n, v, _t = winreg.EnumValue(k, i)
+                    reg[n] = v
+                    i += 1
+                except OSError:
+                    break
+    except Exception as exc:  # noqa: BLE001
+        return "需人读", {"说明": "读不到注册表：%s: %s" % (type(exc).__name__, str(exc)[:80]),
+                          "_读不到_主数据": True}
+    sys.path.insert(0, str(ROOT))
+    from gbt_allinone import deepseek_key as dk
+
+    def fp(v: str) -> str:
+        v = (v or "").strip()
+        return "%d/%s" % (len(v), hashlib.sha256(v.encode("utf-8")).hexdigest()[:12]) if v else ""
+
+    split, nonempty = [], 0
+    for name in sorted(dk._PROFILES):
+        vk, _s = dk.load_from_vault(name)
+        rv = (reg.get(dk._PROFILES[name]["env"]) or "").strip()
+        if vk:
+            nonempty += 1
+        if vk and rv and vk != rv:
+            split.append({"profile": name, "库": dk.mask(vk), "库指纹": fp(vk),
+                          "注册表": dk.mask(rv), "注册表指纹": fp(rv)})
+    # 🔴 自纠（本题第一次跑就栽了）：**整个保险箱是空的**时，上面会得出"没有分叉"⇒ 判"已不成立"。
+    #    而空保险箱**不代表主人的分叉修好了**，只代表**我这次看的 store 不对**
+    #    （开机自检强制跑在隔离 store 里，所以它必然看到空库）。
+    #    ⇒ 一个库都没读到 ⇒ 报 `需人读` + 打机器键 `_读不到_主数据`，**绝不由"没读到"推出"已不成立"**。
+    if nonempty == 0:
+        return "需人读", {
+            "说明": "整个保险箱一个 profile 都没读到 ⇒ **不能**据此判『分叉已修好』"
+                    "（多半是本次 store 不是生产 store —— 开机自检就是跑在隔离 store 里的）",
+            "本器看到的 vault 路径": str(ROOT / "gbt_allinone" / "store" / "secrets"),
+            "权威读数在哪": "python tools/codex-scripts/key-consistency-check.py（对生产 store 跑）",
+            "_读不到_主数据": True,
+        }
+    return ("仍成立" if split else "已不成立"), {
+        "有内容的库数": nonempty, "分叉条数": len(split), "分叉明细": split,
+        "边界": "只比**存量**；不判密钥是否有效（那要真打一次接口 = 出网）",
+    }
+
+
 PROBES = {"F2": probe_f2, "F3": probe_f3, "F4": probe_f4, "F5": probe_f5,
-          "F8": probe_f8, "F9": probe_f9, "F10": probe_f10}
+          "F8": probe_f8, "F9": probe_f9, "F10": probe_f10, "F11": probe_f11}
 
 
 def main(argv=None) -> int:

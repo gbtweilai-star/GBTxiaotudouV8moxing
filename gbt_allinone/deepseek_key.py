@@ -72,6 +72,51 @@ _PROFILES: dict[str, dict] = {
         # 来也 ADP 的 key 是纯十六进制长串，不带 sk-/ak- 前缀 ⇒ 这条只保证"是单行长串"
         "pattern": r"^[A-Za-z0-9_\-]{20,}$",
     },
+    # ── 2026-09-25 第二批（主人令「密钥**全部**部署跟双向插件一样、可以自动读取」）────────
+    #    背景：这些密钥**只配在 Windows 的 User 作用域**，而本机进程是在那些变量写入**之前**
+    #    起的 ⇒ `os.environ` 里一个都没有（F2 就是这条）。收进保险箱后，
+    #    框架走 `deepseek_key` 就能自动读到，**不再依赖"进程有没有继承到环境变量"**。
+    #    注：注册表里的值**照旧不删** —— 那是主人的配置，别的工具可能在用；
+    #    这里只是让框架多一条**不依赖继承**的读法。
+    "moonshot": {
+        "entropy": b"GBTxiaotudouV8:moonshot:v1",
+        "file": "moonshot_api.dpapi",
+        "env": "MOONSHOT_API_KEY",
+        "proxy": "",
+        "file_env": "GBT_MOONSHOT_SECRET_FILE",
+    },
+    "kimi": {
+        "entropy": b"GBTxiaotudouV8:kimi:v1",
+        "file": "kimi_api.dpapi",
+        "env": "KIMI_API_KEY",
+        "proxy": "",
+        "file_env": "GBT_KIMI_SECRET_FILE",
+    },
+    "openai": {
+        "entropy": b"GBTxiaotudouV8:openai:v1",
+        "file": "openai_api.dpapi",
+        "env": "OPENAI_API_KEY",
+        "proxy": "",
+        "file_env": "GBT_OPENAI_SECRET_FILE",
+    },
+    "tripo": {
+        "entropy": b"GBTxiaotudouV8:tripo:v1",
+        "file": "tripo_api.dpapi",
+        "env": "TRIPO_API_KEY",
+        "proxy": "",
+        "file_env": "GBT_TRIPO_SECRET_FILE",
+        # 实测形状：`tcli` 开头、不带 sk-/ak- ⇒ 走"单行长串"那条
+        "pattern": r"^[A-Za-z0-9_\-]{20,}$",
+    },
+    "freellmapi": {
+        "entropy": b"GBTxiaotudouV8:freellmapi:v1",
+        "file": "freellmapi_api.dpapi",
+        "env": "FREELLMAPI_API_KEY",
+        "proxy": "",
+        "file_env": "GBT_FREELLMAPI_SECRET_FILE",
+        # 实测形状：`free` 开头、不带 sk-/ak- ⇒ 同上
+        "pattern": r"^[A-Za-z0-9_\-]{20,}$",
+    },
 }
 _DEFAULT_PROFILE = "deepseek"
 # 默认形状：sk-/ak- 开头的单行长串（deepseek / agnes 用它，**行为与加多 profile 之前一字不差**）

@@ -29,7 +29,28 @@ BASE = os.environ.get("TRIPO_BASE_URL", "https://openapi.tripo3d.ai/v3")
 
 
 def _key():
-    return os.environ.get("TRIPO_API_KEY", "").strip()
+    """取 Tripo 密钥：**环境变量 → DPAPI 保险箱**，两级。
+
+    🔴 2026-09-25 修（F2 的现场）：原来只有 `os.environ.get("TRIPO_API_KEY")` 这一级。
+    而本机的 Tripo 密钥**只配在 Windows 的 User 作用域**，本机进程是在那些变量写入**之前**
+    起的 ⇒ `os.environ` 里**一个都没有** ⇒ 这条链看起来"密钥没配"，其实配了、只是**读不到**。
+    （这正是 F2 那条故障的机制：**不是没配，是没继承**。）
+
+    修法与主人令一致（「密钥跟双向插件一样、可以自动读取」）：先看环境变量（谁先给谁优先），
+    环境里没有就**从保险箱解**（`store/secrets/tripo_api.dpapi`，DPAPI/CurrentUser）。
+    **明文只进内存**，不进日志、不进读数；本函数返回的是密钥本身，调用方不许把它打出来。
+    """
+    env = os.environ.get("TRIPO_API_KEY", "").strip()
+    if env:
+        return env
+    try:
+        from . import deepseek_key as _dk
+
+        key, _source = _dk.load_from_vault("tripo")
+        return (key or "").strip()
+    except Exception:  # noqa: BLE001
+        # 保险箱不可用（非 Windows / 库不在 / 解不开）不许把整条链弄崩 —— 如实退回"没有"
+        return ""
 
 
 def _headers():
@@ -71,8 +92,13 @@ def balance():
     if not _key():
         return {"ok": False, "status": "needs_dependency",
                 "missing": "TRIPO_API_KEY",
-                "hint": "Tripo 控制台 platform.tripo3d.ai 创建 API Key，"
-                        "setx TRIPO_API_KEY <key> 后重试"}
+                # 🔴 提示语也要改：原来只教 `setx` —— 而 `setx` 写的是 User 作用域，
+                #    **当前进程读不到**（要重启才有），这就是 F2 那个坑。
+                #    现在补上"不用重启"的那条路：收进保险箱。
+                "hint": "Tripo 控制台 platform.tripo3d.ai 创建 API Key，然后二选一："
+                        "① 收进本仓保险箱（**不用重启**）："
+                        "`\"<key>\" | python -m gbt_allinone.deepseek_key set --profile tripo`；"
+                        "② 或者 setx TRIPO_API_KEY <key>（写 User 作用域，**要重启宿主进程才读得到**）"}
     try:
         r = _get("/account/balance")
         return {"ok": True, "balance": r.get("data", {})}

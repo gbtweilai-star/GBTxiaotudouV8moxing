@@ -66,6 +66,11 @@ JUDGMENTS = [
     # 2026-09-25 加：**部署漂移对账的牙齿**（离线自检；联网那一侧不进判据 —— 判据不该依赖外网）。
     # 一个"比出来没差异"的对账器，很可能是因为它其实什么都没比 ⇒ 种五处差异看它逮不逮得住。
     ("部署漂移尺子有牙", "gbt_allinone.tests.test_cloud_deploy_drift"),
+    # 2026-09-25 加：**密钥两份存量的对账**。主人令「密钥全部部署…可以自动读取」之后，
+    # 密钥有了两份（User 作用域注册表 + DPAPI 保险箱）⇒ 两份就是两个真相源，轮换只改一处
+    # 另一处就静默过期。**不是假想**：首跑就读出 `agnes` 已经分叉（库 sk-HX**** vs 注册表 sk-Oy****）。
+    # 判据只判分类逻辑与读数自洽（**不判"必须无分叉"** —— 哪份是新的只有主人能定）。
+    ("密钥两份存量对账", "gbt_allinone.tests.test_key_consistency"),
 ]
 
 DRIFT_GATE = ROOT / "plugins" / "gbt-master" / "tools" / "verify-installed-copy.mjs"
