@@ -1,9 +1,16 @@
 {
   "_口径": "唯一进度真源。人读的详细账在 output/blueprint-audit/生产推进-故障清单.md；本文件只放『现在做到哪 / 哪没做 / 未清故障 / 等你拍板』，供宿主插件在重启后自动注入会话头。改了本文件，下一轮会话就看得见。",
   "_排班纪律": "每轮结束前更新本文件 + 时间点；不许只写『继续排查』这种没信息量的话。",
-  "updated_at": "2026-09-25T22:43:00+08:00",
-  "rounds_done": 41,
+  "updated_at": "2026-09-25T22:48:00+08:00",
+  "rounds_done": 42,
   "today_done": [
+    "**把 cross_scan 缺的四个维度里的 V 真做出来了**（第 41 轮量出的阻塞只挡住 D/E/F）。背景：那份文件写着「十个交叉维度」，而现读确认 **D/E/F/V 只出现在维度声明里、全文件没有第二处引用** —— 声称 10 维、实际只有 6 维能产出发现。现在 V 真能产出 finding，`dims_implemented` 从 6 维变 **7 维**（`A/B/G/V/W/X`），`dims_unimplemented` 从 4 个变 **3 个**（`D/E/F`）",
+    "**V 的判据不是『读一个数字』，是『加减法要闭合』**：`inventory` 只读视图给出 `{你看到的（家根总项）:107, 框架管辖:3, 环境托管:104, 异物:0}`，V 维判两条 —— ① 异物必须清零（`foreign>0` ⇒ 有该处置的遗漏）；② **家根总项必须等于六类之和**。第 ② 条才是「对账」的本体：**只读一个数字不叫对账**。现读 107 == 3+104+0+0+0+0 ⇒ `balanced: true`。原始读数一并印出（`v_view`），**人能自己复算那笔加减法**",
+    "🔴 **安全红线：扫描器里只许 `fix=False`**。`inventory.scan(fix=True)` 会**真删文件**，而 V 维是被 `cross_scan` 调起来的 ⇒ 一旦传成 True，「扫一下」就会删东西。用例**用桩记录 kwargs**，直接断言传进去的是 `{'fix': False}`（不是靠读代码猜）；另加 **AST 级复核**：扫全部 `Call` 节点，不许出现 `fix=True` 的调用，且必须存在 `fix=False` 的调用",
+    "🔴 **成本先量再动手**：`inventory.scan()` 单跑 **0.38 s**、整轮 `cross_scan.scan(deep=False)` **15.4 s** ⇒ V 只加了约 0.4 s，**进得了 H 维那条 240 s 预算**（前几轮刚被预算坑过，所以先量）",
+    "**把 V 抽成 `_v_dim(check_inventory=None)` 独立函数**（而不是内联在 `scan()` 里）：整轮扫描要 15 s，而这一维只要 0.4 s ⇒ 抽出来之后「真的传了 fix=False 吗」「双视图不平会不会报」两条都能**毫秒级**验。`check_inventory` 只给用例注入桩，生产路径永远是 None",
+    "🔴 **我自己的用例栽在「提到 ≠ 用了」上，当场被自己抓住**：源码级那条判据第一版写的是 `assertNotIn(\"fix=True\", src)`，**当场判红** —— 因为我在解释危险时写了「`inventory.scan(fix=True)` 会真删文件」，那是**提到**，不是**调用**。⇒ 改成 **AST 找真正的调用**：判代码，不判文字。这是本仓那句老话的又一次现形，这次栽在我自己的用例上",
+    "**接进开机自检**：常设判据 13 → **14 条**（新增「视图对账且只读」），现读 **16 步全绿 · 红 0**。新判据 8 条：安全红线（kwargs + AST）· 两条负控（双视图不平必报 / 有异物必报）· 探针坏了要出 finding 且 `ran=False`（不许假装跑过）· 维度口径（V 在已实现、D/E/F 仍在未实现）· 原始读数可复算",
     "🔴 **动手做 F5 之前先量前提，结果挖出真病根（本轮结论：不写那个维度）**。F 维原文是「审计里的 kind 无幽灵」，最自然的做法是拿 `caps_registry.all_caps()`（172）当参考集 —— **实测这么做会报 86 条『幽灵』**。逐条查完发现**绝大多数是真操作**：`room_release` 31 次 call / **7 次 ok** / 14 次 preflight_checked / 17 次因缺作用域 denied；`notion` 196 call / **89 ok**；`room_plan` 34 call / 7 ok；`collab_open` / `peer_register` / `room_create` / `room_rehearse` 同理。**有 ok、有 preflight、有 denied = 真在跑且真过门**。⇒ 若照最自然的方式写 F 维，等于造一台**每次报 86 次假警**的机器（本仓最忌的那种）",
     "**顺带把真正的『幽灵』分辨出来了**：86 条里只有 `no_such_capability_xyz`（26 call · 22 error · 4 user_error · **0 ok**）是真幽灵 —— 那是本仓**自己的负控用例**。⇒ 『有 ok 的 = 真操作、只是没在册』vs『没有 ok 的 = 真幽灵』，这两类**必须分开判**，而 F 维的原文没写这一层",
     "**新登记 F12（真病根）**：`caps_registry.all_caps()`（172 条）里逐个查，`room_space` / `mirror_space` / `qiankun` / `deployment_rehearsal` / `collab_gateway` / `notion` / `tripo` **全都不在**；而 `preflight.py:155,167` 专门为 `room_plan`/`room_release` 分支、`collab_gateway._DELEGATE_ACTIONS` 显式委派、`room_space.py:58` 列了这些原语、**AGENTS.md 还给它们派了作用域**（room_release→deploy_publish · room_rehearse→process_execute+filesystem_write）⇒ 命中**读数口径**问题：面板/`omni`/普查报的『172 个能力』，对**能动生产的那一整片原语是瞎的** ⇒ 开 D13（改 `caps_registry.py` 是主人专属，我不擅自动）",
@@ -108,7 +115,7 @@
     "已修并带牙用例：voice 参数静默丢失 · voice_orchestra 未知场景假绿灯 · redteam FR-5/FR-8 · aesthetic_brain 静默写盘 · media-gen-slots 窄字符类 · isolation_sweep 超时假绿/假红",
     "已重建派生索引：state/skill_atlas.json（171→172，security 域 5→17，幽灵域 unimplemented 现形）"
   ],
-  "in_progress": "第 41 轮：动手做 F5（cross_scan 的 D/E/F/V）之前先量前提，结果**没写成那一维、反而挖出真病根** —— F 维要的『参考集』根本不存在：注册表 172 **没有收录** room_*/collab_*/peer_register/notion/tripo/mirror_space/qiankun/deployment_rehearsal 这批**真在跑、真过门、真能成功**的操作 ⇒ 登记 F12。F5 如实标『F 维阻塞于 F12』。下一步：接着找不依赖主人的活。",
+  "in_progress": "第 42 轮：把 cross_scan 的 **V 维（视图对账）真做出来** —— 声称 10 维、实际 6 维能产出发现的那笔账，现在改成了 **7 维**（V 进 dims_implemented），D/E/F 仍如实留未实现（参考集不存在）。V 的判据不是「读一个数字」，是**加减法要闭合**（家根总项 == 六类之和）；并钉死安全红线：扫描器里**只许 fix=False**（`fix=True` 会真删文件）。现读 **16 步全绿**。",
   "not_done": [
     {
       "id": "N1",
@@ -203,7 +210,7 @@
       "what": "cross_scan dims D/E/F/V 只有名字没有实现",
       "severity": "中",
       "evidence": "工具自己声明的 dims_unimplemented",
-      "state": "🔴 **2026-09-25 第 41 轮：动手前先量前提，量出真病根 ⇒ 没有盲写实现。** F 维原文是「审计里的 kind 无幽灵」，最自然的做法是拿 `caps_registry.all_caps()`（172）当参考集。**实测这么做会报 86 条『幽灵』，而其中绝大多数是真操作**：`room_plan`(34 次 call · 7 次 ok · 9 次 preflight_checked) · `room_release`(31 · 7 ok · 14 preflight) · `room_rehearse` · `room_create` · `collab_open` · `peer_register` · `notion`(196 · 89 ok) · `tripo`(38 · 8 ok · 27 denied)。它们**有 ok、有 preflight_checked、有因缺作用域被 denied** ⇒ 是**真在跑且真过门**的操作，只是**没被注册表收录**（= F12）。真正的『幽灵』只有一个：`no_such_capability_xyz`（26 call · 22 error · 4 user_error · **0 ok**，是本仓自己的负控用例）。⇒ **F 维阻塞于 F12**：参考集不存在时写它，等于造一台报 86 次假警的机器。D/E/V 三维**也有各自的前置**（D 要一个『文档声称』的来源 · E 要一个『声称的测试数』来源 · V 要 inventory 的双视图），同样不许凭感觉挑一个来源当判据 ⇒ 本轮**如实标未做**，不假装动过。"
+      "state": "**2026-09-25 第 42 轮：V 维已实现，D/E/F 仍阻塞（理由已量过）。** ✅ V 维（视图对账）**真做出来了**：`_v_dim()` 跑一次 `inventory` 只读视图，判两条 —— ① 异物必须清零；② **双视图要算得平**（`你看到的（家根总项）` == 六类之和）。第 ② 条才是『对账』的本体：**只读一个数字不叫对账，加减法要闭合**。现读 `dims_implemented = A/B/G/V/W/X`（7 维）、`dims_unimplemented = D/E/F`，`v_view = {seen:107, sum_by_class:107, balanced:true, foreign:0}`。🔴 安全红线：`inventory.scan(fix=True)` 会**真删文件** ⇒ 用例**用桩记录 kwargs**，直接断言扫描器传的是 `fix=False`（另有 AST 级复核：代码里不许出现 `fix=True` 调用）。⏳ D/E/F 仍阻塞：F 维照最自然的方式写会报 **86 条假警**（见 F12）⇒ **参考集不存在**；D 要一个『文档声称』的来源 · E 要一个『声称的测试数』来源 —— 参考集不存在时写它，等于造一台报假警的机器。**不许凭感觉挑一个来源当判据。**"
     },
     {
       "id": "F8",
@@ -563,6 +570,22 @@
     {
       "at": "2026-09-25T22:43",
       "what": "登记 F12（注册表没收生产管线原语）+ D13；F5 改写为『F 维阻塞于 F12』"
+    },
+    {
+      "at": "2026-09-25T22:44",
+      "what": "量 V 维可行性：inventory.scan() 0.38s，有 dual_view 六类 + 异物数 ⇒ 可做"
+    },
+    {
+      "at": "2026-09-25T22:45",
+      "what": "实现 _v_dim（只读 fix=False · 判异物清零 + 双视图加减法闭合）；dims 6→7 维"
+    },
+    {
+      "at": "2026-09-25T22:46",
+      "what": "自纠：源码级判据 assertNotIn(fix=True) 被自己的 docstring 判红（提到≠用了）⇒ 改 AST 判调用"
+    },
+    {
+      "at": "2026-09-25T22:47",
+      "what": "8 条判据全绿；接进靴自检 ⇒ 16 步全绿"
     }
   ]
 }

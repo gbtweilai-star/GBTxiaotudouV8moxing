@@ -71,6 +71,12 @@ JUDGMENTS = [
     # 另一处就静默过期。**不是假想**：首跑就读出 `agnes` 已经分叉（库 sk-HX**** vs 注册表 sk-Oy****）。
     # 判据只判分类逻辑与读数自洽（**不判"必须无分叉"** —— 哪份是新的只有主人能定）。
     ("密钥两份存量对账", "gbt_allinone.tests.test_key_consistency"),
+    # 2026-09-25 加：**cross_scan 的 V 维（视图对账）**。它此前只出现在维度声明里
+    # （声称 10 维、实际 6 维能产出发现）；本轮真做出来，判据是**加减法要闭合**
+    # （家根总项 == 六类之和），而不是只读一个数字。
+    # 🔴 最要紧的是安全红线：`inventory.scan(fix=True)` 会**真删文件** ——
+    #    用例用桩记录 kwargs，直接断言扫描器传的是 `fix=False`（「扫一下」不该改动任何东西）。
+    ("视图对账且只读", "gbt_allinone.tests.test_cross_scan_v_dim"),
 ]
 
 DRIFT_GATE = ROOT / "plugins" / "gbt-master" / "tools" / "verify-installed-copy.mjs"

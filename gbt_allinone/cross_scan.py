@@ -25,10 +25,52 @@ _BASE = Path(__file__).resolve().parent
 _PKG = _BASE
 
 
+def _v_dim(check_inventory=None) -> tuple:
+    """V 维 · 视图对账（inventory 双视图 + 异物清零）—— 返回 `(findings, stats)`。
+
+    🔴 2026-09-25 实现（在这之前，`V` 只出现在维度声明里，全文件没有第二处引用）。
+    判据两条，都要能机检：
+      ① 异物必须清零（`foreign > 0` ⇒ 有该处置的遗漏）；
+      ② **双视图要算得平**：`你看到的（家根总项）` 必须等于六类之和。
+         ②才是「对账」的本体 —— **只读一个数字不叫对账，加减法要闭合**。
+
+    ⚠️ 安全红线：**必须 `fix=False`**。`inventory.scan(fix=True)` 会**真删文件**；
+       扫描器里绝不许带清理动作 ——「扫一下」不该改动任何东西。
+
+    为什么抽成独立函数：**为了让用例能在不跑整轮扫描的情况下验它**。
+    整轮 `cross_scan.scan()` 要 15 秒，而这一维只要 0.4 秒；抽出来之后
+    「真的传了 fix=False 吗」「双视图不平会不会报」这两条都能毫秒级验。
+    `check_inventory` 只给用例注入桩；生产路径永远是 None ⇒ 真去调 inventory。
+    """
+    findings_out: list = []
+    stats: dict = {"ran": False}
+    try:
+        if check_inventory is None:
+            from . import inventory as _inv
+
+            check_inventory = _inv.scan
+        # ↓↓↓ 这行是安全红线：**只读**。任何时候都不许在这里传 fix=True。
+        iv = check_inventory(fix=False)
+        dv = iv.get("dual_view") or {}
+        its = iv.get("items") or {}
+        seen = int(dv.get("你看到的（家根总项）", -1))
+        foreign = int(dv.get("异物（foreign）", len(its.get("foreign") or [])))
+        by_class = {k: len(v or []) for k, v in its.items()}
+        total = sum(by_class.values())
+        stats = {"ran": True, "seen": seen, "by_class": by_class, "foreign": foreign,
+                 "sum_by_class": total, "balanced": (seen == total), "fixed": iv.get("fixed")}
+        if foreign:
+            findings_out.append({"dim": "V", "issue": f"异物未清零: {foreign} 项（该处置的遗漏）"})
+        if seen >= 0 and seen != total:
+            findings_out.append({"dim": "V",
+                                 "issue": f"双视图对不上: 家根总项 {seen} ≠ 六类之和 {total}（差 {seen - total}）"})
+    except Exception as ve:  # noqa: BLE001
+        findings_out.append({"dim": "V", "issue": f"视图对账跑不动: {type(ve).__name__}: {str(ve)[:60]}"})
+    return findings_out, stats
+
+
 def _rel_imports(src, issues=None):
     """源码里的**硬**相对导入（AST）：返回去重后的 [(点数, 模块首段), ...]。
-
-    R-H170：不许用正则扫原文 —— 字符串字面量 / 注释里的 `from .x import y`
     会被当成真 import（G 维今天的假阳性就是这么来的：那是**提到**，不是**用了**）。
     另外**只算硬导入**：包在 `try:` 里的导入是"优雅降级占位"（家规第 10 条：
     wallet/bridge/ledger 这类业务模块本就该在框架里缺席），不算断链。
@@ -445,6 +487,18 @@ def scan(deep: bool = True, h_budget_s: float | None = H_BUDGET_S) -> dict:
         for name in deep_stats["dead"]:
             findings.append({"dim": "H", "issue": f"僵尸能力（运行时不可达）: {name}"})
 
+    # ── V 维：视图对账（inventory 双视图 + 异物清零）─────────────────────────
+    # 🔴 2026-09-25 **实现**（在这一天之前它只出现在维度声明里，没有任何实现）。
+    #    判据两条，都要能机检：
+    #      ① 异物必须清零（`foreign > 0` ⇒ 有该处置的遗漏）；
+    #      ② **双视图要算得平**：`你看到的（家根总项）` 必须等于六类之和。
+    #         ②才是「对账」的本体 —— **只读一个数字不叫对账，加减法要闭合**。
+    #    ⚠️ 安全红线：**必须 `fix=False`**。`inventory.scan(fix=True)` 会**真删文件**；
+    #       扫描器里绝不许带清理动作 ——「扫一下」不该改动任何东西。
+    #        （有专门用例盯着这条：见 `test_cross_scan_v_dim.py` 的 kwargs 断言。）
+    _v_findings, v_stats = _v_dim()
+    findings.extend(_v_findings)
+
     # ── 维度口径：**声称覆盖必须等于实际覆盖** ──────────────────────────
     # 上一版写死 ["A","B","D","E","F","G","W","X","V"]+["H"] —— 报 10 维。
     # 但实测：D / E / F / V 在整个文件里**各只出现在这一行**，没有任何实现，
@@ -455,8 +509,11 @@ def scan(deep: bool = True, h_budget_s: float | None = H_BUDGET_S) -> dict:
     # 现在的口径：
     #   dims_implemented —— 真有实现、能产出 finding 的维度
     #   dims_unimplemented —— 声明过但没实现的，**如实单列，不混进覆盖数**
-    _DIMS_IMPL = ["A", "B", "G", "W", "X"] + (["H"] if deep else [])
-    _DIMS_NOT_IMPL = ["D", "E", "F", "V"]
+    # 🔴 2026-09-25：V 从"未实现"移进"已实现"（上面那段就是它的实现）。
+    #    D / E / F 仍留在未实现里 —— 第 41 轮量过：它们的**参考集**还不存在
+    #    （F 维照最自然的方式写会报 86 条假警；见台账 F5/F12），不许凭感觉挑一个来源当判据。
+    _DIMS_IMPL = ["A", "B", "G", "V", "W", "X"] + (["H"] if deep else [])
+    _DIMS_NOT_IMPL = ["D", "E", "F"]
     dims_run = _DIMS_IMPL
     # 🔴 2026-09-22 修（错报治理）：`ok` 原来是 `not findings`，而 findings 里混着 **latent 影子**
     # （家根 tools/ deploy/ 与 gbt_allinone/ 同名 —— 只是名字撞了、全包**无非限定引用**、代价 0）。
@@ -478,6 +535,8 @@ def scan(deep: bool = True, h_budget_s: float | None = H_BUDGET_S) -> dict:
         "dims": dims_run,
         "dims_implemented": _DIMS_IMPL,
         "dims_unimplemented": _DIMS_NOT_IMPL,
+        # V 维的原始读数（只读一次、印出来，让人能自己复算那笔加减法）
+        "v_view": v_stats,
         "coverage_note": (
             f"本扫描有实现的维度 {len(_DIMS_IMPL)} 个（{'/'.join(_DIMS_IMPL)}）；"
             f"另有 {len(_DIMS_NOT_IMPL)} 个维度（{'/'.join(_DIMS_NOT_IMPL)}）"
