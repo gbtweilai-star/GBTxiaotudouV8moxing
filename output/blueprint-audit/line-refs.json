@@ -1,0 +1,1861 @@
+{
+ "refs": 2146,
+ "scanned": 202,
+ "problems": [
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "CURRENT.md",
+   "ref": "host.js:165",
+   "note": "同名文件 2 个，不猜：['plugins\\\\gbt-master\\\\lib\\\\host.js', 'plugins\\\\gbt-master-compat-v6\\\\lib\\\\host.js']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "CURRENT.md",
+   "ref": "plugins/gbt-master/host.js:83",
+   "note": "同名文件 2 个，不猜：['plugins\\\\gbt-master\\\\lib\\\\host.js', 'plugins\\\\gbt-master-compat-v6\\\\lib\\\\host.js']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "pipeline.py:388",
+   "note": "同名文件 5 个，不猜：['gbt_allinone\\\\pipeline.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\pipeline.py', 'tools\\\\digihuman\\\\pipeline.py', 'tools\\\\video\\\\pipeline.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "pipeline.py:416",
+   "note": "同名文件 5 个，不猜：['gbt_allinone\\\\pipeline.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\pipeline.py', 'tools\\\\digihuman\\\\pipeline.py', 'tools\\\\video\\\\pipeline.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "preflight.py:610",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "pipeline.py:223",
+   "note": "同名文件 5 个，不猜：['gbt_allinone\\\\pipeline.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\pipeline.py', 'tools\\\\digihuman\\\\pipeline.py', 'tools\\\\video\\\\pipeline.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "main.cjs:368",
+   "note": "落在 holo_pet_w3\\shell\\main.cjs 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "_r28_v4_hook.cjs:18"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "main.cjs:368",
+   "note": "落在 holo_pet_w3\\shell\\main.cjs 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "app.js:2138",
+   "note": "落在 holo_pet\\app.js 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "llm/bridge.py:27",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "holo_pet_w3/README.md:17",
+   "note": "落在 holo_pet_w3\\README.md 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "AGENTS.md:367",
+   "note": "落在 AGENTS.md 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "root_fix.py:22",
+   "note": "落在 gbt_allinone\\root_fix.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "tests/test_framework.py:87",
+   "note": "落在 gbt_allinone\\tests\\test_framework.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "mirror_space.py:28",
+   "note": "落在 gbt_allinone\\mirror_space.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "qiankun.py:22",
+   "note": "落在 gbt_allinone\\qiankun.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "tentacle/vision_bus.py:21",
+   "note": "落在 gbt_allinone\\tentacle\\vision_bus.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "mirror_space.py:28",
+   "note": "落在 gbt_allinone\\mirror_space.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "qiankun.py:22",
+   "note": "落在 gbt_allinone\\qiankun.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "tentacle/vision_bus.py:21",
+   "note": "落在 gbt_allinone\\tentacle\\vision_bus.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "PROJECT_BLUEPRINT.md",
+   "ref": "tests/test_framework.py:87",
+   "note": "落在 gbt_allinone\\tests\\test_framework.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-FreeLLMAPI接入层-第1步交付.md",
+   "ref": "app.ts:226"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-FreeLLMAPI接入层-第1步交付.md",
+   "ref": "app.ts:230"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-FreeLLMAPI接入层-第1步交付.md",
+   "ref": "keys.ts:178"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-FreeLLMAPI接入层-第1步交付.md",
+   "ref": "keys.ts:218"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-FreeLLMAPI接入层-第1步交付.md",
+   "ref": "keys.ts:481"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-FreeLLMAPI接入层-第1步交付.md",
+   "ref": "health.ts:61"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-FreeLLMAPI接入层-第1步交付.md",
+   "ref": "settings.ts:229"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-FreeLLMAPI接入层-第1步交付.md",
+   "ref": "requireAuth.ts:6"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-FreeLLMAPI接入层-第1步交付.md",
+   "ref": "app.ts:212"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "check-jd-archive.mjs:1001"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "company-history.mjs:1700"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "detect-reposts.mjs:747"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "eval-golden.mjs:163"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "pipeline-lock.mjs:153"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "analyze-patterns.mjs:823"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "agent-inbox-tests.mjs:305"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "test-all.mjs:15265"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "doctor.mjs:140"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "validate-untrusted-content-coverage.mjs:10"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "batch/batch-prompt.md:20"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "docs/AUTOMATION.md:130"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "modes/intake.md:72"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "delivery/20260922-SKILL-VETTING-REPORT-career-ops.md",
+   "ref": "AGENTS.md:159",
+   "note": "落在 AGENTS.md 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "OUT_OF_RANGE",
+   "in": "delivery/20260922-七仓吸收判定与落地方案.md",
+   "ref": "CHANGELOG.md:489",
+   "note": "该文件仅 108 行（审美相关skill\\ui-prototype-generator-1.0.0\\CHANGELOG.md）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "delivery/20260922-今晚实错对账表.md",
+   "ref": "auth_gate.py:29",
+   "note": "落在 gbt_allinone\\auth_gate.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-今晚实错对账表.md",
+   "ref": "pit_log.json:154"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "delivery/20260922-今晚实错对账表.md",
+   "ref": "AGENTS.md:33",
+   "note": "落在 AGENTS.md 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-她·变压器·密钥AI·本体操控·官方独立接口-设计.md",
+   "ref": "routes/keys.ts:178"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-她·变压器·密钥AI·本体操控·官方独立接口-设计.md",
+   "ref": "routes/keys.ts:481"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-她·变压器·密钥AI·本体操控·官方独立接口-设计.md",
+   "ref": "routes/keys.ts:727"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-她·变压器·密钥AI·本体操控·官方独立接口-设计.md",
+   "ref": "routes/keys.ts:672"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-她·变压器·密钥AI·本体操控·官方独立接口-设计.md",
+   "ref": "keys.ts:934"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-她·变压器·密钥AI·本体操控·官方独立接口-设计.md",
+   "ref": "routes/health.ts:61"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-她·变压器·密钥AI·本体操控·官方独立接口-设计.md",
+   "ref": "routes/settings.ts:229"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-她·变压器·密钥AI·本体操控·官方独立接口-设计.md",
+   "ref": "middleware/requireAuth.ts:8"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-她·变压器·密钥AI·本体操控·官方独立接口-设计.md",
+   "ref": "app.ts:212"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "delivery/20260922-她·变压器·密钥AI·本体操控·官方独立接口-设计.md",
+   "ref": "requireAuth.ts:6"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "delivery/20260922-第11步-分批模块巡扫第1批.md",
+   "ref": "caps_registry.py:987",
+   "note": "落在 gbt_allinone\\caps_registry.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "delivery/20260922-自进化知识库-交付报告.md",
+   "ref": "codex_bridge.py:1455",
+   "note": "落在 gbt_allinone\\codex_bridge.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "delivery/20260922-自进化知识库-设计.md",
+   "ref": "codex_bridge.py:1447",
+   "note": "落在 gbt_allinone\\codex_bridge.py 的 ')'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "delivery/20260922-自进化知识库-设计.md",
+   "ref": "codex_bridge.py:1455",
+   "note": "落在 gbt_allinone\\codex_bridge.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "delivery/20260922-自进化知识库-设计.md",
+   "ref": "tentacle/bridge.py:737",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "delivery/20260922-自进化知识库-设计.md",
+   "ref": "devour.py:1165",
+   "note": "落在 gbt_allinone\\devour.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "delivery/20260922-触手职业与career-ops对齐核对.md",
+   "ref": "api.py:726",
+   "note": "落在 gbt_allinone\\api.py 的 ')'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "delivery/20260922-赏金台h1mcp接入面板-交付报告.md",
+   "ref": "dsh-host-webserver/lib/index.js:321",
+   "note": "同名文件 10 个，不猜：['deploy\\\\cloud-10\\\\modules\\\\gbt-c01-llm-gateway\\\\src\\\\index.js', 'deploy\\\\cloud-10\\\\modules\\\\gbt-c02-context-compact\\\\src\\\\index.js', 'deploy\\\\cloud-10\\\\modules\\\\gbt-c03-uncensored-lane\\\\src\\\\index.js', 'deploy\\\\cloud-10\\\\modules\\\\gbt-c04-tool-web\\\\src\\\\index.js']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "docs/架构调研汇总 · GBT小土豆V8 设计稿.md",
+   "ref": "auth_gate.py:29",
+   "note": "落在 gbt_allinone\\auth_gate.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "docs/架构调研汇总 · GBT小土豆V8 设计稿.md",
+   "ref": "preflight.py:167",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "docs/架构调研汇总 · GBT小土豆V8 设计稿.md",
+   "ref": "api.py:350",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "docs/架构调研汇总 · GBT小土豆V8 设计稿.md",
+   "ref": "store/schedules.json:2"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "docs/架构调研汇总 · GBT小土豆V8 设计稿.md",
+   "ref": "store/workflows.json:448"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "docs/架构调研汇总 · GBT小土豆V8 设计稿.md",
+   "ref": "mind_state.json:4"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "docs/架构调研汇总 · GBT小土豆V8 设计稿.md",
+   "ref": "devour.py:345",
+   "note": "落在 gbt_allinone\\devour.py 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "docs/架构调研汇总 · GBT小土豆V8 设计稿.md",
+   "ref": "preflight.py:958",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "docs/架构调研汇总 · GBT小土豆V8 设计稿.md",
+   "ref": "policy.py:44",
+   "note": "落在 gbt_allinone\\security\\policy.py 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "docs/架构调研汇总 · GBT小土豆V8 设计稿.md",
+   "ref": "devour.py:345",
+   "note": "落在 gbt_allinone\\devour.py 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "docs/架构调研汇总 · GBT小土豆V8 设计稿.md",
+   "ref": "auth_gate.py:31",
+   "note": "落在 gbt_allinone\\auth_gate.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/AwesomeTools蒸馏.md",
+   "ref": "api.py:319",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/AwesomeTools蒸馏.md",
+   "ref": "api.py:319",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/CloudflareAIGateway评估.md",
+   "ref": "bridge.py:44",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/Codex同化方案.md",
+   "ref": "panel_server.py:250",
+   "note": "落在 holo_pet\\panel_server.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/Codex同化方案.md",
+   "ref": "potato_pet/main.py:275",
+   "note": "落在 potato_pet\\main.py 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/Codex同化方案.md",
+   "ref": "potato_pet/main.py:225",
+   "note": "落在 potato_pet\\main.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/Codex同化方案.md",
+   "ref": "holo_pet/app.js:227",
+   "note": "落在 holo_pet\\app.js 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/Codex同化方案.md",
+   "ref": "holo_pet/app.js:527",
+   "note": "落在 holo_pet\\app.js 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/Codex同化方案.md",
+   "ref": "holo_pet/app.js:603",
+   "note": "落在 holo_pet\\app.js 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/Codex同化方案.md",
+   "ref": "holo_pet/app.js:617",
+   "note": "落在 holo_pet\\app.js 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/Codex同化施工方案.md",
+   "ref": "holo_pet/panel_server.py:304",
+   "note": "落在 holo_pet\\panel_server.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/Codex同化施工方案.md",
+   "ref": "panel_server.py:304",
+   "note": "落在 holo_pet\\panel_server.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/Codex同化施工方案.md",
+   "ref": "potato_pet/main.py:225",
+   "note": "落在 potato_pet\\main.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/D9壳先落地方案.md",
+   "ref": "shell/main.cjs:16",
+   "note": "落在 holo_pet_w3\\shell\\main.cjs 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/EigenFlux审计通道设计.md",
+   "ref": "gbt_allinone/safe_io.py:109",
+   "note": "落在 gbt_allinone\\safe_io.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/EigenFlux集成设计.md",
+   "ref": "holo_pet/panel_server.py:54",
+   "note": "落在 holo_pet\\panel_server.py 的 ')'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/EigenFlux集成设计.md",
+   "ref": "potato_pet/main.py:60",
+   "note": "落在 potato_pet\\main.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/GBT全故障点设计.md",
+   "ref": "store.py:50",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/GBT全故障点设计.md",
+   "ref": "mirror_space.py:150",
+   "note": "落在 gbt_allinone\\mirror_space.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/GBT全故障点设计.md",
+   "ref": "store.py:133",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/GBT全故障点设计.md",
+   "ref": "store.py:37",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/GBT全故障点设计.md",
+   "ref": "test_codex_bridge.py:358",
+   "note": "落在 gbt_allinone\\tests\\test_codex_bridge.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/GBT全故障点设计.md",
+   "ref": "store.py:37",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/docs/GBT全故障点设计.md",
+   "ref": "mock_v2_server.py:192"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/GBT全项目思维导图.md",
+   "ref": "root_fix.py:134",
+   "note": "落在 gbt_allinone\\root_fix.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/GBT全项目思维导图.md",
+   "ref": "root_fix.py:117",
+   "note": "落在 gbt_allinone\\root_fix.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/GBT全项目思维导图.md",
+   "ref": "store.py:31",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/GBT全项目思维导图.md",
+   "ref": "hygiene.py:50",
+   "note": "落在 gbt_allinone\\hygiene.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/holo_pet_UI规格.md",
+   "ref": "holo_pet/desktop/main.cjs:78",
+   "note": "落在 holo_pet_w3\\shell\\main.cjs 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "env.py:210",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\env.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\env.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "env.py:320",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\env.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\env.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "env.py:265",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\env.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\env.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "bird_x.py:64",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\bird_x.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\bird_x.py']"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "cookies.js:143"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "env.py:30",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\env.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\env.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "env.py:132",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\env.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\env.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "env.py:121",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\env.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\env.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "providers.py:19",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\providers.py', 'tools\\\\digihuman\\\\providers.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\providers.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "providers.py:113",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\providers.py', 'tools\\\\digihuman\\\\providers.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\providers.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "env.py:180",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\env.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\env.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "store.py:26",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "store.py:179",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "briefing.py:25",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\briefing.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\briefing.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/last30days同化审查报告.md",
+   "ref": "env.py:27",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\env.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\env.py']"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/docs/M9判据收口.md",
+   "ref": "mock_v2_server.py:192"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/O33隔离洞收口方案.md",
+   "ref": "root_fix.py:22",
+   "note": "落在 gbt_allinone\\root_fix.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/O33隔离洞收口方案.md",
+   "ref": "root_fix.py:134",
+   "note": "落在 gbt_allinone\\root_fix.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/O33隔离洞收口方案.md",
+   "ref": "store.py:50",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/O33隔离洞收口方案.md",
+   "ref": "root_fix.py:249",
+   "note": "落在 gbt_allinone\\root_fix.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/O33隔离洞收口方案.md",
+   "ref": "store.py:50",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/O8修复方案-state去审计化.md",
+   "ref": "app.js:2138",
+   "note": "落在 holo_pet\\app.js 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/O8修复方案-state去审计化.md",
+   "ref": "api.py:70",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/O8修复方案-state去审计化.md",
+   "ref": "cross_scan.py:115",
+   "note": "落在 gbt_allinone\\cross_scan.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/OpenMinis接入评估.md",
+   "ref": "preflight.py:457",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/OpenMinis接入评估.md",
+   "ref": "AGENTS.md:367",
+   "note": "落在 AGENTS.md 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/W2.5主控台最小探针镜像方案.md",
+   "ref": "mirror_space.py:26",
+   "note": "落在 gbt_allinone\\mirror_space.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/W3上帝视角镜像方案.md",
+   "ref": "mirror_space.py:26",
+   "note": "落在 gbt_allinone\\mirror_space.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/docs/W3上帝视角镜像方案.md",
+   "ref": "entry_refactor_probe.py:69"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/W3上帝视角镜像方案.md",
+   "ref": "mirror_space.py:150",
+   "note": "落在 gbt_allinone\\mirror_space.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/W3吸附缺陷修复镜像方案.md",
+   "ref": "main.cjs:368",
+   "note": "落在 holo_pet_w3\\shell\\main.cjs 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/W3吸附缺陷修复镜像方案.md",
+   "ref": "main.cjs:368",
+   "note": "落在 holo_pet_w3\\shell\\main.cjs 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/W3吸附缺陷修复镜像方案.md",
+   "ref": "main.cjs:368",
+   "note": "落在 holo_pet_w3\\shell\\main.cjs 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/W3盲区扫描设计.md",
+   "ref": "store.py:37",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/W3盲区扫描设计.md",
+   "ref": "store.py:37",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/W3盲区扫描设计.md",
+   "ref": "preflight.py:436",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/W3盲区扫描设计.md",
+   "ref": "preflight.py:262",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/W3盲区扫描设计.md",
+   "ref": "store.py:50",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/docs/W3盲区扫描设计.md",
+   "ref": "deepseek_proxy.py:35"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/上下文交接_20260917.md",
+   "ref": "main.cjs:368",
+   "note": "落在 holo_pet_w3\\shell\\main.cjs 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/主控台品牌清洗方案.md",
+   "ref": "app.js:1533",
+   "note": "落在 holo_pet\\app.js 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/主控台品牌清洗方案.md",
+   "ref": "app.js:1532",
+   "note": "落在 holo_pet\\app.js 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/主控台品牌清洗第一刀方案-面板层.md",
+   "ref": "app.js:227",
+   "note": "落在 holo_pet\\app.js 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/主控台品牌清洗第一刀方案-面板层.md",
+   "ref": "app.js:1532",
+   "note": "落在 holo_pet\\app.js 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/主控台品牌清洗第一刀方案-面板层.md",
+   "ref": "app.js:1533",
+   "note": "落在 holo_pet\\app.js 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/主控台品牌清洗第一刀方案-面板层.md",
+   "ref": "app.js:1532",
+   "note": "落在 holo_pet\\app.js 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/主控台品牌清洗第二刀方案-桥接层.md",
+   "ref": "app.js:227",
+   "note": "落在 holo_pet\\app.js 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/主控台品牌清洗第二刀方案-桥接层.md",
+   "ref": "app.js:1150",
+   "note": "落在 holo_pet\\app.js 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/人类视角执行律.md",
+   "ref": "auth_gate.py:29",
+   "note": "落在 gbt_allinone\\auth_gate.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/克劳德精细设计.md",
+   "ref": "store.py:31",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/克劳德精细设计.md",
+   "ref": "llm/bridge.py:8",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/克劳德集成设计.md",
+   "ref": "llm/bridge.py:33",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/克劳德集成设计.md",
+   "ref": "llm/bridge.py:8",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/全项目思维导图架构.md",
+   "ref": "gbt_allinone/root_fix.py:134",
+   "note": "落在 gbt_allinone\\root_fix.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/全项目思维导图架构.md",
+   "ref": "gbt_allinone/root_fix.py:117",
+   "note": "落在 gbt_allinone\\root_fix.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/全项目思维导图架构.md",
+   "ref": "hygiene.py:50",
+   "note": "落在 gbt_allinone\\hygiene.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "gbt_allinone/tentacle/bridge.py:39",
+   "note": "落在 gbt_allinone\\tentacle\\bridge.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "gbt_allinone/codex_bridge.py:1205",
+   "note": "落在 gbt_allinone\\codex_bridge.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "gbt_allinone/brain_exec.py:94",
+   "note": "落在 gbt_allinone\\brain_exec.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "tentacle/bridge.py:85",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "gbt_allinone/tentacle/bridge.py:39",
+   "note": "落在 gbt_allinone\\tentacle\\bridge.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "bridge.py:176",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "bridge.py:129",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "bridge.py:66",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "preflight.py:958",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "tentacle/bridge.py:85",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "tentacle/bridge.py:9",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "tentacle/bridge.py:67",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "tentacle/bridge.py:82",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "codex_bridge.py:1205",
+   "note": "落在 gbt_allinone\\codex_bridge.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "tentacle/bridge.py:55",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "gbt_allinone/codex_bridge.py:1346",
+   "note": "落在 gbt_allinone\\codex_bridge.py 的 ')'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "gbt_allinone/tentacle/bridge.py:39",
+   "note": "落在 gbt_allinone\\tentacle\\bridge.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "tentacle/bridge.py:39",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "tentacle/bridge.py:129",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "codex_bridge.py:1205",
+   "note": "落在 gbt_allinone\\codex_bridge.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/原生能力默认化方案.md",
+   "ref": "codex_bridge.py:1346",
+   "note": "落在 gbt_allinone\\codex_bridge.py 的 ')'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/影子模块取证报告.md",
+   "ref": "delivery/桌面数字人GBT小土豆/main.py:14",
+   "note": "落在 potato_pet\\main.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/影子模块取证报告.md",
+   "ref": "briefing.py:23",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\briefing.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\briefing.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/影子模块取证报告.md",
+   "ref": "watchlist.py:21",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\watchlist.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\watchlist.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/待落刀登记.md",
+   "ref": "tests/test_framework.py:236",
+   "note": "落在 gbt_allinone\\tests\\test_framework.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/待落刀登记.md",
+   "ref": "semantic_route.py:61",
+   "note": "落在 gbt_allinone\\semantic_route.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/待落刀登记.md",
+   "ref": "pipeline.py:136",
+   "note": "同名文件 5 个，不猜：['gbt_allinone\\\\pipeline.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\pipeline.py', 'tools\\\\digihuman\\\\pipeline.py', 'tools\\\\video\\\\pipeline.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/待落刀登记.md",
+   "ref": "vision_cap.py:121",
+   "note": "落在 gbt_allinone\\vision_cap.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/待落刀登记.md",
+   "ref": "vision_cap.py:122",
+   "note": "落在 gbt_allinone\\vision_cap.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/探针无网络影响确认报告.md",
+   "ref": "panel_server.py:668",
+   "note": "落在 holo_pet\\panel_server.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/docs/探针无网络影响确认报告.md",
+   "ref": "panel_probe.py:334"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/docs/第②步块4事件流改道方案.md",
+   "ref": "mock_v2_server.py:128"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/docs/第②步块4事件流改道方案.md",
+   "ref": "mock_v2_server.py:168"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/docs/第②步面板收口方案.md",
+   "ref": "mock_v2_server.py:166"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/第④步去非法 effort + 假绿修复方案.md",
+   "ref": "panel_server.py:104",
+   "note": "落在 holo_pet\\panel_server.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/自我视觉验证设计.md",
+   "ref": "gbt_allinone/tentacle/vision_bus.py:123",
+   "note": "落在 gbt_allinone\\tentacle\\vision_bus.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/自我视觉验证设计.md",
+   "ref": "gbt_allinone/tentacle/vision_watch.py:570",
+   "note": "落在 gbt_allinone\\tentacle\\vision_watch.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/自我视觉验证设计.md",
+   "ref": "gbt_allinone/tentacle/omni_window.py:177",
+   "note": "落在 gbt_allinone\\tentacle\\omni_window.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/自我视觉验证镜像方案.md",
+   "ref": "omni_domain.py:28",
+   "note": "落在 gbt_allinone\\tentacle\\omni_domain.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/自改门监视范围判定.md",
+   "ref": "gbt_allinone/tests/test_framework.py:236",
+   "note": "落在 gbt_allinone\\tests\\test_framework.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/通信域与创作出口方案稿.md",
+   "ref": "HEARTBEAT.md:162",
+   "note": "落在 HEARTBEAT.md 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/钩子矩阵.md",
+   "ref": "framework_gate.py:213",
+   "note": "落在 gbt_allinone\\tools\\framework_gate.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/docs/阶段检查点打点器设计.md",
+   "ref": "safe_io.py:133",
+   "note": "落在 gbt_allinone\\safe_io.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/docs/阶段检查点打点器设计.md",
+   "ref": "store.py:31",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/llm/freellmapi.py",
+   "ref": "middleware/requireAuth.ts:6"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/llm/freellmapi.py",
+   "ref": "server/src/app.ts:212"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/llm/freellmapi.py",
+   "ref": "app.ts:226"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/llm/freellmapi.py",
+   "ref": "app.ts:230"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/llm/freellmapi.py",
+   "ref": "keys.ts:178"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/llm/freellmapi.py",
+   "ref": "keys.ts:218"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/llm/freellmapi.py",
+   "ref": "keys.ts:481"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/llm/freellmapi.py",
+   "ref": "health.ts:61"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/llm/freellmapi.py",
+   "ref": "keys.ts:1245"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/llm/freellmapi.py",
+   "ref": "keys.ts:1163"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/llm/freellmapi.py",
+   "ref": "settings.ts:229"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/llm/unified.py",
+   "ref": "pipeline.py:93",
+   "note": "同名文件 5 个，不猜：['gbt_allinone\\\\pipeline.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\pipeline.py', 'tools\\\\digihuman\\\\pipeline.py', 'tools\\\\video\\\\pipeline.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/llm/unified.py",
+   "ref": "devour.py:636",
+   "note": "落在 gbt_allinone\\devour.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "gbt_allinone/tentacle/dc_brand_preload.js",
+   "ref": "dist/remote-device/device.js:159"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/tools/awesome_tools_index.py",
+   "ref": "api.py:319",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "gbt_allinone/tools/awesome_tools_index.py",
+   "ref": "api.py:319",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/tools/code_exhaustive_scan.py",
+   "ref": "fanout.py:80",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\fanout.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\fanout.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "gbt_allinone/tools/code_exhaustive_scan.py",
+   "ref": "recon/last30days/engine/fanout.py:80",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\fanout.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\fanout.py']"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/2026-09-15.md",
+   "ref": "GBT小土豆\\patch_verify.py:10"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-16.md",
+   "ref": "codex_bridge.py:203",
+   "note": "落在 gbt_allinone\\codex_bridge.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-16.md",
+   "ref": "tentacle/desktop_commander.py:164",
+   "note": "落在 gbt_allinone\\tentacle\\desktop_commander.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-16.md",
+   "ref": "codex_bridge.py:344",
+   "note": "落在 gbt_allinone\\codex_bridge.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-16.md",
+   "ref": "codex_bridge.py:1346",
+   "note": "落在 gbt_allinone\\codex_bridge.py 的 ')'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/2026-09-16.md",
+   "ref": "panel_probe.py:334"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/2026-09-16.md",
+   "ref": "mock_v2_server.py:166"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-16.md",
+   "ref": "llm/bridge.py:33",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "potato_pet/main.py:179",
+   "note": "落在 potato_pet\\main.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "potato_pet/main.py:225",
+   "note": "落在 potato_pet\\main.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/2026-09-17.md",
+   "ref": "entry_refactor_probe.py:69"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/2026-09-17.md",
+   "ref": "deepseek_proxy.py:35"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "panel_server.py:1344",
+   "note": "落在 holo_pet\\panel_server.py 的 ')'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-17.md",
+   "ref": "store.py:44",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "gbt_allinone/store.py:37",
+   "note": "落在 gbt_allinone\\store.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "test_codex_bridge.py:358",
+   "note": "落在 gbt_allinone\\tests\\test_codex_bridge.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-17.md",
+   "ref": "store.py:133",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/2026-09-17.md",
+   "ref": "mock_v2_server.py:192"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-17.md",
+   "ref": "pipeline.py:388",
+   "note": "同名文件 5 个，不猜：['gbt_allinone\\\\pipeline.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\pipeline.py', 'tools\\\\digihuman\\\\pipeline.py', 'tools\\\\video\\\\pipeline.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-17.md",
+   "ref": "pipeline.py:416",
+   "note": "同名文件 5 个，不猜：['gbt_allinone\\\\pipeline.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\pipeline.py', 'tools\\\\digihuman\\\\pipeline.py', 'tools\\\\video\\\\pipeline.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-17.md",
+   "ref": "preflight.py:610",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/2026-09-17.md",
+   "ref": "_r28_v4_hook.cjs:18"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "app.js:1533",
+   "note": "落在 holo_pet\\app.js 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "app.js:1532",
+   "note": "落在 holo_pet\\app.js 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "app.js:227",
+   "note": "落在 holo_pet\\app.js 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-17.md",
+   "ref": "llm/bridge.py:27",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\llm\\\\bridge.py', 'gbt_allinone\\\\tentacle\\\\bridge.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-17.md",
+   "ref": "pipeline.py:92",
+   "note": "同名文件 5 个，不猜：['gbt_allinone\\\\pipeline.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\pipeline.py', 'tools\\\\digihuman\\\\pipeline.py', 'tools\\\\video\\\\pipeline.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "safe_io.py:109",
+   "note": "落在 gbt_allinone\\safe_io.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "shell/main.cjs:16",
+   "note": "落在 holo_pet_w3\\shell\\main.cjs 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "mirror_space.py:28",
+   "note": "落在 gbt_allinone\\mirror_space.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "qiankun.py:22",
+   "note": "落在 gbt_allinone\\qiankun.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "tentacle/vision_bus.py:21",
+   "note": "落在 gbt_allinone\\tentacle\\vision_bus.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "HEARTBEAT.md:309",
+   "note": "落在 HEARTBEAT.md 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-17.md",
+   "ref": "HEARTBEAT.md:309",
+   "note": "落在 HEARTBEAT.md 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-18.md",
+   "ref": "bird_x.py:64",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\bird_x.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\bird_x.py']"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/2026-09-18.md",
+   "ref": "cookies.js:143"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-18.md",
+   "ref": "env.py:30",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\env.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\env.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-18.md",
+   "ref": "providers.py:19",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\providers.py', 'tools\\\\digihuman\\\\providers.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\providers.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-18.md",
+   "ref": "providers.py:113",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\providers.py', 'tools\\\\digihuman\\\\providers.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\providers.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-18.md",
+   "ref": "pipeline.py:555",
+   "note": "同名文件 5 个，不猜：['gbt_allinone\\\\pipeline.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\pipeline.py', 'tools\\\\digihuman\\\\pipeline.py', 'tools\\\\video\\\\pipeline.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-18.md",
+   "ref": "log.py:29",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\log.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\log.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-18.md",
+   "ref": "fanout.py:76",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\fanout.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\fanout.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-19.md",
+   "ref": "dsh-app-boot/README.md:144",
+   "note": "同名文件 35 个，不猜：['README.md', 'archive\\\\README.md', 'delivery\\\\远端独有产物-20260922\\\\README.md', 'deploy\\\\cloud-10\\\\README.md']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-19.md",
+   "ref": "pipeline.py:93",
+   "note": "同名文件 5 个，不猜：['gbt_allinone\\\\pipeline.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\pipeline.py', 'tools\\\\digihuman\\\\pipeline.py', 'tools\\\\video\\\\pipeline.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-19.md",
+   "ref": "devour.py:636",
+   "note": "落在 gbt_allinone\\devour.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-20.md",
+   "ref": "api.py:319",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-22-假绿与自伤清单.md",
+   "ref": "llm/cloud_llm.py:545",
+   "note": "落在 gbt_allinone\\llm\\cloud_llm.py 的 '}'（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-22-假绿与自伤清单.md",
+   "ref": "store.py:178",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\store.py', 'gbt_allinone\\\\recon\\\\last30days\\\\store.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\store.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-22-假绿与自伤清单.md",
+   "ref": "fanout.py:80",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\fanout.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\fanout.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-22-假绿与自伤清单.md",
+   "ref": "fanout.py:80",
+   "note": "同名文件 2 个，不猜：['gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\fanout.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\fanout.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-22-数字人主线-压缩交接.md",
+   "ref": "host.js:29",
+   "note": "同名文件 2 个，不猜：['plugins\\\\gbt-master\\\\lib\\\\host.js', 'plugins\\\\gbt-master-compat-v6\\\\lib\\\\host.js']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-22.md",
+   "ref": "preflight.py:47",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-22.md",
+   "ref": "api.py:683",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/2026-09-23-安全面四条P0-决策证据包.md",
+   "ref": "backups/codexpp-uninstall-20260915/settings.json:42"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/2026-09-23-安全面四条P0-决策证据包.md",
+   "ref": "scratch/_m4_autoclaw_backup_20260918T081922/openclaw.json:482"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-23-旧页面清理-判据机检化.md",
+   "ref": "host.js:165",
+   "note": "同名文件 2 个，不猜：['plugins\\\\gbt-master\\\\lib\\\\host.js', 'plugins\\\\gbt-master-compat-v6\\\\lib\\\\host.js']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-23.md",
+   "ref": "CURRENT.md:214",
+   "note": "落在 CURRENT.md 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "memory/2026-09-23.md",
+   "ref": "README.md:282",
+   "note": "落在 README.md 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/2026-09-23.md",
+   "ref": "host.js:305",
+   "note": "同名文件 2 个，不猜：['plugins\\\\gbt-master\\\\lib\\\\host.js', 'plugins\\\\gbt-master-compat-v6\\\\lib\\\\host.js']"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/2026-09-25.md",
+   "ref": "dsh/profiles/web/cordis.patch.yml:83"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/在办清单.md",
+   "ref": "ComfyUI/nodes.py:932"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "memory/在办清单.md",
+   "ref": "ComfyUI/nodes.py:866"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "memory/在办清单.md",
+   "ref": "__init__.py:29",
+   "note": "同名文件 13 个，不猜：['gbt_allinone\\\\__init__.py', 'gbt_allinone\\\\adapters\\\\__init__.py', 'gbt_allinone\\\\integration\\\\__init__.py', 'gbt_allinone\\\\llm\\\\__init__.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "plugins/gbt-settings-keys/README.md",
+   "ref": "gbt-master/lib/client.js:210",
+   "note": "同名文件 4 个，不猜：['plugins\\\\gbt-capability-bar\\\\lib\\\\client.js', 'plugins\\\\gbt-master\\\\lib\\\\client.js', 'plugins\\\\gbt-master-compat-v6\\\\lib\\\\client.js', 'plugins\\\\gbt-settings-keys\\\\lib\\\\client.js']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/digihuman-pipeline/references/execution-hygiene.md",
+   "ref": "SKILL.md:39",
+   "note": "同名文件 271 个，不猜：['data\\\\skills\\\\better-auth-best-practices\\\\SKILL.md', 'data\\\\skills\\\\create-auth\\\\SKILL.md', 'design-assets-index\\\\SKILL.md', 'infinite-canvas-output\\\\SKILL.md']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/digihuman-pipeline/references/pitfalls.md",
+   "ref": "SKILL.md:34",
+   "note": "同名文件 271 个，不猜：['data\\\\skills\\\\better-auth-best-practices\\\\SKILL.md', 'data\\\\skills\\\\create-auth\\\\SKILL.md', 'design-assets-index\\\\SKILL.md', 'infinite-canvas-output\\\\SKILL.md']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "skills/gbt-brain/SKILL.md",
+   "ref": "api.py:333",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "skills/gbt-brain/SKILL.md",
+   "ref": "api.py:333",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "skills/gbt-brain/SKILL.md",
+   "ref": "api.py:333",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "skills/gbt-data/SKILL.md",
+   "ref": "gbt_allinone/api.py:94",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "skills/gbt-design-mastery/references/L4-动效与合成.md",
+   "ref": "cli.js:11085"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "skills/gbt-design-mastery/references/L4-动效与合成.md",
+   "ref": "dist/cli.js:11085"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "skills/gbt-design-mastery/references/L4-动效与合成.md",
+   "ref": "dist\\cli.js:11085"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/gbt-devour/SKILL.md",
+   "ref": "preflight.py:57",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/gbt-devour/SKILL.md",
+   "ref": "preflight.py:57",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/gbt-devour/SKILL.md",
+   "ref": "preflight.py:58",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/gbt-devour/SKILL.md",
+   "ref": "preflight.py:958",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/gbt-devour/SKILL.md",
+   "ref": "preflight.py:57",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/gbt-devour/SKILL.md",
+   "ref": "preflight.py:979",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "skills/gbt-devour/SKILL.md",
+   "ref": "devour.py:1050",
+   "note": "落在 gbt_allinone\\devour.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "skills/gbt-devour/SKILL.md",
+   "ref": "auth_gate.py:200",
+   "note": "落在 gbt_allinone\\auth_gate.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "skills/gbt-devour/SKILL.md",
+   "ref": "caps_registry.py:994",
+   "note": "落在 gbt_allinone\\caps_registry.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/gbt-engine/SKILL.md",
+   "ref": "preflight.py:47",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "skills/gbt-finance/SKILL.md",
+   "ref": "backtest_api_v3.py:46"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/gbt-longrun/SKILL.md",
+   "ref": "preflight.py:47",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/gbt-longrun/SKILL.md",
+   "ref": "preflight.py:45",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/gbt-longrun/SKILL.md",
+   "ref": "preflight.py:47",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "skills/gbt-pipeline/SKILL.md",
+   "ref": "pipeline.py:461",
+   "note": "同名文件 5 个，不猜：['gbt_allinone\\\\pipeline.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\pipeline.py', 'tools\\\\digihuman\\\\pipeline.py', 'tools\\\\video\\\\pipeline.py']"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "skills/gbt-pipeline/SKILL.md",
+   "ref": "api.py:678",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "SUSPICIOUS_CLOSER",
+   "in": "tools/codex-scripts/audit-line-refs.py",
+   "ref": "api.py:333",
+   "note": "落在 gbt_allinone\\api.py 的 ''（真锚不该指向收尾行）"
+  },
+  {
+   "kind": "OUT_OF_RANGE",
+   "in": "tools/codex-scripts/forget-list-check.py",
+   "ref": "tools/self_model.py:99999",
+   "note": "该文件仅 714 行（tools\\self_model.py）"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "tools/codex-scripts/omni.py",
+   "ref": "preflight.py:47",
+   "note": "同名文件 3 个，不猜：['gbt_allinone\\\\preflight.py', 'gbt_allinone\\\\recon\\\\last30days\\\\engine\\\\preflight.py', '审美相关skill\\\\design-skeletons\\\\last30days\\\\scripts\\\\lib\\\\preflight.py']"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "tools/codex-scripts/verify_roothfix.py",
+   "ref": "x.py:1"
+  },
+  {
+   "kind": "BROKEN_MISSING",
+   "in": "tools/codex-scripts/verify_roothfix.py",
+   "ref": "x.py:2"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "tools/digihuman/gates.py",
+   "ref": "SKILL.md:39",
+   "note": "同名文件 271 个，不猜：['data\\\\skills\\\\better-auth-best-practices\\\\SKILL.md', 'data\\\\skills\\\\create-auth\\\\SKILL.md', 'design-assets-index\\\\SKILL.md', 'infinite-canvas-output\\\\SKILL.md']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "tools/digihuman/tpose-check.py",
+   "ref": "SKILL.md:33",
+   "note": "同名文件 271 个，不猜：['data\\\\skills\\\\better-auth-best-practices\\\\SKILL.md', 'data\\\\skills\\\\create-auth\\\\SKILL.md', 'design-assets-index\\\\SKILL.md', 'infinite-canvas-output\\\\SKILL.md']"
+  },
+  {
+   "kind": "AMBIGUOUS_BASENAME",
+   "in": "tools/digihuman/tpose-check.py",
+   "ref": "SKILL.md:34",
+   "note": "同名文件 271 个，不猜：['data\\\\skills\\\\better-auth-best-practices\\\\SKILL.md', 'data\\\\skills\\\\create-auth\\\\SKILL.md', 'design-assets-index\\\\SKILL.md', 'infinite-canvas-output\\\\SKILL.md']"
+  }
+ ]
+}
