@@ -282,8 +282,32 @@ def probe_f11() -> tuple:
     }
 
 
+# ── F12：注册表没收生产管线原语 ────────────────────────────────────────────
+def probe_f12() -> tuple:
+    """可机检：逐个查那批"真在跑却没在册"的名字还在不在 `all_caps()` 之外。
+
+    主人一旦拍板（补进注册表 / 或明确登记只收能力位），本探针会自己报 `已不成立` 提醒结条目。
+    """
+    sys.path.insert(0, str(ROOT))
+    try:
+        from gbt_allinone import caps_registry as CR
+        names = {c["name"] for c in CR.all_caps()}
+    except Exception as exc:  # noqa: BLE001
+        return "需人读", {"说明": "读不到注册表：%s: %s" % (type(exc).__name__, str(exc)[:80]),
+                          "_读不到_主数据": True}
+    watch = ["room_space", "mirror_space", "qiankun", "deployment_rehearsal", "collab_gateway",
+             "notion", "tripo"]
+    absent = [n for n in watch if n not in names]
+    return ("仍成立" if absent else "已不成立"), {
+        "注册表条数": len(names),
+        "仍不在册的": absent,
+        "边界": "只查『在不在册』；**不判该不该在册**（那是主人拍板的口径问题，见 D13）",
+    }
+
+
 PROBES = {"F2": probe_f2, "F3": probe_f3, "F4": probe_f4, "F5": probe_f5,
-          "F8": probe_f8, "F9": probe_f9, "F10": probe_f10, "F11": probe_f11}
+          "F8": probe_f8, "F9": probe_f9, "F10": probe_f10, "F11": probe_f11,
+          "F12": probe_f12}
 
 
 def main(argv=None) -> int:

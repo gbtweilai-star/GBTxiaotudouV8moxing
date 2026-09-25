@@ -1,9 +1,13 @@
 {
   "_口径": "唯一进度真源。人读的详细账在 output/blueprint-audit/生产推进-故障清单.md；本文件只放『现在做到哪 / 哪没做 / 未清故障 / 等你拍板』，供宿主插件在重启后自动注入会话头。改了本文件，下一轮会话就看得见。",
   "_排班纪律": "每轮结束前更新本文件 + 时间点；不许只写『继续排查』这种没信息量的话。",
-  "updated_at": "2026-09-25T22:29:00+08:00",
-  "rounds_done": 40,
+  "updated_at": "2026-09-25T22:43:00+08:00",
+  "rounds_done": 41,
   "today_done": [
+    "🔴 **动手做 F5 之前先量前提，结果挖出真病根（本轮结论：不写那个维度）**。F 维原文是「审计里的 kind 无幽灵」，最自然的做法是拿 `caps_registry.all_caps()`（172）当参考集 —— **实测这么做会报 86 条『幽灵』**。逐条查完发现**绝大多数是真操作**：`room_release` 31 次 call / **7 次 ok** / 14 次 preflight_checked / 17 次因缺作用域 denied；`notion` 196 call / **89 ok**；`room_plan` 34 call / 7 ok；`collab_open` / `peer_register` / `room_create` / `room_rehearse` 同理。**有 ok、有 preflight、有 denied = 真在跑且真过门**。⇒ 若照最自然的方式写 F 维，等于造一台**每次报 86 次假警**的机器（本仓最忌的那种）",
+    "**顺带把真正的『幽灵』分辨出来了**：86 条里只有 `no_such_capability_xyz`（26 call · 22 error · 4 user_error · **0 ok**）是真幽灵 —— 那是本仓**自己的负控用例**。⇒ 『有 ok 的 = 真操作、只是没在册』vs『没有 ok 的 = 真幽灵』，这两类**必须分开判**，而 F 维的原文没写这一层",
+    "**新登记 F12（真病根）**：`caps_registry.all_caps()`（172 条）里逐个查，`room_space` / `mirror_space` / `qiankun` / `deployment_rehearsal` / `collab_gateway` / `notion` / `tripo` **全都不在**；而 `preflight.py:155,167` 专门为 `room_plan`/`room_release` 分支、`collab_gateway._DELEGATE_ACTIONS` 显式委派、`room_space.py:58` 列了这些原语、**AGENTS.md 还给它们派了作用域**（room_release→deploy_publish · room_rehearse→process_execute+filesystem_write）⇒ 命中**读数口径**问题：面板/`omni`/普查报的『172 个能力』，对**能动生产的那一整片原语是瞎的** ⇒ 开 D13（改 `caps_registry.py` 是主人专属，我不擅自动）",
+    "**F5 如实改写为『F 维阻塞于 F12』**，并把 D/E/V 的前置也写明：D 维要一个『文档声称』的来源 · E 维要一个『声称的测试数』来源 · V 维要 inventory 的双视图 —— **都不许凭感觉挑一个来源当判据**。⇒ 本轮**如实标未做**，不假装动过（这正是 F5 这条故障当初存在的理由，我不给它添一条新罪）",
     "**把主人令的『密钥全部』落到底**：保险箱 profile 3 → **8 个**，新收 **4 把**（`moonshot` / `kimi` / `openai` / `tripo`），加上原有 `deepseek` / `agnes` / `adp` / `freellmapi`，**现读 8/8 全部 configured=True · source=dpapi**。全程**只印掩码**；每存一把立刻回读比对（一致才继续）；**注册表里的值照旧不删**（那是主人的配置，别的工具可能在用）",
     "🔴 **修掉唯一真正被 F2 打坏的消费者**：`gbt_allinone/tripo.py` 原来只有一级 `os.environ.get('TRIPO_API_KEY')`，而本机 Tripo 密钥只配在 **User 作用域**、本机进程是在那之前起的 ⇒ 环境里一个都没有 ⇒ 这条链看起来『密钥没配』，**其实配了、只是读不到**（这就是 F2 的机制：不是没配，是没继承）。已改成**环境变量 → DPAPI 保险箱**两级回退；`balance()` 的提示语也一起改了 —— 原来只教 `setx`（写 User 作用域，**要重启才读得到**，正是那个坑），现在补上『收进保险箱、不用重启』那条路",
     "**实测那条回退真的成立**（四级）：环境没有 ⇒ 从库里拿到 37 位（掩码 `tcli_****`）· 环境有 ⇒ 环境优先 · **负控**（库指到不存在 + 环境清空）⇒ 如实返回空且**不抛** · 复原正常。另 grep 全仓确认：**除 tripo.py 外再无别处直接读这几个密钥名**（`codex-drive.py` / `freellm-alive.py` 本来就有注册表回退，没被这条打坏）",
@@ -104,7 +108,7 @@
     "已修并带牙用例：voice 参数静默丢失 · voice_orchestra 未知场景假绿灯 · redteam FR-5/FR-8 · aesthetic_brain 静默写盘 · media-gen-slots 窄字符类 · isolation_sweep 超时假绿/假红",
     "已重建派生索引：state/skill_atlas.json（171→172，security 域 5→17，幽灵域 unimplemented 现形）"
   ],
-  "in_progress": "第 40 轮：把主人令的『密钥**全部**部署跟双向插件一样、可以自动读取』落到底 —— 保险箱加 5 个 profile、新收 4 把钥匙，并修掉**唯一真被 F2 打坏的消费者**（`tripo.py` 直接读环境变量）。顺手立了『两份存量对账』，**首跑就抓出 `agnes` 已分叉**（库 sk-HX**** vs 注册表 sk-Oy****）⇒ 开 F11/D12。现读 **15 步全绿**。下一步：接着找不依赖主人的活。",
+  "in_progress": "第 41 轮：动手做 F5（cross_scan 的 D/E/F/V）之前先量前提，结果**没写成那一维、反而挖出真病根** —— F 维要的『参考集』根本不存在：注册表 172 **没有收录** room_*/collab_*/peer_register/notion/tripo/mirror_space/qiankun/deployment_rehearsal 这批**真在跑、真过门、真能成功**的操作 ⇒ 登记 F12。F5 如实标『F 维阻塞于 F12』。下一步：接着找不依赖主人的活。",
   "not_done": [
     {
       "id": "N1",
@@ -199,7 +203,7 @@
       "what": "cross_scan dims D/E/F/V 只有名字没有实现",
       "severity": "中",
       "evidence": "工具自己声明的 dims_unimplemented",
-      "state": "未排期"
+      "state": "🔴 **2026-09-25 第 41 轮：动手前先量前提，量出真病根 ⇒ 没有盲写实现。** F 维原文是「审计里的 kind 无幽灵」，最自然的做法是拿 `caps_registry.all_caps()`（172）当参考集。**实测这么做会报 86 条『幽灵』，而其中绝大多数是真操作**：`room_plan`(34 次 call · 7 次 ok · 9 次 preflight_checked) · `room_release`(31 · 7 ok · 14 preflight) · `room_rehearse` · `room_create` · `collab_open` · `peer_register` · `notion`(196 · 89 ok) · `tripo`(38 · 8 ok · 27 denied)。它们**有 ok、有 preflight_checked、有因缺作用域被 denied** ⇒ 是**真在跑且真过门**的操作，只是**没被注册表收录**（= F12）。真正的『幽灵』只有一个：`no_such_capability_xyz`（26 call · 22 error · 4 user_error · **0 ok**，是本仓自己的负控用例）。⇒ **F 维阻塞于 F12**：参考集不存在时写它，等于造一台报 86 次假警的机器。D/E/V 三维**也有各自的前置**（D 要一个『文档声称』的来源 · E 要一个『声称的测试数』来源 · V 要 inventory 的双视图），同样不许凭感觉挑一个来源当判据 ⇒ 本轮**如实标未做**，不假装动过。"
     },
     {
       "id": "F8",
@@ -228,6 +232,13 @@
       "severity": "中",
       "evidence": "`key-consistency-check.py` 现读：8 个 profile 里 **6 一致 · 1 分叉**（agnes，两处长度都 51、指纹 94eb3395b887 vs 85cc885c723e）· 1 只在保险箱（adp）",
       "state": "**我没有覆盖任何一份**（两份都像有效，谁新谁旧只有主人知道）。处置要主人一句话：哪份是当前的 ⇒ 把另一份同步过来。分叉的后果不是报错，是『有时能通、有时 401』"
+    },
+    {
+      "id": "F12",
+      "what": "**能力注册表（172）没有收录一整套真在生产上跑、真过门、真能成功的操作**（room_*/collab_*/peer_register/notion/tripo/mirror_space/qiankun/deployment_rehearsal 等）",
+      "severity": "中",
+      "evidence": "`caps_registry.all_caps()`（172 条）里逐个查：`room_space`/`mirror_space`/`qiankun`/`deployment_rehearsal`/`collab_gateway`/`notion`/`tripo` **全都不在**；而审计账现读显示它们是**真调用**：`room_release` 31 次 call / **7 次 ok** / 14 次 preflight_checked / 17 次 denied（缺作用域）；`notion` 196 call / **89 ok**；`tripo` 38 call / 8 ok / 27 denied；`preflight.py:155,167` 专门为 `room_plan`/`room_release` 分支；`collab_gateway._DELEGATE_ACTIONS` 显式委派 room_plan/simulate/parity；`room_space.py:58` 列了这些原语；AGENTS.md 给它们派了作用域（room_release→deploy_publish · room_rehearse→process_execute+filesystem_write）",
+      "state": "命中即**读数口径**问题：面板/`omni`/普查报的是『**172 个能力**』，而`写生产/镜像`那一整片原语**一个都不在册** —— 读的人会以为它们不在系统里。改它=动注册表（`caps_registry.py` 是**主人专属**文件，红线：不经授权不许改）⇒ 等主人拍板：① 把这批补进注册表（改 caps_registry，主人专属）② 或明确登记『注册表只收能力位、不收管线原语』并让面板分开报两块数 ③ 维持现状但把口径写在面板上"
     }
   ],
   "owner_decisions": [
@@ -285,6 +296,11 @@
       "id": "D12",
       "ask": "`agnes` 的密钥两份不一致（保险箱 sk-HX**** / 注册表 sk-Oy****）—— 哪份是当前的？",
       "why": "两份都像有效，无法从存量判断新旧（要判有效性得真打一次接口 = 出网，得主人点头）；我**没有**擅自覆盖，也没删注册表那份"
+    },
+    {
+      "id": "D13",
+      "ask": "能力注册表（172）要不要收录 room_*/mirror_*/qiankun/deployment_rehearsal 这批生产管线原语？还是明确「注册表只收能力位」并在面板上分开报？",
+      "why": "它们真在生产上跑（审计里有 ok 记录）、真过门（有 preflight_checked 与 denied），却没在册 ⇒ 『172 个能力』这句话对『能动生产的那一片』是瞎的。改 `caps_registry.py` 是主人专属，我不擅自动"
     }
   ],
   "log": [
@@ -535,6 +551,18 @@
     {
       "at": "2026-09-25T22:29",
       "what": "结 F2（影响已处理，边界写明）；接进靴自检 ⇒ 15 步全绿"
+    },
+    {
+      "at": "2026-09-25T22:41",
+      "what": "量 F 维前提：注册表 172 当参考集 ⇒ 会报 86 条幽灵（假警）"
+    },
+    {
+      "at": "2026-09-25T22:42",
+      "what": "逐 kind 关联 event：room_*/notion/tripo 都有 ok+preflight+denied（真操作）；只有 no_such_capability_xyz 无 ok（真幽灵/负控用例）"
+    },
+    {
+      "at": "2026-09-25T22:43",
+      "what": "登记 F12（注册表没收生产管线原语）+ D13；F5 改写为『F 维阻塞于 F12』"
     }
   ]
 }
