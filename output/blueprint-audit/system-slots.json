@@ -1,107 +1,98 @@
 [
  {
   "slot": "health",
-  "ok": true,
-  "status": "ok",
-  "secs": 0.17,
-  "kv": "payload键=platform,python,time"
+  "ok": null,
+  "status": "-",
+  "kv": ""
  },
  {
   "slot": "selfscan",
-  "ok": true,
-  "status": "ok",
-  "secs": 0.14,
-  "kv": "verdict=\"clean\" coverage={\"routing\": \"full\", \"modules\": \" findings=[] "
+  "ok": null,
+  "status": "-",
+  "kv": ""
  },
  {
   "slot": "truth_scan",
+  "ok": null,
+  "status": "-",
+  "kv": ""
+ },
+ {
+  "slot": "cross_scan",
   "ok": true,
-  "status": "ok",
-  "secs": 0.01,
-  "kv": "verdict=\"clean\" "
+  "status": "-",
+  "kv": ""
  },
  {
   "slot": "inventory",
   "ok": true,
-  "status": "ok",
-  "secs": 0.11,
-  "kv": "verdict=\"clean\" "
+  "status": "-",
+  "kv": ""
  },
  {
   "slot": "signature_guard",
   "ok": true,
-  "status": "ok",
-  "secs": 0.5,
-  "kv": "verdict=\"clean\" "
+  "status": "-",
+  "kv": ""
  },
  {
   "slot": "file_hygiene",
   "ok": true,
-  "status": "ok",
-  "secs": 7.79,
-  "kv": "verdict=\"clean\" findings=[] "
+  "status": "-",
+  "kv": ""
  },
  {
   "slot": "wave_probe",
   "ok": true,
-  "status": "ok",
-  "secs": 1.99,
-  "kv": "count=0 coverage=\"half\" "
+  "status": "-",
+  "kv": "count=0"
  },
  {
   "slot": "shared_resources",
   "ok": true,
-  "status": "ok",
-  "secs": 0.01,
-  "kv": "payload键=active_leases,leases_active,leases_total,max_lease_s,note,ok"
+  "status": "-",
+  "kv": ""
  },
  {
   "slot": "hook_registry",
   "ok": true,
-  "status": "ok",
-  "secs": 0.01,
-  "kv": "payload键=counts,hooks,layers,namespace_rules,ok,readonly"
+  "status": "-",
+  "kv": ""
  },
  {
   "slot": "energy_pool",
   "ok": true,
-  "status": "ok",
-  "secs": 0.03,
-  "kv": "count=2 "
+  "status": "-",
+  "kv": "count=2"
  },
  {
   "slot": "context_vault",
   "ok": true,
-  "status": "ok",
-  "secs": 0.02,
-  "kv": "payload键=cap_bytes,db_default,domain,engine,kind,note"
+  "status": "-",
+  "kv": ""
  },
  {
   "slot": "coverage_auditor",
   "ok": true,
-  "status": "ok",
-  "secs": 0.01,
-  "kv": "payload键=as_of,coverage_by_group,known_gaps,matrix,ok,readonly"
+  "status": "-",
+  "kv": ""
  },
  {
   "slot": "auth_gate_status",
   "ok": true,
-  "status": "ok",
-  "secs": 0.01,
-  "kv": "payload键=ai_can_grant,grant_sources,note,ok,one_shot_scopes,scopes"
+  "status": "-",
+  "kv": ""
  },
  {
   "slot": "caps_called_audit",
   "ok": true,
-  "status": "ok",
-  "secs": 8.88,
-  "kv": "total=172 orphans=[] "
+  "status": "-",
+  "kv": "wired=[{\"kind\": \"a1art_skill\", \"callers\" total=172 orphans=[]"
  },
  {
   "slot": "tentacle_cognition",
   "ok": true,
-  "status": "ok",
-  "secs": 0.01,
-  "kv": "payload键=max_depth,ok,pack_fields,questions,readonly,red_lines"
+  "status": "-",
+  "kv": ""
  }
 ]
