@@ -40,6 +40,17 @@ binding = "AI"
 # 自托管 OpenAI 兼容端点（真无限制那条只走这里）。没接线时读数=未读到。
 LLM_ENDPOINT = ""
 UNCENSORED_ENDPOINT = ""
+
+# 🔐 令牌闸（2026-09-25 主人令「生成专属密钥给我用其他框架测试」）
+#   ⚠️ **令牌绝不许写在这份文件里** —— 这里是入库的明文，写进来就是踩凭据红线。
+#   正确落法（**secret**，不进仓库）：
+#       cd deploy/cloud-10
+#       wrangler secret put GBT_ENDPOINT_TOKENS --config wrangler.toml
+#   取值：**逗号分隔的多个令牌**。为什么多令牌：单令牌下没有"专属"可言 ——
+#   给别的框架发的钥匙必须跟你自己 DSH 路由的 `GBT_POTATO_API_KEY` 逐字相同，
+#   想轮换测试钥就会连自己那条路由一起打断。多令牌才能一消费方一钥、各轮各的。
+#   兼容旧的单值 `GBT_ENDPOINT_TOKEN`（两者任一非空即开启闸）。
+#   比较方式：两边各做 SHA-256 再 `timingSafeEqual`（常数时间），不是明文 `!==`。
 # 本网落盘前缀（与 src/modules.js 的 NS_PREFIX 必须一致）
 NS_PREFIX = "mesh10/"
 # Workers AI 的模型 id：**现读**自 `wrangler ai models`（不编 id）。

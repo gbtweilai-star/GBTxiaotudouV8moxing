@@ -267,6 +267,9 @@ export function createMesh(env, sharedState) {
     //    工具调用（tools）**原样透传**给上游，回包里的 tool_calls 也**原样带回来**，
     //    但"上游到底支不支持"要**量出来**再说，不许我先替它表态。
     if (method === "GET" && path === "/v1/models") {
+      // 读数用：令牌闸到底配了几个（与 chat 分支同一套取值口径）
+      const _tkRead = String(e.GBT_ENDPOINT_TOKENS || e.GBT_ENDPOINT_TOKEN || "")
+        .split(",").map((s) => s.trim()).filter(Boolean);
       return json({
         object: "list",
         data: [{ id: "gbt-potato-v8", object: "model", created: 0, owned_by: "GBT小土豆V8" }],
@@ -294,26 +297,55 @@ export function createMesh(env, sharedState) {
           //    `/v1/models` 这一路**根本不校验** —— 老版只写一句「令牌闸已开（要 Bearer）」，
           //    读起来像全局已锁，**声明比事实大**（本仓最忌的那种）。现在按**作用面**分开报：
           //    人读的 `auth`（一句话说清管哪条路）+ 机器读的 `auth_scope`（结构化，可判）。
-          auth: e.GBT_ENDPOINT_TOKEN
-            ? "令牌闸已开：/v1/chat/completions 要 Bearer；/v1/models 这一路公开（不校验）"
-            : "不校验 Authorization（没设 GBT_ENDPOINT_TOKEN）",
+          auth: _tkRead.length
+            ? ("令牌闸已开（" + _tkRead.length + " 个令牌 · 常数时间比较）："
+               + "/v1/chat/completions 要 Bearer；/v1/models 这一路公开（不校验）")
+            : "不校验 Authorization（没设 GBT_ENDPOINT_TOKENS / GBT_ENDPOINT_TOKEN）",
           auth_scope: {
-            chat: e.GBT_ENDPOINT_TOKEN ? "bearer" : "none",
+            chat: _tkRead.length ? "bearer" : "none",
             models: "public",
+            tokens_configured: _tkRead.length,
+            compare: "sha256+timingSafeEqual",
           },
         },
       });
     }
     if (method === "POST" && path === "/v1/chat/completions") {
-      // 🔴 令牌闸（**可选 · 默认关**）：设了 `GBT_ENDPOINT_TOKEN` 就必须带对
-      //    `Authorization: Bearer <同一个值>`。为什么默认关：这个端点本来就是给主人自己的
-      //    客户端用的，默认开会让"还没配 key 的客户端"当场失败。**但能力必须在**：
-      //    要收紧就设这一个 var，客户端那边在 settings.yaml 里配 `apiKeyEnv` 同名环境变量即可。
-      //    读数如实分开：**没设 var 就明说"不校验"**，不许让人以为已经锁上了。
-      if (e.GBT_ENDPOINT_TOKEN) {
-        const got = request.headers.get("authorization") || "";
-        if (got !== "Bearer " + e.GBT_ENDPOINT_TOKEN) {
-          return json({ error: { message: "Authorization 不对（本端点已开启令牌闸）", type: "authentication_error" } }, 401);
+      // 🔴 令牌闸（**可选 · 默认关**）。2026-09-25 按主人「生成专属密钥给我用其他框架测试」改：
+      //
+      //   ① **支持多令牌**：`GBT_ENDPOINT_TOKENS`（逗号分隔）+ 兼容旧的单值 `GBT_ENDPOINT_TOKEN`。
+      //      为什么必须多令牌：单令牌下**没有"专属"可言** —— 你给别的框架发的钥匙，
+      //      跟你自己 DSH 路由用的 `GBT_POTATO_API_KEY` 必须是同一个值；想轮换测试钥
+      //      就会**连自己那条路由一起打断**。多令牌才能"一消费方一钥、各轮各的"。
+      //   ② **常数时间比较**：原来是最朴素的 `got !== "Bearer " + token` 明文比较。
+      //      改成两边各做 SHA-256 再 `timingSafeEqual`（等长摘要），
+      //      消掉"按第一个不同字节提前返回"的时序侧信道。
+      //   ③ 读数如实：**没设就明说"不校验"**，不许让人以为已经锁上了；设了就报几个令牌。
+      async function _tokenMatches(got, want) {
+        const enc = new TextEncoder();
+        const [a, b] = await Promise.all([
+          crypto.subtle.digest("SHA-256", enc.encode(got)),
+          crypto.subtle.digest("SHA-256", enc.encode(want)),
+        ]);
+        const ta = new Uint8Array(a), tb = new Uint8Array(b);
+        if (crypto.subtle.timingSafeEqual) return crypto.subtle.timingSafeEqual(ta, tb);
+        let diff = 0;
+        for (let i = 0; i < ta.length; i++) diff |= ta[i] ^ tb[i];
+        return diff === 0;
+      }
+      const _tokens = String(e.GBT_ENDPOINT_TOKENS || e.GBT_ENDPOINT_TOKEN || "")
+        .split(",").map((s) => s.trim()).filter(Boolean);
+      if (_tokens.length) {
+        const got = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
+        let _ok = false;
+        for (const t of _tokens) {
+          if (await _tokenMatches(got, t)) { _ok = true; break; }
+        }
+        if (!_ok) {
+          return json({
+            error: { message: "Authorization 不对（本端点已开启令牌闸）", type: "authentication_error" },
+            gbt: { tokens_configured: _tokens.length, scheme: "Bearer" },
+          }, 401);
         }
       }
       let body = {};
@@ -377,20 +409,31 @@ export function createMesh(env, sharedState) {
           //    「代码坏了」和「额度用完了」。主人也当场被这个读数绕住过（问"为什么还是 502"）。
           //    ⇒ 按语义分档 + 给出可机读字段，别再让人从一串英文里猜。
           const _msg = String((err && err.message) || err);
-          const _quota = /neuron|daily free allocation|quota|exceeded|4006|429|rate[ _-]?limit/i.test(_msg);
+          // ⚠️ 自纠（2026-09-25）：我第一版把 `exceeded` 放进了**配额**正则，
+          //    而 `5021`（上下文超窗）的报文里**正好有 "exceeded"**
+          //    ⇒ 两类条件会互相吃掉。现在把两个正则**做成互斥**的。
+          const _ctx = /5021|context window|context length|maximum context|too many tokens/i.test(_msg);
+          const _quota = !_ctx && /neuron|daily free allocation|quota|4006|\b429\b|rate[ _-]?limit/i.test(_msg);
           return json({
-            error: { message: _msg, type: _quota ? "quota_error" : "upstream_error" },
+            error: {
+              message: _msg,
+              type: _ctx ? "context_window_exceeded" : (_quota ? "quota_error" : "upstream_error"),
+            },
             gbt: {
               quota_exhausted: _quota,
+              context_window_exceeded: _ctx,
               upstream_model: wid,
               via: "workers-ai",
               upstream_code: (_msg.match(/\b\d{4}\b/) || [null])[0],
-              hint: _quota
-                ? "Workers AI 免费额度（10,000 neurons/日）用尽，按 00:00 UTC 重置；"
-                  + "要彻底绕开配额得先把 LLM_ENDPOINT 真接线（现在它只是个空声明）"
-                : null,
+              hint: _ctx
+                ? "本会话的累积上下文已超过该上游的窗口（gpt-oss-120b = 128,000）。"
+                  + "这是**算术墙**，不是服务坏了：换短会话/开新会话即可；本路由没有压缩能力。"
+                : (_quota
+                  ? "Workers AI 免费额度（10,000 neurons/日）用尽，按 00:00 UTC 重置；"
+                    + "要彻底绕开配额得先把 LLM_ENDPOINT 真接线（现在它只是个空声明）"
+                  : null),
             },
-          }, _quota ? 429 : 502);
+          }, _ctx ? 400 : (_quota ? 429 : 502));
         }
         const created = Math.floor(Date.now() / 1000);
         const cid = "chatcmpl-gbt-" + Date.now();
