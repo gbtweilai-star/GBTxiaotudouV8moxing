@@ -78,6 +78,18 @@
     "why": "无人 import（死代码）",
     "line": 0,
     "text": "/src/components/RichTextEditor.tsx"
+   },
+   {
+    "rule": "U9",
+    "why": "无任何 export（import 到 undefined）",
+    "line": 34,
+    "text": "文件末尾缺 `export default <组件>;`"
+   },
+   {
+    "rule": "U10",
+    "why": "用到未 import 的外部符号（会抛 ReferenceError）",
+    "line": 30,
+    "text": "DOMPurify"
    }
   ]
  },
@@ -91,6 +103,12 @@
     "why": "无人 import（死代码）",
     "line": 0,
     "text": "/src/components/DataGrid.tsx"
+   },
+   {
+    "rule": "U9",
+    "why": "无任何 export（import 到 undefined）",
+    "line": 39,
+    "text": "文件末尾缺 `export default <组件>;`"
    }
   ]
  },
@@ -234,6 +252,12 @@
     "why": "无人 import（死代码）",
     "line": 0,
     "text": "/src/components/CodeEditorWidget.tsx"
+   },
+   {
+    "rule": "U9",
+    "why": "无任何 export（import 到 undefined）",
+    "line": 35,
+    "text": "文件末尾缺 `export default <组件>;`"
    }
   ]
  },
@@ -247,6 +271,12 @@
     "why": "无人 import（死代码）",
     "line": 0,
     "text": "/src/components/ChartDashboard.tsx"
+   },
+   {
+    "rule": "U9",
+    "why": "无任何 export（import 到 undefined）",
+    "line": 46,
+    "text": "文件末尾缺 `export default <组件>;`"
    }
   ]
  },
@@ -273,6 +303,12 @@
     "why": "无人 import（死代码）",
     "line": 0,
     "text": "/src/components/KanbanBoard.tsx"
+   },
+   {
+    "rule": "U9",
+    "why": "无任何 export（import 到 undefined）",
+    "line": 30,
+    "text": "文件末尾缺 `export default <组件>;`"
    }
   ]
  },

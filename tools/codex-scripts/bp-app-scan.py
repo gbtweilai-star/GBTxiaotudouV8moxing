@@ -56,6 +56,18 @@ RULES = [
     ("U8", "占位型可视元素", re.compile(r"<img\s+src\s*=\s*\{\s*[\"']{2}\s*\}|<div\s*/>")),
 ]
 
+# U9 / U10：需要跨行判断，不走单行正则（在 scan_file 里单独做）
+#
+# U9 · 组件无导出（第 5 轮新增，实测）：文件里定义了组件函数，但**没有任何 export**
+#      ⇒ 别人 `import X from …` 拿到的是 `undefined`，渲染即抛错。
+#      **这不是"没接上"，是"接不上"** —— 两种处置完全不同（补导出 vs 挂载）。
+#
+# U10 · 用到未 import 的外部符号（第 5 轮新增，实测）：
+#      注意 **`React` 不算** —— 本预览用 UMD 把 React 挂在全局（unpkg react.development.js），
+#      所以"零 import 却用 React.useState"是**合法的**，不许当缺陷报。
+#      只查下面这张**明确不在全局**的第三方清单。
+_NOT_GLOBAL_PKGS = ("DOMPurify", "axios", "clsx", "lucide", "recharts", "d3")
+
 # 组件是否被别的文件 import（U5 用）
 IMPORT_RE = re.compile(r"""from\s+['"]([^'"]+)['"]""")
 
@@ -73,6 +85,24 @@ def scan_file(name: str, code: str, imported_by: set) -> list:
         base = name.split("/")[-1].replace(".tsx", "")
         if base not in imported_by:
             hits.append({"rule": "U5", "why": "无人 import（死代码）", "line": 0, "text": name})
+
+    # U9：定义了组件却没有任何 export ⇒ 别人 import 到的是 undefined（**接不上，不是没接**）
+    if name.endswith(".tsx") and not name.endswith("App.tsx"):
+        has_export = bool(re.search(r"export\s+default\b", code)
+                          or re.search(r"export\s+(?:const|function|class)\b", code)
+                          or re.search(r"export\s*\{", code))
+        if not has_export:
+            hits.append({"rule": "U9", "why": "无任何 export（import 到 undefined）",
+                         "line": len(lines), "text": "文件末尾缺 `export default <组件>;`"})
+
+    # U10：用到未 import、且**确定不在全局**的第三方符号
+    imports_all = " ".join(IMPORT_RE.findall(code)) + " " + " ".join(
+        re.findall(r"import\s+([^;]+?)\s+from", code))
+    for pk in _NOT_GLOBAL_PKGS:
+        if re.search(r"\b" + re.escape(pk) + r"\b", code) and pk not in imports_all:
+            ln = next((i for i, l in enumerate(lines, 1) if re.search(r"\b" + re.escape(pk) + r"\b", l)), 0)
+            hits.append({"rule": "U10", "why": "用到未 import 的外部符号（会抛 ReferenceError）",
+                         "line": ln, "text": pk})
     return hits
 
 
@@ -156,6 +186,11 @@ def main() -> int:
     for rid, label, _ in RULES:
         print("   %s %-22s %d" % (rid, label, by_rule.get(rid, 0)))
     print("   U5 %-22s %d" % ("无人 import（死代码）", by_rule.get("U5", 0)))
+    print("   U9 %-22s %d" % ("无任何 export（接不上）", by_rule.get("U9", 0)))
+    print("   U10 %-21s %d" % ("未 import 的外部符号", by_rule.get("U10", 0)))
+    _sum = sum(by_rule.get(r, 0) for r in
+               [x[0] for x in RULES] + ["U5", "U9", "U10"])
+    print("   ---- 分类合计 %d（应与上面的总数一致；对不上就是漏计）" % _sum)
 
     if args.json:
         Path(args.json).write_text(json.dumps(all_rows, ensure_ascii=False, indent=1),
