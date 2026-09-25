@@ -1,8 +1,0 @@
-  __pycache__            502 个    10.54 MB
-  *.pyc                   84 个     1.25 MB
-  *.lock                 974 个     0.00 MB
-  *.log                  170 个     9.11 MB
-  *.tmp                    2 个     0.04 MB
-  *.bak/.orig/.rej       170 个     6.03 MB
-  pit_log.before_*        13 个     0.44 MB
-  合计                    1915 个    27.41 MB

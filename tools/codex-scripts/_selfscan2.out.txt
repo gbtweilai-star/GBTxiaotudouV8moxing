@@ -1,3 +1,0 @@
-verdict: P0
-routing: {'registered': 142, 'routed': 142, 'ok': True, 'unrouted': [], 'ghost_routes': []}
-capabilities_total: 142

@@ -1,8 +1,0 @@
-emotion_projection     wired=True callers=['gbt_allinone/tools/orchestration_kernel.py'] type=internal
-persona_kernel         wired=False callers=None type=internal
-hook_registry          wired=True callers=['gbt_allinone/tools/orchestration_kernel.py'] type=internal
-scene_anchor           wired=True callers=['gbt_allinone/tools/brand_outro.py', 'gbt_allinone/tools/emotion_projection.py', 'gbt_allinone/tools/hook_registry.py', 'gbt_allinone/tools/orchestration_kernel.py', 'gbt_allinone/tools/research_intel.py'] type=internal
-brand_outro            wired=True callers=['gbt_allinone/security/security_brain.py', 'gbt_allinone/tools/energy_pool.py', 'gbt_allinone/tools/orchestration_kernel.py'] type=internal
-
-orphans: ['persona_kernel']
-total: 142 wired: 136 unwired: 6

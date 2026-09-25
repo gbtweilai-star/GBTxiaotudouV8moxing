@@ -1,7 +1,0 @@
-复核① tripo 能力已退役: True | 总数: 141
-复核② persona_kernel 仍在: True
-复核③ 审计表里 tripo 主机已摘: True
-复核④ app.js 无 GLTFLoader/MODEL_URL/import three: True
-复核⑤ index.html 无 canvas/importmap: True
-复核⑥ 路由对账: 141/141 ok=True 幽灵=[]
-复核⑦ 实物已移出工作区: True
