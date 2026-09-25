@@ -83,6 +83,27 @@ def _screenshot() -> bytes:
     return base64.b64decode(b64)
 
 
+def _wait_ready(min_bytes: int = 120000, tries: int = 10, gap: float = 2.0):
+    """等画面**真的渲染出来**，再动手读/点。
+
+    🔴 为什么必须有它（实测换来的）：`op=open` 会让 **SPA 重载**，
+    重载后 9 秒截图**只有 43 KB**（还在白屏/加载），而渲染好的页是 **150–300 KB**。
+    ⇒ 用**截图字节数**当"渲染好了没"的判据：便宜、有效、不依赖任何 CSS 选择器
+      （这台环境读不到 Chrome 的 DOM，所以只能用像素侧判据）。
+    判据 = ① 字节数够大 ② 与上一张相比**基本不再变**（同一量级波动 <2%）。
+    """
+    last = b""
+    for i in range(tries):
+        img = _screenshot()
+        big = len(img) >= min_bytes
+        stable = last and abs(len(img) - len(last)) < max(2000, len(img) // 50)
+        if big and stable:
+            return img, i + 1, "ready"
+        last = img
+        time.sleep(gap)
+    return last, tries, "timeout(可能仍在加载，读数要打折看)"
+
+
 def _ask_image(img_bytes: bytes, ask: str) -> dict:
     from gbt_allinone import vision_cap as V
     return V.cloud_recognize(img_bytes, prompt=ask)
@@ -188,6 +209,60 @@ def cmd_click(a):
                      ensure_ascii=False, indent=1))
 
 
+SWEEP_ASK = (
+    "这是网页应用截图。**严格照抄界面原文**：不要翻译、不要概括、不要只挑重点，有就全列。"
+    "【A】左侧导航栏里**哪一项是高亮选中**（照抄它的文字；若看不到左侧栏，就写「看不到左侧栏」）。"
+    "【B】主区域从上到下**逐条**列出：区块名、字段名、按钮文字、输入框里的灰色提示文字、"
+    "表格列名、卡片的数字与百分比。"
+    "【C】把界面上**所有**报错、警告、红色/黄色/绿色提示条、灰色禁用项，以及"
+    "「未完成 / 敬请期待 / 即将上线 / TODO / coming soon / 加载中 / 0 条 / 暂无数据」"
+    "这类字样，**逐条原文照抄**；一条都没有就写「无」。"
+    "【D】**疑是故障**：任何看起来不对的地方 —— 大片空白、错位、重叠、中英混杂、"
+    "文字被截断、按钮像没响应、数字不合理、重复条目、占位符没替换、"
+    "图标缺失、边框缺失 —— 逐条列出它在哪、长什么样。宁可多报，不许放过。"
+    "不要描述操作系统任务栏、微信、Telegram 等其它窗口。用中文。"
+)
+
+
+def cmd_sweep(a):
+    """**无死角扫描**：把一列 y 坐标逐个点过去，每一位读一次，**全部落账本**。
+
+    为什么这样设计（对应主人的要求「全方位无死角、疑是故障也不能放过」）：
+      · **不靠记忆**：每一位的读数当场写进 `--ledger`（jsonl，逐条追加，可复核）。
+      · **不靠猜坐标**：每个位置点完都读一次「哪一项高亮」，所以映射是**跑出来的**。
+      · **渲染判据**：每次点击/导航后先过 `_wait_ready()`，不拿加载中的白屏当读数。
+    """
+    out = Path(a.ledger)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    r = _rt("browser", {"op": "open", "url": a.url})
+    img, tries, state = _wait_ready(tries=a.tries)
+    print("open=%s · 渲染=%s（第 %d 次截图 · %d 字节）"
+          % (r.get("ok"), state, tries, len(img)), file=sys.stderr)
+
+    ys = ([int(v) for v in a.ys.split(",")] if a.ys
+          else list(range(a.start, a.stop + 1, a.step)))
+    n = 0
+    for y in ys:
+        _rt("tentacle", {"action": "click", "args": [a.x, y]})
+        time.sleep(a.click_wait)
+        img, tries, state = _wait_ready(tries=a.tries)
+        if a.out:
+            p = Path(a.out) / ("y%04d.png" % y)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_bytes(img)
+        d = _ask_image(img, a.ask or SWEEP_ASK)
+        desc = str(d.get("description") or d.get("error") or "")
+        row = {"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "x": a.x, "y": y,
+               "shot_bytes": len(img), "render": state, "engine": d.get("model"),
+               "title": chrome_title(), "reading": desc}
+        with out.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+        n += 1
+        print("  y=%-5d %-14s %7dB  %s"
+              % (y, state.split("(")[0], len(img), " ".join(desc.split())[:96]))
+    print("\n账本: %s（本次追加 %d 条）" % (out, n))
+
+
 def cmd_text_region(a):
     """**只取指定矩形内的 UIA 文字块** —— 绝不整屏倾倒（隐私红线）。"""
     r = _rt("tentacle", {"action": "read_text"})
@@ -238,6 +313,20 @@ def main():
     p.add_argument("--expect", default=None, help="期望命中的导航项文字")
     p.add_argument("--wait", type=float, default=4.0)
     p.set_defaults(fn=cmd_click)
+
+    p = sub.add_parser("sweep", help="**无死角扫描**：逐个位置点过去，每位读一次，全落账本")
+    p.add_argument("--url", default=BUILDER_URL)
+    p.add_argument("--x", type=int, default=120, help="点击的 x（左侧栏用小 x）")
+    p.add_argument("--ys", default=None, help="显式 y 列表，逗号分隔（优先于 start/stop/step）")
+    p.add_argument("--start", type=int, default=300)
+    p.add_argument("--stop", type=int, default=960)
+    p.add_argument("--step", type=int, default=40)
+    p.add_argument("--click-wait", type=float, default=3.0)
+    p.add_argument("--tries", type=int, default=6, help="渲染判据最多重截几次")
+    p.add_argument("--ask", default=None)
+    p.add_argument("--out", default=None, help="每位再存一张截图到这个目录（证据）")
+    p.add_argument("--ledger", default="output/blueprint-audit/sweep.jsonl")
+    p.set_defaults(fn=cmd_sweep)
 
     p = sub.add_parser("text-region", help="只取指定矩形内的 UIA 文字（隐私安全）")
     p.add_argument("rect", type=int, nargs=4, metavar=("X", "Y", "W", "H"))

@@ -1202,6 +1202,47 @@ except Exception:  # pragma: no cover - 循环导入兜底
     EngineError = AutopilotError = BrainExecError = LongrunError = SchedError = ThinkLoopError = Exception
 
 
+# ═══════════ 信封 ok 的判据表（2026-09-25 fail-closed 修复）═══════════════
+# 🔴 原实现是 **fail-open（默认放行）**：
+#       ok = status not in ("error", "denied", "failed", "needs_dependency")
+#    凡是不在这张 4 项表里的状态一律算成功。全仓实扫 **63 种 status**，实测
+#    **59 种落到 ok=True**，其中这些一眼就是「没成」：
+#       timeout · not_implemented · unimplemented · needs_implementation ·
+#       not_wired · needs_browser_debug（一个标签页都没连上）· blocked ·
+#       refused · rejected · input_rejected · unverified · contradicted ·
+#       missing · not_found · no_input · no_window · no_engine_found ·
+#       pending · awaiting_input · transcription_not_started ·
+#       unsupported · disabled · no_enabled · skipped · degraded …
+#    ⇒ 这就是「自检全过」反复误报的**机制性来源**：不是谁粗心，
+#      是**契约层的默认值站在"成功"那一边**。
+#
+# 修法三条纪律：
+#   ① **fail-closed**：`ok` 只有在**明确列进成功表**时才算真；
+#   ② **生产者优先**：生产者自己给了 `ok`（或给了 `error`）就一律听它的 ——
+#      这保证逐字节向后兼容，改动只影响"靠默认值蒙过去"的那些；
+#   ③ **不猜语义**：既不在成功表、也不在已知失败表里的状态，判失败**并**打
+#      `unknown_status` 标记，把残余问题**变成可枚举的清单，而不是靠人猜**。
+_ENVELOPE_OK_STATUS = frozenset({
+    # 明确断言「做成了」的状态语
+    "ok", "done", "ready", "completed", "green", "verified", "published",
+    "ran", "launched", "fetched", "prepared", "released", "winner",
+    "acquired", "reuse", "already_running", "already_satisfied",
+})
+_ENVELOPE_FAIL_STATUS = frozenset({
+    # 已知的失败/拒绝/未就绪语义（只用于「不把已知失败误标成 unknown」）
+    "error", "denied", "failed", "needs_dependency",
+    "timeout", "blocked", "refused", "rejected", "input_rejected",
+    "not_implemented", "unimplemented", "needs_implementation", "not_wired",
+    "needs_browser_debug", "unsupported", "disabled", "no_enabled",
+    "missing", "not_found", "no_input", "no_topics", "no_window",
+    "no_engine_found", "pending", "awaiting_input", "not_running",
+    "transcription_not_started", "source_bound_pending_review",
+    "unverified", "contradicted", "input_unjudged", "not_guarded",
+    "skipped", "degraded", "boundary", "need_address",
+    "needs_pairing_or_protocol",
+})
+
+
 def _normalize_envelope(kind: str, raw) -> dict:
     """把任意历史返回结构归一成统一契约。
 
@@ -1211,6 +1252,12 @@ def _normalize_envelope(kind: str, raw) -> dict:
 
     旧字段（``status`` / ``gbt_stamp`` / ``gbt_result`` / 分支专属字段）全部保留，
     因此旧的调用方无需改动；新调用方只看 ``ok`` 与 ``result`` 即可。
+
+    另加两个**读数溯源**字段（新调用方可选读，旧调用方无感）::
+
+        ok_source   "explicit"（生产者自己给的） | "status"（按状态表推的）
+        unknown_status  仅在「状态既不在成功表也不在已知失败表」时出现 —— 它表示
+                        **这里有一条没被归类的状态语义，需要人工归位**（不是失败）。
     """
     if not isinstance(raw, dict):
         raw = {"result": raw}
@@ -1225,10 +1272,31 @@ def _normalize_envelope(kind: str, raw) -> dict:
         inner = dict(raw)
     status = str(raw.get("status") or "").strip().lower()
     ok = raw.get("ok")
+    ok_source = "explicit"
     if ok is None:
-        ok = status not in ("error", "denied", "failed", "needs_dependency")
-        if ok and raw.get("error"):
-            ok = False
+        # 顶层没给 ok —— **先把证据找全再判**，别一上来就 fail-closed。
+        # 旧信封把状态藏在 gbt_result / result 里（实测：file_operation 的信封
+        # 顶层只有 gbt_stamp + gbt_result，status:ok 在内层）⇒ 只读顶层会把
+        # 一次**真成功**判成失败（这是我第一版的回归，已修）。
+        nested = inner if isinstance(inner, dict) else {}
+        nested_is_raw = nested is raw
+        nested_ok = nested.get("ok") if not nested_is_raw else None
+        eff_status = status
+        if nested_ok is None and not eff_status and not nested_is_raw:
+            eff_status = str(nested.get("status") or "").strip().lower()
+        if nested_ok is not None:
+            ok = nested_ok
+            ok_source = "gbt_result.ok"
+        else:
+            # fail-closed：只有进成功表才算成功；同时把没归类的状态标出来
+            ok = eff_status in _ENVELOPE_OK_STATUS
+            ok_source = "status"
+            if ok and raw.get("error"):
+                ok = False
+            if eff_status and eff_status not in _ENVELOPE_OK_STATUS \
+                    and eff_status not in _ENVELOPE_FAIL_STATUS:
+                out["unknown_status"] = eff_status
+    out["ok_source"] = ok_source
     out["ok"] = bool(ok)
     out["kind"] = raw.get("kind") or kind
     out["result"] = inner

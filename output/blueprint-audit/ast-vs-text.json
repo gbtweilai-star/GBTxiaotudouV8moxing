@@ -1,0 +1,1525 @@
+[
+ {
+  "kind": "account_registry",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/auto_publish.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "agency_tentacles",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/external_content_check.py",
+   "gbt_allinone/tools/false_report_audit.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/external_content_check.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "asset_vault_freeze",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/trace_store.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/security/security_brain.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "gbt_allinone/security/security_brain.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "audio_extract",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/audio_mix.py",
+   "gbt_allinone/tools/media_license.py",
+   "gbt_allinone/tools/media_publish.py",
+   "gbt_allinone/tools/media_run.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/audio_mix.py   [标识符]",
+   "gbt_allinone/tools/media_publish.py   [标识符]",
+   "gbt_allinone/tools/media_run.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "auto_switch",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/awesome_tools_index.py",
+   "gbt_allinone/tools/false_report_audit.py",
+   "gbt_allinone/tools/local_brain.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "autopilot",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/auth_gate.py",
+   "gbt_allinone/cross_scan.py",
+   "gbt_allinone/quant_tech.py",
+   "gbt_allinone/selfscan.py",
+   "gbt_allinone/think_loop.py",
+   "gbt_allinone/llm/unified.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tools/brain_graph.py",
+   "gbt_allinone/tools/persona_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/auth_gate.py   [标识符]",
+   "gbt_allinone/cross_scan.py   [标识符]",
+   "gbt_allinone/selfscan.py   [标识符]",
+   "gbt_allinone/think_loop.py   [标识符]",
+   "gbt_allinone/llm/unified.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/tools/brain_graph.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "bluetooth",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/bluetooth_cap.py",
+   "gbt_allinone/bt_control.py",
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/security/redteam.py",
+   "holo_pet/app.js",
+   "holo_pet/panel_server.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/bt_control.py   [标识符]",
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "holo_pet/app.js   [标识符]",
+   "holo_pet/panel_server.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "brain_vault",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/positions.py",
+   "gbt_allinone/tools/ai_capability_net.py",
+   "gbt_allinone/tools/brain_deploy.py",
+   "gbt_allinone/tools/brain_graph.py",
+   "gbt_allinone/tools/meta_cognition.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/tools/brain_deploy.py   [标识符]",
+   "gbt_allinone/tools/brain_graph.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "brand_outro",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/security/security_brain.py",
+   "gbt_allinone/tools/energy_pool.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/security_brain.py   [标识符]",
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "browser",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/browser_cap.py",
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/native_browser.py",
+   "gbt_allinone/preflight.py",
+   "gbt_allinone/llm/cloud_llm.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/tentacle/omni_controller.py",
+   "gbt_allinone/tentacle/omni_web.py",
+   "gbt_allinone/tools/call_graph.py",
+   "gbt_allinone/tools/edit_core.py",
+   "gbt_allinone/tools/edit_rules.py",
+   "gbt_allinone/tools/html_video.py",
+   "gbt_allinone/tentacle/brain/visual_cortex.py",
+   "gbt_allinone/recon/last30days/engine/env.py",
+   "gbt_allinone/recon/last30days/engine/truthsocial.py",
+   "gbt_allinone/recon/last30days/engine/xurl_x.py",
+   "gbt_allinone/recon/last30days/engine/youtube_yt.py",
+   "holo_pet/launch_panel.py",
+   "holo_pet/panel_server.py",
+   "holo_pet/xingyun_e2e.latest.js"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/preflight.py   [标识符]",
+   "gbt_allinone/llm/cloud_llm.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "gbt_allinone/tentacle/omni_controller.py   [标识符]",
+   "gbt_allinone/tentacle/omni_web.py   [标识符]",
+   "gbt_allinone/tools/edit_rules.py   [标识符]",
+   "gbt_allinone/tools/html_video.py   [标识符]",
+   "gbt_allinone/tentacle/brain/visual_cortex.py   [标识符]",
+   "gbt_allinone/recon/last30days/engine/env.py   [标识符]",
+   "gbt_allinone/recon/last30days/engine/truthsocial.py   [标识符]",
+   "gbt_allinone/recon/last30days/engine/xurl_x.py   [标识符]",
+   "gbt_allinone/recon/last30days/engine/youtube_yt.py   [标识符]",
+   "holo_pet/launch_panel.py   [标识符]",
+   "holo_pet/panel_server.py   [标识符]",
+   "holo_pet/xingyun_e2e.latest.js   [标识符]"
+  ]
+ },
+ {
+  "kind": "capability_net",
+  "现行判为接线": true,
+  "AST 判为接线": false,
+  "现行调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": []
+ },
+ {
+  "kind": "caps_called_audit",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/observer_anchor.py",
+   "gbt_allinone/tools/orchestration_kernel.py",
+   "gbt_allinone/tools/scan_engine.py",
+   "gbt_allinone/tools/scan_scope.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/observer_anchor.py   [标识符]",
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "cloud_pc",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/awesome_tools_index.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "code_art",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/positions.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/positions.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "code_patch",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tentacle/bridge.py",
+   "gbt_allinone/tools/code_structure.py",
+   "gbt_allinone/tools/git_repo.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/tentacle/bridge.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "context_vault",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/auto_switch.py",
+   "gbt_allinone/tools/awesome_tools_index.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "coverage_auditor",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/positions.py",
+   "gbt_allinone/tools/orchestration_kernel.py",
+   "gbt_allinone/tools/scan_engine.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "coze_mail",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/coze_mail_cap.py",
+   "gbt_allinone/file_operation.py",
+   "gbt_allinone/security/policy.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/policy.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "create",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/devour.py",
+   "gbt_allinone/feishu_bridge.py",
+   "gbt_allinone/file_operation.py",
+   "gbt_allinone/qiankun.py",
+   "gbt_allinone/room_space.py",
+   "gbt_allinone/vision_cap.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tentacle/omni_core.py",
+   "gbt_allinone/tools/agency_tentacles.py",
+   "gbt_allinone/tools/context_vault.py",
+   "gbt_allinone/tools/libtv_skill.py",
+   "gbt_allinone/tools/long_run_supervisor.py",
+   "gbt_allinone/tools/media_pipeline.py",
+   "gbt_allinone/recon/last30days/engine/vendor/bird-search/lib/twitter-client-constants.js",
+   "holo_pet/social_platforms.py",
+   "holo_pet/xingyun_e2e.latest.js"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/devour.py   [标识符]",
+   "gbt_allinone/feishu_bridge.py   [标识符]",
+   "gbt_allinone/qiankun.py   [标识符]",
+   "gbt_allinone/room_space.py   [标识符]",
+   "gbt_allinone/vision_cap.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/tentacle/omni_core.py   [标识符]",
+   "gbt_allinone/tools/agency_tentacles.py   [标识符]",
+   "gbt_allinone/tools/long_run_supervisor.py   [标识符]",
+   "gbt_allinone/tools/media_pipeline.py   [标识符]",
+   "gbt_allinone/recon/last30days/engine/vendor/bird-search/lib/twitter-client-constants.js   [标识符]",
+   "holo_pet/xingyun_e2e.latest.js   [标识符]"
+  ]
+ },
+ {
+  "kind": "credential_steal",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/trace_store.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/security/security_brain.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "gbt_allinone/security/security_brain.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "cross_scan",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/positions.py",
+   "gbt_allinone/preflight.py",
+   "gbt_allinone/root_fix.py",
+   "gbt_allinone/selfscan.py",
+   "gbt_allinone/tools/code_exhaustive_scan.py",
+   "gbt_allinone/tools/dd_visualizer.py",
+   "gbt_allinone/tools/module_sweep.py",
+   "gbt_allinone/tools/scan_engine.py",
+   "gbt_allinone/tools/__init__.py",
+   "holo_pet/panel_server.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/preflight.py   [标识符]",
+   "gbt_allinone/root_fix.py   [标识符]",
+   "gbt_allinone/selfscan.py   [标识符]",
+   "gbt_allinone/tools/code_exhaustive_scan.py   [标识符]",
+   "holo_pet/panel_server.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "data_hijack",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/ghost_guard.py",
+   "gbt_allinone/trace_store.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/security/security_brain.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/ghost_guard.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "gbt_allinone/security/security_brain.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "device_takeover",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/trace_store.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/security/security_brain.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "gbt_allinone/security/security_brain.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "drama",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/chain.py",
+   "gbt_allinone/llm/unified.py",
+   "gbt_allinone/tools/dd_visualizer.py",
+   "gbt_allinone/tools/media_run.py",
+   "gbt_allinone/recon/last30days/engine/preflight.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/chain.py   [标识符]",
+   "gbt_allinone/llm/unified.py   [标识符]",
+   "gbt_allinone/recon/last30days/engine/preflight.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "dream_replay",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/awesome_tools_index.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "echo",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/autopilot.py",
+   "gbt_allinone/deepseek_key.py",
+   "gbt_allinone/truth_scan.py",
+   "gbt_allinone/tools/native_rc.py",
+   "gbt_allinone/recon/last30days/engine/planner.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/autopilot.py   [标识符]",
+   "gbt_allinone/deepseek_key.py   [标识符]",
+   "gbt_allinone/truth_scan.py   [标识符]",
+   "gbt_allinone/recon/last30days/engine/planner.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "edit_pipeline",
+  "现行判为接线": true,
+  "AST 判为接线": false,
+  "现行调用方": [
+   "gbt_allinone/tools/edit_core.py",
+   "gbt_allinone/tools/media_run.py"
+  ],
+  "AST 调用方": []
+ },
+ {
+  "kind": "energy_pool",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/awesome_tools_index.py",
+   "gbt_allinone/tools/compute_router.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/compute_router.py   [标识符]",
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "feishu_embed",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/awesome_tools_index.py",
+   "gbt_allinone/tools/h3_video_gen.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "file_hygiene",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/cross_scan.py",
+   "gbt_allinone/hygiene.py",
+   "gbt_allinone/positions.py",
+   "gbt_allinone/preflight.py",
+   "gbt_allinone/root_fix.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tools/dd_visualizer.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/cross_scan.py   [标识符]",
+   "gbt_allinone/hygiene.py   [标识符]",
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/preflight.py   [标识符]",
+   "gbt_allinone/root_fix.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "film_intel",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/positions.py",
+   "gbt_allinone/tools/research_intel.py",
+   "gbt_allinone/tools/verification_watch.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/tools/research_intel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "gate_visibility",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/positions.py",
+   "gbt_allinone/tools/orchestration_kernel.py",
+   "gbt_allinone/tools/scan_scope.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "ghost_guard",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/app.py",
+   "gbt_allinone/autopilot.py",
+   "gbt_allinone/cross_scan.py",
+   "gbt_allinone/root_fix.py",
+   "gbt_allinone/selfscan.py",
+   "gbt_allinone/truth_scan.py",
+   "gbt_allinone/tools/ai_capability_net.py",
+   "gbt_allinone/tools/dd_visualizer.py",
+   "gbt_allinone/tools/host_security_scan.py",
+   "gbt_allinone/tools/source_judge.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/app.py   [标识符]",
+   "gbt_allinone/autopilot.py   [标识符]",
+   "gbt_allinone/cross_scan.py   [标识符]",
+   "gbt_allinone/root_fix.py   [标识符]",
+   "gbt_allinone/selfscan.py   [标识符]",
+   "gbt_allinone/truth_scan.py   [标识符]",
+   "gbt_allinone/tools/host_security_scan.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "git_read",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tools/git_repo.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/policy.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "git_write",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tools/git_repo.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/policy.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "h3_video_gen",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/awesome_tools_index.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "health",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/autopilot.py",
+   "gbt_allinone/brain_exec.py",
+   "gbt_allinone/caps_tables.py",
+   "gbt_allinone/cli.py",
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/coze_mail_cap.py",
+   "gbt_allinone/file_operation.py",
+   "gbt_allinone/positions.py",
+   "gbt_allinone/root_fix.py",
+   "gbt_allinone/truth_scan.py",
+   "gbt_allinone/adapters/workspace_adapter.py",
+   "gbt_allinone/deploy/codex_relay_watchdog.py",
+   "gbt_allinone/integration/platform_client.py",
+   "gbt_allinone/integration/smoke_test.py",
+   "gbt_allinone/llm/cloud_llm.py",
+   "gbt_allinone/llm/freellmapi.py",
+   "gbt_allinone/tentacle/omni_process.py",
+   "gbt_allinone/tools/brain_graph.py",
+   "gbt_allinone/tools/organ_check.py",
+   "gbt_allinone/tools/sync_exec.py",
+   "gbt_allinone/tools/visible_write.py",
+   "gbt_allinone/tentacle/brain/visual_cortex.py",
+   "gbt_allinone/tentacle/brain/visual_memory.py",
+   "gbt_allinone/recon/last30days/engine/env.py",
+   "holo_pet/panel_server.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/autopilot.py   [标识符]",
+   "gbt_allinone/brain_exec.py   [标识符]",
+   "gbt_allinone/caps_tables.py   [标识符]",
+   "gbt_allinone/cli.py   [标识符]",
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/root_fix.py   [标识符]",
+   "gbt_allinone/truth_scan.py   [标识符]",
+   "gbt_allinone/adapters/workspace_adapter.py   [标识符]",
+   "gbt_allinone/integration/platform_client.py   [标识符]",
+   "gbt_allinone/integration/smoke_test.py   [标识符]",
+   "gbt_allinone/llm/cloud_llm.py   [标识符]",
+   "gbt_allinone/llm/freellmapi.py   [标识符]",
+   "gbt_allinone/tentacle/omni_process.py   [标识符]",
+   "gbt_allinone/tools/brain_graph.py   [标识符]",
+   "gbt_allinone/tools/organ_check.py   [标识符]",
+   "gbt_allinone/tools/sync_exec.py   [标识符]",
+   "gbt_allinone/tools/visible_write.py   [标识符]",
+   "gbt_allinone/tentacle/brain/visual_cortex.py   [标识符]",
+   "gbt_allinone/tentacle/brain/visual_memory.py   [标识符]",
+   "gbt_allinone/recon/last30days/engine/env.py   [标识符]",
+   "holo_pet/panel_server.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "hook_registry",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tentacle/nav_etiology.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "inventory",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/app.py",
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/cross_scan.py",
+   "gbt_allinone/hygiene.py",
+   "gbt_allinone/positions.py",
+   "gbt_allinone/preflight.py",
+   "gbt_allinone/root_fix.py",
+   "gbt_allinone/selfscan.py",
+   "gbt_allinone/signature.py",
+   "gbt_allinone/llm/cloud_llm.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tools/dd_visualizer.py",
+   "gbt_allinone/tools/host_security_scan.py",
+   "gbt_allinone/tools/launcher_inventory.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/app.py   [标识符]",
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/cross_scan.py   [标识符]",
+   "gbt_allinone/hygiene.py   [标识符]",
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/preflight.py   [标识符]",
+   "gbt_allinone/root_fix.py   [标识符]",
+   "gbt_allinone/selfscan.py   [标识符]",
+   "gbt_allinone/signature.py   [标识符]",
+   "gbt_allinone/llm/cloud_llm.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/tools/host_security_scan.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "keylogger",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/ghost_guard.py",
+   "gbt_allinone/pipeline.py",
+   "gbt_allinone/trace_store.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/security/security_brain.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/ghost_guard.py   [标识符]",
+   "gbt_allinone/pipeline.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "gbt_allinone/security/security_brain.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "libtv_skill",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/awesome_tools_index.py",
+   "gbt_allinone/tools/h3_video_gen.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "life",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/life_archive.py",
+   "gbt_allinone/positions.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tentacle/bridge.py",
+   "gbt_allinone/tools/organ_check.py",
+   "holo_pet/app.js",
+   "holo_pet/panel_server.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/tentacle/bridge.py   [标识符]",
+   "gbt_allinone/tools/organ_check.py   [标识符]",
+   "holo_pet/app.js   [标识符]",
+   "holo_pet/panel_server.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "llm_chat",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/cross_scan.py",
+   "gbt_allinone/llm/bridge.py",
+   "gbt_allinone/llm/unified.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tools/brain_graph.py",
+   "gbt_allinone/tools/energy_pool.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/cross_scan.py   [标识符]",
+   "gbt_allinone/llm/bridge.py   [标识符]",
+   "gbt_allinone/llm/unified.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/tools/brain_graph.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "local_brain",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/awesome_tools_index.py",
+   "gbt_allinone/tools/brain_graph.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/brain_graph.py   [标识符]",
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "media_pipeline",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/positions.py",
+   "gbt_allinone/tools/media_publish.py",
+   "gbt_allinone/tools/media_run.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/tools/media_run.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "media_publish",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/media_run.py",
+   "holo_pet/social_platforms.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/media_run.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "mind",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/life_archive.py",
+   "gbt_allinone/mind_engine.py",
+   "gbt_allinone/positions.py",
+   "gbt_allinone/tentacle/bridge.py",
+   "gbt_allinone/tools/auto_switch.py",
+   "gbt_allinone/tools/brain_graph.py",
+   "gbt_allinone/tools/local_brain.py",
+   "holo_pet/app.js",
+   "holo_pet/panel_server.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/life_archive.py   [标识符]",
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/tentacle/bridge.py   [标识符]",
+   "gbt_allinone/tools/brain_graph.py   [标识符]",
+   "holo_pet/app.js   [标识符]",
+   "holo_pet/panel_server.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "model_key_pool",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/a1art_skill.py",
+   "gbt_allinone/tools/auto_switch.py",
+   "gbt_allinone/tools/energy_pool.py",
+   "gbt_allinone/tools/libtv_skill.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/a1art_skill.py   [标识符]",
+   "gbt_allinone/tools/energy_pool.py   [标识符]",
+   "gbt_allinone/tools/libtv_skill.py   [标识符]",
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "music_intel",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/positions.py",
+   "gbt_allinone/tools/research_intel.py",
+   "gbt_allinone/tools/verification_watch.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/tools/research_intel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "music_publishing",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/media_publish.py",
+   "holo_pet/panel_server.py"
+  ],
+  "AST 调用方": [
+   "holo_pet/panel_server.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "onboarding_gate",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/trace_store.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/security/security_brain.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "gbt_allinone/security/security_brain.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "one_key_deploy",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/cross_scan.py",
+   "gbt_allinone/mirror_space.py",
+   "gbt_allinone/qiankun.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tools/code_exhaustive_scan.py",
+   "gbt_allinone/tools/false_report_audit.py",
+   "gbt_allinone/tools/module_sweep.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/cross_scan.py   [标识符]",
+   "gbt_allinone/mirror_space.py   [标识符]",
+   "gbt_allinone/qiankun.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/tools/code_exhaustive_scan.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "orchestration_kernel",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/positions.py",
+   "gbt_allinone/tools/auto_switch.py",
+   "gbt_allinone/tools/awesome_tools_index.py",
+   "gbt_allinone/tools/energy_pool.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/positions.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "paywallbuster",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/ghost_guard.py",
+   "gbt_allinone/trace_store.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/security/security_brain.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/ghost_guard.py   [标识符]",
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "gbt_allinone/security/security_brain.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "pentest",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/trace_store.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/security/security_brain.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "gbt_allinone/security/security_brain.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "project_context",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/tools/ai_capability_net.py",
+   "gbt_allinone/tools/code_structure.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/codex_bridge.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "projection_card",
+  "现行判为接线": true,
+  "AST 判为接线": false,
+  "现行调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": []
+ },
+ {
+  "kind": "prompt_bridge",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tools/ai_capability_net.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/policy.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "quant",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/truth_scan.py",
+   "gbt_allinone/tools/local_brain.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/truth_scan.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "remote_domain",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/trace_store.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/security/security_brain.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "gbt_allinone/security/security_brain.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "render_evolution",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/energy_pool.py",
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "root_fix",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/life_archive.py",
+   "gbt_allinone/mind_engine.py",
+   "gbt_allinone/preflight.py",
+   "gbt_allinone/selfscan.py",
+   "gbt_allinone/tools/ai_capability_net.py",
+   "gbt_allinone/tools/meta_cognition.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/life_archive.py   [标识符]",
+   "gbt_allinone/mind_engine.py   [标识符]",
+   "gbt_allinone/preflight.py   [标识符]",
+   "gbt_allinone/selfscan.py   [标识符]",
+   "gbt_allinone/tools/meta_cognition.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "screen_sniff",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/trace_store.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/security/security_brain.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "gbt_allinone/security/security_brain.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "selfscan",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/app.py",
+   "gbt_allinone/autopilot.py",
+   "gbt_allinone/brain_exec.py",
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/cross_scan.py",
+   "gbt_allinone/devour.py",
+   "gbt_allinone/inventory.py",
+   "gbt_allinone/positions.py",
+   "gbt_allinone/root_fix.py",
+   "gbt_allinone/services.py",
+   "gbt_allinone/truth_scan.py",
+   "gbt_allinone/tools/ai_capability_net.py",
+   "gbt_allinone/tools/brain_deploy.py",
+   "gbt_allinone/tools/dd_squadron.py",
+   "gbt_allinone/tools/dd_visualizer.py",
+   "gbt_allinone/tools/false_report_audit.py",
+   "gbt_allinone/tools/proactive_report.py",
+   "holo_pet/panel_server.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/app.py   [标识符]",
+   "gbt_allinone/autopilot.py   [标识符]",
+   "gbt_allinone/brain_exec.py   [标识符]",
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/cross_scan.py   [标识符]",
+   "gbt_allinone/devour.py   [标识符]",
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/root_fix.py   [标识符]",
+   "gbt_allinone/services.py   [标识符]",
+   "gbt_allinone/truth_scan.py   [标识符]",
+   "gbt_allinone/tools/brain_deploy.py   [标识符]",
+   "gbt_allinone/tools/dd_squadron.py   [标识符]",
+   "gbt_allinone/tools/proactive_report.py   [标识符]",
+   "holo_pet/panel_server.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "signature_guard",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/cross_scan.py",
+   "gbt_allinone/preflight.py",
+   "gbt_allinone/root_fix.py",
+   "gbt_allinone/signature.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tools/dd_visualizer.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/cross_scan.py   [标识符]",
+   "gbt_allinone/preflight.py   [标识符]",
+   "gbt_allinone/root_fix.py   [标识符]",
+   "gbt_allinone/signature.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "social_eng",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/trace_store.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/security/security_brain.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/redteam.py   [标识符]",
+   "gbt_allinone/security/security_brain.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "stigmergy",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py",
+   "gbt_allinone/tools/source_judge.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "tactics_advise",
+  "现行判为接线": true,
+  "AST 判为接线": false,
+  "现行调用方": [
+   "gbt_allinone/tools/orchestration_kernel.py"
+  ],
+  "AST 调用方": []
+ },
+ {
+  "kind": "tentacle",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/app.py",
+   "gbt_allinone/brain_exec.py",
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/devour.py",
+   "gbt_allinone/ghost_guard.py",
+   "gbt_allinone/hygiene.py",
+   "gbt_allinone/positions.py",
+   "gbt_allinone/preflight.py",
+   "gbt_allinone/room_space.py",
+   "gbt_allinone/selfscan.py",
+   "gbt_allinone/semantic_route.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tentacle/bridge.py",
+   "gbt_allinone/tentacle/desktop_commander.py",
+   "gbt_allinone/tentacle/mcp_bridge.py",
+   "gbt_allinone/tentacle/omni_core.py",
+   "gbt_allinone/tentacle/omni_fs.py",
+   "gbt_allinone/tentacle/omni_tentacle.py",
+   "gbt_allinone/tentacle/omni_vision.py",
+   "gbt_allinone/tentacle/omni_web.py",
+   "gbt_allinone/tentacle/vision_bus.py",
+   "gbt_allinone/tentacle/vision_watch.py",
+   "gbt_allinone/tools/agency_tentacles.py",
+   "gbt_allinone/tools/awesome_tools_index.py",
+   "gbt_allinone/tools/brain_deploy.py",
+   "gbt_allinone/tools/brain_graph.py",
+   "gbt_allinone/tools/coverage_auditor.py",
+   "gbt_allinone/tools/energy_pool.py",
+   "gbt_allinone/tools/false_report_audit.py",
+   "gbt_allinone/tools/feishu_embed.py",
+   "gbt_allinone/tools/hook_registry.py",
+   "gbt_allinone/tools/meta_cognition.py",
+   "gbt_allinone/tools/organ_check.py",
+   "gbt_allinone/tools/regression_stamp.py",
+   "gbt_allinone/tools/vision_probe.py",
+   "gbt_allinone/tentacle/brain/visual_cortex.py",
+   "holo_pet/app.js",
+   "holo_pet/panel_server.py",
+   "holo_pet/social_platforms.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/app.py   [标识符]",
+   "gbt_allinone/brain_exec.py   [标识符]",
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/devour.py   [标识符]",
+   "gbt_allinone/ghost_guard.py   [标识符]",
+   "gbt_allinone/hygiene.py   [标识符]",
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/preflight.py   [标识符]",
+   "gbt_allinone/room_space.py   [标识符]",
+   "gbt_allinone/selfscan.py   [标识符]",
+   "gbt_allinone/semantic_route.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/tools/brain_deploy.py   [标识符]",
+   "gbt_allinone/tools/brain_graph.py   [标识符]",
+   "gbt_allinone/tools/coverage_auditor.py   [标识符]",
+   "gbt_allinone/tools/hook_registry.py   [标识符]",
+   "gbt_allinone/tools/organ_check.py   [标识符]",
+   "gbt_allinone/tools/regression_stamp.py   [标识符]",
+   "gbt_allinone/tools/vision_probe.py   [标识符]",
+   "holo_pet/app.js   [标识符]",
+   "holo_pet/panel_server.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "think_loop",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/cross_scan.py",
+   "gbt_allinone/life_archive.py",
+   "gbt_allinone/selfscan.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tools/brain_graph.py",
+   "gbt_allinone/tools/persona_kernel.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/cross_scan.py   [标识符]",
+   "gbt_allinone/life_archive.py   [标识符]",
+   "gbt_allinone/selfscan.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/tools/brain_graph.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "topic_watch",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/trend_watch.py",
+   "gbt_allinone/tools/ai_capability_net.py",
+   "gbt_allinone/tools/organ_check.py",
+   "gbt_allinone/recon/last30days/redlines.py",
+   "gbt_allinone/recon/last30days/__init__.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/trend_watch.py   [标识符]",
+   "gbt_allinone/tools/organ_check.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "trace_store",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/selfscan.py",
+   "gbt_allinone/tools/a1art_skill.py",
+   "gbt_allinone/tools/absorb_loop.py",
+   "gbt_allinone/tools/auto_publish.py",
+   "gbt_allinone/tools/auto_switch.py",
+   "gbt_allinone/tools/awesome_tools_index.py",
+   "gbt_allinone/tools/cloud_pc.py",
+   "gbt_allinone/tools/context_vault.py",
+   "gbt_allinone/tools/dream_replay.py",
+   "gbt_allinone/tools/energy_pool.py",
+   "gbt_allinone/tools/feishu_embed.py",
+   "gbt_allinone/tools/h3_video_gen.py",
+   "gbt_allinone/tools/hunyuan_video.py",
+   "gbt_allinone/tools/libtv_skill.py",
+   "gbt_allinone/tools/libtv_workflow.py",
+   "gbt_allinone/tools/local_brain.py",
+   "gbt_allinone/tools/tentacle_cognition.py",
+   "gbt_allinone/tools/wave_probe.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/selfscan.py   [标识符]",
+   "gbt_allinone/tools/dream_replay.py   [标识符]",
+   "gbt_allinone/tools/wave_probe.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "transfer",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/engine.py",
+   "gbt_allinone/selfscan.py",
+   "gbt_allinone/deploy/panel_gate.py",
+   "gbt_allinone/security/redteam.py",
+   "gbt_allinone/tools/ai_capability_net.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/engine.py   [标识符]",
+   "gbt_allinone/selfscan.py   [标识符]",
+   "gbt_allinone/security/redteam.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "trend_watch",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/topic_watch.py",
+   "gbt_allinone/tools/ai_capability_net.py",
+   "gbt_allinone/tools/brain_deploy.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/topic_watch.py   [标识符]",
+   "gbt_allinone/tools/brain_deploy.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "truth_scan",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/cross_scan.py",
+   "gbt_allinone/selfscan.py",
+   "gbt_allinone/tools/dd_visualizer.py",
+   "gbt_allinone/tools/false_report_audit.py",
+   "gbt_allinone/tools/host_security_scan.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/cross_scan.py   [标识符]",
+   "gbt_allinone/selfscan.py   [标识符]",
+   "gbt_allinone/tools/host_security_scan.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "video_intel",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/positions.py",
+   "gbt_allinone/tools/research_intel.py",
+   "gbt_allinone/tools/verification_watch.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/tools/research_intel.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "vision",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/brain_exec.py",
+   "gbt_allinone/browser_cap.py",
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/dimension_naming.py",
+   "gbt_allinone/inventory.py",
+   "gbt_allinone/life_archive.py",
+   "gbt_allinone/native_browser.py",
+   "gbt_allinone/positions.py",
+   "gbt_allinone/vision_cap.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tentacle/capture_environment.py",
+   "gbt_allinone/tentacle/omni_read.py",
+   "gbt_allinone/tentacle/omni_tentacle.py",
+   "gbt_allinone/tentacle/omni_vision.py",
+   "gbt_allinone/tentacle/vision_bus.py",
+   "gbt_allinone/tools/organ_check.py",
+   "gbt_allinone/tentacle/brain/visual_cortex.py",
+   "holo_pet/app.js"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/brain_exec.py   [标识符]",
+   "gbt_allinone/browser_cap.py   [标识符]",
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/dimension_naming.py   [标识符]",
+   "gbt_allinone/life_archive.py   [标识符]",
+   "gbt_allinone/native_browser.py   [标识符]",
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/tentacle/omni_read.py   [标识符]",
+   "gbt_allinone/tentacle/omni_tentacle.py   [标识符]",
+   "gbt_allinone/tools/organ_check.py   [标识符]",
+   "gbt_allinone/tentacle/brain/visual_cortex.py   [标识符]",
+   "holo_pet/app.js   [标识符]"
+  ]
+ },
+ {
+  "kind": "voice",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/auth_gate.py",
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/knowledge_base.py",
+   "gbt_allinone/positions.py",
+   "gbt_allinone/voice_cap.py",
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tentacle/omni_controller.py",
+   "gbt_allinone/tools/media_run.py",
+   "gbt_allinone/tools/proactive_report.py",
+   "holo_pet/app.js",
+   "holo_pet/panel_server.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/auth_gate.py   [标识符]",
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/knowledge_base.py   [标识符]",
+   "gbt_allinone/positions.py   [标识符]",
+   "gbt_allinone/security/policy.py   [标识符]",
+   "gbt_allinone/tentacle/omni_controller.py   [标识符]",
+   "gbt_allinone/tools/proactive_report.py   [标识符]",
+   "holo_pet/app.js   [标识符]",
+   "holo_pet/panel_server.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "voice_orchestra",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/security/policy.py",
+   "gbt_allinone/tools/awesome_tools_index.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/security/policy.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "wave_probe",
+  "现行判为接线": true,
+  "AST 判为接线": false,
+  "现行调用方": [
+   "gbt_allinone/trace_store.py",
+   "gbt_allinone/tools/awesome_tools_index.py"
+  ],
+  "AST 调用方": []
+ },
+ {
+  "kind": "wf_define",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/engine.py",
+   "gbt_allinone/preflight.py",
+   "gbt_allinone/schedule.py",
+   "gbt_allinone/truth_scan.py",
+   "gbt_allinone/tools/dd_visualizer.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/engine.py   [标识符]",
+   "gbt_allinone/preflight.py   [标识符]",
+   "gbt_allinone/schedule.py   [标识符]",
+   "gbt_allinone/truth_scan.py   [标识符]"
+  ]
+ },
+ {
+  "kind": "wf_status",
+  "现行判为接线": true,
+  "AST 判为接线": true,
+  "现行调用方": [
+   "gbt_allinone/app.py",
+   "gbt_allinone/brain_exec.py",
+   "gbt_allinone/codex_bridge.py",
+   "gbt_allinone/engine.py",
+   "gbt_allinone/truth_scan.py",
+   "gbt_allinone/tools/dd_visualizer.py",
+   "holo_pet/panel_server.py"
+  ],
+  "AST 调用方": [
+   "gbt_allinone/app.py   [标识符]",
+   "gbt_allinone/brain_exec.py   [标识符]",
+   "gbt_allinone/codex_bridge.py   [标识符]",
+   "gbt_allinone/engine.py   [标识符]",
+   "gbt_allinone/truth_scan.py   [标识符]",
+   "holo_pet/panel_server.py   [标识符]"
+  ]
+ }
+]

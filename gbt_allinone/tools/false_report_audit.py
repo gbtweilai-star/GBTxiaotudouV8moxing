@@ -649,7 +649,15 @@ KNOWN_LEGIT = {
     #      `:833` = 定时任务那条。
     #      ⚠️ 2026-09-24 第 94 轮：这两个行号**又漂了一次** —— 当天编辑 `quick_scan.py`
     #         （修 `_declared_covers` 的 `Path` NameError、给台账 `flags` 补面选择、
-    #          加注释等）把它们从 555/693 推到 **695/833**。
+    #          加注释等）把它们从 555/693 推到 695/833。
+    #      🔴 **2026-09-25 实测：又漂了一次，695/833 → 825/1119。**
+    #         而且这次漂移的处置方法**就写在被审计文件自己的注释里**
+    #         （`tools/codex-scripts/quick_scan.py` L1108-1111 明写「本行以上新增了注释 ⇒
+    #         带 missing 键那一行的行号会变，必须同步更新 KNOWN_LEGIT 里带行号的那条登记」）——
+    #         **预告了、写了办法、然后没做。** 于是 `test_false_report_audit.py`
+    #         长期红着，而对外口径仍是"自检全过"。
+    #         ⇒ 教训不是"锚点会漂"（那早就知道），是**红着的判据没人管**：
+    #           判据立了不等于门关上了，**红必须当场处置，否则它只是一行装饰**。
     #         **没有手填**：跑 `false_report_audit.audit()` 让它自己报出 FR-2 的开火行，
     #         再按读到的数字对齐（审计的输出才是权威，记忆和推算都不是）。
     #         ⇒ 这正是下面那条判据（`test_every_line_anchored_entry_adds_something`）
@@ -658,9 +666,9 @@ KNOWN_LEGIT = {
     #      （`test_every_line_anchored_entry_adds_something`）：
     #      锚点填错/漂移 ⇒ 那条登记**一处都免不掉** ⇒ 判据立刻变红，逼你改锚点。
     #   （FR-2 的 `detail` 是固定文案 ⇒ **标记串在这里没有行特异性，只有行号有**。）
-    ("FR-2", "tools/codex-scripts/quick_scan.py", "查不到 ≠ 不存在", 695):
+    ("FR-2", "tools/codex-scripts/quick_scan.py", "查不到 ≠ 不存在", 825):
         "本地 `Path.exists()` 是权威判定，FR-2 前提不成立（面板登记表 ↔ 盘上实物）。",
-    ("FR-2", "tools/codex-scripts/quick_scan.py", "查不到 ≠ 不存在", 833):
+    ("FR-2", "tools/codex-scripts/quick_scan.py", "查不到 ≠ 不存在", 1119):
         "本地 `Path.exists()` 是权威判定，FR-2 前提不成立（定时任务目标）。"
         "同一行的 `missing[:4]` 另有**静默截断**问题 —— FR-8 的形，第 48 轮已修"
         "（补 `targets_total`/`outside_repo_total`/`missing_total` + `count_note`）。",
