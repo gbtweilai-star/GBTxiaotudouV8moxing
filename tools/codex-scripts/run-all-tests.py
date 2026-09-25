@@ -43,14 +43,31 @@ PY = sys.executable
 
 
 def run_one(path: Path, timeout: float, env: dict) -> dict:
+    """跑一个测试文件。
+
+    🔴 2026-09-25 **自纠（第一版跑法错了）**：第一版是「直接 `python <文件>`」。
+       实测：这样跑时 `sys.path[0]` 是**脚本所在目录**（`gbt_allinone/tests`），
+       不是仓根 ⇒ `import gbt_allinone` 失败 ⇒ 报
+       `ModuleNotFoundError: No module named 'gbt_allinone'`。
+       我据此报了"17 个测试加载不起来" —— **那是假警报**。
+       实测对照（`test_absorb_loop.py`）：
+           直接跑文件              → ModuleNotFoundError
+           `python -m unittest …`  → OK（17 项）
+           从仓根跑（cwd 在 path） → OK（17 项）
+       全仓 100 个文件里 **79 个自带 `sys.path` 引导**、**21 个没有** ⇒ 两种跑法并存，
+       没有引导的那些**必须从仓根跑**（本仓口径也是 `-m unittest`）。
+       ⇒ 现在改成 **`python -m unittest gbt_allinone.tests.<name>` + `PYTHONPATH=仓根`**，
+         这样两种文件都能跑；同时保留"0 个用例"的如实标记（有些 test_*.py 根本不是 unittest 模块）。
+    """
     t0 = time.time()
+    mod = "gbt_allinone.tests." + path.stem
     try:
-        p = subprocess.run([PY, str(path)], cwd=str(ROOT), env=env,
+        p = subprocess.run([PY, "-m", "unittest", mod], cwd=str(ROOT), env=env,
                            capture_output=True, text=True, encoding="utf-8",
                            errors="replace", timeout=timeout)
     except subprocess.TimeoutExpired:
         return {"file": path.name, "result": "TIMEOUT", "ran": None,
-                "secs": round(time.time() - t0, 1), "fails": [], "tail": ""}
+                "secs": round(time.time() - t0, 1), "fails": [], "tail": "", "via": "m"}
     out = (p.stdout or "") + (p.stderr or "")
     ran = None
     m = re.search(r"Ran (\d+) tests?", out)
@@ -62,10 +79,12 @@ def run_one(path: Path, timeout: float, env: dict) -> dict:
         res = "FAILED"
     elif p.returncode != 0:
         res = "ERROR"
+    elif ran == 0:
+        res = "NO_TESTS"          # 如实：这个文件里没有 unittest 用例
     else:
         res = "?"
     fails = re.findall(r"(?m)^(?:FAIL|ERROR): (\S+)", out)
-    return {"file": path.name, "result": res, "ran": ran,
+    return {"file": path.name, "result": res, "ran": ran, "via": "m",
             "secs": round(time.time() - t0, 1), "fails": fails[:20],
             "tail": "\n".join(out.strip().splitlines()[-4:])[:400]}
 
@@ -81,6 +100,8 @@ def main() -> int:
     # 本仓口径：必须隔离 store（否则测试包守卫会拒绝，或写脏生产）
     env.setdefault("GBT_STORE_DIR", str(ROOT / ".scratch" / "alltests-store"))
     env.setdefault("PYTHONIOENCODING", "utf-8")
+    # 🔴 必须：让 `import gbt_allinone` 在任何启动方式下都成立（自纠见 run_one）
+    env["PYTHONPATH"] = str(ROOT) + os.pathsep + env.get("PYTHONPATH", "")
 
     files = sorted(TESTS.glob("test_*.py"))
     if args.filter:
