@@ -12,6 +12,15 @@
 #   2) 主人拍板 wrangler deploy（这一步才真改远端：会在账号里建一个 Worker）
 #   3) deploy → 量真读数（身份漂移 / 拒答率 / 遥测 / 装机验收）
 #
+# 🔴🔴 **必须显式带 `--config wrangler.toml`**（2026-09-25 实测踩到，不是理论风险）：
+#      `deploy/` **父目录另有一份 `wrangler.json` + `wrangler.toml`**（一个 Pages 项目）。
+#      不加 `--config` 时 wrangler 读的是**父目录那份** ⇒ 实测报
+#        「It seems that you have run `wrangler deploy` on a Pages project…」
+#        「✘ Missing entry-point to Worker script or to assets directory」
+#      —— 也就是**会部到错的项目上**（或直接失败），而不是部这个 Worker。
+#      正确命令（在本目录下跑）：
+#        wrangler deploy --config wrangler.toml
+#
 # 现存已知缺口（部署后读数会如实报，不假装有）：
 #   · 07 号向量：本令牌作用域表里没有 vectorize:write ⇒ 落 isolate 内存（重启即失，sink 如实报）
 #   · 06 号命令：容器没建 ⇒ exec 如实拒（unsupported_in_worker）
