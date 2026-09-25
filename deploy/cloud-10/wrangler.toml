@@ -122,15 +122,32 @@ bucket_name = "gbt-bigfiles"
 # database_name = "<未配：主人同意新建后填>"
 # database_id = "<未配：主人同意新建后填>"
 
-# ── 检索面 / 算力面 / 向量面：资源没建 ⇒ 只留形状，不许写成已接线 ──────────
-# ai-search 作用域已在册，但 AI Search 实例要在控制台建：
+# ── 检索面 / 算力面 / 向量面 / 观测面：资源没建 ⇒ 只留形状，不许写成已接线 ──────────
+# 🔴 2026-09-25 **第二次补声明缺口**（新工具 `tools/codex-scripts/cloud-config-wiring.py`
+#    把「代码读的每个 env 名」与「本文件声明的名」逐条对账，一扫就现形）：
+#    上面那次补的是 `[vars]` 类（IMAGE_ENDPOINT 等 5 个），**漏了两个 binding 类的名字** ——
+#    它们在本文件里**连一次都没出现过**，也就是说「要接这个能力，绑定该叫什么名」无处可查：
+#      · `SANDBOX` —— `modules.js:583,596`：06 号命令面（`ctx.env.SANDBOX.exec(cmd)`）。
+#        容器没建时 `status.wired=false`、`exec` 如实拒（`unsupported_in_worker`），
+#        口径没问题；缺的是**告诉后来人这个绑定必须叫 SANDBOX**。
+#      · `AE` —— `modules.js:786`：10 号观测面的 Analytics Engine 绑定
+#        （`ctx.env.AE ? "已接线" : 未读到`）。
+#    ⇒ 下面按 binding 的形状**留成注释**（注释 = 没接线，不许写成已声明；但名字要查得到）。
+#
+# ai-search 作用域已在册，但 AI Search 实例要在控制台建（`modules.js:517,520` 读它）：
 # [[ai_search]]
 # binding = "AI_SEARCH"
 # instance_name = "<未配：建了实例再填>"
 
-# containers 作用域已在册，容器资源未建：
+# containers 作用域已在册，容器资源未建（**绑定名必须是 SANDBOX**，见上）：
 # [[containers]]
 # class_name = "<未配：建了沙箱容器再填>"
+# 绑定名：SANDBOX
+
+# Analytics Engine（10 号观测面读 `AE`；资源未建，读数如实报"未读到"）：
+# [[analytics_engine_datasets]]
+# binding = "AE"
+# dataset = "<未配：建了数据集再填>"
 
 # Vectorize 需要先给令牌加 vectorize:write 作用域，现在建不了：
 # [[vectorize]]

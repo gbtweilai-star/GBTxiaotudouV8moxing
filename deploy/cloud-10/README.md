@@ -57,6 +57,17 @@ deploy/cloud-10/
   tools/check-endpoint-gate.mjs ← 本机**端点闸行为**验收（57 项，含 12 条负控，离线 0.3 s）
 ```
 
+**部署前必跑的一道闸**（离线 · 不联网 · 不改远端）：`tools/codex-scripts/cloud-config-wiring.py`
+把「这份 `wrangler.toml` 声明的名字」与「代码真正读的 `env.*`」**逐名对账** ——
+`deploy/` 是生产落点，配置与代码对不上的代价不是报错，是**部署后静默 `undefined`**。
+
+```powershell
+python tools/codex-scripts/cloud-config-wiring.py        # A 读未声明 · B 声明未读 · C 形态B · D 容器面
+```
+
+它首跑就抓到两个真缺口：`SANDBOX`（06 号命令面的容器绑定）与 `AE`（10 号观测面的 Analytics Engine 绑定）——
+**代码在读，而配置里连名字都没出现过** ⇒ 后来人要接这个能力，查不到绑定该叫什么名。
+
 改接线只改 `mesh.json`，然后：
 
 ```powershell

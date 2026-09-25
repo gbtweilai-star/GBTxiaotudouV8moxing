@@ -55,6 +55,10 @@ JUDGMENTS = [
     # 2026-09-25 加：凭据红线（密钥不许明文落盘 · 没有密钥必须拒绝启动子进程）。
     # 起因是真出过事：config/mcporter.json 里被人直接写了一条明文 API key。
     ("密钥不许明文落盘", "gbt_allinone.tests.test_key_vault_autoread"),
+    # 2026-09-25 加：**部署前接线对账**。deploy/cloud-10 是生产落点，而这个网一次都没部署过 ⇒
+    # 任何"配置与代码对不上"都要等真部署那一刻才以 undefined 炸出来（那时已经在改远端了）。
+    # 首跑就抓到两个真缺口（SANDBOX / AE：代码在读、配置里连名字都没出现过）。
+    ("部署前接线对账", "gbt_allinone.tests.test_cloud_config_wiring"),
 ]
 
 DRIFT_GATE = ROOT / "plugins" / "gbt-master" / "tools" / "verify-installed-copy.mjs"
