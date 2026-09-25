@@ -35,9 +35,24 @@ class PlaintextTests(unittest.TestCase):
         #    真判据 = 同文件 `test_guard_rejects_plaintext_key` 用的那把带牙的尺子
         #    （`assert_no_plaintext` 按 `\b(?:sk|ak)[-_][A-Za-z0-9_\-]{16,}\b` 判真明文，
         #      掩码里的 `*` 不在字符集内 ⇒ 不误伤）。
-        self.assertIn("*", b["key_masked"], "掩码必须真的掩过（含 *）")
-        self.assertNotEqual(b["key_masked"], vc._vision_key(),
-                            "掩码不许等于明文 —— 这才是「明文没出返回值」")
+        # 🔴 2026-09-25 **修假红·第二处**：掩码判据必须**按「有没有钥匙」分两态**。
+        #    原样这里是**无条件**的 `assertIn("*", b["key_masked"])` ——
+        #    而 `resolve_vision_backend()` 在没钥匙时是**刻意**返回空掩码的
+        #    （`vision_cap.py` L204：`"key_masked": _mask_key(key) if key else ""`）。
+        #    ⇒ 在隔离 store（无 DPAPI 保险库）下跑，`key_present=False`、`key_masked=""`，
+        #      这条就以 **`'*' not found in ''`** 变红 ——
+        #      **它分不清「掩码没掩好」和「压根没有钥匙」**，是拿一个不成立的前提去断言。
+        #    实测（2026-09-25）：隔离 store 下 `key_present=False / key_masked='' / _vision_key() 为空`。
+        #    **修法**：有钥匙才断言掩码性质；没钥匙就断言"必须是空串、不许编个假掩码" ——
+        #            两态都带牙，而不是把检查删掉。
+        if b["key_present"]:
+            self.assertIn("*", b["key_masked"], "有钥匙时掩码必须真的掩过（含 *）")
+            self.assertNotEqual(b["key_masked"], vc._vision_key(),
+                                "掩码不许等于明文 —— 这才是「明文没出返回值」")
+        else:
+            self.assertEqual(b["key_masked"], "",
+                             "没有钥匙时掩码必须是空串：不许凭空编一个假掩码出来")
+            self.assertFalse(bool(vc._vision_key()), "key_present=False 时取值也必须是空")
         # 反向控制：把明文塞进同一个字段，这把尺子必须咬
         self.assertFalse(
             vc.assert_no_plaintext({"key_masked": "sk-" + "a" * 40}, where="poison")["ok"],
