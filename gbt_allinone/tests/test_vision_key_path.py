@@ -27,7 +27,21 @@ class PlaintextTests(unittest.TestCase):
         for k in ("key_id", "key_present", "key_masked"):
             self.assertIn(k, b)
         self.assertTrue(vc.assert_no_plaintext(b, where="backend")["ok"])
-        self.assertNotIn("sk-", str(b))
+        # 🔴 2026-09-25 修**假红**：这里原来是 `assertNotIn("sk-", str(b))` —— 它把**掩码**也咬了。
+        #    掩码规则是「前 4 后 2」（`_mask_key`）⇒ 掩码后**本来就以 `sk-` 开头**
+        #    （`sk-H****…Z8`）。保险箱里一有 `agnes` 钥匙，这句必红。
+        #    实测取证：`git stash` 掉当天全部改动后在 HEAD 口径重跑，**同样 FAILED (failures=1)**
+        #    ⇒ 存量假红，不是泄露。**修法是换成精确判据，不是把检查删掉。**
+        #    真判据 = 同文件 `test_guard_rejects_plaintext_key` 用的那把带牙的尺子
+        #    （`assert_no_plaintext` 按 `\b(?:sk|ak)[-_][A-Za-z0-9_\-]{16,}\b` 判真明文，
+        #      掩码里的 `*` 不在字符集内 ⇒ 不误伤）。
+        self.assertIn("*", b["key_masked"], "掩码必须真的掩过（含 *）")
+        self.assertNotEqual(b["key_masked"], vc._vision_key(),
+                            "掩码不许等于明文 —— 这才是「明文没出返回值」")
+        # 反向控制：把明文塞进同一个字段，这把尺子必须咬
+        self.assertFalse(
+            vc.assert_no_plaintext({"key_masked": "sk-" + "a" * 40}, where="poison")["ok"],
+            "反向控制失败：连明文都咬不动 ⇒ 上面那两条等于没验")
 
     def test_guard_rejects_plaintext_key(self):
         bad = vc.assert_no_plaintext({"key": "sk-abcdefghijklmnopqrstuvwx"}, where="poisoned")

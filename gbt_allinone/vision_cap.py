@@ -175,6 +175,30 @@ def resolve_vision_backend():
             via = "unified"
         except Exception:  # noqa: BLE001
             pass
+    # ══════════════════════════════════════════════════════════════════════
+    # 🔴 2026-09-25 补：**"有钥匙、没地址"** —— 这是云端视觉长期 needs_dependency 的根因
+    # ══════════════════════════════════════════════════════════════════════
+    # 病根：`cloud_llm` 的 `_KEY_CHAIN` 解析**只读 `os.environ`**（那两个循环就是
+    # `os.environ.get(e)`），而**钥匙在 DPAPI 保险箱里**（R-H201 把 vision 收口到保险箱之后）。
+    #   ⇒ 环境变量没配时：`cloud_llm.BASE_URL` / `MODEL` 双双为空，`PROVIDER` 也是空。
+    #   ⇒ 而 `_vision_key()` 从保险箱**取得到钥匙**（实测 51 位、认证通过）。
+    #   ⇒ 结果就是 `status.cloud = bool(base and key_present)` = **False**，
+    #      即使"钥匙在、网关活、模型也能看图"。
+    # 修法：钥匙已经在手，缺的只是**地址与模型名**；按 profile 从**同一张 `_KEY_CHAIN`**
+    #   取它们（不复制一份表，改地址仍只改一处）。
+    # 为什么不直接在 cloud_llm 里补保险箱：那会改**统一大模型路由**（`llm_chat` 走它），
+    #   影响面是"谁在回答"—— 那是另一件事，须主人点头。这里只补 vision 这条腿。
+    if not base or not model:
+        try:
+            from .llm.cloud_llm import _KEY_CHAIN as _CHAIN
+            for _n, _envs, _url, _model in _CHAIN:
+                if _n == profile and _url:
+                    base = base or _url
+                    model = model or _model
+                    via = "vault-chain:%s" % profile
+                    break
+        except Exception:  # noqa: BLE001
+            pass
     return {"provider": provider, "base_url": base, "model": model, "via": via,
             "key_id": "vision:%s" % profile, "key_present": bool(key),
             "key_masked": _mask_key(key) if key else ""}
@@ -246,11 +270,17 @@ def run(op="analyze", **params):
     if op == "cloud":
         return cloud_recognize(params.get("image"), params.get("prompt", "描述这张图片"))
     if op == "status":
-        base = os.environ.get("GBT_VISION_BASE_URL", "")
         backend = resolve_vision_backend()
-        base = base or (backend.get("base_url") or "")
+        base = backend.get("base_url") or ""
+        # 🔴 2026-09-25：把解析出来的**地址/模型/来源**一并透出。
+        # 原来只回 `cloud: false` 一个布尔 —— 而它有三种不同的病因
+        # （没钥匙 / 没地址 / 没模型），只报一个 False 等于把诊断逼回猜。
         return {"ok": True, "local_analyze": True,
                 "cloud": bool(base and backend.get("key_present")),
+                "base_url": base or None, "model": backend.get("model") or None,
+                "via": backend.get("via"),
+                "provider": backend.get("provider"),
                 "key_id": backend.get("key_id"), "key_masked": backend.get("key_masked"),
-                "hint": "本地 analyze 随时可用；cloud 需 DPAPI 保险箱密钥（profile）"}
+                "hint": ("本地 analyze 随时可用（backend=local-pil）；"
+                         "cloud 三要素 = 保险箱密钥 + base_url + model —— 缺哪个看上面三个字段")}
     raise ValueError(f"未知 op: {op}（可用: analyze/cloud/status）")
