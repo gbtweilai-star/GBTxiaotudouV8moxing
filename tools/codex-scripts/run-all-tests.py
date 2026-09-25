@@ -77,10 +77,15 @@ def run_one(path: Path, timeout: float, env: dict) -> dict:
         res = "OK"
     elif re.search(r"(?m)^FAILED", out):
         res = "FAILED"
+    elif ran == 0:
+        # 🔴 **收集为 0 不等于出错**：pytest 风格的文件（无 unittest.TestCase）
+        #    在 `-m unittest` 下必然收集 0 个，且 `unittest` 会以非零码退出并喊
+        #    "NO TESTS RAN"。第一版我把它归成 ERROR ⇒ 汇总里把它们列成"未过"，
+        #    **与紧接着 pytest 跑出 156 passed 的事实自相矛盾**。
+        #    ⇒ 单独一类 NO_TESTS；真正的判词交给第二遍 pytest。
+        res = "NO_TESTS"
     elif p.returncode != 0:
         res = "ERROR"
-    elif ran == 0:
-        res = "NO_TESTS"          # 如实：这个文件里没有 unittest 用例
     else:
         res = "?"
     fails = re.findall(r"(?m)^(?:FAIL|ERROR): (\S+)", out)
@@ -94,14 +99,24 @@ def main() -> int:
     ap.add_argument("--filter", default=None, help="只跑文件名含该子串的")
     ap.add_argument("--timeout", type=float, default=300.0, help="单文件超时秒数")
     ap.add_argument("--json", default=None)
+    ap.add_argument("--no-pytest", action="store_true",
+                    help="跳过第二遍：不把 unittest 收集为 0 的文件交给 pytest 重跑")
     args = ap.parse_args()
 
     env = dict(os.environ)
     # 本仓口径：必须隔离 store（否则测试包守卫会拒绝，或写脏生产）
     env.setdefault("GBT_STORE_DIR", str(ROOT / ".scratch" / "alltests-store"))
     env.setdefault("PYTHONIOENCODING", "utf-8")
-    # 🔴 必须：让 `import gbt_allinone` 在任何启动方式下都成立（自纠见 run_one）
-    env["PYTHONPATH"] = str(ROOT) + os.pathsep + env.get("PYTHONPATH", "")
+    # 🔴 2026-09-25 **第二处自纠：绝不要设 PYTHONPATH。**
+    #    我第一版修完跑法后顺手加了 `PYTHONPATH=仓根` —— 那是**画蛇添足且有害**：
+    #    `python -m unittest` 本身就会把 **cwd（`''`）** 放进 sys.path，
+    #    仓根已经在里面了，`import gbt_allinone` 本来就成立。
+    #    而额外的 `PYTHONPATH=仓根` 会让 `test_dependency_face` 把"注入面"测成 `.`：
+    #        设 PYTHONPATH   → FAILED（注入面落在非剪枝区：. ⇒ 收据既看不见又不覆盖 = 真洞）
+    #        不设 PYTHONPATH → OK (skipped=1)
+    #    ⇒ 那是**我自己的环境挖出来的洞**，测试报得对，错的是我。
+    #    若不拆掉，这支普查器会让这条测试**每次都被误判成红**（把假红制度化）。
+    env.pop("PYTHONPATH", None)
 
     files = sorted(TESTS.glob("test_*.py"))
     if args.filter:
@@ -115,17 +130,52 @@ def main() -> int:
     for i, f in enumerate(files, 1):
         r = run_one(f, args.timeout, env)
         rows.append(r)
-        flag = {"OK": "✅", "FAILED": "❌", "ERROR": "❌", "TIMEOUT": "⏰", "?": "?"}[r["result"]]
+        flag = {"OK": "✅", "FAILED": "❌", "ERROR": "❌", "TIMEOUT": "⏰", "?": "?",
+                "NO_TESTS": "🏃"}[r["result"]]
         print("%3d/%d %s %-46s ran=%-4s %5.1fs %s"
               % (i, len(files), flag, r["file"], r["ran"], r["secs"],
                  ("失败 %d 个: %s" % (len(r["fails"]), ", ".join(r["fails"][:3]))) if r["fails"] else ""))
 
     ok = [r for r in rows if r["result"] == "OK"]
-    bad = [r for r in rows if r["result"] != "OK"]
+    bad = [r for r in rows if r["result"] not in ("OK", "NO_TESTS")]
+    zero = [r for r in rows if r["result"] == "NO_TESTS" or (r["ran"] == 0)]
+
+    # 🔴 2026-09-25 **第三处自纠：unittest 收不到 ≠ 这个文件没有测试。**
+    #    实测有 8 个文件是 **pytest 风格**（没有 unittest.TestCase，但有 10~41 个 `def test_*`）：
+    #    `-m unittest` 对它们收集到 0 个用例 ⇒ 我第一版据此把它们当成"跑不起来"，
+    #    实际用 pytest 跑是 **156 passed, 1 skipped** —— 全是好的。
+    #    ⇒ 这里补一遍：对 unittest 收集为 0 的文件，改用 pytest 重跑，并**分开报**，
+    #      不把"工具跑不了"混进"测试没过"。
+    py_rows = []
+    if zero and not args.no_pytest:
+        names = [str(TESTS / r["file"]) for r in zero]
+        print()
+        print("--- unittest 收集为 0 的 %d 个文件，改用 pytest 重跑 ---" % len(names))
+        t0 = time.time()
+        try:
+            p = subprocess.run([PY, "-m", "pytest", "-q"] + names, cwd=str(ROOT), env=env,
+                               capture_output=True, text=True, encoding="utf-8",
+                               errors="replace", timeout=args.timeout * max(2, len(names)))
+            out = (p.stdout or "") + (p.stderr or "")
+            tail = "\n".join(out.strip().splitlines()[-6:])
+            m = re.search(r"(\d+) passed", out)
+            f = re.search(r"(\d+) failed", out)
+            py_rows = [{"file": r["file"], "via": "pytest"} for r in zero]
+            print("  pytest 合计: %s passed / %s failed  （%.1fs）"
+                  % (m.group(1) if m else "?", f.group(1) if f else "0", time.time() - t0))
+            print("  " + tail.replace("\n", "\n  "))
+            if p.returncode != 0:
+                bad = bad + [{"file": r["file"], "result": "PYTEST_FAIL", "ran": None,
+                              "secs": 0, "fails": [], "tail": tail} for r in zero]
+        except Exception as exc:  # noqa: BLE001
+            print("  pytest 跑不动：%s: %s" % (type(exc).__name__, exc))
+
     print()
     print("=" * 78)
-    print("通过 %d / %d ；未过 %d 个（用时 %.1f 分钟）"
-          % (len(ok), len(rows), len(bad), (time.time() - t_all) / 60))
+    print("unittest 风格：通过 %d / %d" % (len(ok), len(rows)))
+    if py_rows:
+        print("pytest  风格：%d 个文件（见上面的 pytest 合计）" % len(py_rows))
+    print("合计：unittest 通过 %d ，pytest 通过见上，未过 %d 个" % (len(ok), len(bad)))
     if bad:
         print()
         print("未过清单：")
