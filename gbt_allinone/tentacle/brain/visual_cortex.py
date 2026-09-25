@@ -86,18 +86,67 @@ def _vision_cap():
 
 
 def _latest_visual_summary() -> dict:
+    """取当前可用的视觉摘要（皮层唯一的取帧口）。
+
+    🔴 2026-09-25 修：**这条取帧口从第一天起就是死的** —— 眼睛→皮层从来没通过。
+
+    病根（**实测出来的，不是推断**）：原来这里只有一句
+    `tx.snapshot(channel="visual", limit=8, min_priority="low")`。而 V8 的
+    `brain.tentacle_transmission` 是个**兼容垫片**（它自己的 docstring 就写着
+    "V8 审计总线**降级实现**"）：
+
+      · `transmit()` 只把 `(source, channel, priority, **size**)` 写进审计，
+        **数据本体直接丢掉**；
+      · 它**根本没有 `snapshot`** —— 那个方法属于已经不存在的 `omni_*` 老硬件层
+        （该模块公开面实测只有 `transmit` 与 `pulse`）。
+
+    ⇒ 每次调用都抛 `AttributeError`，又被下面的 `except: return {}` **静默吞掉**
+    ⇒ 皮层永远读到空 ⇒ `understand_screen` 永远回
+    「无画面帧(总线无visual数据或视觉流未启动)」——
+    **而眼睛其实一直在采帧**（实测：`captured=193 / buffer_frames=120` 时它仍这么报）。
+    这正是本仓最恨的那类病：**不是没数据，是读取口调了个不存在的方法，异常被吞**。
+
+    修法（两条，按顺序）：
+      ① 老路径**存在才用**（`getattr` 探一下，不写死）——将来 omni 层若回来，它照旧生效；
+      ② 否则回落到**眼睛自己的焦点帧** `vision_watch.frame()`。它的 docstring 就是
+         「取当前最重要帧（**大脑视觉焦点**: 注意力 + 边看边清理）」
+         —— 本来就是为大脑取帧而设计的口，不是绕过设计去翻内部缓冲。
+    """
     tx = _transmission()
-    if tx is None:
+    if tx is not None:
+        # ⚠️ 不许写死 `tx.snapshot(...)`：V8 垫片没有它（老 omni 层才有）
+        snap = getattr(tx, "snapshot", None)
+        if callable(snap):
+            try:
+                snapshots = snap(channel="visual", limit=8, min_priority="low") or []
+            except Exception:  # noqa: BLE001
+                snapshots = []
+            for entry in snapshots:
+                summary = (entry or {}).get("summary") or {}
+                if summary.get("frame_b64") or summary.get("frame_id") or summary.get("text"):
+                    return summary
+
+    # ── ② V8 回退：眼睛的实时焦点帧 ──────────────────────────────────────
+    vw = _import_first(("gbt_allinone.tentacle.vision_watch",
+                        "tentacle.vision_watch", "vision_watch"))
+    if vw is None:
         return {}
     try:
-        snapshots = tx.snapshot(channel="visual", limit=8, min_priority="low") or []
+        got = vw.frame() or {}
     except Exception:  # noqa: BLE001
         return {}
-    for entry in snapshots:
-        summary = entry.get("summary") or {}
-        if summary.get("frame_b64") or summary.get("frame_id") or summary.get("text"):
-            return summary
-    return {}
+    if not got.get("ok"):
+        return {}
+    f = got.get("frame") or {}
+    b64 = f.get("image_base64") or ""
+    if not b64:
+        return {}
+    out = {"frame_b64": b64, "text": f.get("screen_text") or "",
+           "ts": f.get("ts"), "engine": f.get("engine"),
+           "source": "vision_watch.frame"}
+    if f.get("frame_id"):
+        out["frame_id"] = f["frame_id"]
+    return out
 
 
 def _frame_from_bus(summary: dict | None = None) -> tuple[str, dict]:
