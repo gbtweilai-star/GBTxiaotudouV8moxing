@@ -1,9 +1,10 @@
 {
   "_口径": "唯一进度真源。人读的详细账在 output/blueprint-audit/生产推进-故障清单.md；本文件只放『现在做到哪 / 哪没做 / 未清故障 / 等你拍板』，供宿主插件在重启后自动注入会话头。改了本文件，下一轮会话就看得见。",
   "_排班纪律": "每轮结束前更新本文件 + 时间点；不许只写『继续排查』这种没信息量的话。",
-  "updated_at": "2026-09-25T22:48:00+08:00",
+  "updated_at": "2026-09-25T23:34:00+08:00",
   "rounds_done": 42,
   "today_done": [
+    "🔴 **满仓横扫逮到的第二条红，查清后不是本轮改动、但顺手修掉它自己的一处假绿**：`test_isolation_sweep::test_a_passing_file_is_reported_green` 在负载下 rc=2 —— 子进程 tail 逐字是 `collected 0 items / 1 error` + `FileNotFoundError [WinError 2]` + `Interrupted: 1 error during collection`（**内层一个测试都没跑**）。**先证「不是我的改动」**：`run_one` 跑的是临时文件里的平凡 unittest，与 cross_scan 无关；**卸掉负载后连跑两次都是 `rc=0 · passed=1`**（13.1s / 12.4s）⇒ 负载决定，不是回归。修法与那条延迟判据同型（**判据不动，只把环境抖动与真判定分开**）：① 重试一次；② 加 `_cannot_tell()` —— **只有** rc=2 **且** tail 有 `during collection`/`Interrupted` **且**无摘要（= 它压根没开口）才判「本次无法判定」并 skip；③ **顺手修掉一处假绿**：负控原来写 `assertNotEqual(rc, 0)`，而 rc=2 是「收集期出错」⇒ 它会在「扫描器根本没开口」时**通过**，读起来却像「它真分得出红绿」；现在钉死 `rc == 1`。现读单跑 `OK (skipped=1)`",
     "**把 cross_scan 缺的四个维度里的 V 真做出来了**（第 41 轮量出的阻塞只挡住 D/E/F）。背景：那份文件写着「十个交叉维度」，而现读确认 **D/E/F/V 只出现在维度声明里、全文件没有第二处引用** —— 声称 10 维、实际只有 6 维能产出发现。现在 V 真能产出 finding，`dims_implemented` 从 6 维变 **7 维**（`A/B/G/V/W/X`），`dims_unimplemented` 从 4 个变 **3 个**（`D/E/F`）",
     "**V 的判据不是『读一个数字』，是『加减法要闭合』**：`inventory` 只读视图给出 `{你看到的（家根总项）:107, 框架管辖:3, 环境托管:104, 异物:0}`，V 维判两条 —— ① 异物必须清零（`foreign>0` ⇒ 有该处置的遗漏）；② **家根总项必须等于六类之和**。第 ② 条才是「对账」的本体：**只读一个数字不叫对账**。现读 107 == 3+104+0+0+0+0 ⇒ `balanced: true`。原始读数一并印出（`v_view`），**人能自己复算那笔加减法**",
     "🔴 **安全红线：扫描器里只许 `fix=False`**。`inventory.scan(fix=True)` 会**真删文件**，而 V 维是被 `cross_scan` 调起来的 ⇒ 一旦传成 True，「扫一下」就会删东西。用例**用桩记录 kwargs**，直接断言传进去的是 `{'fix': False}`（不是靠读代码猜）；另加 **AST 级复核**：扫全部 `Call` 节点，不许出现 `fix=True` 的调用，且必须存在 `fix=False` 的调用",
@@ -246,6 +247,13 @@
       "severity": "中",
       "evidence": "`caps_registry.all_caps()`（172 条）里逐个查：`room_space`/`mirror_space`/`qiankun`/`deployment_rehearsal`/`collab_gateway`/`notion`/`tripo` **全都不在**；而审计账现读显示它们是**真调用**：`room_release` 31 次 call / **7 次 ok** / 14 次 preflight_checked / 17 次 denied（缺作用域）；`notion` 196 call / **89 ok**；`tripo` 38 call / 8 ok / 27 denied；`preflight.py:155,167` 专门为 `room_plan`/`room_release` 分支；`collab_gateway._DELEGATE_ACTIONS` 显式委派 room_plan/simulate/parity；`room_space.py:58` 列了这些原语；AGENTS.md 给它们派了作用域（room_release→deploy_publish · room_rehearse→process_execute+filesystem_write）",
       "state": "命中即**读数口径**问题：面板/`omni`/普查报的是『**172 个能力**』，而`写生产/镜像`那一整片原语**一个都不在册** —— 读的人会以为它们不在系统里。改它=动注册表（`caps_registry.py` 是**主人专属**文件，红线：不经授权不许改）⇒ 等主人拍板：① 把这批补进注册表（改 caps_registry，主人专属）② 或明确登记『注册表只收能力位、不收管线原语』并让面板分开报两块数 ③ 维持现状但把口径写在面板上"
+    },
+    {
+      "id": "F13",
+      "what": "`isolation_sweep.run_one` 在**机器被压着**时会返回 rc=2（内层 pytest 收集期就被打断：`FileNotFoundError [WinError 2]`）⇒ `test_isolation_sweep` 判红；**卸掉负载后连跑两次 rc=0**",
+      "severity": "中",
+      "evidence": "满仓横扫（未过 2）里 `test_a_passing_file_is_reported_green` 红，rc=2；子进程 tail 逐字：`collected 0 items / 1 error` + `ERROR ..\\.. - FileNotFoundError: [WinError 2] 系统找不到指定的文件` + `Interrupted: 1 error during collection`（**一个测试都没跑**）；卸负载后同一个探针连跑两次：`rc=0 · summary={'passed':1,'failed':0}`（13.1s / 12.4s）；模块耗时随负载 127s → 290s。⇒ 是**负载决定**的红，不是扫描器分不出红绿",
+      "state": "**已诚实缓解（不是把它改成绿的）**：① 先把「这是不是我的改动」证掉（`run_one` 跑的是临时文件里的平凡 unittest，与 cross_scan 无关）；② 加 `_cannot_tell()`：**只有** `rc=2` **且** tail 里出现 `during collection`/`Interrupted` **且** 摘要为 None（= 内层根本没开口）才判「本次无法判定」并 skip；其余情况照旧算判定、该红就红（**不许把「收集不了合法文件」这种真缺陷一起放走**）；③ 加了「rc=2 就重试一次」；④ **顺手修掉一处假绿**：负控原来写 `assertNotEqual(rc, 0)`，而 rc=2 是「收集期出错」⇒ 它会在「扫描器根本没开口」时**通过**，读起来却像「它真分得出红绿」；现在钉死 `rc == 1`。现读：单跑 `OK (skipped=1)`（那条 skip 就是如实说「本次无法判定」）"
     }
   ],
   "owner_decisions": [
@@ -586,6 +594,10 @@
     {
       "at": "2026-09-25T22:47",
       "what": "8 条判据全绿；接进靴自检 ⇒ 16 步全绿"
+    },
+    {
+      "at": "2026-09-25T23:34",
+      "what": "isolation_sweep 负载下 rc=2：证与本次改动无关（卸负载 rc=0 ×2）⇒ 加 cannot_tell + 重试 + 把负控从 !=0 收紧成 ==1；登记 F13"
     }
   ]
 }

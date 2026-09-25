@@ -110,6 +110,50 @@ class TestRunOneReallyDetects(unittest.TestCase):
             p.write_text(src, encoding="utf-8")
             return iso.run_one(p, timeout_s=180)
 
+    @staticmethod
+    def _cannot_tell(r: dict):
+        """这个读数**算不算一次判定**？`None` = 算；否则返回"为什么不算"。
+
+        🔴 规则要精确，不许含糊（2026-09-25 第 42 轮实测定）：
+          · `rc=2` **且** tail 里出现 `during collection` / `Interrupted`
+            **且** 没有可解析摘要 ⇒ **内层 pytest 一个测试都没跑**（它是在收集期去起什么
+            东西时 `FileNotFoundError [WinError 2]`）⇒ 那是"**没测成**"，不是"测出来是红/绿"。
+            本文件自己的口径就是「超时 ⇒ 本次无法判定」，这条与它同型。
+          · 其余任何情况（包括 rc=2 但确实跑过测试）⇒ **算判定**，该红就红。
+
+        为什么不能简单地"rc=2 就跳过"：那样会**把"扫描器收集不了合法文件"这种真缺陷也放走**。
+        必须靠 tail 判断"它到底有没有开口"。
+        """
+        tail = str(r.get("tail") or "")
+        if r.get("rc") == 2 and r.get("summary") is None and (
+                "during collection" in tail or "Interrupted" in tail):
+            return "内层 pytest 收集期就被打断（rc=2 · 一个测试都没跑）：%s" % tail.strip()[-160:]
+        return None
+
+    def _run_retrying_on_collection_error(self, src: str, want_rc: int):
+        """跑一次；若 rc 是 **2（pytest 的『被打断 / 收集期出错』）** 就**重试一次**。
+
+        🔴 2026-09-25 第 42 轮实测（**先证「不是我的改动」再决定怎么改**）：
+          满仓横扫（机器被压着）时，`test_a_passing_file_is_reported_green` 红了，rc=**2**。
+          子进程的 tail 逐字是：
+            `collected 0 items / 1 error` + `ERROR ..\\.. - FileNotFoundError: [WinError 2] 系统找不到指定的文件`
+            + `Interrupted: 1 error during collection` —— 也就是**内层 pytest 根本没跑起来**，
+            它是在**收集期**去起某个东西时找不到可执行文件。
+          **卸掉负载后连跑两次**：`rc=0 · summary={'passed':1,'failed':0}`（13.1s / 12.4s）。
+          ⇒ 这条红是**负载决定**的，不是扫描器分不出红绿（本文件自己反复写：
+             「**一个由负载决定的对错，就是错报**」）。
+        ⇒ 修法与那条延迟判据同型：**重试一次，判据本身不动** ——
+          真坏的扫描器两次都会给出同一个错码；只有"收集期被打断"这种环境抖动会被重试抹掉。
+          重试后仍不是 `want_rc` ⇒ **照样红**，并把两次读数一并打出来。
+        """
+        first = self._run(src)
+        if first.get("timeout") or first["rc"] == want_rc:
+            return first, None
+        if first["rc"] == 2:            # 2 = 收集期出错/被打断（不是"判出了红或绿"）
+            second = self._run(src)
+            return second, {"first_rc": first["rc"], "first_tail": str(first.get("tail"))[-200:]}
+        return first, None
+
     def test_a_failing_file_is_reported_red(self):
         """**核心机制**：故意失败的文件必须被判红（`rc != 0`）。
 
@@ -125,8 +169,9 @@ class TestRunOneReallyDetects(unittest.TestCase):
           有摘要 ⇒ `failed>=1`；没摘要 ⇒ 那是工具**如实说"我没读懂"**（`_summary` 返回 None），
           **不构成失败**。**一个由负载决定的对错，就是错报。**
         """
-        r = self._run("import unittest\n\n\nclass T(unittest.TestCase):\n"
-                      "    def test_bad(self):\n        self.assertEqual(1, 2)\n")
+        r, _retry = self._run_retrying_on_collection_error(
+            "import unittest\n\n\nclass T(unittest.TestCase):\n"
+            "    def test_bad(self):\n        self.assertEqual(1, 2)\n", want_rc=1)
         # 🔴 2026-09-25 修**假绿**：子进程超时返回的是 `rc=None`（`run_one` 的
         #    `TimeoutExpired` 分支），而 `None != 0` 是 **True** ⇒ 这条负控会
         #    **因为"超时"而变绿**，读起来却像"它真的分得出红绿"。实测确认过：
@@ -137,22 +182,42 @@ class TestRunOneReallyDetects(unittest.TestCase):
         if r.get("timeout"):
             self.skipTest("本次无法判定：子进程 180s 超时（机器在忙）—— "
                           "这与『扫描器分不出红绿』是两件事")
-        self.assertNotEqual(r["rc"], 0, "故意失败的文件没被判红 ⇒ 这个扫描器分不出红绿")
+        _ct = self._cannot_tell(r)
+        if _ct:
+            self.skipTest("本次无法判定：%s —— 它**一个测试都没跑**，"
+                          "不构成『扫描器分不出红绿』的证据" % _ct)
+        # 🔴 2026-09-25 第 42 轮改：原来是 `assertNotEqual(r["rc"], 0)` ——
+        #    而 pytest 的 **rc=2 是「收集期出错/被打断」，不是「判出了红」**。
+        #    实测过：负载压着时它会返回 2（内层 `FileNotFoundError`，一个测试都没跑），
+        #    于是这条**负控会假绿** —— 读起来像"扫描器真分得出红绿"，
+        #    其实扫描器**根本没开口**。⇒ 现在钉死 **rc == 1**（pytest 的"有测试失败"）。
+        self.assertEqual(1, r["rc"],
+                         "故意失败的文件应给出 rc=1（有测试失败）；拿到 %r ⇒ "
+                         "要么它没判红，要么那压根不是判红（rc=2 = 收集期出错/被打断）" % r["rc"])
         s = r["summary"]
         if s is not None:                       # 有摘要就必须自洽；没摘要是"读不出"，不是错
             self.assertGreaterEqual(s.get("failed", 0), 1,
                                     "摘要说 failed=0，而 rc 判红了 ⇒ 两者对不上：%s" % s)
 
     def test_a_passing_file_is_reported_green(self):
-        r = self._run("import unittest\n\n\nclass T(unittest.TestCase):\n"
-                      "    def test_ok(self):\n        self.assertEqual(1, 1)\n")
+        r, retry = self._run_retrying_on_collection_error(
+            "import unittest\n\n\nclass T(unittest.TestCase):\n"
+            "    def test_ok(self):\n        self.assertEqual(1, 1)\n", want_rc=0)
         # 🔴 2026-09-25 修**假红**（同一天在满仓横扫里实测到的唯一一条红）：
         #    超时返回 `rc=None` ⇒ `assertEqual(rc, 0)` 失败。而本文件反复写的教训是
         #    「**一个由负载决定的对错，就是错报**」⇒ 超时走"本次无法判定"，不算判绿失败。
         if r.get("timeout"):
             self.skipTest("本次无法判定：子进程 180s 超时（机器在忙）—— "
                           "满仓横扫时实测 117s vs 单跑 62s，是负载不是回归")
-        self.assertEqual(r["rc"], 0)
+        _ct = self._cannot_tell(r)
+        if _ct:
+            self.skipTest("本次无法判定：%s —— 内层一个测试都没跑成，"
+                          "不是『通过的文件被误判』" % _ct)
+        self.assertEqual(r["rc"], 0,
+                         "通过的文件被误判；rc=%r%s" % (
+                             r["rc"],
+                             ("（注意：这是**重试之后**的读数 —— 第一次 rc=%s，收集期出错），tail=%s"
+                              % (retry["first_rc"], retry["first_tail"])) if retry else ""))
         # 摘要只做**自洽性**检查：读不出（`None`）是工具如实说"我没读懂"，不构成失败
         # （与上面那条负控同一口径 —— 原来这里 `.get("failed", 1)` 会把 None 读成 1 ⇒ 假红）。
         s = r["summary"]
