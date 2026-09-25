@@ -392,8 +392,27 @@ export function createMesh(env, sharedState) {
           }, 501);
         }
         const wid = (body.model && body.model !== "gbt-potato-v8") ? body.model : e.WORKERS_AI_MODEL;
-        if (!e.AI) return json({ error: { message: "没有 AI 绑定，流式无从谈起", type: "upstream_error" } }, 502);
-        if (!wid) return json({ error: { message: "没配上游模型 id（WORKERS_AI_MODEL）", type: "upstream_error" }, gbt: { detail: "不替主人挑模型" } }, 502);
+        // 🔴 2026-09-25 **改错误分档**：这两条原来都报 `502 / upstream_error` —— **归错了**。
+        //    它们根本不是上游故障：一条是**绑定没配**，一条是**模型 id 没填**，
+        //    都是**本地配置缺失**，而且**一次上游请求都没发出去**。
+        //    用 502（Bad Gateway）报"配置没填"，读起来像远端坏了 ——
+        //    与 `5021`（上下文超窗）被归成通用 502 是**同一类病**：真因被通用档吞掉。
+        //    ⇒ 改报 `configuration_error` + HTTP 500（服务端自身没配好，不是客户端的问题、
+        //      也不是上游的问题），并给出可机读的 `how_to_fix`。
+        if (!e.AI) {
+          return json({
+            error: { message: "没有 AI 绑定（wrangler.toml 的 [ai] binding = \"AI\" 没生效）",
+                     type: "configuration_error" },
+            gbt: { missing: "AI binding", how_to_fix: "确认 wrangler.toml 里有 [ai] binding = \"AI\" 且已部署" },
+          }, 500);
+        }
+        if (!wid) {
+          return json({
+            error: { message: "没配上游模型 id（WORKERS_AI_MODEL 为空）", type: "configuration_error" },
+            gbt: { missing: "WORKERS_AI_MODEL", how_to_fix: "在 wrangler.toml 的 [vars] 里填上模型 id（见 `wrangler ai models`）",
+                   detail: "不替主人挑模型" },
+          }, 500);
+        }
         const idz = withIdentity(e, msgs);
         // 🔴 上游只认 content 字符串 ⇒ 转发前必须归一（见 normalizeMessages 的注释）
         const norm = normalizeMessages(idz.messages);
@@ -497,10 +516,25 @@ export function createMesh(env, sharedState) {
       }, null);
       const b = r.body || {};
       if (r.code !== 200 || b.ok !== true) {
+        // 🔴 2026-09-25 **非流式这条也有同一处假归错**（只修流式 = 只修一半）：
+        //    这里原先把模块的任何非 200 都压成 `upstream_error` + 502。
+        //    但模块自己**知道**它为什么失败，而且如实写在 `reason` / `detail` 里：
+        //      · `gbt-c01-llm-gateway` 报 `reason: NOT_READ` 时，含义是
+        //        「AI 绑定在，但没配 WORKERS_AI_MODEL」（**本地配置缺失**，不是上游故障）；
+        //      · 403 那条是 `denied`（授权门），已有独立档。
+        //    ⇒ 按模块给的理由分档：NOT_READ ⇒ `configuration_error` + 500，
+        //      其余才落 `upstream_error` + 502。**别把"本地没配好"说成"远端坏了"。**
+        const _reason = String(b.reason || "");
+        const _isCfg = (_reason === "NOT_READ") || (r.code === 500);
         return json({
-          error: { message: String(b.detail || b.error || b.reason || "上游没给出正文"), type: "upstream_error" },
-          gbt: { denied: b.denied || false, missing_scopes: b.missing_scopes || [], diag: b.diag || null, content_path: b.content_path || null },
-        }, r.code === 403 ? 403 : 502);
+          error: {
+            message: String(b.detail || b.error || b.reason || "上游没给出正文"),
+            type: _isCfg ? "configuration_error" : "upstream_error",
+          },
+          gbt: { denied: b.denied || false, missing_scopes: b.missing_scopes || [],
+                 diag: b.diag || null, content_path: b.content_path || null,
+                 module_reason: _reason || null },
+        }, r.code === 403 ? 403 : (_isCfg ? 500 : 502));
       }
       return json({
         id: "chatcmpl-gbt-" + Date.now(),
