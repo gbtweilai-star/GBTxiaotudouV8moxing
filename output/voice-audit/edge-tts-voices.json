@@ -1,0 +1,4532 @@
+[
+ {
+  "short": "af-ZA-AdriNeural",
+  "gender": "Female",
+  "locale": "af-ZA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "af-ZA-WillemNeural",
+  "gender": "Male",
+  "locale": "af-ZA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sq-AL-AnilaNeural",
+  "gender": "Female",
+  "locale": "sq-AL",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sq-AL-IlirNeural",
+  "gender": "Male",
+  "locale": "sq-AL",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "am-ET-AmehaNeural",
+  "gender": "Male",
+  "locale": "am-ET",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "am-ET-MekdesNeural",
+  "gender": "Female",
+  "locale": "am-ET",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-DZ-AminaNeural",
+  "gender": "Female",
+  "locale": "ar-DZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-DZ-IsmaelNeural",
+  "gender": "Male",
+  "locale": "ar-DZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-BH-AliNeural",
+  "gender": "Male",
+  "locale": "ar-BH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-BH-LailaNeural",
+  "gender": "Female",
+  "locale": "ar-BH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-EG-SalmaNeural",
+  "gender": "Female",
+  "locale": "ar-EG",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-EG-ShakirNeural",
+  "gender": "Male",
+  "locale": "ar-EG",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-IQ-BasselNeural",
+  "gender": "Male",
+  "locale": "ar-IQ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-IQ-RanaNeural",
+  "gender": "Female",
+  "locale": "ar-IQ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-JO-SanaNeural",
+  "gender": "Female",
+  "locale": "ar-JO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-JO-TaimNeural",
+  "gender": "Male",
+  "locale": "ar-JO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-KW-FahedNeural",
+  "gender": "Male",
+  "locale": "ar-KW",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-KW-NouraNeural",
+  "gender": "Female",
+  "locale": "ar-KW",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-LB-LaylaNeural",
+  "gender": "Female",
+  "locale": "ar-LB",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-LB-RamiNeural",
+  "gender": "Male",
+  "locale": "ar-LB",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-LY-ImanNeural",
+  "gender": "Female",
+  "locale": "ar-LY",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-LY-OmarNeural",
+  "gender": "Male",
+  "locale": "ar-LY",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-MA-JamalNeural",
+  "gender": "Male",
+  "locale": "ar-MA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-MA-MounaNeural",
+  "gender": "Female",
+  "locale": "ar-MA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-OM-AbdullahNeural",
+  "gender": "Male",
+  "locale": "ar-OM",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-OM-AyshaNeural",
+  "gender": "Female",
+  "locale": "ar-OM",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-QA-AmalNeural",
+  "gender": "Female",
+  "locale": "ar-QA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-QA-MoazNeural",
+  "gender": "Male",
+  "locale": "ar-QA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-SA-HamedNeural",
+  "gender": "Male",
+  "locale": "ar-SA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-SA-ZariyahNeural",
+  "gender": "Female",
+  "locale": "ar-SA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-SY-AmanyNeural",
+  "gender": "Female",
+  "locale": "ar-SY",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-SY-LaithNeural",
+  "gender": "Male",
+  "locale": "ar-SY",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-TN-HediNeural",
+  "gender": "Male",
+  "locale": "ar-TN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-TN-ReemNeural",
+  "gender": "Female",
+  "locale": "ar-TN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-AE-FatimaNeural",
+  "gender": "Female",
+  "locale": "ar-AE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-AE-HamdanNeural",
+  "gender": "Male",
+  "locale": "ar-AE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-YE-MaryamNeural",
+  "gender": "Female",
+  "locale": "ar-YE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ar-YE-SalehNeural",
+  "gender": "Male",
+  "locale": "ar-YE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "az-AZ-BabekNeural",
+  "gender": "Male",
+  "locale": "az-AZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "az-AZ-BanuNeural",
+  "gender": "Female",
+  "locale": "az-AZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "bn-BD-NabanitaNeural",
+  "gender": "Female",
+  "locale": "bn-BD",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "bn-BD-PradeepNeural",
+  "gender": "Male",
+  "locale": "bn-BD",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "bn-IN-BashkarNeural",
+  "gender": "Male",
+  "locale": "bn-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "bn-IN-TanishaaNeural",
+  "gender": "Female",
+  "locale": "bn-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "bs-BA-VesnaNeural",
+  "gender": "Female",
+  "locale": "bs-BA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "bs-BA-GoranNeural",
+  "gender": "Male",
+  "locale": "bs-BA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "bg-BG-BorislavNeural",
+  "gender": "Male",
+  "locale": "bg-BG",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "bg-BG-KalinaNeural",
+  "gender": "Female",
+  "locale": "bg-BG",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "my-MM-NilarNeural",
+  "gender": "Female",
+  "locale": "my-MM",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "my-MM-ThihaNeural",
+  "gender": "Male",
+  "locale": "my-MM",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ca-ES-EnricNeural",
+  "gender": "Male",
+  "locale": "ca-ES",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ca-ES-JoanaNeural",
+  "gender": "Female",
+  "locale": "ca-ES",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "zh-HK-HiuGaaiNeural",
+  "gender": "Female",
+  "locale": "zh-HK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "zh-HK-HiuMaanNeural",
+  "gender": "Female",
+  "locale": "zh-HK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "zh-HK-WanLungNeural",
+  "gender": "Male",
+  "locale": "zh-HK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "zh-CN-XiaoxiaoNeural",
+  "gender": "Female",
+  "locale": "zh-CN",
+  "tags": {
+   "ContentCategories": [
+    "News",
+    "Novel"
+   ],
+   "VoicePersonalities": [
+    "Warm"
+   ]
+  }
+ },
+ {
+  "short": "zh-CN-XiaoyiNeural",
+  "gender": "Female",
+  "locale": "zh-CN",
+  "tags": {
+   "ContentCategories": [
+    "Cartoon",
+    "Novel"
+   ],
+   "VoicePersonalities": [
+    "Lively"
+   ]
+  }
+ },
+ {
+  "short": "zh-CN-YunjianNeural",
+  "gender": "Male",
+  "locale": "zh-CN",
+  "tags": {
+   "ContentCategories": [
+    "Sports",
+    " Novel"
+   ],
+   "VoicePersonalities": [
+    "Passion"
+   ]
+  }
+ },
+ {
+  "short": "zh-CN-YunxiNeural",
+  "gender": "Male",
+  "locale": "zh-CN",
+  "tags": {
+   "ContentCategories": [
+    "Novel"
+   ],
+   "VoicePersonalities": [
+    "Lively",
+    "Sunshine"
+   ]
+  }
+ },
+ {
+  "short": "zh-CN-YunxiaNeural",
+  "gender": "Male",
+  "locale": "zh-CN",
+  "tags": {
+   "ContentCategories": [
+    "Cartoon",
+    "Novel"
+   ],
+   "VoicePersonalities": [
+    "Cute"
+   ]
+  }
+ },
+ {
+  "short": "zh-CN-YunyangNeural",
+  "gender": "Male",
+  "locale": "zh-CN",
+  "tags": {
+   "ContentCategories": [
+    "News"
+   ],
+   "VoicePersonalities": [
+    "Professional",
+    "Reliable"
+   ]
+  }
+ },
+ {
+  "short": "zh-CN-liaoning-XiaobeiNeural",
+  "gender": "Female",
+  "locale": "zh-CN-liaoning",
+  "tags": {
+   "ContentCategories": [
+    "Dialect"
+   ],
+   "VoicePersonalities": [
+    "Humorous"
+   ]
+  }
+ },
+ {
+  "short": "zh-TW-HsiaoChenNeural",
+  "gender": "Female",
+  "locale": "zh-TW",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "zh-TW-YunJheNeural",
+  "gender": "Male",
+  "locale": "zh-TW",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "zh-TW-HsiaoYuNeural",
+  "gender": "Female",
+  "locale": "zh-TW",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "zh-CN-shaanxi-XiaoniNeural",
+  "gender": "Female",
+  "locale": "zh-CN-shaanxi",
+  "tags": {
+   "ContentCategories": [
+    "Dialect"
+   ],
+   "VoicePersonalities": [
+    "Bright"
+   ]
+  }
+ },
+ {
+  "short": "hr-HR-GabrijelaNeural",
+  "gender": "Female",
+  "locale": "hr-HR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "hr-HR-SreckoNeural",
+  "gender": "Male",
+  "locale": "hr-HR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "cs-CZ-AntoninNeural",
+  "gender": "Male",
+  "locale": "cs-CZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "cs-CZ-VlastaNeural",
+  "gender": "Female",
+  "locale": "cs-CZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "da-DK-ChristelNeural",
+  "gender": "Female",
+  "locale": "da-DK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "da-DK-JeppeNeural",
+  "gender": "Male",
+  "locale": "da-DK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "nl-BE-ArnaudNeural",
+  "gender": "Male",
+  "locale": "nl-BE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "nl-BE-DenaNeural",
+  "gender": "Female",
+  "locale": "nl-BE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "nl-NL-ColetteNeural",
+  "gender": "Female",
+  "locale": "nl-NL",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "nl-NL-FennaNeural",
+  "gender": "Female",
+  "locale": "nl-NL",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "nl-NL-MaartenNeural",
+  "gender": "Male",
+  "locale": "nl-NL",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-AU-WilliamMultilingualNeural",
+  "gender": "Male",
+  "locale": "en-AU",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-AU-NatashaNeural",
+  "gender": "Female",
+  "locale": "en-AU",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-CA-ClaraNeural",
+  "gender": "Female",
+  "locale": "en-CA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-CA-LiamNeural",
+  "gender": "Male",
+  "locale": "en-CA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-HK-YanNeural",
+  "gender": "Female",
+  "locale": "en-HK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-HK-SamNeural",
+  "gender": "Male",
+  "locale": "en-HK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-IN-NeerjaExpressiveNeural",
+  "gender": "Female",
+  "locale": "en-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-IN-NeerjaNeural",
+  "gender": "Female",
+  "locale": "en-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-IN-PrabhatNeural",
+  "gender": "Male",
+  "locale": "en-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-IE-ConnorNeural",
+  "gender": "Male",
+  "locale": "en-IE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-IE-EmilyNeural",
+  "gender": "Female",
+  "locale": "en-IE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-KE-AsiliaNeural",
+  "gender": "Female",
+  "locale": "en-KE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-KE-ChilembaNeural",
+  "gender": "Male",
+  "locale": "en-KE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-NZ-MitchellNeural",
+  "gender": "Male",
+  "locale": "en-NZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-NZ-MollyNeural",
+  "gender": "Female",
+  "locale": "en-NZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-NG-AbeoNeural",
+  "gender": "Male",
+  "locale": "en-NG",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-NG-EzinneNeural",
+  "gender": "Female",
+  "locale": "en-NG",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-PH-JamesNeural",
+  "gender": "Male",
+  "locale": "en-PH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-PH-RosaNeural",
+  "gender": "Female",
+  "locale": "en-PH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-US-AvaNeural",
+  "gender": "Female",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "Conversation",
+    "Copilot"
+   ],
+   "VoicePersonalities": [
+    "Expressive",
+    "Caring",
+    "Pleasant",
+    "Friendly"
+   ]
+  }
+ },
+ {
+  "short": "en-US-AndrewNeural",
+  "gender": "Male",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "Conversation",
+    "Copilot"
+   ],
+   "VoicePersonalities": [
+    "Warm",
+    "Confident",
+    "Authentic",
+    "Honest"
+   ]
+  }
+ },
+ {
+  "short": "en-US-EmmaNeural",
+  "gender": "Female",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "Conversation",
+    "Copilot"
+   ],
+   "VoicePersonalities": [
+    "Cheerful",
+    "Clear",
+    "Conversational"
+   ]
+  }
+ },
+ {
+  "short": "en-US-BrianNeural",
+  "gender": "Male",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "Conversation",
+    "Copilot"
+   ],
+   "VoicePersonalities": [
+    "Approachable",
+    "Casual",
+    "Sincere"
+   ]
+  }
+ },
+ {
+  "short": "en-SG-LunaNeural",
+  "gender": "Female",
+  "locale": "en-SG",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-SG-WayneNeural",
+  "gender": "Male",
+  "locale": "en-SG",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-ZA-LeahNeural",
+  "gender": "Female",
+  "locale": "en-ZA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-ZA-LukeNeural",
+  "gender": "Male",
+  "locale": "en-ZA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-TZ-ElimuNeural",
+  "gender": "Male",
+  "locale": "en-TZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-TZ-ImaniNeural",
+  "gender": "Female",
+  "locale": "en-TZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-GB-LibbyNeural",
+  "gender": "Female",
+  "locale": "en-GB",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-GB-MaisieNeural",
+  "gender": "Female",
+  "locale": "en-GB",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-GB-RyanNeural",
+  "gender": "Male",
+  "locale": "en-GB",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-GB-SoniaNeural",
+  "gender": "Female",
+  "locale": "en-GB",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-GB-ThomasNeural",
+  "gender": "Male",
+  "locale": "en-GB",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "en-US-AnaNeural",
+  "gender": "Female",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "Cartoon",
+    "Conversation"
+   ],
+   "VoicePersonalities": [
+    "Cute"
+   ]
+  }
+ },
+ {
+  "short": "en-US-AndrewMultilingualNeural",
+  "gender": "Male",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "Conversation",
+    "Copilot"
+   ],
+   "VoicePersonalities": [
+    "Warm",
+    "Confident",
+    "Authentic",
+    "Honest"
+   ]
+  }
+ },
+ {
+  "short": "en-US-AriaNeural",
+  "gender": "Female",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "News",
+    "Novel"
+   ],
+   "VoicePersonalities": [
+    "Positive",
+    "Confident"
+   ]
+  }
+ },
+ {
+  "short": "en-US-AvaMultilingualNeural",
+  "gender": "Female",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "Conversation",
+    "Copilot"
+   ],
+   "VoicePersonalities": [
+    "Expressive",
+    "Caring",
+    "Pleasant",
+    "Friendly"
+   ]
+  }
+ },
+ {
+  "short": "en-US-BrianMultilingualNeural",
+  "gender": "Male",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "Conversation",
+    "Copilot"
+   ],
+   "VoicePersonalities": [
+    "Approachable",
+    "Casual",
+    "Sincere"
+   ]
+  }
+ },
+ {
+  "short": "en-US-ChristopherNeural",
+  "gender": "Male",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "News",
+    "Novel"
+   ],
+   "VoicePersonalities": [
+    "Reliable",
+    "Authority"
+   ]
+  }
+ },
+ {
+  "short": "en-US-EmmaMultilingualNeural",
+  "gender": "Female",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "Conversation",
+    "Copilot"
+   ],
+   "VoicePersonalities": [
+    "Cheerful",
+    "Clear",
+    "Conversational"
+   ]
+  }
+ },
+ {
+  "short": "en-US-EricNeural",
+  "gender": "Male",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "News",
+    "Novel"
+   ],
+   "VoicePersonalities": [
+    "Rational"
+   ]
+  }
+ },
+ {
+  "short": "en-US-GuyNeural",
+  "gender": "Male",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "News",
+    "Novel"
+   ],
+   "VoicePersonalities": [
+    "Passion"
+   ]
+  }
+ },
+ {
+  "short": "en-US-JennyNeural",
+  "gender": "Female",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Considerate",
+    "Comfort"
+   ]
+  }
+ },
+ {
+  "short": "en-US-MichelleNeural",
+  "gender": "Female",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "News",
+    "Novel"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Pleasant"
+   ]
+  }
+ },
+ {
+  "short": "en-US-RogerNeural",
+  "gender": "Male",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "News",
+    "Novel"
+   ],
+   "VoicePersonalities": [
+    "Lively"
+   ]
+  }
+ },
+ {
+  "short": "en-US-SteffanNeural",
+  "gender": "Male",
+  "locale": "en-US",
+  "tags": {
+   "ContentCategories": [
+    "News",
+    "Novel"
+   ],
+   "VoicePersonalities": [
+    "Rational"
+   ]
+  }
+ },
+ {
+  "short": "et-EE-AnuNeural",
+  "gender": "Female",
+  "locale": "et-EE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "et-EE-KertNeural",
+  "gender": "Male",
+  "locale": "et-EE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fil-PH-AngeloNeural",
+  "gender": "Male",
+  "locale": "fil-PH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fil-PH-BlessicaNeural",
+  "gender": "Female",
+  "locale": "fil-PH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fi-FI-HarriNeural",
+  "gender": "Male",
+  "locale": "fi-FI",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fi-FI-NooraNeural",
+  "gender": "Female",
+  "locale": "fi-FI",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-BE-CharlineNeural",
+  "gender": "Female",
+  "locale": "fr-BE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-BE-GerardNeural",
+  "gender": "Male",
+  "locale": "fr-BE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-CA-ThierryNeural",
+  "gender": "Male",
+  "locale": "fr-CA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-CA-AntoineNeural",
+  "gender": "Male",
+  "locale": "fr-CA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-CA-JeanNeural",
+  "gender": "Male",
+  "locale": "fr-CA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-CA-SylvieNeural",
+  "gender": "Female",
+  "locale": "fr-CA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-FR-VivienneMultilingualNeural",
+  "gender": "Female",
+  "locale": "fr-FR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-FR-RemyMultilingualNeural",
+  "gender": "Male",
+  "locale": "fr-FR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-FR-DeniseNeural",
+  "gender": "Female",
+  "locale": "fr-FR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-FR-EloiseNeural",
+  "gender": "Female",
+  "locale": "fr-FR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-FR-HenriNeural",
+  "gender": "Male",
+  "locale": "fr-FR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-CH-ArianeNeural",
+  "gender": "Female",
+  "locale": "fr-CH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fr-CH-FabriceNeural",
+  "gender": "Male",
+  "locale": "fr-CH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "gl-ES-RoiNeural",
+  "gender": "Male",
+  "locale": "gl-ES",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "gl-ES-SabelaNeural",
+  "gender": "Female",
+  "locale": "gl-ES",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ka-GE-EkaNeural",
+  "gender": "Female",
+  "locale": "ka-GE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ka-GE-GiorgiNeural",
+  "gender": "Male",
+  "locale": "ka-GE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "de-AT-IngridNeural",
+  "gender": "Female",
+  "locale": "de-AT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "de-AT-JonasNeural",
+  "gender": "Male",
+  "locale": "de-AT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "de-DE-SeraphinaMultilingualNeural",
+  "gender": "Female",
+  "locale": "de-DE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "de-DE-FlorianMultilingualNeural",
+  "gender": "Male",
+  "locale": "de-DE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "de-DE-AmalaNeural",
+  "gender": "Female",
+  "locale": "de-DE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "de-DE-ConradNeural",
+  "gender": "Male",
+  "locale": "de-DE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "de-DE-KatjaNeural",
+  "gender": "Female",
+  "locale": "de-DE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "de-DE-KillianNeural",
+  "gender": "Male",
+  "locale": "de-DE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "de-CH-JanNeural",
+  "gender": "Male",
+  "locale": "de-CH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "de-CH-LeniNeural",
+  "gender": "Female",
+  "locale": "de-CH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "el-GR-AthinaNeural",
+  "gender": "Female",
+  "locale": "el-GR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "el-GR-NestorasNeural",
+  "gender": "Male",
+  "locale": "el-GR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "gu-IN-DhwaniNeural",
+  "gender": "Female",
+  "locale": "gu-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "gu-IN-NiranjanNeural",
+  "gender": "Male",
+  "locale": "gu-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "he-IL-AvriNeural",
+  "gender": "Male",
+  "locale": "he-IL",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "he-IL-HilaNeural",
+  "gender": "Female",
+  "locale": "he-IL",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "hi-IN-MadhurNeural",
+  "gender": "Male",
+  "locale": "hi-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "hi-IN-SwaraNeural",
+  "gender": "Female",
+  "locale": "hi-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "hu-HU-NoemiNeural",
+  "gender": "Female",
+  "locale": "hu-HU",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "hu-HU-TamasNeural",
+  "gender": "Male",
+  "locale": "hu-HU",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "is-IS-GudrunNeural",
+  "gender": "Female",
+  "locale": "is-IS",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "is-IS-GunnarNeural",
+  "gender": "Male",
+  "locale": "is-IS",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "id-ID-ArdiNeural",
+  "gender": "Male",
+  "locale": "id-ID",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "id-ID-GadisNeural",
+  "gender": "Female",
+  "locale": "id-ID",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "iu-Latn-CA-SiqiniqNeural",
+  "gender": "Female",
+  "locale": "iu-Latn-CA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "iu-Latn-CA-TaqqiqNeural",
+  "gender": "Male",
+  "locale": "iu-Latn-CA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "iu-Cans-CA-SiqiniqNeural",
+  "gender": "Female",
+  "locale": "iu-Cans-CA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "iu-Cans-CA-TaqqiqNeural",
+  "gender": "Male",
+  "locale": "iu-Cans-CA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ga-IE-ColmNeural",
+  "gender": "Male",
+  "locale": "ga-IE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ga-IE-OrlaNeural",
+  "gender": "Female",
+  "locale": "ga-IE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "it-IT-GiuseppeMultilingualNeural",
+  "gender": "Male",
+  "locale": "it-IT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "it-IT-DiegoNeural",
+  "gender": "Male",
+  "locale": "it-IT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "it-IT-ElsaNeural",
+  "gender": "Female",
+  "locale": "it-IT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "it-IT-IsabellaNeural",
+  "gender": "Female",
+  "locale": "it-IT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ja-JP-KeitaNeural",
+  "gender": "Male",
+  "locale": "ja-JP",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ja-JP-NanamiNeural",
+  "gender": "Female",
+  "locale": "ja-JP",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "jv-ID-DimasNeural",
+  "gender": "Male",
+  "locale": "jv-ID",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "jv-ID-SitiNeural",
+  "gender": "Female",
+  "locale": "jv-ID",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "kn-IN-GaganNeural",
+  "gender": "Male",
+  "locale": "kn-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "kn-IN-SapnaNeural",
+  "gender": "Female",
+  "locale": "kn-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "kk-KZ-AigulNeural",
+  "gender": "Female",
+  "locale": "kk-KZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "kk-KZ-DauletNeural",
+  "gender": "Male",
+  "locale": "kk-KZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "km-KH-PisethNeural",
+  "gender": "Male",
+  "locale": "km-KH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "km-KH-SreymomNeural",
+  "gender": "Female",
+  "locale": "km-KH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ko-KR-HyunsuMultilingualNeural",
+  "gender": "Male",
+  "locale": "ko-KR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ko-KR-InJoonNeural",
+  "gender": "Male",
+  "locale": "ko-KR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ko-KR-SunHiNeural",
+  "gender": "Female",
+  "locale": "ko-KR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "lo-LA-ChanthavongNeural",
+  "gender": "Male",
+  "locale": "lo-LA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "lo-LA-KeomanyNeural",
+  "gender": "Female",
+  "locale": "lo-LA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "lv-LV-EveritaNeural",
+  "gender": "Female",
+  "locale": "lv-LV",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "lv-LV-NilsNeural",
+  "gender": "Male",
+  "locale": "lv-LV",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "lt-LT-LeonasNeural",
+  "gender": "Male",
+  "locale": "lt-LT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "lt-LT-OnaNeural",
+  "gender": "Female",
+  "locale": "lt-LT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "mk-MK-AleksandarNeural",
+  "gender": "Male",
+  "locale": "mk-MK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "mk-MK-MarijaNeural",
+  "gender": "Female",
+  "locale": "mk-MK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ms-MY-OsmanNeural",
+  "gender": "Male",
+  "locale": "ms-MY",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ms-MY-YasminNeural",
+  "gender": "Female",
+  "locale": "ms-MY",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ml-IN-MidhunNeural",
+  "gender": "Male",
+  "locale": "ml-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ml-IN-SobhanaNeural",
+  "gender": "Female",
+  "locale": "ml-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "mt-MT-GraceNeural",
+  "gender": "Female",
+  "locale": "mt-MT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "mt-MT-JosephNeural",
+  "gender": "Male",
+  "locale": "mt-MT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "mr-IN-AarohiNeural",
+  "gender": "Female",
+  "locale": "mr-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "mr-IN-ManoharNeural",
+  "gender": "Male",
+  "locale": "mr-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "mn-MN-BataaNeural",
+  "gender": "Male",
+  "locale": "mn-MN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "mn-MN-YesuiNeural",
+  "gender": "Female",
+  "locale": "mn-MN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ne-NP-HemkalaNeural",
+  "gender": "Female",
+  "locale": "ne-NP",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ne-NP-SagarNeural",
+  "gender": "Male",
+  "locale": "ne-NP",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "nb-NO-FinnNeural",
+  "gender": "Male",
+  "locale": "nb-NO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "nb-NO-PernilleNeural",
+  "gender": "Female",
+  "locale": "nb-NO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ps-AF-GulNawazNeural",
+  "gender": "Male",
+  "locale": "ps-AF",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ps-AF-LatifaNeural",
+  "gender": "Female",
+  "locale": "ps-AF",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fa-IR-DilaraNeural",
+  "gender": "Female",
+  "locale": "fa-IR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "fa-IR-FaridNeural",
+  "gender": "Male",
+  "locale": "fa-IR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "pl-PL-MarekNeural",
+  "gender": "Male",
+  "locale": "pl-PL",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "pl-PL-ZofiaNeural",
+  "gender": "Female",
+  "locale": "pl-PL",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "pt-BR-ThalitaMultilingualNeural",
+  "gender": "Female",
+  "locale": "pt-BR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "pt-BR-AntonioNeural",
+  "gender": "Male",
+  "locale": "pt-BR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "pt-BR-FranciscaNeural",
+  "gender": "Female",
+  "locale": "pt-BR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "pt-PT-DuarteNeural",
+  "gender": "Male",
+  "locale": "pt-PT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "pt-PT-RaquelNeural",
+  "gender": "Female",
+  "locale": "pt-PT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ro-RO-AlinaNeural",
+  "gender": "Female",
+  "locale": "ro-RO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ro-RO-EmilNeural",
+  "gender": "Male",
+  "locale": "ro-RO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ru-RU-DmitryNeural",
+  "gender": "Male",
+  "locale": "ru-RU",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ru-RU-SvetlanaNeural",
+  "gender": "Female",
+  "locale": "ru-RU",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sr-RS-NicholasNeural",
+  "gender": "Male",
+  "locale": "sr-RS",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sr-RS-SophieNeural",
+  "gender": "Female",
+  "locale": "sr-RS",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "si-LK-SameeraNeural",
+  "gender": "Male",
+  "locale": "si-LK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "si-LK-ThiliniNeural",
+  "gender": "Female",
+  "locale": "si-LK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sk-SK-LukasNeural",
+  "gender": "Male",
+  "locale": "sk-SK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sk-SK-ViktoriaNeural",
+  "gender": "Female",
+  "locale": "sk-SK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sl-SI-PetraNeural",
+  "gender": "Female",
+  "locale": "sl-SI",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sl-SI-RokNeural",
+  "gender": "Male",
+  "locale": "sl-SI",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "so-SO-MuuseNeural",
+  "gender": "Male",
+  "locale": "so-SO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "so-SO-UbaxNeural",
+  "gender": "Female",
+  "locale": "so-SO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-AR-ElenaNeural",
+  "gender": "Female",
+  "locale": "es-AR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-AR-TomasNeural",
+  "gender": "Male",
+  "locale": "es-AR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-BO-MarceloNeural",
+  "gender": "Male",
+  "locale": "es-BO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-BO-SofiaNeural",
+  "gender": "Female",
+  "locale": "es-BO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-CL-CatalinaNeural",
+  "gender": "Female",
+  "locale": "es-CL",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-CL-LorenzoNeural",
+  "gender": "Male",
+  "locale": "es-CL",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-CO-GonzaloNeural",
+  "gender": "Male",
+  "locale": "es-CO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-CO-SalomeNeural",
+  "gender": "Female",
+  "locale": "es-CO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-ES-XimenaNeural",
+  "gender": "Female",
+  "locale": "es-ES",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-CR-JuanNeural",
+  "gender": "Male",
+  "locale": "es-CR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-CR-MariaNeural",
+  "gender": "Female",
+  "locale": "es-CR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-CU-BelkysNeural",
+  "gender": "Female",
+  "locale": "es-CU",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-CU-ManuelNeural",
+  "gender": "Male",
+  "locale": "es-CU",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-DO-EmilioNeural",
+  "gender": "Male",
+  "locale": "es-DO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-DO-RamonaNeural",
+  "gender": "Female",
+  "locale": "es-DO",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-EC-AndreaNeural",
+  "gender": "Female",
+  "locale": "es-EC",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-EC-LuisNeural",
+  "gender": "Male",
+  "locale": "es-EC",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-SV-LorenaNeural",
+  "gender": "Female",
+  "locale": "es-SV",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-SV-RodrigoNeural",
+  "gender": "Male",
+  "locale": "es-SV",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-GQ-JavierNeural",
+  "gender": "Male",
+  "locale": "es-GQ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-GQ-TeresaNeural",
+  "gender": "Female",
+  "locale": "es-GQ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-GT-AndresNeural",
+  "gender": "Male",
+  "locale": "es-GT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-GT-MartaNeural",
+  "gender": "Female",
+  "locale": "es-GT",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-HN-CarlosNeural",
+  "gender": "Male",
+  "locale": "es-HN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-HN-KarlaNeural",
+  "gender": "Female",
+  "locale": "es-HN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-MX-DaliaNeural",
+  "gender": "Female",
+  "locale": "es-MX",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-MX-JorgeNeural",
+  "gender": "Male",
+  "locale": "es-MX",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-NI-FedericoNeural",
+  "gender": "Male",
+  "locale": "es-NI",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-NI-YolandaNeural",
+  "gender": "Female",
+  "locale": "es-NI",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-PA-MargaritaNeural",
+  "gender": "Female",
+  "locale": "es-PA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-PA-RobertoNeural",
+  "gender": "Male",
+  "locale": "es-PA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-PY-MarioNeural",
+  "gender": "Male",
+  "locale": "es-PY",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-PY-TaniaNeural",
+  "gender": "Female",
+  "locale": "es-PY",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-PE-AlexNeural",
+  "gender": "Male",
+  "locale": "es-PE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-PE-CamilaNeural",
+  "gender": "Female",
+  "locale": "es-PE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-PR-KarinaNeural",
+  "gender": "Female",
+  "locale": "es-PR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-PR-VictorNeural",
+  "gender": "Male",
+  "locale": "es-PR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-ES-AlvaroNeural",
+  "gender": "Male",
+  "locale": "es-ES",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-ES-ElviraNeural",
+  "gender": "Female",
+  "locale": "es-ES",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-US-AlonsoNeural",
+  "gender": "Male",
+  "locale": "es-US",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-US-PalomaNeural",
+  "gender": "Female",
+  "locale": "es-US",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-UY-MateoNeural",
+  "gender": "Male",
+  "locale": "es-UY",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-UY-ValentinaNeural",
+  "gender": "Female",
+  "locale": "es-UY",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-VE-PaolaNeural",
+  "gender": "Female",
+  "locale": "es-VE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "es-VE-SebastianNeural",
+  "gender": "Male",
+  "locale": "es-VE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "su-ID-JajangNeural",
+  "gender": "Male",
+  "locale": "su-ID",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "su-ID-TutiNeural",
+  "gender": "Female",
+  "locale": "su-ID",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sw-KE-RafikiNeural",
+  "gender": "Male",
+  "locale": "sw-KE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sw-KE-ZuriNeural",
+  "gender": "Female",
+  "locale": "sw-KE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sw-TZ-DaudiNeural",
+  "gender": "Male",
+  "locale": "sw-TZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sw-TZ-RehemaNeural",
+  "gender": "Female",
+  "locale": "sw-TZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sv-SE-MattiasNeural",
+  "gender": "Male",
+  "locale": "sv-SE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "sv-SE-SofieNeural",
+  "gender": "Female",
+  "locale": "sv-SE",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ta-IN-PallaviNeural",
+  "gender": "Female",
+  "locale": "ta-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ta-IN-ValluvarNeural",
+  "gender": "Male",
+  "locale": "ta-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ta-MY-KaniNeural",
+  "gender": "Female",
+  "locale": "ta-MY",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ta-MY-SuryaNeural",
+  "gender": "Male",
+  "locale": "ta-MY",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ta-SG-AnbuNeural",
+  "gender": "Male",
+  "locale": "ta-SG",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ta-SG-VenbaNeural",
+  "gender": "Female",
+  "locale": "ta-SG",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ta-LK-KumarNeural",
+  "gender": "Male",
+  "locale": "ta-LK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ta-LK-SaranyaNeural",
+  "gender": "Female",
+  "locale": "ta-LK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "te-IN-MohanNeural",
+  "gender": "Male",
+  "locale": "te-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "te-IN-ShrutiNeural",
+  "gender": "Female",
+  "locale": "te-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "th-TH-NiwatNeural",
+  "gender": "Male",
+  "locale": "th-TH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "th-TH-PremwadeeNeural",
+  "gender": "Female",
+  "locale": "th-TH",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "tr-TR-EmelNeural",
+  "gender": "Female",
+  "locale": "tr-TR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "tr-TR-AhmetNeural",
+  "gender": "Male",
+  "locale": "tr-TR",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "uk-UA-OstapNeural",
+  "gender": "Male",
+  "locale": "uk-UA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "uk-UA-PolinaNeural",
+  "gender": "Female",
+  "locale": "uk-UA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ur-IN-GulNeural",
+  "gender": "Female",
+  "locale": "ur-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ur-IN-SalmanNeural",
+  "gender": "Male",
+  "locale": "ur-IN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ur-PK-AsadNeural",
+  "gender": "Male",
+  "locale": "ur-PK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "ur-PK-UzmaNeural",
+  "gender": "Female",
+  "locale": "ur-PK",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "uz-UZ-MadinaNeural",
+  "gender": "Female",
+  "locale": "uz-UZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "uz-UZ-SardorNeural",
+  "gender": "Male",
+  "locale": "uz-UZ",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "vi-VN-HoaiMyNeural",
+  "gender": "Female",
+  "locale": "vi-VN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "vi-VN-NamMinhNeural",
+  "gender": "Male",
+  "locale": "vi-VN",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "cy-GB-AledNeural",
+  "gender": "Male",
+  "locale": "cy-GB",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "cy-GB-NiaNeural",
+  "gender": "Female",
+  "locale": "cy-GB",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "zu-ZA-ThandoNeural",
+  "gender": "Female",
+  "locale": "zu-ZA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ },
+ {
+  "short": "zu-ZA-ThembaNeural",
+  "gender": "Male",
+  "locale": "zu-ZA",
+  "tags": {
+   "ContentCategories": [
+    "General"
+   ],
+   "VoicePersonalities": [
+    "Friendly",
+    "Positive"
+   ]
+  }
+ }
+]
