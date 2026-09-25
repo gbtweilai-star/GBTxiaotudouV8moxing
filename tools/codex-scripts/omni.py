@@ -277,8 +277,20 @@ DOMAIN_HINTS = {
     "system": "系统 自检 体检 健康 状态 环境 版本 依赖 进程",
     "llm": "模型 大模型 对话 推理 提示词 内核 触手 编程 智能",
     "pipeline": "流水线 管线 发布 提交 回滚 部署 生产 镜像",
-    "dangerous": "危险 高危 破坏 （⚠️ 该域 2026-09-23 已清空：那 11 个名字现在登记在 `unimplemented`）",
+    "dangerous": "危险 高危 破坏 （⚠️ 该域 2026-09-23 已清空；那 11 个名字**2026-09-25 已接上实现并改挂 `security` 域** —— 见下面 `unimplemented` 键上方的现读注释）",
     "unimplemented": "只登记未实现 没实现 没做 禁止已解开 危险名 被禁用的能力",
+    # 🔴 2026-09-25 现读更正（**同一条登记第二次漂移，这次是方向反了**）：
+    #   第 36 轮改它是因为「`dangerous` 域在图鉴里不存在了」；
+    #   现在 **`unimplemented` 域也空了** —— Owner 令「把黑客能力全部多维度全部覆盖补齐」后，
+    #   那 11 个名字**接上了实现层**（`security/redteam.py`），在**注册表里挂了 `domain="security"`**
+    #   （`caps_registry.py:1111-1125` 的注释写明），而 `UNIMPLEMENTED_CAPS` 现在是空表。
+    #   后果（`omni.py build` 重建图鉴后实测）：`verify-distill.py --all` 判红
+    #   「unimplemented FAIL · 图鉴里没有这个域（或它的能力位数为 0）」。
+    #   **这不是"登记表没跟"，是"域被搬空之后这条键没人删"** —— 一条**幽灵域**。
+    #   ⚠️ 我**不擅自删这条键**：删了就等于替主人决定「`gbt-dangerous` 这份规程还要不要」——
+    #   它讲的那 11 个名字现在归 `security` 域，而 `gbt-security` 的规程还没点到它们
+    #   （`verify-distill --domain security` 现读点名缺 11 位）。两条路（并进 gbt-security /
+    #   保留 gbt-dangerous 并给它一个域）都得主人拍板。**在拍板前，这条红就是待办清单本身。**
     "tentacle": "触手 操作 桌面 点击 输入 感知 浏览器 操控",
     "engine": "引擎 执行 循环 大脑 思考 调度",
     "mind": "心智 记忆 认知 情绪 人设 自我",
@@ -359,7 +371,14 @@ DISTILLED_DOMAINS = {
     # 后果实测：`verify-distill.py --all` 判红「dangerous FAIL · 图鉴里没有这个域（或它的能力位数为 0）」
     # ——**域长什么样已经变了，登记表没跟**。规程本身（`gbt-dangerous`）讲的就是这 11 个名字，
     # 所以正确的键是它现在真挂的那个域。
-    "unimplemented": "gbt-dangerous", # 11 位：只有名字、没有实现（原 dangerous 域，解禁后改挂此域）
+    # 🔴 2026-09-25 第 3 次现读：**这条映射现在指向一个空域**。
+    #   第 36 轮那次说"正确的键是它现在真挂的那个域" —— 那个判断当时对，现在过期了：
+    #   11 位接上实现后挂的是 `domain="security"`，`UNIMPLEMENTED_CAPS` 变空表
+    #   ⇒ `unimplemented` 域里**一个能力位都没有**，本键成了幽灵。
+    #   ⇒ 现状：`verify-distill --all` 对它判红（这是**正确的红**，不是误报）。
+    #   处置权在主人（并进 `gbt-security` 的规程 / 还是留 `gbt-dangerous` 另给一个域）；
+    #   在那之前**保留这条红当待办**，不删键、不改判据。
+    "unimplemented": "gbt-dangerous", # ⚠️ 现读：该域已空（11 位已实现并改挂 security）—— 见上方注释
     "tools": "gbt-tools",             # 6 位：前 3 位零作用域只读（投影卡/穿透网 payload 被 api.py 丢掉）；
                                       #        后 3 位是改代码链（code_patch/git_read/git_write），
                                       #        门是 **fail-closed**：非 dry_run 一律挂 filesystem_write

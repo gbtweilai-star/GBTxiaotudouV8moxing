@@ -10,7 +10,8 @@ try:
 except Exception:  # noqa: BLE001
     pass
 
-BASE = Path(__file__).resolve().parent.parent
+BASE = next(p for p in Path(__file__).resolve().parents
+           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 M = json.loads((S / "v7_manifest.json").read_text(encoding="utf-8"))
 P = json.loads((S / "gap_probe.json").read_text(encoding="utf-8"))

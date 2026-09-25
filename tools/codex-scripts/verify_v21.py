@@ -175,7 +175,7 @@ chk("导航无重键", len({x.split("'")[3] for x in nav_entries}) == 57, "")
 chk("画布 61 页", len(re.findall(r"\['[^']+', p\d+\(\)\],", c)) == 61,
     "%d 页" % len(re.findall(r"\['[^']+', p\d+\(\)\],", c)))
 chk("画布 p1~p61 齐", all(("function p%d(" % i) in c for i in range(1, 62)), "")
-chk("原型无 undefined 字面量", "undefined" not in re.sub(r"//[^\n]*", "", p.split("const V21 = ")[1].split("\n  }")[0]) or True, "（数据层已解析，见运行期校验）")
+chk("原型无 undefined 字面量", "undefined" not in re.sub(r"//[^\n]*", "", p.split("const V21 = ")[1]), "（数据层已解析，见运行期校验）")
 
 
 

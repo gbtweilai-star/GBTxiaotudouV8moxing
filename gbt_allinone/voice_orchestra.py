@@ -96,10 +96,13 @@ class VoiceSkillEngine:
             results = [s for s in results if keyword.lower() in s.name.lower() or any(keyword.lower() in h.lower() for h in s.highlights)]
         return results
 
-    def build_pipeline(self, scene: str) -> Dict[str, str]:
+    def build_pipeline(self, scene: str, want_all: bool = False):
         """
         多维度场景 Pipeline 构建器。
         每个场景都精确编排 ASR / LLM / CLONE / TTS / TOOL 的原子技能。
+
+        `want_all=True` 时返回**全部**链条（含兜底「默认」）—— 给"这个场景到底认不认"
+        这类判断用；不传时行为与改动前逐字节相同。
         """
         pipelines = {
 
@@ -166,7 +169,28 @@ class VoiceSkillEngine:
             },
         }
 
+        if want_all:
+            return pipelines
         return pipelines.get(scene, pipelines["默认"])
+
+    def pipeline_scenes(self) -> List[str]:
+        """**有专属链条**的场景名（不含兜底的「默认」）。"""
+        return sorted(k for k in self.build_pipeline("", want_all=True) if k != "默认")
+
+    def resolve_pipeline(self, scene: str):
+        """返回 `(链条, 是否命中专属场景)`。
+
+        🔴 为什么必须有它（2026-09-25 实测抓到的**假绿灯**）：
+        老实现只有 `pipelines.get(scene, pipelines["默认"])` —— 未知场景**静默兜底**成
+        「默认」链条，而 `run(op="pipeline")` 又把**请求的场景名原样回显**在 `scene` 字段里
+        ⇒ 调用方读到 `{"ok": true, "scene": "我瞎编的场景"}` 会**以为自己拿到了该场景的链条**。
+        实测：`cap voice_orchestra '{"op":"pipeline","scene":"不存在的场景"}'` 返回 `ok:true`，
+        而 `steps` 是「默认」那条 —— 读数在骗人，且骗得很自然。
+        """
+        ps = self.build_pipeline("", want_all=True)
+        if scene in ps:
+            return ps[scene], True
+        return ps["默认"], False
 
 
 def _cannot(rule: str, why: str, missing, **extra) -> dict:
@@ -223,8 +247,19 @@ def run(op: str = "status", **params) -> dict:
             return _cannot("voice_scene_required",
                                    "需要 scene（实时对话/有声书/视频配音/跨语言配音/歌声转换/无障碍语音修复）",
                                    ["scene"])
-        return {"ok": True, "op": "pipeline", "scene": scene,
-                "steps": engine.build_pipeline(scene)}
+        steps, matched = engine.resolve_pipeline(scene)
+        if not matched:
+            # 🔴 未知场景**不许静默兜底成 ok:true**（2026-09-25 修的那条假绿灯）。
+            #    改用本文件既有的 `_cannot()` 结构化上报口径：ok=False + 缺什么写 missing，
+            #    并把**建议链条**与**可选场景名**一并给出 —— 信息一点没少，只是不再冒充"命中"。
+            return _cannot("voice_scene_unknown",
+                           "场景「%s」没有专属链条；可选场景：%s"
+                           % (scene, "、".join(engine.pipeline_scenes())),
+                           ["scene"], scene=scene, scene_matched=False,
+                           known_scenes=engine.pipeline_scenes(),
+                           fallback_scene="默认", suggested_steps=steps)
+        return {"ok": True, "op": "pipeline", "scene": scene, "scene_matched": True,
+                "steps": steps}
     if op == "status":
         import importlib.util as _iu
         import os as _os

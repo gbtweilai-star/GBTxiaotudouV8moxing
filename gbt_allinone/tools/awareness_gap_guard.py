@@ -222,7 +222,14 @@ def main(argv=None) -> int:
     else:
         t = r["truth_on_disk"]
         print("=== 盘上真实的自己 ===")
-        print(f"  能力位 {t['capabilities_total']}（可用 {t['available']} · 禁用 {t['disabled']}）")
+        # 🔴 2026-09-25 修：这里原来读 `t['disabled']`，而 `truth` 字典里的键叫 **`denied`**
+        #    （见本文件 `_truth_on_disk` 的构造）⇒ **KeyError: 'disabled'**，
+        #    整条命令**一跑就崩**。而它正是**自我认知文本里点名的自校验命令**
+        #    （`cloud_llm.py` 的 `_BUILTIN_AWARENESS` 写着
+        #     `自校验：python -m gbt_allinone.tools.awareness_gap_guard`）——
+        #    **一条被写进 system prompt 让模型去跑的命令，自己跑不起来。**
+        #    ⇒ 键名对齐（读 `denied`）。机检：`tests/test_awareness_guard_runs.py`。
+        print(f"  能力位 {t['capabilities_total']}（可用 {t['available']} · 禁用 {t['denied']}）")
         print("\n=== 被注入的自我认知 ===")
         for s in r["injected_sources"] + ([r["builtin_fallback"]] if r["builtin_fallback"] else []):
             if not s:

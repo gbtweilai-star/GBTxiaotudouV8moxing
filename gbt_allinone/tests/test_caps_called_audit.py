@@ -97,11 +97,45 @@ class AuditTests(unittest.TestCase):
                          "两支必须覆盖全部未接线能力位（不洗白数字）")
 
     def test_no_internal_orphans_left_and_sec_chain_is_a_gate(self):
-        """R-H202：内调型孤儿应清零；`sec_chain` 是**安全面入口**（判定为门，不是漏接）。"""
+        """R-H202：内调型孤儿应清零；`sec_chain` 是**安全面入口**（判定为门，不是漏接）。
+
+        🔴 2026-09-25 更正（**改的是过期的快照断言，不是放宽判据**）：
+        原来这里还有一句 `self.assertIn("sec_chain", data["external_entries"])`。
+        它编码的其实是**当时的接线快照**（"它一个调用方都没有"），不是判据 ——
+        而新接线的 `gbt_allinone/security/redteam.py` 把 `sec_chain` 写进了
+        它的"建议步骤"字符串里（`"sec_chain（利用链推演，只出图不执行）"`）。本审计器的
+        既定口径是「**只剥注释、保留字符串**」（见 `_code_only` 的 docstring：字符串可能是
+        派发表的键 = 可执行的提及）⇒ 它被算成"有调用方" ⇒ 离开 `external_entries`、
+        进入 `wired`。**这正是它该有的行为**，所以那句断言该改，而不是让规则去迁就它。
+        另外 `external_entries ⊆ unwired` 是本文件另一条用例守着的不变量
+        （`orphans + external_entries == unwired_by_name`，防"洗白数字"）——
+        两个桶必须覆盖全部未接线位，所以**不能**把它放宽成"全部入口型"。
+
+        ⇒ 现在断的是**真判据**：① 入口型归属；② 绝不许落进 orphans。
+        ⇒ 而 R-H202 当年的**原始病灶**（注释里提一句就被算成接线，盖住真孤儿）
+           另起一条用例直接钉住（见本文件 `test_comment_mention_is_not_a_caller`）。
+        """
         data = _audit()
         self.assertEqual(data["orphans"], [], "内调型孤儿必须清零")
-        self.assertIn("sec_chain", data["external_entries"])
-        self.assertEqual(cca.cap_type("sec_chain"), "external")
+        self.assertEqual(cca.cap_type("sec_chain"), "external",
+                         "sec_chain 是安全面入口（门），不是漏接的内部件")
+        self.assertNotIn("sec_chain", data["orphans"], "入口型绝不许被报成孤儿")
+
+    def test_comment_mention_is_not_a_caller(self):
+        """R-H202 的**原始病灶**直接钉住：注释里提一句 ≠ 有人调用它。
+
+        由来（一手，记在 `caps_called_audit._code_only` 的 docstring 里）：
+        编排内核当年写了注记「注：`sec_chain` … 故意不接」，审计器就此把它判成**已接线**，
+        **把一个真孤儿盖住了** —— 与坑册第 34 条（扫到"提到"而不是"用了"）同族。
+        这里直接对**剥注释后的文本**下断言：比断言"某人不在 callers 里"更硬 ——
+        它不依赖那个能力位当前是 wired 还是 unwired。
+        """
+        src = (Path(cca._ROOT) / "gbt_allinone" / "tools" / "orchestration_kernel.py")
+        self.assertTrue(src.is_file(), "编排内核不见了？")
+        raw = src.read_text(encoding="utf-8", errors="replace")
+        self.assertIn("sec_chain", raw, "前提变了：该文件里已经没有那条注释提及")
+        self.assertNotIn("sec_chain", cca._code_only(raw, ".py"),
+                         "注释里的提及被当成调用方了 —— R-H202 的原始病灶回来了")
 
     def test_module_has_no_network_or_write_paths(self):
         src = Path(cca.__file__).read_text(encoding="utf-8")

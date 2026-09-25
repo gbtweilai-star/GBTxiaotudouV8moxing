@@ -5,7 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parent.parent
+BASE = next(p for p in Path(__file__).resolve().parents
+           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 sys.path.insert(0, str(BASE))
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")

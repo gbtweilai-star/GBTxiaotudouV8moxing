@@ -7,7 +7,8 @@ import sys
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-BASE = Path(__file__).resolve().parent.parent
+BASE = next(p for p in Path(__file__).resolve().parents
+           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 
 for f in ("render_full.py", "render_canvas.py", "render_v20.py"):
     p = BASE / ".scratch" / f

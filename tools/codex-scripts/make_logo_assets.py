@@ -18,7 +18,8 @@ try:
 except Exception:  # noqa: BLE001
     pass
 
-BASE = Path(__file__).resolve().parent.parent
+BASE = next(p for p in Path(__file__).resolve().parents
+           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 SRC = Path.home() / ".dsh" / "attachments" / "v1" / "objects" / "c7" / \
     "c7b9017c8eacbb5ac6f60f6f0b85bea57cbc8b7b31bd2022c1cb053044e898b1"
 OUT = BASE / "assets" / "brand"

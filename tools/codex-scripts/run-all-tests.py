@@ -176,6 +176,17 @@ def main() -> int:
     if py_rows:
         print("pytest  风格：%d 个文件（见上面的 pytest 合计）" % len(py_rows))
     print("合计：unittest 通过 %d ，pytest 通过见上，未过 %d 个" % (len(ok), len(bad)))
+    # 🔴 2026-09-25 补：**把「超时」与「失败」分开报**。
+    #    由来（一手）：我连着几轮用 `--timeout 180` 覆盖了本工具的默认 300 ⇒
+    #    `test_framework.py`（单跑现读 **137.9s / 148 条**）在满仓横扫里被 180s 掐断，
+    #    汇总却写「未过 1 个」—— 读的人会当成**红了**，而真相是**跑不完 = 本次无法判定**。
+    #    本仓在 `test_isolation_sweep` 上已立过同一条口径：「超时 ⇒ 说『本次无法判定』，
+    #    **不许**说成『扫描器分不出红绿』」。这里照同一条办。
+    _to = [r for r in bad if r.get("result") == "TIMEOUT"]
+    if _to:
+        print("  ⏰ 其中**超时 %d 个**（本次无法判定，**不等于红**）：%s"
+              % (len(_to), "、".join(r["file"] for r in _to)))
+        print("     ⇒ 提高 --timeout（本工具默认 300s）后单独复跑；或先量一次它的单跑耗时。")
     if bad:
         print()
         print("未过清单：")

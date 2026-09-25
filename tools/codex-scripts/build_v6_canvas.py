@@ -4,7 +4,8 @@ import re
 import shutil
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parent.parent
+BASE = next(p for p in Path(__file__).resolve().parents
+           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 TPL = BASE / "infinite-canvas-output" / "assets" / "infinite-canvas-template.html"
 OUT = BASE / "V6 GBT小土豆V8-无限画布.html"

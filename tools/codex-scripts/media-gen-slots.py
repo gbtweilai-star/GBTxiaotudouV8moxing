@@ -121,7 +121,12 @@ def policy_scopes(kind: str) -> tuple[str, ...] | None:
     if not m:
         return None
     body = m.group(1)
-    return tuple(sorted(set(re.findall(r'add\(\s*["\']([a-z_]+)["\']', body))))
+    # 🔴 2026-09-25 修 FR-6（`false_report_audit --scope workspace` 机检命中）：
+    #    原字符类是 `[a-z_]+` —— **不吃数字与大写** ⇒ 将来一旦有人加了带数字/驼峰的作用域
+    #    （比如 `tts_v2` / `osintPrivate`），这里会**静默漏掉它**，读出来是"这个分支没挂作用域"
+    #    ⇒ 正是本仓最忌的**假缺失**（查不到 ≠ 不存在）。今天 15 个作用域恰好全是小写+下划线，
+    #    所以**现在没出错，但坑已经埋好**。改成完整的标识符字符类。
+    return tuple(sorted(set(re.findall(r'add\(\s*["\']([A-Za-z0-9_]+)["\']', body))))
 
 
 def policy_branch_text(kind: str) -> str:

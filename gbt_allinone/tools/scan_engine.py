@@ -377,27 +377,32 @@ def scan(root=None, mode: str = "scope",
             rec = by_ext.setdefault(ext, {"n": 0, "bytes": 0})
             rec["n"] += 1
             rec["bytes"] += size
-            if name_traps or True:                  # D5 名称诡计
-                nm = p.name
-                if any(ord(ch) in ZW_AND_BIDI for ch in nm):
-                    name_traps.append(str(rel))
-                    _add("GBT-SE-021", "error", p, "文件名含零宽/双向控制字符（肉眼看不见）")
-                if nm != nm.rstrip(" .") :
-                    name_traps.append(str(rel))
-                    _add("GBT-SE-022", "error", p, "文件名以空格或点结尾（Windows 会悄悄剥掉 ⇒ 两名对一物）")
-                low = nm.lower()
-                # 双后缀伪装：**前一个后缀必须是"看着无害"的**（.txt/.jpg/.pdf…），
-                # 后一个才是可执行。第一版只判"点 ≥2 且以 .js 结尾" ⇒
-                # 把 `xingyun_e2e.latest.js` 这种正常命名全报成伪装（自己造的误报）。
-                last = Path(low).suffix
-                prev = Path(low).stem.rpartition(".")[2]
-                prev_ext = "." + prev
-                if last in DANGER_EXTS and prev_ext in (PRETEND_EXTS | CODE_PRETEND) \
-                        and prev_ext != last:
-                    name_traps.append(str(rel))
-                    _add("GBT-SE-023", "error", p,
-                         "双后缀伪装（%s%s）：前一个后缀看着无害，真身是 %s" % (prev_ext, last, last))
-                names_here.append(nm)
+            # D5 名称诡计 —— **本块无条件执行**。
+            # 🔴 2026-09-25 清掉一句死条件：原来写的是 `if name_traps or True:`，
+            #    由于 `X or True ≡ True`，这个"门"**永远开着**、形同注释
+            #    （`dead_judgments` 审计器点出来的）。而且它同时负责 `names_here` 的收集 ——
+            #    那部分**必须**每个文件都跑到，本来就不该被任何条件管。
+            #    ⇒ 直接去掉条件，**行为逐字节不变**。
+            nm = p.name
+            if any(ord(ch) in ZW_AND_BIDI for ch in nm):
+                name_traps.append(str(rel))
+                _add("GBT-SE-021", "error", p, "文件名含零宽/双向控制字符（肉眼看不见）")
+            if nm != nm.rstrip(" .") :
+                name_traps.append(str(rel))
+                _add("GBT-SE-022", "error", p, "文件名以空格或点结尾（Windows 会悄悄剥掉 ⇒ 两名对一物）")
+            low = nm.lower()
+            # 双后缀伪装：**前一个后缀必须是"看着无害"的**（.txt/.jpg/.pdf…），
+            # 后一个才是可执行。第一版只判"点 ≥2 且以 .js 结尾" ⇒
+            # 把 `xingyun_e2e.latest.js` 这种正常命名全报成伪装（自己造的误报）。
+            last = Path(low).suffix
+            prev = Path(low).stem.rpartition(".")[2]
+            prev_ext = "." + prev
+            if last in DANGER_EXTS and prev_ext in (PRETEND_EXTS | CODE_PRETEND) \
+                    and prev_ext != last:
+                name_traps.append(str(rel))
+                _add("GBT-SE-023", "error", p,
+                     "双后缀伪装（%s%s）：前一个后缀看着无害，真身是 %s" % (prev_ext, last, last))
+            names_here.append(nm)
             if size == 0:
                 empty_files.append(str(rel))
             if size > 32 << 20:

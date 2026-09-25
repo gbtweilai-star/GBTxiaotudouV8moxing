@@ -5,7 +5,8 @@ import re
 import shutil
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parent.parent
+BASE = next(p for p in Path(__file__).resolve().parents
+           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 V8P = BASE / "V8 GBT小土豆V8-可交互原型.html"
 V9P = BASE / "V9 GBT小土豆V8-可交互原型.html"

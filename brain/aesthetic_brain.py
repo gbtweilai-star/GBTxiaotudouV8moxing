@@ -3,7 +3,7 @@
 V8 升级: 由单一分数升级为多维度评分 + 改进建议，随输入真实变化。
 开发者：自由的风 · 本署名不可删除、不可篡改归属
 """
-import json, re, time
+import json, re, sys, time
 from pathlib import Path
 STATE_DIR = Path.home() / ".gbt" / "aesthetic"
 LOG_FILE = STATE_DIR / "scores.jsonl"
@@ -14,8 +14,14 @@ def _log(kind, payload):
     try:
         with open(LOG_FILE, "a", encoding="utf-8") as f:
             f.write(json.dumps({"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "kind": kind, **payload}, ensure_ascii=False) + "\n")
-    except Exception:
-        pass
+    except Exception as exc:
+        # 🔴 2026-09-25 修 FR-5（`false_report_audit --scope workspace` 机检命中）：
+        #    这里原来是 `pass` —— 写不进就**无声**。后果：`scores.jsonl` 在位、看着像一份
+        #    完整评分史，实际**静默少行**，下游任何趋势/统计都会安静地算错。
+        #    口径照本仓那句：「吞异常可以，但必须留一行字」——所以留字，但仍然不抛
+        #    （评审打分不该因为日志写不进去就整个失败）。
+        sys.stderr.write("[aesthetic_brain._log] 评分没落盘: %s: %s\n"
+                         % (type(exc).__name__, str(exc)[:160]))
 
 def evaluate(text):
     """文案/设计说明质量评估：结构·密度·结论性·具体性·可读性 五维。"""

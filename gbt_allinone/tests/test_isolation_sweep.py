@@ -127,6 +127,16 @@ class TestRunOneReallyDetects(unittest.TestCase):
         """
         r = self._run("import unittest\n\n\nclass T(unittest.TestCase):\n"
                       "    def test_bad(self):\n        self.assertEqual(1, 2)\n")
+        # 🔴 2026-09-25 修**假绿**：子进程超时返回的是 `rc=None`（`run_one` 的
+        #    `TimeoutExpired` 分支），而 `None != 0` 是 **True** ⇒ 这条负控会
+        #    **因为"超时"而变绿**，读起来却像"它真的分得出红绿"。实测确认过：
+        #    `run_one(..., timeout_s=1)` → `{"rc": None, "timeout": True, "summary": None}`。
+        #    本文件自己的判据就是"超时 ⇒ 说**本次无法判定**"（见
+        #    `TestSelftestIsNotLoadDependent.test_timeout_says_cannot_tell_not_scanner_broken`）
+        #    ⇒ 这里照同一条口径办：超时**跳过并说清**，不许算成判红成功。
+        if r.get("timeout"):
+            self.skipTest("本次无法判定：子进程 180s 超时（机器在忙）—— "
+                          "这与『扫描器分不出红绿』是两件事")
         self.assertNotEqual(r["rc"], 0, "故意失败的文件没被判红 ⇒ 这个扫描器分不出红绿")
         s = r["summary"]
         if s is not None:                       # 有摘要就必须自洽；没摘要是"读不出"，不是错
@@ -136,8 +146,19 @@ class TestRunOneReallyDetects(unittest.TestCase):
     def test_a_passing_file_is_reported_green(self):
         r = self._run("import unittest\n\n\nclass T(unittest.TestCase):\n"
                       "    def test_ok(self):\n        self.assertEqual(1, 1)\n")
+        # 🔴 2026-09-25 修**假红**（同一天在满仓横扫里实测到的唯一一条红）：
+        #    超时返回 `rc=None` ⇒ `assertEqual(rc, 0)` 失败。而本文件反复写的教训是
+        #    「**一个由负载决定的对错，就是错报**」⇒ 超时走"本次无法判定"，不算判绿失败。
+        if r.get("timeout"):
+            self.skipTest("本次无法判定：子进程 180s 超时（机器在忙）—— "
+                          "满仓横扫时实测 117s vs 单跑 62s，是负载不是回归")
         self.assertEqual(r["rc"], 0)
-        self.assertEqual((r["summary"] or {}).get("failed", 1), 0)
+        # 摘要只做**自洽性**检查：读不出（`None`）是工具如实说"我没读懂"，不构成失败
+        # （与上面那条负控同一口径 —— 原来这里 `.get("failed", 1)` 会把 None 读成 1 ⇒ 假红）。
+        s = r["summary"]
+        if s is not None:
+            self.assertEqual(s.get("failed", 0), 0,
+                             "摘要说 failed>0，而 rc 判绿 ⇒ 两者对不上：%s" % s)
 
 
 class TestSelftestDoesNotPolluteTheSharedTree(unittest.TestCase):

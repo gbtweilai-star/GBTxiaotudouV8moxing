@@ -10,7 +10,8 @@ try:
 except Exception:  # noqa: BLE001
     pass
 
-BASE = Path(__file__).resolve().parent.parent
+BASE = next(p for p in Path(__file__).resolve().parents
+           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 PROTO = BASE / "V17 GBT小土豆V8-可交互原型.html"
 CANVAS = BASE / "V17 GBT小土豆V8-无限画布.html"
@@ -137,7 +138,7 @@ chk("导航无重键", len({x.split("'")[3] for x in nav_entries}) == 55, "")
 chk("画布 58 页", len(re.findall(r"\['[^']+', p\d+\(\)\],", c)) == 58,
     "%d 页" % len(re.findall(r"\['[^']+', p\d+\(\)\],", c)))
 chk("画布 p1~p58 齐", all(("function p%d(" % i) in c for i in range(1, 59)), "")
-chk("原型无 undefined 字面量", "undefined" not in re.sub(r"//[^\n]*", "", p.split("const V17 = ")[1].split("\n  }")[0]) or True, "（数据层已解析，见运行期校验）")
+chk("原型无 undefined 字面量", "undefined" not in re.sub(r"//[^\n]*", "", p.split("const V17 = ")[1]), "（数据层已解析，见运行期校验）")
 
 
 

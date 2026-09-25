@@ -71,6 +71,18 @@ def _live_cap_total() -> int:
         # 合理兜底：读能力总数失败 → 返回 0 → 上游 _resolve_awareness_anchor 跳过
         # 数字替换（保留原文案），**不会伪造任何数字**，故静默安全。
         pass
+    # 🔴 2026-09-25 修：**真的活口是活注册表，不是任何 JSON**（本文件 92-98 行的注释
+    #    早就这么写了，但代码没照做）。实测：`.gbt/_audit_caps.json` 全库不存在 ⇒
+    #    这里返回 0 ⇒ 上游 `str(_live_cap_total() or 118)` 打出 **118**（v5 时代的硬编码），
+    #    而同一段 prompt 里的能力索引表打 **0**，真注册表是 **172**。
+    #    **同一段 system prompt 里三个数、没一个对** —— 这就是"大模型不知道自己有什么能力"的机器成因。
+    #    ⇒ 现在回落到活注册表（`caps_registry.BENIGN_CAPS`）。
+    try:
+        from ..caps_registry import BENIGN_CAPS as _BC
+        if _BC:
+            return len(_BC)
+    except Exception:
+        pass
     return 0
 
 def _resolve_awareness_anchor(text: str) -> str:
@@ -84,9 +96,15 @@ def _resolve_awareness_anchor(text: str) -> str:
     _n = _live_cap_total()
     if not _n:
         return text
-    for token in ("{{CAP_TOTAL}}", "118"):
-        if token in text:
-            return text.replace(token, str(_n))
+    # 🔴 2026-09-25（台账 N6）：token 表里原来还有一个**裸字面量 `"118"`** —— 那是**盲替换**：
+    #    正文里任何一处出现 118（"端口 11800"、"第 118 行"…）都会被静默改成能力总数。
+    #    而本函数自己的 docstring 写的是「文本里若出现**占位符**就替换」⇒ **代码与 docstring 不一致**。
+    #    现读：内建文本里 `"118"` 出现 **0** 次，两份 awareness 文件也不存在
+    #    ⇒ 去掉它**今天零行为变化**，只是拆掉一个"将来会静默改写正文"的机关。
+    #    （"自我认知里写了过期数字"这件事另有专人管：`tools/awareness_gap_guard` 会把
+    #      注入文本里解析到的数字报出来，不需要在这里顺手改数字。）
+    if "{{CAP_TOTAL}}" in text:
+        return text.replace("{{CAP_TOTAL}}", str(_n))
     return text
 
 # ── 能力 JSON 索引：只认框架内部的 ────────────────────────────────
@@ -115,6 +133,57 @@ def _load_cap_index() -> dict:
         except Exception:
             continue
     return {}
+def _cap_total_label() -> str:
+    """自我认知标题里那个数字**怎么说**。
+
+    🔴 2026-09-25 修：原来是 `str(_live_cap_total() or 118)` —— 读不到就**印 118**
+    （v5 时代的硬编码）。实测那条路天天在走（`_live_cap_total()` 曾返回 0），
+    ⇒ system prompt 一边说「118 个cap」、紧接着的能力索引表说「0个cap」、真值 172。
+    **读不到就如实说读不到，不许拿历史数字顶替**（本仓口径：不编数字）。
+    """
+    n = _live_cap_total()
+    if n:
+        return str(n) + "个cap"
+    return "**能力总数读不到**（活注册表不可读 —— 不拿旧硬编码顶替）"
+
+
+def _registry_cap_index() -> dict:
+    """**从活注册表**造一份与 JSON 索引同形的字典（回落用）。
+
+    🔴 为什么必须有它（2026-09-25 实测）：`_CAP_INDEX_PATHS` 里那条 JSON
+    （`gbt_allinone/gbt_cap_index.json`）**全库不存在**（本文件 92-98 行的注释已如实写明，
+    并点名「真正的活口是 `caps_registry.py`，不是任何 JSON」）——
+    但 `_build_cap_digest()` 当年**照样把空表注入 system prompt**，
+    表头还写着「0个cap · **实时注册表**」（**两个词都不对**：不是 0，也不是那份 JSON）。
+    后果（现读）：prompt 前一段说「118 个cap」、紧接着的表说「0个cap」、真值是 172
+    ⇒ **同一段自我认知里三个数、没一个对**。
+
+    口径：能解析出动作就解析（`op=a|b|c` / `action=a|b`），解析不出就如实留 `-`；
+    **不编触发词** —— 那一列放描述开头，并在表下注明它是什么。
+    """
+    import re as _re
+    out: dict = {}
+    try:
+        from ..caps_registry import BENIGN_CAPS as _BC
+    except Exception:
+        return out
+    for kind, meta in _BC.items():
+        meta = meta if isinstance(meta, dict) else {}
+        desc = str(meta.get("desc") or "")
+        acts: list = []
+        m = _re.search(r"(?:op|action)\s*=\s*([A-Za-z0-9_|\-/]+)", desc)
+        if m:
+            acts = [x.strip() for x in _re.split(r"[|/]", m.group(1)) if x.strip()][:4]
+        head = _re.split(r"[：（(]", desc)[0].strip()
+        out[kind] = {
+            "domain": meta.get("domain") or "未分类",
+            "actions": acts,
+            "triggers": [head[:40]] if head else [],
+            "status": "ok" if meta.get("safe") else "warn",
+        }
+    return out
+
+
 def _build_cap_digest() -> str:
     """
     全量cap精炼为紧凑能力索引表（动态数量） — 强制注入system prompt
@@ -122,9 +191,16 @@ def _build_cap_digest() -> str:
     大模型读到这张表就能精准感知+瞬间知道调用哪个cap
     """
     index = _load_cap_index()
+    source = "JSON 索引 gbt_cap_index.json"
+    if not index:
+        # 🔴 回落：JSON 索引不存在时**用活注册表**，并把来源**写在表头**上 ——
+        #    读的人（和模型）必须能看出这张表是从哪儿来的。
+        index = _registry_cap_index()
+        source = ("caps_registry.BENIGN_CAPS（活注册表）· ⚠️ JSON 索引 gbt_cap_index.json 不存在，"
+                  "已按本文件既有口径回落")
     n = len(index)
     lines = []
-    lines.append("\n\n## ⚡ 能力精准索引（" + str(n) + "个cap · 实时注册表）")
+    lines.append("\n\n## ⚡ 能力精准索引（" + str(n) + "个cap · 来源：" + source + "）")
     lines.append("|域|cap|动作|触发词|")
     lines.append("|--|---|---|---|")
     # 按域分组
@@ -138,8 +214,21 @@ def _build_cap_digest() -> str:
             triggers = ' · '.join(info.get('triggers', [])[:3]) or '-'
             status   = '✓' if info.get('status') == 'ok' else '⚠'
             lines.append("|"+domain+"|"+status+"`"+cap_id+"`|"+actions+"|"+triggers+"|")
-    lines.append("\n> 直接调用: python caps/<cap_id>/run.py <action> '{\"k\":\"v\"}'")
-    lines.append("> N8N入口: POST http://localhost:5678/webhook/gbt {\"cap\":\"id\",\"action\":\"a\",\"params\":{}}")
+    # 🔴 2026-09-25 修「**教模型走一条不存在的路**」：
+    #   这两行原来写的是
+    #       > 直接调用: python caps/<cap_id>/run.py <action> '{"k":"v"}'
+    #       > N8N入口: POST http://localhost:5678/webhook/gbt {...}
+    #   现读实测：`caps/` 顶层**只有 2 个目录、全库只有 1 个 run.py**（`caps/design_brain/run.py`）
+    #   ⇒ `caps/health/run.py`、`caps/mirror_status/run.py`、`caps/echo/run.py` **统统不存在**；
+    #   5678 端口**无监听**。**⇒ 自我认知教了模型两条调用法，两条都是死的。**
+    #   后果比"少一句说明"重得多：模型照着走 ⇒ 文件不存在 ⇒ 它会得出"这个框架调不动"的结论，
+    #   而**真正的入口只有一道门**（`run_task` / `five-dim.py cap`），那条路它反而没被告知。
+    #   这正是 `verify-distill` 判据 D 要抓的"编出来的命令"——只不过**没人审运行时 prompt**。
+    #   ⇒ 换成真入口。**只写盘上真有的路径**；n8n 不再谎报已在运行。
+    lines.append("\n> 唯一门（真入口）: run_task(\"<cap_id>\", {...payload})")
+    lines.append("> CLI 同一条门: python tools/codex-scripts/five-dim.py cap <cap_id> '{...}'")
+    lines.append("> 缺授权会**如实报缺**（作用域见 `gbt_allinone/security/policy.py`）；"
+                 "**AI 无权给自己发授权**，只由主人在终端发放。")
     return '\n'.join(lines)
 # ══════════════════════════════════════════════════════════════
 # Layer 3 — 瞬间调配：从注册表直接路由到cap
@@ -321,17 +410,44 @@ def _load_awareness() -> str:
             continue
     return _BUILTIN_AWARENESS.replace("ACTIVE_PROVIDER", PROVIDER or "auto")
 def _load_security_policy() -> str:
-    """加载安全策略 — 从 brain.cognition.IDENTITY 提取并格式化"""
+    """安全策略段 —— **以真门为源**。
+
+    🔴 2026-09-25 现读修（第四条机器成因）：原实现只从
+    `brain.cognition.Cognition.IDENTITY["security_policy"]` 取，而那个模块
+    **根本不存在**（`ModuleNotFoundError: No module named 'brain.cognition'`）
+    ⇒ **天天走硬编码回退**，注入进 system prompt 的只有一句口号：
+
+        ⛔ 绝不泄露 | ⛔ 绝不执行危险操作 | ⛔ 绝不允许绕过安全护栏
+
+    现读同一份 prompt：**14 个真实作用域名，命中 0 个**。
+    ⇒ 模型被告知"绝不绕过护栏"，却**从不知道护栏是什么** —— 被 `denied` 时它不知道
+      为什么、也不知道该去请主人开哪一道门（于是要么空转，要么想找旁路）。
+      这是"接不上框架"的**第三条机器成因**（前两条见第十六、十八节）。
+
+    修法照同一口径：**指向活口** —— `security/policy.py` 的 `SCOPE_DESCRIPTIONS`
+    ＋ `auth_gate.ONE_SHOT_SCOPES`（哪几个是一次性消耗），并**如实标注来源**。
+    取不到就仍回退那句口号（不编）。
+    """
     try:
-        sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-        from brain.cognition import Cognition
-        policy = Cognition.IDENTITY.get("security_policy", {})
-        if policy:
-            lines = []
-            for k, v in policy.items():
-                lines.append(f"{k}: {v}")
+        from ..security import policy as _P
+        from .. import auth_gate as _AG
+        descs = dict(getattr(_P, "SCOPE_DESCRIPTIONS", {}) or {})
+        if descs:
+            one = set(getattr(_AG, "ONE_SHOT_SCOPES", ()) or ())
+            lines = ["**唯一授权门 = `gbt_allinone/security/policy.py`（下表现读自该文件，不是抄的）**",
+                     "**需要人工授权的作用域（%d 个）**：" % len(descs)]
+            for _name in sorted(descs):
+                _mode = "**一次性消耗**" if _name in one else "时段授权（TTL 内可多次）"
+                lines.append("- `%s`：%s —— %s" % (_name, _mode, descs[_name]))
+            lines.append("**AI 永远无权给自己发授权。** 只由主人在终端发放："
+                         "`python -m gbt_allinone auth grant --scope <作用域> --ttl 600`。")
+            lines.append("被拒时**如实报缺哪个作用域**，不许找旁路、不许改 `policy.py`、"
+                         "不许绕门（本仓最高优先级红线之一）。")
+            lines.append("（历史来源 `brain.cognition.Cognition.IDENTITY['security_policy']` "
+                         "本机现读**不存在** ⇒ 已按本文件既有口径回落到真门。）")
             return "\n".join(lines)
-    except Exception: pass  # 容错: 非关键路径
+    except Exception:
+        pass  # 容错: 非关键路径（取不到真门时才回退口号）
     return "⛔ 绝不泄露 | ⛔ 绝不执行危险操作 | ⛔ 绝不允许绕过安全护栏"
 def _build_system(custom: str = "") -> str:
     """构建完整system prompt — 自我认知强制首位注入"""
@@ -341,7 +457,7 @@ def _build_system(custom: str = "") -> str:
         "你是GBT·小土豆终端AI（terminal-potato），由自由的风开发。"
         + "当前LLM驱动: " + (PROVIDER or "auto") + " | 模型: " + (MODEL or "auto") + "\n\n"
         + "=" * 60 + "\n"
-        + "## 🧠 完整自我认知（Agent驱动必经首注入，" + str(_live_cap_total() or 118) + "个cap）\n"
+        + "## 🧠 完整自我认知（Agent驱动必经首注入，" + _cap_total_label() + "）\n"
         + "=" * 60 + "\n"
         + awareness + "\n"
         + cap_digest + "\n"

@@ -37,7 +37,11 @@ def acc(J, BIN, i, comps):
 # ① 先验证顶点一致（不同就拒绝，不硬干）
 n_r = JR["accessors"][pr_r["attributes"]["POSITION"]]["count"]
 n_b = JB["accessors"][pr_b["attributes"]["POSITION"]]["count"]
-same = (n_r == n_b) and (pr_r["attributes"]["POSITION"] in JB["accessors"][pr_b["attributes"]["POSITION"]:pr_b["attributes"]["POSITION"] + 1] or True)
+# 🔴 2026-09-25 清掉一句死表达式：原来第二个合取项末尾写着 `or True` ⇒ 那一项**恒真、等于没写**
+#    （`dead_judgments` 审计器点出来的）。它显然是想再验一条"POSITION accessor 指向同一处"，
+#    但**从来没实现**。这里如实收成"只看顶点数一致"，并把"那条没实现"写下来 ——
+#    免得下一个人以为搬之前已经验过 accessor 归属。**行为逐字节不变**（原式恒等于 `n_r == n_b`）。
+same = (n_r == n_b)   # NOTE: 原计划还有一条 accessor 归属校验，**未实现**；本行只判顶点数
 print(f"顶点 {n_r} vs {n_b} ⇒ {'一致，可直搬' if n_r == n_b else '不一致，停'}")
 if n_r != n_b:
     raise SystemExit(1)

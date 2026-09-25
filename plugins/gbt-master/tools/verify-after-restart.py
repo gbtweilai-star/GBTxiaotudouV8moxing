@@ -45,13 +45,26 @@ def add(ok: bool, name: str, now: str, want: str) -> None:
 
 
 # ── ①②③ 一次 GET 拿三样 ───────────────────────────────────────────────────
+# 🔴 2026-09-25 自纠（实测到的一次**假红**）：② 的判据是
+#    `latency < 1.5`，而这是**本机 HTTP 往返**的墙钟读数 —— 我自己的后台活儿
+#    （跑全套测试/审计器）压着 CPU 与内存时，同一发能读到 >1.5 s ⇒ ② 变 ⏳。
+#    现场：20:51 那次靴自检读到「还有 2 项没到位」，而单独跑同一张单只有 1 项（⑤）。
+#    本条**不是把判据改松**（阈值、口径一字未动）：慢发**重测一次**，
+#    判据仍用同一个 1.5 s，读数把两次都印出来 —— 只把"我自己占用机器"造成的
+#    抖动与"实现真的慢"分开。重测还慢 ⇒ 照红，并且明说重测过。
 cat, latency, err = None, None, ""
+lat_first = None
 for attempt in range(3):
     t0 = time.time()
     try:
         with urllib.request.urlopen(BASE, timeout=30) as r:
             cat = json.loads(r.read().decode("utf-8"))
         latency = time.time() - t0
+        # 第一次就慢 ⇒ 再测一次（不换判据，只把抖动与真慢分开）
+        if latency >= 1.5 and lat_first is None:
+            lat_first = latency
+            time.sleep(0.2)
+            continue
         break
     except Exception as e:  # noqa: BLE001
         err = "%s: %s" % (type(e).__name__, e)
@@ -64,9 +77,11 @@ else:
     live_ver = str(cat.get("version"))
     add(live_ver == str(SRC_VERSION), "① 宿主机代码换代",
         "进程自报 version=%s" % live_ver, "源稿是 %s ⇒ 重启后应报 %s" % (SRC_VERSION, SRC_VERSION))
+    _lat_now = ("本次 %.2f s" % (latency or -1)) if lat_first is None else \
+               ("本次 %.2f s（上一发 %.2f s 偏慢，按同一阈值重测过一次）" % (latency or -1, lat_first))
     add(latency is not None and latency < 1.5, "② 目录路由提速",
-        "本次 %.2f s（旧实现是 13 个顺序 await，实测 8–10 s）" % (latency or -1),
-        "< 1.5 s ⇒ 说明 Promise.all 那版已装载")
+        "%s（旧实现是 13 个顺序 await，实测 8–10 s）" % _lat_now,
+        "< 1.5 s ⇒ 说明 Promise.all 那版已装载（重测仍超才算慢）")
     cd = cat.get("clientDiag") or {}
     diag = cd.get("diag") or []
     ok3 = (cd.get("gen") == "gbt-potato-master-v9"
@@ -94,6 +109,77 @@ if INSTALLED.exists() and probe.exists():
 else:
     add(False, "④ 注入上下文是新文案（装机副本实跑）",
         "装机副本或探针不在（%s）" % INSTALLED, "先跑 verify-installed-copy.mjs --fix")
+
+# ── ⑥ 排查台账块（Owner 令：重启后自动读取；正/负对照都要在） ─────────────────
+# 🔴 2026-09-25 加：验收单原来**只验了两块**（面板 / 数字人），台账这块是新加的第三块 ——
+#    不验它，就等于"新增的自动读取"没人管。判据四条：块在 · 四个字段都在 ·
+#    负对照如实说"读不到" · **且真的跑了装机副本**（否则"重启后生效"无从谈起）。
+probe_ok = probe.exists()
+if probe_ok:
+    try:
+        r = subprocess.run(["node", str(probe)], cwd=str(ROOT), capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", timeout=120)
+        out = (r.stdout or "") + (r.stderr or "")
+        has_block = "【GBT小土豆V8 · 故障排查台账" in out
+        has_fields = all(k in out for k in ("台账时间点", "没做", "未清故障", "等你拍板"))
+        neg_honest = "台账文件读不到" in out
+        ran_installed = "正对照·装机副本" in out
+        add(has_block and has_fields and neg_honest and ran_installed,
+            "⑥ 排查台账块（正/负对照 · 含装机副本）",
+            "块=%s · 四字段=%s · 负对照如实=%s · 跑了装机副本=%s"
+            % (has_block, has_fields, neg_honest, ran_installed),
+            "台账块在、四字段齐、读不到时如实上报，且装机副本也真跑了一遍")
+    except Exception as e:  # noqa: BLE001
+        add(False, "⑥ 排查台账块（正/负对照 · 含装机副本）", "跑不动：%s" % e,
+            "node plugins/gbt-master/tools/verify-state-injection.mjs")
+else:
+    add(False, "⑥ 排查台账块（正/负对照 · 含装机副本）", "探针不在：%s" % probe,
+        "node plugins/gbt-master/tools/verify-state-injection.mjs")
+
+# ── ⑦ 装机副本漂移闸（**改了源稿就得同步，否则重启也白搭**） ─────────────────
+# 🔴 2026-09-25 加。当天实测：装机副本的 host.js 比源稿**少 3,309 B** ⇒
+#    光改工作区源稿、重启加载的还是旧副本（"看起来改了、其实没改"）。
+#    ④ 项自称"装机副本实跑"，但它当时 import 的是**源稿** ⇒ 这类漂移它根本测不出来。
+#    所以单列一项，直接跑那个专门管漂移的闸。
+drift_gate = ROOT / "plugins" / "gbt-master" / "tools" / "verify-installed-copy.mjs"
+if drift_gate.exists():
+    try:
+        r = subprocess.run(["node", str(drift_gate)], cwd=str(ROOT), capture_output=True,
+                           text=True, encoding="utf-8", errors="replace", timeout=120)
+        ok = r.returncode == 0
+        add(ok, "⑦ 装机副本与源稿逐字节一致",
+            "漂移闸退出码=%d%s" % (r.returncode, "" if ok else "（有漂移 ⇒ 跑 --fix 同步）"),
+            "node plugins/gbt-master/tools/verify-installed-copy.mjs 退出码 0")
+    except Exception as e:  # noqa: BLE001
+        add(False, "⑦ 装机副本与源稿逐字节一致", "跑不动：%s" % e, "node verify-installed-copy.mjs")
+else:
+    add(False, "⑦ 装机副本与源稿逐字节一致", "漂移闸不在：%s" % drift_gate,
+        "plugins/gbt-master/tools/verify-installed-copy.mjs 应当在")
+
+# ── ⑧ 注入面诚实性（**下一轮会话读到的每一段字都得是真的**） ───────────────────
+# 🔴 2026-09-25 加。理由：第 20-25 轮发现「喂给模型的文本」连撞四处假账
+#    （总数打架 / 调用法是死的 / 自检命令崩 / 安全段是假的）。台账块是**新加的一段注入** ——
+#    它自己也可能变成第五处。⇒ 单列一项，跑那条收口判据。
+honesty = ROOT / "tools" / "codex-scripts" / "audit-injection-honesty.py"
+if honesty.exists():
+    try:
+        r = subprocess.run([sys.executable, str(honesty), "--json"], cwd=str(ROOT),
+                           capture_output=True, text=True, encoding="utf-8",
+                           errors="replace", timeout=300)
+        raw = r.stdout or ""
+        i = raw.find("{")
+        rep = json.loads(raw[i:]) if i >= 0 else {}
+        n = int(rep.get("problem_count") or 0)
+        add(n == 0, "⑧ 注入面诚实性（0 假账）",
+            "查了 %s 段注入 · 假账 %d 条%s" % (rep.get("blocks"), n,
+                                        "" if n == 0 else "：" + str(rep.get("problems"))[:160]),
+            "python tools/codex-scripts/audit-injection-honesty.py 退出码 0")
+    except Exception as e:  # noqa: BLE001
+        add(False, "⑧ 注入面诚实性（0 假账）", "跑不动：%s" % e,
+            "python tools/codex-scripts/audit-injection-honesty.py --json")
+else:
+    add(False, "⑧ 注入面诚实性（0 假账）", "判据不在：%s" % honesty,
+        "tools/codex-scripts/audit-injection-honesty.py 应当在")
 
 # ── ⑤ 旧 specifier 清理（可选，重启后才允许） ───────────────────────────────
 pkg = Path.home() / ".dsh" / "profiles" / "web" / "package.json"

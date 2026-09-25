@@ -11,7 +11,8 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-BASE = Path(__file__).resolve().parent.parent
+BASE = next(p for p in Path(__file__).resolve().parents
+           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 OUT = BASE / "assets" / "brand" / "_preview-typography.png"
 
 PANEL = (8, 17, 31)

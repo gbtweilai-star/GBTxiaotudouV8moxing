@@ -113,6 +113,52 @@ _PROBE_ONLY_KINDS = frozenset({
 
 PROBE_SKIP_KINDS = _PROBE_ONLY_KINDS | _state_changing_kinds()
 
+# 🔴 2026-09-25 立：H 维的**整体预算**（Owner 令「继续扫描所有故障」期间实测逼出来的）。
+#
+# 症状（真跑，不是推演）：空参 `cross_scan` **两次都 >560s 不返回**；
+# `scan(deep=False)` 只要 17.9s ⇒ 钱全花在 H 维。
+#
+# 根因（读源码 + 拿运行时普查的**逐位耗时表**对账，两处证据合得上）：
+# H 维（本文件 355-372 行）对每个 `safe` 且不在 `PROBE_SKIP_KINDS` 里的能力位
+# **就地同步** `run_task(name, {"_probe": True})`，**没有任何时间预算**。
+# 而 `PROBE_SKIP_KINDS` 只排除**侧效应**位，**不排除"很慢的只读扫描器"** ⇒
+# 这些位被逐个真调（下表是 `caps-runtime-census` 的现读耗时）：
+#     sec_scan 299.7s · sec_chain 269.6s · sec_surface 26.6s · file_hygiene 8.6s ·
+#     libtv_workflow 6.5s · sec_defenses 4.5s · caps_called_audit 4.0s · tentacle_status 3.1s
+#     ……（其余 90 位多为 0.2–1s）
+# 光把已量到的加起来就 **>620s** ⇒ **"不返回"不是死锁，是无上界的求和**。
+# 而安全面新接线（第 7 节那 12 个位）让这个和又长了一截 —— 同一个病因，剂量变大。
+#
+# 取舍（为什么是"加预算 + 如实报没跑到"，而不是别的）：
+#   · ❌ 不许改 `deep=False`：那等于**悄悄把 H 维整条砍掉**（2026-09-25 已撤回该建议）。
+#   · ❌ 不许缩 `dims`：覆盖静默缩水，本仓最忌。
+#   · ✅ 加**整体预算**，超了就**如实报出"还差哪几位没探到"**。
+#     有界 + 诚实 > 无界 + 根本跑不起来（后者覆盖率是 **0**，更差）。
+# 🔴 读数纪律：`deadline_hit: true` 时**绝不许**把 `deep_coverage` 念成"全扫过了" ——
+#    `not_probed` 就是"这次没跑到"的名单，它既不是通过、也不是失败。
+# 🔴 2026-09-25 立（**同一次实测的第二刀**）：H 维要跳过的**慢位**。
+#
+# 为什么光有整体预算不够（**我第一版就只加了预算，当场被自己的验证打回**）：
+# 预算是"**起下一次调用之前**看一眼时钟"，它只约束**调用次数**，**约束不了单次调用的时长**。
+# 实测证据：给 30s 预算真跑，**120s 都没回来** —— 因为循环早在 30s 前就起了
+# `sec_chain` 那一发，而它自己要走 269s ⇒ 单发就把预算冲穿了。
+#
+# 判据（不是"猜谁慢"，是**量出来的**）：`caps-runtime-census` 现读 98 位只读位的耗时，
+# 合计 **735.3s**，其中 ≥5s 的只有 6 位、合计 **672.2s**；**扣掉它们只剩 63.0s**。
+#   sec_scan 299.7s · sec_chain 269.6s · sec_surface 26.6s · file_hygiene 8.6s ·
+#   libtv_workflow 6.5s（`cross_scan` 61.1s 本来就在 `_PROBE_ONLY_KINDS` 里，防递归）
+# ⇒ 跳掉这 5 位：H 维从 ~674s 降到 ~63s，进得了预算。
+#
+# 语义上也自洽：H 维自己的 docstring 写的就是「全能力**逐个轻调用**」——
+# 一发 5 分钟的安全全扫**不是轻调用**，它是另一条专门的扫描线（`_X_SCANNER_KINDS` 已在跑）。
+# 跳过**必须可见**（`deep_coverage.skipped_slow` + 量到的耗时），不许当成"探过了没问题"。
+_SLOW_KINDS = frozenset({"sec_scan", "sec_chain", "sec_surface",
+                         "file_hygiene", "libtv_workflow"})
+_SLOW_KIND_COST_S = {"sec_scan": 299.7, "sec_chain": 269.6, "sec_surface": 26.6,
+                     "file_hygiene": 8.6, "libtv_workflow": 6.5}
+
+H_BUDGET_S = 240.0
+
 # 专项名单单独导出，供想区分"改状态"与"探测专项"的读数用（如 caliber 对账）。
 PROBE_ONLY_KINDS = _PROBE_ONLY_KINDS
 
@@ -231,8 +277,16 @@ def _x_run_isolated(kinds=_X_SCANNER_KINDS, timeout_s: int = 240, store_dir=None
             _shutil.rmtree(str(iso), ignore_errors=True)
     return out
 
-def scan(deep: bool = True) -> dict:
-    """深度穿透式交叉扫。deep=True 时含 H 维（全能力运行时可达——较慢）。"""
+def scan(deep: bool = True, h_budget_s: float | None = H_BUDGET_S) -> dict:
+    """深度穿透式交叉扫。deep=True 时含 H 维（全能力运行时可达——较慢）。
+
+    `h_budget_s`：H 维的**整体时间预算**（秒）。默认 240s。
+      · 传 `None` ⇒ **无预算**（改动前的旧行为，会真的跑几分钟到十几分钟）；
+      · 超预算后不再起新调用，把剩下的位**如实记进 `deep_coverage.not_probed`**，
+        并置 `deadline_hit: true` —— **没跑到 ≠ 通过**。
+    为什么默认有界：无界时空参 `cross_scan` 实测 >560s 不返回（H 维逐个真调，
+    而里面躺着 `sec_scan`/`sec_chain` 这类 5 分钟级的只读扫描器）。详见 `H_BUDGET_S` 上方注释。
+    """
     t0 = time.time()
     findings = []
 
@@ -351,15 +405,30 @@ def scan(deep: bool = True) -> dict:
     # 这正是"扫不出问题"的病灶形态：**没有分母，红绿都不算数**。
     # 现在把跳过名单一并交出去（跳过是**设计**，不是缺陷；但**必须可见**）。
     deep_stats = {"checked": 0, "dead": [], "skipped_n": 0, "skipped": [],
-                  "unsafe_n": 0, "unsafe": []}
+                  "unsafe_n": 0, "unsafe": [], "not_probed": [],
+                  "skipped_slow": [], "budget_s": h_budget_s,
+                  "elapsed_s": 0.0, "deadline_hit": False}
     if deep:
         skip = PROBE_SKIP_KINDS
+        _h_t0 = time.monotonic()
         for name in sorted(BENIGN_CAPS):
             if not BENIGN_CAPS[name].get("safe"):
                 deep_stats["unsafe"].append(name)
                 continue
             if name in skip:
                 deep_stats["skipped"].append(name)
+                continue
+            # 🔴 第一刀：**慢位不轻调用**（量出来的 5 位，见 `_SLOW_KINDS`）。
+            #    光靠下面的预算挡不住它们 —— 单发 269s 就能把预算冲穿。
+            if name in _SLOW_KINDS:
+                deep_stats["skipped_slow"].append(name)
+                continue
+            # 🔴 第二刀：预算检查放在**调用之前** —— 超了就不再起新调用。
+            #    ⚠️ 它只约束"还能起几发"，**约束不了单发时长**：若哪一位没被量到却要跑几分钟，
+            #       这一发仍会冲穿预算。所以 `deadline_hit` 与 `not_probed` 都要如实报出来。
+            if h_budget_s is not None and (time.monotonic() - _h_t0) > float(h_budget_s):
+                deep_stats["deadline_hit"] = True
+                deep_stats["not_probed"].append(name)
                 continue
             deep_stats["checked"] += 1
             try:
@@ -370,6 +439,7 @@ def scan(deep: bool = True) -> dict:
                     deep_stats["dead"].append(name)
             except Exception:
                 deep_stats["dead"].append(name)
+        deep_stats["elapsed_s"] = round(time.monotonic() - _h_t0, 1)
         deep_stats["skipped_n"] = len(deep_stats["skipped"])
         deep_stats["unsafe_n"] = len(deep_stats["unsafe"])
         for name in deep_stats["dead"]:
@@ -421,9 +491,27 @@ def scan(deep: bool = True) -> dict:
             "skipped_side_effect": deep_stats["skipped"],
             "unsafe_n": deep_stats["unsafe_n"],
             "unsafe": deep_stats["unsafe"],
+            # 🔴 第三个分母（2026-09-25 加）：**因为超预算而根本没起调用的**那些位。
+            "budget_s": deep_stats["budget_s"],
+            "elapsed_s": deep_stats["elapsed_s"],
+            "deadline_hit": deep_stats["deadline_hit"],
+            "not_probed_n": len(deep_stats["not_probed"]),
+            "not_probed": deep_stats["not_probed"],
+            # 🔴 第四个分母：**慢位**（量出来的，不是猜的）—— H 是"轻调用"，它们不是轻调用。
+            "skipped_slow_n": len(deep_stats["skipped_slow"]),
+            "skipped_slow": deep_stats["skipped_slow"],
+            "skipped_slow_cost_s": {k: _SLOW_KIND_COST_S.get(k) for k in deep_stats["skipped_slow"]},
             "note": ("侧效应位（发布/部署/出网/完整认知循环）与未标 safe 的位**不在 H 维轻调用里** —— "
-                     "跳过是设计，但必须看得见：`checked + skipped_n + unsafe_n == len(BENIGN_CAPS)`。"
-                     "要真探它们请用 `py -3.14 tools/codex-scripts/cap_probe_all.py`（隔离 store + 逐条超时）。"),
+                     "跳过是设计，但必须看得见："
+                     f"`checked({deep_stats['checked']}) + skipped_n({deep_stats['skipped_n']}) + "
+                     f"unsafe_n({deep_stats['unsafe_n']}) + not_probed_n({len(deep_stats['not_probed'])}) + "
+                     f"skipped_slow_n({len(deep_stats['skipped_slow'])}) == len(BENIGN_CAPS)`。"
+                     "**`not_probed` = 这次没跑到**（不是通过、也不是失败）；"
+                     "**`skipped_slow` = 超过 5s 的慢位，不属『轻调用』**"
+                     "（`skipped_slow_cost_s` 是量到的耗时，加总约 611s）。"
+                     "`deadline_hit: true` 时绝不许把本读数念成『全扫过了』。"
+                     "要真探被跳过的位请用 `py -3.14 tools/codex-scripts/cap_probe_all.py`"
+                     "（隔离 store + 逐条超时）。"),
         },
         "scanners_verdict": verdicts,
         # 各扫描器原始判定里被豁免的，逐条写明「豁了谁、按什么理由」——

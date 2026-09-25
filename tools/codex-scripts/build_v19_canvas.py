@@ -6,7 +6,8 @@ import sys
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-BASE = Path(__file__).resolve().parent.parent
+BASE = next(p for p in Path(__file__).resolve().parents
+           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 SRC = BASE / "archive" / "V18 GBT小土豆V8-无限画布.html"
 OUT = BASE / "V19 GBT小土豆V8-可无限画布.html".replace("可无限", "无限")

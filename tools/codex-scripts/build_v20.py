@@ -8,7 +8,8 @@ import sys
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-BASE = Path(__file__).resolve().parent.parent
+BASE = next(p for p in Path(__file__).resolve().parents
+           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 V19P = BASE / "V19 GBT小土豆V8-可交互原型.html"
 V20P = BASE / "V20 GBT小土豆V8-可交互原型.html"

@@ -53,7 +53,8 @@ deploy/cloud-10/
   src/worker.js          ← 路由 / 门 / 边读数 / 全互通实跑（手写）
   src/mesh.generated.js  ← 生成物：运行时读的接线表
   modules/<id>/          ← 生成物：形态 B 的单模块 Worker + 9 条服务绑定
-  tools/run-mesh-local.mjs ← 本机形状验收（43 项判据，不是本机部署）
+  tools/run-mesh-local.mjs ← 本机形状验收（70 项判据，不是本机部署）
+  tools/check-endpoint-gate.mjs ← 本机**端点闸行为**验收（57 项，含 12 条负控，离线 0.3 s）
 ```
 
 改接线只改 `mesh.json`，然后：
@@ -64,7 +65,14 @@ python tools/codex-scripts/cloud-mesh.py check    # 对账：表改了件没改 
 python tools/codex-scripts/cloud-mesh.py edges    # 90 条边现算读数
 python tools/codex-scripts/cloud-mesh.py selftest # 54 项控制（含负控）
 python tools/codex-scripts/cloud-mesh.py readiness# 云侧只读现读：身份/资源/占位符
-node deploy/cloud-10/tools/run-mesh-local.mjs     # 本机形状验收 43 项
+node deploy/cloud-10/tools/run-mesh-local.mjs     # 本机形状验收 70 项
+node deploy/cloud-10/tools/check-endpoint-gate.mjs # 本机端点闸行为 57 项（离线 · 不出一字节网）
+
+# 上面这条为什么单独有：worker.js 里 2026-09-25 那 4 批改动（令牌闸 / `/v1/models`
+# 作用面读数 / `normalizeMessages` 拍平块数组 / 错误分档）因为**没部署**，云端一次都没跑过。
+# 这条闸用桩 AI 绑定把它们的行为在本机验掉，并且**逐条配负控**；
+# 变异测试（把修复打回病根）现读 49/57、退出码 1，红点正好落在对应两组 —— 判据是有牙的。
+# 口径：本机验的是**代码行为**，不替代云端真读数（未部署 ⇒ 云端真读数仍然缺，见 F6）。
 
 # 真跑验收（对一个**已经跑起来**的实例量 16 条判据；不部署、不改远端）
 wrangler dev -c deploy/cloud-10/wrangler.toml --port 8787 --local   # 本机 workerd 冒烟

@@ -564,22 +564,45 @@ def keylogger(action: str = "status", seconds: int = 0, session: str = "", **_kw
         name = session or time.strftime("input-%Y%m%d-%H%M%S")
         rec = _INPUT_DIR / f"{name}.jsonl"
         meta = _INPUT_DIR / f"{name}.meta.json"
+        # 🔴 2026-09-25 修 FR-5（机检命中，`false_report_audit` 自己抓的）：
+        #   原来子进程的 stderr 被丢进 `DEVNULL`，而 `_record_input` 的兜底分支
+        #   **写失败就 `pass`** ⇒ 记录器写盘出问题时**一个字都不留**：
+        #   记录文件在位、看着像一份完整会话日志，读的人**分不清"这段没有输入"
+        #   和"这段写盘一直在失败"**。对取证型记录这是致命的。
+        #   修法：给子进程留一份 stderr 落点，并把兜底分支从 `pass` 改成**往那儿写一行**。
+        errlog = _INPUT_DIR / f"{name}.stderr.log"
+        _err_fh = None
+        try:
+            _err_fh = open(errlog, "a", encoding="utf-8", errors="replace")
+        except OSError:
+            _err_fh = None                     # 开不了就退回 DEVNULL，但下面会把事实报出来
         args = [sys.executable, "-m", "gbt_allinone.security.redteam",
                 "_record_input", str(rec), str(int(seconds or 0))]
         try:
             flags = getattr(subprocess, "DETACHED_PROCESS", 0) | \
                 getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
             proc = subprocess.Popen(args, creationflags=flags, close_fds=True,
-                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                    stdout=subprocess.DEVNULL,
+                                    stderr=(_err_fh or subprocess.DEVNULL),
                                     cwd=str(Path(__file__).resolve().parents[2]))
         except Exception as exc:                                # noqa: BLE001
             return {"ok": False, "error": f"启动记录器失败:{type(exc).__name__}: {exc}"}
+        finally:
+            if _err_fh is not None:
+                _err_fh.close()                # 子进程已拿到自己的句柄，父进程这份可以关
         meta.write_text(json.dumps(
             {"session": name, "pid": proc.pid, "started_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
-             "seconds": int(seconds or 0), "scope": "本机输入活动（仅本机）"},
+             "seconds": int(seconds or 0), "scope": "本机输入活动（仅本机）",
+             "stderr_log": (str(errlog) if _err_fh is not None else None)},
             ensure_ascii=False, indent=2), encoding="utf-8")
         return {"ok": True, "op": "start", "session": name, "pid": proc.pid,
                 "file": str(rec), "seconds": int(seconds or 0),
+                "stderr_log": (str(errlog) if _err_fh is not None else None),
+                "如何查写盘失败": ("读 %s；写不进这个日志本身时该字段为 null，"
+                                   "读数里如实体现、不假装有" % errlog)
+                if _err_fh is not None else
+                ("⚠️ stderr 落点**没建起来**（开 %s 失败）⇒ 记录器写盘失败时将无处留痕；"
+                 "本字段为 null 就是这件事的如实上报" % errlog),
                 "how_to_stop": f'run_task("keylogger", {{"action":"stop","session":"{name}"}})',
                 "口径": "只写本地；不做出网"}
     if action == "stop":
@@ -689,8 +712,15 @@ def _record_input(path: str, seconds: int) -> None:
                                      "event": "error",
                                      "error": f"{type(exc).__name__}: {exc}"},
                                     ensure_ascii=False) + "\n")
-        except Exception:                                       # noqa: BLE001
-            pass
+        except Exception as exc2:                               # noqa: BLE001
+            # 🔴 2026-09-25 修 FR-5：这里原来是 `pass` —— **连"写不进错误记录"这件事本身都无声**。
+            #    改成留一行字：本子进程的 stderr 由 `keylogger(action="start")` 落到
+            #    `<session>.stderr.log`（见 start 分支），所以这一行**真的有人能读到**。
+            #    口径照本仓那句：「吞异常可以，但必须留一行字」。
+            sys.stderr.write("[redteam._record_input] 记录失败且补写失败: %s: %s | %s: %s\n"
+                             % (type(exc).__name__, str(exc)[:120],
+                                type(exc2).__name__, str(exc2)[:120]))
+            sys.stderr.flush()
 
 
 def screen_sniff(action: str = "capture", label: str = "", frames: int = 1,
@@ -707,9 +737,16 @@ def screen_sniff(action: str = "capture", label: str = "", frames: int = 1,
                 _rows.append({"file": str(f), "bytes": f.stat().st_size,
                               "at": time.strftime("%Y-%m-%d %H:%M",
                                                   time.localtime(f.stat().st_mtime))})
-        return {"ok": True, "op": "list", "dimension": "自监控", "count": len(_rows),
-                "captures": _rows[-60:], "落点": str(_SCREEN_DIR),
-                "口径": "只写本地；无出网路径"}
+        # 🔴 2026-09-25 修 FR-8（机检命中）：`count` 报的是**盘上全量**，而 `captures`
+        #    只回**最近 60 条** —— 分母≠分子且**没给这件事起名**，读的人拿
+        #    `len(captures) == count` 去对会莫名对不上，更坏的是**以为拿到的是全部采集**。
+        #    修法：把口径三件套补全（count=全量 / shown=本次返回 / truncated=有没有被截）。
+        _shown = _rows[-60:]
+        return {"ok": True, "op": "list", "dimension": "自监控",
+                "count": len(_rows), "shown": len(_shown),
+                "truncated": len(_rows) > len(_shown),
+                "captures": _shown, "落点": str(_SCREEN_DIR),
+                "口径": "只写本地；无出网路径；count=盘上全量、captures 只回最近 60 条"}
     if action == "capture":
         _state_dir(_SCREEN_DIR)
         n = max(1, min(int(frames or 1), 60))

@@ -394,12 +394,21 @@ def _io_boundary(boundary, path):
     return buf.getvalue()
 
 
-def run(op="tts", **params):
-    """voice 统一入口：tts（SAPI，默认）/ asr（云端）/ **listen（本机离线）** / status。
+# 每个 op **认**哪些参数。用途只有一个：**把"传了但没被用"的参数如实报出来**。
+# 为什么必须有一张表（2026-09-25 实测踩到）：
+#   调度层（`api.py` 的 voice 分支）当年是手写白名单转发，白名单外的参数**静默丢**；
+#   而这层的 `params.get(...)` 是**第二次静默丢** —— 两层都不报错。
+#   实测：传 `path=<wav路径>` 期望落盘，读数却是 `{"ok":true,"spoken":true}`（直接发声、零文件）。
+#   ⇒ 修法不是"多加几个名字"（第 59 轮就是这么补的，同类病照样复发），而是**认不出就报**。
+_ACCEPTED_PARAMS = {
+    "tts": {"text", "voice", "rate", "out"},
+    "asr": {"audio"},
+    "listen": {"seconds", "culture", "min_confidence", "timeout", "wav"},
+    "status": set(),
+}
 
-    `listen` 是 2026-09-23 为「打开页面就自动监听」加的那条腿：
-    它不需要任何密钥，也不需要主人发授权（门现读不给它挂作用域 —— 见文件头那条盲区说明）。
-    """
+
+def _dispatch(op, params):
     if op in ("tts", "speak", None):
         return tts(params.get("text"), params.get("voice"),
                    int(params.get("rate", 0)), params.get("out"))
@@ -434,3 +443,25 @@ def run(op="tts", **params):
                 "note": ("listen = 本机离线识别（零密钥，两条输入腿）；asr = 云端端点（需 GBT_ASR_*）；"
                          "listen 是否要挂 privacy_read 由主人的 policy.py 决定")}
     raise ValueError(f"未知 op: {op}（可用: tts/asr/listen/status）")
+
+
+def run(op="tts", **params):
+    """voice 统一入口：tts（SAPI，默认）/ asr（云端）/ **listen（本机离线）** / status。
+
+    `listen` 是 2026-09-23 为「打开页面就自动监听」加的那条腿：
+    它不需要任何密钥，也不需要主人发授权（门现读不给它挂作用域 —— 见文件头那条盲区说明）。
+
+    🔴 本函数**只加字段、不改任何既有字段**：有认不出的参数时，返回值里多一个
+    `ignored_params`（+ 一句 `ignored_note`）；参数都认得时，返回体与改动前**逐字节相同**。
+    """
+    op_n = "tts" if op in ("tts", "speak", None) else op
+    accepted = _ACCEPTED_PARAMS.get(op_n)
+    extra = sorted(k for k in params if k not in accepted) if accepted is not None else []
+    res = _dispatch(op, params)
+    if extra and isinstance(res, dict):
+        res = dict(res)
+        res["ignored_params"] = extra
+        res["ignored_note"] = ("这些参数本 op 不认，**已原样丢弃、未参与执行**；"
+                               "本 op 认的参数是 %s —— 别把 `ok:true` 读成『你要的效果达成了』"
+                               % (sorted(accepted) or "无"))
+    return res

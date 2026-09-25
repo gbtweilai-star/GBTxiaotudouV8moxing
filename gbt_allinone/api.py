@@ -679,7 +679,15 @@ def _run_benign(kind, payload, policy_decision=None):
     # 交叉扫（V8：深度穿透式交叉验证——扫描器互相咬）
     if kind == "cross_scan":
         from . import cross_scan
-        return cross_scan.scan(bool((payload or {}).get("deep", True)))
+        p = payload or {}
+        # 🔴 2026-09-25：H 维加**整体预算**（默认 240s），且**预算可显式关掉**。
+        #    起因：无预算时空参 `cross_scan` 实测 >560s 不返回（H 维逐个真调，
+        #    里面躺着 sec_scan / sec_chain 这类 5 分钟级的只读扫描器）。
+        #    为什么默认有界：无界 = **根本跑不起来**，覆盖率是 0，比"有界 + 如实报没跑到"更差。
+        #    要旧的无预算行为：`{"deep": true, "h_budget_s": null}`（显式、看得见）。
+        return cross_scan.scan(bool(p.get("deep", True)),
+                               h_budget_s=p["h_budget_s"] if "h_budget_s" in p
+                               else cross_scan.H_BUDGET_S)
 
     # 全息盘点（V8：对齐你的视图与框架的视图——归属四分类）
     if kind == "inventory":
@@ -1108,15 +1116,18 @@ def _run_benign(kind, payload, policy_decision=None):
         #    （永远用默认 6 秒），而调用方看不出被丢了参数 —— 静默失效。
         #    实测抓法：传 `"wav": "<路径>"` 走门，读数里 `wasapi-record` 那条腿**照样跑**
         #    ⇒ 说明载荷没到。补全 listen 的全部参数（不改变任何作用域判定）。
+        #
+        # 🔴 2026-09-25 第 61 轮修（**同一类病的第二个样本，第 59 轮只补了这一例的参数**）：
+        #    上面那次只是把**已知的** listen 参数补进白名单 —— 白名单之外的一切**照样静默丢**。
+        #    实测（真跑过，不是推演）：`voice` 传 `path=<wav路径>` 期望落盘，读数回的是
+        #      `{"ok": true, "backend": "win-sapi", "spoken": true}` —— **没有文件、0 字节**，
+        #    而信封 `status:"ok"`、退出码 0。调用方只看到"成功了"，看不到"你的参数没到"。
+        #    修法与 `browser` 分支（见下方同款注释）**完全一致**：不再手写白名单，**全量透传**，
+        #    认不认得出交给能力层；认不出的由能力层如实报 `ignored_params`。
+        #    保留 `_fw` 排除框架保留字（`op` 已由位置参数占位，重复会 TypeError）。
+        _fw = {"op", "_probe", "_verify", "force", "_force"}
         return voice_cap.run(p.get("op", "tts"),
-                             text=p.get("text"), voice=p.get("voice"),
-                             rate=p.get("rate", 0), out=p.get("out"),
-                             audio=p.get("audio"),
-                             seconds=p.get("seconds", 6.0),
-                             culture=p.get("culture", "zh-CN"),
-                             min_confidence=p.get("min_confidence", 0.0),
-                             timeout=p.get("timeout"),
-                             wav=p.get("wav"))
+                             **{k: v for k, v in p.items() if k not in _fw})
     if kind == "voice_orchestra":
         from . import voice_orchestra as _vo
         p = payload or {}

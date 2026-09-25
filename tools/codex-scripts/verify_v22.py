@@ -56,6 +56,49 @@ if not (PROTO.exists() and CANVAS.exists()):
 p = PROTO.read_text(encoding="utf-8")
 c = CANVAS.read_text(encoding="utf-8")
 
+
+# ── 1b. 嵌数据必须**真的能解析**（2026-09-25 加，带牙）─────────────────────
+#   由来（一手）：我改面板快照时拿正则抓"多行对象"的值，只抓到 ` {`，
+#   替换后把 `"audit_by_event"` 写成了**孤儿键值** ⇒ 整块嵌数据坏掉。
+#   而**这道门当时一声没吭**：
+#     · V20/V21 两支里那条「原型无 undefined 字面量」末尾写着 **`or True`** ⇒ 永不判红；
+#     · V22 这支**根本没有**这一条。
+#   ⇒ 这里补两条**真**判据：① 嵌数据块能被 `json` 解析；② 全块没有裸 `undefined`。
+def _blob(text: str, gen: str = ""):
+    """取嵌数据块。`gen` 空则**自动认出**那一代的变量名（原型是 `const V21 = `，
+    画布可能是别的代/别的名 —— 写死一个名字就会像第一版那样把画布判成"找不到"）。"""
+    if gen:
+        i = text.find("const %s = " % gen)
+    else:
+        m = re.search(r"const (V\d+) = ", text)
+        i = m.start() if m else -1
+    if i < 0:
+        return None, "找不到 `const V<n> = `"
+    j = text.find("{", i)
+    try:
+        _, end = json.JSONDecoder().raw_decode(text, j)
+        return text[j:end], "OK"
+    except ValueError as e:
+        return None, str(e)[:120]
+
+
+_with_blob = 0
+for _label, _txt in (("原型", p), ("画布", c)):
+    _b, _why = _blob(_txt)
+    if _b is None and _why.startswith("找不到"):
+        # 现读事实：**画布没有嵌数据块**（它最大的对象字面量只有 UI_STRINGS / center / ico 那种小件）
+        # ⇒ 本判据对它**不适用**。写成 INFO 而不是"跳过"：**不适用 ≠ 通过**（本仓口径）。
+        INFO.append("%s 没有 `const V<n> = {` 嵌数据块 ⇒ 「嵌数据合法」对它不适用" % _label)
+        continue
+    _with_blob += 1
+    chk("%s 嵌数据是合法 JSON" % _label, _b is not None, _why)
+    if _b is not None:
+        _bare = re.findall(r'(?<![\w"])undefined(?![\w"])', _b)
+        chk("%s 嵌数据无裸 undefined" % _label, not _bare, "命中 %d 处" % len(_bare))
+# 防"两边都不适用"变成静默空转：至少得有一件真被查过
+chk("至少一件交付物有嵌数据块且被查过", _with_blob >= 1, "实际查到 %d 件" % _with_blob)
+
+
 # ── 1. 交付契约 ────────────────────────────────────────────────────────────
 chk("根目录只有现役 V22 两件", all(x.startswith("V22 ") for x in actives), " · ".join(actives))
 chk("两文件都在且够大", PROTO.stat().st_size > 300_000 and CANVAS.stat().st_size > 150_000,

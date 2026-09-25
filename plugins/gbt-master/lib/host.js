@@ -724,6 +724,63 @@ export function apply(ctx, config) {
     ctx.effect(() => ticker.interval(() => { void refreshDhState() }, 90000), 'gbt-master 数字人工作流状态定时刷新')
   }
 
+  // ── 排查台账：**进度唯一真源**（Owner 2026-09-25 令：「今天做到哪 / 哪没做 / 未清故障 /
+  //    排查记录 + 时间点，重启之后自动读取」）──────────────────────────────────
+  //    为什么要有（Owner 原话的意思）：一轮一轮修却不留账 ⇒ 重启后只能"我记得"，
+  //    而"我记得"是本仓反复打过的假账。⇒ 台账只写一处：state/排查台账.json；
+  //    这里**只渲染不编造**：缺字段写「（未写）」，读不到就如实说读不到。
+  const LEDGER_FILE = WORKSPACE + '/state/排查台账.json'
+  let ledgerState = null
+
+  function renderLedger(led, at) {
+    const w = (x) => (x === undefined || x === null || x === '') ? '（未写）' : String(x)
+    const list = (arr, fmt, n) => (Array.isArray(arr) && arr.length)
+      ? arr.slice(0, n).map(fmt).join(' · ')
+      : '（无）'
+    const notDone = list(led && led.not_done, (x) => w(x && x.id) + ' ' + w(x && x.what), 8)
+    const faults = list(led && led.open_faults, (x) => w(x && x.id) + '[' + w(x && x.severity) + '] ' + w(x && x.what), 6)
+    const ask = list(led && led.owner_decisions, (x) => w(x && x.id) + ' ' + w(x && x.ask), 6)
+    const done = list(led && led.today_done, (x) => String(x).slice(0, 70), 4)
+    const last = (Array.isArray(led && led.log) && led.log.length)
+      ? led.log[led.log.length - 1] : null
+    return [
+      '【GBT小土豆V8 · 故障排查台账（唯一进度真源 · 现读）】',
+      '- 台账时间点：' + w(led && led.updated_at) + '（已完成 ' + w(led && led.rounds_done) + ' 轮）',
+      '- 现在在做：' + w(led && led.in_progress),
+      '- 已做（近几条）：' + done,
+      '- **没做**：' + notDone,
+      '- **未清故障**：' + faults,
+      '- **等你拍板**：' + ask,
+      '- 最近一笔记录：' + (last ? (w(last.at) + ' ' + w(last.what)) : '（无）'),
+      '- 全文：state/排查台账.json ｜ 详细账：output/blueprint-audit/生产推进-故障清单.md',
+      '- **开机自检（一条命令跑完全部常设判据 + 两道闸）**：python tools/codex-scripts/boot-selfcheck.py',
+      '- 读数 ' + at + '。重启后首次开口先确认「排查台账已读」并按台账继续，不许凭记忆接着干。',
+    ].join('\n')
+  }
+
+  async function refreshLedger() {
+    try {
+      const text = await fs.readText(await fs.resolve(LEDGER_FILE))
+      ledgerState = renderLedger(JSON.parse(text), stamp())
+    } catch (err) {
+      // 读不到就如实说读不到，绝不猜内容（与数字人状态同一条口径）
+      ledgerState = '【GBT小土豆V8 · 故障排查台账】台账文件读不到：' + LEDGER_FILE +
+        '（' + String(err && err.message ? err.message : err).slice(0, 80) + '）—— 不猜内容，先请 Owner 确认。'
+    }
+    return ledgerState
+  }
+
+  ctx.effect(() => ctx.systemPrompt.context({
+    name: 'gbt-progress-ledger',
+    order: 499,
+    text: () => ledgerState || '【GBT小土豆V8 · 故障排查台账】台账正在读取…',
+  }), 'gbt-master 排查台账')
+
+  void refreshLedger()
+  if (ticker !== undefined && typeof ticker.interval === 'function') {
+    ctx.effect(() => ticker.interval(() => { void refreshLedger() }, 90000), 'gbt-master 排查台账定时刷新')
+  }
+
   // ── 自愈：换代之后不再需要人按 F5 ──────────────────────────────────────────
   // 病根（踩了四轮才断对）：客户端模块 id 跟着换代变，而**已经开着的那张页面**拿的是旧包，
   // 服务端名册里旧 id 已下线 ⇒ 入口与品牌位整片消失，只能靠人按 F5。
