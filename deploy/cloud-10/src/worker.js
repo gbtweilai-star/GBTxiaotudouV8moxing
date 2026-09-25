@@ -17,6 +17,51 @@ import { MODULES, createState, SCOPES, NS_PREFIX, withIdentity } from "./modules
 import { MESH, MODULE_IDS, OP_GATES, PEERS } from "./mesh.generated.js";
 
 const JSON_HEADERS = { "content-type": "application/json; charset=utf-8" };
+
+// ══════════════════════════════════════════════════════════════════════════
+// 🔴 2026-09-25 修：转发前把 OpenAI **内容块数组** 拍平成字符串
+// ══════════════════════════════════════════════════════════════════════════
+// 病根（**上游 502 回包逐字**，不是推断）：
+//   5006: oneOf at '/' not met … required properties at '/' are 'prompt',
+//     Type mismatch of '/messages/0/content', 'array' not in 'string'   ← 0..44 条全是
+//     Type mismatch of '/messages/45/content', 'string' not in 'null'
+//   上游 `@cf/openai/gpt-oss-120b`（Workers AI）**只认 `content` 是字符串**，
+//   而 DSH harness 按 OpenAI 多模态规范发的是 `content: [{type:"text",text:"…"}, …]`。
+//   本文件原来把 `messages` **原样透传** ⇒ 凡是带块数组的请求全被上游 schema 拒掉
+//   ⇒ **她一句话都答不出来**（与配额那个 4006 是两回事，别混）。
+// 修法：逐条归一 —— 数组拍平成文本；`null`（带 tool_calls 的 assistant 消息）转空串；
+//   图片块在本上游是纯文本模型，落一行**确定性占位文本**（不静默丢，也不假装看得见）。
+//   `tool_calls` / `tool_call_id` / `name` 原样保留（丢了下游工具调用就断了）。
+function normalizeMessages(msgs) {
+  const out = [];
+  for (const m of Array.isArray(msgs) ? msgs : []) {
+    if (!m || typeof m !== "object") continue;
+    const role = String(m.role || "user");
+    let content = m.content;
+    if (content == null) {
+      content = "";
+    } else if (Array.isArray(content)) {
+      const bits = [];
+      for (const p of content) {
+        if (p == null) continue;
+        if (typeof p === "string") { bits.push(p); continue; }
+        const t = String(p.type || "");
+        if (t === "text" || t === "input_text") bits.push(String(p.text || ""));
+        else if (t === "image_url" || t === "input_image") bits.push("[图片]");
+        else bits.push(String(p.text || ""));
+      }
+      content = bits.join("\n");
+    } else {
+      content = String(content);
+    }
+    const row = { role, content };
+    if (Array.isArray(m.tool_calls) && m.tool_calls.length) row.tool_calls = m.tool_calls;
+    if (m.tool_call_id) row.tool_call_id = m.tool_call_id;
+    if (m.name) row.name = m.name;
+    out.push(row);
+  }
+  return out;
+}
 // 🔴 控制面（授权）与数据面（模块的用户键）**必须分前缀**。
 //    上一版把授权写进 `mesh10/grants/owner.json` —— 那正是模块自己的命名空间，
 //    于是 08 号的 `list` 把**内部授权文件**当用户键列了出来（本机验收的负控当场逮到：
@@ -277,9 +322,11 @@ export function createMesh(env, sharedState) {
         if (!e.AI) return json({ error: { message: "没有 AI 绑定，流式无从谈起", type: "upstream_error" } }, 502);
         if (!wid) return json({ error: { message: "没配上游模型 id（WORKERS_AI_MODEL）", type: "upstream_error" }, gbt: { detail: "不替主人挑模型" } }, 502);
         const idz = withIdentity(e, msgs);
+        // 🔴 上游只认 content 字符串 ⇒ 转发前必须归一（见 normalizeMessages 的注释）
+        const norm = normalizeMessages(idz.messages);
         let upstream;
         try {
-          upstream = await e.AI.run(wid, { messages: idz.messages, max_tokens: body.max_tokens || body.max_completion_tokens || 512, stream: true });
+          upstream = await e.AI.run(wid, { messages: norm, max_tokens: body.max_tokens || body.max_completion_tokens || 512, stream: true });
         } catch (err) {
           return json({ error: { message: String((err && err.message) || err), type: "upstream_error" } }, 502);
         }
@@ -336,7 +383,8 @@ export function createMesh(env, sharedState) {
         return new Response(sse, { headers: { "content-type": "text/event-stream; charset=utf-8", "cache-control": "no-cache" } });
       }
       const r = await dispatch("gbt-c01-llm-gateway", "complete", {
-        messages: msgs, max_tokens: body.max_tokens || body.max_completion_tokens || 512,
+        // 🔴 同流式那条：上游只认 content 字符串，转发前必须归一
+        messages: normalizeMessages(msgs), max_tokens: body.max_tokens || body.max_completion_tokens || 512,
         temperature: body.temperature, tools: body.tools, tool_choice: body.tool_choice,
         // `model` 透传：客户端点了哪个上游模型就走哪个（不写死）。
         // 现读到的模型 id 见 `wrangler ai models`；不认识的 id 由上游如实报错，**不替它兜底**。
