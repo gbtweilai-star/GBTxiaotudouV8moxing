@@ -1,0 +1,304 @@
+[
+ {
+  "file": "/src/components/FeaturesGrid.tsx",
+  "len": 1678,
+  "reachable": false,
+  "hits": [
+   {
+    "rule": "U6",
+    "why": "硬编码样例数据",
+    "line": 3,
+    "text": "const features = ["
+   },
+   {
+    "rule": "U5",
+    "why": "无人 import（死代码）",
+    "line": 0,
+    "text": "/src/components/FeaturesGrid.tsx"
+   }
+  ]
+ },
+ {
+  "file": "/src/components/Testimonials.tsx",
+  "len": 1698,
+  "reachable": false,
+  "hits": [
+   {
+    "rule": "U6",
+    "why": "硬编码样例数据",
+    "line": 3,
+    "text": "const testimonials = ["
+   },
+   {
+    "rule": "U5",
+    "why": "无人 import（死代码）",
+    "line": 0,
+    "text": "/src/components/Testimonials.tsx"
+   }
+  ]
+ },
+ {
+  "file": "/src/context/AuthContext.tsx",
+  "len": 1857,
+  "reachable": true,
+  "hits": []
+ },
+ {
+  "file": "/src/components/LoginForm.tsx",
+  "len": 2350,
+  "reachable": true,
+  "hits": []
+ },
+ {
+  "file": "/src/components/FAQSection.tsx",
+  "len": 1764,
+  "reachable": false,
+  "hits": [
+   {
+    "rule": "U6",
+    "why": "硬编码样例数据",
+    "line": 3,
+    "text": "const faqs = ["
+   },
+   {
+    "rule": "U5",
+    "why": "无人 import（死代码）",
+    "line": 0,
+    "text": "/src/components/FAQSection.tsx"
+   }
+  ]
+ },
+ {
+  "file": "/src/components/RichTextEditor.tsx",
+  "len": 1391,
+  "reachable": false,
+  "hits": [
+   {
+    "rule": "U5",
+    "why": "无人 import（死代码）",
+    "line": 0,
+    "text": "/src/components/RichTextEditor.tsx"
+   }
+  ]
+ },
+ {
+  "file": "/src/components/DataGrid.tsx",
+  "len": 1314,
+  "reachable": false,
+  "hits": [
+   {
+    "rule": "U5",
+    "why": "无人 import（死代码）",
+    "line": 0,
+    "text": "/src/components/DataGrid.tsx"
+   }
+  ]
+ },
+ {
+  "file": "/src/components/Sidebar.tsx",
+  "len": 1085,
+  "reachable": true,
+  "hits": [
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 17,
+    "text": "<a href=\"#\" className=\"flex items-center p-2 rounded-lg text-foreground hover:bg-brand/5\">"
+   },
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 22,
+    "text": "<a href=\"#\" className=\"flex items-center p-2 rounded-lg text-foreground hover:bg-brand/5\">"
+   },
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 27,
+    "text": "<a href=\"#\" className=\"flex items-center p-2 rounded-lg text-foreground hover:bg-brand/5\">"
+   }
+  ]
+ },
+ {
+  "file": "/src/components/FooterModern.tsx",
+  "len": 2503,
+  "reachable": false,
+  "hits": [
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 13,
+    "text": "<li><a href=\"#\" className=\"hover:text-foreground transition-colors\">Features</a></li>"
+   },
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 14,
+    "text": "<li><a href=\"#\" className=\"hover:text-foreground transition-colors\">Pricing</a></li>"
+   },
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 15,
+    "text": "<li><a href=\"#\" className=\"hover:text-foreground transition-colors\">Docs</a></li>"
+   },
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 16,
+    "text": "<li><a href=\"#\" className=\"hover:text-foreground transition-colors\">Changelog</a></li>"
+   },
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 22,
+    "text": "<li><a href=\"#\" className=\"hover:text-foreground transition-colors\">About</a></li>"
+   },
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 23,
+    "text": "<li><a href=\"#\" className=\"hover:text-foreground transition-colors\">Blog</a></li>"
+   },
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 24,
+    "text": "<li><a href=\"#\" className=\"hover:text-foreground transition-colors\">Careers</a></li>"
+   },
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 25,
+    "text": "<li><a href=\"#\" className=\"hover:text-foreground transition-colors\">Contact</a></li>"
+   },
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 40,
+    "text": "<a href=\"#\" className=\"hover:text-foreground\">Privacy</a>"
+   },
+   {
+    "rule": "U4",
+    "why": "死链 href=\"#\"",
+    "line": 41,
+    "text": "<a href=\"#\" className=\"hover:text-foreground\">Terms</a>"
+   },
+   {
+    "rule": "U5",
+    "why": "无人 import（死代码）",
+    "line": 0,
+    "text": "/src/components/FooterModern.tsx"
+   }
+  ]
+ },
+ {
+  "file": "/src/components/TopBar.tsx",
+  "len": 1185,
+  "reachable": true,
+  "hits": []
+ },
+ {
+  "file": "/src/components/DashboardStats.tsx",
+  "len": 953,
+  "reachable": true,
+  "hits": [
+   {
+    "rule": "U6",
+    "why": "硬编码样例数据",
+    "line": 3,
+    "text": "const stats = ["
+   }
+  ]
+ },
+ {
+  "file": "/src/pages/Dashboard.tsx",
+  "len": 654,
+  "reachable": true,
+  "hits": [
+   {
+    "rule": "U7",
+    "why": "注释掉的内容缺口",
+    "line": 17,
+    "text": "{/* Other dashboard components */}"
+   }
+  ]
+ },
+ {
+  "file": "/src/components/CodeEditorWidget.tsx",
+  "len": 1211,
+  "reachable": false,
+  "hits": [
+   {
+    "rule": "U5",
+    "why": "无人 import（死代码）",
+    "line": 0,
+    "text": "/src/components/CodeEditorWidget.tsx"
+   }
+  ]
+ },
+ {
+  "file": "/src/components/ChartDashboard.tsx",
+  "len": 1737,
+  "reachable": false,
+  "hits": [
+   {
+    "rule": "U5",
+    "why": "无人 import（死代码）",
+    "line": 0,
+    "text": "/src/components/ChartDashboard.tsx"
+   }
+  ]
+ },
+ {
+  "file": "/src/components/HeroGradient.tsx",
+  "len": 1183,
+  "reachable": false,
+  "hits": [
+   {
+    "rule": "U5",
+    "why": "无人 import（死代码）",
+    "line": 0,
+    "text": "/src/components/HeroGradient.tsx"
+   }
+  ]
+ },
+ {
+  "file": "/src/components/KanbanBoard.tsx",
+  "len": 1190,
+  "reachable": false,
+  "hits": [
+   {
+    "rule": "U5",
+    "why": "无人 import（死代码）",
+    "line": 0,
+    "text": "/src/components/KanbanBoard.tsx"
+   }
+  ]
+ },
+ {
+  "file": "/src/components/PricingTable.tsx",
+  "len": 2112,
+  "reachable": false,
+  "hits": [
+   {
+    "rule": "U6",
+    "why": "硬编码样例数据",
+    "line": 3,
+    "text": "const plans = ["
+   },
+   {
+    "rule": "U5",
+    "why": "无人 import（死代码）",
+    "line": 0,
+    "text": "/src/components/PricingTable.tsx"
+   }
+  ]
+ },
+ {
+  "file": "/src/App.tsx",
+  "len": 1148,
+  "reachable": true,
+  "hits": []
+ }
+]
