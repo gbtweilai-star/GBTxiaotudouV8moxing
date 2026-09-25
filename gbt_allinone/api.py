@@ -305,6 +305,31 @@ def _run_benign(kind, payload, policy_decision=None):
                        timeout=int(p.get("timeout", 180)),
                        _coding_discipline=p.get("_coding_discipline"))
 
+    # ── 外部 CLI 智能体：接通（2026-09-25 补齐）─────────────────────────────
+    # 这 3 位长期**登记了却没有分派分支** ⇒ 真调落到本函数末尾那条兜底，
+    # 返回 `status: not_wired`（更早是 `status: ok` + `result: None` = 报成功但什么都没干）。
+    # 哨兵闸 ⑥「登记 vs 接线」一直在点它们的名。现在接真实现：security→cli_agents.py。
+    if kind == "claude_code":
+        from . import cli_agents
+        return cli_agents.claude_code(payload)
+    if kind == "codebuddy":
+        from . import cli_agents
+        return cli_agents.codebuddy(payload)
+    if kind == "ul_tars_desktop":
+        from . import cli_agents
+        return cli_agents.ul_tars_desktop(payload)
+
+    # ── 授权红队内核（Owner 2026-09-25 令：黑客能力多维度全覆盖，使用需人工授权）──
+    # 这 12 位此前在 UNIMPLEMENTED_CAPS 里只有名字、没有实现（调用得到 unknown capability）。
+    # 实现层：security/redteam.py；作用域：security/policy.py 的 evaluate()。
+    # 接线三处必须同时在位（本表 + 本分支 + policy 作用域），少一处门就看不见它。
+    if kind in ("redteam_recon", "pentest", "keylogger", "screen_sniff",
+                "device_takeover", "remote_domain", "credential_steal",
+                "social_eng", "paywallbuster", "asset_vault_freeze",
+                "data_hijack", "onboarding_gate"):
+        from .security import redteam as _RT
+        return _RT.run(kind, payload or {})
+
     # 真实性审计层（V8：零假执行铁律）
     if kind == "truth_scan":
         from . import truth_scan as TS

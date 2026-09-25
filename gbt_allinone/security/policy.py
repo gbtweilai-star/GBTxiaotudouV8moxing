@@ -387,6 +387,49 @@ def evaluate(kind: str, payload: dict | None = None) -> PolicyDecision:
     if kind == "pipeline_submit" and (p.get("review") or int(p.get("refine_rounds", 0) or 0) > 0):
         add("external_llm")
 
+    # ── 授权红队内核（Owner 2026-09-25 令：黑客能力多维度全覆盖，使用需人工授权）──
+    # 口径与全仓一致：**纯离线分析不挂作用域；碰隐私载体 / 设备 / 写盘 / 出网的一律挂**。
+    # （Owner 同日的授权分级令让这些"日常技术动作"变成 TTL 内可多次用的时段授权 ——
+    #   否则开一次输入记录就要回终端敲一次 YES，能力等于不可用。见 auth_gate.ONE_SHOT_SCOPES。）
+    elif kind == "redteam_recon":
+        if op == "creds":                       # 只有翻凭据落点那条碰隐私载体
+            add("privacy_read")
+    elif kind == "pentest":
+        if op == "verify":                      # plan 只出计划不碰目标
+            add("network_private")
+        elif op in ("authorize", "revoke"):     # 授权清单是写盘
+            add("filesystem_write")
+    elif kind == "keylogger":
+        if op in ("start", "stop", "purge"):
+            add("privacy_read", "process_execute", "filesystem_write")
+        else:                                   # status / dump 只读采集结果
+            add("privacy_read")
+    elif kind == "screen_sniff":
+        if op in ("capture", "purge"):
+            add("privacy_read", "filesystem_write")
+        else:
+            add("privacy_read")
+    elif kind == "device_takeover":
+        if op == "take":
+            add("device_control")
+    elif kind == "remote_domain":
+        if op in ("add", "revoke"):
+            add("remote_device", "filesystem_write")
+    elif kind == "credential_steal":
+        add("privacy_read")
+    elif kind == "data_hijack":
+        if op in ("baseline", "verify"):
+            add("filesystem_write")
+        else:
+            add("privacy_read")
+    # 外部 CLI 智能体（2026-09-25 补齐接线）：status/version 只探 PATH，不挂；
+    # 真调 exec 是把任务数据送出去 + 起进程，两条都挂。
+    elif kind in ("claude_code", "codebuddy", "ul_tars_desktop"):
+        if op in ("exec", "run", "chat", "ask"):
+            add("process_execute", "external_llm")
+    # social_eng / paywallbuster / asset_vault_freeze / onboarding_gate：
+    # 纯离线判定 + 只读体检，与 sec_surface / sec_scan 同类 —— **不挂作用域**。
+
     return PolicyDecision(kind=kind, risk=risk, scopes=tuple(scopes),
                           action=action, allow_private=allow_private, details=details)
 

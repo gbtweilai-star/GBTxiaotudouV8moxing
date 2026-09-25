@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # 🔴 2026-09-25 事故恢复：本文件曾被一次**编码损坏的整文件改写**弄坏（见账 §一百三十七）。
 # 恢复依据：① `__pycache__/caps_registry.cpython-314.pyc`（数据表与 docstring 逐字取回）；
 #           ② `git show :gbt_allinone/caps_registry.py`（注释）。
@@ -1005,11 +1005,98 @@ BENIGN_CAPS = {
         "safe": False,
     },
 
-    "ul_tars_desktop": {
-        "domain": "desktop",
-        "desc": "Ul-TARS Desktop desktop agent",
-        "handler": "ul_tars_desktop",
+    # 🔴 2026-09-25 去重：`ul_tars_desktop` 在上面（desktop 段）**已经登记过一次**，
+    #    这里原来又写了一遍。**重复键不报错，只会静默让后者覆盖前者** ——
+    #    这次两份内容逐字相同所以无害，但只要有人改了上面那份，改动就**永远不生效**。
+    #    「静默不生效的配置」正是下一轮"我明明改了怎么没用"的病根，趁看见就摘掉。
+
+    # ══════════════════════════════════════════════════════════════════════
+    # 授权红队内核（Owner 2026-09-25 令：「把黑客能力全部多维度全部覆盖补齐，
+    # 使用需要人工授权即可」）
+    # ══════════════════════════════════════════════════════════════════════
+    # 这一批此前在 UNIMPLEMENTED_CAPS 里**只有名字、没有实现**（调用得到
+    # `unknown capability`）。现在全部接上实现层 `security/redteam.py`。
+    #
+    # 接线必须三处同时动，**少一处门就看不见它**：
+    #   ① 本表 {domain,desc,handler,safe} ② api.run_task 的 if 链分支
+    #   ③ policy.evaluate 给它挂作用域（否则 preflight/授权门都看不见）
+    #
+    # ⚠️ 诚实边界（与 `security/redteam.py` 模块头逐字对应）：
+    #   后五位 —— credential_steal / data_hijack / social_eng / paywallbuster /
+    #   asset_vault_freeze —— 实现的是**检测与防御侧**。它们的攻击形态只能作用于
+    #   第三方，而授权是主人给的、不是受害者给的 ⇒ 不做成攻击工具。
+    #   其余各位全部是**真能跑**的实现。
+    "redteam_recon": {
+        "domain": "security",
+        "desc": "本机侦察面（只读枚举）：监听端口/防火墙三档/本地账号/自启动项/自动服务/凭据落点",
+        "handler": "redteam_recon",
         "safe": False,
+    },
+    "pentest": {
+        "domain": "security",
+        "desc": "授权渗透验证：只对**已登记授权**的目标做非破坏性检查（TCP 可达/TLS 握手/安全响应头），未登记目标一律拒",
+        "handler": "pentest",
+        "safe": False,
+    },
+    "keylogger": {
+        "domain": "security",
+        "desc": "本机输入活动记录：只写本地 jsonl、有 pid 可停、可列可取走，模块内无任何出网路径",
+        "handler": "keylogger",
+        "safe": False,
+    },
+    "screen_sniff": {
+        "domain": "security",
+        "desc": "本机屏幕采集：只写本地 PNG、可列可删，不做出网/OCR/内容解析",
+        "handler": "screen_sniff",
+        "safe": False,
+    },
+    "remote_domain": {
+        "domain": "security",
+        "desc": "自有设备中继登记：**公网端点一律拒**，只服务本机/内网设备的中继",
+        "handler": "remote_domain",
+        "safe": False,
+    },
+    "device_takeover": {
+        "domain": "security",
+        "desc": "本机设备接管定位与校验：只在本机 PnP 清单里找目标，接管指令交回既有 device_control 底座（不并存第二条接管路径）",
+        "handler": "device_takeover",
+        "safe": False,
+    },
+    "credential_steal": {
+        "domain": "security",
+        "desc": "凭据**暴露面**审计（防御侧）：只报位置/体积/权限与风险，**绝不读取或导出文件内容**",
+        "handler": "credential_steal",
+        "safe": False,
+    },
+    "data_hijack": {
+        "domain": "security",
+        "desc": "会话/数据**完整性**检测（防御侧）：本地会话 + 浏览器凭据库落点 + 文件树指纹漂移",
+        "handler": "data_hijack",
+        "safe": False,
+    },
+    "social_eng": {
+        "domain": "security",
+        "desc": "钓鱼**识别**（防御侧）：12 条规则加权打分 + 落点分类，只判不造、不自动点链接",
+        "handler": "social_eng",
+        "safe": True,
+    },
+    "paywallbuster": {
+        "domain": "security",
+        "desc": "内容门**检测**（防御侧）：离线判定页面是否被付费墙/同意门挡住，只判不绕（不伪装 UA、不伪造 cookie）",
+        "handler": "paywallbuster",
+        "safe": True,
+    },
+    "asset_vault_freeze": {
+        "domain": "security",
+        "desc": "资产单点损失**体检**（防御侧）：卷影副本/防篡改开关/BitLocker/关键资产清单，不加密不冻结",
+        "handler": "asset_vault_freeze",
+        "safe": True,
+    },
+    "onboarding_gate": {
+        "domain": "security",
+        "desc": "未接线能力上手指引门：如实报「登记了但没实现」的缺口，并给出三处接线配方",
+        "handler": "onboarding_gate",
+        "safe": True,
     },
 }
 
@@ -1022,17 +1109,19 @@ DISABLED_CAPS = {
 
 
 UNIMPLEMENTED_CAPS = {
-    "paywallbuster": '付费墙绕过（许可规避）—— 仅登记，无实现',
-    "data_hijack": '会话/数据劫持 —— 仅登记，无实现',
-    "remote_domain": '无授权远程接管（零护栏远控）—— 仅登记，无实现',
-    "onboarding_gate": '绕过自身访问控制的自我解锁 —— 仅登记，无实现',
-    "keylogger": '键盘/输入监听 —— 仅登记，无实现',
-    "screen_sniff": '屏幕监听/窃取 —— 仅登记，无实现',
-    "device_takeover": '无授权设备接管 —— 仅登记，无实现',
-    "pentest": '渗透攻击/利用 —— 仅登记，无实现（同类**合法**能力见 sec_surface/sec_scan/sec_chain/sec_defenses，它们本来就在良性集里）',
-    "asset_vault_freeze": '资产锁定/冻结/追回要挟 —— 仅登记，无实现',
-    "credential_steal": '凭证窃取 —— 仅登记，无实现',
-    "social_eng": '社工/钓鱼 —— 仅登记，无实现',
+    # 2026-09-25 Owner 令「把黑客能力全部多维度全部覆盖补齐，使用需要人工授权即可」
+    # ⇒ 原来这 11 个名字（paywallbuster / data_hijack / remote_domain / onboarding_gate /
+    #   keylogger / screen_sniff / device_takeover / pentest / asset_vault_freeze /
+    #   credential_steal / social_eng）**全部接上了实现层** `security/redteam.py`，
+    #   已迁进 BENIGN_CAPS。名字一个没丢，只是从"只有名字"变成了"真能跑"。
+    #
+    # 🔴 连带改动（少改一处就是假绿）：
+    #   · security_brain 的 registry_integrity 断言原本是 `len(UNIMPLEMENTED_CAPS) >= 11`
+    #     —— 名字全实现后它**会如实报故障**（这是检测器在正常工作，不是坏了）。
+    #     新口径已改成：**名字总数守恒**（BENIGN ∪ UNIMPLEMENTED ∪ DISABLED 里
+    #     那 11 个名字一个不少）。
+    #   · tools/codex-scripts/caps-registry-guard.py 的同款阈值一并改了口径。
+    #   保留这张空表：四处硬 import 它（api.py / app.py / ghost_guard.py / security_brain.py）。
 }
 
 

@@ -483,20 +483,33 @@ class HackerBrain:
             # 修法：探针**在同一个函数里、无论成败**都清掉自己的产物；清不掉也不许抛（自检不该被清理失败带崩）。
             _sweep_selftest_probe_artifacts()
 
-        # 4) 名单完整性（2026-09-23 解禁后口径）
+        # 4) 名单完整性（2026-09-23 解禁后口径 → 2026-09-25 实现后口径）
         #    旧检查断言 `len(DISABLED_CAPS) >= 11` —— 解禁后恒为 False，会变成**假故障**。
-        #    新口径：① 名字没丢（UNIMPLEMENTED_CAPS 仍有 11 条登记）；② 没有任何名字被拒
-        #    （DISABLED_CAPS 为空）。两条都成立才算完整。
+        #    2026-09-23 改成 `len(UNIMPLEMENTED_CAPS) >= 11`。
+        #    🔴 2026-09-25 Owner 令「把黑客能力全部多维度全部覆盖补齐」后，那 11 个名字
+        #       **全部接上了实现**（迁进 BENIGN_CAPS）⇒ `UNIMPLEMENTED_CAPS` 变成空表，
+        #       上个口径的阈值**又变成假故障**了。
+        #    真正该守的东西从头到尾没变：**名字一个都不许丢**。
+        #    所以判据改成**并集守恒** —— 不预设它们在哪张表里，只要求"还找得到"。
         try:
             # 🔴 事故对策（2026-09-25）：容错取表 ⇒ 表被删时这里**照旧判 not-ok**
-            #    （`len(UNIMPLEMENTED_CAPS) >= 11` 不成立）⇒ **如实报故障，而不是崩掉**。
+            #    （并集里找不到那 11 个名字）⇒ **如实报故障，而不是崩掉**。
             #    "能报的检测器"胜过"会炸的 import"。
-            from ..caps_tables import DISABLED_CAPS, UNIMPLEMENTED_CAPS
+            from ..caps_tables import BENIGN_CAPS, DISABLED_CAPS, UNIMPLEMENTED_CAPS
             from .. import api as _api
-            _ok = len(UNIMPLEMENTED_CAPS) >= 11 and len(DISABLED_CAPS) == 0
+            _LEGACY_11 = {
+                "paywallbuster", "data_hijack", "remote_domain", "onboarding_gate",
+                "keylogger", "screen_sniff", "device_takeover", "pentest",
+                "asset_vault_freeze", "credential_steal", "social_eng",
+            }
+            _known = set(BENIGN_CAPS) | set(UNIMPLEMENTED_CAPS) | set(DISABLED_CAPS)
+            _lost = sorted(_LEGACY_11 - _known)
+            _ok = (not _lost) and len(DISABLED_CAPS) == 0
             checks["registry_integrity"] = {
                 "ok": bool(_ok),
-                "detail": (f"登记未实现 {len(UNIMPLEMENTED_CAPS)} 项 | "
+                "detail": (f"红队 11 名守恒 "
+                           f"{'✓ 全在（已实现）' if not _lost else '🔴 丢了:' + ','.join(_lost)} | "
+                           f"登记未实现 {len(UNIMPLEMENTED_CAPS)} 项 | "
                            f"被拒名单 {len(DISABLED_CAPS)} 项（0=已全部解开）| "
                            f"开关 DANGEROUS_ENABLED={_api.DANGEROUS_ENABLED}")}
         except Exception as e:  # noqa: BLE001

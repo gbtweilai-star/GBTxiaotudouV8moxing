@@ -8,11 +8,17 @@
   1. CLI 交互确认（auth grant 命令，终端人工输入 YES）
   2. 主人手写授权文件（store/auth_grants.jsonl 追加一行，格式严格校验）
 
-授权纪律：
-  - 一次性消耗：每次被门拦截的操作消耗一条匹配授权（用完即失效）
+授权纪律（**2026-09-25 Owner 令后分级**，改前是全体一次性消耗）：
+  - **日常技术动作 = 时段授权**：TTL 内可多次用，用一次在账本里记一次（`used` /
+    `last_used_at`）。为什么改：改前实测 `voice -> denied · 账本 0 行` —— 一次性消耗
+    放在 audio_output / privacy_read 这类日常动作上，等于"每说一句话回终端敲一次 YES"，
+    语音对讲在物理上不可用；而它挡的又不是危险动作，是主人自己的日常动作。
+  - **危险动作 = 仍一次性消耗**：`owner_control`（总控钥匙）/ `deploy_publish` /
+    `remote_device` / `data_export`，用掉即从账本删行。见 `ONE_SHOT_SCOPES`。
   - 过期自毁：过期授权在下次检查时自动清理
-  - 全程留痕：发放/校验/消耗全部落审计
+  - 全程留痕：发放/校验/消耗全部落审计（时段授权记 `mode=window` 与 `reuse_count`）
   - AI 无权发放：本模块没有任何可供 run_task 调用的"创建授权"入口
+    —— **分级改的是"用几次"，没碰"谁能发"这条红线**
 
 当前纳入授权门的作用域：
   osint_private   OSINT 扫描内网/保留地址（原 allow_private 直通开关废止）
@@ -57,6 +63,33 @@ SCOPES = {
     "audit_read": "读取审计、授权或运行历史",
 }
 DEFAULT_TTL_S = 600   # 授权默认 10 分钟有效
+
+# ── 作用域分级（Owner 2026-09-25 令：「改成时段授权：TTL 内可多次用，危险类保持一次性」）
+#
+# 分级只决定**一张授权能用几次**，不决定**谁能发**。发放入口一个都没变：
+#   ① 终端交互确认（cli_grant_interactive，getpass 敲 YES）
+#   ② 主人手写 store/auth_grants.jsonl
+# 本文件里**没有**任何 run_task 可达的"创建授权"分支 —— 这是红线，改语义不许碰。
+ONE_SHOT_SCOPES = {
+    # 总控钥匙：一条顶掉该次动作**全部**缺失作用域。若变成时段，等于一把万能钥匙
+    # 连开 10 分钟，比它顶掉的那几项各自时段化加起来还宽 —— 必须一次性。
+    "owner_control",
+    "deploy_publish",   # 写生产 / 晋升 / 回滚（不可逆）
+    "remote_device",    # 远控中继 / 外部接管通道
+    "data_export",      # 数据出框架 / 出网（发出去就收不回）
+}
+
+
+def grant_mode(scope: str) -> str:
+    """该作用域的授权模式：`one_shot`（用掉即失效）或 `window`（TTL 内可多次）。"""
+    return "one_shot" if scope in ONE_SHOT_SCOPES else "window"
+
+
+_NOTE_DENY = ("日常技术动作=时段授权（TTL 内可多次）· "
+              "owner_control/deploy_publish/remote_device/data_export=一次性消耗；"
+              "AI 调用路径无权自行发放")
+_NOTE_STATUS = ("日常技术动作=时段授权（TTL 内可多次，用一次记一次）· "
+                "危险作用域=一次性消耗（用掉即从账本删行）；AI 无权发放")
 
 _OPERATOR_HUMAN = "human-terminal"
 _OPERATOR_OWNER = "owner-manual"
@@ -139,22 +172,31 @@ def _expire_stale(grants: list) -> list:
 
 
 def status() -> dict:
-    """授权门状态：各作用域的可用授权数（只读，不消耗）。"""
+    """授权门状态：各作用域的可用授权数 + 授权模式（只读，不消耗）。"""
     grants = _expire_stale(_load_grants())
-    by = {}
+    by: dict[str, int] = {}
+    used: dict[str, int] = {}
     for g in grants:
-        by[g["scope"]] = by.get(g["scope"], 0) + 1
+        scope = g["scope"]
+        by[scope] = by.get(scope, 0) + 1
+        used[scope] = used.get(scope, 0) + int(g.get("used", 0) or 0)
     return {
         "ok": True,
-        "scopes": {k: {"desc": v, "grants_available": by.get(k, 0)} for k, v in SCOPES.items()},
+        "scopes": {k: {"desc": v, "grants_available": by.get(k, 0),
+                       "mode": grant_mode(k),
+                       # 时段授权会留在账本里，所以"已用几次"是必须看得见的读数
+                       # （否则"还剩 1 张"读起来像"一次都没用过"）。
+                       "used_total": used.get(k, 0)}
+                   for k, v in SCOPES.items()},
+        "one_shot_scopes": sorted(ONE_SHOT_SCOPES),
         "ai_can_grant": False,
         "grant_sources": ["CLI 交互确认（auth grant）", "主人手写 store/auth_grants.jsonl"],
-        "note": "授权一次性消耗，默认 10 分钟过期；AI 无权发放",
+        "note": _NOTE_STATUS,
     }
 
 
 def check_and_consume(scope: str, detail: str = "") -> dict:
-    """校验并消耗一条授权。有匹配的未过期授权 → 消耗并放行；没有 → 拒绝（含人工指引）。
+    """校验并放行一次授权。有匹配的未过期授权 → 放行；没有 → 拒绝（含人工指引）。
 
     这是授权门唯一的校验入口，供被门拦截的操作调用。
     """
@@ -167,6 +209,7 @@ def check_and_consume(scope: str, detail: str = "") -> dict:
     return {"ok": True,
             "consumed": consumed[0] if consumed else None,
             "substituted_for": r.get("substituted_for") or [],
+            "mode": grant_mode(scope),
             "remaining": sum(1 for x in rest if x["scope"] == scope)}
 
 
@@ -192,7 +235,7 @@ def check_and_consume_many(scopes, detail: str = "") -> dict:
             "denied": True,
             "missing": unknown,
             "error": f"未知授权作用域: {unknown[0]}",
-            "note": "授权一次性消耗；AI 调用路径无权自行发放",
+            "note": _NOTE_DENY,
         }
 
     available: dict[str, int] = {}
@@ -226,16 +269,21 @@ def check_and_consume_many(scopes, detail: str = "") -> dict:
                         "substituted_for": list(missing), "remaining": remaining}
         _audit("auth_denied", {"scope": missing[0], "detail": str(detail)[:60],
                                "missing": missing})
+        _mode = grant_mode(missing[0])
         return {
             "ok": False,
             "denied": True,
             "missing": missing,
             "error": f"需要人工授权（{missing[0]}）：{SCOPES[missing[0]]}",
+            "mode": _mode,
             "how_to_grant": [
                 f"终端运行: python -m gbt_allinone auth grant --scope {missing[0]} --ttl 600",
                 "或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）",
+                ("该作用域是**时段授权**：一张在 TTL 内可反复用"
+                 if _mode == "window" else
+                 "该作用域是**一次性消耗**：用掉即从账本删行"),
             ],
-            "note": "授权一次性消耗；AI 调用路径无权自行发放",
+            "note": _NOTE_DENY,
         }
 
     consumed: list[str] = []
@@ -244,11 +292,26 @@ def check_and_consume_many(scopes, detail: str = "") -> dict:
         for index, grant in enumerate(current):
             if grant.get("scope") != scope:
                 continue
-            _save_grants(current[:index] + current[index + 1:])
-            consumed.append(grant.get("id"))
-            _audit("auth_consumed", {"scope": scope, "grant_id": grant.get("id"),
-                                     "granted_at": grant.get("granted_at"),
-                                     "detail": str(detail)[:60]})
+            if grant_mode(scope) == "one_shot":
+                _save_grants(current[:index] + current[index + 1:])
+                consumed.append(grant.get("id"))
+                _audit("auth_consumed", {"scope": scope, "grant_id": grant.get("id"),
+                                         "granted_at": grant.get("granted_at"),
+                                         "detail": str(detail)[:60], "mode": "one_shot"})
+            else:
+                # 时段授权：**不从账本删行**，只把用量记进那一行。
+                # 为什么记用量而不是静默复用：账本要能如实回答"这张授权被用了几回" ——
+                # 一张 10 分钟授权反复放行了多少动作，是主人事后必须看得见的东西。
+                reuse = int(grant.get("used", 0) or 0) + 1
+                grant["used"] = reuse
+                grant["last_used_at"] = time.strftime("%Y-%m-%dT%H:%M:%S")
+                current[index] = grant
+                _save_grants(current)
+                consumed.append(grant.get("id"))
+                _audit("auth_consumed", {"scope": scope, "grant_id": grant.get("id"),
+                                         "granted_at": grant.get("granted_at"),
+                                         "detail": str(detail)[:60], "mode": "window",
+                                         "reuse_count": reuse})
             break
 
     remaining: dict[str, int] = {}
@@ -268,9 +331,13 @@ def cli_grant_interactive(scope: str, ttl: int = DEFAULT_TTL_S, purpose: str = "
     import getpass
     if scope not in SCOPES:
         return {"ok": False, "error": f"未知作用域: {scope}"}
+    _m = grant_mode(scope)
     print(f"[授权请求] 作用域: {scope}")
     print(f"           内容: {SCOPES[scope]}")
-    print(f"           有效期: {ttl}s | 一次性消耗 | 发放后将落审计")
+    # 人在敲 YES 之前必须看清自己签的是哪种 —— 这正是交互确认存在的意义。
+    print(f"           模式: " + ("一次性消耗（用掉即从账本删行）" if _m == "one_shot"
+                                 else "时段授权（有效期内可反复用，用一次记一次）"))
+    print(f"           有效期: {ttl}s | 发放后将落审计")
     try:
         answer = getpass.getpass("人工确认请输入 YES（直接回车取消）: ")
     except Exception:
@@ -282,6 +349,7 @@ def cli_grant_interactive(scope: str, ttl: int = DEFAULT_TTL_S, purpose: str = "
 
 
 def _append_grant(scope: str, operator: str, ttl: int, purpose: str) -> dict:
+    _m = grant_mode(scope)
     g = {
         "id": f"grant-{int(time.time()*1000)}",
         "scope": scope,
@@ -289,11 +357,14 @@ def _append_grant(scope: str, operator: str, ttl: int, purpose: str) -> dict:
         "purpose": str(purpose)[:120],
         "granted_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "expires_at": round(time.time() + max(30, int(ttl)), 3),
+        "mode": _m,
+        # 时段授权的用量计数（一次性的一直是 0：它用完就整行没了）
+        "used": 0,
     }
     grants = _load_grants()
     grants.append(g)
     _save_grants(grants)
-    _audit("auth_granted", {"scope": scope, "operator": operator,
+    _audit("auth_granted", {"scope": scope, "operator": operator, "mode": _m,
                              "grant_id": g["id"], "ttl": ttl, "purpose": g["purpose"]})
-    return {"ok": True, "grant_id": g["id"], "scope": scope,
-            "expires_at": g["expires_at"], "one_shot": True}
+    return {"ok": True, "grant_id": g["id"], "scope": scope, "mode": _m,
+            "expires_at": g["expires_at"], "one_shot": _m == "one_shot"}

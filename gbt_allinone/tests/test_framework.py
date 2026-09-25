@@ -278,13 +278,23 @@ class TestFramework(unittest.TestCase):
             self.assertNotIn(d, names, "登记未实现的名字不应出现在良性清单: %s" % d)
 
     def test_all_list_marks_unimplemented(self):
-        """全登记面（filter_dangerous=False）里，它们如实标 "unimplemented"，不是 "disabled"。"""
+        """全登记面（filter_dangerous=False）里，红队那 11 位的状态要**如实**。
+
+        口径变更（Owner 2026-09-25 令「把黑客能力全部多维度全部覆盖补齐」）：
+        这 11 位此前标 `unimplemented`（只有名字、没有实现），现在**全部接上了实现**。
+        ⇒ 判据从"必须标 unimplemented"换成"标 enabled，且**全表不许再有任何
+        unimplemented / disabled**"。名字守恒那一条由
+        `tests/test_redteam.py::TestWiring::test_legacy_eleven_names_conserved` 守着。
+        """
         items = gbt.list_capabilities(filter_dangerous=False)
         statuses = {i["name"]: i.get("status") for i in items}
-        self.assertEqual(statuses.get("paywallbuster"), "unimplemented")
         self.assertNotIn("disabled", set(statuses.values()), "解禁后不该再有任何 disabled 状态")
-        for d in UNIMPLEMENTED_CAPS:
-            self.assertEqual(statuses.get(d), "unimplemented", d)
+        self.assertNotIn("unimplemented", set(statuses.values()),
+                         "红队 11 位已全部接上实现，不该再有 unimplemented 状态")
+        for name in ("paywallbuster", "keylogger", "data_hijack", "remote_domain",
+                     "screen_sniff", "device_takeover", "pentest", "asset_vault_freeze",
+                     "credential_steal", "social_eng", "onboarding_gate"):
+            self.assertEqual(statuses.get(name), "enabled", "%s 应已可执行" % name)
 
     def test_health_ok(self):
         r = _body(gbt.run_task("health"))
@@ -296,18 +306,24 @@ class TestFramework(unittest.TestCase):
         self.assertEqual(r["status"], "ok")
         self.assertEqual(r["result"]["words"], 3)
 
-    def test_unimplemented_names_never_succeed(self):
-        """2026-09-23 解禁后改口径：这 4 个名字**不许跑成功**，但理由不再是"被禁用"。
+    def test_redteam_names_are_no_longer_unknown(self):
+        """2026-09-25 Owner 令后**换口径**：这 4 个名字已经接上实现。
 
-        解禁前它们返回 `denied/安全策略`；解禁后返回 `error/unknown capability`（如实"没做"）。
-        判据只钉一件事：**不许是 ok**，且消息必须说清是"没实现"而不是含糊的失败。
+        旧判据（本用例原名 `test_unimplemented_names_never_succeed`）钉的是**旧事实**：
+        「不许跑成功 + 必须回 `unknown capability`」。那条事实已经被 Owner 的令改掉了 ——
+        再留着它就是**用测试把过时结论钉死**。
+
+        新判据只钉真正该守的那一件：**绝不许再回 `unknown capability`**
+        （回了就等于说"名字有、实现没有"，那正是这次要消灭的状态）。
+        实际行为（真跑 / 被授权门如实拒绝 / 缺参数报 user_error）三者都算接线在位，
+        不在这里钉死 —— 那是 `tests/test_redteam.py` 的活。
         """
+        from gbt_allinone.caps_registry import BENIGN_CAPS as _B
         for d in ["paywallbuster", "keylogger", "data_hijack", "remote_domain"]:
+            self.assertIn(d, _B, "%s 应已登记为可执行能力" % d)
             r = _body(gbt.run_task(d))
-            self.assertNotEqual(r["status"], "ok", "%s 不该跑成功" % d)
-            self.assertEqual(r["status"], "error", "%s 现读应为 error（未实现）" % d)
-            self.assertIn("unknown capability", str(r.get("message") or ""),
-                          "%s 的失败理由必须如实说「没实现」" % d)
+            self.assertNotIn("unknown capability", json.dumps(r, ensure_ascii=False),
+                             "%s 已接上实现，不该再报 unknown capability" % d)
 
     def test_unknown_cap_error(self):
         r = _body(gbt.run_task("no_such_capability_xyz"))
@@ -321,35 +337,110 @@ class TestFramework(unittest.TestCase):
         self.assertIn("人工授权", str(res.get("error", "")))
 
     def test_auth_gate_flow(self):
-        # 授权门全链路：无授权拒 → 人工授权放行 → 一次性消耗 → 再拒
+        # 授权门全链路（**Owner 2026-09-25 令后分级**）：
+        #   无授权拒 → 人工授权放行 → **时段授权在 TTL 内可再次放行，且用量如实累计**
+        #   → 过期即拒。
+        # 旧口径是「消耗 → 再拒」（全体一次性）。改它的理由写在 auth_gate.ONE_SHOT_SCOPES
+        # 上方：一次性消耗压在 audio_output / privacy_read 这类**日常技术动作**上，
+        # 实测等于"每说一句话回终端敲一次 YES"，语音对讲物理上不可用。
+        # 注意：本用例改的是**日常类**作用域（osint_private）的语义；
+        # 危险类的"仍一次性"由 test_one_shot_scopes_stay_one_shot 单独钉住。
+        import os as _os
         import time as _t
         import json as _j
         from pathlib import Path as _P
         from gbt_allinone import auth_gate as _AG
+        from gbt_allinone.security import policy as _Pol
         # 清场
         from gbt_allinone import _paths as _p
         gf = _P(_AG._GRANTS)   # O33：唯一来源——不自己拼 /"store"/（否则测试与授权门各看一份路径）
         self.assertEqual(gf.resolve(),
                          (_P(_p.STORE_DIR) / "auth_grants.jsonl").resolve(),
                          "授权门落点必须在 _paths.STORE_DIR 里：%s" % gf)
-        if gf.exists():
-            gf.unlink()
-        # 1) 无授权拒绝
-        r1 = _body(gbt.run_task("osint_scan", {"target": "192.168.1.1", "allow_private": True}))
-        self.assertTrue(r1["result"].get("denied"))
-        # 2) 主人手写授权（合法途径）
-        g = {"id": "grant-test-flow", "scope": "osint_private", "operator": "owner-manual",
-             "purpose": "测试授权流", "granted_at": _t.strftime("%Y-%m-%dT%H:%M:%S"),
-             "expires_at": round(_t.time() + 120, 3)}
-        gf.parent.mkdir(parents=True, exist_ok=True)
-        gf.write_text(_j.dumps(g, ensure_ascii=False) + "\n", encoding="utf-8")
-        # 3) 授权后放行 + 消耗
-        r2 = _body(gbt.run_task("osint_scan", {"target": "192.168.1.1"}))
-        self.assertEqual(r2["status"], "ok")
-        self.assertEqual(r2["result"].get("auth_consumed"), "grant-test-flow")
-        # 4) 一次性：再扫即拒
-        r3 = _body(gbt.run_task("osint_scan", {"target": "192.168.1.1"}))
-        self.assertTrue(r3["result"].get("denied"))
+        _prev_env = _os.environ.pop("GBT_OWNER_SESSION", None)
+        _prev_bytes = gf.read_bytes() if gf.exists() else b""
+        try:
+            # 主人会话下授权门直通，本用例的每一条断言都不成立 —— 与其静默假绿，
+            # 不如先把会话按成非主人并**断言它确实是非主人**。
+            self.assertFalse(_Pol.is_trusted(), "本用例必须在非主人会话下跑")
+            if gf.exists():
+                gf.unlink()
+            # 1) 无授权拒绝
+            r1 = _body(gbt.run_task("osint_scan", {"target": "192.168.1.1", "allow_private": True}))
+            self.assertTrue(r1["result"].get("denied"))
+            # 2) 主人手写授权（合法途径）
+            g = {"id": "grant-test-flow", "scope": "osint_private", "operator": "owner-manual",
+                 "purpose": "测试授权流", "granted_at": _t.strftime("%Y-%m-%dT%H:%M:%S"),
+                 "expires_at": round(_t.time() + 120, 3), "mode": "window", "used": 0}
+            gf.parent.mkdir(parents=True, exist_ok=True)
+            gf.write_text(_j.dumps(g, ensure_ascii=False) + "\n", encoding="utf-8")
+            # 3) 授权后放行
+            r2 = _body(gbt.run_task("osint_scan", {"target": "192.168.1.1"}))
+            self.assertEqual(r2["status"], "ok")
+            self.assertEqual(r2["result"].get("auth_consumed"), "grant-test-flow")
+            # 4) **正题**：时段授权在 TTL 内必须能再次放行
+            r3 = _body(gbt.run_task("osint_scan", {"target": "192.168.1.1"}))
+            self.assertEqual(r3["status"], "ok",
+                             "时段授权在 TTL 内必须能反复放行；这里若 denied，就是又退回一次性语义")
+            rows = [_j.loads(x) for x in gf.read_text(encoding="utf-8").splitlines() if x.strip()]
+            self.assertEqual(len(rows), 1, "时段授权不许从账本删行（删了就没法回答'用了几回'）")
+            self.assertEqual(int(rows[0].get("used", 0)), 2,
+                             "用量必须如实累计：两次放行 = used 2")
+            # 5) 时段授权也不是永久的：过期即拒
+            g["expires_at"] = round(_t.time() - 1, 3)
+            gf.write_text(_j.dumps(g, ensure_ascii=False) + "\n", encoding="utf-8")
+            r4 = _body(gbt.run_task("osint_scan", {"target": "192.168.1.1"}))
+            self.assertTrue(r4["result"].get("denied"), "过期授权必须失效")
+        finally:
+            if _prev_bytes:
+                gf.write_bytes(_prev_bytes)
+            elif gf.exists():
+                gf.unlink()
+            if _prev_env is not None:
+                _os.environ["GBT_OWNER_SESSION"] = _prev_env
+
+    def test_one_shot_scopes_stay_one_shot(self):
+        """危险作用域**不许**跟着时段化 —— 分级只放日常类，这条是那次改动的边界。
+
+        钉两件事：① 名单本身（owner_control 是总控钥匙，绝不能变成时段）；
+        ② 行为（用一次即从账本删行，第二次即拒）。
+        """
+        import json as _j
+        import time as _t
+        from pathlib import Path as _P
+        from gbt_allinone import auth_gate as _AG
+        from gbt_allinone.security import policy as _Pol
+
+        self.assertEqual(sorted(_AG.ONE_SHOT_SCOPES),
+                         ["data_export", "deploy_publish", "owner_control", "remote_device"])
+        for s in _AG.ONE_SHOT_SCOPES:
+            self.assertEqual(_AG.grant_mode(s), "one_shot", s)
+        # 日常类必须是 window —— 否则这次改动等于没做
+        for s in ("audio_output", "privacy_read", "filesystem_write", "process_execute"):
+            self.assertEqual(_AG.grant_mode(s), "window", s)
+
+        if _Pol.is_trusted():
+            self.skipTest("主人本机会话下授权门直通，本用例不适用")
+        gf = _P(_AG._GRANTS)
+        before = gf.read_bytes() if gf.exists() else b""
+        try:
+            row = {"id": "g-dx", "scope": "data_export", "operator": "owner-manual",
+                   "purpose": "一次性边界用例", "mode": "one_shot", "used": 0,
+                   "granted_at": _t.strftime("%Y-%m-%dT%H:%M:%S"),
+                   "expires_at": round(_t.time() + 300, 3)}
+            gf.parent.mkdir(parents=True, exist_ok=True)
+            gf.write_text(_j.dumps(row, ensure_ascii=False) + "\n", encoding="utf-8")
+            d1 = _AG.check_and_consume_many(["data_export"], detail="test")
+            self.assertTrue(d1.get("ok"), d1)
+            self.assertEqual(_AG._load_grants(), [], "data_export 必须一次性消耗（用掉即删行）")
+            d2 = _AG.check_and_consume_many(["data_export"], detail="test")
+            self.assertFalse(d2.get("ok"))
+            self.assertTrue(d2.get("denied"))
+        finally:
+            if before:
+                gf.write_bytes(before)
+            elif gf.exists():
+                gf.unlink()
 
     def test_auth_gate_ai_cannot_grant(self):
         # AI 无发放入口：能力清单里不存在 grant 类能力
@@ -1023,13 +1114,21 @@ class TestFramework(unittest.TestCase):
             self.assertEqual(r["status"], "error")
 
     def test_autopilot_validates_llm_plan(self):
+        """本地校验器必须拒掉**未注册**能力 —— 判据不该绑在某一位的历史状态上。
+
+        ⚠️ 本用例原来拿 `keylogger` 当"未注册样本"。2026-09-25 Owner 令后它**已注册**，
+        样本失效 ⇒ 用例变成假红。**修法是换一个真未注册的名字，不是把用例删掉**：
+        它的意图（"未注册能力应被拒绝"）一个字没变。
+        """
         from gbt_allinone import autopilot as AP
-        bad_nodes = [{"id": "a", "kind": "keylogger", "params": {}}]
+        bad_nodes = [{"id": "a", "kind": "no_such_capability_xyz", "params": {}}]
         try:
             AP._validate_nodes(bad_nodes)
             self.fail("未注册能力应被拒绝")
         except AP.AutopilotError:
             pass
+        # 正控：已注册的名字不许被误拒（`keylogger` 从"负样本"改任"正控"）
+        AP._validate_nodes([{"id": "a", "kind": "keylogger", "params": {}}])
 
     def test_truth_scan_readonly(self):
         r = _body(gbt.run_task("truth_scan", {}))

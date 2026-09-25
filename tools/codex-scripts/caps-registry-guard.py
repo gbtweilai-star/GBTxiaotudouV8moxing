@@ -51,7 +51,18 @@ for _s in (sys.stdout, sys.stderr):
 # ⇒ 只有**两类**东西配当红判据：**不许跌破的下限** 与 **Owner 定过的口径**；
 #    条数**变了要报（漂移），但不判红**。
 MIN_BENIGN = 157            # 下限：良性位不许跌破这个数
-MIN_UNIMPL = 11             # 登记未实现的名字不许丢（Owner 2026-09-23 解禁后的口径）
+MIN_UNIMPL = 11             # **只用于自检负控造人造注册表**；真判据见下方 LEGACY_11
+# 🔴 2026-09-25 Owner 令「把黑客能力全部多维度全部覆盖补齐，使用需要人工授权即可」后，
+#    下面这 11 个名字**全部接上了实现**（迁进 BENIGN_CAPS）⇒ 旧判据
+#    `UNIMPLEMENTED_CAPS >= 11`（"名字还在未实现表里"）**必然报红 = 假故障**
+#    —— 这正是本文件开头骂的那种"写死会把合法的变化判成故障"。
+#    真判据从来不是"它们在不在那张表里"，而是**"还找不找得到"**。
+#    ⇒ 改成**并集守恒**：不预设落在哪张表，只要求一个都不丢。
+LEGACY_11 = frozenset({
+    "paywallbuster", "data_hijack", "remote_domain", "onboarding_gate",
+    "keylogger", "screen_sniff", "device_takeover", "pentest",
+    "asset_vault_freeze", "credential_steal", "social_eng",
+})
 BASELINE_COUNT = 168        # **只作对照读数**（会漂移就报漂移），**不当红判据**
 
 
@@ -82,7 +93,9 @@ def check(path: Path | None = None) -> dict:
         " 'benign': len(m.BENIGN_CAPS), 'unimpl': len(m.UNIMPLEMENTED_CAPS),"
         " 'disabled': len(m.DISABLED_CAPS),"
         " 'names': [c.get('name') for c in m.all_caps()],"
-        " 'benign_names': list(m.BENIGN_CAPS)}))" % str(p)
+        " 'benign_names': list(m.BENIGN_CAPS),"
+        " 'unimpl_names': list(m.UNIMPLEMENTED_CAPS),"
+        " 'disabled_names': list(m.DISABLED_CAPS)}))" % str(p)
     )
     r = subprocess.run([py, "-X", "utf8", "-c", code], capture_output=True, text=True,
                        encoding="utf-8", errors="replace", timeout=120, cwd=str(ROOT))
@@ -102,10 +115,14 @@ def check(path: Path | None = None) -> dict:
     # ② Owner 口径：解禁后没有任何名字被拒
     if got.get("disabled") != 0:
         bad.append("DISABLED_CAPS=%s（应 0：Owner 2026-09-23「把禁止全部解开」）" % got.get("disabled"))
-    # ③ Owner 口径：登记未实现的名字不许丢
-    if (got.get("unimpl") or 0) < MIN_UNIMPL:
-        bad.append("UNIMPLEMENTED_CAPS=%s（应 >= %d：名字不许丢）" % (got.get("unimpl"),
-                                                            MIN_UNIMPL))
+    # ③ 🔴 Owner 口径：登记未实现的名字不许丢 —— 2026-09-25 实现后改成**并集守恒**。
+    #    旧写法 `unimpl >= MIN_UNIMPL` 在名字全部接上实现后**必然报红（假故障）**。
+    #    新写法只问一句："那 11 个名字还找不找得到？"（在哪张表都行）
+    _known = (set(got.get("benign_names") or []) | set(got.get("unimpl_names") or [])
+              | set(got.get("disabled_names") or []))
+    _lost = sorted(LEGACY_11 - _known)
+    if _lost:
+        bad.append("红队 11 名丢了 %s（名字不许丢：实现后应落在 BENIGN_CAPS）" % ",".join(_lost))
     # ④ 条数**变动只报漂移，不判红**（写死条数正是本仓反复吃的病）
     total = got.get("total")
     drift = (None if total is None else total - BASELINE_COUNT)
@@ -131,9 +148,9 @@ def check(path: Path | None = None) -> dict:
             "登记 vs 接线（**假绿源头**）": disp or {},
             "空话分支（**防用空话骗闸**）": empty or {},
             "为什么": "✅ 可导入 · 未违反任何硬口径" if not bad else "**口径不对**：" + "；".join(bad),
-            "判据口径": "**只有两类当红判据**：不许跌破的下限（BENIGN>=%d · UNIMPL>=%d）"
-                    "与 Owner 口径（DISABLED==0）；**条数变动只报漂移**"
-                    % (MIN_BENIGN, MIN_UNIMPL),
+            "判据口径": "**只有两类当红判据**：不许跌破的下限（BENIGN>=%d）"
+                    "与 Owner 口径（DISABLED==0 · 红队 11 名并集守恒）；**条数变动只报漂移**"
+                    % (MIN_BENIGN,),
             "复原命令": (None if not bad else
                      "python tools/codex-scripts/caps-registry-guard.py restore")}
 
