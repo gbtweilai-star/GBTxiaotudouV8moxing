@@ -140,3 +140,12 @@ data/skills/
 # --- ④ 彩排与临时产物（pipeline 自检、彩排出片、切片中间件，可重跑）---
 projects/**/*rehearsal*
 projects/**/_work/
+
+# --- 跑批输出（工具 stdout 转存，是产物不是源码；2026-09-25 整理时摘出 63 个）---
+# 保留被引用的 2 个在库里（gitignore 管不了已跟踪文件），其余不再入库。
+*.out.txt
+*.out
+
+# --- 根目录残留（12 字节，内容 I have run，全仓 0 引用）---
+# 本轮整理时从索引摘出；**文件本体的删除要主人点头**，先把 status 噪音关掉。
+test_localsystem.txt
