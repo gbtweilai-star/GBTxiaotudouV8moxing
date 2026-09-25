@@ -1,9 +1,14 @@
 {
   "_口径": "唯一进度真源。人读的详细账在 output/blueprint-audit/生产推进-故障清单.md；本文件只放『现在做到哪 / 哪没做 / 未清故障 / 等你拍板』，供宿主插件在重启后自动注入会话头。改了本文件，下一轮会话就看得见。",
   "_排班纪律": "每轮结束前更新本文件 + 时间点；不许只写『继续排查』这种没信息量的话。",
-  "updated_at": "2026-09-25T23:34:00+08:00",
-  "rounds_done": 42,
+  "updated_at": "2026-09-25T23:49:00+08:00",
+  "rounds_done": 43,
   "today_done": [
+    "**新立 `tools/codex-scripts/caps-two-plane-census.py`（只读 · 什么都不改）**：把 F12 摊成**两个平面**让主人能看着数拍板 D13 —— **平面一 = `caps_registry.BENIGN_CAPS` 172 条**（面板/omni 报的就是这个数）· **平面二 = 注册表之外、在审计账里被分派过的 61 个名字**。⚠️ 改 `caps_registry.py` 是**主人专属**（红线）⇒ 本器**一个字节都不写**，只摆事实",
+    "🔴 **平面二不写成一句，按三种出处分档**（这正是本仓那句「提到 ≠ 用了」的规模化版本）：**35 条代码里有字面量 · 26 条只在审计账里出现过**。三种出处**不许念成一句** ——出现在代码里 ≠ 有实现 ≠ 跑成了。每条都带出处，出处拿不到的不写进来",
+    "🔴 **查出 25 条钱面**（`ledger_balance/deposit/transfer/withdraw/freeze/open_account/reconcile/verify…`、`receive_invoice/new_address/scan/balances…`、`pool_assign_address`、`wallet_*`）—— **本器一律不探活**：探一下就可能真开户/真动钱；要判它们通不通必须主人在场且明确授权。⇒ 「它们通不通」这件事**本轮没验，也不该我擅自验**",
+    "**给 F12 补了两支独立取证**（证明那些名字不是审计标签、而是真被分派的 kind）：① `truth_scan.py:83-96` 直接 `run_task('ledger_open_account'/'ledger_deposit'/'ledger_balance'/'pool_assign_address')`；② 审计账里 `event=call, kind=ledger_withdraw` 紧跟 `event=error, reason=非法金额: None` —— 分派收到了这个 kind，**而且它的处理器真的校验了金额**",
+    "🔴 **顺手把 F5 的 D 维处置查清了（结论与预期相反）**：D 维要的『文档声称』来源**已经存在** —— 就在 `audit-injection-honesty.py` 里（`N个cap 必须等于活注册表`，还带 `_unquote()`『引述 ≠ 声称』），**而且它已经是常设判据**（靴自检「判据/注入面诚实性」11 条）。⇒ 在 cross_scan 里再写一遍 D 维 = **抄第二份判据**（本仓明令禁止）。处置二选一（属口径决定，等主人）：① 让 D 维**调用**那份唯一真源；② 或从维度声明里**去掉 D**。**E 维仍没有来源**（没人声称过测试数）",
     "🔴 **满仓横扫逮到的第二条红，查清后不是本轮改动、但顺手修掉它自己的一处假绿**：`test_isolation_sweep::test_a_passing_file_is_reported_green` 在负载下 rc=2 —— 子进程 tail 逐字是 `collected 0 items / 1 error` + `FileNotFoundError [WinError 2]` + `Interrupted: 1 error during collection`（**内层一个测试都没跑**）。**先证「不是我的改动」**：`run_one` 跑的是临时文件里的平凡 unittest，与 cross_scan 无关；**卸掉负载后连跑两次都是 `rc=0 · passed=1`**（13.1s / 12.4s）⇒ 负载决定，不是回归。修法与那条延迟判据同型（**判据不动，只把环境抖动与真判定分开**）：① 重试一次；② 加 `_cannot_tell()` —— **只有** rc=2 **且** tail 有 `during collection`/`Interrupted` **且**无摘要（= 它压根没开口）才判「本次无法判定」并 skip；③ **顺手修掉一处假绿**：负控原来写 `assertNotEqual(rc, 0)`，而 rc=2 是「收集期出错」⇒ 它会在「扫描器根本没开口」时**通过**，读起来却像「它真分得出红绿」；现在钉死 `rc == 1`。现读单跑 `OK (skipped=1)`",
     "**把 cross_scan 缺的四个维度里的 V 真做出来了**（第 41 轮量出的阻塞只挡住 D/E/F）。背景：那份文件写着「十个交叉维度」，而现读确认 **D/E/F/V 只出现在维度声明里、全文件没有第二处引用** —— 声称 10 维、实际只有 6 维能产出发现。现在 V 真能产出 finding，`dims_implemented` 从 6 维变 **7 维**（`A/B/G/V/W/X`），`dims_unimplemented` 从 4 个变 **3 个**（`D/E/F`）",
     "**V 的判据不是『读一个数字』，是『加减法要闭合』**：`inventory` 只读视图给出 `{你看到的（家根总项）:107, 框架管辖:3, 环境托管:104, 异物:0}`，V 维判两条 —— ① 异物必须清零（`foreign>0` ⇒ 有该处置的遗漏）；② **家根总项必须等于六类之和**。第 ② 条才是「对账」的本体：**只读一个数字不叫对账**。现读 107 == 3+104+0+0+0+0 ⇒ `balanced: true`。原始读数一并印出（`v_view`），**人能自己复算那笔加减法**",
@@ -116,7 +121,7 @@
     "已修并带牙用例：voice 参数静默丢失 · voice_orchestra 未知场景假绿灯 · redteam FR-5/FR-8 · aesthetic_brain 静默写盘 · media-gen-slots 窄字符类 · isolation_sweep 超时假绿/假红",
     "已重建派生索引：state/skill_atlas.json（171→172，security 域 5→17，幽灵域 unimplemented 现形）"
   ],
-  "in_progress": "第 42 轮：把 cross_scan 的 **V 维（视图对账）真做出来** —— 声称 10 维、实际 6 维能产出发现的那笔账，现在改成了 **7 维**（V 进 dims_implemented），D/E/F 仍如实留未实现（参考集不存在）。V 的判据不是「读一个数字」，是**加减法要闭合**（家根总项 == 六类之和）；并钉死安全红线：扫描器里**只许 fix=False**（`fix=True` 会真删文件）。现读 **16 步全绿**。",
+  "in_progress": "第 43 轮：新立 `caps-two-plane-census.py`（只读），把 F12 摊开给主人拍板 D13 —— **平面一 = 注册表 172 条**（面板报的就是它）；**平面二 = 注册表之外、在审计里被分派过的 61 个名字**（35 个代码里有字面量 · 26 个只在审计里出现过），其中 **25 个是钱面**（ledger_/receive_/pool_/wallet_）**一律不探活**。同时把 F5 的 D 维处置说清：**它的来源已经存在**（`audit-injection-honesty` 里那条『N个cap 必须等于活注册表』，而且是常设判据）⇒ 在 cross_scan 里再写一遍就是**抄第二份**。",
   "not_done": [
     {
       "id": "N1",
@@ -211,7 +216,7 @@
       "what": "cross_scan dims D/E/F/V 只有名字没有实现",
       "severity": "中",
       "evidence": "工具自己声明的 dims_unimplemented",
-      "state": "**2026-09-25 第 42 轮：V 维已实现，D/E/F 仍阻塞（理由已量过）。** ✅ V 维（视图对账）**真做出来了**：`_v_dim()` 跑一次 `inventory` 只读视图，判两条 —— ① 异物必须清零；② **双视图要算得平**（`你看到的（家根总项）` == 六类之和）。第 ② 条才是『对账』的本体：**只读一个数字不叫对账，加减法要闭合**。现读 `dims_implemented = A/B/G/V/W/X`（7 维）、`dims_unimplemented = D/E/F`，`v_view = {seen:107, sum_by_class:107, balanced:true, foreign:0}`。🔴 安全红线：`inventory.scan(fix=True)` 会**真删文件** ⇒ 用例**用桩记录 kwargs**，直接断言扫描器传的是 `fix=False`（另有 AST 级复核：代码里不许出现 `fix=True` 调用）。⏳ D/E/F 仍阻塞：F 维照最自然的方式写会报 **86 条假警**（见 F12）⇒ **参考集不存在**；D 要一个『文档声称』的来源 · E 要一个『声称的测试数』来源 —— 参考集不存在时写它，等于造一台报假警的机器。**不许凭感觉挑一个来源当判据。**"
+      "state": "**2026-09-25 第 42 轮：V 维已实现，D/E/F 仍阻塞（理由已量过）。** ✅ V 维（视图对账）**真做出来了**：`_v_dim()` 跑一次 `inventory` 只读视图，判两条 —— ① 异物必须清零；② **双视图要算得平**（`你看到的（家根总项）` == 六类之和）。第 ② 条才是『对账』的本体：**只读一个数字不叫对账，加减法要闭合**。现读 `dims_implemented = A/B/G/V/W/X`（7 维）、`dims_unimplemented = D/E/F`，`v_view = {seen:107, sum_by_class:107, balanced:true, foreign:0}`。🔴 安全红线：`inventory.scan(fix=True)` 会**真删文件** ⇒ 用例**用桩记录 kwargs**，直接断言扫描器传的是 `fix=False`（另有 AST 级复核：代码里不许出现 `fix=True` 调用）。⏳ D/E/F 仍阻塞：F 维照最自然的方式写会报 **86 条假警**（见 F12）⇒ **参考集不存在**；D 要一个『文档声称』的来源 · E 要一个『声称的测试数』来源 —— 参考集不存在时写它，等于造一台报假警的机器。**不许凭感觉挑一个来源当判据。** ｜🔴 **第 43 轮补：D 维的处置查清了 —— 不是『卡住』，是『已有唯一真源』**：D 维要的『文档声称』来源**已经存在**，就在 `tools/codex-scripts/audit-injection-honesty.py` 里（那条 `N个cap / N个能力位 必须等于活注册表条数`，还带 `_unquote()`『引述 ≠ 声称』），而且它**已经是常设判据**（靴自检里的「判据/注入面诚实性」，11 条）。⇒ 在 cross_scan 里再写一遍 D 维 = **抄第二份判据**（本仓明令禁止：判据只有一份）。正确处置二选一（**属口径决定，等主人**）：① 让 cross_scan 的 D 维**调用**那份唯一真源并把结论转成 finding；② 或者从维度声明里**去掉 D**（它已被别处覆盖）。**E 维仍没有来源**（没人声称过测试数）。"
     },
     {
       "id": "F8",
@@ -245,7 +250,7 @@
       "id": "F12",
       "what": "**能力注册表（172）没有收录一整套真在生产上跑、真过门、真能成功的操作**（room_*/collab_*/peer_register/notion/tripo/mirror_space/qiankun/deployment_rehearsal 等）",
       "severity": "中",
-      "evidence": "`caps_registry.all_caps()`（172 条）里逐个查：`room_space`/`mirror_space`/`qiankun`/`deployment_rehearsal`/`collab_gateway`/`notion`/`tripo` **全都不在**；而审计账现读显示它们是**真调用**：`room_release` 31 次 call / **7 次 ok** / 14 次 preflight_checked / 17 次 denied（缺作用域）；`notion` 196 call / **89 ok**；`tripo` 38 call / 8 ok / 27 denied；`preflight.py:155,167` 专门为 `room_plan`/`room_release` 分支；`collab_gateway._DELEGATE_ACTIONS` 显式委派 room_plan/simulate/parity；`room_space.py:58` 列了这些原语；AGENTS.md 给它们派了作用域（room_release→deploy_publish · room_rehearse→process_execute+filesystem_write）",
+      "evidence": "`caps_registry.all_caps()`（172 条）里逐个查：`room_space`/`mirror_space`/`qiankun`/`deployment_rehearsal`/`collab_gateway`/`notion`/`tripo` **全都不在**；而审计账现读显示它们是**真调用**：`room_release` 31 次 call / **7 次 ok** / 14 次 preflight_checked / 17 次 denied（缺作用域）；`notion` 196 call / **89 ok**；`tripo` 38 call / 8 ok / 27 denied；`preflight.py:155,167` 专门为 `room_plan`/`room_release` 分支；`collab_gateway._DELEGATE_ACTIONS` 显式委派 room_plan/simulate/parity；`room_space.py:58` 列了这些原语；AGENTS.md 给它们派了作用域（room_release→deploy_publish · room_rehearse→process_execute+filesystem_write） ｜🔴 **第 43 轮扩大取证（双平面普查现读）**：注册表之外**在审计账里被分派过的名字共 61 个**，出处分三档 —— **35 个代码里有字面量 · 26 个只在审计账里出现过**（三种出处**不许念成一句**：出现在代码里 ≠ 有实现 ≠ 跑成了）。其中 **25 个是钱面**（`ledger_balance/deposit/transfer/withdraw/freeze/open_account/reconcile/verify…` · `receive_invoice/new_address/scan/balances…` · `pool_assign_address` · `wallet_*`）；另有两支**独立验证**证明不是审计标签而是真被分派的 kind：① `truth_scan.py:83-96` **直接 `gbt.run_task('ledger_open_account'/'ledger_deposit'/'ledger_balance'/'pool_assign_address', …)`**；② 审计账里有 `event=call, kind=ledger_withdraw` 紧跟 `event=error, reason=非法金额: None` —— 说明**分派收到了这个 kind、并且它的处理器真的校验了金额**。⚠️ **本器不探活钱面**（探一下就可能真开户/真动钱）⇒ 「它们通不通」这件事**本轮没验、也不该我擅自验**。",
       "state": "命中即**读数口径**问题：面板/`omni`/普查报的是『**172 个能力**』，而`写生产/镜像`那一整片原语**一个都不在册** —— 读的人会以为它们不在系统里。改它=动注册表（`caps_registry.py` 是**主人专属**文件，红线：不经授权不许改）⇒ 等主人拍板：① 把这批补进注册表（改 caps_registry，主人专属）② 或明确登记『注册表只收能力位、不收管线原语』并让面板分开报两块数 ③ 维持现状但把口径写在面板上"
     },
     {
@@ -598,6 +603,10 @@
     {
       "at": "2026-09-25T23:34",
       "what": "isolation_sweep 负载下 rc=2：证与本次改动无关（卸负载 rc=0 ×2）⇒ 加 cannot_tell + 重试 + 把负控从 !=0 收紧成 ==1；登记 F13"
+    },
+    {
+      "at": "2026-09-25T23:49",
+      "what": "立双平面普查：平面一 172 / 平面二 61（35 代码字面量 · 26 仅审计）· 钱面 25 一律不探活；F5 的 D 维处置查清（已有唯一真源）"
     }
   ]
 }
