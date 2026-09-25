@@ -13,6 +13,26 @@ import webbrowser
 
 logger = logging.getLogger("potato.tools")
 
+# CPU 采样基线：psutil 的 interval=None 是「距上次调用以来的平均占用」，
+# 只有先建立基线才能给出真实读数。第一次必须带一个极短 interval，
+# 否则首帧会显示假的 0%。
+_CPU_BASELINE_READY = False
+
+
+def _cpu_percent(psutil_mod) -> float:
+    """非阻塞 CPU 读数。
+
+    旧实现是 `psutil.cpu_percent(interval=0.3)`：面板每 5 秒在主线程直接调用
+    （main.py 的 telemetry_timer 未 moveToThread），实测本机 psutil 7.2.2
+    该调用实耗 0.303s —— 每 5 秒硬冻面板 300ms，正好压在打字/看流式输出时。
+    现在只有首次调用花 50ms 建基线，之后是零阻塞取瞬时值。
+    """
+    global _CPU_BASELINE_READY
+    if not _CPU_BASELINE_READY:
+        _CPU_BASELINE_READY = True
+        return float(psutil_mod.cpu_percent(interval=0.05))
+    return float(psutil_mod.cpu_percent(interval=None))
+
 # ---- 工具注册表（GLM function calling 的 tools 定义） ----
 TOOLS_SCHEMA = [
     {
@@ -83,7 +103,7 @@ def get_time() -> str:
 def get_system_status() -> str:
     try:
         import psutil
-        cpu = psutil.cpu_percent(interval=0.3)
+        cpu = _cpu_percent(psutil)
         mem = psutil.virtual_memory()
         battery = psutil.sensors_battery()
         parts = [f"CPU {cpu:.0f}%", f"内存 {mem.percent:.0f}%（{mem.used/1e9:.1f}/{mem.total/1e9:.1f}GB）"]
@@ -114,7 +134,15 @@ def open_app(app: str) -> str:
         if target.startswith(("http://", "https://")):
             webbrowser.open(target)
         else:
-            os.system(f"start {target}")
+            # R-H295：原来是 os.system(f"start {target}") —— 把 target 拼进 shell 命令行。
+            # 实测追溯：target 只可能来自 _APP_WHITELIST 的 5 个常量（app 未命中就提前 return），
+            # 所以**当前没有可达的注入路径**，扫描器报的 critical 是「无污点分析」的误报。
+            # 但这层安全性依赖「白名单以后永不放入带参数的值」——是脆的（改一行白名单就破）。
+            # 改成不经 shell 的启动方式：注入面按构造消失，不再依赖白名单纪律。
+            if hasattr(os, "startfile"):        # Windows：走 ShellExecute，不经 shell
+                os.startfile(target)
+            else:                               # 非 Windows 兜底：列表形式同样不经 shell
+                subprocess.Popen([target])
         return f"已为你打开 {app}~"
     except Exception as e:
         return f"打不开 {app}：{e}"

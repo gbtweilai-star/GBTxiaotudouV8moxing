@@ -1,0 +1,650 @@
+{
+ "来源": "https://en.wikipedia.org/w/index.php?title=List_of_hexagrams_of_the_I_Ching&action=raw",
+ "sha256": "6b57d09877a84dc24df1249757fc33ecf8a5628735ff77ee2b40eb4fbb372fcd",
+ "字节数": 36513,
+ "字段": "卦名/下卦/上卦 取自来源；六爻位串由本仓 TRIGRAMS 推导",
+ "位串约定": "六位＝下三爻+上三爻；爻自下而上；阳=1 阴=0",
+ "卦数": 64,
+ "表": {
+  "111111": {
+   "n": 1,
+   "name": "乾",
+   "raw": "乾",
+   "lower": "乾",
+   "upper": "乾",
+   "lower_sym": "☰",
+   "upper_sym": "☰",
+   "uni": "䷀"
+  },
+  "000000": {
+   "n": 2,
+   "name": "坤",
+   "raw": "坤",
+   "lower": "坤",
+   "upper": "坤",
+   "lower_sym": "☷",
+   "upper_sym": "☷",
+   "uni": "䷁"
+  },
+  "100010": {
+   "n": 3,
+   "name": "屯",
+   "raw": "屯",
+   "lower": "震",
+   "upper": "坎",
+   "lower_sym": "☳",
+   "upper_sym": "☵",
+   "uni": "䷂"
+  },
+  "010001": {
+   "n": 4,
+   "name": "蒙",
+   "raw": "蒙",
+   "lower": "坎",
+   "upper": "艮",
+   "lower_sym": "☵",
+   "upper_sym": "☶",
+   "uni": "䷃"
+  },
+  "111010": {
+   "n": 5,
+   "name": "需",
+   "raw": "需",
+   "lower": "乾",
+   "upper": "坎",
+   "lower_sym": "☰",
+   "upper_sym": "☵",
+   "uni": "䷄"
+  },
+  "010111": {
+   "n": 6,
+   "name": "讼",
+   "raw": "訟",
+   "lower": "坎",
+   "upper": "乾",
+   "lower_sym": "☵",
+   "upper_sym": "☰",
+   "uni": "䷅"
+  },
+  "010000": {
+   "n": 7,
+   "name": "师",
+   "raw": "師",
+   "lower": "坎",
+   "upper": "坤",
+   "lower_sym": "☵",
+   "upper_sym": "☷",
+   "uni": "䷆"
+  },
+  "000010": {
+   "n": 8,
+   "name": "比",
+   "raw": "比",
+   "lower": "坤",
+   "upper": "坎",
+   "lower_sym": "☷",
+   "upper_sym": "☵",
+   "uni": "䷇"
+  },
+  "111011": {
+   "n": 9,
+   "name": "小畜",
+   "raw": "小畜",
+   "lower": "乾",
+   "upper": "巽",
+   "lower_sym": "☰",
+   "upper_sym": "☴",
+   "uni": "䷈"
+  },
+  "110111": {
+   "n": 10,
+   "name": "履",
+   "raw": "履",
+   "lower": "兑",
+   "upper": "乾",
+   "lower_sym": "☱",
+   "upper_sym": "☰",
+   "uni": "䷉"
+  },
+  "111000": {
+   "n": 11,
+   "name": "泰",
+   "raw": "泰",
+   "lower": "乾",
+   "upper": "坤",
+   "lower_sym": "☰",
+   "upper_sym": "☷",
+   "uni": "䷊"
+  },
+  "000111": {
+   "n": 12,
+   "name": "否",
+   "raw": "否",
+   "lower": "坤",
+   "upper": "乾",
+   "lower_sym": "☷",
+   "upper_sym": "☰",
+   "uni": "䷋"
+  },
+  "101111": {
+   "n": 13,
+   "name": "同人",
+   "raw": "同人",
+   "lower": "离",
+   "upper": "乾",
+   "lower_sym": "☲",
+   "upper_sym": "☰",
+   "uni": "䷌"
+  },
+  "111101": {
+   "n": 14,
+   "name": "大有",
+   "raw": "大有",
+   "lower": "乾",
+   "upper": "离",
+   "lower_sym": "☰",
+   "upper_sym": "☲",
+   "uni": "䷍"
+  },
+  "001000": {
+   "n": 15,
+   "name": "谦",
+   "raw": "謙",
+   "lower": "艮",
+   "upper": "坤",
+   "lower_sym": "☶",
+   "upper_sym": "☷",
+   "uni": "䷎"
+  },
+  "000100": {
+   "n": 16,
+   "name": "豫",
+   "raw": "豫",
+   "lower": "坤",
+   "upper": "震",
+   "lower_sym": "☷",
+   "upper_sym": "☳",
+   "uni": "䷏"
+  },
+  "100110": {
+   "n": 17,
+   "name": "随",
+   "raw": "隨",
+   "lower": "震",
+   "upper": "兑",
+   "lower_sym": "☳",
+   "upper_sym": "☱",
+   "uni": "䷐"
+  },
+  "011001": {
+   "n": 18,
+   "name": "蛊",
+   "raw": "蠱",
+   "lower": "巽",
+   "upper": "艮",
+   "lower_sym": "☴",
+   "upper_sym": "☶",
+   "uni": "䷑"
+  },
+  "110000": {
+   "n": 19,
+   "name": "临",
+   "raw": "臨",
+   "lower": "兑",
+   "upper": "坤",
+   "lower_sym": "☱",
+   "upper_sym": "☷",
+   "uni": "䷒"
+  },
+  "000011": {
+   "n": 20,
+   "name": "观",
+   "raw": "觀",
+   "lower": "坤",
+   "upper": "巽",
+   "lower_sym": "☷",
+   "upper_sym": "☴",
+   "uni": "䷓"
+  },
+  "100101": {
+   "n": 21,
+   "name": "噬嗑",
+   "raw": "噬嗑",
+   "lower": "震",
+   "upper": "离",
+   "lower_sym": "☳",
+   "upper_sym": "☲",
+   "uni": "䷔"
+  },
+  "101001": {
+   "n": 22,
+   "name": "贲",
+   "raw": "賁",
+   "lower": "离",
+   "upper": "艮",
+   "lower_sym": "☲",
+   "upper_sym": "☶",
+   "uni": "䷕"
+  },
+  "000001": {
+   "n": 23,
+   "name": "剥",
+   "raw": "剝",
+   "lower": "坤",
+   "upper": "艮",
+   "lower_sym": "☷",
+   "upper_sym": "☶",
+   "uni": "䷖"
+  },
+  "100000": {
+   "n": 24,
+   "name": "复",
+   "raw": "復",
+   "lower": "震",
+   "upper": "坤",
+   "lower_sym": "☳",
+   "upper_sym": "☷",
+   "uni": "䷗"
+  },
+  "100111": {
+   "n": 25,
+   "name": "无妄",
+   "raw": "无妄",
+   "lower": "震",
+   "upper": "乾",
+   "lower_sym": "☳",
+   "upper_sym": "☰",
+   "uni": "䷘"
+  },
+  "111001": {
+   "n": 26,
+   "name": "大畜",
+   "raw": "大畜",
+   "lower": "乾",
+   "upper": "艮",
+   "lower_sym": "☰",
+   "upper_sym": "☶",
+   "uni": "䷙"
+  },
+  "100001": {
+   "n": 27,
+   "name": "颐",
+   "raw": "頤",
+   "lower": "震",
+   "upper": "艮",
+   "lower_sym": "☳",
+   "upper_sym": "☶",
+   "uni": "䷚"
+  },
+  "011110": {
+   "n": 28,
+   "name": "大过",
+   "raw": "大過",
+   "lower": "巽",
+   "upper": "兑",
+   "lower_sym": "☴",
+   "upper_sym": "☱",
+   "uni": "䷛"
+  },
+  "010010": {
+   "n": 29,
+   "name": "坎",
+   "raw": "坎",
+   "lower": "坎",
+   "upper": "坎",
+   "lower_sym": "☵",
+   "upper_sym": "☵",
+   "uni": "䷜"
+  },
+  "101101": {
+   "n": 30,
+   "name": "离",
+   "raw": "離",
+   "lower": "离",
+   "upper": "离",
+   "lower_sym": "☲",
+   "upper_sym": "☲",
+   "uni": "䷝"
+  },
+  "001110": {
+   "n": 31,
+   "name": "咸",
+   "raw": "咸",
+   "lower": "艮",
+   "upper": "兑",
+   "lower_sym": "☶",
+   "upper_sym": "☱",
+   "uni": "䷞"
+  },
+  "011100": {
+   "n": 32,
+   "name": "恒",
+   "raw": "恆",
+   "lower": "巽",
+   "upper": "震",
+   "lower_sym": "☴",
+   "upper_sym": "☳",
+   "uni": "䷟"
+  },
+  "001111": {
+   "n": 33,
+   "name": "遁",
+   "raw": "遯",
+   "lower": "艮",
+   "upper": "乾",
+   "lower_sym": "☶",
+   "upper_sym": "☰",
+   "uni": "䷠"
+  },
+  "111100": {
+   "n": 34,
+   "name": "大壮",
+   "raw": "大壯",
+   "lower": "乾",
+   "upper": "震",
+   "lower_sym": "☰",
+   "upper_sym": "☳",
+   "uni": "䷡"
+  },
+  "000101": {
+   "n": 35,
+   "name": "晋",
+   "raw": "晉",
+   "lower": "坤",
+   "upper": "离",
+   "lower_sym": "☷",
+   "upper_sym": "☲",
+   "uni": "䷢"
+  },
+  "101000": {
+   "n": 36,
+   "name": "明夷",
+   "raw": "明夷",
+   "lower": "离",
+   "upper": "坤",
+   "lower_sym": "☲",
+   "upper_sym": "☷",
+   "uni": "䷣"
+  },
+  "101011": {
+   "n": 37,
+   "name": "家人",
+   "raw": "家人",
+   "lower": "离",
+   "upper": "巽",
+   "lower_sym": "☲",
+   "upper_sym": "☴",
+   "uni": "䷤"
+  },
+  "110101": {
+   "n": 38,
+   "name": "睽",
+   "raw": "睽",
+   "lower": "兑",
+   "upper": "离",
+   "lower_sym": "☱",
+   "upper_sym": "☲",
+   "uni": "䷥"
+  },
+  "001010": {
+   "n": 39,
+   "name": "蹇",
+   "raw": "蹇",
+   "lower": "艮",
+   "upper": "坎",
+   "lower_sym": "☶",
+   "upper_sym": "☵",
+   "uni": "䷦"
+  },
+  "010100": {
+   "n": 40,
+   "name": "解",
+   "raw": "解",
+   "lower": "坎",
+   "upper": "震",
+   "lower_sym": "☵",
+   "upper_sym": "☳",
+   "uni": "䷧"
+  },
+  "110001": {
+   "n": 41,
+   "name": "损",
+   "raw": "損",
+   "lower": "兑",
+   "upper": "艮",
+   "lower_sym": "☱",
+   "upper_sym": "☶",
+   "uni": "䷨"
+  },
+  "100011": {
+   "n": 42,
+   "name": "益",
+   "raw": "益",
+   "lower": "震",
+   "upper": "巽",
+   "lower_sym": "☳",
+   "upper_sym": "☴",
+   "uni": "䷩"
+  },
+  "111110": {
+   "n": 43,
+   "name": "夬",
+   "raw": "夬",
+   "lower": "乾",
+   "upper": "兑",
+   "lower_sym": "☰",
+   "upper_sym": "☱",
+   "uni": "䷪"
+  },
+  "011111": {
+   "n": 44,
+   "name": "姤",
+   "raw": "姤",
+   "lower": "巽",
+   "upper": "乾",
+   "lower_sym": "☴",
+   "upper_sym": "☰",
+   "uni": "䷫"
+  },
+  "000110": {
+   "n": 45,
+   "name": "萃",
+   "raw": "萃",
+   "lower": "坤",
+   "upper": "兑",
+   "lower_sym": "☷",
+   "upper_sym": "☱",
+   "uni": "䷬"
+  },
+  "011000": {
+   "n": 46,
+   "name": "升",
+   "raw": "升",
+   "lower": "巽",
+   "upper": "坤",
+   "lower_sym": "☴",
+   "upper_sym": "☷",
+   "uni": "䷭"
+  },
+  "010110": {
+   "n": 47,
+   "name": "困",
+   "raw": "困",
+   "lower": "坎",
+   "upper": "兑",
+   "lower_sym": "☵",
+   "upper_sym": "☱",
+   "uni": "䷮"
+  },
+  "011010": {
+   "n": 48,
+   "name": "井",
+   "raw": "井",
+   "lower": "巽",
+   "upper": "坎",
+   "lower_sym": "☴",
+   "upper_sym": "☵",
+   "uni": "䷯"
+  },
+  "101110": {
+   "n": 49,
+   "name": "革",
+   "raw": "革",
+   "lower": "离",
+   "upper": "兑",
+   "lower_sym": "☲",
+   "upper_sym": "☱",
+   "uni": "䷰"
+  },
+  "011101": {
+   "n": 50,
+   "name": "鼎",
+   "raw": "鼎",
+   "lower": "巽",
+   "upper": "离",
+   "lower_sym": "☴",
+   "upper_sym": "☲",
+   "uni": "䷱"
+  },
+  "100100": {
+   "n": 51,
+   "name": "震",
+   "raw": "震",
+   "lower": "震",
+   "upper": "震",
+   "lower_sym": "☳",
+   "upper_sym": "☳",
+   "uni": "䷲"
+  },
+  "001001": {
+   "n": 52,
+   "name": "艮",
+   "raw": "艮",
+   "lower": "艮",
+   "upper": "艮",
+   "lower_sym": "☶",
+   "upper_sym": "☶",
+   "uni": "䷳"
+  },
+  "001011": {
+   "n": 53,
+   "name": "渐",
+   "raw": "漸",
+   "lower": "艮",
+   "upper": "巽",
+   "lower_sym": "☶",
+   "upper_sym": "☴",
+   "uni": "䷴"
+  },
+  "110100": {
+   "n": 54,
+   "name": "归妹",
+   "raw": "歸妹",
+   "lower": "兑",
+   "upper": "震",
+   "lower_sym": "☱",
+   "upper_sym": "☳",
+   "uni": "䷵"
+  },
+  "101100": {
+   "n": 55,
+   "name": "丰",
+   "raw": "豐",
+   "lower": "离",
+   "upper": "震",
+   "lower_sym": "☲",
+   "upper_sym": "☳",
+   "uni": "䷶"
+  },
+  "001101": {
+   "n": 56,
+   "name": "旅",
+   "raw": "旅",
+   "lower": "艮",
+   "upper": "离",
+   "lower_sym": "☶",
+   "upper_sym": "☲",
+   "uni": "䷷"
+  },
+  "011011": {
+   "n": 57,
+   "name": "巽",
+   "raw": "巽",
+   "lower": "巽",
+   "upper": "巽",
+   "lower_sym": "☴",
+   "upper_sym": "☴",
+   "uni": "䷸"
+  },
+  "110110": {
+   "n": 58,
+   "name": "兑",
+   "raw": "兌",
+   "lower": "兑",
+   "upper": "兑",
+   "lower_sym": "☱",
+   "upper_sym": "☱",
+   "uni": "䷹"
+  },
+  "010011": {
+   "n": 59,
+   "name": "涣",
+   "raw": "渙",
+   "lower": "坎",
+   "upper": "巽",
+   "lower_sym": "☵",
+   "upper_sym": "☴",
+   "uni": "䷺"
+  },
+  "110010": {
+   "n": 60,
+   "name": "节",
+   "raw": "節",
+   "lower": "兑",
+   "upper": "坎",
+   "lower_sym": "☱",
+   "upper_sym": "☵",
+   "uni": "䷻"
+  },
+  "110011": {
+   "n": 61,
+   "name": "中孚",
+   "raw": "中孚",
+   "lower": "兑",
+   "upper": "巽",
+   "lower_sym": "☱",
+   "upper_sym": "☴",
+   "uni": "䷼"
+  },
+  "001100": {
+   "n": 62,
+   "name": "小过",
+   "raw": "小過",
+   "lower": "艮",
+   "upper": "震",
+   "lower_sym": "☶",
+   "upper_sym": "☳",
+   "uni": "䷽"
+  },
+  "101010": {
+   "n": 63,
+   "name": "既济",
+   "raw": "既濟",
+   "lower": "离",
+   "upper": "坎",
+   "lower_sym": "☲",
+   "upper_sym": "☵",
+   "uni": "䷾"
+  },
+  "010101": {
+   "n": 64,
+   "name": "未济",
+   "raw": "未濟",
+   "lower": "坎",
+   "upper": "离",
+   "lower_sym": "☵",
+   "upper_sym": "☲",
+   "uni": "䷿"
+  }
+ }
+}

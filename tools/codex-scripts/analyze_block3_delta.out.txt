@@ -1,0 +1,58 @@
+﻿生产 sha256 = 8812426dd98768e8af21880cbde9132304244d1e8aaa8984f5c223b840ae6ad5
+镜像 sha256 = f4c4f559090cf43c01689bc9df2475c2a0862ac9f3a479a9de6c8910b898bbbf
+生产 LF= 1239 CR= 0 | 镜像 LF= 1306 CR= 0
+生产行数 = 1239 | 横幅首行(1-based) = 1292 | 横幅标记数 = 2
+正文行数 = 1290 | 净增 = 51
+正文末行 = '    raise SystemExit(main())'
+被剥行数 = 16
+
+非等区间数 = 9 | 等值区间数 = 10
+非改动区逐行一致 = True
+
+合计 删 2 行 / 增 53 行 / 净 +51
+
+T0  insert   生产   14-13    ->  镜像   14-14     del=0   add=1  
+       上文锚点: import argparse
+       下文锚点: import json
+       新增首行: import hashlib
+
+T1  insert   生产   88-87    ->  镜像   89-112    del=0   add=24 
+       上文锚点: 
+       下文锚点: class EventBus:
+       新增首行: 
+
+T2  insert   生产  147-146   ->  镜像  172-174    del=0   add=3  
+       上文锚点: self._turn_id = None
+       下文锚点: self._delta_buf: list[str] = []
+       新增首行: # 块3：记录 _thread_id 归属哪条共享连接（_connection_token 指纹）。
+
+T3  replace  生产  735-735   ->  镜像  763-765    del=1   add=3  
+       上文锚点: server = CB.get_shared_server()
+       下文锚点: try:
+       新增首行: token = _connection_token(server)
+
+T4  insert   生产  743-742   ->  镜像  773-773    del=0   add=1  
+       上文锚点: )
+       下文锚点: return self._thread_id
+       新增首行: _panel_audit("thread_reuse", {"thread_id": self._thread_id, "owner": token})
+
+T5  replace  生产  744-744   ->  镜像  775-778    del=1   add=4  
+       上文锚点: return self._thread_id
+       下文锚点: self._thread_id = None
+       新增首行: except CB.CodexAppServerError as exc:
+
+T6  insert   生产  746-745   ->  镜像  780-791    del=0   add=12 
+       上文锚点: self._thread_id = None
+       下文锚点: # S1-P1：线程创建同样走路由，并包 owner_session。
+       新增首行: self._turn_id = None
+
+T7  insert   生产  768-767   ->  镜像  814-817    del=0   add=4  
+       上文锚点: raise RuntimeError("Codex thread/start returned no thread id")
+       下文锚点: return self._thread_id
+       新增首行: # 块3：建成后重取令牌——防止创建过程中共享连接被整体替换。
+
+T8  insert   生产  972-971   ->  镜像 1022-1022   del=0   add=1  
+       上文锚点: self._turn_id = None
+       下文锚点: self.bus.publish("thread", id=None, fresh=True)
+       新增首行: self._thread_owner = None
+

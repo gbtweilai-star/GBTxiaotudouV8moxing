@@ -1,0 +1,25 @@
+copied=21 skipped_junk=2
+window.css -> 15244 bytes
+
+stage tree:
+   ef_render.js                          4772B
+   eigenflux/ef.js                       4142B
+   eigenflux/index.html                  2152B
+   h1/h1.css                              803B
+   h1/h1.js                              5175B
+   h1/index.html                         2797B
+   index.html                           11059B
+   ledger/ledger_store.py               11488B
+   ledger/sink.py                        7557B
+   README.md                             2720B
+   shell/features.cjs                   12788B
+   shell/layout.cjs                      4438B
+   shell/main.cjs                       56437B
+   shell/preload.cjs                     2289B
+   shell/windows.json                    2033B
+   tests/run_tests.py                    5641B
+   tests/test_brand_tokens.cjs           5178B
+   tests/test_layout_snap.cjs            6945B
+   tests/test_w9_features.cjs           18858B
+   window.css                           15244B
+   window.js                            35216B

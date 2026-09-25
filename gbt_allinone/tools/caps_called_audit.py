@@ -31,6 +31,8 @@ SKIP_PARTS = (".pylibs", "node_modules", ".git", "__pycache__", "store", "docs",
               "archive", "resources", "dist", "build")
 SCAN_DIRS = ("gbt_allinone", "holo_pet")
 SCAN_SUFFIX = (".py", ".js", ".cjs")
+# `\w+` 型 kind（本仓全部能力位都是）可走词表快查；其余走原正则，保证语义不变
+_TOKEN_KIND = re.compile(r"\w+")
 
 # ── 能力位分两类（R-H194 · 主人定）────────────────────────────
 #   internal（内调型）：给别的模块用的 ⇒ **必须**被 import/called，否则报 orphan
@@ -48,6 +50,22 @@ CAP_TYPES = {
     # `sec_chain` = 安全面 HackerBrain 的**入口**（`api.py:196` 直接调 build_exploit_chain），
     # 它是"人调的安全分析入口"，不是"给别的模块调的内部件" ⇒ 归 external。
     "sec_chain": "external",
+    # R-H 入口型：api.py _run_benign 路由的入口能力，与 pipeline_versions 同族
+    "agency_tentacles": "external",
+    "media_pipeline": "external",
+    # 第 81 轮补：`media_run`（三方向链执行器）**与 `media_pipeline` 同族** ——
+    # 它只经 `api.run_task` 这道门进入，框架内部**没有任何东西该调它**。
+    # 当初给 `media_pipeline` 分型时**漏了它一个** ⇒ 落回默认 internal ⇒
+    # `caps_called_audit` 把它报成孤儿（`self_ref_only`），而它明明是入口。
+    # 证据：审计自己的读数 `orphans: ["media_run"]` / `self_ref_only: ["media_run"]`。
+    "media_run": "external",
+    # 第 55 轮补：`datakit`（本地数据工具）**与 `media_run` 同族** ——
+    # 它只经 `api.run_task` 这道门进入（`api.py` 的 `datakit` 分支），
+    # 框架内部**没有任何东西该调它**：它是**给人用的入口**（HTML转MD / JSON美化 / CSV合并…）。
+    # 证：不补分型时审计自己的读数就是 `orphan_count: 0 → 1`（我刚接上它时实测到的），
+    # 补完应回 0。**分型不是洗白**：判据是"它是不是门"，不是"想不想让它绿"。
+    "datakit": "external",
+    "tentacle_pipeline": "external"
 }
 DEFAULT_TYPE = "internal"
 CAP_TYPE_CN = {"internal": "内调型（给别的模块用）", "external": "入口型（给人/API 用）"}
@@ -109,21 +127,42 @@ def _code_only(text: str, suffix: str) -> str:
     return re.sub(r"(?m)^\s*//.*$", "", out)
 
 
+def _corpus_index(corpus: list) -> list:
+    """把语料**每个文件切一次词表**，供后续 O(1) 查词。
+
+    为什么改（2026-09-22 实测）：原实现是「每个能力位 × 每个文件」各跑一次
+    `re.search`：141 位 × 275 文件 = **38,775 次正则**，每次扫全文（合计 4.4 MB），
+    实测 `audit()` 要 **19.5–33.2s**（抖动本身就让用例在 30s 硬超时边缘时红时绿）。
+    拆开量过：走树 0.85s、读语料 1.88s —— 钱全花在这层重扫上。
+
+    等价性：`re.compile(r"\\b" + re.escape(kind) + r"\\b")` 在 kind 是 `\\w+` 型时，
+    等价于「kind 是文本里的一个**完整词**」，故可先切词集合再查。
+    非 `\\w+` 型（含连字符等）仍走原正则路径 —— **不改变任何语义**。
+    改完必须与冻结基线逐字节一致（见 tests/test_caps_called_audit.py 的口径）。
+    """
+    return [(rel, frozenset(re.findall(r"\w+", txt)), txt) for rel, txt in corpus]
+
+
 def audit(kinds: list | None = None) -> dict:
     """逐个能力位算 called_by（只读）。返回 wired / orphan 两张清单。"""
     from ..caps_registry import BENIGN_CAPS
     corpus = _corpus()
+    indexed = _corpus_index(corpus)
     targets = sorted(kinds) if kinds else sorted(BENIGN_CAPS)
     rows = []
     for kind in targets:
-        pat = re.compile(r"\b" + re.escape(kind) + r"\b")
+        # 判据与原来**逐字等价**（等价性说明见 _corpus_index）：
+        # `\w+` 型 kind 走词表 O(1) 查；含非词字符的 kind 退回原正则路径。
+        exact = _TOKEN_KIND.fullmatch(kind) is not None
+        pat = None if exact else re.compile(r"\b" + re.escape(kind) + r"\b")
         # 🔴 口径修正（第一版被自己的读数打脸）：**同名模块自己的提及不算接线** ——
         # `account_registry.py` 里写着自己的名字，那不是"有人调用它"，那是自我介绍。
         # 不排掉这一层，审计会给出**假绿**（112/120），把"孤儿"算成"活着"。
         self_module_names = {kind + ".py", kind + ".js", kind + ".cjs"}
         callers, self_refs = [], []
-        for rel, txt in corpus:
-            if not pat.search(txt):
+        for rel, tokens, txt in indexed:
+            hit = (kind in tokens) if exact else bool(pat.search(txt))
+            if not hit:
                 continue
             if Path(rel).name in self_module_names:
                 self_refs.append(rel)

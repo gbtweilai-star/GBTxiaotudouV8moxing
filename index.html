@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GBT小土豆V8 · 总入口</title>
+<!-- 内联 data: icon：不依赖路径（DSH 宿主 / file:// 都成立）。
+     ⚠️ 这条要留在**模板**里：先前它是手补在生成产物上的，一旦重新生成就被冲掉，
+     浏览器转而请求 /favicon.ico 拿 404，控制台多一条红字。 -->
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAWklEQVR42mNgGAWjYBSMglEwCkbBKBgFo2AUjIJRMApGwSgYBaNgFIyCUTAKRsEoGAWjYBSMglEwCkbBKBgFo2AUjIJRMApGwSgYBaNgFIyCUTAKRsEoAAB2gAH/8kQ0dQAAAABJRU5ErkJggg==">
+<style>
+/* ── 令牌：唯一允许写裸色值的地方（与上帝视角同源） ── */
+:root {
+  --gold:#F5B041; --cyan:#00E5FF; --violet:#7C4DFF;
+  --ok:#22C55E; --warn:#F5B041; --fault:#EF4444; --off:#6B7280;
+  --bg:#04060E; --bg-2:#070B18; --panel:rgba(10,15,32,.72);
+  --line:rgba(124,77,255,.26); --line-hot:rgba(0,229,255,.42);
+  --text:#E8ECF8; --dim:#93A0C0; --faint:rgba(147,160,192,.5);
+  --radius:10px; --radius-ctl:6px; --radius-pill:999px;
+  --mono:"SF Mono","JetBrains Mono","Cascadia Mono",Consolas,ui-monospace,monospace;
+}
+/* 形状系统：卡片 10px · 控件 6px · 药丸 999px。整页只此三档，不许裸值。 */
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; color:var(--text); position:relative; min-height:100vh;
+  background:
+    radial-gradient(1400px 700px at 8% -14%, rgba(0,229,255,.10), transparent 58%),
+    radial-gradient(900px 500px at 96% 4%, rgba(124,77,255,.075), transparent 60%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  font:14px/1.62 "Microsoft YaHei UI","Segoe UI",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+/* 工程网格 + 内暗角：固定背景，不随滚动跑 */
+body::before {
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    linear-gradient(rgba(0,229,255,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,.045) 1px, transparent 1px);
+  background-size:64px 64px, 64px 64px;
+  -webkit-mask-image:radial-gradient(1200px 800px at 50% 0%, #000 25%, transparent 78%);
+  mask-image:radial-gradient(1200px 800px at 50% 0%, #000 25%, transparent 78%);
+}
+body::after {
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:radial-gradient(120% 90% at 50% 40%, transparent 42%, rgba(2,4,10,.72) 100%);
+}
+.wrap { position:relative; z-index:1; max-width:1460px; margin:0 auto; padding:0 34px 56px; }
+
+.topbar {
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  padding:13px 0; border-bottom:1px solid var(--line);
+  font:500 11.5px/1 var(--mono); letter-spacing:.14em; color:var(--faint);
+  text-transform:uppercase;
+}
+.topbar .dot {
+  width:7px; height:7px; border-radius:var(--radius-pill);
+  background:var(--ok); box-shadow:0 0 10px var(--ok);
+  animation:beat 3.2s ease-in-out infinite;
+}
+@keyframes beat { 0%,100%{opacity:1} 50%{opacity:.3} }
+.topbar .grow { flex:1; }
+.topbar b { color:var(--text); font-weight:600; }
+
+.hero { padding:52px 0 26px; }
+.eyebrow {
+  font:600 11.5px/1 var(--mono); letter-spacing:.3em; color:var(--cyan);
+  text-transform:uppercase; margin:0 0 18px;
+}
+.eyebrow::before { content:"\25AA\25AA "; color:var(--violet); letter-spacing:.1em; }
+h1 {
+  margin:0 0 14px; font-weight:700; letter-spacing:-.03em; line-height:1.02;
+  font-size:clamp(40px, 6.2vw, 78px);
+  background:linear-gradient(180deg, #FFFFFF 0%, #C3CFEA 58%, rgba(147,160,192,.6) 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+h1 em {
+  font-style:normal; color:var(--cyan);
+  text-shadow:0 0 34px rgba(0,229,255,.45);
+}
+.lede { margin:0; color:var(--dim); max-width:74ch; font-size:15px; }
+.lede b { color:var(--gold); }
+
+.stats {
+  display:flex; flex-wrap:wrap; margin:28px 0 6px;
+  border:1px solid var(--line); border-radius:var(--radius);
+  background:linear-gradient(180deg, rgba(0,229,255,.035), transparent);
+  overflow:hidden;
+}
+.stats div { flex:1; min-width:150px; padding:15px 20px; border-right:1px solid var(--line); }
+.stats div:last-child { border-right:none; }
+.stats .n { display:block; font:700 30px/1 var(--mono); color:var(--text); letter-spacing:-.02em; }
+.stats .n.hot { color:var(--cyan); text-shadow:0 0 22px rgba(0,229,255,.4); }
+.stats .k {
+  display:block; margin-top:6px; font:500 11px/1 var(--mono);
+  letter-spacing:.16em; color:var(--faint); text-transform:uppercase;
+}
+
+.sec-h {
+  display:flex; align-items:baseline; gap:12px; margin:42px 0 16px;
+  padding-bottom:10px; border-bottom:1px solid var(--line);
+}
+.sec-h h2 { margin:0; font-size:15px; font-weight:650; }
+.sec-h .cnt { font:500 11px/1 var(--mono); color:var(--faint); letter-spacing:.1em; }
+
+.panel-list { display:flex; flex-direction:column; gap:10px; }
+a.card {
+  position:relative; display:grid; grid-template-columns:250px 1fr; gap:18px;
+  border:1px solid var(--line); border-radius:var(--radius);
+  background:var(--panel); padding:13px 16px 13px 13px;
+  text-decoration:none; color:inherit; overflow:hidden;
+  transition:border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+a.card::before {
+  content:attr(data-i); position:absolute; top:9px; right:13px;
+  font:600 11px/1 var(--mono); color:var(--faint); letter-spacing:.1em;
+}
+a.card::after {
+  content:""; position:absolute; left:0; bottom:0; width:16px; height:16px;
+  border-left:2px solid var(--violet); border-bottom:2px solid var(--violet); opacity:.55;
+}
+a.card:hover {
+  border-color:var(--line-hot);
+  box-shadow:0 0 0 1px rgba(0,229,255,.14), 0 14px 40px -18px rgba(0,229,255,.5);
+  transform:translateY(-2px);
+}
+a.card[aria-disabled="true"] { opacity:.5; }
+.thumb {
+  display:block; border-radius:var(--radius-ctl); overflow:hidden;
+  background:#02040A; aspect-ratio:16/10; border:1px solid var(--line);
+}
+.thumb img {
+  width:100%; height:100%; object-fit:cover; display:block;
+  filter:saturate(1.05) contrast(1.04); transition:transform .35s ease;
+}
+a.card:hover .thumb img { transform:scale(1.035); }
+.noimg {
+  display:flex; align-items:center; justify-content:center; height:100%;
+  color:var(--off); font:500 11px/1 var(--mono); letter-spacing:.14em;
+}
+.cbody { min-width:0; display:flex; flex-direction:column; gap:6px; justify-content:center; }
+.chead { display:flex; align-items:baseline; gap:10px; }
+.chead b { font-size:17px; font-weight:650; letter-spacing:-.01em; }
+.cdesc { color:var(--dim); font-size:13px; }
+.cmeta { color:var(--faint); font:500 11.5px/1.6 var(--mono); overflow-wrap:anywhere; }
+.miss { color:var(--fault); font-weight:600; }
+.chip {
+  border:1px solid currentColor; border-radius:var(--radius-pill);
+  padding:1px 9px; font:600 10.5px/1.6 var(--mono); letter-spacing:.08em;
+}
+.chip-ok { color:var(--ok); box-shadow:0 0 12px -3px currentColor; }
+.chip-fault { color:var(--fault); }
+code {
+  font:12px/1.5 var(--mono); color:var(--cyan);
+  background:rgba(0,229,255,.07); padding:1px 6px; border-radius:var(--radius-ctl);
+}
+
+.gal { margin:0 0 30px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:11px; }
+a.tile {
+  display:block; border:1px solid var(--line); border-radius:var(--radius);
+  background:var(--panel); padding:8px; text-decoration:none; color:inherit;
+  transition:border-color .18s ease, transform .18s ease;
+}
+a.tile:hover { border-color:var(--line-hot); transform:translateY(-2px); }
+a.tile img {
+  width:100%; aspect-ratio:16/10; object-fit:cover; display:block;
+  border-radius:var(--radius-ctl); background:#02040A; border:1px solid var(--line);
+}
+.tname { display:block; margin-top:7px; font-size:12.5px; overflow-wrap:anywhere; }
+.tsize { display:block; color:var(--faint); font:500 10.5px/1.7 var(--mono); letter-spacing:.06em; }
+
+/* 卡内子入口（子窗口，不占顶层卡位）：形状沿用令牌，不新造档位 */
+.subs {
+  display:block; margin-top:6px; color:var(--faint);
+  font:500 11px/1.7 var(--mono); letter-spacing:.04em;
+}
+a.sub { color:var(--cyan); text-decoration:none; border-bottom:1px dotted var(--line-hot); }
+a.sub:hover { color:var(--text); border-bottom-color:var(--cyan); }
+.sub-miss { color:var(--fault); }
+
+footer.sig {
+  margin-top:34px; padding-top:15px; border-top:1px solid var(--line);
+  color:var(--faint); font:500 11.5px/1.8 var(--mono); letter-spacing:.06em;
+}
+@media (max-width:720px) {
+  .wrap { padding:0 18px 40px; }
+  a.card { grid-template-columns:1fr; }
+  .hero { padding:32px 0 20px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="dot"></span>
+    <span>GBT小土豆V8</span>
+    <span class="grow"></span>
+    <span>WORKSPACE INDEX</span>
+    <span>PANELS <b id="t-panels">—</b></span>
+    <span>RENDERS <b id="t-renders">—</b></span>
+  </div>
+
+  <div class="hero">
+    <p class="eyebrow">Workspace · Panel Index</p>
+    <h1>可视化面板<em>总索引</em></h1>
+    <p class="lede">一屏看全本工作区所有可视化面板与渲染留影，<b>点开即用</b>。
+       本页清单与宿主插件的 PANELS 登记表同源；<b>顶部台账与每张卡片的字节数都是打开这一页时
+       现读宿主目录</b>（同源 <code>GET /gbt-master</code>），不是写死的 —— 取不到就显示
+       <b>「取不到」</b>并写明原因，<b>不顶一个好看的假数</b>。要逐页真渲染审计请用
+       <code>plugins/gbt-master/tools/cross-scan.py</code>（真 Chrome 穿透四层：登记表 / 路由 /
+       运行时 / 数据层，抓状态码、控制台错、失败请求、canvas 是否真出画面）。</p>
+  </div>
+
+  <div class="stats">
+    <div><span class="n hot" id="s-panels">—</span><span class="k">PANELS LIVE</span></div>
+    <div><span class="n" id="s-renders">—</span><span class="k">RENDERS</span></div>
+    <div><span class="n" id="s-payload">—</span><span class="k">PAYLOAD</span></div>
+    <div><span class="n" id="s-missing">—</span><span class="k">MISSING</span></div>
+  </div>
+
+  <div class="sec-h"><h2>活面板</h2><span class="cnt" id="live-src">READING…</span></div>
+  <div class="panel-list">
+      <a class="card" data-i="01" href="capabilities.html">
+        <span class="thumb"><img src="render/能力球-violet-默认.png" alt="能力球 · 能力台 预览" loading="lazy"></span>
+        <span class="cbody">
+          <span class="chead"><b>能力球 · 能力台</b><span class="chip chip-ok">在</span></span>
+          <span class="cdesc">158 项能力铺在一个真 3D 球面上（手写三维引擎，零依赖）。拖拽旋转，悬停读数，点节点进它自己的独立页面。形态即状态：实心=免卡、琥珀环=要授权、空心虚线=桩、暗红=禁用。配色可切（1/2/3/4）。</span>
+          <span class="cmeta">108 KB · <code>capabilities.html</code></span>
+        </span>
+      </a>
+      <a class="card" data-i="02" href="holo_pet_w3/index.html">
+        <span class="thumb"><img src="render/godview/quad_四视图.png" alt="上帝视角 W3 预览" loading="lazy"></span>
+        <span class="cbody">
+          <span class="chead"><b>上帝视角 W3</b><span class="chip chip-ok">在</span></span>
+          <span class="cdesc">六页签实时驾驶舱：四视图 / 工作树 / 故障矩阵 / 驾驶舱 / 工具 / 数字人。数据走 Electron IPC 桥，独立窗口打开。</span>
+          <span class="cmeta">16 KB · <code>holo_pet_w3/index.html</code></span><span class="subs">子窗口 · <a class="sub" href="holo_pet_w3/brain/index.html">神经工作台（窗 E）</a></span>
+        </span>
+      </a>
+      <a class="card" data-i="03" href="holo_pet/index.html">
+        <span class="thumb"><img src="render/godview/pets_数字人.png" alt="主控台 W1 预览" loading="lazy"></span>
+        <span class="cbody">
+          <span class="chead"><b>主控台 W1</b><span class="chip chip-ok">在</span></span>
+          <span class="cdesc">桌面宠物主界面。需先起本地服务（holo_pet/panel_server.py），否则页面拿不到 /api/* 数据。</span>
+          <span class="cmeta">28 KB · <code>holo_pet/index.html</code></span>
+        </span>
+      </a>
+      <a class="card" data-i="04" href="V22 GBT小土豆V8-可交互原型.html">
+        <span class="thumb"><img src="render/总览-58画布页.png" alt="V22 可交互原型 预览" loading="lazy"></span>
+        <span class="cbody">
+          <span class="chead"><b>V22 可交互原型</b><span class="chip chip-ok">在</span></span>
+          <span class="cdesc">本版交付物之一（App 类）。高保真可交互，单文件自带全部样式与脚本。</span>
+          <span class="cmeta">643 KB · <code>V22 GBT小土豆V8-可交互原型.html</code></span>
+        </span>
+      </a>
+      <a class="card" data-i="05" href="V22 GBT小土豆V8-无限画布.html">
+        <span class="thumb"><img src="render/总览-55面板.png" alt="V22 无限画布 预览" loading="lazy"></span>
+        <span class="cbody">
+          <span class="chead"><b>V22 无限画布</b><span class="chip chip-ok">在</span></span>
+          <span class="cdesc">本版交付物之一。自由画布形态，支持拖拽 / 缩放 / 复位。</span>
+          <span class="cmeta">242 KB · <code>V22 GBT小土豆V8-无限画布.html</code></span>
+        </span>
+      </a>
+      <a class="card" data-i="06" href="projects/_shared/templates/20260921-三方向-HITL1审批屏.html">
+        <span class="thumb"><img src="render/hitl1/审批屏-首屏.png" alt="HITL#1 审批屏 预览" loading="lazy"></span>
+        <span class="cbody">
+          <span class="chead"><b>HITL#1 审批屏</b><span class="chip chip-ok">在</span></span>
+          <span class="cdesc">三件作品的审批面：链状态 + 逐镜待填 + 闸口表 + 编排自审 + 独立审计判定 + 作者认账。</span>
+          <span class="cmeta">37 KB · <code>projects/_shared/templates/20260921-三方向-HITL1审批屏.html</code></span>
+        </span>
+      </a>
+      <a class="card" data-i="07" href="projects/_shared/templates/20260921-三方向-HITL1-分镜契约填写页.html">
+        <span class="thumb"><img src="render/hitl1/填写页-首屏.png" alt="分镜契约填写页 预览" loading="lazy"></span>
+        <span class="cbody">
+          <span class="chead"><b>分镜契约填写页</b><span class="chip chip-ok">在</span></span>
+          <span class="cdesc">把「审」变成「填」：旁白摆在输入框左边，契约「先读旁白再决定」被结构性强制的 85 格表单。</span>
+          <span class="cmeta">40 KB · <code>projects/_shared/templates/20260921-三方向-HITL1-分镜契约填写页.html</code></span>
+        </span>
+      </a>
+      <a class="card" data-i="08" href="deploy/index.html">
+        <span class="thumb"><div class="noimg"><span>NO PREVIEW</span></div></span>
+        <span class="cbody">
+          <span class="chead"><b>部署版入口</b><span class="chip chip-ok">在</span></span>
+          <span class="cdesc">推到部署面的那份（deploy/）：<b>V21 代快照</b>（与根上 V22 有 39 行差，页内自称 V21）。重新部署＝外网写入 → 先问主人。</span>
+          <span class="cmeta">644 KB · <code>deploy/index.html</code></span>
+        </span>
+      </a>
+      <a class="card" data-i="09" href="media-console.html">
+        <span class="thumb"><div class="noimg"><span>NO PREVIEW</span></div></span>
+        <span class="cbody">
+          <span class="chead"><b>三方向自动化工作流</b><span class="chip chip-ok">在</span></span>
+          <span class="cdesc">短视频 / AI电影 / AI音乐 三条链的<b>现读</b>进度：18 格抽屉（有货 · 仅彩排 · 空）+ 许可账（逐件 sha256）+ 发布包（停在主人授权门）+ 试听台 + 输入口判据强度。数据<b>生成期烘焙</b>（生成器当场读抽屉 / 许可 / 副档），非手抄。重生成走 <code>media-console.py</code>。</span>
+          <span class="cmeta">1,308 KB · <code>media-console.html</code></span>
+        </span>
+      </a>
+      <a class="card" data-i="10" href="holo_pet_w3/h1/index.html">
+        <span class="thumb"><div class="noimg"><span>NO PREVIEW</span></div></span>
+        <span class="cbody">
+          <span class="chead"><b>赏金台 · h1mcp</b><span class="chip chip-ok">在</span></span>
+          <span class="cdesc">HackerOne 赏金台（阶段一 · 本机只读）：二进制在位 + 侧车 sha256 比对、凭据配置状态（只报「已配置 / 未配置」，不回显值、连用户名也不回显）、本地草稿收件箱。零子进程 / 零网络 / 零写盘；取不到就灰并写明原因，<b>不假绿</b>。脚注显示本次真实通道（IPC / 同源 / 本机直连）。</span>
+          <span class="cmeta">3 KB · <code>holo_pet_w3/h1/index.html</code></span>
+        </span>
+      </a>
+      <a class="card" data-i="11" href="brain.html">
+        <span class="thumb"><div class="noimg"><span>NO PREVIEW</span></div></span>
+        <span class="cbody">
+          <span class="chead"><b>大脑执行层 · 五维合一</b><span class="chip chip-ok">在</span></span>
+          <span class="cdesc">五维合一脑的排布图与连接网络：结构从 brain_exec.py 的 AST 现算（Sugiyama 分层布局，不是力导向），实时态取 store/audit.jsonl 的真实事件尾部。<b>源码里查不到的边不画</b> —— 注册表声称的执行链有 3 条在代码里不存在，图上如实标 drawn=false。</span>
+          <span class="cmeta">32 KB · <code>brain.html</code></span>
+        </span>
+      </a>
+      <a class="card" data-i="12" href="holo_pet/assets/digital-human/web/avatar.html">
+        <span class="thumb"><div class="noimg"><span>NO PREVIEW</span></div></span>
+        <span class="cbody">
+          <span class="chead"><b>数字人形象页（成品）</b><span class="chip chip-ok">在</span></span>
+          <span class="cdesc">数字人主线的成品页：idle 与 walk 交叉淡入状态机 · IBL(RoomEnvironment) + PBR Neutral + PCFSoft 接触阴影 + SSAA · 皮肤 sheen（SSS 近似）+ 暖轮廓 · HUD 现读。默认全身动画件（3.37 MB）；<code>?model=bust</code> 换半身件（4.28 MB）—— <b>两件都在宿主 12 MB 单文件上限内</b>，所以能直接内嵌；4K 件 90.86 MB 超上限，别指过来。</span>
+          <span class="cmeta">18 KB · <code>holo_pet/assets/digital-human/web/avatar.html</code></span>
+        </span>
+      </a></div>
+
+  <section class="gal">
+    <div class="sec-h"><h2>上帝视角 · 逐页留影</h2><span class="cnt">8 张</span></div>
+    <div class="grid"><a class="tile" href="render/godview/cockpit_最优基因.png"><img src="render/godview/cockpit_最优基因.png" alt="cockpit_最优基因" loading="lazy"><span class="tname">cockpit_最优基因</span><span class="tsize">135 KB</span></a><a class="tile" href="render/godview/cockpit_驾驶舱.png"><img src="render/godview/cockpit_驾驶舱.png" alt="cockpit_驾驶舱" loading="lazy"><span class="tname">cockpit_驾驶舱</span><span class="tsize">435 KB</span></a><a class="tile" href="render/godview/matrix_故障矩阵.png"><img src="render/godview/matrix_故障矩阵.png" alt="matrix_故障矩阵" loading="lazy"><span class="tname">matrix_故障矩阵</span><span class="tsize">569 KB</span></a><a class="tile" href="render/godview/pets_数字人.png"><img src="render/godview/pets_数字人.png" alt="pets_数字人" loading="lazy"><span class="tname">pets_数字人</span><span class="tsize">670 KB</span></a><a class="tile" href="render/godview/quad_四视图.png"><img src="render/godview/quad_四视图.png" alt="quad_四视图" loading="lazy"><span class="tname">quad_四视图</span><span class="tsize">452 KB</span></a><a class="tile" href="render/godview/tools_工具.png"><img src="render/godview/tools_工具.png" alt="tools_工具" loading="lazy"><span class="tname">tools_工具</span><span class="tsize">601 KB</span></a><a class="tile" href="render/godview/tree_工作树.png"><img src="render/godview/tree_工作树.png" alt="tree_工作树" loading="lazy"><span class="tname">tree_工作树</span><span class="tsize">577 KB</span></a><a class="tile" href="render/godview/全窗口_四视图.png"><img src="render/godview/全窗口_四视图.png" alt="全窗口_四视图" loading="lazy"><span class="tname">全窗口_四视图</span><span class="tsize">669 KB</span></a></div>
+  </section>
+  <section class="gal">
+    <div class="sec-h"><h2>HITL#1 · 审批与填写</h2><span class="cnt">15 张</span></div>
+    <div class="grid"><a class="tile" href="render/hitl1/作者认账-1.png"><img src="render/hitl1/作者认账-1.png" alt="作者认账-1" loading="lazy"><span class="tname">作者认账-1</span><span class="tsize">140 KB</span></a><a class="tile" href="render/hitl1/其余必填-电影.png"><img src="render/hitl1/其余必填-电影.png" alt="其余必填-电影" loading="lazy"><span class="tname">其余必填-电影</span><span class="tsize">604 KB</span></a><a class="tile" href="render/hitl1/其余必填-音乐-修正后.png"><img src="render/hitl1/其余必填-音乐-修正后.png" alt="其余必填-音乐-修正后" loading="lazy"><span class="tname">其余必填-音乐-修正后</span><span class="tsize">132 KB</span></a><a class="tile" href="render/hitl1/其余必填-音乐.png"><img src="render/hitl1/其余必填-音乐.png" alt="其余必填-音乐" loading="lazy"><span class="tname">其余必填-音乐</span><span class="tsize">240 KB</span></a><a class="tile" href="render/hitl1/填写页-其余必填.png"><img src="render/hitl1/填写页-其余必填.png" alt="填写页-其余必填" loading="lazy"><span class="tname">填写页-其余必填</span><span class="tsize">161 KB</span></a><a class="tile" href="render/hitl1/填写页-底栏.png"><img src="render/hitl1/填写页-底栏.png" alt="填写页-底栏" loading="lazy"><span class="tname">填写页-底栏</span><span class="tsize">84 KB</span></a><a class="tile" href="render/hitl1/填写页-首屏.png"><img src="render/hitl1/填写页-首屏.png" alt="填写页-首屏" loading="lazy"><span class="tname">填写页-首屏</span><span class="tsize">577 KB</span></a><a class="tile" href="render/hitl1/审批屏-全页.png"><img src="render/hitl1/审批屏-全页.png" alt="审批屏-全页" loading="lazy"><span class="tname">审批屏-全页</span><span class="tsize">2,054 KB</span></a><a class="tile" href="render/hitl1/审批屏-首屏.png"><img src="render/hitl1/审批屏-首屏.png" alt="审批屏-首屏" loading="lazy"><span class="tname">审批屏-首屏</span><span class="tsize">321 KB</span></a><a class="tile" href="render/hitl1/框架自审-1.png"><img src="render/hitl1/框架自审-1.png" alt="框架自审-1" loading="lazy"><span class="tname">框架自审-1</span><span class="tsize">124 KB</span></a><a class="tile" href="render/hitl1/框架自审-2.png"><img src="render/hitl1/框架自审-2.png" alt="框架自审-2" loading="lazy"><span class="tname">框架自审-2</span><span class="tsize">125 KB</span></a><a class="tile" href="render/hitl1/框架自审-3.png"><img src="render/hitl1/框架自审-3.png" alt="框架自审-3" loading="lazy"><span class="tname">框架自审-3</span><span class="tsize">125 KB</span></a><a class="tile" href="render/hitl1/独立判定-1.png"><img src="render/hitl1/独立判定-1.png" alt="独立判定-1" loading="lazy"><span class="tname">独立判定-1</span><span class="tsize">199 KB</span></a><a class="tile" href="render/hitl1/链状态-修正后.png"><img src="render/hitl1/链状态-修正后.png" alt="链状态-修正后" loading="lazy"><span class="tname">链状态-修正后</span><span class="tsize">109 KB</span></a><a class="tile" href="render/hitl1/链状态.png"><img src="render/hitl1/链状态.png" alt="链状态" loading="lazy"><span class="tname">链状态</span><span class="tsize">111 KB</span></a></div>
+  </section>
+  <section class="gal">
+    <div class="sec-h"><h2>总览图</h2><span class="cnt">3 张</span></div>
+    <div class="grid"><a class="tile" href="render/总览-55面板.png"><img src="render/总览-55面板.png" alt="总览-55面板" loading="lazy"><span class="tname">总览-55面板</span><span class="tsize">2,094 KB</span></a><a class="tile" href="render/总览-58画布页.png"><img src="render/总览-58画布页.png" alt="总览-58画布页" loading="lazy"><span class="tname">总览-58画布页</span><span class="tsize">1,265 KB</span></a><a class="tile" href="render/总览-上帝视角6页.png"><img src="render/总览-上帝视角6页.png" alt="总览-上帝视角6页" loading="lazy"><span class="tname">总览-上帝视角6页</span><span class="tsize">1,028 KB</span></a></div>
+  </section>
+
+  <footer class="sig">开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属</footer>
+</div>
+
+<script>
+/* ── 台账现读 ───────────────────────────────────────────────────────────────
+   🔴 这段**必须留在模板里**：先前它是手补在生成产物上的（顶栏写死
+   「PANELS 10 / RENDERS 26 / PAYLOAD 1,726 KB」，而宿主目录实测 total 12 / renders 67）
+   —— 页面自称"与登记表同源"、数字却是手抄的。**不诚实的自述比没有自述更坏。**
+   现在：打开这一页就同源读 `GET /gbt-master`，台账与每张卡片的字节数、在/缺全部按当次真值填；
+   **取不到就显示「取不到」并写明原因，不顶假数**。（宿主目录路由与本页同源，不需额外权限。） */
+(function () {
+  function kb(n) {
+    if (typeof n !== 'number' || !isFinite(n)) return '—';
+    if (n >= 1048576) return (n / 1048576).toFixed(2) + ' MB';
+    return Math.round(n / 1024).toLocaleString('en-US') + ' KB';
+  }
+  function set(id, v) { var el = document.getElementById(id); if (el) el.textContent = String(v); }
+  function fail(why) {
+    ['t-panels', 't-renders', 's-panels', 's-renders', 's-payload', 's-missing'].forEach(function (i) { set(i, '取不到'); });
+    set('live-src', '宿主目录取不到：' + why);
+    document.querySelectorAll('a.card .cmeta').forEach(function (m) {
+      if (m.childNodes[0]) m.childNodes[0].nodeValue = '取不到 · ';
+    });
+  }
+  fetch('/gbt-master', { headers: { accept: 'application/json' }, cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (cat) {
+      var panels = (cat && cat.panels) || [];
+      var present = panels.filter(function (p) { return p.exists; });
+      var payload = present.reduce(function (a, p) { return a + (p.size || 0); }, 0);
+      set('t-panels', cat.total);
+      set('t-renders', cat.renders === null || cat.renders === undefined ? '—' : cat.renders);
+      set('s-panels', cat.present);
+      set('s-renders', cat.renders === null || cat.renders === undefined ? '—' : cat.renders);
+      set('s-payload', kb(payload));
+      set('s-missing', panels.length - present.length);
+      set('live-src', 'LIVE · 现读 /gbt-master · ' + new Date().toLocaleTimeString('zh-CN'));
+
+      var byFile = {};
+      panels.forEach(function (p) { byFile[p.file] = p; });
+      // ── 双向对账（第 115 轮补）─────────────────────────────────────────────
+      // 原来只测一个方向：**卡片 → 登记表**（不在登记表的卡打「不在登记表」）。
+      // 于是「登记表里有、本页却没有卡」的那一半**永远看不见** —— 实测正是它漏掉了
+      // 名册在册的 `holo_pet/index.html`（主控台 W1）。关系是对称的，两个方向都得测。
+      var listed = {};
+      var orphan = [];
+      document.querySelectorAll('a.card').forEach(function (card) {
+        var f = card.getAttribute('href');
+        listed[f] = 1;
+        var p = byFile[f];
+        var meta = card.querySelector('.cmeta');
+        var chip = card.querySelector('.chip');
+        if (!p) { orphan.push(f); if (chip) { chip.textContent = '不在登记表'; chip.className = 'chip chip-fault'; } return; }
+        if (meta && meta.childNodes[0]) meta.childNodes[0].nodeValue = kb(p.size) + ' · ';
+        if (chip) {
+          chip.textContent = p.exists ? '在' : '缺';
+          chip.className = 'chip ' + (p.exists ? 'chip-ok' : 'chip-fault');
+        }
+      });
+      // 自指豁免：名册把「总索引」本身也登记为一块面板，而**本页不该给自己一张卡**
+      // （「从索引进索引」不是导航入口）。豁免写在文案里，不藏着。
+      var SELF = 'index.html';
+      var unlisted = panels.filter(function (p) { return p.file !== SELF && !listed[p.file]; })
+                           .map(function (p) { return p.file; });
+      // 每节留影张数：按本页真实 tile 数现算（与盘上 render/ 总数不是一回事，别混）
+      document.querySelectorAll('section.gal').forEach(function (sec) {
+        var c = sec.querySelector('.cnt');
+        if (c) c.textContent = sec.querySelectorAll('.tile').length + ' 张';
+      });
+      var msg = 'LIVE · 现读 /gbt-master · ' + new Date().toLocaleTimeString('zh-CN');
+      if (orphan.length) {
+        msg += ' · 本页有 ' + orphan.length + ' 张卡片不在宿主登记表：' + orphan.join(' / ');
+      }
+      if (unlisted.length) {
+        msg += ' · 登记表有 ' + unlisted.length + ' 块面板本页没有卡片：' + unlisted.join(' / ');
+      }
+      if (orphan.length || unlisted.length) set('live-src', msg);
+      else set('live-src', msg + ' · 卡片与登记表一一对应');
+    })
+    .catch(function (e) { fail(String(e && e.message ? e.message : e)); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+ "ok": true,
+ "job_id": "demo-001",
+ "status": {
+  "job_id": "demo-001",
+  "at": "2026-09-24T23:26:20",
+  "engine": "remotion",
+  "artifact": "pipeline/jobs/demo-001/artifacts/out.mp4",
+  "bytes": 141318,
+  "sha256": "73b2311f5bbc7de7410a660afebed1fbf6facf2ae272376a7fe608b96305a66e"
+ },
+ "tail": null
+}

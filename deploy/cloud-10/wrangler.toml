@@ -1,0 +1,98 @@
+# GBT小土豆V8 · 10 云插件拼接网 · 形态 A（10 模块同一 isolate）
+# 开发者：自由的风 · 守护者：公主土豆 · 禁止删除
+#
+# 形态 A 是真共享 CPU 的唯一样子：10 个模块编进同一个 Worker ⇒ 同一 isolate，
+# CPU/内存配额是这一份的；modules/ 下那 10 个独立件是形态 B（真互通、各算各的）。
+#
+# ⚠️ 本文件用的是**主人账号里已有的**资源（现读：KV 4 个 · R2 1 个 · D1 4 个），
+#    没有新建任何云资源。为不碰主人原有数据，全部键走 mesh10/ 前缀（见 src/modules.js 的 NS_PREFIX）。
+#
+# 部署顺序（都不许跳）：
+#   1) 本文件占位符清零（现在 0 处）
+#   2) 主人拍板 wrangler deploy（这一步才真改远端：会在账号里建一个 Worker）
+#   3) deploy → 量真读数（身份漂移 / 拒答率 / 遥测 / 装机验收）
+#
+# 现存已知缺口（部署后读数会如实报，不假装有）：
+#   · 07 号向量：本令牌作用域表里没有 vectorize:write ⇒ 落 isolate 内存（重启即失，sink 如实报）
+#   · 06 号命令：容器没建 ⇒ exec 如实拒（unsupported_in_worker）
+#   · 03 号无审查通道：没有自托管权重端点 ⇒ 未读到
+#   · 01 号模型：Workers AI 的权重不是我们的，平台侧内容策略仍在 ⇒ 能干活，但不是"无限制"
+
+name = "gbt-potato-cloud-10"
+main = "src/worker.js"
+compatibility_date = "2025-01-01"
+workers_dev = true
+
+# ── 模型面 ────────────────────────────────────────────────────────────────
+[ai]
+binding = "AI"
+
+[vars]
+# 自托管 OpenAI 兼容端点（真无限制那条只走这里）。没接线时读数=未读到。
+LLM_ENDPOINT = ""
+UNCENSORED_ENDPOINT = ""
+# 本网落盘前缀（与 src/modules.js 的 NS_PREFIX 必须一致）
+NS_PREFIX = "mesh10/"
+# Workers AI 的模型 id：**现读**自 `wrangler ai models`（不编 id）。
+# ⚠️ 走这条 = 权重**不是我们的**，读数里 `weights_ours=false` 会如实标出来。
+# 换模型只改这一行；要走我们自己的权重，就把上面的 LLM_ENDPOINT 指向自建端点（那时优先走它）。
+WORKERS_AI_MODEL = "@cf/openai/gpt-oss-120b"
+
+# ── 授权（主人令 2026-09-25「全部部署好并跑通闭环」）─────────────────────────
+# 主人在 2026-09-25 说「把所有限制去掉、改为**人工授权**」。这里就是那份人工授权的
+# **可见落点**：写在这份配置里 ⇒ 看得见、可审计、**删掉这一行即撤**。
+# ⚠️ 只用得到 4 条，**故意不发不需要的**：
+#   external_llm     → 01/03 模型面（不授权则模型一条都调不动）
+#   filesystem_read  → 05 读、08 列
+#   filesystem_write → 05 写/删
+#   network_read     → 04 抓取/检索
+# 🔴 **不发**：owner_control（一条顶全部，等于把门全拆了）· deploy_publish（本网不需要）
+#   · privacy_read · data_export · process_execute（容器没建，发了也是空头授权）。
+#   运行时授权仍走 `/admin/grant` + 主人令牌（要主人在终端放行），落 KV。
+GRANTED_SCOPES = "external_llm,filesystem_read,filesystem_write,network_read"
+
+# ── 记忆面（复用已有 KV；两处绑定同一个库也可以，这里分开用）──────────────
+[[kv_namespaces]]
+binding = "MEM"
+id = "caad048b525b41d8b7f9bb0bd8addda0"   # 现读：BRAIN_KV
+
+[[kv_namespaces]]
+binding = "CTX"
+id = "5dd283b077d04009b35e0b1a4f4dcdb0"   # 现读：gbt-canary-kv
+
+# ── 对象存储（复用已有桶；键都在 mesh10/ 下）──────────────────────────────
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "gbt-bigfiles"
+
+[[r2_buckets]]
+binding = "LEDGER"
+bucket_name = "gbt-bigfiles"
+
+# ── D1：07 号向量的降级落点 ───────────────────────────────────────────────
+# 主人账号里现读 4 个库都是别的用途（gbt-orders-a/b · gbt-caps · gbt-wallet），
+# 往里写我们的向量表会把别人的库弄脏 ⇒ 这一项**故意留空**：
+#   要么主人同意新建一个 gbt-memory（那是一条真改远端的动作，要主人点头），
+#   要么就让 07 号落 isolate 内存（读数会如实报 sink=isolate-memory，重启即失）。
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "<未配：主人同意新建后填>"
+# database_id = "<未配：主人同意新建后填>"
+
+# ── 检索面 / 算力面 / 向量面：资源没建 ⇒ 只留形状，不许写成已接线 ──────────
+# ai-search 作用域已在册，但 AI Search 实例要在控制台建：
+# [[ai_search]]
+# binding = "AI_SEARCH"
+# instance_name = "<未配：建了实例再填>"
+
+# containers 作用域已在册，容器资源未建：
+# [[containers]]
+# class_name = "<未配：建了沙箱容器再填>"
+
+# Vectorize 需要先给令牌加 vectorize:write 作用域，现在建不了：
+# [[vectorize]]
+# binding = "VECTORIZE"
+# index_name = "<未配：作用域到位后填>"
+
+[observability]
+enabled = true

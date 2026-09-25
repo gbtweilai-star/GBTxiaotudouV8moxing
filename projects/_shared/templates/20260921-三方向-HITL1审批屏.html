@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>三方向 · HITL#1 分镜审批屏</title>
+<!-- 内联 data: icon：不依赖路径（DSH 宿主 / file:// 都成立）。
+     ⚠️ 这条原先**只补在产物上**、模板里没有 ⇒ 一重新生成就被冲掉（实测：两页各差 244 字，
+     差的就是这一行）。教训与 `make_capability_console.py` / `make_workspace_index.py` 同源：**手补的东西必须挪进模板**。 -->
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAWklEQVR42mNgGAWjYBSMglEwCkbBKBgFo2AUjIJRMApGwSgYBaNgFIyCUTAKRsEoGAWjYBSMglEwCkbBKBgFo2AUjIJRMApGwSgYBaNgFIyCUTAKRsEoAAB2gAH/8kQ0dQAAAABJRU5ErkJggg==">
+<style>
+/* ── 令牌：唯一允许写裸色值的地方 ──────────────────────────────
+   品牌三色（土豆金/赛博青/深空紫）与上帝视角同源，四窗口共用；
+   绿/琥珀/红/灰是「语义状态色」，不计入"1 个装饰 accent"的限额。 */
+:root {
+  --gold:#F5B041; --cyan:#00E5FF; --violet:#7C4DFF;
+  --ok:#22C55E; --warn:#F5B041; --fault:#EF4444; --off:#6B7280;
+  --bg:#050711; --panel:#0C1022; --line:rgba(124,77,255,.30);
+  --text:#E8ECF8; --dim:#9AA4C4;
+  --radius:10px;            /* 卡片 */
+  --radius-ctl:6px;         /* 控件 */
+  --radius-pill:999px;      /* 药丸 */
+}
+/* 形状系统（SHAPE CONSISTENCY LOCK）：卡片 10px · 控件 6px · 药丸 999px。
+   整页只有这三档，不许再出裸值、不许单侧圆角。 */
+* { box-sizing:border-box; }
+body {
+  margin:0; padding:28px 32px 40px;
+  background:
+    radial-gradient(1100px 460px at 12% -8%, rgba(0,229,255,.07), transparent 62%),
+    var(--bg);
+  color:var(--text);
+  font:14px/1.62 "Microsoft YaHei UI","Segoe UI",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:1180px; margin:0 auto; }
+
+/* 页头：整页唯一一处「小标签 + 大标题」 */
+.eyebrow {
+  font:600 11.5px/1 ui-monospace,"Cascadia Mono",Consolas,monospace;
+  letter-spacing:.16em; color:var(--cyan); text-transform:uppercase;
+}
+h1 { margin:10px 0 6px; font-size:27px; font-weight:650; letter-spacing:-.015em; }
+.lede { margin:0; color:var(--dim); max-width:74ch; }
+.lede b { color:var(--gold); font-weight:600; }
+
+/* 决策条：Von Restorff —— 需要动作的东西必须一眼跳出来 */
+.decide {
+  margin:22px 0 26px; padding:14px 18px;
+  border:1px solid var(--line); border-left:2px solid var(--warn);
+  border-radius:0;                     /* 左侧色规 + 方形，不做"圆角卡+彩边" */
+  background:rgba(245,176,65,.055);
+  display:flex; gap:26px; flex-wrap:wrap; align-items:baseline;
+}
+.decide .k { color:var(--dim); font-size:12.5px; }
+.decide .v { color:var(--text); font-weight:650; font-size:15px; }
+.decide .v.hot { color:var(--warn); }
+
+section.work {
+  border:1px solid var(--line); border-radius:var(--radius);
+  background:var(--panel); padding:16px 18px 18px; margin:0 0 16px;
+}
+.work-head { display:flex; align-items:baseline; gap:12px; margin-bottom:12px; }
+.work-head h3 { margin:0; font-size:16px; font-weight:620; }
+.chip {
+  border-radius:var(--radius-pill); padding:1px 10px; font-size:12px;
+  border:1px solid currentColor;
+}
+.chip-warn { color:var(--warn); }
+.chip-off  { color:var(--off); }
+
+.files { display:grid; grid-template-columns:64px 1fr; gap:4px 12px; margin:0 0 14px; }
+.files dt { color:var(--dim); font-size:12.5px; }
+.files dd { margin:0; min-width:0; }
+code {
+  font:12px/1.5 ui-monospace,"Cascadia Mono",Consolas,monospace;
+  color:var(--cyan); background:rgba(0,229,255,.07);
+  padding:1px 5px; border-radius:var(--radius-ctl);
+}
+.miss { color:var(--fault); font-weight:600; }
+.dim { color:var(--dim); }
+
+table.grid { width:100%; border-collapse:collapse; margin:6px 0 0; }
+table.grid caption {
+  text-align:left; color:var(--dim); font-size:12.5px; padding-bottom:6px;
+}
+table.grid th {
+  text-align:left; font-weight:600; font-size:12px; color:var(--dim);
+  border-bottom:1px solid var(--line); padding:6px 8px;
+}
+table.grid td { padding:6px 8px; border-bottom:1px solid rgba(124,77,255,.14); }
+table.grid td.num { color:var(--dim); width:36px; }
+.blank {
+  display:block; min-width:78px; height:20px;
+  border-bottom:1px dashed var(--off); background:rgba(107,114,128,.10);
+}
+.lack { color:var(--warn); font-size:12.5px; }
+
+.hint, .empty { margin:10px 0 0; color:var(--dim); font-size:12.5px; }
+.hint b, .empty b { color:var(--gold); font-weight:600; }
+.empty .how { color:var(--cyan); }
+
+/* 闸口检查表：三列 —— 出处 / 检查项 / 结论。
+   出处一列按节合并（rowspan），把「哪行属哪道闸」摆在明面上。 */
+table.gates { width:100%; border-collapse:collapse; margin:14px 0 0; }
+table.gates th {
+  text-align:left; font-weight:600; font-size:11.5px; color:var(--dim);
+  border-bottom:1px solid var(--line); padding:6px 8px; letter-spacing:.04em;
+}
+table.gates td { padding:5px 8px; border-bottom:1px solid rgba(124,77,255,.13); font-size:12.5px; vertical-align:top; }
+table.gates td.src {
+  /* 出处列**不用主色**：taste-skill §Soft tells 规定「var(--accent) 在渲染正文里
+     6+ 次应收敛，每屏可见用途上限 2 处」。这一列有几十行，全上青色会把主色的
+     信号价值稀释光 —— 主色要留给真正需要点的东西。改用中性色 + 左侧细规分组。 */
+  color:var(--dim); font-size:11.5px; white-space:nowrap;
+  border-right:1px solid rgba(124,77,255,.16);
+}
+table.gates td.tt { color:var(--text); width:190px; }
+table.gates td.wh { color:var(--dim); overflow-wrap:anywhere; }
+
+/* 框架编排层自审块：与上半部用一条上规分开，读作「另一层给的判定」 */
+.fw {
+  margin-top:16px; padding-top:13px;
+  border-top:1px solid rgba(124,77,255,.20);
+}
+.fw-h { margin:0 0 3px; color:var(--gold); font-size:12.5px; font-weight:600; }
+.fw-s { margin:0 0 8px; color:var(--dim); font-size:12.5px; }
+.fw-s b { color:var(--text); }
+.fw table.gates td.tt { width:auto; color:var(--dim); font-size:12px; }
+.fw table.gates td.wh { width:74px; }
+.fw table.gates td { padding:3px 8px; }
+/* 判定必须**紧挨着它判的东西**（格式塔·邻近性）。
+   上一版让这张表吃满 1142px，徽章被甩到离标签 1200px 外，
+   标签与判定分家 —— 机器自检 6/6 全过也照样看不出来，是眼睛看出来的。
+   所以这里给表定死一个**内容宽度**，不许铺满。 */
+.fw table.gates { width:auto; min-width:360px; max-width:460px; border-collapse:collapse; }
+.fw table.gates td.wh { text-align:right; white-space:nowrap; }
+.fw-chain {
+  margin:9px 0 0; color:var(--dim); font-size:12px;
+  overflow-wrap:anywhere; line-height:1.7;
+}
+.fw-chain .k { color:var(--text); margin-right:6px; }
+
+/* 独立审计块：与「框架自审」分开成一层 —— 一个是作者自己量的，一个是不许作者插手的 */
+.irv {
+  margin-top:14px; padding:13px 15px;
+  border:1px solid rgba(239,68,68,.30); border-left:2px solid var(--fault);
+  border-radius:0; background:rgba(239,68,68,.045);
+}
+.irv-h { margin:0 0 4px; color:var(--fault); font-size:12.5px; font-weight:600; }
+.irv-s { margin:0 0 10px; color:var(--dim); font-size:12.5px; }
+.irv-s .cnt { margin-left:12px; }
+ul.fnds { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+li.fnd { display:grid; grid-template-columns:52px 1fr; gap:10px; align-items:baseline; font-size:12.5px; }
+.fnd-body { color:var(--text); overflow-wrap:anywhere; }
+.fnd-body b { color:var(--dim); font-weight:600; }
+.fnd-body .ev { display:block; margin-top:3px; color:var(--dim); font-size:11.5px; }
+.irv-fix { margin:10px 0 0; color:var(--warn); font-size:12px; }
+.irv-credit { margin-top:9px; }
+.irv-credit summary { color:var(--dim); font-size:11.5px; cursor:pointer; }
+.irv-credit ul { margin:6px 0 0; padding-left:18px; color:var(--dim); font-size:11.5px; }
+
+/* 链状态：顶部一条，五步一格。语义色只用状态色，主色仍留给交互。 */
+.chain {
+  margin:0 0 20px; padding:13px 16px;
+  border:1px solid var(--line); border-left:2px solid var(--cyan);
+  border-radius:0; background:rgba(0,229,255,.045);
+}
+.chain-h { margin:0 0 9px; color:var(--cyan); font-size:12.5px; font-weight:600; }
+ul.chain-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px; }
+/* 三列：作品名固定 · 步骤格按内容 · 下一步吃掉剩余宽度。
+   上一版把下一步写死 260px，长句折成两行还参差不齐（截图看出来的）。 */
+ul.chain-list li { display:grid; grid-template-columns:170px auto minmax(300px, 1fr);
+  gap:12px; align-items:baseline; }
+.cw { color:var(--text); font-size:12.5px; }
+.csteps { display:flex; gap:6px; flex-wrap:wrap; }
+.stp {
+  border:1px solid currentColor; border-radius:var(--radius-pill);
+  padding:0 8px; font-size:11px; white-space:nowrap;
+}
+.stp b { font-weight:600; margin-right:5px; }
+.stp-ok { color:var(--ok); }
+.stp-fault { color:var(--fault); }
+.stp-off { color:var(--off); }
+.cnext { color:var(--dim); font-size:11.5px; }
+.chain-b { margin:10px 0 0; padding-top:9px; border-top:1px solid rgba(124,77,255,.16);
+  color:var(--dim); font-size:12px; }
+.chain-b .k { color:var(--text); margin-right:8px; }
+
+/* 作者认账块：把"我犯的错"摆在审批之前，不藏在角落 */
+.ack {
+  margin:22px 0 0; padding:14px 16px;
+  border:1px solid rgba(239,68,68,.34); border-left:2px solid var(--fault);
+  border-radius:0; background:rgba(239,68,68,.06);
+}
+.ack h2 { margin:0 0 8px; font-size:14px; color:var(--fault); }
+.ack p { margin:0 0 7px; color:var(--text); font-size:12.5px; }
+.ack p:last-child { margin-bottom:0; }
+.ack b { color:var(--warn); }
+/* 语义状态标签：替掉产物里的 emoji 字形（anti-ai-slop 第 3 条）。
+   颜色由这几个类承担，形状走 999px 药丸档。 */
+.badge {
+  display:inline-block; min-width:38px; text-align:center;
+  border-radius:var(--radius-pill); padding:0 7px; margin-right:7px;
+  font-size:11.5px; font-weight:600; border:1px solid currentColor;
+}
+.badge-ok { color:var(--ok); }
+.badge-warn { color:var(--warn); }
+.badge-fault { color:var(--fault); }
+
+.note {
+  margin:26px 0 0; padding:12px 16px; border:1px solid var(--line);
+  border-left:2px solid var(--cyan); border-radius:0;
+  background:rgba(0,229,255,.05); color:var(--dim); font-size:12.5px;
+}
+.note b { color:var(--text); }
+.note .cite { color:var(--cyan); font-style:normal; }
+
+footer.sig {
+  margin-top:30px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--dim); font-size:12px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">GBT小土豆V8 · 生产审批</p>
+  <h1>三方向 · HITL#1 分镜审批屏</h1>
+  <p class="lede">一屏看全短视频 / 音乐 / 电影三件作品的现状。<b>这一屏不生成任何东西</b> ——
+     契约 §0 明写「分镜阶段只规划，不生成」，所以退回或废弃的成本为 0。
+     本页数据全部从盘上真文件读出并现跑解析器，没有一个是手写的。</p>
+
+  <div class="decide">
+    <div><div class="k">待主人拍板</div><div class="v hot">3 件作品 · 进入 HITL#1</div></div>
+    <div><div class="k">待填契约格</div><div class="v">48 格</div></div>
+    <div><div class="k">已生成像素</div><div class="v">0</div></div>
+    <div><div class="k">预算预估</div><div class="v">拒估（见下）</div></div>
+  </div>
+
+  
+  <section class="chain">
+    <p class="chain-h">链状态 · 一屏看到三方向各卡在哪一步</p>
+    <ul class="chain-list">
+      <li>
+        <span class="cw">短视频 · 《AI搬砖人》</span>
+        <span class="csteps"><span class="stp stp-ok"><b>产物</b>2 件</span><span class="stp stp-ok"><b>编排自审</b>5/9</span><span class="stp stp-fault"><b>独立审计</b>退回</span><span class="stp stp-off"><b>HITL#1填</b>未导出</span><span class="stp stp-off"><b>合并</b>未落</span></span>
+        <span class="cnext">下一步：打开填写页填 HITL#1 并导出到 projects/_inbox/</span>
+      </li>
+      <li>
+        <span class="cw">音乐 · 《夜航》</span>
+        <span class="csteps"><span class="stp stp-ok"><b>产物</b>1 件</span><span class="stp stp-ok"><b>编排自审</b>5/9</span><span class="stp stp-fault"><b>独立审计</b>退回</span><span class="stp stp-off"><b>HITL#1填</b>未导出</span><span class="stp stp-off"><b>合并</b>未落</span></span>
+        <span class="cnext">下一步：打开填写页填 HITL#1 并导出到 projects/_inbox/</span>
+      </li>
+      <li>
+        <span class="cw">电影 · 《老屋》</span>
+        <span class="csteps"><span class="stp stp-ok"><b>产物</b>2 件</span><span class="stp stp-ok"><b>编排自审</b>5/9</span><span class="stp stp-fault"><b>独立审计</b>退回</span><span class="stp stp-off"><b>HITL#1填</b>未导出</span><span class="stp stp-off"><b>合并</b>未落</span></span>
+        <span class="cnext">下一步：打开填写页填 HITL#1 并导出到 projects/_inbox/</span>
+      </li></ul>
+    <p class="chain-b"><span class="k">全局阻塞</span>授权台账 无 · LLM 密钥 无 · HITL#1 导出 无</p>
+  </section>
+
+
+    <section class="work" data-state="warn">
+      <header class="work-head">
+        <h3>短视频 · 《AI搬砖人》</h3>
+        <span class="chip chip-warn">待填 24 格</span>
+      </header>
+      <dl class="files">
+        <dt>源稿</dt><dd><code>projects/short-video/01-script/20260921-AI搬砖人/20260921-short-video-AI搬砖人-01script.md</code> · 3715 B</dd>
+        <dt>分镜</dt><dd><code>projects/short-video/02-storyboard/20260921-AI搬砖人/20260921-short-video-AI搬砖人-02storyboard.md</code> · 6887 B</dd>
+        <dt>闸口</dt><dd><code>video-pipeline</code></dd>
+      </dl>
+      
+      <table class="grid">
+        <caption>镜头三契约 · 逐镜待填（8 镜 × 3 项 = 24 格）</caption>
+        <thead><tr><th>镜</th><th>render</th><th>eyeline</th><th>depth</th><th>parse_timed 点名缺</th></tr></thead>
+        <tbody><tr><td class="num">1</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">2</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">3</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">4</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">5</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">6</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">7</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">8</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr></tbody>
+      </table>
+      <p class="hint">坑是空的，我<b>不代填</b> —— 契约 §1 明写「复制别人的理由 = 失败」，
+      这三格必须<b>先读了上表旁白</b>才能定。审批时一次定齐即可。</p>
+      <table class="gates"><thead><tr><th>出处</th><th>检查项</th><th>结论 / 卡在哪</th></tr></thead><tbody><tr><td class="src" rowspan="2">源稿 · 信息句</td><td class="tt">去掉人名后仍然为真</td><td class="wh">—</td></tr><tr><td class="tt">不填数字</td><td class="wh">—</td></tr><tr><td class="src" rowspan="5">源稿 · 五、待办与阻塞（如实写）</td><td class="tt">分镜表</td><td class="wh">骨架已出（02-storyboard/，切出 8 镜），但 §1 三契约（render/eyeline/depth）逐镜为空、shot.style 整列缺 —— 分镜件自判 complete:false。原写「 已出」是把「骨架已出」说成了「工序已完成」，已更正</td></tr><tr><td class="tt">静帧/动效页生成</td><td class="wh">video-pipeline §0：分镜未审批不许生成；且生成端需外部服务</td></tr><tr><td class="tt">配音</td><td class="wh">voice_orchestra.synthesize 实测判 risk=high  ('data_export','external_llm')</td></tr><tr><td class="tt">成本预估</td><td class="wh">§3 预算闸明文「未知价格直接失败，不许猜」—— 当前无价格表，故不出预估而非编一个数</td></tr><tr><td class="tt">分镜审批（HITL#1）</td><td class="wh">双人审闸第一道；注意：审计官判此件应退回 02-storyboard 返工后再审</td></tr><tr><td class="src" rowspan="1">分镜 · 五、双人审闸（§6）</td><td class="tt">HITL #1 分镜审批</td><td class="wh">—</td></tr></tbody></table>
+      
+      <div class="fw">
+        <p class="fw-h">框架编排层自审 · <code>media_pipeline</code>（喂的是盘上真 sha256）</p>
+        <p class="fw-s"><b>5</b>/<b>9</b> 项通过 ·
+           发布口径 <code>blocked_until_owner_authorization</code></p>
+        <table class="gates"><tbody><tr><td class="tt">kind_known</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">title_present</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">brief_present</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">stages_declared</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">stage_outputs_bound</td><td class="wh"><span class="badge badge-fault">未过</span></td></tr><tr><td class="tt">asset_hashes_present</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">copyright_attested</td><td class="wh"><span class="badge badge-fault">未过</span></td></tr><tr><td class="tt">safety_reviewed</td><td class="wh"><span class="badge badge-fault">未过</span></td></tr><tr><td class="tt">owner_reviewed</td><td class="wh"><span class="badge badge-fault">未过</span></td></tr></tbody></table>
+        <p class="hint">缺工序（框架声明有、盘上还没有）：<b>assets、edit、export</b>。
+           三项证明（版权 / 安全 / 主人审批）我<b>一律填 False</b> —— 没核就是没核，不代签。</p>
+        <p class="fw-chain"><span class="k">角色链</span>（7 包）：script → storyboard → assets → edit → export → independent_review → owner_release</p>
+      </div>
+      
+      <div class="irv">
+        <p class="irv-h">独立质量审计官判定 · <code>independent_review</code>（作者看不到、也改不了）</p>
+        <p class="irv-s">
+          <span class="badge badge-fault">退回返工</span>
+          退回工序 <code>02-storyboard</code>
+          <span class="cnt">阻断 1 · 重要 3 · 次要 3</span>
+        </p>
+        <ul class="fnds"><li class="fnd"><span class="badge badge-fault">阻断</span><span class="fnd-body"><b>video-pipeline §1</b> —— §1 三契约是空坑，不是已填：8 个镜头 render/eyeline/depth/理由 全部为「待填」，一个都没有取值；工具自身判 complete:false。<span class="ev">02storyboard.md:286「下表是待填骨架，不是已完成」；:290 唯一数据行全为「待填」；:101「&quot;complete&quot;: false」</span></span></li><li class="fnd"><span class="badge badge-warn">重要</span><span class="fnd-body"><b>video-pipeline §5 可转发物</b> —— 可转发物没落到分镜板上。契约指定的落点是收尾镜头的 shot.share，而分镜件 8 个镜头对象均无 share 字段 —— 按 §5 原文「缺了分镜板打回」。<span class="ev">契约 SKILL.md:71；02storyboard.md:245-264 收尾镜字段集无 share；内容本身在 01script.md:33/:38，属落错件非缺失</span></span></li><li class="fnd"><span class="badge badge-warn">重要</span><span class="fnd-body"><b>video-pipeline §1 shot.style</b> —— 风格整列不存在。契约明写「没有风格的分镜板一律打回」，本件既无全片预设风格记录，也无 shot.style 字段。<span class="ev">契约 SKILL.md:40、:42；02storyboard.md:288 表头七列无 style；全目录检索「风格|预设|style」唯一命中即该表头自身</span></span></li></ul>
+        
+        <details class="irv-credit"><summary>审计官认可的地方（3 条）</summary>
+          <ul><li>§0「只规划不生成」经盘上取证未被违反（下游四个抽屉只有 0 字节 .gitkeep）</li><li>§3 未被编数字绕过（全盘 glob /prices* 0 命中，拒绝出数为合规）</li><li>parse_timed 的 JSON 判为真实工具输出：按 drama.py:120-148 逐镜复算 missing 顺序与 dur 结算全部吻合</li></ul></details>
+      </div>
+    </section>
+    <section class="work" data-state="off">
+      <header class="work-head">
+        <h3>音乐 · 《夜航》</h3>
+        <span class="chip chip-off">走歌词闸</span>
+      </header>
+      <dl class="files">
+        <dt>源稿</dt><dd><code>projects/music/01-lyrics/20260921-夜航/20260921-music-夜航-01lyrics.md</code> · 4207 B</dd>
+        <dt>分镜</dt><dd><span class="dim">无（本方向不走切镜）</span></dd>
+        <dt>闸口</dt><dd><code>music-production</code></dd>
+      </dl>
+      <p class="empty">本方向不用切镜表：音乐走的是<b>歌词闸</b>，不是镜头契约。<span class="how">要填的是「生成前闸」四项（见 01 歌词件 §四）。</span></p>
+      <table class="gates"><thead><tr><th>出处</th><th>检查项</th><th>结论 / 卡在哪</th></tr></thead><tbody><tr><td class="src" rowspan="6">源稿 · 三、13 项歌词闸 · 逐条自查</td><td class="tt">押韵</td><td class="wh">主歌一：退/啡/回/谁（-ei/-ui 通押）；副歌：向/亮（江阳辙）为主</td></tr><tr><td class="tt">韵律</td><td class="wh">实测逐行非空白字数（18 行）：min 4 · max 15 · 均值 10.8。结构是「主歌长句 + 副歌短句」：主歌 12/12/12/15/11/12 与 14/14/13/14，副歌 4/7/7/14 与 4/6/11/12。「夜航 夜航」4 字重复句是刻意的短句钩子。</td></tr><tr><td class="tt">发音风险</td><td class="wh">「谁」在「不归谁」句尾作韵脚，易被唱成 suí；建议改标注：演唱提示写「shuí（韵脚重读）」，或替换为「不归任何人」</td></tr><tr><td class="tt">视角一致</td><td class="wh">全篇第一人称，无视角漂移</td></tr><tr><td class="tt">事实准确</td><td class="wh">本曲为虚构抒情，不含纪实主张，故 §1 溯源铁律（每条主张追到已核验来源）不触发</td></tr><tr><td class="tt">其余九项</td><td class="wh">上游未列全判据；我不编判据、也不写&quot;通过&quot;</td></tr><tr><td class="src" rowspan="2">源稿 · 四、生成前闸（§3）自查</td><td class="tt">来源已核验</td><td class="wh">—</td></tr><tr><td class="tt">风格提示词完整</td><td class="wh">—</td></tr><tr><td class="src" rowspan="4">源稿 · 六、待办与阻塞</td><td class="tt">歌词</td><td class="wh">——</td></tr><tr><td class="tt">旋律/MIDI</td><td class="wh">02-compose；需生成端或主人给 MIDI 工具链</td></tr><tr><td class="tt">编曲/混音/母带</td><td class="wh">03-arrange / 04-mix / 05-master</td></tr><tr><td class="tt">发行元数据</td><td class="wh">06-release</td></tr></tbody></table>
+      
+      <div class="fw">
+        <p class="fw-h">框架编排层自审 · <code>media_pipeline</code>（喂的是盘上真 sha256）</p>
+        <p class="fw-s"><b>5</b>/<b>9</b> 项通过 ·
+           发布口径 <code>blocked_until_owner_authorization</code></p>
+        <table class="gates"><tbody><tr><td class="tt">kind_known</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">title_present</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">brief_present</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">stages_declared</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">stage_outputs_bound</td><td class="wh"><span class="badge badge-fault">未过</span></td></tr><tr><td class="tt">asset_hashes_present</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">copyright_attested</td><td class="wh"><span class="badge badge-fault">未过</span></td></tr><tr><td class="tt">safety_reviewed</td><td class="wh"><span class="badge badge-fault">未过</span></td></tr><tr><td class="tt">owner_reviewed</td><td class="wh"><span class="badge badge-fault">未过</span></td></tr></tbody></table>
+        <p class="hint">缺工序（框架声明有、盘上还没有）：<b>arrangement、audio、master、export</b>。
+           三项证明（版权 / 安全 / 主人审批）我<b>一律填 False</b> —— 没核就是没核，不代签。</p>
+        <p class="fw-chain"><span class="k">角色链</span>（7 包）：lyrics → arrangement → audio → master → export → independent_review → owner_release</p>
+      </div>
+      
+      <div class="irv">
+        <p class="irv-h">独立质量审计官判定 · <code>independent_review</code>（作者看不到、也改不了）</p>
+        <p class="irv-s">
+          <span class="badge badge-fault">退回返工</span>
+          退回工序 <code>music/01-lyrics（歌词工序）</code>
+          <span class="cnt">阻断 0 · 重要 1 · 次要 3</span>
+        </p>
+        <ul class="fnds"><li class="fnd"><span class="badge badge-warn">重要</span><span class="fnd-body"><b>music-production §2 歌词闸 · 韵律</b> —— 「韵律」被判 ，唯一依据「每行 9–11 字」是未经实测的编造数字。逐行实测非空白字数为 4–15，落在 9–11 的仅 2 行。<span class="ev">【审计时原文，现已更正】01lyrics.md:57「| 韵律 | | 每行 9–11 字，副歌短句化拉节奏 |」；实测 18 行 min=4 max=15 均值 10.8，9–11 区间仅 :24/:34 两行</span></span></li></ul>
+        <p class="irv-fix">本条已由作者工序更正：01lyrics.md §三 第 2 行改为实测值（18 行 / min 4 / max 15 / 均值 10.8 / 分布），并保留更正留痕。</p>
+        <details class="irv-credit"><summary>审计官认可的地方（3 条）</summary>
+          <ul><li>§4 七项音频 QC 因盘上 0 音频文件而无法机器判 —— 产物如实写「全部未判」，未虚假声称通过</li><li>§1 溯源铁律判「不触发」正确（全篇虚构抒情、无纪实主张）</li><li>艺人名扫描：全文件无任何艺人/乐队/作品名</li></ul></details>
+      </div>
+    </section>
+    <section class="work" data-state="warn">
+      <header class="work-head">
+        <h3>电影 · 《老屋》</h3>
+        <span class="chip chip-warn">待填 24 格</span>
+      </header>
+      <dl class="files">
+        <dt>源稿</dt><dd><code>projects/film/01-screenplay/20260921-老屋/20260921-film-老屋-01screenplay.md</code> · 2457 B</dd>
+        <dt>分镜</dt><dd><code>projects/film/02-storyboard/20260921-老屋/20260921-film-老屋-02storyboard.md</code> · 7002 B</dd>
+        <dt>闸口</dt><dd><code>video-pipeline</code></dd>
+      </dl>
+      
+      <table class="grid">
+        <caption>镜头三契约 · 逐镜待填（8 镜 × 3 项 = 24 格）</caption>
+        <thead><tr><th>镜</th><th>render</th><th>eyeline</th><th>depth</th><th>parse_timed 点名缺</th></tr></thead>
+        <tbody><tr><td class="num">1</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">2</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">3</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">4</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">5</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">6</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">7</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr><tr><td class="num">8</td><td><span class="blank" title="待填：读了旁白才能定">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td class="lack">运镜/情绪/角色位置</td></tr></tbody>
+      </table>
+      <p class="hint">坑是空的，我<b>不代填</b> —— 契约 §1 明写「复制别人的理由 = 失败」，
+      这三格必须<b>先读了上表旁白</b>才能定。审批时一次定齐即可。</p>
+      <table class="gates"><thead><tr><th>出处</th><th>检查项</th><th>结论 / 卡在哪</th></tr></thead><tbody><tr><td class="src" rowspan="2">源稿 · 四、剧本层自查</td><td class="tt">场次表完整</td><td class="wh">—</td></tr><tr><td class="tt">人物动机可追</td><td class="wh">—</td></tr><tr><td class="src" rowspan="1">分镜 · 五、双人审闸（§6）</td><td class="tt">HITL #1 分镜审批</td><td class="wh">—</td></tr></tbody></table>
+      
+      <div class="fw">
+        <p class="fw-h">框架编排层自审 · <code>media_pipeline</code>（喂的是盘上真 sha256）</p>
+        <p class="fw-s"><b>5</b>/<b>9</b> 项通过 ·
+           发布口径 <code>blocked_until_owner_authorization</code></p>
+        <table class="gates"><tbody><tr><td class="tt">kind_known</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">title_present</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">brief_present</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">stages_declared</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">stage_outputs_bound</td><td class="wh"><span class="badge badge-fault">未过</span></td></tr><tr><td class="tt">asset_hashes_present</td><td class="wh"><span class="badge badge-ok">通过</span></td></tr><tr><td class="tt">copyright_attested</td><td class="wh"><span class="badge badge-fault">未过</span></td></tr><tr><td class="tt">safety_reviewed</td><td class="wh"><span class="badge badge-fault">未过</span></td></tr><tr><td class="tt">owner_reviewed</td><td class="wh"><span class="badge badge-fault">未过</span></td></tr></tbody></table>
+        <p class="hint">缺工序（框架声明有、盘上还没有）：<b>concept、sound、edit、export</b>。
+           三项证明（版权 / 安全 / 主人审批）我<b>一律填 False</b> —— 没核就是没核，不代签。</p>
+        <p class="fw-chain"><span class="k">角色链</span>（8 包）：concept → script → shots → sound → edit → export → independent_review → owner_release</p>
+      </div>
+      
+      <div class="irv">
+        <p class="irv-h">独立质量审计官判定 · <code>independent_review</code>（作者看不到、也改不了）</p>
+        <p class="irv-s">
+          <span class="badge badge-fault">退回返工</span>
+          退回工序 <code>02-storyboard</code>
+          <span class="cnt">阻断 3 · 重要 5 · 次要 3</span>
+        </p>
+        <ul class="fnds"><li class="fnd"><span class="badge badge-fault">阻断</span><span class="fnd-body"><b>video-pipeline §1</b> —— §1 三契约逐镜为空（8 镜 × 4 字段），分镜件自判 complete:false。<span class="ev">02storyboard.md:288 表头无 style；:290 全「待填」；:101 complete:false</span></span></li><li class="fnd"><span class="badge badge-fault">阻断</span><span class="fnd-body"><b>video-pipeline §5</b> —— §5 整节零处置：可转发物/信息句在本件完全不存在，检索 share/转发/信息句 全部 0 命中。<span class="ev">film/02storyboard.md 全文检索 share/转发/信息句/风格/style 均 0 命中</span></span></li><li class="fnd"><span class="badge badge-fault">阻断</span><span class="fnd-body"><b>跨件一致性</b> —— 全片唯一台词「妈回来了」在剧本件有、在分镜件 0 命中 —— 唯一一句台词在分镜工序丢失。<span class="ev">01screenplay.md:40「林秀兰（很轻）：&quot;妈回来了。&quot;」；02storyboard.md 检索「妈回来了|台词|对白」0 命中</span></span></li></ul>
+        
+        <details class="irv-credit"><summary>审计官认可的地方（2 条）</summary>
+          <ul><li>01-screenplay 被评「明显更扎实」：主动把「妈回来了」的归属挂牌 HITL#1 待主人定，而非擅自定死</li><li>退回对象只需 02-storyboard，不需要回退到剧本</li></ul></details>
+      </div>
+    </section>
+
+  
+  <section class="ack">
+    <h2>作者认账：这一屏上曾经有过一个我编的数字</h2>
+    <p><b>《夜航》的「韵律」闸原写「每行 9–11 字」—— 那是我没实测就写下的，属编造。</b>
+       独立审计官逐行实测证伪：18 行里落在 9–11 的只有 2 行（实测 min 4 / max 15 / 均值 10.8）。
+       该数字<b>曾原样复制到本屏</b>，现已连同歌词件一并更正并留痕。</p>
+    <p>另更正一处口径矛盾：短视频源稿原把「分镜表」标为「已出」，
+       而分镜件自判 <code>complete:false</code> —— 已改为「未完成」。</p>
+    <p><b>三件作品全部被判「退回返工」</b>（接受全部三条 return_to_stage 判定）。
+       §1 逐镜三契约、<code>shot.style</code> 列、<code>shot.share</code> 落点我<b>不代填</b> ——
+       契约 §1 明写这些必须「先读旁白再决定」且理由不许复制，属 HITL#1 一次定齐的动作。</p>
+    <details class="irv-credit"><summary>元审（复核这三份判定本身）查出的要点（4 条）</summary>
+      <ul><li>唯一一处行号与所引内容不符：报告3 引 HTML:250，实际该 rowspan 表在 :197（结论未受影响）</li><li>【重要】被证伪的假数字「每行 9–11 字」已扩散到主人审批所看的 HITL#1 审批屏（HTML:220 原样复制）—— 返工范围不止改歌词件</li><li>契约自身缺陷：music-production :40 写「13 项」而 :42 列 5 项 + 「其余九项」（5+9=14），算术矛盾</li><li>三份审计官共同的推理瑕疵：把「文件 mtime 与 declaration.at 同秒」当作『非手写编造』的硬旁证，但本批五个交付物 mtime 全部同为 23:45:06（整批一次批写），该吻合无鉴别力 —— 由元审官指出</li></ul></details>
+  </section>
+
+  <div class="note">
+    <b>为什么预算栏写着「拒估」而不是一个数字：</b>    <span class="cite">video-pipeline §3</span> 原文 ——「<b>未知价格直接失败，不许猜</b>」，
+    且要求「价格表每行带证据等级与出处」。当前没有价格表，
+    所以按契约<b>拒绝给出数字</b>，而不是编一个 $10 交差。
+    等接入生成端、拿到带出处的价目后，这一栏才会有真数。
+  </div>
+
+  <footer class="sig">开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{
+  "report_type": "implementation_audit_production_ready",
+  "generated_at": "2026-09-21T20:14:09.228793",
+  "summary": {
+    "total_capabilities": 147,
+    "wired": 139,
+    "orphans": 0,
+    "external_entries": 8,
+    "coverage_percent": 94.6
+  },
+  "truth_scan": {
+    "verdict": "clean",
+    "fake": 0,
+    "note": "FAKE 必须为 0——任何假执行都是框架的癌症"
+  },
+  "selfscan": {
+    "verdict": "P1",
+    "routing_ok": true
+  },
+  "capabilities_verified": [
+    "health",
+    "selfscan",
+    "truth_scan",
+    "tentacle_manifest",
+    "media_pipeline",
+    "tentacle_pipeline",
+    "agency_tentacles",
+    "brain_health",
+    "voice_orchestra"
+  ],
+  "status": "READY_FOR_PRODUCTION",
+  "next_steps": [
+    "申请 deploy_publish 授权",
+    "执行 one_key_deploy into_global_production=true",
+    "验证生产环境健康检查"
+  ]
+}

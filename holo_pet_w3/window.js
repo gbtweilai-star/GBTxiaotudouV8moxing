@@ -37,16 +37,9 @@
     }
   }
 
-  function put(el, payload, pretty) {
-    if (!el) return;
-    if (!payload || payload.ok !== true) {
-      el.textContent = "取不到：" + ((payload && payload.error) || "原因未报");
-      el.dataset.state = "fault";
-      return;
-    }
-    el.dataset.state = "ok";
-    el.textContent = pretty ? JSON.stringify(payload.data, null, 2) : String(payload.data);
-  }
+  /* 2026-09-23 第 31 轮删掉了 `put(el, payload, pretty)` —— 它做的正是
+     `el.textContent = JSON.stringify(payload.data, null, 2)`，四视图改控制台之后
+     **一个调用点都不剩**。死代码留着只会让下一个人以为"还有地方在铺 JSON"。 */
 
   function textOf(v) { return v === undefined || v === null ? "—" : String(v); }
 
@@ -126,14 +119,38 @@
     return "text";   /* 离线可用、永远跑得通的那条 */
   }
 
+  /* R-H295：文本兜底引擎原来把 markdown **原样**画出来 —— 反引号、粗体星号、
+     转义反斜杠全都当着内容显示（实测截图里是 `nebula-agent.xingyun3d.com`
+     与 **本仓零文件**）。markmap/d3 在的话它们自己会解析，但 index.html 的 CSP 是
+     script-src 'self' 且只引了 ef_render.js / window.js —— 两个库都不在，**永远走 text**。
+     所以剥行内标记这件事必须由文本引擎自己做，否则"兜底"兜出来的是一屏标记符号。
+     只剥显示层的行内标记，**不动** node.label 原文（搜索/hit 判定仍按原文比对）。 */
+  function plainMd(s) {
+    var t = String(s == null ? "" : s);
+    t = t.replace(/\\([\\`*_{}\[\]()#+\-.!])/g, "$1");   /* 转义还原 */
+    t = t.replace(/`([^`]*)`/g, "$1");                    /* 行内代码 */
+    t = t.replace(/\*\*([^*]+)\*\*/g, "$1");              /* 粗体 */
+    t = t.replace(/(^|[^*])\*([^*]+)\*/g, "$1$2");        /* 斜体 */
+    t = t.replace(/~~([^~]+)~~/g, "$1");                  /* 删除线 */
+    t = t.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");        /* 链接只留文字 */
+    return t;
+  }
+
   function renderTreeText(node, host, depth) {
     var wrap = document.createElement("div");
     wrap.className = "gbt-node";
-    wrap.dataset.state = node.state || "off";
+    /* R-H295：原来是 `wrap.dataset.state = node.state || "off"` ——
+       mindmap 载荷（markdown）里**没有**逐节点状态，于是 193 个节点全被贴上
+       data-state="off"，而 --gbt-off 的图例语义是「灰 · 未启用 / 休眠」：
+       **替没量过的东西宣布了一个状态**，还把整棵树压成 #6B7280（压深底几乎读不出来）。
+       实测：state_counts={"off":193} · label 计算色 rgb(107,114,128) · opacity 1。
+       改成「没状态就不设 data-state」—— 不发明状态，也不假装它是灰的；
+       中性样式见 window.css 的 .gbt-node:not([data-state])。 */
+    if (node.state) wrap.dataset.state = node.state;
     wrap.dataset.hot = node.hot ? "true" : "false";
     var label = document.createElement("span");
     label.className = "gbt-node-label";
-    label.textContent = node.label;
+    label.textContent = plainMd(node.label);
     label.addEventListener("click", function () {
       openSidebar("节点", {
         label: node.label,
@@ -141,6 +158,7 @@
         pid: node.pid || "未登记 pid",
         port: node.port || "未登记 port",
         faults: node.faults || [],
+        state: node.state || "未登记状态（不画成任何一种已测状态）",
         note: "节点大小 = 资源占用：本机 psutil 未装，按《反空壳律》画『未启用』，不用默认值顶替。",
       });
     });
@@ -158,8 +176,13 @@
     var badge = $("tree-engine");
     if (badge) badge.textContent = engine + (engine === "text" ? "（离线兜底）" : "");
     host.innerHTML = "";
+    delete host.dataset.empty;          /* 默认不是空场；只有真空才挂上（第 57 轮） */
     if (!payload || payload.ok !== true) {
-      host.textContent = "取不到工作树：" + ((payload && payload.error) || "原因未报");
+      /* 第 57 轮：原来是 `host.textContent = …` ⇒ 一坨纯文本横跨 1400px（一行 110+ 汉字）。
+         改走 `hint()`：一句人话 + 内幕折叠 + 行长上限。**文本一个字没改**。
+         并挂 `data-empty` —— 那句"取不到"该在**场中央**，不是缩在左上角（量到 53/750 ⇒ 92.7% 空着）。 */
+      host.dataset.empty = "true";
+      host.replaceChildren(hint("取不到工作树：" + ((payload && payload.error) || "原因未报"), "fault"));
       return;
     }
     var tree = parseMarkmap(payload.text);
@@ -187,6 +210,13 @@
       return;
     }
     host.appendChild(renderTreeText(tree, host, 0));
+    /* 🔴 空场兜底（第 57 轮）：解析出 0 个节点时**不许静默留白** ——
+       静默的空白会被读成"一切正常"，那是本仓最贵的假绿。
+       这一条**不编内容**，只如实说"取到了、但里面没有节点"。 */
+    if (!host.textContent.trim()) {
+      host.dataset.empty = "true";
+      host.replaceChildren(hint("导图源取到了，但里面没有节点 —— 如实报空，不画假树"));
+    }
     applyFilter();
   }
 
@@ -208,8 +238,9 @@
       var tr = document.createElement("tr");
       var td = document.createElement("td");
       td.colSpan = 7;
-      td.className = "gbt-dim";
-      td.textContent = "取不到矩阵：" + ((payload && payload.error) || "母表未读到");
+      /* 第 57 轮：空矩阵原来是「一行小字躺在整屏空表里」（表区本来就铺满一屏，
+         于是空着读作"坏了"）。改成**构图过的空态**：发丝虚框 + 灰点 + 一句人话。 */
+      td.appendChild(emptyBlock("取不到矩阵：" + ((payload && payload.error) || "母表未读到")));
       tr.appendChild(td);
       body.appendChild(tr);
       if (src) src.textContent = "来源：取不到";
@@ -298,13 +329,525 @@
     bar.hidden = false;
   }
 
+  /* ══ 四视图控制台（2026-09-23 第 31 轮重构）══════════════════════════════
+     改前这四格是 `<pre>` + `JSON.stringify(payload.data, null, 2)`。用真壳取证器
+     （`shell/shots.cjs`）拍出来是这样：**屏上四坨原始 JSON** —— 没有层级、没有状态色、
+     不能扫读；而且**明文带着本机绝对路径**
+     （`C:\Users\ADMIN\AppData\Local\Programs\OpenAI\Codex\bin\codex.exe`）与服务 host/port。
+     本仓 AGENTS.md 写着「不要暴露内部地址、端口、配置」。⇒ 现在按每格**自己的语义**渲染：
+       · 颜色**只**编码状态（绿=好 / 黄=降级 / 红=故障 / 灰=没数据），不做装饰；
+       · **路径掩码** —— 屏上不再出现完整本机路径；
+       · **取不到就说取不到**；`{}` 不许当成「一切正常」（state/env 是**缓存驱动**的，
+         刚起来时合法地就是空 —— 实测 `w3State()` 冷启动返回 `{}`）。 */
+
+  function mk(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined && text !== null) e.textContent = String(text);
+    return e;
+  }
+
+  /* 路径掩码：`C:\Users\ADMIN\AppData\Local\Programs\OpenAI\Codex\bin\codex.exe`
+     → `…\Codex\bin\codex.exe`。为什么必须做：本机绝对路径里就带用户名。 */
+  function maskPath(s) {
+    var t = String(s);
+    if (!/[A-Za-z]:\\/.test(t)) return t;
+    var parts = t.split("\\").filter(function (x) { return x !== ""; });
+    if (parts.length <= 3) return "…\\" + parts.slice(-2).join("\\");
+    return "…\\" + parts.slice(-3).join("\\");
+  }
+
+  /* 状态判定：把任意形状的"子系统值"收成四态之一。
+     🔴 **灰 = 不知道**，绝不许渲染成绿（本文件 §3 假绿铁律）。 */
+  function stateOfValue(v) {
+    if (v === undefined || v === null) return "gray";
+    if (v === false) return "fault";
+    if (v === true) return "ok";
+    if (typeof v === "object") {
+      if (v.ok === false || v.up === false || v.connected === false) return "fault";
+      if (v.ok === true || v.up === true || v.connected === true) return "ok";
+      if (typeof v.status === "string") {
+        var st = v.status.toLowerCase();
+        if (st === "ok" || st === "up" || st === "ready" || st === "done") return "ok";
+        if (st === "down" || st === "error" || st === "failed") return "fault";
+        if (st === "warn" || st === "degraded" || st === "partial") return "warn";
+      }
+      return "gray";          /* 有对象但读不出状态 ⇒ 灰。**不猜。** */
+    }
+    return "gray";
+  }
+
+  var STATE_TEXT = { ok: "正常", warn: "降级", fault: "故障", gray: "无读数" };
+
+  function chip(id, state, text) {
+    var el = $(id);
+    if (!el) return;
+    el.dataset.state = state;
+    el.textContent = text;
+  }
+
+  function tiles(pairs) {
+    var wrap = mk("div", "gbt-tiles");
+    pairs.forEach(function (p) {
+      var t = mk("div", "gbt-tile");
+      t.appendChild(mk("div", "gbt-tile-k", p[0]));
+      var v = mk("div", "gbt-tile-v", p[1]);
+      if (p[3]) v.dataset.state = p[3];
+      if (p[2]) v.appendChild(mk("span", "gbt-tile-u", p[2]));
+      t.appendChild(v);
+      wrap.appendChild(t);
+    });
+    return wrap;
+  }
+
+  /* ── 空态**构图**（第 57 轮）──────────────────────────────────────────
+     为什么要有它：空的地方只留一行小字，读起来像"没渲染完"—— 七屏取证量到的后果
+     就是工具页 70.1%、形象库 75.1% 的空白率。空态要看起来**是设计过的**：
+     一道发丝虚框把"这里本该有东西"圈出来，状态点在前面分清"是没量到、不是 0"。
+     🔴 **只改构图，不改文案真值**：判据的真假照旧由数据层决定（灰绝不画成绿）。 */
+  function emptyBlock(text) {
+    var box = mk("div", "gbt-empty");
+    var dot = mk("span", "gbt-dot");
+    dot.dataset.state = "gray";
+    box.appendChild(dot);
+    box.appendChild(mk("span", "gbt-empty-t", text));
+    return box;
+  }
+
+  /* ── 长错误：**人面一句，内幕折叠**（第 57 轮）────────────────────────
+     为什么：CSP 全文、`gbtW3 未注入` 这类是**证据**，该留；但它占着人第一眼要读的那一行。
+     折进原生 `<details>` ⇒ **一个字都不删**，只是分层。
+     判据：只在**够长**（>46 字）且**切得动**（有 ` —— ` 或 `；`，且切点不在句首）时才折；
+     切不动就原样一句 —— 不许为了好看把一句人话切成看不懂的两截。 */
+  function hint(text, state) {
+    var t = String(text == null ? "" : text);
+    var h = mk("div", "gbt-hint");
+    if (state) h.dataset.state = state;
+    var cut = -1;
+    if (t.length > 46) {
+      var seps = [" —— ", "；"];
+      for (var i = 0; i < seps.length; i++) {
+        var at = t.indexOf(seps[i]);
+        if (at > 8) { cut = at; break; }
+      }
+    }
+    if (cut < 0) { h.textContent = t; return h; }
+    h.appendChild(document.createTextNode(t.slice(0, cut)));
+    var det = document.createElement("details");
+    det.className = "gbt-hint-detail";
+    var sum = document.createElement("summary");
+    /* 标签要短：一屏五张卡都挂一句长摘要 = 五遍噪音（第 57 轮截图看到的）。
+       只说"能展开、里面还有多少字"，不重复正文。 */
+    sum.textContent = "展开原文（+" + (t.length - cut) + " 字）";
+    var pp = document.createElement("p");
+    pp.textContent = t.slice(cut).replace(/^[\s—；]+/, "");
+    det.appendChild(sum);
+    det.appendChild(pp);
+    h.appendChild(det);
+    return h;
+  }
+
+  function stateCell(state, text) {
+    var td = mk("td");
+    var sp = mk("span", "gbt-state");
+    sp.dataset.state = state;
+    var dot = mk("span", "gbt-dot");
+    dot.dataset.state = state;
+    sp.appendChild(dot);
+    sp.appendChild(mk("span", null, text));
+    td.appendChild(sp);
+    return td;
+  }
+
+  function table(headers, rows) {
+    var tbl = mk("table", "gbt-tbl");
+    var thead = mk("thead"), tr = mk("tr");
+    headers.forEach(function (h) { tr.appendChild(mk("th", null, h)); });
+    thead.appendChild(tr); tbl.appendChild(thead);
+    var tb = mk("tbody");
+    rows.forEach(function (cells) { tb.appendChild(cells); });
+    tbl.appendChild(tb);
+    return tbl;
+  }
+
+  /* `payload` 形状是 `{ok, data}`（main.cjs 那层包的）。取不到就如实说原因；空对象如实说等数据。 */
+  function unpack(el, payload, emptyText) {
+    if (!payload || payload.ok !== true) {
+      el.replaceChildren(hint("取不到：" + ((payload && payload.error) || "原因未报"), "fault"));
+      return null;
+    }
+    var d = payload.data;
+    if (d === null || d === undefined
+        || (typeof d === "object" && Object.keys(d).length === 0)) {
+      el.replaceChildren(hint(emptyText || "宿主数据面还没回值（缓存驱动，等下一次刷新）"));
+      return null;
+    }
+    /* 🔴 **声明数据新鲜度**（2026-09-23 第 34 轮）：本窗是 IPC 实时取数，
+       这里是**四张卡唯一的成功出口** ⇒ 声明收在这一处，四张卡一次覆盖。
+       写 `window.GBT_DATA` 而不是调铬给的 gbtFresh：那是普通全局，**与注入顺序无关**
+       （铬每秒读一次，晚挂上照样读得到）。 */
+    window.GBT_DATA = { kind: "实时", at: new Date().toISOString() };
+    return d;
+  }
+
+  var SUB_LABEL = {
+    codex: "Codex 引擎", codex_ready: "引擎就绪", mind: "心智内核", life: "生命档案",
+    bluetooth: "蓝牙", sensory: "感知", notion: "Notion", eigenflux: "AI 朋友圈",
+    xingyun: "星云",
+  };
+
+  function renderSelf(el, payload) {
+    var d = unpack(el, payload);
+    if (!d) { chip("chip-self", "gray", "无读数"); return; }
+    var subs = Object.keys(d).filter(function (k) { return k !== "ok" && k !== "last_error"; });
+    var st = subs.map(function (k) { return stateOfValue(d[k]); });
+    var n = function (s) { return st.filter(function (x) { return x === s; }).length; };
+    var bad = n("fault"), warn = n("warn"), gray = n("gray");
+    chip("chip-self", bad ? "fault" : (warn ? "warn" : (subs.length && gray === subs.length ? "gray" : "ok")),
+         bad ? (bad + " 项故障") : (warn ? (warn + " 项降级")
+              : (subs.length && gray === subs.length ? "无读数" : "正常")));
+    var kids = [tiles([
+      ["子系统", subs.length],
+      ["正常", n("ok"), "", "ok"],
+      ["故障", bad, "", bad ? "fault" : "gray"],
+      ["无读数", gray, "", "gray"],
+    ])];
+    kids.push(table(["子系统", "状态", "读数"], subs.map(function (k) {
+      var s = stateOfValue(d[k]), v = d[k];
+      var row = mk("tr");
+      row.appendChild(mk("td", "wide", SUB_LABEL[k] || k));
+      row.appendChild(stateCell(s, STATE_TEXT[s]));
+      var brief = (v && typeof v === "object")
+        ? Object.keys(v).slice(0, 4).map(function (kk) {
+            return kk + "=" + maskPath(JSON.stringify(v[kk])).slice(0, 36);
+          }).join(" · ")
+        : maskPath(String(v));
+      row.appendChild(mk("td", null, brief || "—"));
+      return row;
+    })));
+    if (d.last_error) {
+      kids.push(hint("最近错误：" + maskPath(String(d.last_error)).slice(0, 200), "fault"));
+    }
+    el.replaceChildren.apply(el, kids);
+  }
+
+  function renderTasks(el, payload) {
+    var d = unpack(el, payload);
+    if (!d) { chip("chip-tasks", "gray", "无读数"); return; }
+    var list = Array.isArray(d.tasks) ? d.tasks : [];
+    var cnt = { done: 0, failed: 0, open: 0 };
+    list.forEach(function (t) {
+      var s = String(t.status || "").toLowerCase();
+      if (s === "done" || s === "ok") cnt.done++;
+      else if (s === "failed" || s === "error") cnt.failed++;
+      else cnt.open++;
+    });
+    var esc = list.filter(function (t) { return t && t.escalation; });
+    chip("chip-tasks", cnt.failed ? "fault" : (esc.length ? "warn" : "ok"),
+         cnt.failed ? (cnt.failed + " 未达标") : (esc.length ? (esc.length + " 待升级") : "正常"));
+    var kids = [tiles([
+      ["任务总数", Number(d.total || list.length)],
+      ["已达标", cnt.done, "", "ok"],
+      ["未达标", cnt.failed, "", cnt.failed ? "fault" : "gray"],
+      ["待升级", esc.length, "", esc.length ? "warn" : "gray"],
+    ])];
+    kids.push(table(["ID", "任务", "类型", "状态", "尝试"], list.slice(0, 40).map(function (t) {
+      var s = String(t.status || "");
+      var st = (s === "done" || s === "ok") ? "ok"
+             : (s === "failed" || s === "error") ? "fault" : (s ? "warn" : "gray");
+      var row = mk("tr");
+      row.appendChild(mk("td", "num", t.task_id || "—"));
+      row.appendChild(mk("td", "wide", String(t.description || "—").slice(0, 26)));
+      row.appendChild(mk("td", null, t.kind || "—"));
+      row.appendChild(stateCell(st, s || "—"));
+      row.appendChild(mk("td", "num",
+        (t.attempts == null ? "—" : t.attempts) + "/" + (t.max_attempts == null ? "—" : t.max_attempts)));
+      return row;
+    })));
+    if (esc.length) {
+      var e0 = esc[0].escalation || {};
+      kids.push(hint("待升级：" + String(e0.what || "—").slice(0, 110)
+                     + " ｜ 需要：" + String(e0.need || "—").slice(0, 70), "warn"));
+    }
+    el.replaceChildren.apply(el, kids);
+  }
+
+  function renderEnv(el, payload) {
+    var d = unpack(el, payload);
+    if (!d) { chip("chip-env", "gray", "无读数"); return; }
+    var svcs = (d.services && typeof d.services === "object") ? d.services : {};
+    var names = Object.keys(svcs);
+    var up = names.filter(function (k) { return svcs[k] && svcs[k].up === true; }).length;
+    var down = names.length - up;
+    chip("chip-env", !names.length ? "gray" : (down ? "fault" : "ok"),
+         !names.length ? "无读数" : (down ? (down + " 离线") : "全在线"));
+    var kids = [tiles([
+      ["受管服务", names.length],
+      ["在线", up, "", "ok"],
+      ["离线", down, "", down ? "fault" : "gray"],
+      ["监听面", names.length ? "本机回环" : "—", "", names.length ? "ok" : "gray"],
+    ])];
+    /* 🔴 `host` 一列**故意不显示**：登记表里它是 `127.0.0.1`，属于"内部地址"，
+       按 AGENTS.md 不上屏。端口要留 —— 判「谁在听」离不开它。 */
+    kids.push(table(["服务", "端口", "归属", "状态"], names.slice(0, 40).map(function (k) {
+      var v = svcs[k] || {}, isUp = v.up === true;
+      var row = mk("tr");
+      row.appendChild(mk("td", "wide", k));
+      row.appendChild(mk("td", "num", v.port == null ? "—" : v.port));
+      row.appendChild(mk("td", null, v.owner || "—"));
+      row.appendChild(stateCell(isUp ? "ok" : "fault",
+                                isUp ? "在线" : (v.optional ? "可选·离线" : "离线")));
+      return row;
+    })));
+    el.replaceChildren.apply(el, kids);
+  }
+
+  function renderLedger(el, payload) {
+    var d = unpack(el, payload);
+    if (!d) { chip("chip-ledger", "gray", "无读数"); return; }
+    var tail = Array.isArray(d.audit_tail) ? d.audit_tail : [];
+    var kinds = {};
+    tail.forEach(function (e) {
+      var k = (e && e.meta && e.meta.kind) || (e && e.event) || "?";
+      kinds[k] = (kinds[k] || 0) + 1;
+    });
+    var top = Object.keys(kinds).sort(function (a, b) { return kinds[b] - kinds[a]; })[0];
+    chip("chip-ledger", tail.length ? "ok" : "gray", tail.length ? (tail.length + " 条") : "无读数");
+    var kids = [tiles([
+      ["尾部条数", tail.length],
+      ["事件种类", Object.keys(kinds).length],
+      ["最多", top ? String(top).slice(0, 12) : "—", "", top ? "ok" : "gray"],
+      ["来源", "audit"],
+    ])];
+    var feed = mk("div", "gbt-feed");
+    tail.slice(-26).reverse().forEach(function (e) {
+      var row = mk("div", "gbt-feed-row");
+      row.appendChild(mk("span", "gbt-feed-t", String(e.iso || "").slice(11, 19) || "—"));
+      row.appendChild(mk("span", "gbt-feed-e", String(e.event || "—")));
+      row.appendChild(mk("span", "gbt-feed-k", String((e.meta && e.meta.kind) || "")));
+      feed.appendChild(row);
+    });
+    kids.push(feed);
+    el.replaceChildren.apply(el, kids);
+  }
+
+  /* ── 编程工作台（2026-09-23 第 45 轮）──
+     Owner 要的是「一体式多功能专业级编程AI」，而主窗原来**没有编程入口**。
+     本函数只做三件事：回路六步（认现有能力位）+ 编程动作流 + 四个入口。
+
+     🔴 两条纪律：
+       ① **不新增数据源**：动作流从**主窗已有的** `audit_tail` 里筛，不另采一份 ——
+          同一件事两处采集 = 两套口径（本仓最贵的教训）。
+       ② **不重复渲染"门/命令"**：那是代码台 F 块的读数。这里只放步骤与能力位名，
+          需要门与命令的人点「打开 代码台」过去看。 */
+  var PROG_KINDS = ["project_context", "code_patch", "git_read", "git_write",
+                    "codex_status", "codex_tools", "codex_models", "codex_chat",
+                    "codex_thread_new", "codex_turn_send", "codex_interrupt"];
+  var LOOP_STEPS = [
+    ["① 读", "project_context"],
+    ["② 看改动面", "git_read"],
+    ["③ 试改（不落盘）", "code_patch · dry_run"],
+    ["④ 真改", "code_patch · apply"],
+    ["⑤ 验证", "（还不是能力位 —— 见代码台说明）"],
+    ["⑥ 登记", "git_write"],
+  ];
+  var WORKBENCH_ENTRIES = [
+    ["代码台", "code-deck", "回路与门的读数"],
+    ["执行面", "exec-deck", "账本与执行卡"],
+    ["对话", "dsh-chat", "DeepSeek Harness（DSH 的窗）"],
+    ["神经工作台", "brain", "能力图与脉冲"],
+  ];
+
+  function renderWorkbench(payload) {
+    var el = $("workbench-body");
+    if (!el) return;
+    var d = unpack(el, payload);
+    var tail = (d && Array.isArray(d.audit_tail)) ? d.audit_tail : [];
+    var prog = tail.filter(function (e) {
+      var k = (e && e.meta && e.meta.kind) || "";
+      return PROG_KINDS.indexOf(k) >= 0;
+    });
+    var kids = [];
+
+    kids.push(mk("div", "gbt-hint", "回路 · 一次改动的六步（门与命令见「代码台」）"));
+    var loop = mk("div", "gbt-feed");
+    LOOP_STEPS.forEach(function (s) {
+      /* 第 57 轮：`.gbt-feed-row` 的首列是 62px（时间线给时间戳用的），
+         装「③ 试改（不落盘）」会折成两行、行高参差 ⇒ 这一步用**自己的列宽**。 */
+      var row = mk("div", "gbt-feed-row gbt-step-row");
+      row.appendChild(mk("span", "gbt-feed-t", s[0]));
+      row.appendChild(mk("span", "gbt-feed-k", s[1]));
+      loop.appendChild(row);
+    });
+    kids.push(loop);
+
+    kids.push(mk("div", "gbt-hint", "本仓编程动作流（从实时账本尾部**筛**出来的，不另采一份）"));
+    kids.push(tiles([
+      ["编程类调用", prog.length, "", prog.length ? "ok" : "gray"],
+      ["账本总条数", tail.length, "", tail.length ? "ok" : "gray"],
+      ["来源", "audit"],
+    ]));
+    var feed = mk("div", "gbt-feed");
+    prog.slice(-14).reverse().forEach(function (e) {
+      var row = mk("div", "gbt-feed-row");
+      row.appendChild(mk("span", "gbt-feed-t", String(e.iso || "").slice(11, 19) || "—"));
+      row.appendChild(mk("span", "gbt-feed-e", String(e.event || "—")));
+      row.appendChild(mk("span", "gbt-feed-k", String((e.meta && e.meta.kind) || "")));
+      feed.appendChild(row);
+    });
+    if (!prog.length) {
+      feed.appendChild(mk("div", "gbt-hint",
+        tail.length ? "这一段账本里没有编程类调用 —— 不是没接线，是这一段没发生"
+                    : "账本没读数：数据面可能没起来"));
+    }
+    kids.push(feed);
+
+    kids.push(mk("div", "gbt-hint", "入口（与顶部铬里的跨窗跳转**同一套桥**，不另造）"));
+    var bar = mk("div", "gbt-feed");
+    WORKBENCH_ENTRIES.forEach(function (en) {
+      /* 第 57 轮：入口按钮原来落在 62px 首列 ⇒ 「打开 代码台」被折成「打开 代 / 码台」，
+         看着像坏了。按钮这一行用**自己的两列**，且不折行。 */
+      var row = mk("div", "gbt-feed-row gbt-entry-row");
+      var btn = mk("button", "gbt-btn", "打开 " + en[0]);
+      btn.type = "button";
+      btn.addEventListener("click", function () {
+        var br = window.gbtW3;
+        if (!br || typeof br.showWindow !== "function") return;   /* 没宿主：不假装能跳 */
+        Promise.resolve(br.showWindow({ id: en[1] })).catch(function () {});
+      });
+      row.appendChild(btn);
+      row.appendChild(mk("span", "gbt-feed-k", en[2]));
+      bar.appendChild(row);
+    });
+    kids.push(bar);
+
+    chip("chip-workbench", tail.length ? "ok" : "gray",
+         tail.length ? (prog.length + " 条编程动作") : "无读数");
+    el.replaceChildren.apply(el, kids);
+  }
+
+  /* ── 交流视野 · 顾问席（第 43 轮镶嵌）────────────────────────────────
+     两个席位（克劳德 / DSH）**只能给建议**：这一卡只**读**它们的建议账并显示，
+     一个写口、一个执行口都没有。界面上每条都带「建议 · 不执行」标，
+     每席只显示两个数「只读 N · 建议 M」—— 一眼看出它是顾问，不是执行者。
+     判据：`tools/codex-scripts/advisor-audit.py`（写面只此一处 · 只追加 · 无 run_task）。 */
+  var SEAT_CN = { claude: "克劳德", dsh: "DeepSeek Harness" };
+
+  /* ── 顾问席 · 三栏（主人 2026-09-23 定）────────────────────────────────
+     ① 项目树 ② 交流视野 ③ 顾问建议 —— **三栏都只读**。
+     数据一律经 `callBridge`（宿主内由垫片从注入的数据件里取）：
+       · 项目树 ← `mindmap`（与 Electron 同源：同一份 .md 的同一个 markmap 块）
+       · 交流视野 ← `stream`（本会话的事件/工具流尾部）
+       · 顾问建议 ← `advisors`（两席的只追加建议账）
+     取不到就**如实说取不到**（`unpack` 的既有口径），不编、不假绿。 */
+  function renderAdvTree(el, payload) {
+    var d = unpack(el, payload);
+    if (!d) { chip("chip-adv-tree", "gray", "取不到"); return; }
+    // 🔴 第 56 轮修：`unpack()` 对 `{ok,data:"文本"}` 返回的**已经是那个字符串**，
+    //    我第一版又去取 `d.data` ⇒ 永远取空 ⇒ 栏里显示「导图源是空的」（假红）。
+    var text = (typeof d === "string") ? d : String((d && (d.data || d.text)) || "");
+    var lines = text.split(/\r?\n/).filter(function (l) { return l.trim(); }).slice(0, 40);
+    var box = document.createElement("div");
+    lines.forEach(function (l) {
+      var lead = (l.match(/^(\s*)/) || ["", ""])[1].length;
+      var depth = Math.min(6, Math.round(lead / 2) + (/^\s*#/.test(l) ? 0 : 1));
+      var p = document.createElement("p");
+      p.className = "gbt-adv-line";
+      // 🔴 内联 `style.paddingLeft` 会被本页 CSP（`style-src 'self'`）**拒掉**并喷红字
+      //    （第 56 轮实测 1 条）。⇒ 改用 data 属性 + CSS 档位，**不写内联样式**。
+      p.setAttribute("data-depth", String(depth));
+      p.textContent = l.replace(/^#+\s*/, "").replace(/^[-*]\s*/, "· ").slice(0, 60);
+      box.appendChild(p);
+    });
+    if (!lines.length) {
+      var n = document.createElement("p");
+      n.className = "gbt-dim";
+      n.textContent = "导图源是空的（不编一棵假的树）";
+      box.appendChild(n);
+    }
+    el.replaceChildren(box);
+    chip("chip-adv-tree", lines.length ? "ok" : "gray", lines.length ? (lines.length + " 行") : "空");
+  }
+
+  function renderStream(el, payload) {
+    var d = unpack(el, payload);
+    if (!d) { chip("chip-stream", "gray", "取不到"); return; }
+    var tail = Array.isArray(d.tail) ? d.tail : [];
+    var box = document.createElement("div");
+    var head = document.createElement("p");
+    head.className = "gbt-dim";
+    head.textContent = "本会话事件流尾部（只读）" + (d.count != null ? " · 共 " + d.count + " 条" : "");
+    box.appendChild(head);
+    tail.forEach(function (t) {
+      var p = document.createElement("p");
+      p.className = "gbt-adv-line";
+      p.textContent = String(t.iso || t.at || "").slice(11, 19) + "  " +
+                      String(t.kind || t.event || "?") + "  " + String(t.note || "").slice(0, 40);
+      box.appendChild(p);
+    });
+    if (!tail.length) {
+      var n = document.createElement("p");
+      n.className = "gbt-dim";
+      n.textContent = "尾部为空 —— 空着就是空着，不编事件";
+      box.appendChild(n);
+    }
+    el.replaceChildren(box);
+    chip("chip-stream", tail.length ? "ok" : "gray", tail.length ? (tail.length + " 条") : "0 条");
+  }
+
+  function renderSeats(el, payload) {
+    var d = unpack(el, payload);
+    if (!d) { chip("chip-seats", "gray", "取不到"); return; }
+    var seats = (d.seats && typeof d.seats === "object") ? d.seats : {};
+    var names = Object.keys(seats);
+    var total = 0;
+    names.forEach(function (k) { total += Number((seats[k] && seats[k].lines) || 0); });
+    var box = document.createElement("div");
+    if (!names.length) {
+      var none = document.createElement("p");
+      none.className = "gbt-dim";
+      none.textContent = "两个席位都还没有建议（账上 0 条）。空着就是空着，不编。";
+      box.appendChild(none);
+    }
+    names.forEach(function (k) {
+      var s = seats[k] || {};
+      var row = document.createElement("div");
+      row.className = "gbt-feed-row";
+      var b = document.createElement("b");
+      b.textContent = SEAT_CN[k] || k;
+      row.appendChild(b);
+      var k1 = document.createElement("span");
+      k1.className = "gbt-feed-k";
+      k1.textContent = "只读 " + (s.readonly || "—") + " · 建议 " + (s.lines || 0);
+      row.appendChild(k1);
+      box.appendChild(row);
+      (s.tail || []).slice(-3).forEach(function (t) {
+        var li = document.createElement("p");
+        li.className = "gbt-adv-line";
+        li.textContent = "• " + String(t.text || t["坏行"] || "").slice(0, 70) + "（建议 · 不执行）";
+        box.appendChild(li);
+      });
+    });
+    el.replaceChildren(box);
+    chip("chip-seats", total > 0 ? "ok" : "gray", total > 0 ? (total + " 条") : "0 条");
+    chip("chip-advisors", "ok", "三栏 · 只读");
+  }
+
   /* ── 一轮刷新 ── */
 
   function refresh() {
-    callBridge("state").then(function (r) { put($("card-self"), r, true); });
-    callBridge("tasks").then(function (r) { put($("card-tasks"), r, true); });
-    callBridge("env").then(function (r) { put($("card-env"), r, true); });
-    callBridge("ledger").then(function (r) { put($("card-ledger"), r, true); });
+    callBridge("state").then(function (r) { renderSelf($("card-self"), r); });
+    callBridge("tasks").then(function (r) { renderTasks($("card-tasks"), r); });
+    callBridge("env").then(function (r) { renderEnv($("card-env"), r); });
+    callBridge("ledger").then(function (r) {
+      renderLedger($("card-ledger"), r);
+      /* 同一份读数喂两处渲染 —— **不**再调一次 callBridge("ledger")：
+         多调一次就是多采一份，两份之间会漂。 */
+      renderWorkbench(r);
+    });
+    callBridge("advisors").then(function (r) { renderSeats($("card-seats"), r); });
+    callBridge("stream").then(function (r) { renderStream($("card-stream"), r); });
+    callBridge("mindmap").then(function (r) { renderAdvTree($("card-adv-tree"), r); });
     callBridge("matrix").then(function (m) {
       callBridge("health").then(function (h) {
         renderMatrix(m, h && h.ok ? h.data : null);
@@ -317,7 +860,14 @@
       renderTree(r.ok ? { ok: true, text: r.data, engine: cfg } : r);
     });
     var clock = $("stat-clock");
-    if (clock) clock.textContent = new Date().toLocaleTimeString("zh-CN");
+    if (clock) {
+      /* 与卡片时间戳同一时区口径，并把时区摆在明面上：
+         否则读者无法判断卡片时间是本地还是 UTC（第 1 轮审计实测差 7 小时）。 */
+      var z = -new Date().getTimezoneOffset() / 60;
+      clock.textContent = new Date().toLocaleTimeString("zh-CN") +
+        " · UTC" + (z >= 0 ? "+" : "") + z;
+      clock.title = "本机时区；卡片「刚取」时间同为本机时间";
+    }
   }
 
   function overallState(health) {
@@ -364,8 +914,9 @@
     var tr = document.createElement("tr");
     var td = document.createElement("td");
     td.colSpan = 4;
-    td.className = "gbt-dim";
-    td.textContent = "✕ 取不到：" + (msg || "未知原因");
+    /* 第 57 轮：同上 —— 一行小字躺在整屏空表里，量出来就是 70.1% 的空白率。
+       改成构图过的空态（灰点在前面分清"是没量到、不是 0"）。 */
+    td.appendChild(emptyBlock("取不到：" + (msg || "未知原因")));
     tr.appendChild(td);
     tbody.appendChild(tr);
   }
@@ -377,10 +928,26 @@
     var store = $("tools-store");
     var note = $("tools-note");
     var foot = $("tools-foot");
+    var covEl = $("tools-coverage");
     var okData = (r && r.ok) ? r.data : null;
     if (store) store.textContent = okData ? (okData.store || "—") : "取不到";
     if (note) note.textContent = okData ? (okData.note || "") : String((r && r.error) || "取不到");
     if (foot) foot.textContent = okData ? (okData.not_exported_note || "—") : "取不到就不显示绿（负对照口径）";
+    /* R-H295 ⑤：把「本页是精选、不是全量」的落差画在页面上。
+       取不到全量口径时如实留白（不估、不拿上次的数顶着）。 */
+    if (covEl) {
+      var cv = okData && okData.coverage;
+      if (!cv) {
+        covEl.textContent = "覆盖面：取不到";
+      } else {
+        var done = (cv.total === null || cv.total === undefined);
+        covEl.textContent = "覆盖面：本页精选 " + cv.curated + " 项 / 注册表 " +
+          (done ? "?" : cv.total) + " 项（可用 " + (cv.enabled === null ? "?" : cv.enabled) +
+          " · 禁用 " + (cv.disabled === null ? "?" : cv.disabled) + " · 面板自身路由 " +
+          (cv.app_routes === null ? "?" : cv.app_routes) + "）" +
+          (done ? " —— 全量口径取不到，不估" : " · 口径 " + (cv.source || "—"));
+      }
+    }
     if (!okData) { toolsFail(tbody, r && r.error); return; }
     var caps = okData.caps || [];
     for (var i = 0; i < caps.length; i++) {
@@ -449,8 +1016,8 @@
     var out = $("pets-summon-out");
     var d = (r && r.ok) ? r.data : null;
     if (!d) {
-      hosts.appendChild(newEl("div", "gbt-pet-reason", "取不到：" + ((r && r.error) || "原因未报")));
-      mhost.appendChild(newEl("div", "gbt-pet-reason", "取不到就不显示绿（负对照口径）"));
+      hosts.appendChild(emptyBlock("取不到：" + ((r && r.error) || "原因未报")));
+      mhost.appendChild(emptyBlock("取不到就不显示绿（负对照口径）"));
       if (py) py.textContent = "Python 腿：取不到";
       return;
     }
@@ -465,8 +1032,9 @@
     (d.carriers || []).forEach(function (row) { hosts.appendChild(carrierCard(row)); });
     var models = d.models || [];
     if (!models.length) {
-      mhost.appendChild(newEl("div", "gbt-pet-reason",
-        "形象库为空或目录不在位 —— 按《反空壳律》如实记，不画假形象"));
+      /* 第 57 轮：形象库空着时原来是"一行小字 + 半张空卡"（量到 75.1% 空白率）。
+         改成构图过的空态：虚框把它圈住，读起来是"这一格是空的"，不是"没渲染完"。 */
+      mhost.appendChild(emptyBlock("形象库为空或目录不在位 —— 按《反空壳律》如实记，不画假形象"));
     }
     models.forEach(function (row) { mhost.appendChild(modelCard(row)); });
     if ((d.issues || []).length) {
@@ -564,6 +1132,169 @@
         $("cockpit-out").textContent = JSON.stringify(r && r.ok ? r.data : { error: (r && r.error) || "取不到" }, null, 2);
       });
     });
+
+    /* ── R-H295 新接：覆盖率与死角 / 零调用点（实时现跑框架审计器）──
+       两者都**不落快照**：每次点刷新都真调一次。取不到就如实显示取不到的原因，
+       不用上一次的旧值顶着（否则「实时」两个字就是假的）。 */
+    function fillGaps(hostId, rows, emptyText) {
+      var host = $(hostId);
+      if (!host) return;
+      host.innerHTML = "";
+      if (!rows || !rows.length) {
+        var e = document.createElement("span");
+        e.className = "gbt-pet-reason";
+        e.textContent = emptyText || "（空）";
+        host.appendChild(e);
+        return;
+      }
+      for (var i = 0; i < rows.length; i++) {
+        var it = document.createElement("div");
+        it.className = "gbt-gap-item";
+        it.textContent = rows[i];
+        host.appendChild(it);
+      }
+    }
+
+    /* ── 时间戳统一口径（第 1 轮审美审计 · 实测查出）────────────────────
+       能力层回的 at 是 ISO-8601 **UTC**（形如 2026-09-21T15:57:21.816Z）。
+       原先三处都写 `String(d.at).slice(11, 19)` —— 这是从 ISO 串里硬切字符，
+       切出来的是 **UTC 小时**；而底栏时钟 stat-clock 用的是本地时间。
+       本机时区 GMT+0700（中南半岛时间），于是同一屏上：
+           卡片「刚取 · 15:57:21」   底栏「22:58:25」
+       两条时间线差 7 小时且都不带时区标签 —— 操作员会把刚取到的数
+       读成 7 小时前的陈旧数据。这不是显示 bug，是"看着对、其实错"。
+       现统一：一律本地时间渲染；原始 UTC 串留在 title 里保精确。 */
+    function atText(iso) {
+      var t = new Date(String(iso || ""));
+      if (isNaN(t.getTime())) return "刚取";
+      var p = function (n) { return (n < 10 ? "0" : "") + n; };
+      return "刚取 · " + p(t.getHours()) + ":" + p(t.getMinutes()) + ":" + p(t.getSeconds());
+    }
+    function putAt(id, iso) {
+      var el = $(id);
+      if (!el) return;
+      el.textContent = atText(iso);
+      el.title = "本机时间。原始时间戳（UTC）：" + String(iso || "—");
+    }
+
+    function loadCoverage() {
+      $("cov-at").textContent = "取数中…";
+      callBridge("coverage").then(function (r) {
+        var d = (r && r.ok && r.data) || {};
+        var raw = d.raw || {};
+        if (!r || !r.ok) {
+          $("cov-reportable").textContent = "—";
+          $("cov-groups").textContent = "取不到：" + ((r && r.error) || "原因未报");
+          fillGaps("cov-gaps", [], "取不到 —— 原因见上");
+          $("cov-at").textContent = "失败";
+          return;
+        }
+        $("cov-reportable").textContent = raw.reportable_modules || "—";
+        $("cov-groups").textContent = "分组覆盖：" + (raw.coverage_by_group || "—");
+        fillGaps("cov-gaps", raw.known_gaps || [], "无已知死角（审计器没报 gap）");
+        $("cov-source").textContent = "来源：" + (raw.source || "—");
+        putAt("cov-at", d.at);
+      });
+    }
+
+    function loadOrphans() {
+      $("orph-at").textContent = "取数中…";
+      callBridge("orphans").then(function (r) {
+        var d = (r && r.ok && r.data) || {};
+        var raw = d.raw || {};
+        if (!r || !r.ok) {
+          $("orph-wired").textContent = "—";
+          $("orph-scanned").textContent = "取不到：" + ((r && r.error) || "原因未报");
+          fillGaps("orph-list", [], "取不到 —— 原因见上");
+          $("orph-at").textContent = "失败";
+          return;
+        }
+        $("orph-wired").textContent = (raw.wired_count === undefined ? "—" : raw.wired_count)
+          + " / " + (raw.total === undefined ? "—" : raw.total);
+        $("orph-scanned").textContent = "扫描文件：" + (raw.scanned_files === undefined ? "—" : raw.scanned_files);
+        var list = [];
+        var orph = raw.orphans || [];
+        for (var i = 0; i < orph.length; i++) {
+          list.push("孤儿：" + (typeof orph[i] === "string" ? orph[i] : JSON.stringify(orph[i])));
+        }
+        fillGaps("orph-list", list, "孤儿 " + (raw.orphan_count === undefined ? "—" : raw.orphan_count) + " 个");
+        $("orph-rule").textContent = "口径：" + (raw.rule || "—");
+        putAt("orph-at", d.at);
+      });
+    }
+
+    var covBtn = $("btn-coverage");
+    if (covBtn) covBtn.addEventListener("click", loadCoverage);
+    var orphBtn = $("btn-orphans");
+    if (orphBtn) orphBtn.addEventListener("click", loadOrphans);
+
+    /* ── 渲染进化的最优基因（实时）──
+       0 代就写 0 代：该能力红线第 1 条是「无基线不许进化」，
+       面板若拿默认值顶上就是替不存在的基线宣布"最优"。 */
+    function loadGene() {
+      $("gene-at").textContent = "取数中…";
+      callBridge("gene").then(function (r) {
+        var d = (r && r.ok && r.data) || {};
+        var raw = d.raw || {};
+        var body = $("gene-body");
+        if (!r || !r.ok) {
+          $("gene-count").textContent = "—";
+          $("gene-exp").textContent = "取不到：" + ((r && r.error) || "原因未报");
+          fillGaps("gene-winners", [], "取不到 —— 原因见上");
+          if (body) body.innerHTML = '<tr><td colspan="3" class="gbt-dim">取不到</td></tr>';
+          $("gene-at").textContent = "失败";
+          return;
+        }
+        var gen = raw.genomes, exp = raw.experiments;
+        $("gene-count").textContent = (gen === undefined ? "—" : gen) + " 代";
+        $("gene-exp").textContent = "实验数：" + (exp === undefined ? "—" : exp);
+        var winners = raw.winners || [];
+        if (winners.length) {
+          var lines = [];
+          for (var i = 0; i < winners.length; i++) {
+            lines.push("最优：" + (typeof winners[i] === "string" ? winners[i] : JSON.stringify(winners[i])));
+          }
+          fillGaps("gene-winners", lines, "");
+        } else {
+          fillGaps("gene-winners", [],
+                   "最优基因：暂无（" + (gen === undefined ? "?" : gen) + " 代 / " +
+                   (exp === undefined ? "?" : exp) + " 次实验）—— 无基线不许进化，不拿默认值顶替");
+        }
+        if (body) {
+          body.innerHTML = "";
+          var prims = raw.primitives || [];
+          for (var j = 0; j < prims.length; j++) {
+            var pr = prims[j] || {};
+            var tr = document.createElement("tr");
+            var td1 = document.createElement("td"); td1.textContent = pr.key || "—";
+            var td2 = document.createElement("td"); td2.textContent = pr.source || "—";
+            var td3 = document.createElement("td");
+            var od = String(pr.on_disk || "");
+            td3.textContent = od || "—";
+            /* 盘上没有 = 灰（--gbt-off 的图例语义这里**成立**：确实没启用）；
+               有 = 绿。这是量过的状态，不是默认值。 */
+            td3.className = od === "none" ? "gbt-cell-off" : "gbt-cell-ok";
+            tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+            body.appendChild(tr);
+          }
+          if (!prims.length) {
+            body.innerHTML = '<tr><td colspan="3" class="gbt-dim">该能力未报原语表</td></tr>';
+          }
+        }
+        $("gene-boundary").textContent = "边界：" + (raw.honest_boundary || "—");
+        putAt("gene-at", d.at);
+      });
+    }
+    var geneBtn = $("btn-gene");
+    if (geneBtn) geneBtn.addEventListener("click", loadGene);
+
+    var cockpitTab = document.querySelector('.gbt-tab[data-view="cockpit"]');
+    if (cockpitTab) cockpitTab.addEventListener("click", function () {
+      /* 进页即取一次（与工具/数字人页同口径：点本页才测，不做后台轮询） */
+      if ($("cov-at").textContent === "未取") loadCoverage();
+      if ($("orph-at").textContent === "未取") loadOrphans();
+      if ($("gene-at").textContent === "未取") loadGene();
+    });
     var toolsTab = document.querySelector('.gbt-tab[data-view="tools"]');
     if (toolsTab) toolsTab.addEventListener("click", function () { loadTools(); });
     var toolsBtn = $("btn-tools-refresh");
@@ -580,7 +1311,9 @@
 
   function boot() {
     bind();
-    showView("quad");
+    /* 默认落在**编程工作台**（2026-09-23 第 45 轮改）：
+       一体式编程AI 打开就该是工作台，不是体检报告。 */
+    showView("workbench");
     if (bridge && typeof bridge.onEvent === "function") {
       bridge.onEvent(function (msg) {
         var badge = $("stream-badge");
@@ -588,11 +1321,23 @@
         if (msg && msg.kind === "health") refresh();
       });
     }
+    var applyStreamState = function (st) {
+      setBadge($("stream-badge"), st === "open" ? "ok" : "gray",
+               "实时流：" + (st === "open" ? "已接" : "未接（退到 5 s 轮询）"));
+    };
     if (bridge && typeof bridge.onStreamState === "function") {
-      bridge.onStreamState(function (st) {
-        setBadge($("stream-badge"), st === "open" ? "ok" : "gray",
-                 "实时流：" + (st === "open" ? "已接" : "未接（退到 5 s 轮询）"));
-      });
+      bridge.onStreamState(applyStreamState);
+    }
+    /* 🔴 再**拉一次现状**（2026-09-23 第 45 轮加）：推只在"状态变化"时来一次，
+       而本窗可能**建得比连接晚** ⇒ 只靠推的话，屏上会一直挂着 HTML 里写死的「未接」。
+       实测两台器都踩过：真启动预演（主进程建的窗）用"建窗后补发"治好了；
+       取证器 shots 是**它自己建的窗**，照样收不到 ⇒ 屏上又是一句「未接」。
+       ⇒ 推 + 拉都在，才不挑宿主。拉取口是**只读**的；拿不到就保持默认值，**不编状态**。 */
+    if (bridge && typeof bridge.streamState === "function") {
+      bridge.streamState().then(function (r) {
+        var st = (r && r.ok && r.data) ? r.data.state : (r && r.state);
+        if (st) applyStreamState(st);
+      }).catch(function () { /* 拉不到就算了：默认文案本身就写着"未接" */ });
     }
     refresh();
     setInterval(refresh, REFRESH_MS);

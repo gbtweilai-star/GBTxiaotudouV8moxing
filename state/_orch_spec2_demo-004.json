@@ -1,0 +1,27 @@
+{
+ "job_id": "demo-004",
+ "engine": "remotion",
+ "project": ".scratch/remotion-smoke",
+ "composition": "Hello",
+ "entry_point": "src/index.tsx",
+ "out": "out.mp4",
+ "stages": [
+  [
+   "04",
+   "frame-cache"
+  ],
+  [
+   "06",
+   "render"
+  ],
+  [
+   "07",
+   "assemble"
+  ],
+  [
+   "08",
+   "publish"
+  ]
+ ],
+ "备注": "长视频链的真单：04 与 06 已登记，07/08 未登记 ⇒ 编排器必须停在 07，不许越级"
+}

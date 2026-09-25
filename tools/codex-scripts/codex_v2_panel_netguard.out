@@ -1,0 +1,69 @@
+[NETGUARD] 探针进程 pid=10172，三层卫兵就位
+[1] 场景回执
+     面板自建实例启动                   ok             codex_ready=True
+     S1 冷启动 _run_turn           返回             见事件总线
+     S2 热路径 _run_turn           返回             见事件总线
+     S3 快捷动作 quick()            ok             C 层记账 1 条
+
+[1b] S1 事件总线尾部（看降级与吞点）
+     {"type": "status", "at": "2026-09-16T11:10:06", "codex": "ready", "detail": "{'userAgent': 'MockV2/1.0 (ledger)', 'codexHome': 'mock-home', 'platformF
+     {"type": "error", "at": "2026-09-16T11:10:06", "detail": "CodexAppServer.start_thread() got an unexpected keyword argument 'effort'", "recoverable": t
+     {"type": "thinking", "at": "2026-09-16T11:10:06", "active": false}
+     {"type": "activity", "at": "2026-09-16T11:10:06", "text": "Codex 与外部 LLM 均不可用"}
+     {"type": "error", "at": "2026-09-16T11:10:06", "detail": "CodexAppServer.start_thread() got an unexpected keyword argument 'effort'"}
+
+[2] 面板账本: 8 行（意图=3 / 真实出网=4 / C层=1）| 3772 B
+     panel.emit   | codex app-server(stdio) | recv=False | effort=None       | None  | initialize             | warn
+     panel.emit   | codex app-server(stdio) | recv=False | effort=None       | None  | initialized            | warn
+     panel.send   | codex_bridge.start_thread | recv=True  | effort='high'     | str   | -                      | accept
+     panel.send   | codex_bridge.resume_thread | recv=False | effort=None       | None  | -                      | warn
+     panel.emit   | codex app-server(stdio) | recv=False | effort=None       | None  | thread/resume          | warn
+     panel.send   | codex_bridge.start_turn | recv=True  | effort='high'     | str   | -                      | accept
+     panel.emit   | codex app-server(stdio) | recv=True  | effort='high'     | str   | turn/start             | accept
+     panel.send   | api.run_task     | recv=False | effort=None       | None  | -                      | warn
+
+[3] 判定
+     A: 面板确实把 effort='high' 传给了 start_thread（非法形参）: True
+     A: 面板把 effort='high' 传给了 start_turn（合法形参）: True
+     B: 冷启动路径 **零帧出网**（TypeError 在出网前就抛）: True thread/start 帧数=0
+     B: 热路径 turn/start 帧带 effort 出网: True 带 effort 帧数=1
+     C: 面板 quick() -> api.run_task 出口已记账: True C 行数=1
+     B: 面板出网帧与 Mock 入站帧字节指纹一致: True (4 帧)
+
+VERDICT: PASS panel.send 落地；冷启动零出网已实证、热路径 effort 正常
+[NETGUARD] 探针异常传播（已兜住）: SystemExit: 0
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\.scratch\codex_v2_mirror\panel_netguard.py", line 178, in <module>
+    runpy.run_path(_TARGET, run_name="__main__")
+  File "C:\Python310\lib\runpy.py", line 289, in run_path
+    return _run_module_code(code, init_globals, run_name,
+  File "C:\Python310\lib\runpy.py", line 96, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "C:\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\.scratch\codex_v2_mirror\panel_probe.py", line 334, in <module>
+    sys.exit(0 if allok else 1)
+SystemExit: 0
+
+
+==============================================================================
+[NETGUARD] 层 3 · OS 采样（netstat -ano -p TCP）
+  跑前全机 TCP 行数: 54
+  跑中全机 TCP 行数: 54（702 次采样，702 行原始记录）
+  跑后全机 TCP 行数: 54
+  跑前 -> 跑后 全机差异: 0 行
+  跑中窗口内新出现的 TCP 行: 0
+  归属本探针(pid=10172)或其子进程(19192) 的 TCP 行: 0
+
+[NETGUARD] 层 2 · 子进程登记
+  探针 spawn 的子进程 PID: 19192
+  收尾仍存活的子进程: 无（应为空 = 无孤儿）
+
+[NETGUARD] 层 1 · 进程内拦截
+  socket.connect / connect_ex 调用: 0
+  非回环 connect 被阻断: 0
+  socket.bind 调用: 0
+  listen / ThreadingHTTPServer 构造: 0
+  getaddrinfo(名字解析) 调用: 0 []
+
+NETGUARD VERDICT: PASS 探针零网络（未连外部 / 未绑端口 / 未起服务 / 无孤儿）

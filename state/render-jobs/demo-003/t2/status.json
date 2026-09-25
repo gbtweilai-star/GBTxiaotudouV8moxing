@@ -1,0 +1,10 @@
+{
+ "job_id": "demo-003",
+ "at": "2026-09-24T23:31:32",
+ "engine": "remotion",
+ "artifact": "pipeline/jobs/demo-003/artifacts/out.mp4",
+ "bytes": 141318,
+ "sha256": "73b2311f5bbc7de7410a660afebed1fbf6facf2ae272376a7fe608b96305a66e",
+ "worker": "t2",
+ "done": true
+}

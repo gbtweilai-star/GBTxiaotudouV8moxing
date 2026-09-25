@@ -1,0 +1,188 @@
+{
+ "未实现·真调验证": {
+  "asset_vault_freeze": {
+   "rc": 1,
+   "message": "unknown capability（没有这个能力位名）。你是不是要：asset_vault_freeze",
+   "如实报 unknown": true
+  },
+  "credential_steal": {
+   "rc": 1,
+   "message": "unknown capability（没有这个能力位名）。你是不是要：credential_steal",
+   "如实报 unknown": true
+  },
+  "data_hijack": {
+   "rc": 1,
+   "message": "unknown capability（没有这个能力位名）。你是不是要：data_hijack",
+   "如实报 unknown": true
+  },
+  "device_takeover": {
+   "rc": 1,
+   "message": "unknown capability（没有这个能力位名）。你是不是要：device_takeover",
+   "如实报 unknown": true
+  },
+  "keylogger": {
+   "rc": 1,
+   "message": "unknown capability（没有这个能力位名）。你是不是要：keylogger",
+   "如实报 unknown": true
+  },
+  "onboarding_gate": {
+   "rc": 1,
+   "message": "unknown capability（没有这个能力位名）。你是不是要：onboarding_gate",
+   "如实报 unknown": true
+  },
+  "paywallbuster": {
+   "rc": 1,
+   "message": "unknown capability（没有这个能力位名）。你是不是要：paywallbuster",
+   "如实报 unknown": true
+  },
+  "pentest": {
+   "rc": 1,
+   "message": "unknown capability（没有这个能力位名）。你是不是要：pentest",
+   "如实报 unknown": true
+  },
+  "remote_domain": {
+   "rc": 1,
+   "message": "unknown capability（没有这个能力位名）。你是不是要：remote_domain",
+   "如实报 unknown": true
+  },
+  "screen_sniff": {
+   "rc": 1,
+   "message": "unknown capability（没有这个能力位名）。你是不是要：screen_sniff",
+   "如实报 unknown": true
+  },
+  "social_eng": {
+   "rc": 1,
+   "message": "unknown capability（没有这个能力位名）。你是不是要：social_eng",
+   "如实报 unknown": true
+  }
+ },
+ "safe=False·静态核": {
+  "audio_extract": {
+   "域": "video",
+   "desc": "从视频里取出声音（本机 ffmpeg，**零出网**）：probe/tracks 读流与音轨（只读）；extract 真出音频件（mp3/aac/m4a/wav/flac/ogg/opus/wma 八种，可切段/调音量/响度归一）。**产出",
+   "required_params": []
+  },
+  "audio_mix": {
+   "域": "video",
+   "desc": "混音与母带（本机 ffmpeg，**零出网**）：`mix` 多轨合成（amix，逐路音量，显式 normalize=0）；`master` 响度归一（**两遍法 loudnorm**：先量后施加，第一遍的四个测量值随结果返回）。响度标准表",
+   "required_params": []
+  },
+  "code_patch": {
+   "域": "tools",
+   "desc": "**改代码的唯一过门入口**（2026-09-23 接）：此前 agent 直接 edit/write 落盘 ⇒ **不过门、没审计、没信封、没改前改后凭据**。三原语 dry_run（**默认，只算不写**）/ apply（落盘，挂 fi",
+   "required_params": [
+    "path",
+    "find",
+    "replace"
+   ]
+  },
+  "edit_pipeline": {
+   "域": "video",
+   "desc": "剪辑引擎（蒸馏剪映时间线语义）：轨道→片段→目标/源时间区间→变速/音量/转场/文本，真渲染 1080x1920 成片（ffmpeg + libass 烧字幕）或导出剪映草稿；写面自收窄到 projects/·outputs/·.scrat",
+   "required_params": []
+  },
+  "git_write": {
+   "域": "tools",
+   "desc": "**版本库写面**（只两个 op，且**永远要点名路径**）：stage（`git add -- <paths>`）· commit（**pathspec-limited**：`git commit -m … -- <paths>`，只提交",
+   "required_params": [
+    "paths",
+    "message"
+   ]
+  },
+  "media_license": {
+   "域": "video",
+   "desc": "素材许可账（三方向流程台「家规第 2 条：没有许可的素材不许进成品格」的数据源）：`register` 逐件登记（**现算 sha256** + 出处 + 授权 + 时间）、`unregister` 撤销（**必须写 why**，留档在 r",
+   "required_params": []
+  },
+  "media_publish": {
+   "域": "video",
+   "desc": "三方向**发布到赚钱平台**的准备与授权门：`platforms <方向>` 读平台口径（**音乐复用能力位 `music_publishing` 的 13 平台，不另造**；短视频 7 / 电影 6 为内置候选表，**全部标「未核实」**",
+   "required_params": []
+  },
+  "media_run": {
+   "域": "video",
+   "desc": "三方向自动化工作流**执行器**：一次调用把一条链从头走到尾，每步落真件 + 同批登记许可。链取自 `media_pipeline.KINDS`（music: lyrics→arrangement→audio→master→export ·",
+   "required_params": []
+  }
+ },
+ "改状态·不探（红线）": {
+  "devour_pulse": {
+   "域": "devour",
+   "desc": "吞天：完整认知循环（吞噬→反思→消化→重组→进化）",
+   "required_params": [],
+   "为什么不探": "它在 preflight.state_changing_kinds() 里 ⇒ 探它就可能真改框架状态"
+  },
+  "devour_reflect": {
+   "域": "devour",
+   "desc": "吞天：反思（回顾吞噬历史学习模式，发现弱能力与重组机会）",
+   "required_params": [],
+   "为什么不探": "它在 preflight.state_changing_kinds() 里 ⇒ 探它就可能真改框架状态"
+  },
+  "lr_submit": {
+   "域": "longrun",
+   "desc": "长程任务层：提交任务（非LLM验收+重试+停滞升级，跨进程可续）",
+   "required_params": [],
+   "为什么不探": "它在 preflight.state_changing_kinds() 里 ⇒ 探它就可能真改框架状态"
+  },
+  "lr_tick": {
+   "域": "longrun",
+   "desc": "长程任务层：推进任务图（执行→验收→完成/重试/停滞）",
+   "required_params": [],
+   "为什么不探": "它在 preflight.state_changing_kinds() 里 ⇒ 探它就可能真改框架状态"
+  },
+  "root_fix": {
+   "域": "system",
+   "desc": "根治环：症状五问诊断/补丁债量化/根治铁律——她自己必须懂的根源追踪纪律",
+   "required_params": [],
+   "为什么不探": "它在 preflight.state_changing_kinds() 里 ⇒ 探它就可能真改框架状态"
+  },
+  "sched_define": {
+   "域": "engine",
+   "desc": "定时触发器：定义调度（工作流 + 间隔），无人值守自动执行",
+   "required_params": [
+    "name",
+    "workflow",
+    "every_seconds"
+   ],
+   "为什么不探": "它在 preflight.state_changing_kinds() 里 ⇒ 探它就可能真改框架状态"
+  },
+  "sched_tick": {
+   "域": "engine",
+   "desc": "定时触发器：扫描到期调度并执行（可由循环/计划任务驱动）",
+   "required_params": [],
+   "为什么不探": "它在 preflight.state_changing_kinds() 里 ⇒ 探它就可能真改框架状态"
+  },
+  "wf_cache_clear": {
+   "域": "engine",
+   "desc": "万能插：清空传输缓存（同输入复用的节点结果缓存）",
+   "required_params": [],
+   "为什么不探": "它在 preflight.state_changing_kinds() 里 ⇒ 探它就可能真改框架状态"
+  },
+  "wf_define": {
+   "域": "engine",
+   "desc": "万能插执行引擎：定义工作流（DAG，校验环/依赖/能力合法性）",
+   "required_params": [
+    "name",
+    "nodes"
+   ],
+   "为什么不探": "它在 preflight.state_changing_kinds() 里 ⇒ 探它就可能真改框架状态"
+  },
+  "wf_resume": {
+   "域": "engine",
+   "desc": "万能插执行引擎：从运行记录断点续跑（复用已完成节点，只重跑未完成的）",
+   "required_params": [
+    "run_id"
+   ],
+   "为什么不探": "它在 preflight.state_changing_kinds() 里 ⇒ 探它就可能真改框架状态"
+  },
+  "wf_run": {
+   "域": "engine",
+   "desc": "万能插执行引擎：分层并行执行工作流，节点结果如实落盘",
+   "required_params": [
+    "name"
+   ],
+   "为什么不探": "它在 preflight.state_changing_kinds() 里 ⇒ 探它就可能真改框架状态"
+  }
+ },
+ "口径": "未实现按定义无副作用⇒真调验诚实性；safe=False 只静态核；改状态**绝不调用**——宁可账上留缺口，也不碰会改状态的位"
+}

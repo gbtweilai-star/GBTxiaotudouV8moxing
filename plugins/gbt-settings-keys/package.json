@@ -1,0 +1,21 @@
+{
+  "name": "gbt-settings-keys",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GBT小土豆V8 · 设置·密钥：把本地免费大模型池（FreeLLMAPI）的密钥配置装进 DSH 的「设置」里（只走公开扩展位，不改 DSH 源码，不占 conversation.view 的位）",
+  "type": "module",
+  "main": "lib/client.js",
+  "exports": {
+    ".": "./lib/client.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-slots"
+      ],
+      "platform": "web"
+    }
+  }
+}

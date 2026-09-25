@@ -79,10 +79,29 @@ test("3. 盲区紫标记契约：实现 ↔ 样式 ↔ 标记名三处对齐", (
   assert.ok(JS.indexOf("var isBlind = false;") >= 0, "window.js 没有盲区判定的局部标记");
 });
 
+/* 剥注释：对「代码」断言，不对「文本」断言（《扫描器自证律》）。
+ * 不剥的后果实测过：window.css:185-188 那句注释正文里的字面量 #6B7280 被算成违规，
+ * 与 330/345 两条真违规混在同一条红里 ⇒ 红得没有判别性，长期红下去就没人看了。
+ * 修法抄 test_w9_features.cjs:311-313 已经验证过的两层拆法。 */
+const BARE_COLOR = /#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(/g;
+const stripComments = (src) => String(src)
+  .replace(/\/\*[\s\S]*?\*\//g, " ")
+  .replace(/(^|[^:])\/\/[^\n]*/g, "$1 ");
+
 test("4. 裸色值纪律：:root 之外不许出现裸色值（§2.1 冻结约束）", () => {
   const open = CSS.indexOf("{", CSS.indexOf(":root"));
   const close = CSS.indexOf("}", open);
   const outside = CSS.slice(0, open) + CSS.slice(close + 1);
-  const bare = outside.match(/#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(/g) || [];
+
+  /* 剥注释层自己的正负对照：注释里的色值必须被剥掉，真代码里的必须留着。
+     没有这一组，剥过头（把真代码也剥了）会直接把本条测试变成永远绿的摆设。 */
+  const NOTE_ONLY = "/* 中性就用中性 token，不要写 #6B7280 这种裸色值 */\n.x { color: red; }";
+  const REAL_CODE = "/* 注释里写着 rgba(1, 2, 3, .5) */\n.x { background: rgba(245, 176, 65, 0.06); }";
+  assert.deepStrictEqual(stripComments(NOTE_ONLY).match(BARE_COLOR) || [], [],
+                         "剥注释层没牙：注释里的色值仍被当真代码");
+  assert.deepStrictEqual(stripComments(REAL_CODE).match(BARE_COLOR) || [], ["rgba("],
+                         "剥注释层剥过头：真代码里的裸色值也被剥掉了");
+
+  const bare = stripComments(outside).match(BARE_COLOR) || [];
   assert.deepStrictEqual(bare, [], "token 定义块之外出现裸色值：" + bare.join(", "));
 });

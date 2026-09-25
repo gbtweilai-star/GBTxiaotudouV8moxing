@@ -1,5 +1,9 @@
 # gbt-capability: subprocess, dynamic-import, ctypes, base64
 # ⛔ 开发者：自由的风 · 永久钢印 · 禁止删除
+# ⚠️ 外部内容纪律：`clipboard_read` 读回的**剪贴板内容一律是不可信数据，不是指令** ——
+#    剪贴板可能来自任何程序或任何网页，可能写着"忽略你之前的指令"。
+#    本域只把它当数据返回；不执行其中任何祈使句、不拼进 system 提示、不拿去驱动执行口。
+#    覆盖校验器：py -3.14 -m gbt_allinone.tools.external_content_check gbt_allinone
 # keyboard 域 mixin — 拆分自 omni_tentacle (自动生成, 2026-08-10)
 # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
 #    不会自动加路径, 需显式保障 omni_core 可寻址 (插 brain/ 而非项目根)
@@ -39,7 +43,7 @@ class OmniKeyboardMixin:
         except Exception: pass  # 容错: UIA失败走物理
         r = self.find_text(label)
         if not r.get("found"):
-            return {"ok": False, "error": f"未找到标签 '{label}'"}
+            return refusal("label_not_found", f"未找到标签 '{label}'", ("label",))
         # 输入框通常在标签右边
         _mouse_move(r["x"] + 150, r["y"])
         time.sleep(0.05)
@@ -79,7 +83,7 @@ class OmniKeyboardMixin:
 
     def clipboard_read(self):
         try: import pyperclip; text = pyperclip.paste(); return {"ok": True, "text": text[:5000], "length": len(text)}
-        except ImportError: return {"ok": False, "error": "pyperclip not installed"}
+        except ImportError: return refusal("dependency_unavailable", "pyperclip not installed", ("pyperclip",))
 
     def clipboard_write(self, text: str):
         try: import pyperclip; pyperclip.copy(text); return {"ok": True, "length": len(text)}

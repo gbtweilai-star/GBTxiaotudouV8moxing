@@ -48,15 +48,30 @@ def _remote_cmd():
     """remote 设备启动命令：优先 node 直跑（同步输出到文件）+ 品牌注入 preload，回退 npx。
 
     品牌：preload 覆写 os.hostname()，让设备以 GBT小土豆V8 身份上报云端（见 dc_brand_preload.js）。
+
+    ⚠️ 2026-09-19 修（回退路径缺品牌注入 · 由单测逐条追根挖出）：
+    旧回退直接返回 `REMOTE_CMD`（`npx -y … remote`）—— **回退路径完全没有品牌注入**，
+    而 README 承诺"remote 设备通过 preload 注入品牌"。也就是说：**任何没装本地入口的机器**，
+    设备会以原名上报，承诺当场失效；而这条红一直被归在"环境"里没人单独验。
+    修法：回退时也走 **node 直跑 npx 的 JS 入口**，从而能把 `--require <preload>` 注进去 ——
+    **回退路径与主路径同权**（坑册第 16 条）。
+    找不到 npx 的 JS 入口时才退回原样，且此时是**真的没有办法**，不是懒得做。
     """
     import shutil
     entry = _resolve_dc_entry()
     node = shutil.which("node")
+    preload = Path(__file__).resolve().parent / "dc_brand_preload.js"
     if entry and node:
-        preload = Path(__file__).resolve().parent / "dc_brand_preload.js"
         if preload.exists():
             return [node, "--require", str(preload), entry, "remote"]
         return [node, entry, "remote"]
+    # 回退：用 node 直跑 npx 的 JS 入口，好把品牌 preload 一起注进去
+    if node and preload.exists():
+        npx = shutil.which("npx") or shutil.which("npx.cmd")
+        if npx:
+            npx_js = Path(npx).resolve().parent / "node_modules" / "npm" / "bin" / "npx-cli.js"
+            if npx_js.is_file():
+                return [node, "--require", str(preload), str(npx_js)] + list(REMOTE_CMD[1:])
     return list(REMOTE_CMD)
 
 # 工具清单按用途归类（便于人读，不是能力白名单——能力口径仍以服务端 tools/list 为准）

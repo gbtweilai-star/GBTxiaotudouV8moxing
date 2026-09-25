@@ -1,0 +1,12 @@
+{
+ "编号": "05",
+ "模块": "generator",
+ "运行地": "cloud",
+ "依赖编号": [
+  "03"
+ ],
+ "版本": "2026-09-24.1",
+ "状态": "已验",
+ "证据": "py -3.14 tools/codex-scripts/generator.py providers => 5 个 provider 全缺凭据（环境变量未设 · 保险箱 7 个 .dpapi 无一是生成端）; gen demo-gen --provider fal => 凭据闸拦住 rc=3 needs_key; 注入有 key 未确认花费 => 花费闸 rc=4; 自检 8/8。诚实范围：验的是【双源凭据闸 + 花费闸 + needs_key 如实报】，**不是出图能力**（调用姿势未接线）",
+ "at": "2026-09-25T00:17:20"
+}

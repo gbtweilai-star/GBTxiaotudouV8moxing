@@ -1,0 +1,44 @@
+{
+ "at": "2026-09-25T02:32:07",
+ "本次探位数": 1,
+ "合计": {
+  "✅ 通": 1,
+  "⛔ 痛": 0,
+  "🟡 需参数·未探": 0,
+  "🔒 被门拒·缺授权": 0
+ },
+ "运行期排除复核": "待探 ∩ (改状态 ∪ safe=False) = ∅ ✅",
+ "被排除": {
+  "改状态": [
+   "devour_pulse",
+   "devour_reflect",
+   "lr_submit",
+   "lr_tick",
+   "root_fix",
+   "sched_define",
+   "sched_tick",
+   "wf_cache_clear",
+   "wf_define",
+   "wf_resume",
+   "wf_run"
+  ],
+  "safe=False": [
+   "audio_extract",
+   "audio_mix",
+   "code_patch",
+   "edit_pipeline",
+   "git_write",
+   "media_license",
+   "media_publish",
+   "media_run"
+  ]
+ },
+ "逐位": [
+  {
+   "kind": "cross_scan",
+   "态": "✅ 通",
+   "秒": 445.9,
+   "读数尾": "ng\\Python\\Python314\\site-packages\\comtypes\\gen' INFO:dxcam.dxcam:Frame buffer build(start): 1920x1080 c=3 n=8."
+  }
+ ]
+}

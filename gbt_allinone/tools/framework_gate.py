@@ -68,13 +68,27 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 #   G2 .bat：启动器改一行就是行为变化（holo_pet 4 个 + potato_pet 2 个）；
 #   G3 .json：被代码真读的"单一真相源"（dd_squad/toolchain_manifest.json）——
 #      放宽成"全 json"会把 store/state 全卷进来，所以走**显式单文件**（见 _WATCH_EXTRA_FILES）。
+# R-H249（Owner 2026-09-20 四类拍板 · 由"门盲区清单"长出的一刀）：
+#   ① 纳入 `.ps1`：10 个真部署脚本就在 gbt_allinone/deploy/（backup / healthcheck /
+#      install_service_windows …），改一行就换行为 —— 与 R-H176 的 `.bat` 缺口同族；
+#   ② 纳入**根级行为面**：根级 `.md`（设计流程指令与 AGENTS.md 同级）+ 根级 `.bat` / `.py`
+#      启动器（`deploy-app-one-click.bat` → `deploy_app_oneclick.py` 这一对就是真入口）。
+#   ③ 图纸面**显式不纳**：`gbt_allinone/docs/*.md` 是设计文档/报告，改了不改运行时行为 ⇒
+#      不占门的监视成本（但走 git / 待落刀登记，不是"没人管"）。声明见 docs/门盲区清单.md。
+#   判据始终一句：**凡是"改了它，系统行为就会变"的源码面，都必须在可见范围内。**
 _WATCH_DIRS = ("gbt_allinone", "holo_pet", "holo_pet_w3", "potato_pet")
-_WATCH_SUFFIX = (".py", ".js", ".cjs", ".html", ".css", ".bat")
+_WATCH_SUFFIX = (".py", ".js", ".cjs", ".html", ".css", ".bat", ".ps1")
 # 显式单文件：不在 _WATCH_DIRS 里、也不吃后缀规则，但**被代码真读**、改了行为就变。
 _WATCH_EXTRA_FILES = (".cluster/dd_squad/toolchain_manifest.json",)
 # 根级**指令文件**：它们改一个字就能改系统行为，比源码更该留账（R-H99 第二刀）。
 # 不含 USER.md / MEMORY.md —— 那两份是主人自己的记忆载体，另有归属规则，不属于"框架自改"。
 _WATCH_ROOT_FILES = ("AGENTS.md", "HEARTBEAT.md", "CHARTER.md", "SOUL.md", "CODING_DISCIPLINE.md")
+# R-H249：根级行为面**按后缀**收（不再只靠名字白名单）。
+# 依据：根级那 13 个设计流程指令与 AGENTS.md 同级（运行时被读），
+#       根级 .bat/.py 是启动器（deploy-app-one-click.bat → deploy_app_oneclick.py）。
+_WATCH_ROOT_SUFFIX = (".md", ".bat", ".py")
+# 主人自己的记忆载体：**显式不纳**（另有归属规则），不是"忘了纳"。
+_WATCH_ROOT_EXCLUDE = ("USER.md", "MEMORY.md")
 # 依赖树 / 缓存 / 产物 / 版本库：不是源码，改了也不该红（宁可漏报噪声，不许误报）
 _SKIP_DIRS = {
     "__pycache__", "node_modules", ".git", ".pylibs", "store", ".scratch",
@@ -82,6 +96,57 @@ _SKIP_DIRS = {
     # R-H176 建议落地：`.backups` 从"恰好没纳"改成"**显式声明不纳**"（免得以后被顺手纳进来）
     ".backups",
 }
+
+# 🔴 R-H466 §61：门盲区**台账** —— §60 说「门必须知道自己看不见什么」；
+#    §61 说「既然知道，就要把**盲区清单登记在册**」。
+#    盲区面 = **图纸面**（gbt_allinone/docs/**.md）+ **记忆面**（memory/**.md）
+#      —— 它们**显式不纳监视**（改了不改运行时行为），但**改了要留账**。
+#    guard（机械）：close 时若 `changed_files == 0` 而盲区面**有改动** ⇒ 追加一条盲区日志；
+#      同类累计 ⇒ 进「待纳入 / 显式不纳」判定（依据：§51「复发两次要事前拦」在门侧的应用）。
+#    ⚠️ 本扫描**只看 mtime、不读内容**（不碰写路径、不碰 store）。
+_BLINDSPOT_DIRS = ("gbt_allinone/docs", "memory")
+_BLINDSPOT_SUFFIX = (".md",)
+
+
+def _ts(iso: str) -> float:
+    """把门自己写的 ISO 时间串换成时间戳（解析不了就返回 0 = 不筛）。"""
+    try:
+        return time.mktime(time.strptime(str(iso), "%Y-%m-%dT%H:%M:%S"))
+    except Exception:  # noqa: BLE001
+        return 0.0
+
+
+def blindspot_scan(root: Path, since_ts: float) -> dict:
+    """扫**盲区面**里比 since_ts 新的文件（只 stat，不读内容）。返回读数，不做判定。"""
+    hits, scanned = [], 0
+    for top in _BLINDSPOT_DIRS:
+        base = root / top
+        if not base.is_dir():
+            continue
+        for dirpath, dirnames, filenames in os.walk(base):
+            dirnames[:] = [d for d in dirnames if d not in _SKIP_DIRS]
+            for name in filenames:
+                if not name.lower().endswith(_BLINDSPOT_SUFFIX):
+                    continue
+                p = Path(dirpath) / name
+                try:
+                    mt = p.stat().st_mtime
+                except OSError:
+                    continue
+                scanned += 1
+                if since_ts and mt > since_ts:
+                    hits.append(p.relative_to(root).as_posix())
+    return {"scanned": scanned, "changed": len(hits), "samples": sorted(hits)[:10]}
+
+
+def _blindspot_log(store: Path) -> Path:
+    return store / "blindspot_log.jsonl"
+
+
+def _append_jsonl(path: Path, row: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
 def _default_store() -> Path:
@@ -105,6 +170,13 @@ def _watched(root: Path) -> list:
         p = root / name
         if p.is_file():
             out.append(p)
+    # R-H249：根级行为面按后缀收（.md / .bat / .py）；主人记忆载体显式排除
+    if root.is_dir():
+        for p in sorted(root.iterdir()):
+            if not p.is_file() or p.name in _WATCH_ROOT_EXCLUDE:
+                continue
+            if p.name.lower().endswith(_WATCH_ROOT_SUFFIX):
+                out.append(p)
     # R-H176：显式单文件（G3）——路径写死，不受后缀规则与目录范围影响
     for rel in _WATCH_EXTRA_FILES:
         p = root / rel
@@ -241,6 +313,13 @@ def cmd_close(args) -> int:
                           "error": "找不到护照 " + args.id}, ensure_ascii=False, indent=1))
         return 2
 
+    # 🔴 F39 根治：先把「相对基线的偏差」算出来 —— 它是**认领范围的来源**，而范围必须
+    #    在**校验阶段**就参与判决（不能像原来那样等到写库时才第一次出现）。
+    after = fingerprint(Path(args.root).resolve())
+    base_files = (_load(_baseline_path(store)).get("files") or {})
+    ref = base_files or (rec.get("before") or {})
+    pending = _diff(ref, after)
+
     problems = []
     evidence = [str(e).strip() for e in (args.evidence or []) if str(e).strip()]
     if not evidence:
@@ -259,9 +338,23 @@ def cmd_close(args) -> int:
             stamp = {"path": str(sp), "sha256": _sha(sp), "at": _now()}
             data = _load(sp)
             if isinstance(data, dict) and data:
-                stamp["four_tuple"] = {k: data.get(k) for k in
-                                       ("python", "store", "comparability", "identity")
-                                       if k in data}
+                # 🔴 2026-09-23 第 51 轮修（**"四元组"少了两元却一声不响**）：
+                #    这里原来只写 `if k in data` —— 而印章文件里**没有** `python`/`comparability`
+                #    这两个键（实测盘上 52 个印章，四元组齐的 **0 个**），
+                #    于是护照里的"四元组"长期只记到 **2/4**，**没有任何提示**。
+                #    ⇒ 取到的照旧记；**取不到的必须列出来**（缺项 = 未知，不是"没有这一项"）。
+                _want = ("python", "store", "comparability", "identity")
+                stamp["four_tuple"] = {k: data.get(k) for k in _want if k in data}
+                _miss = [k for k in _want if k not in data]
+                if _miss:
+                    stamp["four_tuple_missing"] = _miss
+                    stamp["four_tuple_note"] = (
+                        "印章里**没有**这几个键：%s ⇒ 四元组只记到 %d/4。"
+                        "缺项是**未知**，不是『这一项没问题』。"
+                        % ("、".join(_miss), len(stamp["four_tuple"])))
+                    # 只**报**、不阻断：把它塞进 problems 会改变关门判决（那是主人的口径决定）。
+                    print("[gate] ⚠️ 印章四元组不全：缺 %s（只记到 %d/4）"
+                          % ("、".join(_miss), len(stamp["four_tuple"])), file=sys.stderr)
     elif not (args.no_stamp_reason or "").strip():
         problems.append("缺回归印章：给 --stamp <印章.json>，或显式写 --no-stamp-reason 『为什么这轮没法盖章』")
 
@@ -281,6 +374,42 @@ def cmd_close(args) -> int:
         if len(rv_labels) < len(reviews):
             problems.append("复核缺 checker 标签：每条复核都要以 `<checker>: ` 开头")
 
+    # ── 🔴 认领范围闸（F39 根治 · 本文件曾经最大的假绿来源）────────────────────────
+    # 病史：`changed` 由 `_diff(整份基线, after)` 得出 ⇒ 护照**没有范围这个概念**，
+    #      关一张只讲 A 的护照会把 A+B+C…**整批**记进它的账。
+    #      F31 认领 20 个（19 个早于 opened_at）· F39 理由写 2 个、实际 22 个 —— **两次都因此把红洗成绿**。
+    # 修法：范围必须在**判决阶段**就落地，而不是事后解释。
+    _root_res = Path(args.root).resolve()
+    declared = []
+    for _d in (getattr(args, "files", None) or []):
+        _d = str(_d).strip()
+        if not _d:
+            continue
+        _p = Path(_d)
+        if _p.is_absolute():
+            try:
+                _d = str(_p.resolve().relative_to(_root_res))
+            except Exception:  # noqa: BLE001
+                pass
+        declared.append(_d.replace("\\", "/"))
+    if declared:
+        _not_pending = [d for d in declared if d not in pending]
+        if _not_pending:
+            problems.append(
+                "--files 里有文件**相对基线没有变动**（或路径写错）：%s。"
+                "认领一个没变的文件 = 账目虚增，一律拒。" % _not_pending)
+        claimed = {k: v for k, v in pending.items() if k in set(declared)}
+    else:
+        claimed = dict(pending)
+        if len(pending) > 1:
+            problems.append(
+                "**认领范围未声明**：当前相对基线有 %d 个文件变动，"
+                "必须用 --files 逐个列出你要认领的那些（可重复给）。"
+                "不带 --files 会把 %d 个文件**整批**记进这一张护照 —— "
+                "「我只改了这个」在账里就表达不出来了，一张理由不符的护照足以把红洗成绿。"
+                % (len(pending), len(pending)))
+    unclaimed = sorted(set(pending) - set(claimed))
+
     if problems:
         print(json.dumps({"ok": False, "stage": "close", "id": args.id, "blocked": True,
                           "problems": problems, "reason_code": "passport_incomplete",
@@ -288,26 +417,41 @@ def cmd_close(args) -> int:
                          ensure_ascii=False, indent=1))
         return 2
 
-    after = fingerprint(Path(args.root).resolve())
-    # 认领范围 = **相对基线的偏差**（不是相对"开护照那一刻"）。
-    # 实测教训（R-H99 自己的用例当场抓出）：真实顺序常常是"先改、后想起开护照"，
-    # 若按 open→close 算，这种改动就认领不到 ⇒ verify 永远红，门变成摆设。
-    base_files = (_load(_baseline_path(store)).get("files") or {})
-    ref = base_files or (rec.get("before") or {})
+    # 认领范围 = **显式声明的那几个**（不再等于"所有偏差"）。
+    # ⚠️ 保留 R-H99 的教训：范围仍以**相对基线的偏差**为基准（不是"开护照那一刻"），
+    #    因为真实顺序常常是"先改、后想起开护照"，按 open→close 算会认领不到 ⇒ verify 永远红。
     rec.update({"closed_at": _now(), "after": after, "evidence": evidence,
                 "review": reviews,
                 "no_review_reason": (args.no_review_reason or "").strip(),
                 "rollback": rollback, "stamp": stamp,
                 "no_stamp_reason": (args.no_stamp_reason or "").strip(),
                 "decision": (args.decision or "").strip(),
-                "changed": _diff(ref, after),
+                "changed": claimed,
+                "declared_scope": declared,
+                "claimed_all_pending": not declared,
+                "pending_at_close": sorted(pending),
+                "unclaimed_after_close": unclaimed,
                 "changed_ref": "baseline" if base_files else "open_state",
                 "open_diff": _diff(rec.get("before") or {}, after)})
+    # 🔴 R-H466 §61：**盲区台账** —— changed_files==0 但有实际改动时，必须留账
+    blindspot = blindspot_scan(Path(args.root).resolve(), _ts(rec.get("opened_at")))
+    rec["blindspot"] = blindspot
+    logged = None
+    if not rec["changed"] and blindspot["changed"] > 0:
+        logged = {"at": _now(), "id": rec.get("id"), "label": rec.get("label") or "",
+                  "changed_files": 0, "blindspot_changed": blindspot["changed"],
+                  "scanned": blindspot["scanned"], "samples": blindspot["samples"],
+                  "rule": "R-H466 §61：changed_files=0 但盲区面（图纸/记忆）有改动 ⇒ 记一条"}
+        _append_jsonl(_blindspot_log(store), logged)
     _save(path, rec)
     print(json.dumps({"ok": True, "stage": "close", "id": args.id,
                       "changed_files": len(rec["changed"]),
                       "changed": sorted(rec["changed"])[:20],
-                      "has_stamp": bool(stamp), "closed_at": rec["closed_at"]},
+                      "认领方式": ("显式 --files 声明" if declared else "未声明（变动只有 1 个，恰好认领它）"),
+                      "声明范围": declared or None,
+                      "**本次未认领**（≠ 无人认领，别的护照可能已兜着它 —— 以 verify 为准）": unclaimed,
+                      "has_stamp": bool(stamp), "closed_at": rec["closed_at"],
+                      "blindspot": blindspot, "blindspot_logged": bool(logged)},
                      ensure_ascii=False, indent=1))
     return 0
 
@@ -326,6 +470,7 @@ def cmd_verify(args) -> int:
     changed = _diff(base["files"], current)
     closed = [p for p in _passports(store) if p.get("closed_at") and p.get("after")]
     findings = []
+    covered_by = {}
     for rel, info in sorted(changed.items()):
         owners = [p for p in closed if rel in (p.get("changed") or {})]
         fresh = [p for p in owners if (p.get("after") or {}).get(rel) == info["after"]]
@@ -336,10 +481,33 @@ def cmd_verify(args) -> int:
             findings.append({"file": rel, "reason_code": "stale_passport",
                              "detail": "护照之后又改过；涉及护照 "
                                        + str(sorted(p["id"] for p in owners))})
+        # 🔴 F39 加固：**分层输出** —— 不只给红绿，还要给出"这个文件是被谁的哪条理由认领的、
+        #    那张护照当时有没有声明范围"。读者据此自己判这个 green 值不值得采信。
+        covered_by[rel] = {
+            "现状": "已覆盖且新鲜" if fresh else ("被覆盖但已过期" if owners else "无护照认领"),
+            "认领护照": [{"id": p["id"], "reason": (p.get("reason") or "")[:90],
+                          "声明范围": (p.get("declared_scope") or "**未声明 · 整批认领**"),
+                          "整批认领": bool(p.get("claimed_all_pending")),
+                          "新鲜": p in fresh} for p in owners],
+        }
+    # 历史遗留：**没声明范围却认领了多个文件**的护照 —— 这些是"范围含糊"的账，单独点名。
+    # 🔴 加固（2026-09-25 实测抓到自己的洞）：老护照里**根本没有** `declared_scope` /
+    #    `claimed_all_pending` 这两个键（实测 fhnb：两键皆 None）。第一版探测器写成
+    #    `p.get("claimed_all_pending") and …` ⇒ **历史那批一个都抓不到**，而它们恰恰就是
+    #    F31/F39 那一批。改成按**事实**判：**没有声明范围** 且 认领了 >1 个文件 ⇒ 含糊。
+    overbroad = sorted(p["id"] for p in closed
+                       if (not p.get("declared_scope")) and len(p.get("changed") or {}) > 1)
     out = {"ok": not findings, "stage": "verify",
            "verdict": "green" if not findings else "red",
            "baseline_at": base.get("at"), "baseline_files": base.get("count"),
            "changed_files": len(changed), "passports_closed": len(closed),
+           "已认领且新鲜": sum(1 for v in covered_by.values() if v["现状"] == "已覆盖且新鲜"),
+           "未认领": sum(1 for v in covered_by.values() if v["现状"] == "无护照认领"),
+           "认领但已过期": sum(1 for v in covered_by.values() if v["现状"] == "被覆盖但已过期"),
+           "covered_by": covered_by,
+           "范围含糊的旧护照": overbroad,
+           "范围含糊说明": ("上面这些护照**没声明范围**却认领了多个文件（F31/F39 同源）—— "
+                            "它们的账**可能与理由不符**，读到 green 时请对照 covered_by 自己判。"),
            "stamp_waived_passports": [p["id"] for p in closed if not p.get("stamp")],
            "review_waived_passports": [p["id"] for p in closed if not (p.get("review") or [])],
            "findings": findings,
@@ -363,6 +531,35 @@ def cmd_status(args) -> int:
     print(json.dumps({"ok": True, "stage": "status", "store": str(store),
                       "baseline_at": base.get("at"), "baseline_files": base.get("count"),
                       "passports": rows, "count": len(rows)}, ensure_ascii=False, indent=1))
+    return 0
+
+
+def cmd_blindspots(args) -> int:
+    """§61：门盲区**台账**（只读）—— 每次「changed_files=0 但盲区面有改动」都在这里。"""
+    store = Path(args.store).resolve()
+    log = _blindspot_log(store)
+    rows = []
+    if log.exists():
+        for line in log.read_text(encoding="utf-8", errors="replace").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rows.append(json.loads(line))
+            except Exception:  # noqa: BLE001
+                continue
+    by_suffix = {}
+    for r in rows:
+        for one in (r.get("samples") or []):
+            ext = Path(one).suffix.lower() or "(无后缀)"
+            by_suffix[ext] = by_suffix.get(ext, 0) + 1
+    print(json.dumps({"ok": True, "stage": "blindspots", "count": len(rows),
+                      "by_suffix": by_suffix, "recent": rows[-5:],
+                      "watched_suffix": list(_WATCH_SUFFIX),
+                      "blindspot_dirs": list(_BLINDSPOT_DIRS),
+                      "note": "§61：门必须**知道自己看不见什么**，并且**既然知道就要登记在册**；"
+                              "同类累计 ⇒ 进「待纳入 / 显式不纳」判定（依据 §51）"},
+                     ensure_ascii=False, indent=1))
     return 0
 
 
@@ -394,6 +591,11 @@ def build_parser() -> argparse.ArgumentParser:
     s3.add_argument("--no-review-reason", default="",
                     help="确无独立复核时显式写原因（verify 会把它当豁免列出来）")
     s3.add_argument("--rollback", default="")
+    s3.add_argument("--files", action="append", default=[],
+                    help="🔴 显式声明本护照**认领哪些文件**（可重复）。"
+                         "不声明时：变动只有 1 个文件才允许（等于恰好认领它）；"
+                         "变动 >1 个文件时**必须**逐个列出 —— 否则一张理由不符的护照"
+                         "会把整批未记账变动洗成『有账』（F31/F39 同源事故）")
     s3.add_argument("--stamp", default="")
     s3.add_argument("--no-stamp-reason", default="")
     s3.add_argument("--decision", default="")
@@ -405,6 +607,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     s5 = sub.add_parser("status", help="看基线 + 护照清单（只读）")
     s5.set_defaults(func=cmd_status)
+
+    s6 = sub.add_parser("blindspots", help="§61 门盲区台账：changed_files=0 但有改动的每一次（只读）")
+    s6.set_defaults(func=cmd_blindspots)
     return ap
 
 

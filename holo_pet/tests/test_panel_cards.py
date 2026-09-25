@@ -33,6 +33,29 @@ class PanelCardsTests(unittest.TestCase):
         self.assertIn("未核实", self.block)
         self.assertIn('id="quick-strip"'.replace('id=', 'class='), PAGE.read_text(encoding="utf-8"))
 
+    def test_catalog_is_passed_into_observer_rendering(self):
+        """能力目录必须显式传入后续渲染链，不能依赖不存在的全局 catalog。"""
+        self.assertIn("async function setupObserverAndTree(catalog)", self.src)
+        self.assertIn("return catalog;", self.src)
+        self.assertIn("const catalog = await setupCapabilityCatalog();", self.src)
+        self.assertIn("await setupObserverAndTree(catalog);", self.src)
+        self.assertNotIn("setupObserverAndTree();", self.src)
+
+    def test_free_local_avatar_is_default_and_xingyun_is_optional(self):
+        page = PAGE.read_text(encoding="utf-8")
+        styles = (ROOT / "holo_pet" / "styles.css").read_text(encoding="utf-8")
+        self.assertIn('id="local-avatar"', page)
+        self.assertIn('id="btn-avatar-local"', page)
+        self.assertIn('id="btn-avatar-xingyun"', page)
+        self.assertIn('data-state="idle"', page)
+        self.assertIn("function setLocalAvatarState(", self.src)
+        self.assertIn("function startLocalAvatar()", self.src)
+        self.assertIn("startLocalAvatar();", self.src)
+        self.assertIn('localAvatar.source = "xingyun"', self.src)
+        self.assertIn('[data-state="speaking"]', styles)
+        self.assertIn("local-blink", styles)
+        self.assertIn("local-head-sway", styles)
+
     def test_empty_data_does_not_crash(self):
         """空数据不崩：进函数先守卫，再对 items 做 Array.isArray 兜底。"""
         self.assertIn("if (!host || !catalog) return;", self.block)

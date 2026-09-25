@@ -1,0 +1,9 @@
+{
+ "job_id": "demo-003",
+ "engine": "remotion",
+ "project": ".scratch/remotion-smoke",
+ "composition": "Hello",
+ "entry_point": "src/index.tsx",
+ "out": "out.mp4",
+ "note": "本地只渲染；素材/作业单/产物/状态都在插件云"
+}

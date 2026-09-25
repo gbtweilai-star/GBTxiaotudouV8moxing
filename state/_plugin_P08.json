@@ -1,0 +1,16 @@
+{
+ "插件编号": "P08",
+ "名称": "node-npm-npx",
+ "做什么": "运行时：Node/npm/npx（⚠️ Windows 上 subprocess 必须解析真路径）",
+ "落点": "LOCAL",
+ "真命令": "npx --version",
+ "关联模块": "—",
+ "状态": "✅ 已真跑",
+ "出处": "Node v24.15.0 · subprocess 直起 npx 报 WinError 2，须 shutil.which",
+ "触手": [
+  "T02"
+ ],
+ "声明触手根数": 3,
+ "at": "2026-09-25T02:47:12",
+ "边界": "这是**契约登记**，不是函数部署（deploy 是发布动作，须主人点头）"
+}

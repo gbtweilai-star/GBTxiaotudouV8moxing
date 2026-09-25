@@ -165,31 +165,104 @@ def publish_hook_ok(text: str, scene: str = "") -> dict:
             "from": "tools.scene_anchor", "publish_hooks": list(PUBLISH_HOOKS)}
 
 
-def dispatch(hooks, deadline_s: float = 0.0, now=None) -> dict:
+# ── 真注册表（2026-09-22 补）─────────────────────────────────────────
+# 此前 50 个钩子只有"位置"，`dispatch()` 的生产调用点 **= 0**（只在测试里跑过）
+# ⇒ 整张矩阵是一张"位置登记表"。这里补上"谁真的挂上来了"。
+REGISTERED: dict = {}          # 钩子名 -> {"fn": callable, "owner": str, "at": ts}
+
+
+def register(name: str, fn, owner: str = "framework") -> dict:
+    """把一个**真实现**挂到登记表里的某个钩子位上。
+
+    红线① 仍由 `verify_registry` 守（L3 审计钩子不许挂触手内部）；
+    这里额外拒绝"登记表里没有的名字" —— 不许自创钩子位。
+    """
+    known = {h[1] for h in HOOKS}
+    if name not in known:
+        return {"ok": False, "rule": "unknown_hook",
+                "why": "登记表里没有这个钩子位：%s（不许自创）" % name, "available": sorted(known)}
+    if not callable(fn):
+        return {"ok": False, "rule": "not_callable", "why": "钩子必须是可调用的"}
+    layer = next((h[3] for h in HOOKS if h[1] == name), "")
+    if layer == "L3" and "tentacle" in str(owner).lower():
+        return {"ok": False, "rule": "red_line_1",
+                "why": "审计钩子（L3）不许挂在触手内部（owner=%r）" % owner}
+    REGISTERED[name] = {"fn": fn, "owner": str(owner), "at": time.time()}
+    return {"ok": True, "name": name, "owner": str(owner), "layer": layer,
+            "registered_total": len(REGISTERED)}
+
+
+def registered_hooks(names=None) -> list:
+    """取出已注册的 `[(name, fn), ...]`（只取登记表里存在且真注册过的）。"""
+    want = list(names) if names else list(REGISTERED)
+    return [(n, REGISTERED[n]["fn"]) for n in want if n in REGISTERED]
+
+
+def install_nav_hooks() -> dict:
+    """把**导航故障钩子**的真实现挂上来（幂等）。
+
+    这是 `dispatch()` 从"没有生产调用点"变成"真在跑"的那一步：
+    实现放在 `tentacle/nav_etiology.py`（延迟导入，避免 tools ↔ tentacle 的导入环）。
+    """
+    try:
+        from ..tentacle import nav_etiology as ne
+    except Exception as e:                                      # noqa: BLE001
+        return {"ok": False, "error": "nav_etiology 不可用：%s" % str(e)[:120]}
+    done = []
+    for name, fn in ne._HOOK_IMPL.items():
+        r = register(name, fn, owner="nav_etiology")
+        if r.get("ok"):
+            done.append(name)
+    return {"ok": True, "installed": done, "total": len(REGISTERED)}
+
+
+def dispatch(hooks, deadline_s: float = 0.0, now=None, ctx: dict = None) -> dict:
     """跑一条钩子链：**失败隔离 + 链可中断**（红线 ②③）。
 
     hooks: [(name, callable), ...]；某个钩子抛异常 ⇒ 记进 `errors`，**继续下一个**；
     超过 `deadline_s` ⇒ 记 `timed_out` 并**立即停止**（不许无限等待）。
-    本函数**不写盘、不执行任何业务动作**，只演示顺序与隔离。
+
+    ── 2026-09-22 补两件 ──
+    ① 坏钩子除了进 `errors`，还**补发 `on_hook_failed`**（登记表 #48）：
+       此前"钩子炸了"只在当次返回值里存在，**不进任何事件流**。
+    ② `ctx` 会传给**收参的**钩子（无参钩子照旧调用，不破坏既有链）。
+    `hooks=None` ⇒ 自动取已注册的那条导航故障链。
     """
     import inspect
 
+    if hooks is None:
+        hooks = registered_hooks(("on_tool_timeout", "on_tool_retry", "on_tool_denied",
+                                  "after_browser_action", "post_tentacle_invoke"))
     t0 = float(time.time() if now is None else now)
-    ran, errors, timed_out = [], [], None
+    ran, errors, timed_out, on_hook_failed = [], [], None, []
     for name, fn in list(hooks or []):
         if deadline_s and (float(time.time() if now is None else now) - t0) > float(deadline_s):
             timed_out = str(name)
             break
         try:
             if callable(fn):
-                out = fn()
+                try:
+                    n_pos = len([p for p in inspect.signature(fn).parameters.values()
+                                 if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)])
+                except (TypeError, ValueError):
+                    n_pos = 0
+                out = fn(ctx) if n_pos >= 1 else fn()
                 if inspect.isawaitable(out):
                     out = None
             ran.append(str(name))
         except Exception as e:  # noqa: BLE001 —— 红线 ②：坏钩子不许拖垮主流程
             errors.append({"hook": str(name), "error": "%s: %s" % (type(e).__name__, str(e)[:120])})
+            # 补发 on_hook_failed（#48）：坏钩子这件事必须进事件流，不许只躺在返回值里
+            handler = REGISTERED.get("on_hook_failed")
+            if handler:
+                try:
+                    handler["fn"]({"hook": str(name), "error": str(e)[:200]})
+                    on_hook_failed.append(str(name))
+                except Exception:                              # noqa: BLE001
+                    pass
     return {"ok": True, "readonly": True, "ran": ran, "errors": errors,
             "timed_out": timed_out, "chain_completed": timed_out is None,
+            "on_hook_failed": on_hook_failed, "registered_total": len(REGISTERED),
             "red_lines": list(RED_LINES)}
 
 

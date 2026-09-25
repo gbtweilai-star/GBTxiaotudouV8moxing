@@ -1,0 +1,39 @@
+=== 垃圾候选分类 ===
+  _*.py                    2954 个    11.64 MB
+        .scratch\_ab_samestore.py
+        .scratch\_ab_test.py
+        .scratch\_ac_probe.py
+        .scratch\_add_deferred_semantics.py
+  *.lock                    974 个     0.00 MB
+        holo_pet\research_status.py.lock
+        holo_pet\signal_ingest.py.lock
+        memory\2026-09-18.md.lock
+        state\README.md.lock
+  __pycache__               502 个    10.54 MB
+        potato_pet\__pycache__\chat_client.cpython-310.pyc
+        potato_pet\__pycache__\chat_client.cpython-312.pyc
+        potato_pet\__pycache__\chat_client.cpython-314.pyc
+        potato_pet\__pycache__\codex_client.cpython-314.pyc
+  *.bak/.orig/.rej          170 个     6.03 MB
+        .backups\PROJECT_BLUEPRINT.md.pre-fault-20260917-121924.bak
+        .backups\schedules.json.pre-sched-disable-20260917.bak
+        .backups\services.json.pre-w3-20260917-121356.bak
+        .backups\xingyun_e2e.latest.js.pre-cdn-20260919-040900.bak
+  *.log                     170 个     9.11 MB
+        .playwright-cli\console-2026-09-14T22-16-45-277Z.log
+        .playwright-cli\console-2026-09-14T22-19-09-041Z.log
+        .playwright-cli\console-2026-09-14T22-40-05-790Z.log
+        .playwright-cli\console-2026-09-14T23-06-34-503Z.log
+  *.pyc                      84 个     1.25 MB
+        .scratch\pc_api.pyc
+        .scratch\pc_app.pyc
+        .scratch\pc_auth_gate.pyc
+        .scratch\pc_autopilot.pyc
+  *.before/.pre-/.old        53 个     0.52 MB
+        gbt_allinone\store\pit_log.json.before_rh235
+        gbt_allinone\store\pit_log.json.before_rh237
+        gbt_allinone\store\pit_log.json.before_rh238
+        gbt_allinone\store\pit_log.json.before_rh240
+  *.tmp                       2 个     0.04 MB
+        .scratch\_r96_rc.tmp
+        gbt_allinone\store\native_browser\profile\Local State0b91ac74-5005-4d1d-b6ec-30982e818273.tmp

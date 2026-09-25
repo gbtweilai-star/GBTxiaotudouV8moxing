@@ -1,0 +1,83 @@
+﻿py : approval listener failed for item/commandExecution/requestApproval
+所在位置 行:2 字符: 1
++ py -3.10 .scratch\block4b_bridge_probe.py --target=prod4b 2>&1 | Out- ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (approval listen...requestApproval:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBTС����V8\gbt_allinone\codex_bridge.py", line 488, in _handle_server_request
+    decision = listener(method, params)
+  File "C:\Users\ADMIN\Desktop\GBTС����V8\.scratch\block4b_bridge_probe.py", line 253, in _boom
+    raise RuntimeError("�����߹������쳣")
+RuntimeError: �����߹������쳣
+approval listener failed for item/fileChange/requestApproval
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBTС����V8\gbt_allinone\codex_bridge.py", line 488, in _handle_server_request
+    decision = listener(method, params)
+  File "C:\Users\ADMIN\Desktop\GBTС����V8\.scratch\block4b_bridge_probe.py", line 269, in _boom2
+    raise RuntimeError("Ψһ�����߹������쳣")
+RuntimeError: Ψһ�����߹������쳣
+approval handler failed for item/commandExecution/requestApproval
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBTС����V8\gbt_allinone\codex_bridge.py", line 478, in _handle_server_request
+    decision = self.on_approval(method, params)
+  File "C:\Users\ADMIN\Desktop\GBTС����V8\.scratch\block4b_bridge_probe.py", line 292, in <lambda>
+    srv, rec = new_srv(on_approval=lambda m, p: (_ for _ in ()).throw(RuntimeError("�ɲ����쳣")))
+  File "C:\Users\ADMIN\Desktop\GBTС����V8\.scratch\block4b_bridge_probe.py", line 292, in <genexpr>
+    srv, rec = new_srv(on_approval=lambda m, p: (_ for _ in ()).throw(RuntimeError("�ɲ����쳣")))
+RuntimeError: �ɲ����쳣
+target    = prod4b
+src       = codex_bridge.py
+src sha256= 47bcb0a51bb0ba30a1e0a7d81cafc61201b180e287c328a875e610535eef0e93
+src lines = 1558
+store     = C:\Users\ADMIN\AppData\Local\Temp\gbt_b4b_probe_g44gwr_r
+----------------------------------------------------------------------------------------------------------------------
+P1 实例具备 _approval_listeners（镜像 True / 生产 False）              True                             expect=True                   PASS
+P2 实例具备 add_approval_listener（镜像 True / 生产 False）            True                             expect=True                   PASS
+P2b 生产侧审批通道：仅 _listeners + 单槽 on_approval                    ['_approval_listeners', '_listen expect=['_approval_listeners' PASS
+B1-a 注册后 len +1                                              1                                expect=1                      PASS
+B1-b 返回句柄可调用                                                 True                             expect=True                   PASS
+B1-c 句柄不是 None                                               True                             expect=True                   PASS
+B2 基线（未注册）len                                                0                                expect=0                      PASS
+B2-a attach->stop x3 delta 序列                                [1, 0, 1, 0, 1, 0]               expect=[1, 0, 1, 0, 1, 0]     PASS
+B2-b 结束时回落基线                                                 0                                expect=0                      PASS
+B2-c 两订阅者共存 len +2                                           2                                expect=2                      PASS
+B2-d 重复摘同一句柄幂等（余 1）                                          1                                expect=1                      PASS
+B2-e 全摘后回落基线                                                 0                                expect=0                      PASS
+B3-a 旧槽命中 -> 回执 = 旧槽值                                        {'decision': 'slot-accept'}      expect={'decision': 'slot-acc PASS
+B3-b 旧槽命中 -> listeners 被短路（命中 0）                             []                               expect=[]                     PASS
+B3-c 回执非空（未悬空）                                               True                             expect=True                   PASS
+B4-a 旧槽 None -> 订阅者接管                                        {'decision': 'L2-accept'}        expect={'decision': 'L2-accep PASS
+B4-b 注册顺序 L1 -> L2                                           ['L1', 'L2']                     expect=['L1', 'L2']           PASS
+B4-c 命中即停：L3 未被调用                                            False                            expect=False                  PASS
+B4-d 回执非空                                                    True                             expect=True                   PASS
+B5 兜底逐条 item/commandExecution/requestApproval                {'decision': 'cancel'}           expect={'decision': 'cancel'} PASS
+B5 兜底逐条 item/fileChange/requestApproval                      {'decision': 'cancel'}           expect={'decision': 'cancel'} PASS
+B5 兜底逐条 item/tool/requestUserInput                           {'answers': {}}                  expect={'answers': {}}        PASS
+B5 兜底逐条 item/permissions/requestApproval                     {'permissions': {}, 'scope': 'tu expect={'permissions': {}, 's PASS
+B5 兜底逐条 mcpServer/elicitation/request                        {'action': 'decline'}            expect={'action': 'decline'}  PASS
+B5 兜底逐条 unknown/method                                       {}                               expect={}                     PASS
+B6-a 前一个订阅者炸 -> 后续仍被调用                                       ['boom', 'ok']                   expect=['boom', 'ok']         PASS
+B6-b 回执 = 后续订阅者结果                                            {'decision': 'after-boom'}       expect={'decision': 'after-bo PASS
+B6-c 回执非空（不悬空）                                               True                             expect=True                   PASS
+B6-d 全部炸 -> 落兜底，回执非空                                         {'decision': 'cancel'}           expect={'decision': 'cancel'} PASS
+B8-a 摘除前订阅者生效                                                {'decision': 'kept'}             expect={'decision': 'kept'}   PASS
+B8-b 摘除后不再被调用                                                ['called']                       expect=['called']             PASS
+B8-c 摘除后走兜底                                                  {'decision': 'cancel'}           expect={'decision': 'cancel'} PASS
+B8-d 旧槽抛异常 -> 订阅者仍被调用                                        ['L']                            expect=['L']                  PASS
+B8-e 回执非空                                                    True                             expect=True                   PASS
+P3 生产/镜像：审批审计两条存在（生产 False = 缺口）                             True                             expect=True                   PASS
+B7-a approval_request 近三条齐备                                  True                             expect=True                   PASS
+B7-b approval_decision 近三条齐备                                 True                             expect=True                   PASS
+B7-c decided_by 三分支顺序 = slot/listener/default_denial         ['slot', 'listener', 'default_de expect=['slot', 'listener', ' PASS
+B7-d approval_request meta 键齐备                               ['has_slot', 'listener_count', ' expect=['has_slot', 'listener PASS
+B7-e approval_decision meta 键齐备                              ['decided_by', 'decision', 'meth expect=['decided_by', 'decisi PASS
+B7-f decision 落库为脱敏摘要字符串                                     True                             expect=True                   PASS
+  审计原文（末三条 approval_decision）：
+    {"ts": 1789543635.96, "iso": "2026-09-16T14:27:15", "event": "codex_approval_decision", "meta": {"method": "item/commandExecution/requestApproval", "decided_by": "slot", "decision": "{\"decision\": \"by-slot\"}"}}
+    {"ts": 1789543635.964, "iso": "2026-09-16T14:27:15", "event": "codex_approval_decision", "meta": {"method": "item/commandExecution/requestApproval", "decided_by": "listener", "decision": "{\"decision\": \"by-listener\"}"
+    {"ts": 1789543635.969, "iso": "2026-09-16T14:27:15", "event": "codex_approval_decision", "meta": {"method": "item/commandExecution/requestApproval", "decided_by": "default_denial", "decision": "{\"decision\": \"cancel\"}
+----------------------------------------------------------------------------------------------------------------------
+PASS = 41   FAIL = 0   OBS = 0
+账本: block4b_bridge_probe.prod4b.json

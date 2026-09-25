@@ -1,0 +1,16 @@
+{
+ "插件编号": "P07",
+ "名称": "chrome-headless-shell",
+ "做什么": "出帧内核：无头 Chrome（Remotion/HyperFrames 都靠它）",
+ "落点": "LOCAL",
+ "真命令": "npx remotion browser ensure",
+ "关联模块": "—",
+ "状态": "✅ 已真跑",
+ "出处": "152 在位（HyperFrames doctor 读数）",
+ "触手": [
+  "T01"
+ ],
+ "声明触手根数": 3,
+ "at": "2026-09-25T02:47:09",
+ "边界": "这是**契约登记**，不是函数部署（deploy 是发布动作，须主人点头）"
+}

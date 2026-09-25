@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>免费云电脑服务器方案对比（2026-09 · 非甲骨文）</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --ink:#1c2330; --muted:#6b7280;
+    --line:#e5e7eb; --blue:#2563eb; --green:#16a34a; --amber:#d97706; --red:#dc2626;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;padding:32px 16px}
+  .wrap{max-width:960px;margin:0 auto}
+  header h1{font-size:26px;margin-bottom:6px}
+  header .sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+  .verdict{background:linear-gradient(135deg,#eef4ff,#f8fbff);border:1px solid #dbe6ff;border-left:4px solid var(--blue);border-radius:10px;padding:16px 18px;margin-bottom:26px}
+  .verdict strong{color:var(--blue)}
+  h2{font-size:18px;margin:28px 0 14px;padding-left:10px;border-left:4px solid var(--blue)}
+  table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);font-size:14px}
+  th{background:#1f2937;color:#fff;text-align:left;padding:10px 12px;font-weight:600;white-space:nowrap}
+  td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:#fafbfc}
+  .star{color:#f59e0b;letter-spacing:1px}
+  .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;white-space:nowrap}
+  .tag-green{background:#dcfce7;color:#15803d}
+  .tag-blue{background:#dbeafe;color:#1d4ed8}
+  .tag-amber{background:#fef3c7;color:#b45309}
+  .tag-red{background:#fee2e2;color:#b91c1c}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .card{background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-top:3px solid var(--blue)}
+  .card.green{border-top-color:var(--green)}
+  .card.amber{border-top-color:var(--amber)}
+  .card h3{font-size:15px;margin-bottom:8px}
+  .card p{font-size:13.5px;color:#374151}
+  .steps{counter-reset:s;list-style:none;margin-top:4px}
+  .steps li{position:relative;padding:10px 0 10px 44px;border-left:2px solid var(--line);margin-left:14px}
+  .steps li::before{counter-increment:s;content:counter(s);position:absolute;left:-14px;top:8px;width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+  .steps li b{display:block;font-size:14.5px}
+  .steps li span{font-size:13.5px;color:var(--muted)}
+  .risk{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 18px;margin-top:8px}
+  .risk li{margin:6px 0 6px 18px;font-size:14px}
+  footer{margin-top:30px;color:var(--muted);font-size:12.5px;text-align:center}
+  code{background:#eef2f7;padding:1px 6px;border-radius:4px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="background:#7f1d1d;color:#fff;border-radius:10px;padding:14px 16px;margin:0 0 18px;line-height:1.7">
+    <strong>本方案已于 2026-09-17 整份作废。</strong><br>
+    风哥拍板：云电脑<strong>不租第三方</strong>，改为自建——宿主机自出（本机 / 备用旧机 / 任意可支配机器），
+    自搭虚拟化层（Hyper-V / VirtualBox / KVM / QEMU 择一），虚机内装桌面（XFCE 优先）+ 运行环境，
+    连接层走 Cloudflare Tunnel。GCP e2-micro / Azure B1s 接力方案<strong>不再执行</strong>。<br>
+    保留这一页只为留痕对照，现口径见 <code>gbt_allinone/docs/holo_pet多窗口架构设计.md</code> §3.2。
+  </div>
+  <header>
+    <h1>免费云电脑服务器方案对比</h1>
+    <div class="sub">数据核实时间：2026年9月 · 已排除甲骨文（Oracle Cloud） · 仅供个人参考</div>
+  </header>
+
+  <div class="verdict">
+    <strong>核心结论：</strong>排除甲骨文后，不存在「永久免费 + 高配置」的选项。长期白嫖只能拿到 1G 内存小机（Google Cloud / Azure / Hax），高配置只能靠各家新用户免费试用（1~3 个月）。推荐多平台接力注册，把免费周期拉到一年以上。
+  </div>
+
+  <h2>方案横向对比</h2>
+  <table>
+    <thead>
+      <tr><th>平台</th><th>免费配置</th><th>免费时长</th><th>注册门槛</th><th>云电脑适配</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>腾讯云 Lighthouse</b></td>
+        <td>2核4G（个人）／最高 4核8G（企业资质）</td>
+        <td>约 1 个月</td>
+        <td><span class="tag tag-green">无需信用卡</span> 手机实名</td>
+        <td><span class="star">★★★★★</span> 国内节点延迟低，体验最好</td>
+      </tr>
+      <tr>
+        <td><b>阿里云 ECS</b></td>
+        <td>试用金约 300 元（额度制，自选配置抵扣）</td>
+        <td>折合约 49 天～3 个月</td>
+        <td><span class="tag tag-green">无需信用卡</span> 实名认证</td>
+        <td><span class="star">★★★★</span> 配置可选，够用</td>
+      </tr>
+      <tr>
+        <td><b>Google Cloud</b></td>
+        <td>$300 赠金 + e2-micro（1核1G）永久免费层（仅美国区）</td>
+        <td>90 天 + <b>永久小机</b></td>
+        <td><span class="tag tag-amber">需外币信用卡</span></td>
+        <td><span class="star">★★★</span> 永久层内存小，赠金期可开高配</td>
+      </tr>
+      <tr>
+        <td><b>Microsoft Azure</b></td>
+        <td>$200 赠金（30 天）+ B1s（1核1G）每月 750 小时</td>
+        <td><b>12 个月</b>免费 VM</td>
+        <td><span class="tag tag-amber">需信用卡</span></td>
+        <td><span class="star">★★★</span> 只能跑轻量桌面</td>
+      </tr>
+      <tr>
+        <td><b>Hax / Woiden</b></td>
+        <td>1核1G KVM 小机（NAT / IPv6 为主）</td>
+        <td>永久（7天/1天手动续期）</td>
+        <td><span class="tag tag-green">无需信用卡</span></td>
+        <td><span class="star">★★</span> 远程连接受限，只当备用</td>
+      </tr>
+      <tr>
+        <td><b>华为云 / 京东云等</b></td>
+        <td>2核4G 左右</td>
+        <td>7～15 天</td>
+        <td><span class="tag tag-green">无需信用卡</span> 实名</td>
+        <td><span class="star">★★★</span> 时长偏短，聊胜于无</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>按情况选方案</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>① 要体验 · 立刻能用</h3>
+      <p>选<b>腾讯云轻量</b>试用：4核8G（企业资质）或 2核4G（个人）。国内延迟低，装好云桌面后流畅不卡，一个月随便用。</p>
+    </div>
+    <div class="card green">
+      <h3>② 要长期免费 · 有信用卡</h3>
+      <p><b>Azure B1s</b> 跑满 12 个月免费额度，到期转 <b>Google Cloud e2-micro</b> 永久层，接力白嫖时间最长。</p>
+    </div>
+    <div class="card amber">
+      <h3>③ 没有信用卡</h3>
+      <p>国内厂商新用户试用叠加：腾讯 1 月 → 阿里 2~3 月 → 华为 15 天；再挂一台 <b>Hax</b> 当永久备用机。</p>
+    </div>
+  </div>
+
+  <h2>云电脑部署四步</h2>
+  <ol class="steps">
+    <li><b>装系统</b><span>Ubuntu 22.04 / 24.04，最小化安装，关闭不用的服务省内存</span></li>
+    <li><b>装轻量桌面</b><span><code>sudo apt install xfce4</code>（1G 内存也能跑；别装 GNOME/KDE）</span></li>
+    <li><b>装远程访问</b><span><code>xrdp</code>（系统自带远程桌面客户端直连，推荐）或 <code>KasmVNC</code>（浏览器直接开桌面）</span></li>
+    <li><b>连接使用</b><span>防火墙放行 3389（RDP）端口；手机装 RD Client / 电脑用 mstsc 连公网 IP 即可</span></li>
+  </ol>
+
+  <div class="risk">
+    <b>⚠️ 风险提醒</b>
+    <ul>
+      <li>GCP / Azure 试用到期<b>不升级就不扣费</b>；但点了升级按钮后，超出免费额度的用量会真实扣卡。</li>
+      <li>Hax/Woiden 超过 7 天不续期机器直接删除，重要数据不要只存那里。</li>
+      <li>国内试用机留意别勾选「自动续费」，到期默认停机不扣钱。</li>
+      <li>Windows 云电脑没有免费方案；Linux + XFCE 只适合轻办公、挂机、跑脚本，重游戏/视频剪辑不要指望。</li>
+    </ul>
+  </div>
+
+  <footer>GBT小土豆V8 · 整理于 2026-09 · 政策随时可能调整，注册前以官网页面为准</footer>
+</div>
+</body>
+</html>

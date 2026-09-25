@@ -1,0 +1,33 @@
+{
+ "时间": "2026-09-24T04:30:57",
+ "带现状": true,
+ "沙箱": "read-only",
+ "任务": "读【本仓现状】里的 §十一 / §二十三～§二十七 / §三十六。用不超过 14 行回答三问：(1) 本机**已经跑通**的 OpenPose+LoRA+SD 那条链，具体已经验过哪几件（带读数）；(2) 相对你上一版方案，**真正还缺**的是哪几件；(3) 你上一版里**不该做**的是哪两条、为什么。不要再给新的建设方案。",
+ "提示字数": 9278,
+ "第一次": {
+  "exit": 0,
+  "耗时s": 276.2,
+  "命中冷却": true
+ },
+ "换钉": {
+  "ok": true,
+  "status": "pinned",
+  "改前": "meta/muse-glimmer-30b",
+  "改后": "auto",
+  "备份": "C:\\Users\\ADMIN\\.codex\\config.toml.bak-043537-pin",
+  "探活读数": {
+   "活": true,
+   "状态": 200,
+   "status": "completed",
+   "落到": "meta/muse-glimmer-30b",
+   "耗时s": 2.5
+  },
+  "_口径": "只动 # freellmapi:start…end 块里的 model 行；块外一字未动；改后回读核对。"
+ },
+ "重试一次": {
+  "exit": 0,
+  "耗时s": 289.4
+ },
+ "答复": "(1) 本机 OpenPose+LoRA+SD 已验：\n- 三件真身 sha256 验真：Realistic_Vision_V5.1 2,132,625,894 B、control_openpose-fp16 722,596,338 B、lcm-lora-sdv1-5 134,621,556 B\n- 一单闭环 `prompt_id dd26c038…` status success 1366.3 s，512×512 LCM cfg2.0，成图 281,703 B sha256 bcec416c… 肢干级咬合成立\n- 姿势检测器落地：`body_pose_model.pth` 209,267,595 B，`openpose-extract.py` 首次 69.2 s 缓存 13.8 s，18/18 点，骨架 8,358 px\n- 闭环回检 Chamfer 中位 0.00 px / 均值 1.24 px / P90 4.65 px；验收器关节级中位 6.2 px 最大 24.6 px，头部 Reye0.4 Leye3.2 Rear1.7 Lear0.5\n- 配色/LR 修复 IoU 0.9997，鼻子误差 249.9 → 10.0 px；A/B Chamfer 1.51 vs 1.50，关节中位 6.2 vs 6.5，无可测收益\n- 负对照非人图 0 点 exit5，七条验收全过\n\n(2) 相对上一版仍缺：\n- 身份 LoRA：现 LCM 仅加速，非“主人那张脸”\n- 检测器仅 body，手/脸权重未下；仅 1 图/1 姿势验证，未泛化\n- 仍是同图像素尺度，非真实世界尺度\n\n(3) 上一版不该做：\n- 按模型拆分上云：去噪需底模/ControlNet/LoRA 每步同卡，跨网同步 GB 张量算不动\n- 用 ComfyUI 官方 44 个云插件部署 ControlNet：插件列表无 controlnet，承载不了三件套\n",
+ "成败": "✅ 拿到答复"
+}

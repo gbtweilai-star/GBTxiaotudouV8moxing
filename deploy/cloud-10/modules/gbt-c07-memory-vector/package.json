@@ -1,0 +1,8 @@
+{
+  "name": "gbt-c07-memory-vector",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "向量记忆与语义检索（主人给的对应名：dsh-memory-vector）",
+  "_generated": "tools/codex-scripts/cloud-mesh.py gen"
+}

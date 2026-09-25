@@ -41,6 +41,11 @@
     if (!d) {
       var why = "取不到：" + ((r && r.error) || "原因未报");
       if (state) { state.dataset.state = "gray"; state.textContent = "取不到"; }
+      /* 失败路径必须把上一轮的计数与通道行一并清掉：不清就是拿**上一次**的数字
+       * 冒充这一次的结果 —— 四条 list 都写着"取不到"，右下角却还在报"好友 3 · 动态 20"，
+       * 自相矛盾，而且屏上没有任何东西提示那是旧的。 */
+      if (counts) { counts.dataset.state = "gray"; counts.textContent = "取不到"; }
+      if (source) source.textContent = "通道：本机只读（取不到）";
       R.empty($("ef-feed-list"), why);
       R.empty($("ef-friend-list"), why);
       R.empty($("ef-msg-list"), why);
@@ -48,14 +53,27 @@
       return;
     }
 
+    /* 🔴 声明数据新鲜度（2026-09-23 第 34 轮）：本窗**不是实时** —— 它读的是
+       本机 EigenFlux 的**缓存文件**（`source.feed.file`），所以要报那个文件的
+       `mtime`（实测形如 `2026-09-23T04:35:22.531Z`），**不是 `new Date()`**。
+       拿加载时刻冒充数据时刻，就是把几小时前的动态说成现在的 —— 那正是假绿。
+       拿不到 mtime 就**不声明**（铬会显示「数据 未声明」），不编一个。 */
+    var _mt = d.source && d.source.feed && d.source.feed.mtime;
+    if (_mt) window.GBT_DATA = { kind: "快照", at: _mt };
+
     if (state) {
       state.dataset.state = d.initialized ? "ok" : "gray";
       state.textContent = d.initialized ? "本机只读 · 已接" : "未初始化";
     }
     if (counts) {
       counts.dataset.state = "gray";
-      counts.textContent = "好友 " + d.counts.friends + " · 动态 " + d.counts.feed +
-        " · 私信 " + d.counts.messages;
+      /* 主进程没报计数时不许编 0、也不许让 d.counts.friends 抛 TypeError
+         —— 那一抛会被下面的 .catch 接走，整页被打成"取不到：Cannot read properties…"，
+         用户看到的是内部异常文本。没报就写"未报"（《反空壳律》）。 */
+      counts.textContent = d.counts
+        ? ("好友 " + d.counts.friends + " · 动态 " + d.counts.feed +
+           " · 私信 " + d.counts.messages)
+        : "计数未报";
     }
     if (source) {
       source.textContent = "通道：本机只读 " + d.home_label +
@@ -64,15 +82,33 @@
           : "");
     }
 
+    /* 空态理由必须按**本机的真实状态**分叉。原来「好友 / 私信」两条写死
+     * 「没有好友记录 / 没有私信记录」：未初始化时（本机根本没有 EigenFlux）
+     * 那句话把"没读到"说成了"量到是空的"，与主进程那句
+     * 「是未初始化，不是空数据」（shell/main.cjs §13b）直接打架 —— 同一块屏，
+     * 动态流说"未初始化"，好友页说"没有记录"。
+     * issues 原来只挂在动态流上 ⇒ 站在「私信」页的人看不到「私信文件解析失败」，
+     * 只看得到一句"没有私信记录"：**理由不在它该在的那一页**。
+     * 正解是主进程给 issues 带上频道字段；在那之前先把理由铺到四页 ——
+     * 宁可四页重复，不可一页隐瞒。 */
+    var notInit = "未初始化：本机还没有 EigenFlux（是未初始化，不是空数据）";
     var feed = $("ef-feed-list");
-    R.list(feed, d.feed, R.item,
-      d.initialized ? "动态流是空的（本机缓存里确实没有条目）" : "未初始化：本机还没有 EigenFlux");
-    R.issues(feed, d.issues);
-    R.list($("ef-friend-list"), d.friends, R.friend, "没有好友记录");
-    R.list($("ef-msg-list"), d.messages, R.message, "没有私信记录");
-
+    var friends = $("ef-friend-list");
+    var msgs = $("ef-msg-list");
     var prof = $("ef-profile-list");
-    if (prof) { prof.textContent = ""; prof.appendChild(R.profile(d.profile)); }
+
+    R.list(feed, d.feed, R.item,
+      d.initialized ? "动态流是空的（本机缓存里确实没有条目）" : notInit);
+    R.list(friends, d.friends, R.friend, d.initialized ? "没有好友记录" : notInit);
+    R.list(msgs, d.messages, R.message, d.initialized ? "没有私信记录" : notInit);
+    if (prof) {
+      if (d.profile) { prof.textContent = ""; prof.appendChild(R.profile(d.profile)); }
+      else R.empty(prof, d.initialized ? "档案取不到：profile.json 没读到" : notInit);
+    }
+    R.issues(feed, d.issues);
+    R.issues(friends, d.issues);
+    R.issues(msgs, d.issues);
+    R.issues(prof, d.issues);
   }
 
   function load() {

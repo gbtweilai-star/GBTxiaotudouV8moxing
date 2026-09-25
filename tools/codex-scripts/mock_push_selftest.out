@@ -1,0 +1,28 @@
+﻿=== 场景 0：旧 mock + 开关缺省（基线）===
+场景0 子进程已回收                                                 True                       expect=True                       PASS
+场景0 thread/start 回执                                        thread-mirror-1            expect=thread-mirror-1            PASS
+场景0 无 mock.push                                            0                          expect=0                          PASS
+场景0 桥未收到推流通知                                               0                          expect=0                          PASS
+=== 场景 1：新 mock + 开关缺省（应逐字同旧版）===
+场景1 子进程已回收                                                 True                       expect=True                       PASS
+场景1 thread/start 回执                                        thread-mirror-1            expect=thread-mirror-1            PASS
+场景1 无 mock.push                                            0                          expect=0                          PASS
+场景1 账本记录数与旧版一致                                             3                          expect=3                          PASS
+场景1 账本逐记录逐字一致（关闭态无行为漂移）                                    True                       expect=True                       PASS
+场景1 桥未收到推流通知                                               0                          expect=0                          PASS
+=== 场景 2：新 mock + GBT_MOCK_PUSH=1 ===
+场景2 子进程已回收                                                 True                       expect=True                       PASS
+场景2 thread/start 回执                                        thread-mirror-1            expect=thread-mirror-1            PASS
+场景2 账本 mock.push 恰好 1 条                                    1                          expect=1                          PASS
+场景2 mock.push.method                                       item/agentMessage/delta    expect=item/agentMessage/delta    PASS
+场景2 mock.push.raw_tid                                      thread-mirror-1            expect=thread-mirror-1            PASS
+场景2 mock.push.type（主动通知，非回执）                               notification               expect=notification               PASS
+场景2 mock.push 带 frame_bytes_hash                           True                       expect=True                       PASS
+场景2 桥收到 item/agentMessage/delta（真帧端到端）                     1                          expect=1                          PASS
+场景2 通知 params.delta                                        mock-push-delta            expect=mock-push-delta            PASS
+场景2 通知 params.threadId                                     thread-mirror-1            expect=thread-mirror-1            PASS
+场景2 推流不改变入站记账（仅多 1 行 mock.push）                            1                          expect=1                          PASS
+[obs] 场景2 mock.push 原文                                     {"layer": "mock", "event": "mock.push", "origin": "pushselftest", "received": true, "raw_value": "mock-push-delta", "type": "notification", "schema_verdict": "accept", "method": "item/agentMessage/delta", "raw_tid": "thread-mirror-1", "frame_bytes": 127, "frame_bytes_hash": "c6f88a8e78b3db12", "note": "推送通知（无 id，服务端主动发；第二判据用）", "timestamp": "2026-09-16T13:54:38"}
+[obs] 场景2 桥事件原文                                            {"method": "item/agentMessage/delta", "params": {"delta": "mock-push-delta", "threadId": "thread-mirror-1"}}
+[obs] 场景0/1/2 账本行数                                         3 / 3 / 4
+断言 21 项 · PASS 21 · FAIL 0 ；观察项 3 条

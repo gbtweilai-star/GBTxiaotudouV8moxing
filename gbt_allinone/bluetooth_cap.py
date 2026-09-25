@@ -16,13 +16,14 @@ from __future__ import annotations
 
 import asyncio
 import os
-import sys
-from pathlib import Path
-
-# 依赖兜底：框架自带 .pylibs（与 tentacle/bridge.py 同机制）
-_PYLIBS = Path(__file__).resolve().parent / ".pylibs"
-if _PYLIBS.exists() and str(_PYLIBS) not in sys.path:
-    sys.path.insert(0, str(_PYLIBS))
+# 依赖兜底：唯一真相源走 dependency_paths.activate_local_dependencies()。
+# 不再手打 sys.path：手打会漏掉 ABI overlay（.pylibs/<abi>），
+# 且会把 legacy 树顶到 sys.path[0]，对撞「系统包优先于 legacy 兜底」的设计。
+try:
+    from .dependency_paths import activate_local_dependencies
+except ImportError:            # 以脚本方式直跑本文件时
+    from gbt_allinone.dependency_paths import activate_local_dependencies
+activate_local_dependencies()
 
 
 def _bleak():

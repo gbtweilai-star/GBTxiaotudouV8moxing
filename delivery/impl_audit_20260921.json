@@ -1,0 +1,107 @@
+{
+  "timestamp": "2026-09-21T20:08:39.804998",
+  "summary": {
+    "total_caps": 147,
+    "wired": 139,
+    "orphans": 0,
+    "external_entries": 8
+  },
+  "truth_scan": {
+    "mode": "readonly",
+    "REAL": 1,
+    "HONEST_STUB": 0,
+    "FAKE": 0,
+    "FAKE_detail": "无——零假执行",
+    "NEEDS_CRED": [],
+    "detail": {
+      "REAL": [
+        "readonly-mode(探针关闭，副作用类能力未验证)"
+      ],
+      "HONEST_STUB": [],
+      "FAKE": [],
+      "NEEDS_CRED": []
+    },
+    "verdict": "clean",
+    "note": "FAKE 必须为 0——任何假执行都是框架的癌症"
+  },
+  "selfscan": {
+    "verdict": "P1",
+    "checked_at": "2026-09-21T20:08:39",
+    "findings": [
+      "P1 运行时故障 1 起: {'codex_interrupt': 1}"
+    ],
+    "sections": {
+      "routing": {
+        "registered": 147,
+        "routed": 147,
+        "unrouted": [],
+        "ghost_routes": [],
+        "ok": true
+      },
+      "modules": {
+        "checked": 37,
+        "failed": [],
+        "ok": true
+      },
+      "store": {
+        "json_files": 2720,
+        "missing_dirs": [],
+        "corrupted": [],
+        "ok": true
+      },
+      "audit": {
+        "window": 500,
+        "anomalies": 1,
+        "runtime_faults": 1,
+        "by_event": {
+          "error": 1
+        },
+        "by_signal": {
+          "runtime": 1,
+          "guard": 0,
+          "trace": 0,
+          "legacy": 0,
+          "recovered": 0
+        },
+        "errors_by_kind": {
+          "codex_interrupt": {
+            "runtime": 1,
+            "guard": 0,
+            "trace": 0,
+            "legacy": 0,
+            "recovered": 0
+          }
+        },
+        "recent_runtime": [
+          {
+            "event": "error",
+            "kind": "codex_interrupt",
+            "reason": "turn/interrupt 失败: no active turn to interrupt",
+            "at": "2026-09-21T16:09:44"
+          }
+        ],
+        "reading_scope": {
+          "anomalies": "窗口内 _ANOMALY_EVENTS 的全部事件数（= runtime+guard+trace+legacy+recovered，含已恢复）——不是净化成绩",
+          "scoreboard": "runtime_faults",
+          "why": "guard/trace/legacy/recovered 都不是现行故障；只有 runtime 才是要追的病",
+          "before_after_rule": "净化前后对比必须同路径同窗口，且必须带 runtime_faults 这条分母"
+        },
+        "ok": false
+      },
+      "stub_gaps": []
+    },
+    "capabilities_total": 147,
+    "note": "P0=断连/损坏必须修；P1=异常在发生；clean=五维全过（桩缺口如实列出不算病）"
+  },
+  "orphans_detail": [],
+  "external_list": [
+    "agency_tentacles",
+    "auth_gate_status",
+    "codex_tools",
+    "mcp_tools",
+    "media_pipeline",
+    "pipeline_versions",
+    "sec_chain",
+    "tentacle_pipeline"
+  ]
+}

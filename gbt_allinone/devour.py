@@ -15,6 +15,19 @@ brain/devour_tentacle.py -- 吞噬触手 · 自主进化 v1.0
   devour_tentacle = 织入神经触手的自主吞噬(每次脉冲自动触发)
 """
 import sys, json
+
+
+# ── 病因钩子：吞错统一收口（根级模块走**包内相对导入**；失败退回原 print）
+try:
+    from .tentacle.nav_etiology import record_swallow as _record_swallow
+except Exception:  # noqa: BLE001
+    try:
+        from gbt_allinone.tentacle.nav_etiology import record_swallow as _record_swallow
+    except Exception:  # noqa: BLE001
+        def _record_swallow(_e, _mod="?", _op=""):
+            import sys as _s
+            print(f"⚠️ {_mod}: 吞错: {_e}", file=_s.stderr)
+            return "action_no_effect"
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
@@ -26,6 +39,61 @@ CAPS_DIR.mkdir(parents=True, exist_ok=True)  # 自愈：吞噬产物目录缺失
 
 # ⛔ 2026-08-28 打磨(R34): 模块级缓存 — 修复 exec_module 每次重建模块的内存泄漏 (同路径只 exec 一次)
 _MOD_CACHE: dict = {}
+
+
+# ═══ 生成能力体的模板（2026-09-22 · 反空壳律落到生成器身上）═══════════
+# 吞噬吞进来的能力，在被**真正实现**之前，必须如实说"还没做"。
+# 恒返回 {"ok": True} 的桩 = 假执行 —— 它让"复刻式实现"变成"复刻式假装"。
+_SCAFFOLD_TMPL = '''"""caps/{cap_name}/run.py
+
+由「吞噬·创新引擎」生成（{at}）—— **这是脚手架，不是实现。**
+
+  概念   : {concept}
+  来源域 : {domain}
+
+🔴 反空壳律（写进生成物，让下一次读到它的人与 AI 都知道规矩）：
+   · 在被真正实现之前，本文件**必须如实报 needs_implementation**；
+   · **绝不许 return {{"ok": True}} 而什么都没做** —— 那是假执行（铁律 6）；
+   · 实现完之后，把 _IMPLEMENTED 改成 True，并在下面写真逻辑；
+   · 若永远不打算实现它，就把它从能力表里摘掉 —— **别留着占位**。
+"""
+import json
+import sys
+
+NAME = "{cap_name}"
+CONCEPT = "{concept}"
+DOMAIN = "{domain}"
+_IMPLEMENTED = False          # ← 真实现了才许改 True
+
+
+def do_run(p):
+    if not _IMPLEMENTED:
+        # 诚实出口：**没做就说没做**，并交出蓝图，让人知道下一步该补什么
+        return {{
+            "ok": False,
+            "status": "needs_implementation",
+            "cap": NAME,
+            "concept": CONCEPT,
+            "from_domain": DOMAIN,
+            "blueprint": {{
+                "what_it_should_do": "按概念「%s」实现真实逻辑" % CONCEPT,
+                "what_it_needs": ["真实数据源或算法", "输入/输出契约", "一条带牙用例"],
+            }},
+            "why_not_ok_true": "反空壳律：没实现就不许报成功",
+        }}
+    raise NotImplementedError("_IMPLEMENTED 已置 True，但真实逻辑还没写")
+
+
+def do_research(p):
+    return do_run(p)
+
+
+HANDLERS = {{"run": do_run, "research": do_research}}
+
+if __name__ == "__main__":
+    a = sys.argv[3] if len(sys.argv) > 3 else "run"
+    print(json.dumps(HANDLERS.get(a, do_run)({{}}), ensure_ascii=False))
+'''
 
 def _load_module(name: str, path) -> object:
     """缓存式模块加载 — 同路径只 exec 一次, 后续复用 (单例由模块内部缓存)"""
@@ -100,7 +168,7 @@ class DevourTentacle:
             try:
                 return json.loads(DEVOUR_STATE.read_text(encoding="utf-8"))
             except Exception as _e:
-                print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "devour_tentacle")
         return {
             "total_devours": 0,
             "total_absorbed": 0,
@@ -125,7 +193,7 @@ class DevourTentacle:
             from .selfscan import check_routing
             results["nexus"] = check_routing()["ok"]
         except Exception as _e:
-            print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "devour_tentacle")
         # 2. 神经邻域脉冲 — 让神经触手感知新能力
         try:
             import importlib.util as _iu
@@ -134,7 +202,7 @@ class DevourTentacle:
             if _TB.eye_ready():
                 results["neural"] = True
         except Exception as _e:
-            print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "devour_tentacle")
         # 3. 感知邻域注册 — 视觉/桌面/侦察域感知
         try:
             domains = cap_domains or []
@@ -147,14 +215,14 @@ class DevourTentacle:
                 self._save_state()
                 results["perception"] = True
         except Exception as _e:
-            print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "devour_tentacle")
         # 4. 拓扑索引更新
         try:
             # V8: 拓扑索引 → 状态文件（邻域连接图）
             idx = self.state.setdefault("topology", {})
             results["topology"] = True
         except Exception as _e:
-            print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "devour_tentacle")
         return results
 
     def scan_gaps(self) -> dict:
@@ -299,7 +367,7 @@ class DevourTentacle:
                 _gk_gd.publish(str(CAPS_DIR / cap_name / "run.py"),
                                _run_py, f"{context}:{owner}/{repo}:scaffold")
             except Exception as _e:
-                print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "devour_tentacle")
 
             # ⑥ 注入神经触手 + 更新状态
             self.state["total_devours"] += 1
@@ -313,11 +381,11 @@ class DevourTentacle:
             try:
                 self.inject_to_tentacle(f"github_{owner}_{repo}".lower()[:60], knowledge[:500])
             except Exception as _e:
-                print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "devour_tentacle")
             try:
                 self._connect_neighborhoods(cap_name=cap_name, cap_domains=meta.get("topics", [])[:3] or ["AI域"])
             except Exception as _e:
-                print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "devour_tentacle")
 
             return {
                 "ok": True, "repo": f"{owner}/{repo}",
@@ -342,9 +410,26 @@ class DevourTentacle:
             # 先用本地缺口分析
             gaps = self.scan_gaps()
             if gaps.get("ok") and gaps.get("gaps"):
-                high_gaps = [v for v in gaps["gaps"].values() if v.get("priority") == "high"]
+                # ── 2026-09-22 修 BUG（实测发现）────────────────────────────
+                # 原文：high_gaps = [v for v in gaps["gaps"].values() ...]
+                # 但 scan_gaps() 返回的 "gaps" 是 **list**（L224 列表推导），
+                # 对它调 .values() ⇒ AttributeError: 'list' object has no attribute 'values'。
+                # 而整个 quick_devour 被 try/except 包着，异常被吞成 {"ok": False, ...}
+                # ⇒ **吞噬第一段一直是死的**，而且没人看得见（devour_pulse 的
+                #    stage_errors 也因此是空的）。这正是"静默失败"。
+                # 修法：按真实类型处理，list 与 dict 都认。
+                _raw_gaps = gaps["gaps"]
+                gap_items = (list(_raw_gaps.values())
+                             if isinstance(_raw_gaps, dict) else list(_raw_gaps))
+                # 注意：scan_gaps 现在**不产出 priority 字段**，所以这里不硬造一个，
+                # 只按字段在不在来筛 ⇒ high_gaps 保持为空 ⇒ 自动建 cap 保持关闭。
+                # 这是**故意**的：domains_expected 里还留着 wallet/finance/ledger，
+                # 而那三域是主人 2026-09-12 明确"资金能力注册清零"掉的，
+                # 不能因为一个过期的域清单就把它们自动造回来。见交付报告。
+                high_gaps = [v for v in gap_items
+                             if isinstance(v, dict) and v.get("priority") == "high"]
                 result["gaps_found"] = len(high_gaps)
-                result["total_found"] = len(gaps.get("gaps", []))
+                result["total_found"] = len(gap_items)
 
                 # 自动创建高优先级缺口cap
                 if high_gaps:
@@ -353,7 +438,7 @@ class DevourTentacle:
                         result["caps_created"] = len(created.get("created", []))
                         result["new_caps"] = created.get("created", [])
                     except Exception as _e:
-                        print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+                        _record_swallow(_e, "devour_tentacle")
             # 更新状态
             self.state["total_devours"] += 1
             self.state["total_caps_created"] += result["caps_created"]
@@ -440,7 +525,7 @@ class DevourTentacle:
                     _dpy.deploy(rel, json.dumps(cap_data, ensure_ascii=False, indent=2),
                                context=f"devour_scan:{fix_type}:{fix_action}")
             except Exception as _e:
-                print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "devour_tentacle")
         self.state["total_devours"] += 1
         self.state["total_absorbed"] += len(devoured)
         self.state["total_caps_created"] += len(fixed)
@@ -557,7 +642,7 @@ class DevourTentacle:
                         break
 
         except Exception as _e:
-            print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "devour_tentacle")
         return fixed
 
     def auto_create_from_gaps(self, max_create: int = 3) -> dict:
@@ -631,9 +716,10 @@ class DevourTentacle:
 
         def _worker():
             try:
-                # V8: 脑委会 → llm 桥（DeepSeek/多引擎密钥链）
-                from .llm import bridge as _LB
-                _r = _LB.chat(f"[{context}] {question}", max_tokens=500, timeout=45)
+                # V8: 脑委会 → 统一大模型口（Owner 2026-09-19：模块不再直连 bridge）
+                from .llm import unified as _LLM
+                _r = _LLM.ask(f"[{context}] {question}", max_tokens=500, timeout=45,
+                              purpose="devour.consult")
                 if _r.get("ok") and str(_r.get("reply", "")).strip():
                     _out_box["r"] = {"ok": True, "reply": _r["reply"][:800]}
                 else:
@@ -727,7 +813,7 @@ class DevourTentacle:
                     context="devour_reflect", timeout=4.0
                 )
             except Exception as _e:
-                print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "devour_tentacle")
         self.state.setdefault("reflections", [])
         self.state["reflections"].append({
             "at": datetime.now().isoformat(),
@@ -741,6 +827,16 @@ class DevourTentacle:
             "cap_quality_summary": {"total": len(cap_quality), "avg_score": sum(q.get("score",0) for q in cap_quality.values())//max(len(cap_quality),1), "weak": len(weak_caps), "strong": len(strong_caps)},
             "weak_caps": weak_caps[:10],
             "potential_pairs": potential_pairs[:10],
+            # 🔴 2026-09-22 第 43 轮修（错报治理 · **清单只给 10 条、分母不见**）：
+            #    两个清单都截到前 10 条，而返回值里只有 cap_quality_summary 的 weak/strong 计数
+            #    —— **potential_pairs 的总数根本没报** ⇒ 读的人会把 10 当成"只有 10 对候选"。
+            #    ⇒ 两边都补真分母 + 截断旗 + 一句话口径（同 `omni_fs.file_list` 的样板）。
+            "weak_caps_total": len(weak_caps),
+            "potential_pairs_total": len(potential_pairs),
+            "lists_truncated": (len(weak_caps) > 10) or (len(potential_pairs) > 10),
+            "lists_note": ("weak_caps / potential_pairs 各只列**前 10 条**；总数看 "
+                           "weak_caps_total / potential_pairs_total —— "
+                           "**只列了一部分 ≠ 只有那么多**。"),
             "suggestions": suggestions,
             "brain_advice": brain_advice.get("synthesis", "") if brain_advice and brain_advice.get("ok") else None,
         }
@@ -763,7 +859,7 @@ class DevourTentacle:
                 if items:
                     all_knowledge[cap_dir.name] = items
             except Exception as _e:
-                print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "devour_tentacle")
         if not all_knowledge:
             return {"ok": True, "digested": 0, "message": "无吸收知识可消化"}
         
@@ -800,7 +896,7 @@ class DevourTentacle:
                         if data.get("actions") and len(data["actions"]) > 1:
                             all_caps_with_actions.add(cap_dir.name)
                     except Exception as _e:
-                        print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+                        _record_swallow(_e, "devour_tentacle")
         caps_without_knowledge = all_caps_with_actions - set(all_knowledge.keys())
         
         brain_synthesis = None
@@ -811,7 +907,7 @@ class DevourTentacle:
                     context="devour_digest", timeout=4.0
                 )
             except Exception as _e:
-                print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "devour_tentacle")
         return {
             "ok": True,
             "digested": len(all_knowledge),
@@ -876,7 +972,7 @@ class DevourTentacle:
                     context="devour_recombine"
                 )
             except Exception as _e:
-                print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "devour_tentacle")
         # ⛔ 2026-08-02 修复: 目录创建改为 publish 托管 (镜像验证), 不再直接 mkdir 写项目树
         _gk_rb = type("_GK", (), {"publish": staticmethod(lambda p, content=None, note="": _v8_publish(p, content, note))})()
         _gk_rb.publish(str(new_dir / ".gbt_dir_marker"), "dir", "devour_recombine_mkdir")
@@ -929,7 +1025,7 @@ class DevourTentacle:
             self._connect_neighborhoods(cap_name=new_name, 
                                        cap_domains=list(set(data1.get("domains",[]) + data2.get("domains",[]))))
         except Exception as _e:
-            print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "devour_tentacle")
         return {
             "ok": True, "recombined": True,
             "sources": [cap1, cap2], "new_cap": new_name,
@@ -967,7 +1063,7 @@ class DevourTentacle:
                 context="devour_innovate"
             )
         except Exception as _e:
-            print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "devour_tentacle")
         domains_to_scan = {domain: innovation_domains[domain]} if domain and domain in innovation_domains else innovation_domains
         
         innovations = []
@@ -1002,8 +1098,18 @@ class DevourTentacle:
             }
             _dpy_inn.deploy(str(cap_dir/"knowledge.json"), _json.dumps(innovative_cap,ensure_ascii=False,indent=2), context="devour_innovate")
             
-            stub = f'"""caps/{cap_name}/run.py"""\\nimport json\\ndef do_run(p): return {{"ok":True,"cap":"{cap_name}"}}\\ndef do_research(p): return {{"ok":True}}\\nHANDLERS={{"run":do_run,"research":do_research}}\\nif __name__=="__main__":\\n    import sys\\n    a=sys.argv[3]if len(sys.argv)>3 else"run"\\n    print(json.dumps(HANDLERS.get(a,do_run)({{}})))\\n'
-            _dpy_inn.deploy(str(cap_dir/"run.py"), stub, context="devour_innovate_run")
+            # ── 2026-09-22 修（Owner：复刻式实现要「目之所至且是真实」）────────
+            # 原文这里是恒返回桩：
+            #     def do_run(p): return {"ok":True,"cap":"..."}   ← **不做任何事却报成功**
+            # 病灶：生成器自己犯了反空壳律要打的形态。吞进来 → 反思 → 重组 → 建目录 →
+            #       写 knowledge.json 全是真的，**唯独最后生成的能力体是假的**。
+            # 现在改成**诚实脚手架**：留着蓝图（概念/来源域/该做什么/需要什么），
+            # 但 `_IMPLEMENTED=False` 时如实报 needs_implementation，**绝不报成功**。
+            scaffold = _SCAFFOLD_TMPL.format(
+                cap_name=cap_name, concept=inn["concept"], domain=inn["domain"],
+                at=datetime.now().strftime("%Y-%m-%d"),
+            )
+            _dpy_inn.deploy(str(cap_dir/"run.py"), scaffold, context="devour_innovate_run")
             created.append({"name":cap_name,"domain":inn["domain"],"concept":inn["concept"]})
         
         self.state.setdefault("innovation_history",[])
@@ -1015,7 +1121,7 @@ class DevourTentacle:
             for _c in created:
                 self._connect_neighborhoods(cap_name=_c["name"], cap_domains=[_c["domain"]])
         except Exception as _e:
-            print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "devour_tentacle")
         return {
             "ok":True,"innovated":True,
             "concepts_found":len(innovations),"created":len(created),
@@ -1059,29 +1165,83 @@ def get_devourer() -> DevourTentacle:
 
 
 def devour_pulse() -> dict:
-    """吞噬脉冲 — 完整认知循环 v3"""
+    """吞噬脉冲 — 完整认知循环 v3
+
+    2026-09-22 修（职业习惯审计 G5-2「失败模式思考」）：
+      原文三处是**裸 except + 吞掉**：
+          try: reflect_result = d.reflect()
+          except: reflect_result = {"weak_caps":[],"potential_pairs":[]}
+      病：reflect 挂了与「真的没有弱能力」在账面上**长得一模一样**
+      （都是空列表），根因从此追不到 —— 踩铁律 5。
+      现在：**照样降级不中断循环，但把失败记进返回值**，账面能分清
+      「真没有」和「这一段挂了」。
+    """
     d = get_devourer()
+    stage_errors: dict = {}
     devour_result = d.quick_devour()
-    try: reflect_result = d.reflect()
-    except: reflect_result = {"weak_caps":[],"potential_pairs":[]}
-    try: digest_result = d.digest()
-    except: digest_result = {"digested":0,"cross_references":0}
+    try:
+        reflect_result = d.reflect()
+    except Exception as _e:
+        reflect_result = {"weak_caps": [], "potential_pairs": []}
+        stage_errors["reflect"] = f"{type(_e).__name__}: {str(_e)[:120]}"
+    try:
+        digest_result = d.digest()
+    except Exception as _e:
+        digest_result = {"digested": 0, "cross_references": 0}
+        stage_errors["digest"] = f"{type(_e).__name__}: {str(_e)[:120]}"
     recombine_count = 0
-    for pair in reflect_result.get("potential_pairs",[])[:3]:
+    for pair in reflect_result.get("potential_pairs", [])[:3]:
         try:
-            r=d.recombine(pair["cap1"],pair["cap2"])
-            if r.get("ok"): recombine_count+=1
+            r = d.recombine(pair["cap1"], pair["cap2"])
+            if r.get("ok"):
+                recombine_count += 1
         except Exception as _e:
-            print(f"⚠️ devour_tentacle: 吞错: {_e}", file=sys.stderr)
-    try: innovate_result = d.innovate()
-    except: innovate_result = {"created":0,"concepts_found":0}
+            _record_swallow(_e, "devour_tentacle")
+    try:
+        innovate_result = d.innovate()
+    except Exception as _e:
+        innovate_result = {"created": 0, "concepts_found": 0}
+        stage_errors["innovate"] = f"{type(_e).__name__}: {str(_e)[:120]}"
+
+    # ── 第六段（2026-09-22 新增）：自省知识库 ──
+    # Owner：「设计一个自己的知识库，记录大模型的技术输出来提升自己、进化自己、
+    #         衍生出自己的输出方式方向，自我能源补给，自主输出，动脑输出。」
+    # 前五段解决"吞进来"，这一段解决"变成我们自己的"：
+    #   原始技术输出 -> 蒸馏要点 -> 衍生我们自己的输出方式 -> 数能源（可证伪）
+    # 纪律：只**增加**返回字段，不动前五段的契约；这里挂了也不中断整轮，
+    #       但必须写进 stage_errors —— 不许和"真的没产出"长得一样。
+    try:
+        from .knowledge_base import pulse as _kb_pulse
+        kb_result = _kb_pulse()
+    except Exception as _e:
+        kb_result = {"ok": False, "productive": False,
+                     "note": "knowledge_base 不可用"}
+        stage_errors["knowledge_base"] = f"{type(_e).__name__}: {str(_e)[:120]}"
+
+    # ── 段内自带失败也要算失败（2026-09-22 修 · 反假执行）──
+    # quick_devour() 自己把异常吞进返回值（{"ok": False, "error": ...}）而**不抛**，
+    # 所以只写 except 会把"整段死了"报成 stage_errors 为空、顶层 ok=True。
+    # 实测就是：devour 段报 'list' object has no attribute 'values'，
+    # 而 stage_errors 是 {}、ok 是 true —— 账面全绿，里头是死的。
+    # 现在把"值里自报失败"一并收进 stage_errors，账面与事实对齐。
+    for _seg, _res in (("devour", devour_result), ("reflect", reflect_result),
+                       ("digest", digest_result), ("innovate", innovate_result),
+                       ("knowledge_base", kb_result)):
+        if isinstance(_res, dict) and _res.get("ok") is False:
+            stage_errors.setdefault(
+                _seg, "in-band(值内自报失败): " + str(_res.get("error")
+                                                     or _res.get("reason") or "")[:120])
+
     return {
-        "ok":True,
+        "ok": True,
+        "stage_errors": stage_errors,          # 空 dict = 六段全跑通；非空 = 哪段挂了
+        "stages_degraded": sorted(stage_errors),
         "devour":devour_result,
         "reflect":{"weak_caps":len(reflect_result.get("weak_caps",[])),"recombine_candidates":len(reflect_result.get("potential_pairs",[]))},
         "digest":{"caps_digested":digest_result.get("digested",0),"cross_references":digest_result.get("cross_references",0)},
         "recombine":{"processed":min(len(reflect_result.get("potential_pairs",[])),3),"created":recombine_count},
         "innovate":{"created":innovate_result.get("created",0),"concepts":innovate_result.get("concepts_found",0)},
+        "knowledge_base": kb_result,
     }
 
 if __name__ == "__main__":

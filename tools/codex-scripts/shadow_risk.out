@@ -1,0 +1,54 @@
+C:\Users\ADMIN\Desktop\GBTС����V8\.scratch\shadow_risk.py:9: DeprecationWarning: Flags not at the start of the expression '(?m)^\\s*from\\s+\\.\\w*' (truncated) but at position 30
+  rel_pat = re.compile(r"(?m)^\s*from\s+\.\w*\s+import|(?m)^\s*from\s+\.\s+import")
+总数: 41
+
+A 类 相对导入型（裸导入必 ImportError，失败显眼）: 28
+    api stale
+    app dup
+    auth_gate stale
+    autopilot dup
+    brain_exec dup
+    bt_control stale
+    cli dup
+    cross_scan dup
+    devour dup
+    engine stale
+    ghost_guard dup
+    hygiene dup
+    inventory dup
+    longrun dup
+    mirror_space dup
+    pipeline stale
+    qiankun dup
+    root_fix dup
+    schedule dup
+    selfscan stale
+    services dup
+    signature dup
+    store dup
+    tactics dup
+    think_loop dup
+    transfer stale
+    tripo dup
+    truth_scan dup
+
+B 类 绝对导入型 from gbt_allinone（裸导入仍指向真身，较安全）: 2
+    verify_capabilities stale
+    verify_caps stale
+
+C 类 两者皆无（纯 stdlib，裸导入会静默用旧逻辑 → 最危险）: 11
+    _fixplat stale
+    _fixplat2 stale
+    _fixplat3 stale
+    _paths stale
+    bluetooth_cap dup
+    browser_cap dup
+    caps_registry stale
+    quant_tech dup
+    soul stale
+    vision_cap dup
+    voice_cap dup
+
+D 类 两者皆有: 0 []
+
+JSON 落盘:.scratch/shadow_risk.json

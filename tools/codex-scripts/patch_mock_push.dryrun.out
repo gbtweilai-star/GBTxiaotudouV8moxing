@@ -1,0 +1,6 @@
+﻿原 mock sha256 = 7048da6890d9147095bba7a34c6020825da85ba816115d56f75ae77403eb5d78 | 行数 = 252
+R1 命中 1 次  PASS
+R2 命中 1 次  PASS
+R3 命中 1 次  PASS
+py_compile = PASS
+dry-run 全绿（未写盘）。加 --go 落盘。

@@ -1,0 +1,316 @@
+扫描 .py 文件数: 819
+
+=== 1) sys.path 注入点 ===
+app.py:11: python -c "import sys;sys.path.insert(0,'.');from gbt_allinone.app import main;main()"
+app.py:12: 不要用 `python -m gbt_allinone.app`：自带解释器开启安全路径，当前目录不进 sys.path；
+app.py:115: print("    \"%s\" -c \"import sys;sys.path.insert(0,'.');from gbt_allinone.app import main;main()\"" % found)
+app.py:121: print("    python -c \"import sys;sys.path.insert(0,'.');from gbt_allinone.cli import main;main(['list'])\"")
+app.py:122: print("  注: -m gbt_allinone 在本机不可用，因为解释器开启安全路径，当前目录不进 sys.path。")
+bluetooth_cap.py:24: if _PYLIBS.exists() and str(_PYLIBS) not in sys.path:
+bluetooth_cap.py:25: sys.path.insert(0, str(_PYLIBS))
+devour.py:41: sys.path.insert(0, str(ROOT))
+selfscan.py:129: if str(_ROOT) not in sys.path:
+selfscan.py:130: sys.path.insert(0, str(_ROOT))
+truth_scan.py:19: if str(_HERE.parent) not in sys.path:
+truth_scan.py:20: sys.path.insert(0, str(_HERE.parent))
+verify_capabilities.py:13: sys.path.insert(0, workspace)
+verify_caps.py:12: sys.path.insert(0, script_dir)
+vision_cap.py:23: if _PYLIBS.exists() and str(_PYLIBS) not in _sys.path:
+vision_cap.py:24: _sys.path.insert(0, str(_PYLIBS))
+voice_cap.py:16: if _PYLIBS.exists() and str(_PYLIBS) not in _sys.path:
+voice_cap.py:17: _sys.path.insert(0, str(_PYLIBS))
+.cluster\benchmark\bench_gbt.py:18: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt\brain")
+.cluster\benchmark\bench_gbt2.py:17: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt\brain")
+.cluster\five-dim-ultimate\five_dimension_glm.py:12: if _CAPS not in sys.path:
+.cluster\five-dim-ultimate\five_dimension_glm.py:13: sys.path.insert(0, _CAPS)
+.cluster\five-dim-ultimate\five_dimension_glm.py:82: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt\brain")
+.cluster\five-dim-ultimate\five_dimension_ultimate.py:18: if _CAPS not in sys.path:
+.cluster\five-dim-ultimate\five_dimension_ultimate.py:19: sys.path.insert(0, _CAPS)
+.cluster\five-dim-ultimate\five_dim_deep_polish.py:14: if _CAPS not in sys.path:
+.cluster\five-dim-ultimate\five_dim_deep_polish.py:15: sys.path.insert(0, _CAPS)
+.cluster\five-dim-ultimate\multibrain_bridge.py:14: if _CAPS not in sys.path:
+.cluster\five-dim-ultimate\multibrain_bridge.py:15: sys.path.insert(0, _CAPS)
+.cluster\five-dim-ultimate\polish_full_chain.py:8: sys.path.insert(0, FD + r"\caps")
+.openclaw\tmp\bt_api_write.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\bt_audit.py:7: sys.path.insert(0, W)
+.openclaw\tmp\bt_connect_verify.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\bt_context.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\bt_ctrl_verify.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\bt_intent_regression.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\bt_read_verify.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\bt_verify.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\bt_write_devices.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\bt_write_devices2.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\bt_write_final.py:6: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\bt_write_verify.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\bt_write_verify2.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\cap_probe.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\check_affection.py:5: sys.path.insert(0, PET)
+.openclaw\tmp\check_dc.py:3: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\check_deps.py:3: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\check_deps.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8\gbt_allinone\.pylibs")
+.openclaw\tmp\check_key2.py:2: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt\brain")
+.openclaw\tmp\check_ledger_import.py:3: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\check_mono.py:4: sys.path.insert(0, PET)
+.openclaw\tmp\clean_checkout_sim.py:32: sys.path.insert(0, r"C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8")
+.openclaw\tmp\dbg_key_chars.py:19: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt\brain")
+.openclaw\tmp\dbg_provider.py:2: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt")
+.openclaw\tmp\dbg_provider4.py:2: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt")
+.openclaw\tmp\debug_cross.py:3: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\debug_selfscan.py:3: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\diag_agnes.py:29: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt\brain")
+.openclaw\tmp\e2e_coding.py:5: sys.path.insert(0, PET)
+.openclaw\tmp\final_checklist.py:29: sys.path.insert(0, CANON + r"\.cluster\five-dim-ultimate\caps")
+.openclaw\tmp\final_key_dbg.py:3: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt\brain")
+.openclaw\tmp\final_polish_verify.py:3: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt\brain")
+.openclaw\tmp\final_scan.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\five_dim_final_verify.py:3: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt\brain")
+.openclaw\tmp\five_dim_final_verify.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8\.cluster\five-dim-ultimate\caps")
+.openclaw\tmp\glm_live_test3.py:4: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt")
+.openclaw\tmp\gui_smoke.py:4: sys.path.insert(0, BASE)
+.openclaw\tmp\gui_smoke2.py:4: sys.path.insert(0, BASE)
+.openclaw\tmp\integrate_eng.py:37: sys.path.insert(0, r"C:\\Users\\ADMIN\\.openclaw-autoclaw\\workspace\\gbt\\brain")
+.openclaw\tmp\integration_smoke.py:4: sys.path.insert(0, BASE)
+.openclaw\tmp\model_smoke.py:4: sys.path.insert(0, BASE)
+.openclaw\tmp\panel_v6_verify.py:5: sys.path.insert(0, PET)
+.openclaw\tmp\pet_boot2.py:10: "sys.path.insert(0, r'" + PET + "')\n"
+.openclaw\tmp\pet_full_boot.py:10: "sys.path.insert(0, r'" + PET + "')\n"
+.openclaw\tmp\pet_stability.py:17: sys.path.insert(0, PET)
+.openclaw\tmp\pet_v3_smoke.py:33: sys.path.insert(0, PET)
+.openclaw\tmp\polish_verify.py:3: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt\brain")
+.openclaw\tmp\probe_channels.py:3: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt\brain")
+.openclaw\tmp\probe_setexp.py:6: sys.path.insert(0, PET)
+.openclaw\tmp\repro_latin1.py:3: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt")
+.openclaw\tmp\repro_live2d.py:10: "sys.path.insert(0, r'" + PET + "')\n"
+.openclaw\tmp\smoke_evolution.py:2: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt")
+.openclaw\tmp\stability_final.py:8: sys.path.insert(0, PET)
+.openclaw\tmp\test_behavior_smoke.py:15: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8\potato_pet")
+.openclaw\tmp\test_deepseek.py:5: sys.path.insert(0, PET)
+.openclaw\tmp\test_ds_direct.py:3: sys.path.insert(0, r"C:\Users\ADMIN\.openclaw-autoclaw\workspace\gbt\brain")
+.openclaw\tmp\test_setexp.py:7: sys.path.insert(0, PET)
+.openclaw\tmp\v2_smoke.py:4: sys.path.insert(0, BASE)
+.openclaw\tmp\v8_deluxe_verify.py:12: sys.path.insert(0, PET)
+.openclaw\tmp\verify_fixes.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\verify_fsync.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\verify_removal.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\verify_rule10.py:11: f"sys.path.insert(0, r'{W}')\n"
+.openclaw\tmp\verify_tripo2.py:5: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\verify_tripo_voice.py:4: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\verify_tripo_voice.py:25: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8\potato_pet")
+.openclaw\tmp\voice_final.py:6: sys.path.insert(0, PET)
+.openclaw\tmp\voice_final.py:16: sys.path.insert(0, r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+.openclaw\tmp\voice_test.py:4: sys.path.insert(0, PET)
+delivery\桌面数字人GBT小土豆\main.py:14: if BASE_DIR not in sys.path:
+delivery\桌面数字人GBT小土豆\main.py:15: sys.path.insert(0, BASE_DIR)
+gbt_allinone\app.py:11: python -c "import sys;sys.path.insert(0,'.');from gbt_allinone.app import main;main()"
+gbt_allinone\app.py:12: 不要用 `python -m gbt_allinone.app`：自带解释器开启安全路径，当前目录不进 sys.path；
+gbt_allinone\app.py:115: print("    \"%s\" -c \"import sys;sys.path.insert(0,'.');from gbt_allinone.app import main;main()\"" % found)
+gbt_allinone\app.py:121: print("    python -c \"import sys;sys.path.insert(0,'.');from gbt_allinone.cli import main;main(['list'])\"")
+gbt_allinone\app.py:122: print("  注: -m gbt_allinone 在本机不可用，因为解释器开启安全路径，当前目录不进 sys.path。")
+gbt_allinone\bluetooth_cap.py:24: if _PYLIBS.exists() and str(_PYLIBS) not in sys.path:
+gbt_allinone\bluetooth_cap.py:25: sys.path.insert(0, str(_PYLIBS))
+gbt_allinone\dependency_paths.py:33: """Avoid putting sandbox-blocked or partially hydrated wheels on sys.path."""
+gbt_allinone\dependency_paths.py:55: if text in sys.path:
+gbt_allinone\dependency_paths.py:56: sys.path.remove(text)
+gbt_allinone\dependency_paths.py:57: sys.path.insert(0, text)
+gbt_allinone\dependency_paths.py:61: if text in sys.path:
+gbt_allinone\dependency_paths.py:62: sys.path.remove(text)
+gbt_allinone\dependency_paths.py:65: sys.path.append(text)
+gbt_allinone\devour.py:41: sys.path.insert(0, str(ROOT))
+gbt_allinone\selfscan.py:130: if str(_ROOT) not in sys.path:
+gbt_allinone\selfscan.py:131: sys.path.insert(0, str(_ROOT))
+gbt_allinone\truth_scan.py:19: if str(_HERE.parent) not in sys.path:
+gbt_allinone\truth_scan.py:20: sys.path.insert(0, str(_HERE.parent))
+gbt_allinone\vision_cap.py:23: if _PYLIBS.exists() and str(_PYLIBS) not in _sys.path:
+gbt_allinone\vision_cap.py:24: _sys.path.insert(0, str(_PYLIBS))
+gbt_allinone\voice_cap.py:16: if _PYLIBS.exists() and str(_PYLIBS) not in _sys.path:
+gbt_allinone\voice_cap.py:17: _sys.path.insert(0, str(_PYLIBS))
+gbt_allinone\integration\smoke_test.py:29: sys.path.insert(0, _ROOT)
+gbt_allinone\llm\bridge.py:16: if str(_HERE) not in sys.path:
+gbt_allinone\llm\bridge.py:17: sys.path.insert(0, str(_HERE))
+gbt_allinone\llm\cloud_llm.py:217: sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+gbt_allinone\tentacle\bridge.py:29: if _PYLIBS.exists() and str(_PYLIBS) not in sys.path:
+gbt_allinone\tentacle\bridge.py:30: sys.path.insert(0, str(_PYLIBS))
+gbt_allinone\tentacle\bridge.py:31: if str(_TENTACLE_DIR) not in sys.path:
+gbt_allinone\tentacle\bridge.py:32: sys.path.insert(0, str(_TENTACLE_DIR))
+gbt_allinone\tentacle\omni_controller.py:33: sys.path.insert(0, str(ROOT))
+gbt_allinone\tentacle\omni_core.py:55: # 防御: 清理 sys.path 中的 cv2 目录条目 (cv2 目录身在 path 会导致 dxcam 内部 import cv2 递归爆炸)
+gbt_allinone\tentacle\omni_domain.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+gbt_allinone\tentacle\omni_domain.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+gbt_allinone\tentacle\omni_keyboard.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+gbt_allinone\tentacle\omni_keyboard.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+gbt_allinone\tentacle\omni_mouse.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+gbt_allinone\tentacle\omni_mouse.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+gbt_allinone\tentacle\omni_process.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+gbt_allinone\tentacle\omni_process.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+gbt_allinone\tentacle\omni_read.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+gbt_allinone\tentacle\omni_read.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+gbt_allinone\tentacle\omni_tentacle.py:11: # ⛔ 拆分保障: 自身目录 brain/ 入 sys.path — omni_core/mixin 与主文件同目录
+gbt_allinone\tentacle\omni_tentacle.py:16: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+gbt_allinone\tentacle\omni_vision.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+gbt_allinone\tentacle\omni_vision.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+gbt_allinone\tentacle\omni_window.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+gbt_allinone\tentacle\omni_window.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+gbt_allinone\tentacle\vision_watch.py:38: if str(_HERE) not in sys.path:
+gbt_allinone\tentacle\vision_watch.py:39: sys.path.insert(0, str(_HERE))
+gbt_allinone\tentacle\brain\tentacle_transmission.py:11: if str(_HERE.parent) not in sys.path:
+gbt_allinone\tentacle\brain\tentacle_transmission.py:12: sys.path.insert(0, str(_HERE.parent))
+gbt_allinone\tentacle\brain\transmit.py:14: if str(_HERE.parent) not in sys.path:
+gbt_allinone\tentacle\brain\transmit.py:15: sys.path.insert(0, str(_HERE.parent))
+gbt_allinone\tests\test_ai_audit.py:20: if _ROOT not in sys.path:
+gbt_allinone\tests\test_ai_audit.py:21: sys.path.insert(0, _ROOT)
+gbt_allinone\tests\test_codex_bridge.py:19: sys.path.insert(0, _ROOT)
+gbt_allinone\tests\test_framework.py:12: sys.path.insert(0, _ROOT)
+gbt_allinone\tests\test_life_archive.py:14: if _ROOT not in sys.path:
+gbt_allinone\tests\test_life_archive.py:15: sys.path.insert(0, _ROOT)
+gbt_allinone\tests\test_mind_engine.py:13: if _ROOT not in sys.path:
+gbt_allinone\tests\test_mind_engine.py:14: sys.path.insert(0, _ROOT)
+gbt_allinone\tests\test_notion_bridge.py:14: if str(path) not in sys.path:
+gbt_allinone\tests\test_notion_bridge.py:15: sys.path.insert(0, str(path))
+holo_pet\panel_server.py:31: if str(_path) not in sys.path:
+holo_pet\panel_server.py:32: sys.path.insert(0, str(_path))
+holo_pet\tests\test_panel_server.py:16: if str(path) not in sys.path:
+holo_pet\tests\test_panel_server.py:17: sys.path.insert(0, str(path))
+integration\smoke_test.py:29: sys.path.insert(0, _ROOT)
+llm\bridge.py:16: if str(_HERE) not in sys.path:
+llm\bridge.py:17: sys.path.insert(0, str(_HERE))
+llm\cloud_llm.py:215: sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+potato_pet\chat_client.py:46: if root not in sys.path:
+potato_pet\chat_client.py:47: sys.path.insert(0, root)
+potato_pet\codex_client.py:17: if _ROOT not in sys.path:
+potato_pet\codex_client.py:18: sys.path.insert(0, _ROOT)
+potato_pet\eigenflux_bridge.py:18: if _ROOT not in sys.path:
+potato_pet\eigenflux_bridge.py:19: sys.path.insert(0, _ROOT)
+potato_pet\main.py:16: if BASE_DIR not in sys.path:
+potato_pet\main.py:17: sys.path.insert(0, BASE_DIR)
+potato_pet\main.py:18: if ROOT_DIR not in sys.path:
+potato_pet\main.py:19: sys.path.insert(0, ROOT_DIR)
+potato_pet\mind_client.py:13: if _ROOT_DIR not in sys.path:
+potato_pet\mind_client.py:14: sys.path.insert(0, _ROOT_DIR)
+potato_pet\tests\test_chat_audit.py:20: if path not in sys.path:
+potato_pet\tests\test_chat_audit.py:21: sys.path.insert(0, path)
+potato_pet\tests\test_codex_client.py:54: sys.path.insert(0, _PET)
+potato_pet\tests\test_eigenflux_client.py:16: if PET_DIR not in sys.path:
+potato_pet\tests\test_eigenflux_client.py:17: sys.path.insert(0, PET_DIR)
+potato_pet\tests\test_mind_client.py:10: if _PET not in sys.path:
+potato_pet\tests\test_mind_client.py:11: sys.path.insert(0, _PET)
+tentacle\bridge.py:29: if _PYLIBS.exists() and str(_PYLIBS) not in sys.path:
+tentacle\bridge.py:30: sys.path.insert(0, str(_PYLIBS))
+tentacle\bridge.py:31: if str(_TENTACLE_DIR) not in sys.path:
+tentacle\bridge.py:32: sys.path.insert(0, str(_TENTACLE_DIR))
+tentacle\omni_controller.py:33: sys.path.insert(0, str(ROOT))
+tentacle\omni_core.py:55: # 防御: 清理 sys.path 中的 cv2 目录条目 (cv2 目录身在 path 会导致 dxcam 内部 import cv2 递归爆炸)
+tentacle\omni_domain.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+tentacle\omni_domain.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+tentacle\omni_keyboard.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+tentacle\omni_keyboard.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+tentacle\omni_mouse.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+tentacle\omni_mouse.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+tentacle\omni_process.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+tentacle\omni_process.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+tentacle\omni_read.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+tentacle\omni_read.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+tentacle\omni_tentacle.py:11: # ⛔ 拆分保障: 自身目录 brain/ 入 sys.path — omni_core/mixin 与主文件同目录
+tentacle\omni_tentacle.py:16: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+tentacle\omni_vision.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+tentacle\omni_vision.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+tentacle\omni_window.py:4: # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
+tentacle\omni_window.py:8: _sys.path.insert(0, str(_P(__file__).resolve().parent))
+tentacle\brain\tentacle_transmission.py:11: if str(_HERE.parent) not in sys.path:
+tentacle\brain\tentacle_transmission.py:12: sys.path.insert(0, str(_HERE.parent))
+tentacle\brain\transmit.py:13: if str(_HERE.parent) not in sys.path:
+tentacle\brain\transmit.py:14: sys.path.insert(0, str(_HERE.parent))
+tests\test_framework.py:12: sys.path.insert(0, _ROOT)
+审美相关skill\design-skeletons\last30days\scripts\briefing.py:21: sys.path.insert(0, str(SCRIPT_DIR))
+审美相关skill\design-skeletons\last30days\scripts\last30days.py:42: sys.path.insert(0, str(SCRIPT_DIR))
+审美相关skill\design-skeletons\last30days\scripts\store.py:22: sys.path.insert(0, str(SCRIPT_DIR))
+审美相关skill\design-skeletons\last30days\scripts\watchlist.py:19: sys.path.insert(0, str(SCRIPT_DIR))
+注入点总数: 224
+
+=== 2) PYTHONPATH / .pth 命中 ===
+PYTHONPATH env = None
+
+=== 3) 根目录顶层 .py 归属 ===
+STALE      __init__.py                    759  230e777d40a3ee3f  =84ae735d8ce95a2e  2026-09-15T14:15:41
+STALE      __main__.py                    100  2a11e0e456bfe14d  =f82aca3bf91c4fe9  2026-09-15T14:15:41
+ROOT_ONLY  _fixplat.py                  14252  c9c66cd4be708a9a  -  2026-09-12T06:41:33
+ROOT_ONLY  _fixplat2.py                  5755  8a8b98e59b1bd835  -  2026-09-12T06:43:49
+ROOT_ONLY  _fixplat3.py                  6262  c867991950a1bc34  -  2026-09-12T06:44:11
+STALE      _paths.py                      404  942244b93cf0ae72  =7b0811ce2f7a0851  2026-09-15T14:15:41
+STALE      api.py                       34749  dac2daea72244681  =fd72d385f4d08476  2026-09-15T14:15:41
+DUP        app.py                       14108  ae721178c519c6d6  =ae721178c519c6d6  2026-09-15T14:15:41
+STALE      auth_gate.py                  6558  f8811c901371cf9b  =e407bc6db6f2a733  2026-09-15T14:15:41
+DUP        autopilot.py                  7649  ac703f80b1ef40c1  =ac703f80b1ef40c1  2026-09-15T14:15:41
+DUP        bluetooth_cap.py              8502  ca062ea7029f94c5  =ca062ea7029f94c5  2026-09-15T14:15:41
+DUP        brain_exec.py                10366  9480783e9174d0bb  =9480783e9174d0bb  2026-09-15T14:15:41
+DUP        browser_cap.py                6431  394f821a6dc42b34  =394f821a6dc42b34  2026-09-15T14:15:41
+STALE      bt_control.py                16467  3576519f3249637b  =f9d636814465bc94  2026-09-15T14:15:41
+STALE      caps_registry.py             20519  472b148ad64f423e  =2d637a9ae28c93d3  2026-09-15T14:15:41
+DUP        cli.py                        2934  9999a28f9ecceead  =9999a28f9ecceead  2026-09-15T14:15:41
+DUP        cross_scan.py                 6672  ea21ffc337dbc867  =ea21ffc337dbc867  2026-09-15T14:15:41
+DUP        devour.py                    58081  2532bc886befb869  =2532bc886befb869  2026-09-15T14:15:41
+STALE      engine.py                    23396  51b2bd797ddf4d23  =ec43ca92f3df2a21  2026-09-15T14:15:41
+DUP        ghost_guard.py                9692  f5346a965910bac4  =f5346a965910bac4  2026-09-15T14:15:41
+DUP        hygiene.py                    9115  6bb60cddd93173ad  =6bb60cddd93173ad  2026-09-15T14:15:41
+DUP        inventory.py                  7269  6d4e3f51346664c0  =6d4e3f51346664c0  2026-09-15T14:15:41
+DUP        longrun.py                    8014  daf48e8987eeef5c  =daf48e8987eeef5c  2026-09-15T14:15:41
+DUP        mirror_space.py              11539  ffd259d1d0323362  =ffd259d1d0323362  2026-09-15T14:15:41
+STALE      pipeline.py                  20729  b6096faef6cfd041  =e861688e3d3509ba  2026-09-15T14:15:41
+DUP        qiankun.py                    8876  58d2bd15b6c13f8e  =58d2bd15b6c13f8e  2026-09-15T14:15:41
+DUP        quant_tech.py                 4540  f68d1cc57bb710b8  =f68d1cc57bb710b8  2026-09-15T14:15:41
+DUP        root_fix.py                  14496  bf9588b17e2c75aa  =bf9588b17e2c75aa  2026-09-15T14:15:41
+DUP        schedule.py                   4788  6f4bbfd2574692a8  =6f4bbfd2574692a8  2026-09-15T14:15:41
+STALE      selfscan.py                  15542  814f560dab2f09a1  =a93c9b05678b136b  2026-09-15T14:15:41
+DUP        services.py                   5993  5d40b0382b03ce81  =5d40b0382b03ce81  2026-09-15T14:15:41
+DUP        signature.py                  5124  ac9c6080fb1cb1df  =ac9c6080fb1cb1df  2026-09-15T14:15:41
+STALE      soul.py                       3465  c6977a8e24caa19d  =27e0da74c5b1167c  2026-09-15T14:15:41
+DUP        store.py                      4792  cd0c73e5af75d6d5  =cd0c73e5af75d6d5  2026-09-15T14:15:41
+DUP        tactics.py                    7338  fff93a0dcaa2f67c  =fff93a0dcaa2f67c  2026-09-15T14:15:41
+DUP        think_loop.py                 9124  3113ead698ee9d90  =3113ead698ee9d90  2026-09-15T14:15:41
+STALE      transfer.py                   5778  093911cfdd5c1f18  =5e663f3ff77084c1  2026-09-15T14:15:41
+DUP        tripo.py                     11128  e33fa509d5359fb9  =e33fa509d5359fb9  2026-09-15T14:15:41
+DUP        truth_scan.py                 6631  8932e5064ee40a18  =8932e5064ee40a18  2026-09-15T14:15:41
+ROOT_ONLY  verify_capabilities.py        2902  89de287bf735ce14  -  2026-09-15T14:01:26
+ROOT_ONLY  verify_caps.py                3877  cf2e6fc175fe0736  -  2026-09-15T12:48:40
+DUP        vision_cap.py                 6469  33b7b64a7eb581f3  =33b7b64a7eb581f3  2026-09-15T14:15:41
+DUP        voice_cap.py                  5107  cbcd35f5244f19a6  =cbcd35f5244f19a6  2026-09-15T14:15:41
+
+=== 4) 根目录顶层目录归属 ===
+.agents                files=2     twin=NO
+.autoclaw              files=0     twin=NO
+.backups               files=3     twin=NO
+.cluster               files=149   twin=NO
+.openclaw              files=555   twin=NO
+.openclaw-attachments  files=8     twin=NO
+.opencode              files=1     twin=NO
+adapters               files=2     twin=yes(10)
+agent-gvmz-gbtv8       files=117   twin=NO
+archive                files=0     twin=NO
+brain                  files=2     twin=NO
+caps                   files=1     twin=NO
+config                 files=2     twin=NO
+delivery               files=171   twin=NO
+deploy                 files=12    twin=yes(12)
+design-assets-index    files=3     twin=NO
+docs                   files=2     twin=yes(6)
+gbt_allinone           files=11163 twin=NO
+holo_pet               files=1707  twin=NO
+infinite-canvas-output files=2     twin=NO
+integration            files=5     twin=yes(19)
+llm                    files=3     twin=yes(15)
+memory                 files=5     twin=NO
+outputs                files=0     twin=NO
+potato_pet             files=171   twin=NO
+projects               files=0     twin=NO
+recon                  files=3     twin=yes(15)
+security               files=3     twin=yes(36)
+skills                 files=1     twin=NO
+tentacle               files=20    twin=yes(104)
+tests                  files=2     twin=yes(32)
+审美相关skill              files=887   twin=NO
+
+=== 5) 根级模块被 import 情况 ===
+  store: 3 处 -> [{'file': '审美相关skill\\design-skeletons\\last30days\\scripts\\briefing.py', 'line': 22, 'kind': 'import'}, {'file': '审美相关skill\\design-skeletons\\last30days\\scripts\\last30days.py', 'line': 204, 'kind': 'import'}, {'file': '审美相关skill\\design-skeletons\\last30days\\scripts\\watchlist.py', 'line': 20, 'kind': 'import'}]
+有根外引用的模块数: 1
+
+JSON 落盘: C:\Users\ADMIN\Desktop\GBT小土豆V8\.scratch\root_shadow_scan.json

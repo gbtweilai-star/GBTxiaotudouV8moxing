@@ -66,10 +66,17 @@ NEEDS_REVIEW_TRIGGERS = {
 
 
 def _local_nodes() -> list:
-    """本地能力位（真读数：111 位 · 19 条 entry_known · 9 口/6 位 verified(readonly)）。"""
+    """本地能力位（读数**全部现算**，不许写死 —— 见 build_net 的 metric_defs）。
+
+    🔴 2026-09-22 第 35 轮改名（错报治理）：这个集合原来叫 **`GREEN6`**，
+    但它的取值只有 **5** 个元素 —— **名字里的数字是假的**（"名字看着像计数"这类病，
+    本仓已犯过第 4 次：`scanned` 曾是布尔、`GREEN6` 是 5 个）。现名 `GREEN`：
+    不含数字的名字不会随成员增减而说谎。
+    集合语义：**已核实为只读**的本地能力位（人工清单，逐条复核过；不自动取证）。
+    """
     from gbt_allinone import caps_registry as C
     pkg = ROOT / "gbt_allinone"
-    GREEN6 = {"brain_vault", "project_context", "root_fix", "selfscan", "topic_watch", "tripo"}
+    GREEN = {"brain_vault", "project_context", "root_fix", "selfscan", "topic_watch"}
     TESTED = {"project_context", "prompt_bridge"}
     nodes = []
     for c in C.all_caps():
@@ -81,8 +88,8 @@ def _local_nodes() -> list:
             desc=str(c.get("desc") or "")[:80], source="local",
             indexed=True, entry_known=on_disk,
             reachable=on_disk, verified_reachable=on_disk,
-            verified_readonly=h in GREEN6, has_test=h in TESTED,
-            penetrate_ready=h in GREEN6,
+            verified_readonly=h in GREEN, has_test=h in TESTED,
+            penetrate_ready=h in GREEN,
             invoke_mode="api" if on_disk else "unknown",
             auth_type="blocked" if blocked else "unknown",
             requires_params=["params"] if c.get("requires_params") else [],
@@ -165,12 +172,39 @@ def run(op="status", **params) -> dict:
 
 
 def build_net() -> dict:
-    """建网：本地 + 外部 → 七栏读数。**每一格都能追到盘上。**"""
+    """建网：本地 + 外部 → 七栏读数。**每一格都能追到盘上。**
+
+    🔴 2026-09-22 第 35 轮修（错报治理 · 这是**产品在说谎**，不只是测试写死）：
+
+    七栏里原本有 **5 栏是现算的**（`"%d/%d" % (col(...), len(...))`），
+    而 `verified(readonly)` 与 `penetrate_ready` **两栏是写死的字面量**：
+
+        "verified(readonly)": "%d 口 / %d 位" % (9, 6),
+
+    有病的地方在于它**长得像现算** —— `%d` 占位符摆在那里，参数却是 `9` 和 `6` 两个字面量。
+    实测真相：`GREEN` 只有 **5** 个成员 ⇒ 该栏真值是 5 而不是 6；
+    而 `9` 在整个仓库里**找不到任何定义或可算来源**（`_READONLY_MODULES` 是 37、
+    `entry_known` 是 19、`entry ∩ 只读注册表` 是 0，没有一个是 9），
+    所有副本（原型 HTML、无限画布、trace 里的面板截图）都是同一个字面量抄来抄去。
+    更要命的是它**流到了主人眼睛看的那块面板上**
+    （`tools/codex-scripts/build_v8_canvas.py:157-158` 写着『值与 :root 清单逐字一致』）。
+
+    ⇒ 现改为**全部现算**，并把**口径写进返回值**（`metric_defs`）：谁能算就报谁、
+    算不出来的**不编**。`9 口` 那一半被拿掉，因为盘上没有任何东西能支撑它 ——
+    这是我**不敢替主人定义**的量，所以只能如实说"这个数没有出处"。
+    主人给出 `口` 的定义后，这里再加一行现算即可。
+    """
     local, external = _local_nodes(), _external_nodes()
     nodes = local + external
 
     def col(attr, pool):
         return sum(1 for n in pool if getattr(n, attr))
+
+    # 已核实只读：位=已核实只读的能力位个数；口=其中**确实有入口**的个数。
+    # 两个数**都是现算的**，谁涨谁落都跟着走，不存在"写死的读数"。
+    green_local = [n for n in local if n.verified_readonly]
+    green_entry = [n for n in green_local if n.entry_known]
+    green_txt = "%d 口 / %d 位" % (len(green_entry), len(green_local))
 
     return {
         "ok": True, "readonly": True,
@@ -180,10 +214,23 @@ def build_net() -> dict:
             "entry_known": "%d/%d" % (col("entry_known", nodes), len(nodes)),
             "reachable": "%d/%d" % (col("reachable", local), len(local)),
             "verified(reachable)": "%d/%d" % (col("verified_reachable", local), len(local)),
-            "verified(readonly)": "%d 口 / %d 位" % (9, 6),
+            "verified(readonly)": green_txt,
             "has_test": "%d/%d" % (col("has_test", local), len(local)),
-            "penetrate_ready": "%d 口 / %d 位" % (9, 6),
+            "penetrate_ready": green_txt,
         },
+        # 口径必须跟着读数一起交出去：否则下一个人读到 "5 口 / 5 位" 还是得猜单位。
+        "metric_defs": {
+            "位": "本地能力位里 **已核实只读** 的个数（现算：verified_readonly 为真的节点数）",
+            "口": "上述已核实只读位里 **确实有入口文件在盘上** 的个数（现算：entry_known 为真）",
+            "GREEN 出处": "人工逐条复核的只读清单（%d 条）；**不自动取证** ⇒ evidence_ref 为空"
+                          % len(green_local),
+            "9 口 已撤": ("原写法 `\"%%d 口 / %%d 位\" %% (9, 6)` 里 9 与 6 都是**字面量**，"
+                          "长得像现算其实写死。实测真值 6→%d；9 在盘上**无定义、无来源**，"
+                          "故撤下该半句，不替主人编一个新定义。" % len(green_local)),
+        },
+        "evidence_ref_note": ("`CapabilityNode.evidence_ref` 目前**恒为空串**（注册表 147 条里 "
+                              "0 条带 evidence 字段）⇒ 任何『带着 evidence_ref』的断言都只能用 "
+                              "`is not None` 空过。这是已知缺口，已在此显式登记，不再假装有证据。"),
         "needs_review": NEEDS_REVIEW_TRIGGERS,
         "honest_boundary": ("穿透网只保证『能力位可路由』，不保证『每个能力位都可穿透』；"
                             "『在索引里』不等于『能穿透』，『能穿透』不等于『已核实能穿透』，"

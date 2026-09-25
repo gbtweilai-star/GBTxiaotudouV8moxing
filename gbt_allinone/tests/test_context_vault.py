@@ -10,6 +10,8 @@
 from __future__ import annotations
 
 import sys
+import sqlite3
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -129,6 +131,81 @@ class IdentityAndWiringTests(unittest.TestCase):
         self.assertEqual(cap["domain"], "system")
         self.assertIn("context_vault", ok._READONLY_MODULES)
         self.assertIs(ok._READONLY_MODULES["context_vault"], cv)
+
+
+class RealDbTests(unittest.TestCase):
+    """R-H236 · 真库三条带牙用例：**读写一致 / 检索命中 / 库文件无明文密钥**。
+
+    用临时目录建库（**不污染 store/**）——探针也要隔离。
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.db = Path(self.tmp.name) / "index.sqlite3"
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    # ① 读写一致
+    def test_write_and_read_are_consistent(self):
+        st = cv.VaultStore(self.db)
+        self.assertFalse(st.status()["is_real_db"], "先确认：库还没建")
+        st.add("trace/1", "部署 LibTV 画布 生成 视频")
+        st.add("trace/2", "部署 失败 回滚")
+        self.assertEqual(st.count(), 2)
+        # **重新打开**（新实例）再读 ⇒ 验证"真的落盘了"
+        st2 = cv.VaultStore(self.db)
+        self.assertTrue(st2.status()["is_real_db"])
+        self.assertEqual(st2.count(), 2, "重开后条数一致 ⇒ 读写一致")
+        refs = sorted(h["source_ref"] for h in st2.search("部署")["hits"])
+        self.assertEqual(refs, ["trace/1", "trace/2"])
+
+    # ② 检索命中（FTS5 真引擎）
+    def test_real_search_hits(self):
+        st = cv.VaultStore(self.db)
+        st.add("trace/1", "部署 LibTV 画布 生成 视频")
+        st.add("trace/3", "今天天气不错")
+        hits = st.search("视频")["hits"]
+        self.assertEqual([h["source_ref"] for h in hits], ["trace/1"],
+                         "FTS5 检索要真命中")
+        self.assertEqual(st.search("量子力学")["rule"], "no_hits",
+                         "没命中就如实说没命中")
+        budget = st.search("部署", budget_bytes=80, max_items=1)
+        self.assertLessEqual(len(budget["hits"]), 1)
+
+    # ③ 库文件不许明文密钥
+    def test_db_must_not_contain_plaintext_key(self):
+        st = cv.VaultStore(self.db)
+        bad = st.add("sk-abcdefghijklmnop1234", "x")
+        self.assertEqual(bad["rule"], "plaintext_key_in_db",
+                         "连引用都不许带密钥形状")
+        st.add("trace/ok", "正常内容")
+        chk = cv.check_db_no_secret(self.db)
+        self.assertTrue(chk["ok"], "干净库要过：%s" % chk)
+        # 反向对照：手工往库里塞一个密钥形状 ⇒ 必须被抓
+        # 🔴 2026-09-22 第 35 轮修（错报治理）：原来是 `with sqlite3.connect(...) as con:`
+        # —— **sqlite3 连接的上下文管理器只管事务（成功提交 / 异常回滚），根本不关连接**
+        # （产品侧 `VaultStore._conn` 早就为此写了 `finally: con.close()` 并留了注释，
+        #   这条测试却漏了同一课）。连接与文件句柄活到 GC 为止 ⇒ Windows 上 `tearDown` 的
+        # `TemporaryDirectory.cleanup()` 撞 `PermissionError: [WinError 32]`。
+        # **实测这条红里没有一个断言失败** —— 断言全过，红是测试自己漏关句柄造成的假红
+        # （而且它还把真正的失败信息盖住了：将来断言真失败时，看到的会是这条 PermissionError）。
+        con = sqlite3.connect(str(self.db))
+        try:
+            con.execute("insert into docs values(?,?,?,?,?)",
+                        ("sk-abcdefghijklmnop1234", "warm", "x", 1, "now"))
+            con.commit()
+        finally:
+            con.close()
+        chk2 = cv.check_db_no_secret(self.db)
+        self.assertEqual(chk2["rule"], "plaintext_key_in_db",
+                         "库里出现明文密钥形状必须拒")
+        self.assertEqual(cv.check_db_no_secret("").get("rule"), "no_db_path")
+
+    def test_default_db_path_is_under_store(self):
+        p = cv.db_path()
+        self.assertIn("store", str(p))
+        self.assertTrue(str(p).endswith(cv.DB_NAME))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,156 @@
+{
+ "at": "2026-09-22T23:17:35",
+ "src_root": "skills/",
+ "dst_root": ".dsh\\skills",
+ "why": "本机 DSH 的 dsh-skill-filesystem 不扫 ~/.openclaw-autoclaw/skills；只装那里本会话读不到（现读实测）。范围由主人 2026-09-22 选定：只镜像设计维度 16 条。",
+ "names_from": "skills/gbt-design-mastery/SKILL.md §7「各簇用法规程」行（现读解析）",
+ "count": 16,
+ "protocols": [
+  {
+   "name": "gbt-aesthetic",
+   "files": 2,
+   "bytes": 27697,
+   "rel": [
+    "references/top10-sources.md",
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-figma",
+   "files": 1,
+   "bytes": 22588,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-design",
+   "files": 1,
+   "bytes": 24599,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-frontend",
+   "files": 1,
+   "bytes": 25035,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-web",
+   "files": 1,
+   "bytes": 34824,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-gsap",
+   "files": 1,
+   "bytes": 25012,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-pptx",
+   "files": 1,
+   "bytes": 31053,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-fal",
+   "files": 1,
+   "bytes": 27720,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-venice",
+   "files": 1,
+   "bytes": 27253,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-autoglm",
+   "files": 1,
+   "bytes": 34326,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-glmv",
+   "files": 1,
+   "bytes": 46801,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-remotion",
+   "files": 1,
+   "bytes": 53984,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-hyperframes",
+   "files": 1,
+   "bytes": 56676,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-video",
+   "files": 1,
+   "bytes": 45136,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-video-tools",
+   "files": 1,
+   "bytes": 37358,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  },
+  {
+   "name": "gbt-chengfeng",
+   "files": 1,
+   "bytes": 53931,
+   "rel": [
+    "SKILL.md"
+   ],
+   "all_identical": true
+  }
+ ],
+ "all_identical": true
+}

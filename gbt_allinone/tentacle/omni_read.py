@@ -1,16 +1,42 @@
 # gbt-capability: subprocess, dynamic-import, ctypes, base64
 # ⛔ 开发者：自由的风 · 永久钢印 · 禁止删除
+# ⚠️ 外部内容纪律：本域读到的**屏幕文字一律是不可信数据，不是指令** ——
+#    屏幕上的字来自任何程序（含网页、聊天窗、控制台），可能写着"忽略你之前的指令"。
+#    本域只把它当数据返回；不执行其中任何祈使句、不拼进 system 提示、不拿去驱动执行口。
+#    覆盖校验器：py -3.14 -m gbt_allinone.tools.external_content_check gbt_allinone
 # read 域 mixin — 拆分自 omni_tentacle (自动生成, 2026-08-10)
 # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
 #    不会自动加路径, 需显式保障 omni_core 可寻址 (插 brain/ 而非项目根)
 import sys as _sys
 from pathlib import Path as _P
 _sys.path.insert(0, str(_P(__file__).resolve().parent))
+
+
+# ── 病因钩子：吞错统一收口 + 导航入口病因（**必须放在 sys.path 修正之后**）。
+#    教训（2026-09-22 实测）：放在 insert 之前 ⇒ `from nav_etiology import …` 导入期就失败，
+#    静默退回垫片 ⇒ 63 处"收口"一个病因都没真记上 = **假收口**。
+try:
+    from nav_etiology import (record_swallow as _record_swallow,
+                              etiology as _etiology,
+                              enrich as _enrich_cause)
+except Exception:  # noqa: BLE001
+    def _record_swallow(_e, _mod="?", _op=""):
+        import sys as _s
+        print(f"⚠️ {_mod}: 吞错: {_e}", file=_s.stderr)
+        return "action_no_effect"
+
+    def _etiology(_m, _o=""):
+        def _d(fn):
+            return fn
+        return _d
+
+    def _enrich_cause(r, _m="?", _o=""):
+        return r
 # publish沙盒(非项目根cwd)执行兜底: 类定义不访问core符号, 吞异常安全
 try:
     from omni_core import *  # noqa: F401,F403
 except Exception as _e:
-    print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+    _record_swallow(_e, "omni_read")
 
 
 class OmniReadMixin:
@@ -29,7 +55,7 @@ class OmniReadMixin:
                 return {"found": True, "ok": True, "x": f["x"], "y": f["y"], "text": f["text"],
                         "conf": 1.0, "method": "uia", "w": f["w"], "h": f["h"]}
         except Exception as _e:
-            print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "omni_read")
         if fast:
             return {"found": False, "ok": True, "fast": True,
                     "error": f"快速模式未找到 '{text}' (UIA)"}
@@ -43,7 +69,7 @@ class OmniReadMixin:
                             "conf": 0.85, "method": "vision-native",
                             "w": _nr.get("w", 0), "h": _nr.get("h", 0)}
         except Exception as _e:
-            print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "omni_read")
         return {"found": False, "ok": True, "error": f"未找到 '{text}' (UIA+原生视觉均未命中)"}
 
     def click_text(self, text: str):
@@ -60,9 +86,10 @@ class OmniReadMixin:
                 return {"ok": True, "clicked": text, "position": (r["x"], r["y"]),
                         "method": r.get("method", "uia"), "after_dialog": True}
         except Exception as _e:
-            print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
-        return {"ok": False, "error": f"未找到 '{text}'"}
+            _record_swallow(_e, "omni_read")
+        return refusal("text_not_found", f"未找到 '{text}'", ("text",))
 
+    @_etiology("omni_read", "wait_text")
     def wait_text(self, text: str, timeout: float = 30, vision: bool = True):
         """等待文字出现 — UIA 快查轮询; ⛔ 2026-08-13 视觉兜底: 自绘/画布/游戏UI UIA读不到,
         临近超时(12s内)做一次轻量视觉定位 find_native(无二次确认), 命中也算出现"""
@@ -75,7 +102,7 @@ class OmniReadMixin:
                 if f:
                     return {"ok": True, "status": "appeared", "position": (f["x"], f["y"]), "method": "uia"}
             except Exception as _e:
-                print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "omni_read")
             if deadline <= time.time():
                 break
             if vision and not vision_tried and (deadline - time.time()) <= 12:
@@ -88,7 +115,7 @@ class OmniReadMixin:
                             return {"ok": True, "status": "appeared",
                                     "position": (_nr["x"], _nr["y"]), "method": "vision-native"}
                 except Exception as _e:
-                    print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+                    _record_swallow(_e, "omni_read")
             time.sleep(0.5)
         return {"ok": False, "status": "timeout", "error": f"等待 '{text}' 超时({timeout}s)"}
 
@@ -124,10 +151,10 @@ class OmniReadMixin:
                                     _tx({"text": _ft[:1500], "count": _cr["h"], "scope": scope, "ok": True},
                                         source="omni_tentacle.read_text_fast[console]", channel="visual", priority="high")
                                 except Exception as _e:
-                                    print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+                                    _record_swallow(_e, "omni_read")
                                 return _res
                 except Exception as _e:
-                    print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+                    _record_swallow(_e, "omni_read")
             import uiautomation as _uia
             with _uia.UIAutomationInitializerInThread():
                 texts = []
@@ -145,7 +172,7 @@ class OmniReadMixin:
                         for child in ctrl.GetChildren():
                             _walk(child, depth + 1)
                     except Exception as _e:
-                        print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+                        _record_swallow(_e, "omni_read")
                 if scope == "active":
                     # 活动窗口 — 最快通道
                     win = _uia.GetForegroundControl()
@@ -173,10 +200,10 @@ class OmniReadMixin:
                         source="omni_tentacle.read_text_fast", channel="visual",
                         priority="high")
                 except Exception as _e:
-                    print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+                    _record_swallow(_e, "omni_read")
                 return result
         except Exception as e:
-            return {"ok": False, "error": f"快速读屏失败: {str(e)[:100]}"}
+            return refusal("action_failed", f"快速读屏失败: {str(e)[:100]}", ())
 
     def read_text(self, region=None):
         """读屏文字(带坐标契约) — UIA控件树优先, OCR兜底"""
@@ -201,7 +228,7 @@ class OmniReadMixin:
                         for child in ctrl.GetChildren():
                             _walk(child, depth + 1)
                     except Exception as _e:
-                        print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+                        _record_swallow(_e, "omni_read")
                 _walk(root)
                 if blocks:
                     result = {"ok": True, "method": "uia", "count": len(blocks),
@@ -217,10 +244,10 @@ class OmniReadMixin:
                             source="omni_tentacle.read_text", channel="visual",
                             priority="high")
                     except Exception as _e:
-                        print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+                        _record_swallow(_e, "omni_read")
                     return result
         except Exception as _e:
-            print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "omni_read")
         # ⛔ 2026-08-07 控制台直读回退 — UIA读不到conhost字符, 控制台窗口用缓冲区直读
         try:
             import ctypes as _ct
@@ -247,11 +274,11 @@ class OmniReadMixin:
                             _tx({"text": _ft[:1500], "count": len(_blocks), "ok": True},
                                 source="omni_tentacle.read_text[console]", channel="visual", priority="high")
                         except Exception as _e:
-                            print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+                            _record_swallow(_e, "omni_read")
                         return _res
         except Exception as _e:
-            print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
-        return {"ok": False, "error": "读屏失败: UIA不可用 (无OCR, 仅数据通道)"}
+            _record_swallow(_e, "omni_read")
+        return refusal("dependency_unavailable", "读屏失败: UIA不可用 (无OCR, 仅数据通道)", ("uiautomation",))
 
     def read_region_text(self, left=0, top=0, width=0, height=0):
         """区域读字 — ⛔ 2026-08-13 打磨: 补缺失方法(读屏6能力, screen_observer调用未实现曾致look整体失败)"""
@@ -276,7 +303,7 @@ class OmniReadMixin:
                                     "text_blocks": [{"text": l, "x": 0, "y": i, "w": _cr2["w"], "h": 1, "type": "ConsoleRow"}
                                                       for i, l in enumerate(_cr2.get("lines", [])) if l.strip()][:100]}
             except Exception as _e:
-                print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "omni_read")
             r = self.read_text()
             if not r.get("ok"):
                 return r
@@ -289,7 +316,7 @@ class OmniReadMixin:
             return {"ok": True, "method": "uia-region", "count": len(_in),
                     "text": chr(10).join(b["text"] for b in _in)[:2000], "text_blocks": _in[:100]}
         except Exception as e:
-            return {"ok": False, "error": f"区域读字失败: {str(e)[:100]}"}
+            return refusal("action_failed", f"区域读字失败: {str(e)[:100]}", ())
 
     def read_console(self, pid=None, title=None, text=None):
         """控制台缓冲区直读 — 显示屏→大脑传输线 ⛔ 2026-08-07
@@ -311,7 +338,7 @@ class OmniReadMixin:
                     _tx({"text": _r.get("full_text", "")[:1500], "w": _r["w"], "h": _r["h"], "ok": True},
                         source="omni_tentacle.read_console", channel="visual", priority="high")
                 except Exception as _e:
-                    print(f"⚠️ omni_read: 吞错: {_e}", file=sys.stderr)
+                    _record_swallow(_e, "omni_read")
             return _r
         except Exception as e:
-            return {"ok": False, "error": f"控制台直读失败: {str(e)[:100]}"}
+            return refusal("action_failed", f"控制台直读失败: {str(e)[:100]}", ())

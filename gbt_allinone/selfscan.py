@@ -39,6 +39,7 @@ _MODULES = [
     # 集成收口：第九批新模块全部入列（黑客大脑/LLM网关/自主编排/真实性审计/触手）
     "security.security_brain", "security.abl_gateway",
     "llm.bridge", "truth_scan", "autopilot", "tentacle.bridge",
+    "record_grid",
 ]
 
 # 资金模块（纯全能 AI 框架不随库分发）：存在则检查，不存在不算病
@@ -158,7 +159,10 @@ def check_store():
                  "pipeline/production", "pipeline/records", "wf_runs"]
     missing = [d for d in need_dirs if not (store / d).exists()]
     corrupted = []
+    unreadable = []
+    checked = 0
     n = 0
+    attempted = 0
     if store.exists():
         # 性能纪律：全量列出 + 分层检查——活跃工作文件（顶层）全查，
         # 历史记录目录（wf_runs/pipeline/records）每目录抽前 50 个
@@ -166,25 +170,80 @@ def check_store():
         n = len(all_json)
         active = [jf for jf in store.glob("*.json")]
         sampled = [jf for jf in all_json if jf not in active][:150]
+        attempted = len(active) + len(sampled)
         for jf in active + sampled:
             try:
                 json.loads(jf.read_text(encoding="utf-8"))
+                checked += 1
+            except (PermissionError, OSError) as e:
+                # 🔴 「读不了」≠「坏了」：权限拒绝是**没扫到**，不是文件损坏。
+                #    实测（生产 store）：`pipeline/production/.versions/*.json` 就是这么被拒的。
+                #    归进 corrupted 会造一条**假红**；丢掉不说又变成**假绿** ⇒ 单列 unreadable。
+                unreadable.append({"file": str(jf.relative_to(_BASE)),
+                                   "error": type(e).__name__})
             except Exception as e:  # noqa: BLE001
                 corrupted.append({"file": str(jf.relative_to(_BASE)),
                                   "error": str(e)[:100]})
-    return {"json_files": n, "missing_dirs": missing,
-            "corrupted": corrupted, "ok": not missing and not corrupted}
+    complete = attempted >= n
+    # 🔴 2026-09-22 第 37 轮修（错报治理 · 本轮抓到最大的一条）：
+    #    原来只返回 `json_files`(=分母) + `corrupted`(抽样的结论) + `ok`，
+    #    **不返回"到底检查了多少"**。实测生产 store：2681 个 .json 只解析 **159** 个（**5.9%**）——
+    #    全量解析要 2317ms、超 selfscan 的 500ms 预算（剪掉 native_browser 那 34MB 浏览器剖析后
+    #    仍要 679ms）⇒ **抽样是必要的**，问题不在抽样，在**把抽样结论说成全量结论**。
+    #    `corrupted: []` 一交出去，读的人就会得出"全库 2681 个都没坏"。
+    #    ⇒ 现在把**分母 / 分子 / 覆盖口径**一并交出，并写明"未检查 ≠ 没有"。
+    return {"json_files": n, "json_checked": checked, "json_attempted": attempted,
+            "json_unreadable": len(unreadable),
+            "coverage": "full" if complete else "sampled",
+            "coverage_note": ("全量解析（%d/%d）" % (checked, n) if complete else
+                              "**抽样** %d/%d（%.1f%%）—— 其余 %d 个**没检查**，"
+                              "不许读成『没有损坏』"
+                              % (attempted, n, 100.0 * attempted / max(1, n), n - attempted)),
+            "missing_dirs": missing,
+            "corrupted": corrupted,
+            "unreadable": unreadable,
+            # ok 的**作用域**是本轮检查范围，不是"整个 store" —— 口径写在 ok_scope 里
+            "ok": not missing and not corrupted,
+            "ok_scope": "本轮检查范围内（覆盖口径见 coverage / coverage_note）"}
 
 
 def check_audit(last=500):
-    """审计体检（信号分级版）。
+    """审计体检（信号分级版 · 口径 R-H167 定清）。
 
-    三级信号：
-      runtime  运行时故障——真正要追的病（默认算 anomaly）
-      guard    护栏拦截——内网/安全策略/门禁在正常工作（不算病，如实列出）
-      trace    测试足迹——能力不存在/参数缺失等测试与联调残留（不算病，可清）
+    五档信号（**这是"病灶怎么分"，不是"成绩怎么算"**）：
+      runtime   运行时故障——真正要追的病（默认算 anomaly）
+      guard     护栏拦截——内网/安全策略/演练被门禁挡下：护栏在正常工作（不算病，如实列出）
+      trace     测试足迹——测试件（命中共用排除表）/探针/历史长程残留（不算病，可溯）
+      legacy    V5 遗留服务——已登记为"未迁移"：不报警，但 svc_inspect 仍能显式查到（≠ 删除）
+      recovered 历史掉线且当前已探活在线：如实报"已恢复"，不算现行故障
+
+    读数口径（**别用错尺子** · R-H167）：
+      · `anomalies` = 窗口内 `_ANOMALY_EVENTS` 的**全部事件条数**，恒等于
+        runtime + guard + trace + legacy + recovered —— **它含"已恢复"，不是净化成绩**。
+        它是"报警源总量"：净化刀不改变它（实测：净化前后都是 20）。
+      · **净化成绩只看 `runtime_faults`**。前后对比必须带这条分母，
+        不许用"排除了多少"代替"剩下多少"。
     """
     from .store import query_log
+    # 净化刀（R-H157）：排除表**引用** trace_store 那一张（唯一真相源，不另抄一份）
+    from .trace_store import SELFTEST_HINTS as _SELFTEST_HINTS, DRILL_KINDS as _DRILL_KINDS
+    # V5 遗留服务：登记为"未迁移" —— 不报警，但 svc_inspect 仍可显式查到（legacy ≠ 删除）
+    _LEGACY_SERVICES = {
+        "payment_gateway", "blockchain_bridge", "social_trading_v2", "monitor_service",
+        "backtest_api_v2", "cis_harvesting_v2", "quant_api", "cis_v42_trader",
+        "crypto_gateway", "gbt_wallet_api", "gbt_cap_bridge", "hcl_control", "gate_daemon"}
+
+    def _hit(hint: str, text: str) -> bool:
+        """词边界命中：**不许裸子串**（R-H158 实测教训：`test_` 撞上 `backtest_api_v2` 假阳性）。"""
+        i = text.find(hint)
+        while i >= 0:
+            left_ok = i == 0 or not (text[i - 1].isalnum() or text[i - 1] == "_")
+            j = i + len(hint)
+            right_ok = j >= len(text) or not (text[j].isalnum() or text[j] == "_")
+            if left_ok and right_ok:
+                return True
+            i = text.find(hint, i + 1)
+        return False
     rows = query_log(limit=last)
 
     # 恢复证据索引：窗口内每 kind 的成功调用（audit('ok')）——error 之后有 ok = 已恢复。
@@ -200,7 +259,7 @@ def check_audit(last=500):
                 ok_kinds.update([x for x in _k if isinstance(x, str)])
     by_event = {}
     by_kind = {}
-    by_signal = {"runtime": 0, "guard": 0, "trace": 0, "recovered": 0}
+    by_signal = {"runtime": 0, "guard": 0, "trace": 0, "legacy": 0, "recovered": 0}
     samples = []
     for r in rows:
         ev = r.get("event", "")
@@ -217,12 +276,23 @@ def check_audit(last=500):
 
         # 信号分级（v2 源头分类版——判例法退役）：
         # user_error 事件天然不算 anomaly（不在 _ANOMALY_EVENTS 里），
-        # error 事件现在只剩真故障——唯一的判例只剩护栏与不可改名的历史足迹。
+        # error 事件现在只剩真故障——不可改名的历史足迹只剩 T00（下面单独一档）。
         if meta.get("probe"):
             sig = "trace"     # 探针/观察者足迹（源头标记）：不是现行故障——最优先判定
         elif ("内网" in reason or "安全策略" in reason
-                or (ev == "pipeline_blocked" and str(key).startswith("t-"))):
+                or str(meta.get("kind") or "") in _DRILL_KINDS):
+            # 护栏拦截：内网 / 安全策略 / 演练被门禁挡下 —— 护栏在正常工作（不算病，如实列出）
             sig = "guard"
+        elif any(_hit(h, str(key).lower()) for h in _SELFTEST_HINTS):
+            # R-H167：测试件（命中共用排除表）**归 trace，不归 guard**。
+            # guard 的含义是"护栏在正常工作"，测试件是"根本不该进账的测试噪声"；
+            # 两件事挤在一格，读数的意思就变了（实测：7 条测试件 pipeline_blocked 被读成"护栏忙了 7 次"）。
+            # 顺手退役最后一个前缀判例（`startswith("t-")`）——不再靠前缀猜，改由排除表裁决（R-H157 的本意）。
+            # 词边界匹配（R-H158）：堵掉 test_ 撞 backtest_api_v2 的假阳性。
+            sig = "trace"
+        elif any(s.strip() in _LEGACY_SERVICES for s in str(key).split(",")):
+            # R-H158：支持**多服务逗号串**拆解（实测：鉴权/服务类 svc_down 的 key 是拼接串）
+            sig = "legacy"   # V5 遗留服务：不算 anomaly（仍可被 svc_inspect 显式查到）
         elif key.startswith("T00"):   # 历史长程测试任务（审计轮转前的旧记录，不可改名）
             sig = "trace"
         elif ev == "svc_down" and _service_recovered(key):
@@ -241,36 +311,80 @@ def check_audit(last=500):
 
         by_event[ev] = by_event.get(ev, 0) + 1
         by_signal[sig] = by_signal.get(sig, 0) + 1
-        by_kind.setdefault(key, {"runtime": 0, "guard": 0, "trace": 0, "recovered": 0})[sig] += 1
+        # R-H298（2026-09-22 根因修复）：多服务合并行**逐服务分账**。
+        # 病根：`meta.services` 本来是**列表**，被这里 `",".join(...)` 压成**一个 key** ⇒
+        #   报出来的"一个 capability"其实是 13 个 V5 遗留服务（payment_gateway, blockchain_bridge, …），
+        #   读的人既看不出是哪些、也没法逐个处置。
+        # 口径（必须写明，否则又是一处误读）：
+        #   by_event / by_signal **按事件计**（不受此改动影响）；
+        #   by_kind 是**逐服务明细** ⇒ 它的合计**不要求等于**事件数。
+        _members = [s.strip() for s in str(key).split(",") if s.strip()] or [str(key)]
+        for _m in _members:
+            by_kind.setdefault(_m, {"runtime": 0, "guard": 0, "trace": 0, "legacy": 0,
+                                    "recovered": 0})[sig] += 1
         if sig == "runtime" and len(samples) < 5:
             samples.append({"event": ev, "kind": key, "reason": reason[:120],
                             "at": r.get("iso")})
 
     total = sum(by_event.values())
     runtime = by_signal["runtime"]
+    # R-H167 口径（机器可读，给面板/沙盘/图纸取数用）：**别拿 anomalies 当净化成绩**。
+    scope = {
+        "anomalies": ("窗口内 _ANOMALY_EVENTS 的全部事件数"
+                      "（= runtime+guard+trace+legacy+recovered，含已恢复）——不是净化成绩"),
+        "scoreboard": "runtime_faults",
+        "why": "guard/trace/legacy/recovered 都不是现行故障；只有 runtime 才是要追的病",
+        "before_after_rule": "净化前后对比必须同路径同窗口，且必须带 runtime_faults 这条分母",
+    }
     return {"window": last, "anomalies": total, "runtime_faults": runtime,
             "by_event": by_event, "by_signal": by_signal,
             "errors_by_kind": by_kind, "recent_runtime": samples,
+            "reading_scope": scope,
             "ok": runtime == 0}
 
 
 def alerts(last=500):
-    """声带：近期异常摘要 + 根源线索（分级版）。"""
+    """声带：近期异常摘要 + 根源线索（分级版）。
+
+    R-H297（2026-09-22 根因修复）：`quiet` 原来等价于 `runtime_faults == 0`，
+    于是出现**读起来自相矛盾**的一屏：`quiet: true` 与 `anomalies: 4` 并排显示。
+    病根是**字段名骗人**：它只说「没有现行故障」，却长得像「一切正常」。
+    后果不是难看，是**给故障喘息** —— 人扫一眼 `quiet: true` 就不往下看了，
+    而那几条（`svc_down` / `pipeline_blocked`）会一直挂着没人碰。
+    修法：`quiet` 保留（不破坏既有消费者），**另加无歧义的三个字段**，
+    并把「quiet 到底代表什么」在 `quiet_means` 与 `note` 里写死。
+    """
     a = check_audit(last)
     if a["anomalies"] == 0:
-        return {"quiet": True, "anomalies": 0,
+        return {"quiet": True, "quiet_means": "窗口内确实什么都没有",
+                "any_signal": False, "needs_a_look": False, "anomalies": 0,
                 "note": "窗口期内无异常事件"}
     top = sorted(a["errors_by_kind"].items(),
-                 key=lambda x: -(x[1].get("runtime", 0)) )[:5]
-    return {"quiet": a["runtime_faults"] == 0,
+                 key=lambda x: -(int(x[1].get("runtime", 0) or 0) * 100
+                                 + int(x[1].get("guard", 0) or 0) * 10
+                                 + int(x[1].get("trace", 0) or 0)
+                                 + int(x[1].get("legacy", 0) or 0)))[:5]
+    runtime_faults = a["runtime_faults"]
+    return {"quiet": runtime_faults == 0,
+            "quiet_means": ("窗口内没有**现行故障**（runtime_faults=0）；"
+                            "但异常事件数不为 0 ⇒ 仍需人逐条看一眼"),
+            "any_signal": True,
+            "needs_a_look": True,
             "anomalies": a["anomalies"],
-            "runtime_faults": a["runtime_faults"],
+            "runtime_faults": runtime_faults,
             "by_signal": a["by_signal"],
             "by_event": a["by_event"],
             "top_offenders": [{"capability": k, "runtime": v.get("runtime", 0),
-                                "guard": v.get("guard", 0), "trace": v.get("trace", 0)}
+                                "guard": v.get("guard", 0), "trace": v.get("trace", 0),
+                                "legacy": v.get("legacy", 0),
+                                "total": sum(int(v.get(x, 0) or 0)
+                                             for x in ("runtime", "guard", "trace",
+                                                       "legacy", "recovered"))}
                                for k, v in top],
-            "note": "runtime=要追的病；guard=护栏正常工作；trace=测试足迹；recovered=历史掉线已恢复"}
+            "note": ("runtime=要追的病；guard=护栏正常工作；trace=测试足迹；"
+                     "legacy=历史缺席；recovered=历史掉线已恢复。"
+                     "⚠️ **别只看 quiet**：anomalies 不为 0 就得逐条看，"
+                     "否则那几条会一直挂着没人碰。")}
 
 
 def _autofix(sec_store):
@@ -333,5 +447,27 @@ def scan(autofix: bool = False) -> dict:
             "stub_gaps": stubs,
         },
         "capabilities_total": routing["registered"],
-        "note": "P0=断连/损坏必须修；P1=异常在发生；clean=五维全过（桩缺口如实列出不算病）",
+        # 🔴 2026-09-22 第 37 轮加（错报治理）：**覆盖口径必须一眼可读**。
+        #    原来那句 note 写的是「clean=五维**全过**」，而存储维度实测只检查了 **5.9%**
+        #    ⇒ 五维里的"全过"是假的。现在把每个维度的覆盖口径摊在顶层，
+        #    并把 note 改成**带前提**的说法（"在本轮检查范围内"），
+        #    读者不必去翻 sections 才知道哪个维度是抽样的。
+        #    另：`check_audit` 只读**最后 `window` 行**（窗读），**不是全账本** ⇒
+        #    它的口径如实写成 `window(N 行)`，不许默认成 "full"（那又是同一个病）。
+        "coverage": {
+            "routing": "full",
+            "modules": "full",
+            "store": store_sec.get("coverage"),
+            "audit": ("window(%s 行)" % audit_sec.get("window")
+                      if audit_sec.get("window") is not None else "full"),
+            "stub_gaps": "full",
+            "note": "本表逐维标明覆盖口径；**未检查 ≠ 没有**。",
+        },
+        "coverage_incomplete": [
+            k for k, v in (("store", store_sec.get("coverage")),
+                           ("audit", "window" if audit_sec.get("window") is not None else "full"))
+            if v != "full"],
+        "note": "P0=断连/损坏必须修；P1=异常在发生；"
+                "clean=五维**在本轮检查范围内**未发现问题（**不是**『五维全量验过』——"
+                "抽样维度见 coverage / coverage_incomplete；桩缺口如实列出不算病）",
     }

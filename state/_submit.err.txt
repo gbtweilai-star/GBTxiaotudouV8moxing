@@ -1,0 +1,40 @@
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\tools\codex-scripts\render-agent.py", line 208, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\tools\codex-scripts\render-agent.py", line 204, in main
+    return a.func(a)
+           ~~~~~~^^^
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\tools\codex-scripts\render-agent.py", line 115, in cmd_submit
+    ok, tail = _put(tmp, "%s/jobs/%s/spec.json" % (PREFIX, jid))
+               ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\tools\codex-scripts\render-agent.py", line 73, in _put
+    rc, out = _r2("object", "put", "%s/%s" % (BUCKET, key), "--file", str(local), "--remote")
+              ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\tools\codex-scripts\render-agent.py", line 67, in _r2
+    r = subprocess.run(["npx", "--yes", "wrangler", "r2", *args], capture_output=True,
+                       text=True, encoding="utf-8", errors="replace")
+  File "C:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\subprocess.py", line 1553, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+                             # no special security
+                             ^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+                             cwd,
+                             ^^^^
+                             startupinfo)
+                             ^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] 系统找不到指定的文件。

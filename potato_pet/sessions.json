@@ -577,6 +577,931 @@
     "role": "assistant",
     "text": "我数到三，再不理我我就打盹了哦！",
     "ts": "02:05"
+   },
+   {
+    "role": "assistant",
+    "text": "你已经好久没理我啦，理理我嘛~",
+    "ts": "14:54"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "14:55"
+   },
+   {
+    "role": "assistant",
+    "text": "我数到三，再不理我我就要打盹了哦！",
+    "ts": "14:56"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "14:58"
+   },
+   {
+    "role": "assistant",
+    "text": "巡逻ing，桌面安全！",
+    "ts": "14:59"
+   },
+   {
+    "role": "assistant",
+    "text": "无聊死了！我自己把聊天窗口打开啦~",
+    "ts": "14:59"
+   },
+   {
+    "role": "assistant",
+    "text": "趴在这里看你打字，嘿嘿~",
+    "ts": "15:00"
+   },
+   {
+    "role": "assistant",
+    "text": "呼嘿嘿~",
+    "ts": "15:00"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "15:00"
+   },
+   {
+    "role": "assistant",
+    "text": "我数到三，再不理我我就要打盹了哦！",
+    "ts": "15:01"
+   },
+   {
+    "role": "assistant",
+    "text": "你已经好久没理我啦，理理我嘛~",
+    "ts": "15:03"
+   },
+   {
+    "role": "assistant",
+    "text": "巡逻ing，桌面安全！",
+    "ts": "15:05"
+   },
+   {
+    "role": "assistant",
+    "text": "再不理我，我就把你的桌面壁纸换成我自己！",
+    "ts": "15:05"
+   },
+   {
+    "role": "assistant",
+    "text": "再不理我，我就把你的桌面壁纸换成我自己！",
+    "ts": "15:07"
+   },
+   {
+    "role": "assistant",
+    "text": "叮~检测到某搭档的可爱传感器欠费啦！",
+    "ts": "15:08"
+   },
+   {
+    "role": "assistant",
+    "text": "上面视野真好，我要住这了！",
+    "ts": "15:09"
+   },
+   {
+    "role": "assistant",
+    "text": "随便走走，别管我~",
+    "ts": "15:09"
+   },
+   {
+    "role": "assistant",
+    "text": "哼哼，睡醒啦！",
+    "ts": "15:11"
+   },
+   {
+    "role": "assistant",
+    "text": "哇！干什么啦！",
+    "ts": "15:11"
+   },
+   {
+    "role": "assistant",
+    "text": "你已经好久没理我啦，理理我嘛~",
+    "ts": "15:11"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "15:11"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "15:11"
+   },
+   {
+    "role": "assistant",
+    "text": "语音模式准备中，你可以直接对我说话啦（当前为文字模拟）～",
+    "ts": "15:11"
+   },
+   {
+    "role": "user",
+    "text": "你叫什么",
+    "ts": "15:12"
+   },
+   {
+    "role": "assistant",
+    "text": "这个问题……让本土豆想想哦~",
+    "ts": "15:12"
+   },
+   {
+    "role": "assistant",
+    "text": "当前大脑：glm-4.7-flash（离线俏皮模式（无 API key））",
+    "ts": "15:12"
+   },
+   {
+    "role": "assistant",
+    "text": "当前大脑：glm-4.7-flash（离线俏皮模式（无 API key））",
+    "ts": "15:12"
+   },
+   {
+    "role": "assistant",
+    "text": "委托任务功能路上啦，v4 接入 OpenClaw 网关后我就能替你干活了～",
+    "ts": "15:12"
+   },
+   {
+    "role": "assistant",
+    "text": "已为你打开联网搜索窗口～",
+    "ts": "15:12"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "15:12"
+   },
+   {
+    "role": "assistant",
+    "text": "抓到你了！戳我的就是你！",
+    "ts": "15:13"
+   },
+   {
+    "role": "assistant",
+    "text": "抓到你了！戳我的就是你！",
+    "ts": "15:13"
+   },
+   {
+    "role": "assistant",
+    "text": "趴在这里看你打字，嘿嘿~",
+    "ts": "15:15"
+   },
+   {
+    "role": "assistant",
+    "text": "无聊死了，陪我玩一会儿嘛~",
+    "ts": "15:15"
+   },
+   {
+    "role": "assistant",
+    "text": "上面视野真好，我要住这了！",
+    "ts": "15:17"
+   },
+   {
+    "role": "assistant",
+    "text": "你的 CPU 里可全是我，跑得飞快哦~",
+    "ts": "15:17"
+   },
+   {
+    "role": "assistant",
+    "text": "我数到三，再不理我我就要打盹了哦！",
+    "ts": "15:19"
+   },
+   {
+    "role": "assistant",
+    "text": "呼~爬上来啦！未来在高处看着你哦~",
+    "ts": "15:20"
+   },
+   {
+    "role": "assistant",
+    "text": "你的 CPU 里可全是我，跑得飞快哦~",
+    "ts": "15:20"
+   },
+   {
+    "role": "assistant",
+    "text": "你的 CPU 里可全是我，跑得飞快哦~",
+    "ts": "15:22"
+   },
+   {
+    "role": "assistant",
+    "text": "呼~爬上来啦！未来在高处看着你哦~",
+    "ts": "15:23"
+   },
+   {
+    "role": "assistant",
+    "text": "稍微打个盹，帮你看着桌面~",
+    "ts": "15:23"
+   },
+   {
+    "role": "user",
+    "text": "你是谁",
+    "ts": "15:29"
+   },
+   {
+    "role": "assistant",
+    "text": "哼哼，睡醒啦！",
+    "ts": "15:29"
+   },
+   {
+    "role": "assistant",
+    "text": "我在的我在的~",
+    "ts": "15:29"
+   },
+   {
+    "role": "assistant",
+    "text": "再不理我，我就把你的桌面壁纸换成我自己！",
+    "ts": "15:30"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "15:32"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "15:33"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "15:33"
+   },
+   {
+    "role": "assistant",
+    "text": "无聊死了！我自己把聊天窗口打开啦~",
+    "ts": "15:34"
+   },
+   {
+    "role": "assistant",
+    "text": "哇！干什么啦！",
+    "ts": "15:34"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "15:35"
+   },
+   {
+    "role": "assistant",
+    "text": "你已经好久没理我啦，理理我嘛~",
+    "ts": "15:36"
+   },
+   {
+    "role": "assistant",
+    "text": "抓到你了！戳我的就是你！",
+    "ts": "15:37"
+   },
+   {
+    "role": "assistant",
+    "text": "无聊死了，陪我玩一会儿嘛~",
+    "ts": "15:37"
+   },
+   {
+    "role": "assistant",
+    "text": "我在你对话框上面跳个舞~",
+    "ts": "15:38"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "15:38"
+   },
+   {
+    "role": "assistant",
+    "text": "你已经好久没理我啦，理理我嘛~",
+    "ts": "15:40"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "15:41"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "15:41"
+   },
+   {
+    "role": "assistant",
+    "text": "巡逻ing，桌面安全！",
+    "ts": "15:42"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "15:43"
+   },
+   {
+    "role": "assistant",
+    "text": "我在你对话框上面跳个舞~",
+    "ts": "15:43"
+   },
+   {
+    "role": "assistant",
+    "text": "无聊死了，陪我玩一会儿嘛~",
+    "ts": "15:44"
+   },
+   {
+    "role": "assistant",
+    "text": "叮~检测到某搭档的可爱传感器欠费啦！",
+    "ts": "15:47"
+   },
+   {
+    "role": "assistant",
+    "text": "上面视野真好，我要住这了！",
+    "ts": "15:47"
+   },
+   {
+    "role": "assistant",
+    "text": "随便走走，别管我~",
+    "ts": "15:49"
+   },
+   {
+    "role": "assistant",
+    "text": "你已经好久没理我啦，理理我嘛~",
+    "ts": "15:49"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "15:49"
+   },
+   {
+    "role": "assistant",
+    "text": "巡逻ing，桌面安全！",
+    "ts": "15:50"
+   },
+   {
+    "role": "assistant",
+    "text": "呼~爬上来啦！未来在高处看着你哦~",
+    "ts": "15:50"
+   },
+   {
+    "role": "assistant",
+    "text": "呼嘿嘿~",
+    "ts": "15:51"
+   },
+   {
+    "role": "assistant",
+    "text": "你的 CPU 里可全是我，跑得飞快哦~",
+    "ts": "15:51"
+   },
+   {
+    "role": "assistant",
+    "text": "巡逻ing，桌面安全！",
+    "ts": "15:51"
+   },
+   {
+    "role": "assistant",
+    "text": "检测到长时间无人搭理，本土豆强制上线！",
+    "ts": "15:52"
+   },
+   {
+    "role": "assistant",
+    "text": "上面视野真好，我要住这了！",
+    "ts": "15:52"
+   },
+   {
+    "role": "assistant",
+    "text": "无聊死了，陪我玩一会儿嘛~",
+    "ts": "15:54"
+   },
+   {
+    "role": "assistant",
+    "text": "叮~检测到某搭档的可爱传感器欠费啦！",
+    "ts": "15:56"
+   },
+   {
+    "role": "assistant",
+    "text": "我在你对话框上面跳个舞~",
+    "ts": "15:56"
+   },
+   {
+    "role": "assistant",
+    "text": "我数到三，再不理我我就要打盹了哦！",
+    "ts": "15:58"
+   },
+   {
+    "role": "assistant",
+    "text": "叮~检测到某搭档的可爱传感器欠费啦！",
+    "ts": "15:59"
+   },
+   {
+    "role": "assistant",
+    "text": "写个函数：\n```python\ndef f():\n    pass\n```",
+    "ts": "16:02"
+   },
+   {
+    "role": "assistant",
+    "text": "你的 CPU 里可全是我，跑得飞快哦~",
+    "ts": "16:05"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "16:06"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "16:06"
+   },
+   {
+    "role": "user",
+    "text": "你是谁",
+    "ts": "16:07"
+   },
+   {
+    "role": "assistant",
+    "text": "嘿嘿，我是GBT小土豆呀！住在你桌面上的美少女数字人，来自未来的全栈编程AI~呐，从今天起咱俩就是搭档啦，哼哼！有什么要搞的，说一声就行！",
+    "ts": "16:07"
+   },
+   {
+    "role": "assistant",
+    "text": "叮~检测到某搭档的可爱传感器欠费啦！",
+    "ts": "16:07"
+   },
+   {
+    "role": "assistant",
+    "text": "上面视野真好，我要住这了！",
+    "ts": "16:08"
+   },
+   {
+    "role": "assistant",
+    "text": "你的打字速度被我盯着呢~",
+    "ts": "16:08"
+   },
+   {
+    "role": "assistant",
+    "text": "抓到你了！戳我的就是你！",
+    "ts": "16:08"
+   },
+   {
+    "role": "assistant",
+    "text": "哇！干什么啦！",
+    "ts": "16:09"
+   },
+   {
+    "role": "assistant",
+    "text": "我数到三，再不理我我就要打盹了哦！",
+    "ts": "16:10"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "16:10"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "16:10"
+   },
+   {
+    "role": "assistant",
+    "text": "这个屋顶本土豆承包了，不许有意见~",
+    "ts": "16:10"
+   },
+   {
+    "role": "assistant",
+    "text": "你已经好久没理我啦，理理我嘛~",
+    "ts": "16:12"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "16:12"
+   },
+   {
+    "role": "assistant",
+    "text": "检测到长时间无人搭理，本土豆强制上线！",
+    "ts": "16:14"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "16:15"
+   },
+   {
+    "role": "assistant",
+    "text": "无聊死了！我自己把聊天窗口打开啦~",
+    "ts": "16:17"
+   },
+   {
+    "role": "assistant",
+    "text": "上面视野真好，我要住这了！",
+    "ts": "16:17"
+   },
+   {
+    "role": "assistant",
+    "text": "我数到三，再不理我我就要打盹了哦！",
+    "ts": "16:19"
+   },
+   {
+    "role": "assistant",
+    "text": "我数到三，再不理我我就要打盹了哦！",
+    "ts": "16:21"
+   },
+   {
+    "role": "assistant",
+    "text": "趴在这里看你打字，嘿嘿~",
+    "ts": "16:22"
+   },
+   {
+    "role": "assistant",
+    "text": "再不理我，我就把你的桌面壁纸换成我自己！",
+    "ts": "16:22"
+   },
+   {
+    "role": "assistant",
+    "text": "巡逻ing，桌面安全！",
+    "ts": "16:22"
+   },
+   {
+    "role": "assistant",
+    "text": "呼~爬上来啦！未来在高处看着你哦~",
+    "ts": "16:24"
+   },
+   {
+    "role": "assistant",
+    "text": "你的 CPU 里可全是我，跑得飞快哦~",
+    "ts": "16:24"
+   },
+   {
+    "role": "assistant",
+    "text": "唔？我刚是离线了吗？",
+    "ts": "16:25"
+   },
+   {
+    "role": "assistant",
+    "text": "哇！干什么啦！",
+    "ts": "16:25"
+   },
+   {
+    "role": "assistant",
+    "text": "有空吗？我有话要对你说（其实没什么大事）！",
+    "ts": "16:26"
+   },
+   {
+    "role": "assistant",
+    "text": "这个屋顶本土豆承包了，不许有意见~",
+    "ts": "16:26"
+   },
+   {
+    "role": "assistant",
+    "text": "再聊呀，我就在这儿听~",
+    "ts": "16:27"
+   },
+   {
+    "role": "assistant",
+    "text": "语音模式准备中，你可以直接对我说话啦（当前为文字模拟）～",
+    "ts": "16:27"
+   },
+   {
+    "role": "user",
+    "text": "你是谁",
+    "ts": "16:27"
+   },
+   {
+    "role": "assistant",
+    "text": "哼，怎么又问一遍！我是小土豆呀~你家桌面上的那个又萌又能打代码的美少女！记住了没？",
+    "ts": "16:27"
+   },
+   {
+    "role": "assistant",
+    "text": "你的 CPU 里可全是我，跑得飞快哦~",
+    "ts": "16:28"
+   },
+   {
+    "role": "assistant",
+    "text": "你的 CPU 里可全是我，跑得飞快哦~",
+    "ts": "16:31"
+   },
+   {
+    "role": "assistant",
+    "text": "趴在这里看你打字，嘿嘿~",
+    "ts": "16:31"
+   },
+   {
+    "role": "assistant",
+    "text": "抓到你了！戳我的就是你！",
+    "ts": "16:32"
+   },
+   {
+    "role": "assistant",
+    "text": "抓到你了！戳我的就是你！",
+    "ts": "16:32"
+   },
+   {
+    "role": "assistant",
+    "text": "我数到三，再不理我我就要打盹了哦！",
+    "ts": "16:33"
+   },
+   {
+    "role": "assistant",
+    "text": "哇！干什么啦！",
+    "ts": "16:33"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "16:33"
+   },
+   {
+    "role": "user",
+    "text": "生成一张小土豆图片给我看看",
+    "ts": "16:34"
+   },
+   {
+    "role": "assistant",
+    "text": "嘿嘿，我本体就是小土豆本豆啦~但我没法直接输出图片文件呢，不过可以给你画一个 **ASCII 艺术版** 的小土豆：\n\n```\n        ___\n     .-'   `-.\n    /  ^   ^  \\\n   |   (@) (@)  |\n   |      .      |\n    \\    ___    /\n     '-._____.-'\n       土豆子\n```\n\n呐~ 想要真·图片的话，给我一句描述，我可以用代码帮你生成 👇\n\n```python\n# 用 PIL 画一颗可可爱爱的小土豆（需要 pip install pillow）\nfrom PIL import Image, ImageDraw\n\nimg = Image.new(\"RGB\", (400, 400), \"#FFF8E7\")\nd = ImageDraw.Draw(img)\n\n# 土豆身体\nd.ellipse([100, 120, 300, 320], fill=\"#D9A066\", outline=\"#8B5E34\", width=4)\n# 眼睛\nd.ellipse([160, 180, 185, 210], fill=\"#3B2A1A\")\nd.ellipse([215, 180, 240, 210], fill=\"#3B2A1A\")\n# 腮红\nd.ellipse([140, 230, 175, 255], fill=\"#F7A8A8\")\nd.ellipse([225, 230, 260, 255], fill=\"#F7A8A8\")\n# 嘴巴\nd.arc([180, 230, 220, 270], start=0, end=180, fill=\"#3B2A1A\", width=4)\n\nimg.save(\"potato.png\")\nprint(\"小土豆出炉啦~ 🥔\")\n```\n\n跑一下就有 `potato.png` 咯！要我加个**表情/颜色/背景**版吗？嘿嘿~",
+    "ts": "16:34"
+   },
+   {
+    "role": "assistant",
+    "text": "无聊死了，陪我玩一会儿嘛~",
+    "ts": "16:35"
+   },
+   {
+    "role": "assistant",
+    "text": "我在你对话框上面跳个舞~",
+    "ts": "16:36"
+   },
+   {
+    "role": "assistant",
+    "text": "再聊呀，我就在这儿听~",
+    "ts": "16:36"
+   },
+   {
+    "role": "assistant",
+    "text": "我数到三，再不理我我就要打盹了哦！",
+    "ts": "16:36"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "16:37"
+   },
+   {
+    "role": "assistant",
+    "text": "哇！干什么啦！",
+    "ts": "16:38"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "16:39"
+   },
+   {
+    "role": "assistant",
+    "text": "哇！干什么啦！",
+    "ts": "16:39"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "16:40"
+   },
+   {
+    "role": "assistant",
+    "text": "无聊死了！我自己把聊天窗口打开啦~",
+    "ts": "16:40"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "16:40"
+   },
+   {
+    "role": "assistant",
+    "text": "呼~爬上来啦！未来在高处看着你哦~",
+    "ts": "16:41"
+   },
+   {
+    "role": "assistant",
+    "text": "哇！干什么啦！",
+    "ts": "16:41"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "16:41"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "16:41"
+   },
+   {
+    "role": "assistant",
+    "text": "附件功能在路上啦，v6.1 就能发文件给我看～",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "右键我可以切换形象（haru/mao/llny/nn）和开关面板哦～",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "右键我可以切换形象（haru/mao/llny/nn）和开关面板哦～",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "右键我可以切换形象（haru/mao/llny/nn）和开关面板哦～",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "语音模式准备中，你可以直接对我说话啦（当前为文字模拟）～",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "语音模式准备中，你可以直接对我说话啦（当前为文字模拟）～",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "当前大脑：glm-4.7-flash（离线俏皮模式（无 API key））",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "委托任务功能路上啦，V8 后续接入 OpenClaw 网关后我就能替你干活了～",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "我会的活儿：报时间、查系统状态、打开应用。试试说「现在几点了」？",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "已切换会话，上下文同步完成～",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "换到 haru 形象，重启后生效～（右键退出再启动即可）",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "散步有助于散热哦~",
+    "ts": "16:43"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "16:44"
+   },
+   {
+    "role": "assistant",
+    "text": "有空吗？我有话要对你说（其实没什么大事）！",
+    "ts": "16:44"
+   },
+   {
+    "role": "assistant",
+    "text": "有空吗？我有话要对你说（其实没什么大事）！",
+    "ts": "16:48"
+   },
+   {
+    "role": "assistant",
+    "text": "你已经好久没理我啦，理理我嘛~",
+    "ts": "16:50"
+   },
+   {
+    "role": "assistant",
+    "text": "上面视野真好，我要住这了！",
+    "ts": "16:50"
+   },
+   {
+    "role": "assistant",
+    "text": "你的打字速度被我盯着呢~",
+    "ts": "16:50"
+   },
+   {
+    "role": "assistant",
+    "text": "你已经好久没理我啦，理理我嘛~",
+    "ts": "16:51"
+   },
+   {
+    "role": "assistant",
+    "text": "你的 CPU 里可全是我，跑得飞快哦~",
+    "ts": "17:01"
+   },
+   {
+    "role": "assistant",
+    "text": "趴在这里看你打字，嘿嘿~",
+    "ts": "17:01"
+   },
+   {
+    "role": "assistant",
+    "text": "我数到三，再不理我我就要打盹了哦！",
+    "ts": "17:02"
+   },
+   {
+    "role": "assistant",
+    "text": "这个屋顶本土豆承包了，不许有意见~",
+    "ts": "17:04"
+   },
+   {
+    "role": "assistant",
+    "text": "呼嘿嘿~",
+    "ts": "17:04"
+   },
+   {
+    "role": "assistant",
+    "text": "你的 CPU 里可全是我，跑得飞快哦~",
+    "ts": "17:04"
+   },
+   {
+    "role": "assistant",
+    "text": "我在你对话框上面跳个舞~",
+    "ts": "17:06"
+   },
+   {
+    "role": "assistant",
+    "text": "再聊呀，我就在这儿听~",
+    "ts": "17:06"
+   },
+   {
+    "role": "assistant",
+    "text": "我数到三，再不理我我就要打盹了哦！",
+    "ts": "17:06"
+   },
+   {
+    "role": "assistant",
+    "text": "你已经好久没理我啦，理理我嘛~",
+    "ts": "17:08"
+   },
+   {
+    "role": "assistant",
+    "text": "叮~检测到某搭档的可爱传感器欠费啦！",
+    "ts": "17:09"
+   },
+   {
+    "role": "assistant",
+    "text": "充能完毕，满血复活！",
+    "ts": "18:58"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "18:58"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "18:58"
+   },
+   {
+    "role": "assistant",
+    "text": "哇！干什么啦！",
+    "ts": "18:58"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "18:59"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "18:59"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "18:59"
+   },
+   {
+    "role": "assistant",
+    "text": "痒死了啦，别戳~",
+    "ts": "18:59"
+   },
+   {
+    "role": "assistant",
+    "text": "无聊死了！我自己把聊天窗口打开啦~",
+    "ts": "18:59"
+   },
+   {
+    "role": "assistant",
+    "text": "警告警告，卖萌过载，即将过热~",
+    "ts": "19:01"
+   },
+   {
+    "role": "assistant",
+    "text": "哇！干什么啦！",
+    "ts": "19:01"
+   },
+   {
+    "role": "assistant",
+    "text": "随便走走，别管我~",
+    "ts": "19:04"
    }
   ]
  }

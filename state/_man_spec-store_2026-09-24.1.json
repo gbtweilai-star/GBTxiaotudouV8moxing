@@ -1,0 +1,10 @@
+{
+ "编号": "01",
+ "模块": "spec-store",
+ "运行地": "cloud",
+ "依赖编号": [],
+ "版本": "2026-09-24.1",
+ "状态": "已验",
+ "证据": "py -3.14 tools/codex-scripts/deploy-panel.py board --verify => 01 探针 ✓ 作业索引 pipeline/jobs/index.json 有 3 个作业",
+ "at": "2026-09-24T23:38:12"
+}

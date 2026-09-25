@@ -22,7 +22,7 @@ from pathlib import Path
 API_KEY = os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("KIMI_API_KEY") or ""
 IMAGE_API_KEY = os.environ.get("OPENAI_API_KEY") or os.environ.get("STABILITY_KEY") or ""
 BASE_URL = os.environ.get("GBT_LLM_BASE_URL", "https://api.deepseek.com")
-MODEL = os.environ.get("GBT_LLM_MODEL", "deepseek-chat")
+MODEL = os.environ.get("GBT_LLM_MODEL", "deepseek-flash")  # 官方唯一 id：deepseek-flash = DeepSeek-V4.1-Flash
 
 # ═══════════════════════════════════════════════════════════
 #  建筑与室内风格百科全书

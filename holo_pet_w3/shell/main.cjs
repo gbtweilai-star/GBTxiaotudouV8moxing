@@ -23,6 +23,7 @@ const crypto = require("crypto");
 const { execFile, spawn } = require("child_process");
 const layout = require("./layout.cjs");
 const features = require("./features.cjs");
+const chrome = require("./chrome.cjs");
 const os = require("os");
 
 const HERE = __dirname;
@@ -147,6 +148,201 @@ function httpGetJson(url, timeoutMs) {
 }
 
 function w3State() { return httpGetJson(PANEL + "/api/state", 2500); }
+
+/* ── R-H295 · 把框架自己的只读审计接进上帝视角 ──
+ *
+ * 欠账出处：docs/待落刀登记.md
+ *   · 「覆盖审计接进上帝视角（实时显示覆盖率与死角）」—— **未接**
+ *   · 「把零调用点清单接进上帝视角 / 工作区（定期扫、可点名）」—— **未接**
+ *
+ * 为什么以前接不上：`:8765` 的 `/api/capability` 是**异步**口 —— 它返回
+ * `{accepted, deferred, request_id}`，真结果由 `cap_result` 事件从 `/api/events`
+ * 送回来（panel_server.py:2290-2311）。渲染进程从 file:// 直接 fetch 会被 CORS 拦死
+ * （见本文件头注），所以「调能力 + 等结果」这件事只能在主进程做。
+ * 本函数就是补上这半截：POST 拿 request_id → 在该表上等 SSE 送回同名 request_id。
+ */
+const CAP_PENDING = new Map();
+
+function httpPostJson(pathname, bodyObj, timeoutMs) {
+  return new Promise((resolve) => {
+    const data = Buffer.from(JSON.stringify(bodyObj || {}), "utf8");
+    const m = PANEL.match(/^https?:\/\/([^\/:]+)(?::(\d+))?/);
+    const req = http.request({
+      host: (m && m[1]) || "127.0.0.1",
+      port: Number((m && m[2]) || 8765),
+      path: pathname,
+      method: "POST",
+      headers: { "Content-Type": "application/json",
+                 "Content-Length": data.length },
+    }, (res) => {
+      let raw = "";
+      res.setEncoding("utf8");
+      res.on("data", (d) => { raw += d; });
+      res.on("end", () => {
+        if (res.statusCode !== 200) return resolve(no("HTTP " + res.statusCode));
+        try { resolve(ok(JSON.parse(raw))); }
+        catch (e) { resolve(no("响应不是 JSON")); }
+      });
+    });
+    req.on("error", (err) => resolve(no(String(err.message || err))));
+    req.setTimeout(timeoutMs || 30000, () => { req.destroy(); resolve(no("超时")); });
+    req.write(data);
+    req.end();
+  });
+}
+
+/* 调一个能力并把结果等回来。
+ *
+ * R-H295：**自带订阅**，不复用全局那条 SSE。原因：app.whenReady() 里
+ * registerIpc → createWindow → buildTray → refreshTrayMenu → startSse 是**一条不断的链**，
+ * 上游任一环抛错（例如托盘图标构造失败）整条链就在 .catch 里结束，startSse 永远不会跑 ——
+ * 那时"能力调用超时"看起来像能力坏了，其实是订阅压根没建。
+ * 本函数自己开一条 /api/events 只等自己那个 request_id，拿到即断，与托盘/窗口解耦。
+ * 超时如实报超时，不拿空对象冒充成功。
+ */
+function callCapability(kind, payload, waitMs) {
+  return new Promise((resolve) => {
+    const data = Buffer.from(JSON.stringify({
+      kind: kind, payload: payload || {}, confirm: true,
+    }), "utf8");
+    const m = PANEL.match(/^https?:\/\/([^\/:]+)(?::(\d+))?/);
+    const host = (m && m[1]) || "127.0.0.1";
+    const port = Number((m && m[2]) || 8765);
+    const deadline = Date.now() + (waitMs || 60000);
+    let settled = false;
+    let sseReq = null;
+
+    function finish(value) {
+      if (settled) return;
+      settled = true;
+      if (sseReq) { try { sseReq.destroy(); } catch (e) { /* 已断 */ } }
+      resolve(value);
+    }
+
+    /* 先挂订阅，再发调用 —— 反过来会漏掉"结果比订阅先到"的窗口 */
+    sseReq = http.get({ host: host, port: port, path: "/api/events" }, (res) => {
+      if (res.statusCode !== 200) { finish(no("事件流 HTTP " + res.statusCode)); return; }
+      let buf = "";
+      res.setEncoding("utf8");
+      res.on("data", (chunk) => {
+        buf += chunk;
+        let idx = buf.indexOf("\n\n");
+        while (idx >= 0) {
+          const block = buf.slice(0, idx);
+          buf = buf.slice(idx + 2);
+          const dataLines = [];
+          const lines = block.split("\n");
+          for (let li = 0; li < lines.length; li++) {
+            const t = lines[li].replace(/\r$/, "");
+            if (t.indexOf("data:") === 0) dataLines.push(t.slice(5).replace(/^ /, ""));
+          }
+          if (!dataLines.length) { idx = buf.indexOf("\n\n"); continue; }
+          try {
+            const ev = JSON.parse(dataLines.join("\n"));
+            if (ev && ev.type === "cap_result" && ev.request_id === rid) {
+              finish(ok({ kind: ev.kind, request_id: ev.request_id,
+                          result: ev.result === undefined ? null : ev.result }));
+            }
+          } catch (e) { /* 非 JSON 忽略 */ }
+          idx = buf.indexOf("\n\n");
+        }
+      });
+      res.on("end", () => { /* 服务端断流：交给下面的超时兜底 */ });
+    });
+    sseReq.on("error", (err) => finish(no("事件流断开：" + String(err.message || err))));
+
+    let rid = null;
+    const posted = http.request({
+      host: host, port: port, path: "/api/capability", method: "POST",
+      headers: { "Content-Type": "application/json", "Content-Length": data.length },
+    }, (res) => {
+      let raw = "";
+      res.setEncoding("utf8");
+      res.on("data", (d) => { raw += d; });
+      res.on("end", () => {
+        let meta = {};
+        try { meta = JSON.parse(raw); } catch (e) { finish(no("能力口响应不是 JSON")); return; }
+        if (!meta.ok) { finish(no(meta.error || "能力口拒绝")); return; }
+        if (meta.needs_confirmation) {
+          finish(no("能力层要求二次确认，主进程未代确认（不绕门）",
+                    { kind: kind, needs_confirmation: true }));
+          return;
+        }
+        if (!meta.request_id) { finish(no("面板未回 request_id（异步口口径变了？）", meta)); return; }
+        rid = meta.request_id;
+        const timer = setInterval(() => {
+          if (Date.now() > deadline) {
+            clearInterval(timer);
+            finish(no("等结果超时（" + Math.round((waitMs || 60000) / 1000) + "s）：cap_result 没回来",
+                      { request_id: rid }));
+          }
+        }, 250);
+      });
+    });
+    posted.on("error", (err) => finish(no("能力口断开：" + String(err.message || err))));
+    posted.setTimeout(15000, () => { posted.destroy(); finish(no("能力口超时")); });
+    posted.write(data);
+    posted.end();
+  });
+}
+
+/* SSE 分发：命中等待表就把结果交回去（其余事件照旧广播给渲染层） */
+function settleCapPending(ev) {
+  if (!ev || ev.request_id === undefined) return false;
+  const slot = CAP_PENDING.get(ev.request_id);
+  if (!slot) return false;
+  CAP_PENDING.delete(ev.request_id);
+  clearTimeout(slot.timer);
+  slot.resolve(ok({ kind: ev.kind, request_id: ev.request_id,
+                    result: ev.result === undefined ? null : ev.result }));
+  return true;
+}
+
+/* 覆盖率审计（实时：每次调用现跑框架那只只读审计器，不存快照、不猜） */
+async function w3Coverage() {
+  const r = await callCapability("coverage_auditor", {}, 60000);
+  if (!r.ok) return r;
+  const body = (r.data && r.data.result) || {};
+  const inner = body.result && typeof body.result === "object" ? body.result : body;
+  return ok({
+    readonly: true,
+    note: "实时跑 coverage_auditor（只读审计器）；覆盖率与死角以它为准，面板不做二次判读。",
+    at: new Date().toISOString(),
+    raw: inner,
+  });
+}
+
+/* 渲染进化的最优基因（欠账：「进 trace_store · 工作区可跑实验 · 上帝视角显示最优基因」—— 未接）。
+   同 coverage/orphans：实时现跑 render_evolution，不落快照。
+   诚实口径：现在 genomes=0 —— 面板就该显示「还没有最优基因」，不许拿某个默认值冒充
+   （该能力自己的红线第 1 条就是「无基线不许进化」）。 */
+async function w3Gene() {
+  const r = await callCapability("render_evolution", {}, 60000);
+  if (!r.ok) return r;
+  const body = (r.data && r.data.result) || {};
+  const inner = body.result && typeof body.result === "object" ? body.result : body;
+  return ok({
+    readonly: true,
+    note: "实时跑 render_evolution（只读）；最优基因与实验数以它为准。0 代就如实写 0 代。",
+    at: new Date().toISOString(),
+    raw: inner,
+  });
+}
+
+
+async function w3Orphans() {
+  const r = await callCapability("caps_called_audit", {}, 60000);
+  if (!r.ok) return r;
+  const body = (r.data && r.data.result) || {};
+  const inner = body.result && typeof body.result === "object" ? body.result : body;
+  return ok({
+    readonly: true,
+    note: "实时跑 caps_called_audit（只读审计器）；孤儿口径以它自己的 rule 字段为准。",
+    at: new Date().toISOString(),
+    raw: inner,
+  });
+}
+
 
 function w3Tasks() {
   const file = path.join(STORE, "tasks.json");
@@ -287,10 +483,23 @@ function w3Introspect() {
 function startSse(broadcast) {
   let req = null;
   let retry = null;
-  function notify(st) { broadcast("w3:stream", st); }
+  /* 🔴 2026-09-23 第 43 轮：**状态变化如实打出来**。
+     为什么非打不可：这条链上有**三处静默出口**（非 200 / error / end），
+     任何一处走到，屏上只有「未接」三个字，盘上什么都没有 ——
+     于是"实时流没接上"这件事**没法从日志里查**，只能靠猜。
+     与本仓既定的"灰态必须带原因"同一条规矩。 */
+  function notify(st) {
+    lastStreamState = st;
+    console.log("[w3] 实时流状态: %s", st);
+    broadcast("w3:stream", st);
+  }
   function connect() {
     req = http.get(PANEL + "/api/events", (res) => {
-      if (res.statusCode !== 200) { notify("closed"); return schedule(); }
+      if (res.statusCode !== 200) {
+        console.error("[w3] 实时流被拒：HTTP %s（目标 %s/api/events）", res.statusCode, PANEL);
+        notify("closed");
+        return schedule();
+      }
       notify("open");
       let buf = "";
       res.setEncoding("utf8");
@@ -300,15 +509,46 @@ function startSse(broadcast) {
         while (idx >= 0) {
           const block = buf.slice(0, idx);
           buf = buf.slice(idx + 2);
-          if (block.indexOf("data: ") === 0) {
-            try { broadcast("w3:event", JSON.parse(block.slice(6))); } catch (e) { /* 心跳等忽略 */ }
+          /* R-H295 · 修根因：原来这里是
+           *     if (block.indexOf("data: ") === 0) { ... }
+           * 而 panel_server._write_sse（panel_server.py:2856）每条事件都**先写 `id: N\n`
+           * 再写 `data: …\n\n`** —— 于是**没有任何一个块是以 "data: " 开头的**，
+           * 这个条件永远不成立 ⇒ 上帝视角的实时推送从来没送进渲染层一条事件；
+           * 15 秒一次的心跳是注释行（`: heartbeat`），同样被丢掉，所以连"活着"都看不出来。
+           * 副作用：新接的 callCapability 也拿不到 cap_result（它也喂自这里）。
+           * 现在按 SSE 规范逐行解析：`data:` 可多行、`id:`/`event:`/注释各自独立；
+           * 首个块还夹着 HTTP 响应头（`\r\n\r\n`），逐行解析天然忽略它们。 */
+          const dataLines = [];
+          const lines = block.split("\n");
+          for (let li = 0; li < lines.length; li++) {
+            const t = lines[li].replace(/\r$/, "");
+            if (t.indexOf("data:") === 0) dataLines.push(t.slice(5).replace(/^ /, ""));
+          }
+          if (dataLines.length) {
+            try {
+              const ev = JSON.parse(dataLines.join("\n"));
+              /* 先喂等待表（callCapability 的结果就在 cap_result 上回来），再广播 */
+              settleCapPending(ev);
+              broadcast("w3:event", ev);
+            } catch (e) { /* 非 JSON 的心跳等忽略 */ }
           }
           idx = buf.indexOf("\n\n");
         }
       });
       res.on("end", () => { notify("closed"); schedule(); });
     });
-    req.on("error", () => { notify("closed"); schedule(); });
+    /* 🔴 2026-09-23 第 43 轮：这一行原来把**错误对象整个吞掉** ——
+       `req.on("error", () => { notify("closed"); schedule(); })`。
+       后果：实时流可以**永远**连不上（每 5 s 重试一次，一路静默），
+       而盘上、屏上都不说为什么 —— 页脚只有「未接」三个字。
+       这与 `broadcast` 那边早就定下的规矩（"坏因如实打到 stderr"）自相矛盾。
+       现在如实打出来：错误码 + 目标地址，让人**一眼知道断在哪**。 */
+    req.on("error", (err) => {
+      const why = (err && (err.code || err.message)) || "未知";
+      console.error("[w3] 实时流断开：%s（目标 %s/api/events）", why, PANEL);
+      notify("closed");
+      schedule();
+    });
   }
   function schedule() {
     if (retry) return;
@@ -332,7 +572,7 @@ function startSse(broadcast) {
 const TOOLS_CAPS = [
   {
     cap: "prompt_bridge",
-    registered: "caps_registry.py:560",
+    registered: "caps_registry.py:593",
     actions: [
       { name: "status", state: "live", reason: "只读纯函数：先问当前态再决定发不发车（零副作用）" },
       { name: "compile", state: "live", reason: "只读纯本地：四段模板 + 原意保真自检（丢词即 intent_loss）" },
@@ -349,7 +589,7 @@ const TOOLS_CAPS = [
   },
   {
     cap: "coze_mail",
-    registered: "caps_registry.py:465",
+    registered: "caps_registry.py:498",
     actions: [
       { name: "status", state: "live", reason: "只读探针：读 state.json 与通道行数，不调能力层" },
       { name: "search", state: "pending", reason: "后端未接线 backend_not_wired（coze_mail_cap.py:69 _UnwiredTransport）" },
@@ -359,7 +599,7 @@ const TOOLS_CAPS = [
   },
   {
     cap: "create",
-    registered: "caps_registry.py:471",
+    registered: "caps_registry.py:504",
     actions: [
       { name: "status", state: "live", reason: "只读探针：读 state.json 与写根存在性，零字节零目录" },
       { name: "intent", state: "pending", reason: "本地登记（不发网络）；本轮不开放点击" },
@@ -370,6 +610,29 @@ const TOOLS_CAPS = [
 
 const TOOLS_NOT_EXPORTED = "敏感档动作不挂出口（物理上没有键）：coze_mail mark / send / reply / register · create configure / write";
 const TOOLS_LINES_CAP_BYTES = 1048576;
+
+/* R-H295：`registered` 原来是**硬编码行号**，实测已经漂了一个 ——
+   voice_orchestra 声明 `caps_registry.py:560`，而 560 是 prompt_bridge 的行号，
+   真实在 572（对着注册表逐个数出来的）。行号会随注册表增删漂移：本文件开头
+   （main.cjs:1）自己就记着「本表行号按 caps_registry.py 实际行号刷新（因 sched_define
+   后新增约 30 行而漂移；非静默改数）」—— 也就是靠人工重刷维持。
+   指向**别人**的行号比不写更坏：读者会照着一个假引用去查，还查到东西。
+   改成运行时现查真实行号；查不到就如实说查不到，不编、也不留旧值。 */
+function registeredAt(cap) {
+  try {
+    if (!ROOT) return null;
+    const p = path.join(ROOT, "gbt_allinone", "caps_registry.py");
+    if (!fs.existsSync(p)) return null;
+    const lines = fs.readFileSync(p, "utf8").split(/\r?\n/);
+    const re = new RegExp('^\\s*"' + String(cap).replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '":');
+    for (let i = 0; i < lines.length; i++) {
+      if (re.test(lines[i])) return "caps_registry.py:" + (i + 1);
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
 
 function readJsonIfPresent(file) {
   try {
@@ -397,7 +660,7 @@ function draftReason(allowCount) {
 }
 
 /* 只读视图，任何状态判定以能力层为准，面板只做展示映射。 */
-function w3Tools() {
+async function w3Tools() {
   if (!STORE) return no("找不到仓库根（上层没有 gbt_allinone）-> 工具出口不猜路径");
   if (!fs.existsSync(STORE)) {
     return no("store 不存在：" + path.basename(STORE) + "（取不到就不显示绿 · 负对照口径）",
@@ -433,14 +696,49 @@ function w3Tools() {
       if (c.cap === "coze_mail" && a.name === "draft") reason = draftReason(mailAllow);
       return { name: a.name, state: a.state, reason: reason };
     });
-    return { cap: c.cap, registered: c.registered, actions: acts, facts: facts[c.cap] };
+    // 现查真实行号；查不到就如实说，不回落到可能已漂的硬编码值
+    const at = registeredAt(c.cap);
+    return { cap: c.cap, registered: at || "未在 caps_registry.py 找到（不编行号）",
+             declared: c.registered || null, actions: acts, facts: facts[c.cap] };
   });
+  /* R-H295 · ⑤ 修「命名与覆盖面错位」。
+   * 本页标题写的是「工具出口」，读的人自然以为它列出**全部**出口；实际 TOOLS_CAPS
+   * 是一张**精选 4 项**的硬编码表（prompt_bridge / voice_orchestra / coze_mail / create），
+   * 而注册表里有 141 个可用能力。落差 137 项**在面板上完全看不见**，
+   * 脚注还只说「敏感档动作不挂出口（物理上没有键）」—— 暗示其余都挂了，那是假的。
+   * 修法不是把 141 项全塞进这张表（那会把"展示映射"变成第二份能力表，
+   * 违背本口「不复制任何一份能力表」的硬约束），而是**把落差本身如实显示出来**：
+   * 全量口径取自正门 `/api/capabilities`（返回注册表 + 面板自身能力面），不自己数。
+   */
+  let coverage = { curated: TOOLS_CAPS.length, total: null, enabled: null,
+                   disabled: null, app_routes: null, source: "/api/capabilities" };
+  try {
+    const disc = await httpGetJson(PANEL + "/api/capabilities", 4000);
+    if (disc.ok && disc.data) {
+      const dd = disc.data;
+      coverage.total = dd.total === undefined ? null : dd.total;
+      coverage.enabled = dd.enabled === undefined ? null : dd.enabled;
+      coverage.disabled = dd.disabled === undefined ? null : dd.disabled;
+      coverage.app_routes = (dd.app && Array.isArray(dd.app.routes)) ? dd.app.routes.length : null;
+      coverage.note = ("本页是**精选展示**：" + coverage.curated + " / " +
+                       (coverage.total === null ? "?" : coverage.total) +
+                       "（可用 " + (coverage.enabled === null ? "?" : coverage.enabled) +
+                       " · 禁用 " + (coverage.disabled === null ? "?" : coverage.disabled) +
+                       "）。全量清单看能力总目录，不在这里复制第二份。");
+    } else {
+      coverage.note = "取不到全量口径（" + (disc.error || "未返回") + "）—— 落差数字如实留空，不估。";
+    }
+  } catch (err) {
+    coverage.note = "取不到全量口径（" + String(err.message || err) + "）—— 落差数字如实留空，不估。";
+  }
+
   return ok({
     readonly: true,
     store: path.basename(STORE),
     root: ROOT ? path.basename(ROOT) : null,
     note: "只读视图：不落账、不建目录、不写健康通道；面板只做展示映射。",
     caps: caps,
+    coverage: coverage,
     not_exported_note: TOOLS_NOT_EXPORTED,
   });
 }
@@ -811,11 +1109,25 @@ function w3Eigenflux() {
 const registry = readRegistry();
 const wins = new Map();
 let tray = null;
+/* 实时流的**当前状态**（2026-09-23 第 43 轮加）。
+   为什么要记：`startSse` 跑在建窗之前（R-H295 的"数据面先立"），那条 `notify("open")`
+   发生时还没有窗口 ⇒ 状态只报一次就丢。记下来，建窗完成后**补发**给迟到的订阅者。
+   null = 还没连过（此时不该补发任何状态 —— 补发 null 等于替面板编一个状态）。 */
+let lastStreamState = null;
 
 function broadcast(channel, payload) {
-  wins.forEach((w) => {
-    if (w && !w.isDestroyed() && w.webContents && !w.webContents.isDestroyed()) {
-      w.webContents.send(channel, payload);
+  /* R-H295：原实现没有任何错误隔离 —— 某个窗口的 webContents 处于异常态时
+     （`isDestroyed` 本身可能抛、`send` 也可能抛），异常会从 SSE 的 data 回调里冒出来，
+     而那条路径上没人接：**实时流会整条断掉甚至带走主进程**，
+     症状和"实时流未接"一样，但原因完全不同。
+     逐窗口隔离：坏的那扇跳过，其余照推；坏因如实打到 stderr。 */
+  wins.forEach((w, id) => {
+    try {
+      if (w && !w.isDestroyed() && w.webContents && !w.webContents.isDestroyed()) {
+        w.webContents.send(channel, payload);
+      }
+    } catch (err) {
+      console.error("[w3] 推送失败（跳过该窗，其余照推） id=" + id + " ch=" + channel + ":", err);
     }
   });
 }
@@ -829,13 +1141,34 @@ function saveWindowState() {
   try { layout.saveLayout(LAYOUT_FILE, data); } catch (err) { /* 写不进布局文件不该拖垮壳 */ }
 }
 
+/* ── 2026-09-23 加：窗可以加载**回环 HTTP**（一体式要塞对话面）────────────────
+   规则与测试见 `shell/url-policy.cjs` —— 它**不依赖 electron**，所以能在普通 node 下单测
+   （`tests/test_url_policy.cjs`）。这里只是把它接上；**策略本身不在这份文件里**。
+
+   ⚠️ 对话面（DSH）的**真实约束**（2026-09-23 实测）：
+     `GET http://127.0.0.1:3080/` → **HTTP 401**
+     body 原文：`dsh web authentication required; reopen the URL printed by dsh web.`
+   ⇒ 它要的是 **`dsh web` 启动时打印的那条带 token 的 URL**，不是裸 URL。
+     **本文件不保存、不读、不猜那个 token**（凭据不许明文落盘）。
+     带 token 的 URL 只能由**主人在运行时**提供 —— 见 windows.json 里 `dsh-chat` 的 `needs_url`。 */
+const urlPolicy = require("./url-policy.cjs");
+const loopbackUrlOnly = urlPolicy.loopbackUrlOnly;
+
 function createWindow(entry) {
   const stored = layout.loadLayout(LAYOUT_FILE).windows[entry.id];
   const displays = screen.getAllDisplays();
   const wanted = stored || entry.default;
   const placed = layout.clampBounds(layout.normalize(wanted, entry.id), displays);
+  /* 🔴 **真启动预演的插桩**（2026-09-23 第 37 轮）：`GBT_W3_STARTUP_PROBE=1` 时
+     所有窗**屏幕外 + 不显示**，但引导链**一个环节都不跳**（单例锁 → registerIpc →
+     startSse → createWindow → buildTray → refreshTrayMenu）。
+     为什么插在这里而不是另写一条探针链：另写一条就**不是真启动**了 ——
+     托盘图标构造失败会让 startSse 永远不跑（本文件上面记着这条实测），
+     那种缺陷只有走真链才抓得到。**只改两个字段，不设这个变量时行为一个字节不动。** */
+  const PROBE = process.env.GBT_W3_STARTUP_PROBE === "1";
   const win = new BrowserWindow({
-    x: placed.x, y: placed.y, width: placed.w, height: placed.h,
+    x: PROBE ? -20000 : placed.x, y: PROBE ? -20000 : placed.y,
+    width: placed.w, height: placed.h,
     minWidth: 720, minHeight: 480,
     transparent: entry.transparent !== false,
     frame: entry.frame === true,
@@ -852,8 +1185,67 @@ function createWindow(entry) {
     },
   });
   if (entry.alwaysOnTop !== false) win.setAlwaysOnTop(true, "screen-saver");
-  win.loadFile(path.join(HERE, entry.file));
-  win.on("moved", () => {
+
+  /* 一体式 App 铬（2026-09-23 第 32 轮）：**壳这一层注入**，不改那 8 个页面一行。
+     `chrome.attach` 内部自己排除 `dsh-chat`（DSH 的窗，内容不是我们的）。 */
+  try { chrome.attach(win, entry, registry); } catch (err) { console.error("[w3] 铬挂载失败:", err); }
+
+  /* 加载什么 —— 决策在 url-policy.windowSource（**单一决策点**，可单测）。
+     四种结果：url / blocked（不合法→拒绝页，理由写清）/ connect（要主人运行时给 URL）/ file。 */
+  const src = urlPolicy.windowSource(entry);
+  if (src.kind === "url") {
+    win.loadURL(src.url);
+  } else if (src.kind === "connect") {
+    win.loadFile(path.join(HERE, "connect.html"),
+                 { query: { id: String(src.id || entry.id), port: String(src.port || 0) } });
+  } else if (src.kind === "file") {
+    win.loadFile(path.join(HERE, src.file));
+  } else {
+    console.error("[gbt-shell] 拒绝加载（%s）：%s", entry.id, src.why);
+    win.loadFile(path.join(HERE, "blocked.html"),
+                 { query: { why: src.why, id: String(entry.id) } });
+  }
+  /* 🔴 **2026-09-23 第 43 轮修的「迟到订阅者」缺陷**（一条只有真跑才照得到的死角）。
+
+     症状：页脚**永远**显示「实时流：未接」，而面板端其实在推、连接也真的建起来了 ——
+     录下来的页面 innerText 就是「实时流：未接」，可与此同时账本还在出数（走 5 s 轮询兜底）。
+
+     查证（三步都是实测，不是推断）：
+       ① 面板端有这条路由：`panel_server.py:3445` → `GET /api/events`；
+          Python 直连拿到 `HTTP 200 · text/event-stream` + 真事件字节；
+          Node 照本壳的写法直连 **13 ms** 拿到 `status 200` ⇒ **不是网络、不是面板**。
+       ② `preload.cjs:47-48` 两个口（`onEvent` / `onStreamState`）都在 ⇒ 不是桥没接。
+       ③ `window.js:1056-1060` 订阅也在，徽章默认文案就是 HTML 里写死的「实时流：未接」
+          ⇒ **只要那条 `w3:stream` 消息没到，页脚就永远停在默认值**。
+
+     真因（**是 R-H295 那次修法的副作用**）：
+       R-H295 把 `startSse` 提到 `createWindow` **之前**（数据面先立 —— 这个方向是对的，
+       它治的是"托盘坏掉会弄死实时流"）。但 `broadcast()` 是**遍历 `wins`** 推送的，
+       于是 `notify("open")` 发生的那一刻 `wins` **还空着**，那条状态**没有任何窗口听得到**。
+       ⇒ 生产者被挪到了消费者前面，"状态只报一次"的毛病就露出来了。
+
+     修法（**不许把 startSse 挪回去**，那会退回老病）：补**状态回放** ——
+     窗口加载完成后，把当前状态单独补发给它。迟到的订阅者也能拿到现状，这是 pub/sub 的本分。 */
+  win.webContents.on("did-finish-load", () => {
+    if (!lastStreamState) return;
+    try {
+      win.webContents.send("w3:stream", lastStreamState);
+    } catch (err) {
+      console.error("[w3] 补发实时流状态失败 id=" + entry.id + ":", err);
+    }
+  });
+  /* 🔴 **2026-09-23 第 37 轮修的真缺陷：`moved` 在 Windows 上永远不触发。**
+     Electron 文档对 `BrowserWindow` 的 `moved` 事件原文写着 **"macOS only"** ——
+     而本壳跑在 Windows 11 上 ⇒ 下面这段（吸附对齐 + 挪窗后落盘）**在本机从来没跑过**。
+
+     怎么发现的：新加的「真启动预演」（`shell/startup.cjs`）里有一条
+     「主动挪一下窗，看布局文件会不会被重写」——**判红**。查下去才是这个原因。
+     为什么以前的门全都放绿：预检**刻意不启动**、复演只验载入、取证只拍图 ——
+     **没有一格会去动一下窗**。这是一条只有"真启动 + 真动手"才照得到的死角。
+
+     修法：抽出 `onMoved()`，`moved`（macOS）与 `move`（全平台）都接上；
+     `move` 在拖动期间会**连续**触发，所以做防抖 —— 每次拖动都跑一遍吸附 + 写盘会白烧磁盘。 */
+  function onMoved() {
     const others = [];
     wins.forEach((o, oid) => { if (oid !== entry.id && o && !o.isDestroyed()) others.push(layout.fromBrowserBounds(o.getBounds(), oid)); });
     const snapped = layout.snapBounds(layout.fromBrowserBounds(win.getBounds(), entry.id), screen.getAllDisplays(), others, layout.SNAP_PX);
@@ -861,12 +1253,51 @@ function createWindow(entry) {
     const cur = win.getBounds();
     if (next.x !== cur.x || next.y !== cur.y) win.setBounds(next);
     saveWindowState();
+  }
+  let moveTimer = null;
+  win.on("moved", onMoved);                       // macOS
+  win.on("move", () => {                          // Windows / Linux（全平台）
+    if (moveTimer) clearTimeout(moveTimer);
+    moveTimer = setTimeout(() => { moveTimer = null; onMoved(); }, 220);
   });
   win.on("resized", saveWindowState);
   win.on("close", saveWindowState);
-  win.on("closed", () => wins.delete(entry.id));
+  win.on("closed", () => { if (moveTimer) clearTimeout(moveTimer); wins.delete(entry.id); });
   wins.set(entry.id, win);
   return win;
+}
+
+/* ── W9 · 窗 A：把对话面接上（**主人在运行时给 URL**）─────────────────────────
+   背景：对话面裸 URL 回 401，要 `dsh web` 打印的**带 token 的 URL**。
+   纪律（三条，写在这儿免得以后有人"顺手优化"掉）：
+     ① **不落盘**：URL 只在内存里交给 `loadURL`，不写任何配置文件、不进布局文件；
+     ② **不回显**：返回值只给 `host`（`127.0.0.1:3080`），**绝不把整条 URL 回给渲染进程**
+        —— 它带 token，一回显就会进界面/日志；
+     ③ **不白名单外**：仍然过 `loopbackUrlOnly()`，只放行本机回环。 */
+function w3ConnectDsh(payload) {
+  const raw = String((payload && payload.url) || "").trim();
+  if (!raw) return { ok: false, error: "没有给 URL" };
+  const chk = loopbackUrlOnly(raw);
+  if (!chk.ok) return { ok: false, error: chk.why, rule: "只放行本机回环（127.0.0.1 / localhost / ::1）" };
+  const win = wins.get("dsh-chat");
+  if (!win || win.isDestroyed()) return { ok: false, error: "对话面的窗不在（先从托盘菜单把它开起来）" };
+  let host = "";
+  try { host = new URL(chk.url).host; } catch (err) { host = "(无法解析)"; }
+  win.loadURL(chk.url);
+  /* 落一张**不含 token** 的回执：这是"真接上过一次"的机器证据（守卫 B1e 读它）。
+     回执里只有 host 与时间 —— **绝不写 URL、绝不写 token**。 */
+  try {
+    const dir = path.join(ROOT, "state");
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, "desktop-dsh-connect-receipt.json"),
+      JSON.stringify({ host: host, at: new Date().toISOString(),
+                       note: "由桌面壳 w3ConnectDsh 落盘：只记 host 与时间，不含 URL/token" }, null, 1),
+      "utf8");
+  } catch (err) {
+    /* 回执写不了不影响接上；但也不静默 —— 记一行给排查 */
+    console.error("[gbt-shell] 回执写不了：%s", String(err).slice(0, 120));
+  }
+  return { ok: true, host: host, note: "已交给对话框加载；URL 只在内存，未落盘、未回显" };
 }
 
 function buildTray() {
@@ -909,6 +1340,13 @@ function refreshTrayMenu() {
 
 function registerIpc() {
   ipcMain.handle("w3:config", () => ok({ engine: process.env.GBT_TREE_ENGINE || "auto", readonly: true, root: ROOT ? path.basename(ROOT) : null }));
+  /* 实时流的**现状**（只读拉取，2026-09-23 第 45 轮加）。
+     为什么要能"拉"：`w3:stream` 是**推**，只在状态**变化**时发一次；
+     而窗口是**后来才建**的（`startSse` 跑在建窗之前 —— R-H295 的"数据面先立"）。
+     上一轮用"建窗后补发"治了主进程建的那条路，但**别的东西建的窗**（取证器 shots 自己建窗）
+     照样收不到 ⇒ 屏上又是一句「实时流：未接」，而主进程其实连着。
+     ⇒ 补一个**只读拉取**：谁建的窗都能问一句"现在什么状态"。推 + 拉都在，才不挑宿主。 */
+  ipcMain.handle("w3:stream-state", () => ok({ state: lastStreamState }));
   ipcMain.handle("w3:state", () => w3State());
   ipcMain.handle("w3:tasks", () => w3Tasks());
   ipcMain.handle("w3:env", () => w3Env());
@@ -923,9 +1361,166 @@ function registerIpc() {
   ipcMain.handle("w3:pets", (ev, payload) => w3Pets(payload));
   ipcMain.handle("w3:summon", (ev, payload) => w3Summon(payload));
   ipcMain.handle("w3:eigenflux", () => w3Eigenflux());
+  /* R-H295 新接：框架自己的两只只读审计器（欠账「覆盖审计 / 零调用点清单接进上帝视角」）*/
+  ipcMain.handle("w3:coverage", () => w3Coverage());
+  ipcMain.handle("w3:orphans", () => w3Orphans());
+  ipcMain.handle("w3:gene", () => w3Gene());
+  /* W9 · 窗 A 的动作口：把主人粘进来的 URL 交给对话框。
+     它**不是数据写口**（不写文件、不写配置），但**是动作口** ——
+     preload 里 `non_readonly_capability` 那一行必须同步登记它，不许悄悄放宽。 */
+  ipcMain.handle("w3:connect-dsh", (ev, payload) => w3ConnectDsh(payload));
+  /* W13 · 一体式 App 铬的跨窗跳转口（2026-09-23 第 32 轮加）。
+     它**不是数据写口**，但是**动作口**（会改窗口可见性/焦点）⇒：
+       · 只认注册表里**已有的 id**（白名单，不认任意字符串）；
+       · 不写文件、不出网、不 kill 任何东西；
+       · `preload.cjs` 的 `non_readonly_capability` 那一行**同步登记**它，不许悄悄放宽。 */
+  ipcMain.handle("w3:show-window", (ev, payload) => {
+    /* 判据在 `chrome.showWindow`（纯函数、可单测）—— 这里只做 `ok()/no()` 的适配。 */
+    const r = chrome.showWindow(registry, wins, payload);
+    return r.ok ? ok(r.data) : no(r.error);
+  });
+
+  /* ══ W3 · 语音对讲（2026-09-23 第 58 轮）══════════════════════════════════
+     主人令：「我打开页面就自动监听，关闭她也跟着关闭，但是大脑后台是在运行的。」
+     ⇒ 四条硬纪律（写死，别改）：
+       ① **不设开关**：页面打开就起，页面关闭就停。本进程**不做常驻守护** ——
+          "大脑后台照常运行"是 DSH 的事，不归这一段。
+       ② **绑 webContents**：`sender.once('destroyed', …)` 才是"关页面就停"的**可靠实现**。
+          页面被强杀时它自己的 `pagehide` 发不出去；只靠那一句，麦克风就留在那儿开着。
+       ③ **一切走唯一门**：这里只拉起 `tools/codex-scripts/intercom.py`，
+          它内部调 `five-dim.py cap voice`（= `api.run_task`）。
+          **主进程不直接碰 voice_cap、不碰麦克风、不读凭据、不写任何数据。**
+       ④ `preload.cjs` 的 `non_readonly_capability` 那一行**同步登记**本口（它开麦克风+出声），
+          不许悄悄放宽。
+     ⚠️ 现读实况（2026-09-23）：本机**没有可用录音设备**（唯一输入端点是 iPhone 蓝牙免提，
+        未连接）⇒ 监听会如实回 `no_input` 并退避；**这不是坏，是没设备**，页面按黄色显示。
+     */
+  const intercomSessions = new Map();   // webContents.id → {child, startedAt, rounds, heard, last}
+  const INTERCOM_JS = path.join(ROOT, "tools", "codex-scripts", "intercom.py");
+
+  function intercomStop(id) {
+    const s = intercomSessions.get(id);
+    if (!s) return false;
+    try { if (s.child && !s.child.killed) s.child.kill(); } catch (e) { /* 可能已退，如实忽略 */ }
+    intercomSessions.delete(id);
+    return true;
+  }
+
+  /* 三条腿的状态**只问一次、缓存在主进程**（第 58 轮补）。
+     为什么必须缓存：走一次门要起 Python + 加载框架 + 连发两次 `cap voice`，
+     实测要好几秒；而取证/开窗在那一秒就发生了 ⇒ 页面会显示"未取到"，
+     那是**时序**不是"坏"。缓存后：**注册时就先预热**，等窗口起来时读数已经在了。 */
+  let intercomStatusCache = null;
+  function intercomStatus(force) {
+    if (intercomStatusCache && !force) return Promise.resolve(intercomStatusCache);
+    return intercomRun(["status"], 120000).then((r) => {
+      intercomStatusCache = (r && r.ok && r.data) ? r.data : null;
+      return intercomStatusCache;
+    }, () => null);
+  }
+
+  function intercomStart(wc) {
+    const id = wc.id;
+    if (intercomSessions.has(id)) return intercomSessions.get(id);
+    const child = spawn(PETS_PY_EXE,
+      ["-3.10", INTERCOM_JS, "watch", "--jsonl", "--seconds", "4", "--culture", "zh-CN"],
+      { cwd: ROOT, windowsHide: true, stdio: ["ignore", "pipe", "pipe"] });
+    const sess = { child: child, startedAt: Date.now(), rounds: 0, heard: 0, last: null,
+                   status: null };
+    intercomSessions.set(id, sess);
+    /* 三条腿：优先吃**预热好的缓存**（`intercomStatus()` 在注册时就已发起）。 */
+    intercomStatus().then((s) => { sess.status = s; }, () => { sess.status = null; });
+    let buf = "";
+    child.stdout.on("data", (d) => {
+      buf += d.toString("utf8");
+      let i;
+      while ((i = buf.indexOf("\n")) >= 0) {
+        const line = buf.slice(0, i).trim();
+        buf = buf.slice(i + 1);
+        if (line.charAt(0) !== "{") continue;          // 非 JSON 行（进度/告警）不转给页面
+        try {
+          const rec = JSON.parse(line);
+          sess.rounds = rec.rounds_total || sess.rounds + 1;
+          sess.heard = rec.heard_total || sess.heard;
+          sess.last = rec;
+          if (!wc.isDestroyed()) wc.send("w3:intercom-event", rec);
+        } catch (e) { /* 半行/坏行丢掉 —— 不编一条假读数 */ }
+      }
+    });
+    child.on("exit", (code) => {
+      const s = intercomSessions.get(id);
+      if (s && s.child === child) intercomSessions.delete(id);
+      if (!wc.isDestroyed()) wc.send("w3:intercom-event", { status: "stopped", exit: code });
+    });
+    /* 🔴 这一句就是「关掉页面她也跟着关」的可靠实现。 */
+    wc.once("destroyed", () => { intercomStop(id); });
+    return sess;
+  }
+
+  /* 一次性调用（status / say）：同一件脚本、同一道门。 */
+  function intercomRun(args, timeoutMs) {
+    return new Promise((resolve) => {
+      execFile(PETS_PY_EXE, ["-3.10", INTERCOM_JS].concat(args),
+        { cwd: ROOT, timeout: timeoutMs || 120000, windowsHide: true, maxBuffer: 1 << 20 },
+        (err, stdout, stderr) => {
+          const txt = String(stdout || "");
+          const i = txt.indexOf("{");
+          if (i < 0) {
+            resolve(no("对讲件没吐 JSON：" + String(stderr || err || "").slice(0, 160)));
+            return;
+          }
+          try { resolve(ok(JSON.parse(txt.slice(i)))); }
+          catch (e) { resolve(no("JSON 解析失败：" + String(e).slice(0, 120))); }
+        });
+    });
+  }
+
+  ipcMain.handle("w3:intercom", (ev, payload) => {
+    const op = (payload && payload.op) || "state";
+    const args = (payload && payload.args) || {};
+    const wc = ev.sender;
+    if (op === "status") return intercomStatus(true).then((s) => ok(s || { ok: false }));
+    if (op === "start") {
+      const s = intercomStart(wc);
+      return ok({ listening: true, rounds: s.rounds, heard: s.heard, last: s.last,
+                  status: s.status || null });
+    }
+    if (op === "stop") { intercomStop(wc.id); return ok({ listening: false }); }
+    if (op === "state") {
+      const s = intercomSessions.get(wc.id);
+      return ok({ listening: !!s, rounds: s ? s.rounds : 0, heard: s ? s.heard : 0,
+                  last: s ? s.last : null, status: (s && s.status) || null });
+    }
+    if (op === "say") {
+      if (!args.text) return no("缺少 text");
+      return intercomRun(["say", String(args.text)], 180000);
+    }
+    return no("未知 op：" + op);
+  });
+  /* **预热**：注册完就先把三条腿问一次（不阻塞、失败也不报错），
+     等第一扇窗起来时缓存里已经有读数了 —— 这正是"页面显示未取到"那个时序坑的解。 */
+  intercomStatus();
 }
 
-if (!app.requestSingleInstanceLock()) {
+/* 🔴 **只接线模式**（2026-09-23 第 31 轮加，为真壳取证器 `shots.cjs` 而开）：
+ * `GBT_W3_WIRE_ONLY=1` 时**只建立只读数据面（IPC）**，不开窗、不进托盘、不抢单例锁。
+ *
+ * 为什么要它：`shots.cjs` 要拍的是**"真实数据面下的窗长什么样"**。
+ * 而唯一可靠的做法是复用**同一份** `registerIpc` —— 在取证器里重写一遍接线，
+ * 两份必然漂（那时拍的就不是真壳，是"我以为的壳"）。
+ * 只加一个分支，**不设这个变量时走的还是原来那条路，既有行为一个字节不动**。
+ */
+const WIRE_ONLY = process.env.GBT_W3_WIRE_ONLY === "1";
+if (WIRE_ONLY) {
+  /* `app &&`：让**无 Electron 的 node 进程**也能 require 本件只为拿那几个只读数据函数
+     （形状探针用）。没有这一层，`app.whenReady()` 会当场抛，导出的函数就用不上了。 */
+  if (app) {
+    app.whenReady().then(() => {
+      registerIpc();
+      try { startSse(broadcast); } catch (err) { console.error("[w3] 只接线模式 SSE 未起:", err); }
+    });
+  }
+} else if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
   app.on("second-instance", () => {
@@ -939,18 +1534,40 @@ if (!app.requestSingleInstanceLock()) {
     });
   });
   app.whenReady().then(() => {
+    /* R-H295 · 数据面先立，展示面后立，且展示面不许拖垮数据面。
+     * 病根：这里原来是一条不断的链
+     *     registerIpc → createWindow → buildTray → refreshTrayMenu → startSse
+     * 任一环抛错就整条进 .catch（记「启动失败」后 app.quit()）—— 于是
+     * **托盘图标/菜单一旦出问题，实时推送 startSse 就永远不执行，而且没有任何提示**：
+     * 页脚只是安静地显示「实时流：未接」，能力调用则表现为"超时"。
+     * 实测（无头桩里 refreshTrayMenu 抛 `isVisible is not a function`）就复现了这条路径。
+     * 现在：只读数据面（IPC + SSE 订阅）先无条件建立；窗口/托盘各自 try/catch，
+     * 坏了就在盘上如实说坏了，不牵连数据面。 */
     registerIpc();
-    registry.windows.forEach((entry) => createWindow(entry));
-    buildTray();
-    refreshTrayMenu();
     startSse(broadcast);
-    screen.on("display-metrics-changed", () => {
-      wins.forEach((w, id) => {
-        if (w.isDestroyed()) return;
-        w.setBounds(layout.toBrowserBounds(layout.clampBounds(w.getBounds(), screen.getAllDisplays())));
+
+    try {
+      registry.windows.forEach((entry) => createWindow(entry));
+    } catch (err) {
+      console.error("[w3] 建窗失败（数据面不受影响）:", err);
+    }
+    try {
+      buildTray();
+      refreshTrayMenu();
+    } catch (err) {
+      console.error("[w3] 托盘失败（数据面不受影响，实时流照常）:", err);
+    }
+    try {
+      screen.on("display-metrics-changed", () => {
+        wins.forEach((w, id) => {
+          if (w.isDestroyed()) return;
+          w.setBounds(layout.toBrowserBounds(layout.clampBounds(w.getBounds(), screen.getAllDisplays())));
+        });
+        saveWindowState();
       });
-      saveWindowState();
-    });
+    } catch (err) {
+      console.error("[w3] 显示器事件挂载失败:", err);
+    }
     if (process.env.GBT_W3_DEBUG) {
       console.log("[w3] root=" + ROOT + " windows=" + registry.windows.map((e) => e.id).join(","));
     }
@@ -984,4 +1601,9 @@ module.exports = {
   w3Pets,
   w3Summon,
   w3Eigenflux,
+  /* R-H295 新接的两只只读审计器（脱离 Electron 也能探）*/
+  w3Coverage,
+  w3Orphans,
+  w3Gene,
+  callCapability,
 };

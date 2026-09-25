@@ -1,0 +1,12 @@
+{
+  "name": "三层并联体检",
+  "nodes": [
+    { "id": "h",  "kind": "health" },
+    { "id": "al", "kind": "alerts" },
+    { "id": "wf", "kind": "wf_status" },
+    { "id": "agg", "kind": "transfer", "depends_on": ["h", "al", "wf"],
+      "params": { "op": "map", "field": "gbt_result.status", "data": "{{*}}" } },
+    { "id": "sum", "kind": "transfer", "depends_on": ["agg"],
+      "params": { "op": "stats", "data": "{{agg.gbt_result.result}}" } }
+  ]
+}

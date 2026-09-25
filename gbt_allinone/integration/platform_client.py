@@ -273,7 +273,15 @@ class WalletClient:
             return None
         return entry.get("invoice")
 
-    def _idem_put(self, key, value):
+    def _idem_put(self, key, value) -> bool:
+        """写幂等映射。**返回是否真的落盘**。
+
+        🔴 2026-09-22 修（错报治理 · 第 31/40 条）：原来失败静默 `pass` ——
+        调用方以为「这张发票已经登记过了」，而映射**其实没落盘** ⇒
+        下次重试会**重复提交**（幂等门失效）。**幂等文件缺行 = 重复扣款/重复记账**，
+        这是**有后果的静默**，与授权门那处同级。
+        口径同全仓：**不抛 + 计数 + 同类首次出声 + 只读口 `idem_failures()`**。
+        """
         m = self._idem_load()
         m[key] = {"base": self.base, "ts": int(time.time()), "invoice": value}
         try:
@@ -283,8 +291,36 @@ class WalletClient:
             with open(tmp, "w", encoding="utf-8") as f:
                 json.dump(m, f, ensure_ascii=False, indent=2)
             os.replace(tmp, self._idem_file)
-        except Exception:                                       # noqa: BLE001
-            pass
+            return True
+        except Exception as _e:                                     # noqa: BLE001
+            st = getattr(type(self), "_IDEM_FAIL", None)
+            if st is None:
+                st = {"count": 0, "reasons": {}, "last_at": None}
+                type(self)._IDEM_FAIL = st
+            st["count"] += 1
+            st["last_at"] = int(time.time())
+            _k = type(_e).__name__
+            st["reasons"][_k] = st["reasons"].get(_k, 0) + 1
+            if st["reasons"][_k] == 1:                              # 同类只首次出声
+                try:
+                    import sys as _s
+                    print("⚠️ platform_client: 幂等映射落盘失败（%s: %s）⇒ 幂等门可能失效、"
+                          "重试有重复提交风险（累计 %d 次）"
+                          % (_k, str(_e)[:110], st["count"]), file=_s.stderr)
+                except Exception:                                   # noqa: BLE001
+                    pass
+            return False
+
+    @classmethod
+    def idem_failures(cls) -> dict:
+        """只读：幂等映射落盘失败读数。
+
+        `count > 0` ⇒ **幂等映射未落盘，重试可能重复提交** —— 必须被看见的读数。
+        """
+        st = getattr(cls, "_IDEM_FAIL", None) or {"count": 0, "reasons": {}, "last_at": None}
+        return {"ok": True, "readonly": True, "count": st["count"],
+                "reasons": dict(st["reasons"]), "last_at": st["last_at"],
+                "note": "count>0 ⇒ 幂等映射未落盘，重试可能重复提交（有后果）"}
 
 
 # ---------- 模块级便捷函数(复用默认客户端) ----------

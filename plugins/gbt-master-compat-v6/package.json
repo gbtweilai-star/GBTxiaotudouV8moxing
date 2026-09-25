@@ -1,0 +1,17 @@
+{
+  "name": "gbt-potato-master-v6",
+  "version": "1.0.0",
+  "private": true,
+  "description": "兼容壳：只为让 DSH 加载器里**按 specifier 缓存到重启**的旧世代条目仍能解析。不是功能包，别往上加东西。",
+  "type": "module",
+  "main": "lib/host.js",
+  "exports": {
+    ".": "./lib/host.js",
+    "./client": "./lib/client.js"
+  },
+  "dsh": {
+    "client": {
+      "platform": "web"
+    }
+  }
+}

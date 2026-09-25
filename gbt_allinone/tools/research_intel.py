@@ -21,6 +21,9 @@
 from __future__ import annotations
 
 import time
+import hashlib
+import json
+import math
 
 GROUPS = {
     "music_intel": {"cn": "AI音乐部", "code": "MUSIC",
@@ -111,7 +114,7 @@ def make_intel(department: str, dimension: str, finding: str, evidence: str = ""
         conf = float(confidence)
     except (TypeError, ValueError):
         conf = 0.0
-    conf = 0.0 if conf < 0 else (1.0 if conf > 1 else conf)
+    conf = 0.0 if not math.isfinite(conf) or conf < 0 else (1.0 if conf > 1 else conf)
     has_evidence = bool(str(evidence or "").strip())
     low_conf = conf < CONFIDENCE_FLOOR
     if not has_evidence:
@@ -160,6 +163,71 @@ def gate(rows) -> dict:
             "based_on": [r.get("finding") for r in usable]}
 
 
+def evidence_report(question, sources, claims) -> dict:
+    """核验调用方提供的文本快照及引用；不声明已抓取来源或证明结论真实。"""
+    errors = []
+    if not isinstance(question, str) or not question.strip():
+        errors.append("question_required")
+    if not isinstance(sources, list) or not sources or len(sources) > 100:
+        return {"ok": False, "errors": ["sources_required_or_limit_exceeded"]}
+    if not isinstance(claims, list) or not claims or len(claims) > 500:
+        return {"ok": False, "errors": ["claims_required_or_limit_exceeded"]}
+    indexed = {}
+    for index, source in enumerate(sources):
+        if not isinstance(source, dict):
+            errors.append(f"source:{index}:invalid")
+            continue
+        source_id, origin, content = (source.get(key) for key in ("id", "origin", "content"))
+        if not all(isinstance(value, str) and value.strip()
+                   for value in (source_id, origin, content)):
+            errors.append(f"source:{index}:missing_fields")
+            continue
+        if source_id in indexed:
+            errors.append(f"source:{index}:duplicate_id")
+            continue
+        if len(content) > 1_000_000:
+            errors.append(f"source:{index}:too_large")
+            continue
+        digest = hashlib.sha256(content.encode("utf-8")).hexdigest()
+        if source.get("sha256") is not None and source["sha256"] != digest:
+            errors.append(f"source:{index}:hash_mismatch")
+            continue
+        indexed[source_id] = {"id": source_id, "origin": origin,
+                              "content": content, "sha256": digest}
+    bound = []
+    for index, claim in enumerate(claims):
+        if not isinstance(claim, dict):
+            errors.append(f"claim:{index}:invalid")
+            continue
+        text, quote, source_id = (claim.get(key) for key in ("text", "quote", "source_id"))
+        if not all(isinstance(value, str) and value.strip()
+                   for value in (text, quote, source_id)):
+            errors.append(f"claim:{index}:missing_fields")
+            continue
+        source = indexed.get(source_id)
+        if source is None or quote not in source["content"]:
+            errors.append(f"claim:{index}:quote_not_found")
+            continue
+        line = source["content"][:source["content"].index(quote)].count("\n") + 1
+        bound.append({"text": text, "quote": quote, "source_id": source_id,
+                      "line": line, "source_sha256": source["sha256"]})
+    if errors:
+        return {"ok": False, "readonly": True, "errors": errors,
+                "status": "blocked", "report": None}
+    manifest = [{key: value for key, value in source.items() if key != "content"}
+                for source in indexed.values()]
+    payload = {"question": question.strip(), "sources": manifest, "claims": bound}
+    report_id = hashlib.sha256(json.dumps(payload, ensure_ascii=False,
+                                          sort_keys=True).encode("utf-8")).hexdigest()
+    return {"ok": True, "readonly": True, "report_id": report_id,
+            "status": "source_bound_pending_review", "report": payload,
+            "validation_scope": "supplied_text_hash_and_exact_quote",
+            "source_fetched": False, "verified": False,
+            "is_instruction": False, "usable_for_decision": False,
+            "limitations": ["来源内容由调用方提供，尚未核实来源真实性",
+                            "原文包含引用，不等于原文支持结论；仍需独立复核"]}
+
+
 def run(op="coverage", group=None, **params) -> dict:
     """能力入口（只读）：coverage / group / redlines。**不联网、不写盘、不执行。**"""
     op = str(op or "coverage")
@@ -175,13 +243,16 @@ def run(op="coverage", group=None, **params) -> dict:
                 "groups": list(GROUPS), "dimensions": list(DIMENSIONS)}
     if op == "gate":
         return gate(params.get("rows") or [])
+    if op == "report":
+        return evidence_report(params.get("question"), params.get("sources"),
+                               params.get("claims"))
     if op == "scene_vocab":
         # 贯通②的可见面：情报组能直接查"场景锚定的 8 大类"（真引用那一份）
         from . import scene_anchor
         return {"ok": True, "readonly": True, "from": "tools.scene_anchor",
                 "classes": list(scene_anchor.SCENE_CLASSES),
                 "note": "用户画像维度必须落到这些场景里（谁在什么情况下点开）"}
-    raise ValueError("未知 op %r（可用：coverage/group/redlines/gate/scene_vocab）" % (op,))
+    raise ValueError("未知 op %r（可用：coverage/group/redlines/gate/report/scene_vocab）" % (op,))
 
 
 HONEST_BOUNDARY = (

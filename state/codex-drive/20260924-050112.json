@@ -1,0 +1,30 @@
+{
+ "时间": "2026-09-24T04:50:53",
+ "带现状": true,
+ "沙箱": "workspace-write",
+ "任务": "生成 Stable Diffusion OpenPose+LoRA ComfyUI 自动化工作流模板，输出 JSON 节点流，说明如何与 GBT小土豆V8 框架协作实现免费无限生产",
+ "提示字数": 8737,
+ "第一次": {
+  "exit": 0,
+  "耗时s": 192.5,
+  "命中冷却": true
+ },
+ "换钉": {
+  "ok": true,
+  "status": "already",
+  "钉的": "auto",
+  "读数": {
+   "活": true,
+   "状态": 200,
+   "status": "completed",
+   "落到": "meta/muse-glimmer-30b",
+   "耗时s": 0.8
+  }
+ },
+ "重试一次": {
+  "exit": 0,
+  "耗时s": 422.4
+ },
+ "答复": "**Stable Diffusion OpenPose+LoRA ComfyUI 工作流模板 — 基于已验单**\n\n已验基础：`tools/codex-scripts/comfy-pose-lora.py` 已跑通 1366.3 s/张，模型三件套已 sha256 验真\n- Realistic_Vision_V5.1_fp16-no-ema.safetensors 2,132,625,894 B\n- control_openpose-fp16.safetensors 722,596,338 B\n- lcm-lora-sdv1-5.safetensors 134,621,556 B\n\n**节点流 JSON 模板**\n直接导入 ComfyUI，节点 ID 与 `comfy-pose-lora.py build()` 一致：\n\n```json\n{\n  \"4\": {\"class_type\":\"CheckpointLoaderSimple\",\"inputs\":{\"ckpt_name\":\"Realistic_Vision_V5.1_fp16-no-ema.safetensors\"}},\n  \"13\":{\"class_type\":\"LoraLoader\",\"inputs\":{\"lora_name\":\"lcm-lora-sdv1-5.safetensors\",\"strength_model\":1.0,\"strength_clip\":1.0,\"model\":[\"4\",0],\"clip\":[\"4\",1]}},\n  \"6\": {\"class_type\":\"CLIPTextEncode\",\"inputs\":{\"text\":\"photo of a young woman standing, full body, cinematic light\",\"clip\":[\"13\",1]}},\n  \"7\": {\"class_type\":\"CLIPTextEncode\",\"inputs\":{\"text\":\"lowres, blurry, watermark, text, extra fingers, deformed hands, cartoon, anime, 3d render, painting\",\"clip\":[\"13\",1]}},\n  \"5\": {\"class_type\":\"EmptyLatentImage\",\"inputs\":{\"width\":512,\"height\":512,\"batch_size\":1}},\n  \"10\":{\"class_type\":\"ControlNetLoader\",\"inputs\":{\"control_net_name\":\"control_openpose-fp16.safetensors\"}},\n  \"11\":{\"class_type\":\"LoadImage\",\"inputs\":{\"image\":\"gbt-pose-stand-std.png\"}},\n  \"12\":{\"class_type\":\"ControlNetApplyAdvanced\",\"inputs\":{\"positive\":[\"6\",0],\"negative\":[\"7\",0],\"control_net\":[\"10\",0],\"image\":[\"11\",0],\"strength\":1.0,\"start_percent\":0.0,\"end_percent\":0.9,\"vae\":[\"4\",2]}},\n  \"3\": {\"class_type\":\"KSampler\",\"inputs\":{\"seed\":123456,\"steps\":8,\"cfg\":2.0,\"sampler_name\":\"lcm\",\"scheduler\":\"sgm_uniform\",\"denoise\":1.0,\"model\":[\"13\",0],\"positive\":[\"12\",0],\"negative\":[\"12\",1],\"latent_image\":[\"5\",0]}},\n  \"8\": {\"class_type\":\"VAEDecode\",\"inputs\":{\"samples\":[\"3\",0],\"vae\":[\"4\",2]}},\n  \"9\": {\"class_type\":\"SaveImage\",\"inputs\":{\"filename_prefix\":\"gbt_pose_lora\",\"images\":[\"8\",0]}}\n}\n```\n参数与已验单保持一致：steps 8 / cfg 2.0 / sampler lcm / scheduler sgm_uniform / 512×512 / controlnet end 0.9。\n\n**与 GBT小土豆V8 协作实现免费无限生产**\n\n- 本机只做轻量段：`tools/codex-scripts/openpose-skeleton.py` 生成骨架 PNG，零 GPU，内存可承受\n- 生成段必须同一张卡：底模+ControlNet+LoRA 三件套在同一去噪步生效，不可拆分到两朵云\n- 免费无限生产 = 本机预处理 + 云端 ComfyUI 生成 + 本机后处理\n  - `genrouter.py:484` base 可配：`base = \"http://127.0.0.1:8188\"` 改为云端 ComfyUI 地址即可切换，不改代码\n  - 执行入口走万能插：`python tools/codex-scripts/omni.py \"<人话>\"` → `python tools/codex-scripts/five-dim.py cap <能力位> '{\"op\":\"...\",...}'`\n  - 只读/生成统一走 `run_task` 授权门，`one_key_deploy` 必须显式声明落点 `room=\"<房间名>\"`\n\n现状已明确：Cloudflare Workers AI 无图像 LoRA/ControlNet 支持，ComfyUI 官方 44 个云插件无 controlnet。唯一可行云路是 RunPod/Vast 等自托管 ComfyUI。\n\n未验：`--write` 模式未跑，连续驱动稳定性未验。\n",
+ "成败": "✅ 拿到答复"
+}

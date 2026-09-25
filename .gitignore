@@ -24,6 +24,14 @@ gbt_allinone/__pycache__/
 # --- 运行时数据仓（store/：助记词/账本/审计流/镜像空间，本地运行时产物，不入库）---
 gbt_allinone/store/
 
+# --- 触手视觉回传的帧（**整屏截图**，本地运行时产物，绝不入库）---
+# 为什么单独写死这一条：那些不是"图片资源"，那是**主人的整块屏幕**。
+# 落点 holo_pet_w3/eye/frames/ 是环形覆盖的缓存（tools/codex-scripts/eye-feed.py 生成）；
+# 一旦进了索引，就等于把桌面画面写进 git 历史 —— **删都删不干净**（历史里还在）。
+# frames.js 是同一支取帧器每 1.2 秒重写的清单，同理不入库（进去只会制造无休止的改动噪音）。
+holo_pet_w3/eye/frames/
+holo_pet_w3/eye/frames.js
+
 # --- 资金模块（钱包/账本/收款桥，纯全能 AI 框架不随库分发，归家 Workspace/03_收款钱包与支付/）---
 gbt_allinone/wallet/
 gbt_allinone/ledger/
@@ -52,3 +60,83 @@ potato_pet/potato_state.json
 *.tmp
 .DS_Store
 Thumbs.db
+
+# ══════════════════════════════════════════════════════════════════════
+# 2026-09-22 补 —— 仓库 88% 是垃圾的根因，就是下面这几行缺失
+# ══════════════════════════════════════════════════════════════════════
+# 实测（当日）：受版本控制 38,494 个文件，其中 **34,180 个在 .scratch/**（88%）；
+# .trash/ 另有 1,121 个。真实代码约 1,200 个（gbt_allinone + holo_pet + tools）。
+# ⇒ 不是有人往里放垃圾，是**门没有**。补门。
+
+# --- 作业临时区（历次作业的临时脚本/快照/中间产物，一律不入库）---
+.scratch/
+.trash/
+.backups/
+
+# --- 第三方依赖树（体积大、可从 lock 重建，不入库）---
+node_modules/
+**/node_modules/
+
+# --- 构建产物（可从源码重建，不入库）---
+dist/
+build/
+.wrangler/
+
+# --- 工具缓存（本机状态，不属于源码）---
+.playwright-cli/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# --- 编辑器临时件 ---
+*.bak
+*.orig
+*.rej
+*.swp
+
+# --- 影子仓（清理分块用，自成一体、自带 .git，永不并入本仓）---
+# 2026-09-22：本仓有一个 git add -A 循环在反复跑；影子仓若不被挡住，
+# 它会把影子仓的 2,214 个文件扫进本仓索引。挡住，绝不让两仓互相污染。
+.shadow-repo/
+
+# 第三方参考仓：只读、与我们自有源码严格分开、永不进版本历史
+/_upstream/
+
+
+/generated/prisma
+
+# ══════════════════════════════════════════════════════════════════════
+# 2026-09-25 补 —— 「git add -A 循环」灌脏索引后的收口
+# ══════════════════════════════════════════════════════════════════════
+# 实测（当日）：撤掉脏暂存后，真实待入库 8,801 个文件。其中 2.78 GB 是
+# **可重建的第三方运行时 + 3D 生成中间产物 + 工具技能镜像**；真源码/文档/工具
+# 约 180 MB。历史最大 blob 19.19 MB（llny.moc3）⇒ 本仓一直是小文件源码仓。
+# 另：本批里有一个单文件 119.57 MB，已超 GitHub 单文件 100 MB 硬上限 ——
+# 挡它不是图省事，是它**物理上推不上去**：不挡，整个 push 会失败。
+
+# --- ① 第三方内嵌 Python 运行时（302 MB：cv2.pyd 82MB · numpy DLL 19MB …）---
+# 与上面 gbt_allinone/.pylibs/ 同类，可由 requirements.txt 重建。
+vendor/
+
+# --- ② 数字人 3D 生成中间产物（2,476 MB / 136 个）---
+# raw/ 下全是过程档与废档（avatar-final · avatar-final2.REJECTED · avatar-eyes6.REJECTED …）。
+# 定档判据与 sha16 记在 holo_pet/assets/digital-human/STATUS.json，工具链在 tools/codex-scripts/。
+holo_pet/assets/digital-human/raw/
+
+# --- ③ AI 工具的技能镜像目录（同一批技能被复制进多个工具目录，非本仓源码）---
+# 入库前校验过：skills/ 是 .dsh/skills/ 的**超集**（60 个 gbt-* 全在，
+# 且多出 digihuman-pipeline 与 12 条 remotion-*）；.agents/.claude/.windsurf 里
+# 只有第三方技能（prisma-* · remotion-* · better-auth · playwriter）。
+# ⇒ 挡掉这些镜像目录，本仓自研技能一份不丢。
+.agents/
+.claude/
+.windsurf/
+.dsh/
+.aider-desk/
+.augment/
+data/skills/
+
+# --- ④ 彩排与临时产物（pipeline 自检、彩排出片、切片中间件，可重跑）---
+projects/**/*rehearsal*
+projects/**/_work/

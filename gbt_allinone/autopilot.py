@@ -61,9 +61,10 @@ def _caps_menu():
 
 def _llm_plan(goal):
     """LLM 拆解目标 → 节点草案（数据，不是指令）。"""
-    from .llm import bridge as LB
-    r = LB.chat(_PLAN_PROMPT.format(caps=_caps_menu()[:2000], goal=goal[:500]),
-                max_tokens=1400, timeout=90)
+    # 统一大模型口（Owner 2026-09-19）：模块不许再自己直连 bridge。
+    from .llm import unified as LLM
+    r = LLM.ask(_PLAN_PROMPT.format(caps=_caps_menu()[:2000], goal=goal[:500]),
+                max_tokens=1400, timeout=90, purpose="autopilot.plan")
     if not r.get("ok"):
         raise AutopilotError(f"LLM 拆解失败: {str(r.get('error'))[:120]}")
     text = r.get("reply", "")

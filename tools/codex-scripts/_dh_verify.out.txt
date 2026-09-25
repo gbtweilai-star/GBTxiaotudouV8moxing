@@ -1,0 +1,5 @@
+路由: {'registered': 141, 'routed': 141, 'ok': True, 'unrouted': [], 'ghost_routes': []}
+能力总数: 141
+/            200   23303B  {'avatar-canvas': False, 'avatar-source': False, 'importmap/three': False, 'tripo': False, 'xingyun': True, 'stage-fallback': True}
+/app.js      200  128180B  {'avatar-canvas': False, 'avatar-source': False, 'importmap/three': False, 'tripo': True, 'xingyun': True, 'stage-fallback': True}
+/index.html  200   23303B  {'avatar-canvas': False, 'avatar-source': False, 'importmap/three': False, 'tripo': False, 'xingyun': True, 'stage-fallback': True}

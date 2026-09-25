@@ -1,0 +1,139 @@
+{
+ "at": "2026-09-25T03:03:42",
+ "pool_size": 10,
+ "usable": 1,
+ "waiting": 8,
+ "pool": [
+  {
+   "id": "comfy_local",
+   "name": "本机 ComfyUI（SD1.5 · CPU）",
+   "kind": "image",
+   "status": "没起来",
+   "why": "探针不通：http://127.0.0.1:8188/system_stats",
+   "free": "真无限（本地）",
+   "adapter": "comfy_local",
+   "missing": [],
+   "is_local": true
+  },
+  {
+   "id": "pollinations",
+   "name": "Pollinations（公开端点，无需 key）",
+   "kind": "image",
+   "status": "可用",
+   "why": "",
+   "free": "公开端点 · 无 key（用它即接受其条款与限速）",
+   "adapter": "pollinations",
+   "missing": [],
+   "is_local": false
+  },
+  {
+   "id": "cf_flux_schnell",
+   "name": "Cloudflare · flux-1-schnell",
+   "kind": "image",
+   "status": "等凭据",
+   "why": "缺 CLOUDFLARE_ACCOUNT_ID、CLOUDFLARE_API_TOKEN",
+   "free": "免费 10,000 神经元/天 · 43.2/张 ⇒ 约 231 张/天",
+   "adapter": "cf_ai",
+   "missing": [
+    "CLOUDFLARE_ACCOUNT_ID",
+    "CLOUDFLARE_API_TOKEN"
+   ],
+   "is_local": false
+  },
+  {
+   "id": "hf_inference",
+   "name": "HuggingFace Inference",
+   "kind": "image",
+   "status": "等凭据",
+   "why": "缺 HF_TOKEN",
+   "free": "未查（不编额度）",
+   "adapter": "hf_inference",
+   "missing": [
+    "HF_TOKEN"
+   ],
+   "is_local": false
+  },
+  {
+   "id": "google_ai",
+   "name": "Google AI Studio / Gemini",
+   "kind": "image",
+   "status": "等凭据",
+   "why": "缺 GOOGLE_API_KEY",
+   "free": "未查（不编额度）",
+   "adapter": "google_ai",
+   "missing": [
+    "GOOGLE_API_KEY"
+   ],
+   "is_local": false
+  },
+  {
+   "id": "siliconflow",
+   "name": "SiliconFlow 硅基流动",
+   "kind": "image",
+   "status": "等凭据",
+   "why": "缺 SILICONFLOW_API_KEY",
+   "free": "未查（不编额度）",
+   "adapter": "openai_image",
+   "missing": [
+    "SILICONFLOW_API_KEY"
+   ],
+   "is_local": false
+  },
+  {
+   "id": "modelscope",
+   "name": "ModelScope 魔搭",
+   "kind": "image",
+   "status": "等凭据",
+   "why": "缺 MODELSCOPE_API_KEY",
+   "free": "未查（不编额度）",
+   "adapter": "openai_image",
+   "missing": [
+    "MODELSCOPE_API_KEY"
+   ],
+   "is_local": false
+  },
+  {
+   "id": "volc_ark",
+   "name": "火山方舟 Ark（本仓有 arkcli 规程）",
+   "kind": "image",
+   "status": "等凭据",
+   "why": "缺 ARK_API_KEY",
+   "free": "未查（不编额度）",
+   "adapter": "openai_image",
+   "missing": [
+    "ARK_API_KEY"
+   ],
+   "is_local": false
+  },
+  {
+   "id": "dashscope",
+   "name": "阿里云百炼 / 通义万相",
+   "kind": "image",
+   "status": "等凭据",
+   "why": "缺 DASHSCOPE_API_KEY",
+   "free": "未查（不编额度）",
+   "adapter": "openai_image",
+   "missing": [
+    "DASHSCOPE_API_KEY"
+   ],
+   "is_local": false
+  },
+  {
+   "id": "fal",
+   "name": "fal.ai",
+   "kind": "image",
+   "status": "等凭据",
+   "why": "缺 FAL_KEY",
+   "free": "未查（不编额度）",
+   "adapter": "fal",
+   "missing": [
+    "FAL_KEY"
+   ],
+   "is_local": false
+  }
+ ],
+ "calls_today": {},
+ "calls_today_total": 0,
+ "cooldown": [],
+ "_口径": "同一家的多个账号不算多个后端；未验的不参与路由；云后端不占本地磁盘"
+}

@@ -1,0 +1,14 @@
+{
+ "name": "fogpine",
+ "version": 1,
+ "reference_image": "holo_pet/assets/digital-human/samples/Owner-三视图-原图.png",
+ "parts": {
+  "env": null,
+  "terrain": null,
+  "scatter": null,
+  "refcam": null,
+  "hero": null
+ },
+ "status": "not_wired",
+ "note": "五件产物（env/terrain/scatter/refcam/hero）本版**未生成** —— 生成端未接线"
+}

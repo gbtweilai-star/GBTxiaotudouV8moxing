@@ -25,7 +25,31 @@ import time
 from pathlib import Path
 
 _BASE = Path(__file__).resolve().parent
-_STORE = _BASE / "store"
+
+
+def _resolve_store() -> Path:
+    """store 基址单一来源（O35 扩展）：包内走 _paths.STORE_DIR；独立加载
+    （checkpoint._load_sibling 走 spec_from_file_location，无包上下文）按同目录
+    _paths.py 回退；两者都不可用才退回 GBT_STORE_DIR / 默认（保底，勿依赖）。"""
+    try:
+        from . import _paths as _p           # 包内导入（首选）
+        return Path(_p.STORE_DIR)
+    except Exception:
+        pass
+    try:
+        import importlib.util as _ilu
+        _spec = _ilu.spec_from_file_location(
+            "gbt_mirror_space__paths", Path(__file__).resolve().parent / "_paths.py")
+        _mod = _ilu.module_from_spec(_spec)
+        _spec.loader.exec_module(_mod)
+        return Path(_mod.STORE_DIR)
+    except Exception:
+        pass
+    _env = __import__("os").getenv("GBT_STORE_DIR")
+    return Path(_env).resolve() if _env else (_BASE / "store")
+
+
+_STORE = _resolve_store()
 _MIRROR = _STORE / "mirror_space"
 _DIM = _MIRROR / "dimension"
 _REALITY = _MIRROR / "reality"
@@ -59,6 +83,21 @@ def _tree_fingerprint(root: Path) -> dict:
 
 # ── 镜像部署区（沙箱：随便改）──
 
+def _replace_tree(src: Path, dst: Path) -> None:
+    """整树一次性替换（先清后拷）—— 镜像 / 房间 / 生产共用同一处实现。
+
+    由来（2026-09-19 · R-H97）：`room_space.release()` 一直在调本函数，
+    而本模块**从来没有过它** ⇒ 房间放行这条路结构上一次都没跑通过
+    （`AttributeError: module 'gbt_allinone.mirror_space' has no attribute '_replace_tree'`）。
+    同类"名字对不上"已出现三次（`mirror_release` 的入参、`one_key_deploy` 的入参、这里）——
+    凡是跨模块调用的私有名，都必须有一条用例把它钉住。
+    """
+    if dst.exists():
+        shutil.rmtree(dst)
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(src, dst)
+
+
 def shape(path: str, content: str, note: str = "") -> dict:
     """写镜像部署区（可反复覆盖——假设/试验/打磨全在这里，永不触碰生产）。"""
     p = _DIM / path
@@ -70,6 +109,24 @@ def shape(path: str, content: str, note: str = "") -> dict:
     p.write_text(str(content), encoding="utf-8")
     _audit("deploy_stage_write", {"path": path, "bytes": len(str(content)), "note": note[:60]})
     return {"ok": True, "path": path, "sha": _sha_file(p), "stage": True}
+
+
+def shape_bytes(path: str, data: bytes, note: str = "") -> dict:
+    """写镜像部署区（**二进制安全**）：图片/字体/模型等不许当文本读。
+
+    实测由来（2026-09-19 · R-H96）：`one_key_deploy` 本地模式对每个文件都走
+    `read_text(errors="replace")` ⇒ PNG/GLB/字体一律被替换字符污染，**镜像区里的产物当场变废**，
+    再晋升出去就是"上线了一个坏的"。文本页走 `shape()`（要注入署名），
+    二进制一律走本函数，**逐字节**落盘。
+    """
+    p = _DIM / path
+    resolved = p.resolve()
+    if not str(resolved).startswith(str(_DIM.resolve())):
+        return {"ok": False, "error": "路径越界：只允许 stage 内相对路径"}
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_bytes(bytes(data))
+    _audit("deploy_stage_write", {"path": path, "bytes": len(data), "binary": True, "note": note[:60]})
+    return {"ok": True, "path": path, "sha": _sha_file(p), "stage": True, "binary": True}
 
 
 def unshape(path: str) -> dict:
@@ -215,7 +272,7 @@ def mirror_status() -> dict:
 
     # 生产自身漂移（对照最近护照）
     prod_drift = []
-    passports = sorted(_PASSPORTS.glob("v*.json")) if _PASSPORTS.exists() else []
+    passports = sorted(_PASSPORTS.glob("v*.json"), key=lambda p: int(p.stem[1:])) if _PASSPORTS.exists() else []
     if passports:
         latest = json.loads(passports[-1].read_text(encoding="utf-8"))
         manifest = latest.get("manifest", {})
@@ -268,3 +325,7 @@ validate = scan
 promote = ascend
 rollback = rewind
 status = mirror_status
+
+
+# 公开别名（设计 §九② —— 落生产时加在 mirror_space.py 两副本上）
+tree_fingerprint = _tree_fingerprint

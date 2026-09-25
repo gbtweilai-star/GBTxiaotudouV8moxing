@@ -1,0 +1,24 @@
+======================================================================
+file_hygiene | outer ok = True | status = ok
+{
+  "ok": true,
+  "verdict": "clean",
+  "findings": [],
+  "fixed": [],
+  "cache_cleared": 311,
+  "checked_at": "2026-09-16T11:40:39",
+  "elapsed_ms": 1012.9999999999999,
+  "rules": "LAYOUT.md 铁律 + 源码入库边界（纯全能 AI 框架定位）"
+}
+======================================================================
+signature_guard | outer ok = True | status = ok
+{
+  "ok": true,
+  "verdict": "clean",
+  "developer": "自由的风",
+  "pages_checked": 26,
+  "missing": [],
+  "restored": [],
+  "checked_at": "2026-09-16T11:40:39",
+  "elapsed_ms": 206.0
+}

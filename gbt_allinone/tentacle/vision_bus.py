@@ -18,7 +18,30 @@ import time
 from pathlib import Path
 
 _BASE = Path(__file__).resolve().parent          # tentacle/
-_STORE = _BASE.parent / "store"
+
+
+def _resolve_store() -> Path:
+    """store 基址单一来源（O35 扩展）：视觉总线可能被 spec_from_file_location
+    独立加载（无包上下文），故按 [包内导入 -> 同目录 _paths.py -> env/默认] 三级回退。"""
+    try:
+        from .. import _paths as _p          # gbt_allinone.tentacle.vision_bus
+        return Path(_p.STORE_DIR)
+    except Exception:
+        pass
+    try:
+        import importlib.util as _ilu
+        _spec = _ilu.spec_from_file_location(
+            "gbt_vision_bus__paths", Path(__file__).resolve().parents[1] / "_paths.py")
+        _mod = _ilu.module_from_spec(_spec)
+        _spec.loader.exec_module(_mod)
+        return Path(_mod.STORE_DIR)
+    except Exception:
+        pass
+    _env = __import__("os").getenv("GBT_STORE_DIR")
+    return Path(_env).resolve() if _env else (_BASE.parent / "store")
+
+
+_STORE = _resolve_store()
 _VISION_DIR = _STORE / "vision"
 _STREAM_FILE = _VISION_DIR / "streams.json"
 _CACHE_FILE = _STORE / "transfer_cache.json"
@@ -75,15 +98,55 @@ def _full_frame(eye, region=None, fmt=None):
         return fn(region)
 
 
+_VISION_MISSING = ("display", "frame_source")
+
+
+def _refuse(cap, action: str) -> dict:
+    """R-H295 · ⑥ G1/G2：视觉面的**结构化"做不了"**。
+
+    《触手覆盖矩阵.md》§三 实测眼组「能报做不了 0/5」—— 本文件此前是 `ok:False` 原样返回，
+    或直接 `cap["image_base64"]` 取键（取不到就 KeyError）。调用方分不清
+    "没显示 / 没帧源 / 形状异常"。失败一律经这里，形状与门禁的 denied 同族。
+    """
+    cap = cap if isinstance(cap, dict) else {}
+    return {
+        "ok": False,
+        "unavailable": True,
+        "denied": False,
+        "rule": "vision_bus_cannot_capture",
+        "action": action,
+        "missing": list(_VISION_MISSING),
+        "why": str(cap.get("error") or cap.get("why") or "取帧失败（原因未报）")[:200],
+        "cap": cap,
+        "note": "视觉总线做不了时结构化上报：缺什么写在 missing 里，不抛 KeyError。",
+    }
+
+
+def _require_frame(cap, action: str):
+    """成功返回 (cap, None)；失败或形状异常返回 (None, 结构化拒绝)。"""
+    if not isinstance(cap, dict) or not cap.get("ok"):
+        return None, _refuse(cap, action)
+    if not cap.get("image_base64"):
+        return None, _refuse({"error": "取帧成功但无 image_base64（形状异常）"}, action)
+    return cap, None
+
+
 def snapshot(eye, region=None, ttl=60):
     """带缓存的视觉快照：画面指纹命中缓存则直接复用（不重新截屏）。
 
     返回: {ok, cached, fingerprint, size, kb, image_base64, ...}
     """
-    cap = _full_frame(eye, region)
-    if not cap.get("ok"):
-        return cap
-    fp = _ahash(cap["image_base64"])[:16]   # 感知指纹（编码噪声免疫）
+    cap, refusal = _require_frame(_full_frame(eye, region), "snapshot")
+    if refusal:
+        return refusal
+    # R-H295：`_ahash` 要把 base64 解码成图再算感知指纹 —— **帧损坏/截断时它抛 OSError**，
+    # 而这里原来没有任何保护：一帧坏了就把整条视觉路径打崩，且不带分类。
+    # 实测就是这么炸的（`OSError: broken data stream when reading image file`）。
+    try:
+        fp = _ahash(cap["image_base64"])[:16]   # 感知指纹（编码噪声免疫）
+    except Exception as exc:  # noqa: BLE001
+        return _refuse({"error": "帧无法解码（损坏/截断）: %s: %s"
+                                 % (type(exc).__name__, str(exc)[:80])}, "snapshot")
     result = dict(cap)
     result["fingerprint"] = fp
 
@@ -193,10 +256,14 @@ def diff_regions(current_b64, previous_b64, grid=GRID):
 
 def diff_with_previous(eye, grid=GRID):
     """与上一次快照对比 + 变化区域定位（内部维护基准帧）。"""
-    cur = _full_frame(eye)
-    if not cur.get("ok"):
-        return cur
-    cur_fp = _ahash(cur["image_base64"])[:16]   # 感知指纹
+    cur, refusal = _require_frame(_full_frame(eye), "diff_with_previous")
+    if refusal:
+        return refusal
+    try:
+        cur_fp = _ahash(cur["image_base64"])[:16]   # 感知指纹
+    except Exception as exc:  # noqa: BLE001
+        return _refuse({"error": "帧无法解码（损坏/截断）: %s: %s"
+                                 % (type(exc).__name__, str(exc)[:80])}, "diff_with_previous")
     prev_fp = getattr(eye, "_vision_last_fp", None)
     prev_b64 = getattr(eye, "_vision_last_b64", None)
 

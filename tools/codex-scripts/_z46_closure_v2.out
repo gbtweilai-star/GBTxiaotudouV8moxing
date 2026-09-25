@@ -1,0 +1,39 @@
+== _z46 收口 v2 · start 2026-09-18 14:36:54 ==
+
+---- 阶段 0：前置锚点闸（各打 1 次，打完放手）----
+  N1_2p_all_elec   14:36:54 -> 200  X-Cache=MISS, HIT, MISS Age=0      bytes_unknown served_by=0030-LGA, cache-bkk2280026-BKK
+  N2_3p_all_elec   14:36:58 -> 200  X-Cache=MISS, HIT, MISS Age=0      bytes_unknown served_by=0034-LGA, cache-bkk2280026-BKK
+  N3_2p_all_ml     14:37:02 -> 406  X-Cache=MISS, MISS     Age=-      bytes_unknown served_by=0030-LGA, cache-bkk2280021-BKK
+  N4_2p_ti_trans   14:37:06 -> 406  X-Cache=MISS, MISS     Age=-      bytes_unknown served_by=0035-LGA, cache-bkk2280033-BKK
+  N5_2p_cat_csAI   14:37:10 -> 406  X-Cache=MISS, MISS     Age=-      bytes_unknown served_by=0062-LGA, cache-bkk2280031-BKK
+  N6_2p_all_prot   14:37:14 -> 406  X-Cache=MISS, MISS     Age=-      bytes_unknown served_by=0048-LGA, cache-bkk2280020-BKK
+  候选锚（200 且 X-Cache 含 HIT）= ['N1_2p_all_elec', 'N2_3p_all_elec']
+  闸通过，锚 = ['N1_2p_all_elec', 'N2_3p_all_elec']
+
+---- 阶段 1：锚定确认（前置闸后 5 分钟）----
+    ...320s
+  N1_2p_all_elec@t0 14:42:14 -> 200  X-Cache=MISS, HIT, HIT Age=320    bytes_unknown served_by=0030-LGA, cache-bkk2280031-BKK
+  N2_3p_all_elec@t0 14:42:18 -> 200  X-Cache=MISS, HIT, HIT Age=320    bytes_unknown served_by=0034-LGA, cache-bkk2280024-BKK
+
+---- 批一（锚定后 30 min） @ 15:12:18 ----
+  N1_2p_all_elec   15:12:18 -> 200  X-Cache=MISS, HIT, HIT Age=2124   bytes_unknown served_by=0030-LGA, cache-bkk2280031-BKK
+  N2_3p_all_elec   15:12:22 -> 200  X-Cache=MISS, HIT, HIT Age=2124   bytes_unknown served_by=0034-LGA, cache-bkk2280036-BKK
+  H(被观察)           15:12:26 -> 200  X-Cache=MISS, HIT, MISS Age=0      bytes_unknown served_by=0038-LGA, cache-bkk2280031-BKK
+  批窗口 7.9s（< 12s = 同批）
+
+---- 批二（锚定后 60 min） @ 15:42:26 ----
+  N1_2p_all_elec   15:42:26 -> 200  X-Cache=MISS, HIT, MISS Age=0      bytes_unknown served_by=0030-LGA, cache-bkk2280020-BKK
+  N2_3p_all_elec   15:42:31 -> 406  X-Cache=MISS, MISS     Age=-      bytes_unknown served_by=0034-LGA, cache-bkk2280031-BKK
+  H(被观察)           15:42:35 -> 200  X-Cache=MISS, HIT, HIT Age=1809   bytes_unknown served_by=0038-LGA, cache-bkk2280030-BKK
+  批窗口 9.2s（< 12s = 同批）
+
+== 汇总 ==
+  批一  N1_2p_all_elec   200  X-Cache=MISS, HIT, HIT  Age=2124
+  批一  N2_3p_all_elec   200  X-Cache=MISS, HIT, HIT  Age=2124
+  批一  H                200  X-Cache=MISS, HIT, MISS  Age=0
+  批二  N1_2p_all_elec   200  X-Cache=MISS, HIT, MISS  Age=0
+  批二  N2_3p_all_elec   406  X-Cache=MISS, MISS  Age=None
+  批二  H                200  X-Cache=MISS, HIT, HIT  Age=1809
+  锚 2/2 绿（两批）= False；H 批一 = 200；H 批二 = 200
+  判定 = 丙 环境变/作废
+== end 15:42:35 ==

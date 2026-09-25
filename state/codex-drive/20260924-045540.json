@@ -1,0 +1,30 @@
+{
+ "时间": "2026-09-24T04:48:14",
+ "带现状": true,
+ "沙箱": "read-only",
+ "任务": "帮我生成一个 Stable Diffusion OpenPose+LoRA 的 ComfyUI 自动化工作流模板，并说明如何与 GBT小土豆V8 框架协作实现免费无限生产",
+ "提示字数": 8732,
+ "第一次": {
+  "exit": 0,
+  "耗时s": 373.1,
+  "命中冷却": true
+ },
+ "换钉": {
+  "ok": true,
+  "status": "already",
+  "钉的": "auto",
+  "读数": {
+   "活": true,
+   "状态": 200,
+   "status": "completed",
+   "落到": "meta/muse-glimmer-30b",
+   "耗时s": 1.6
+  }
+ },
+ "重试一次": {
+  "exit": 0,
+  "耗时s": 67.6
+ },
+ "答复": "**工作流模板**（CPU/7.4 GB 友好，LCM+OpenPose+LoRA）\n\n`workflows/sd_openpose_lora_cpu.json` 骨架，关键节点：\n\n- `CheckpointLoader` → 你的 SD1.5 基模\n- `LoraLoader` + `ApplyLora` → 你的 LoRA，weight 0.6~0.8\n- `ControlNetLoader` `control_v11p_sd15_openpose` + `ControlNetApplyAdvanced`\n- `OpenPosePreprocessor` 输入 pose.png → `control_net` 权重 0.9\n- `KSampler` `sampler_name: euler`, `scheduler: normal`, `steps: 20`, `cfg: 3.5`, `denoise 0.7`；用 LCM 模型时 steps 4~8\n- `VAEDecode` → `SaveImage` 512×512，batch_size 1\n- `Metadata` 输出时写入 `workflow_id` 便于验收器回读\n\nCPU 约束：固定 512×512、VAE 精简、关闭 Tiled VAE、单图队列、输出目录 `mirror_shape/…`。内存峰值控制在 3.5 GB 内。\n\n**与 GBT小土豆V8 协作**\n\n路由与执行只走万能插，不裸调模块：\n\n```\npython tools/codex-scripts/omni.py \"生成 Stable Diffusion OpenPose+LoRA ComfyUI 自动化工作流模板 CPU 版\"\npython tools/codex-scripts/five-dim.py cap <能力位> '{\"op\":\"...\", ...}'\n```\n\n* 默认 `--sandbox read-only`，`--write` 才落盘且先问主人\n* 生产/镜像写入必须显式落点：`room=\"<房间名>\"` 或 `into_global_production=true`，缺授权会回 `missing_scopes`，原样转给主人\n* 免费无限生产走镜像多维度：`mirror_shape → mirror_rehearse → mirror_release`，全部通过 `run_task` 门，成品验收通过后才晋升\n* 现状已知：本机无 CUDA、7.4 GB、检测器仅 body、LCM 只是加速非身份 LoRA。模板保持三件套同卡、在镜像里排练，不拆云、不加官方 ControlNet 插件集，与 §三十七 已验结论一致\n\n留痕：用 `tools/codex-scripts/codex-drive.py --state memory/在办清单.md` 驱动，记录换钉/耗时到 `state/codex-drive/`，可复跑命令 + 真读数才算跑通。\n",
+ "成败": "✅ 拿到答复"
+}

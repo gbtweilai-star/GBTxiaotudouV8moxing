@@ -1,0 +1,8 @@
+{"at": "2026-09-25 16:48:01", "source_kind": "bepic_world", "op": "build", "ok": false, "reason": "no_reference_image"}
+{"at": "2026-09-25 16:48:13", "source_kind": "bepic_world", "op": "read", "ok": true, "image": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\samples\\Owner-三视图-原图.png", "bytes": 492258}
+{"at": "2026-09-25 16:48:13", "source_kind": "bepic_world", "op": "read", "ok": true, "image": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\samples\\Owner-三视图-原图.png", "bytes": 492258}
+{"at": "2026-09-25 16:48:13", "source_kind": "bepic_world", "op": "build", "ok": true, "name": "fogpine", "version": 1}
+{"at": "2026-09-25 16:48:13", "source_kind": "bepic_world", "op": "walk", "ok": true, "name": "fogpine", "version": 1}
+{"at": "2026-09-25 16:48:13", "source_kind": "bepic_world", "op": "pin", "ok": true, "name": "fogpine", "pin_id": "pin-1790329693651", "note": "这里树太多"}
+{"at": "2026-09-25 16:48:13", "source_kind": "bepic_world", "op": "pin", "ok": true, "name": "fogpine", "pin_id": "pin-1790329693771", "note": "天空太饱和"}
+{"at": "2026-09-25 16:48:13", "source_kind": "bepic_world", "op": "evolve", "ok": true, "name": "fogpine", "version": 2, "ops": [{"from": "pending_pins"}], "note": "按 pin 减树、降饱和"}

@@ -23,12 +23,22 @@ import sys
 import threading
 import time
 import uuid
+from datetime import datetime
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 _HERE = Path(__file__).resolve().parent
+# 仓库根（holo_pet 的上一级）。静态托管要认它第二级，理由见 _static_path。
+_REPO_ROOT = _HERE.parent
+# 🔴 仓库根**只放行点名的这几个件**，绝不整棵树都发。
+# 2026-09-22 实测教训：第一版直接把 _REPO_ROOT 当第二个静态根，
+# 结果 `GET /.git/config` 真能拿到（.NET 会把 /../.git/config 规范化成 /.git/config，
+# 于是"路径穿越守卫"根本没触发 —— 它是防**越出**根的，而 .git 就在根**里面**）。
+# 整棵树一旦发出去，memory/ delivery/ .git/ 全部暴露。
+# ⇒ 白名单：只有列在这里的**顶层文件**可发，子目录一律不发。
+_REPO_ROOT_ALLOW = {"capabilities.html", "index.html", "brain.html"}
 _ROOT = _HERE.parent
 _POTATO = _ROOT / "potato_pet"
 for _path in (_ROOT, _POTATO, _HERE):
@@ -357,6 +367,24 @@ APP_SURFACE = (
      "desc": "三件职能（提醒 / 意见 / 建议）→ 只落独立通道；**零执行权**，该方法体里没有任何执行调用"},
     {"route": "/api/studio", "method": "GET", "title": "视频工坊",
      "desc": "自作电影的工具就绪度（实测 bin/env）+ 最火的几家短视频平台（事实读登记表、门禁复用 social 视图）"},
+    {"route": "/api/settings", "method": "GET", "title": "设置",
+     "desc": "设置面读数（分组）。密钥是第一组：免费大模型池探活 + 供应商已配/未配；"
+             "**绝不下发明文密钥**；没登录就如实说没登录"},
+    {"route": "/api/settings/action", "method": "POST", "title": "设置 · 写动作",
+     "desc": "op：probe/login/logout/providers/add_key/health。**密码不落盘**"
+             "（会话 token 只留内存）；加完密钥**必须过健康检查**才算配好"},
+    {"route": "/api/recent-calls", "method": "GET", "title": "最近能力调用",
+     "desc": "只读：最近若干次能力调用的能量流（给能力球的传输动画用）。"
+             "补登记 —— 本会话早先加了这个出口却漏进目录，被双向对账测试抓出来后补上"},
+    {"route": "/api/brain-graph", "method": "GET", "title": "大脑执行层",
+     "desc": "只读：五维合一脑的**排布图与连接网络**。结构从 `brain_exec.py` 的 AST 现算"
+             "（不硬编码），实时状态从 `store/audit.jsonl` 的真实事件尾部取；"
+             "**源码查不到的边不画**（注册表声称的链有 3 条在代码里不存在，如实标 drawn=false）"},
+    {"route": "/api/h1", "method": "GET", "title": "赏金台（h1mcp）",
+     "desc": "只读：窗口 6 赏金台的本机体检 —— 二进制在位与侧车 sha256 比对、凭据"
+             "**只报配置状态不回显值**、本地草稿收件箱。零子进程、零网络、零写盘；"
+             "路径单一真源取自 `holo_pet_w3/shell/windows.json`（与 Electron 侧同一份登记）；"
+             "取不到就 ok=false 带原因，绝不假绿"},
 )
 
 # 契约已立、实体未建的位子：**如实标"未建"**，不做假入口。
@@ -459,6 +487,21 @@ def _spec_for_platform(platform_id: str) -> dict | None:
         return None
 
 
+# ── 性格心跳（R-H702 · 2026-09-21）─────────────────────────────
+# 她要"自己演化七情六欲"就得有人按真实时间推她 —— 光在任务里推，
+# 她只在干活时才有情绪；空转时的衰减（mind_engine._decay 按分钟算）永远不发生。
+# 面板是常驻宿主：APP 在跑 ⇒ 心跳在跑。走**框架自己的调度器**（schedule.tick），
+# 不绕过任何门；没挂调度就什么都不做（静默降级，不影响面板任何功能）。
+_PERSONA_TICK_SECONDS = 600
+
+# ── 主动汇报扫描（R-H705）────────────────────────────────────
+# 判据层在 gbt_allinone/tools/proactive_report.py（只判不说）；
+# 这里只做两件事：**从本地源捞候选** + **把判完的结论说出去**。
+# 判据与出声分离 = 观察者锚点律的要求：同一方不许既判又报。
+_PROACTIVE_TICK_SECONDS = 900
+_PROACTIVE_MAX_CANDIDATES = 12
+
+
 class HoloBridge:
     """Codex、LLM 降级、心智与 GBT 能力的本地适配器。"""
 
@@ -481,6 +524,11 @@ class HoloBridge:
         # 块4-B：共享连接「审批订阅」的取消句柄（add_approval_listener 的返回值）。
         # 与 _unlisten 同范式：谁挂谁摘，stop() 两个句柄一起摘。
         self._unapproval_listen = None
+        # R-H702：性格心跳的停止信号（APP 退出时一起收）
+        self._persona_stop = threading.Event()
+        self._persona_thread = None
+        # R-H705：主动汇报台账（去重/预算/反馈都在它上面算）
+        self._proactive_journal: list = []
         self._delta_buf: list[str] = []
         self._replied_emitted = False
         self._approvals: dict[int, dict] = {}
@@ -492,6 +540,10 @@ class HoloBridge:
         self._last_error_safe = ""
         self._last_error_audited_hash = ""
         self._last_error_audit_landed = True
+        # 最近的能力调用环形缓冲（能力球"能源输送"的**真源**）。
+        # 只由 /api/capability 里真实发生的调用写入；不提供任何写入口、
+        # 也没有"演示模式" —— 源没数据就是没数据，球上如实显示"实时源未接"。
+        self._recent_calls: list = []
         self._sensory_cache: dict | None = None
         self._sensory_cache_at = 0.0
         self._sensory_cache_ttl = 5.0
@@ -527,9 +579,127 @@ class HoloBridge:
         except Exception:
             return {}
 
+    def _start_persona_heartbeat(self) -> None:
+        """挂上性格心跳（幂等：已在跑就不重复挂）。"""
+        if self._persona_thread is not None and self._persona_thread.is_alive():
+            return
+        self._persona_stop.clear()
+        self._persona_thread = threading.Thread(
+            target=self._persona_heartbeat, name="gbt-persona-heartbeat", daemon=True)
+        self._persona_thread.start()
+
+    def _stop_persona_heartbeat(self) -> None:
+        """收掉性格心跳（幂等）。"""
+        self._persona_stop.set()
+        self._persona_thread = None
+
+    def _persona_heartbeat(self) -> None:
+        """到点推一次框架调度器 —— 到期的工作流自己会跑（含她自己的演化）。"""
+        while not self._persona_stop.wait(_PERSONA_TICK_SECONDS):
+            try:
+                from gbt_allinone import schedule as _sched
+                r = _sched.tick()
+                if r.get("count"):
+                    _panel_audit("persona_heartbeat", {"ran": r.get("count")})
+            except Exception as exc:  # noqa: BLE001
+                _panel_audit("persona_heartbeat_error", {"error": str(exc)[:160]})
+            # 心跳顺带扫一遍主动汇报（同一条线程，不另起进程）
+            try:
+                self.proactive_sweep()
+            except Exception as exc:  # noqa: BLE001
+                _panel_audit("proactive_sweep_error", {"error": str(exc)[:160]})
+
+    # ── 主动汇报（R-H705）：捞候选 → 判 → 说 ──────────────────
+    def _proactive_candidates(self) -> tuple:
+        """从**本地已有源**捞候选。返回 (候选, 源错误)。
+
+        捞不到就返回空 —— **不许编一条出来充数**；
+        某个源报错也**不许静默吞** —— 错误要跟着读数一起出去，否则
+        "源断了"和"源没东西"长得一模一样（坑册：异常不许静默吞）。
+        """
+        out = []
+        errors = []
+        # 源①：AI 朋友圈新动态
+        try:
+            client = self._ensure_eigenflux()
+            # installed / authenticated 是 @property（不是方法）—— R-H705 实测抓到的真 bug
+            if client is not None and client.authenticated:
+                feed = client.feed() or {}
+                for row in (feed.get("items") or feed.get("rows") or [])[:6]:
+                    text = str(row.get("text") or row.get("content") or "").strip()
+                    if not text:
+                        continue
+                    out.append({"kind": "novelty", "source": "eigenflux_feed",
+                                "text": text, "seen_before": False,
+                                "new_to_owner": True, "age_hours": 1.0})
+        except Exception as exc:  # noqa: BLE001
+            errors.append({"source": "eigenflux_feed", "error": str(exc)[:160]})
+            _panel_audit("proactive_source_error", {"source": "eigenflux_feed",
+                                                    "error": str(exc)[:160]})
+        # 源②：未兑现的承诺 + 主人状态
+        try:
+            from gbt_allinone import mind_engine as _me
+            st = _me.status() or {}
+            om = st.get("owner_model") or {}
+            for c in (st.get("self_model") or {}).get("active_commitments") or []:
+                if str(c.get("status") or "") == "closed":
+                    continue
+                out.append({"kind": "memory_hit", "source": "commitment",
+                            "text": f"有件事还挂着：{c.get('commitment')}",
+                            "seen_before": False, "age_hours": 2.0})
+            self._proactive_owner_state = str(om.get("state") or "")
+        except Exception as exc:  # noqa: BLE001
+            errors.append({"source": "commitment", "error": str(exc)[:160]})
+            _panel_audit("proactive_source_error", {"source": "commitment",
+                                                    "error": str(exc)[:160]})
+        # 源③：调度结果
+        try:
+            from gbt_allinone import schedule as _sched
+            for name, row in (_sched.status().get("schedules") or {}).items():
+                if row.get("last_status") == "error":
+                    out.append({"kind": "owner_need", "source": "schedule_state",
+                                "text": f"调度 {name} 上次跑失败了，要看一下。",
+                                "seen_before": False, "age_hours": 1.0, "risk": 0.7})
+        except Exception as exc:  # noqa: BLE001
+            errors.append({"source": "schedule_state", "error": str(exc)[:160]})
+            _panel_audit("proactive_source_error", {"source": "schedule_state",
+                                                    "error": str(exc)[:160]})
+        return out[:_PROACTIVE_MAX_CANDIDATES], errors
+
+    def proactive_sweep(self) -> dict:
+        """扫一遍候选 → 判 → 该说的说、该压的压（压也留痕）。**只判不说在工具层。**"""
+        from gbt_allinone.tools import proactive_report as _pr
+        cands, src_errors = self._proactive_candidates()
+        state = getattr(self, "_proactive_owner_state", "") or ""
+        spoke, held = [], []
+        for c in cands:
+            d = _pr.decide(c, journal=self._proactive_journal, owner_state=state)
+            fp = d["scored"]["fingerprint"]
+            if d.get("speak"):
+                text = str(d.get("text") or "").strip()
+                res = self.voice_speak(d.get("voice_kind") or "提醒", text)
+                self.bus.publish("proactive", kind=d.get("voice_kind"), text=text,
+                                 source=d["scored"].get("source_name"),
+                                 score=d["scored"]["score"], spoken=True)
+                spoke.append({"text": text, "score": d["scored"]["score"]})
+                self._proactive_journal.append(
+                    {"spoken": True, "at_ts": time.time(), "fingerprint": fp,
+                     "voice": d.get("voice_kind"), "delivered": bool(res.get("ok"))})
+            else:
+                held.append({"text": str(c.get("text"))[:60],
+                             "why": (d.get("hold_reason") or [""])[0]})
+                self._proactive_journal.append(
+                    {"spoken": False, "at_ts": time.time(), "fingerprint": fp})
+        if spoke or held:
+            _panel_audit("proactive_sweep", {"candidates": len(cands),
+                                             "spoke": len(spoke), "held": len(held)})
+        return {"ok": True, "candidates": len(cands), "spoke": spoke, "held": held,
+                "source_errors": src_errors, "journal": len(self._proactive_journal)}
+
     def start(self, wait_seconds: float = 0.0) -> bool:
         """启动本地面板桥；等待秒数为 0 时在后台挂载 Codex 共享连接。"""
         self._ensure_fallback()
+        self._start_persona_heartbeat()
         if not wait_seconds:
             threading.Thread(
                 target=self._attach_shared,
@@ -631,6 +801,7 @@ class HoloBridge:
         返回的取消句柄（_unlisten / _unapproval_listen）精确摘除；仍保留
         _is_same_hook 回落，兼容老路径挂上的单槽钩子。
         """
+        self._stop_persona_heartbeat()
         with self._lock:
             server = self._codex
             unlisten = self._unlisten
@@ -2218,6 +2389,10 @@ class HoloBridge:
                 "domain": str(row.get("domain") or ""),
                 "desc": str(row.get("desc") or "")[:180],
                 "enabled": enabled,
+                # 2026-09-23 解禁后必须把**状态**也交出去：`enabled=False` 现在有两种完全不同的原因 ——
+                # `unimplemented`（只有名字、没有实现）与（若将来再有）`disabled`（被策略拒）。
+                # 只给 bool，读的人分不清"没做"和"被挡住"，就会去琢磨"怎么开门"。
+                "status": str(row.get("status") or ""),
                 "reason": str(row.get("reason") or ""),
                 # 需要二次确认 = 在她那份"侧效应"名单里（名单缺失则全部要求确认）
                 "needs_confirmation": enabled and (gate is None or kind in gate),
@@ -2237,12 +2412,56 @@ class HoloBridge:
             "disabled": sum(1 for row in items if not row["enabled"]),
             "domains": dict(sorted(domains.items())),
             "items": items,
+            # 🔴 通道总账：`total` 只是**注册表**那一条通道的数。
+            # 外面还有本面板自身路由面与 Ark 云端能力面。不把这件事写出来，
+            # 只看 `total` 的人会以为"框架一共就这么多个能力" —— 那是误读，不是读数。
+            "channels": {
+                "registry": len(items),
+                "app_routes": len(APP_SURFACE),
+                "app_pending": len(APP_PENDING),
+                "ark": len((self._ark_surface().get("skills") or [])),
+            },
+            "total_all_channels": (len(items) + len(APP_SURFACE) + len(APP_PENDING)
+                                   + len((self._ark_surface().get("skills") or []))),
+            "channels_note": ("能力分四条通道：registry=注册表能力位（走 run_task 唯一门）· "
+                              "app_routes=本面板自身路由 · app_pending=契约已立实体未建 · "
+                              "ark=Ark 云端（外部 CLI，不走 run_task）。"
+                              "`total` 只数第一条，别拿它当全量。"),
             # APP 自身的能力面（不属于她的注册表）+ 契约已立但实体未建的位子
             "app": {
+                "ark": self._ark_surface(),
                 "routes": [dict(row) for row in APP_SURFACE],
                 "pending": [dict(row) for row in APP_PENDING],
             },
         }
+
+    # ------------------------------------------------------------------
+    # Ark 云端能力面（外部 CLI）
+    # 单一声明：holo_pet/ark_surface.json（由 tools/codex-scripts/make_ark_surface.py 现读技能目录生成）。
+    # 面板**只读这一份**，不持有第二份真相；也不在这里起进程（见该脚本里的说明）。
+    # ------------------------------------------------------------------
+    _ark_cache: dict | None = None
+    _ark_cache_stamp: tuple = ()
+
+    def _ark_surface(self) -> dict:
+        path = _HERE / "ark_surface.json"
+        try:
+            stamp = (path.stat().st_mtime_ns, path.stat().st_size)
+        except OSError as exc:
+            return {"ok": False, "error": f"读不到 Ark 能力面声明: {exc}",
+                    "how": "跑 python tools/codex-scripts/make_ark_surface.py 生成它"}
+        if self._ark_cache is None or self._ark_cache_stamp != stamp:
+            try:
+                loaded = json.loads(path.read_text(encoding="utf-8"))
+            except Exception as exc:  # noqa: BLE001
+                return {"ok": False, "error": f"Ark 能力面声明解析失败: {exc}"}
+            skills = list(loaded.get("skills") or [])
+            loaded["ok"] = True
+            loaded["total"] = len(skills)
+            loaded["with_cli_help"] = sum(1 for s in skills if s.get("cli_help"))
+            self._ark_cache = loaded
+            self._ark_cache_stamp = stamp
+        return self._ark_cache
 
     def capability(self, kind: str, payload: dict | None = None, confirm: bool = False) -> dict:
         """通用调用口：只放行注册表里 enabled 且 safe 的能力；侧效应能力要确认。"""
@@ -2251,14 +2470,13 @@ class HoloBridge:
         if not kind:
             return {"ok": False, "error": "缺少 kind"}
         try:
-            from gbt_allinone.caps_registry import BENIGN_CAPS, DISABLED_CAPS
+            from gbt_allinone.caps_registry import BENIGN_CAPS
         except Exception as exc:  # noqa: BLE001
             return {"ok": False, "error": f"读不到能力注册表: {exc}"}
 
-        if kind in DISABLED_CAPS:
-            # 与 api.py 同一判决，只是提前到面板侧 —— 不留"面板能撬开"的口子。
-            return {"ok": False, "error": "该能力被安全策略禁用",
-                    "reason": DISABLED_CAPS[kind], "kind": kind}
+        # 2026-09-23 Owner 令：禁止已全部解开，面板侧与 api.py 同步。
+        # 那 11 个名字**没有实现**（不在 BENIGN_CAPS、全仓无实现文件）⇒ 落进下面的
+        # "未知能力"分支，得到**如实**的"没做"，而不是旧消息那种"被策略挡住"的误导。
         spec = BENIGN_CAPS.get(kind)
         if not spec:
             return {"ok": False, "error": f"未知能力: {kind}"}
@@ -2710,6 +2928,339 @@ class HoloBridge:
                 "channel": str(folder), "file": target.name}
 
 
+    # ═════════════ 设置面（Owner 2026-09-22：「配置密钥属于设置」）═════════════
+    # 落点纪律：密钥不是一个独立窗口，而是「设置」面里的第一组。
+    # 三条硬纪律写在这里，防止后来人放宽：
+    #   ① **绝不下发明文密钥** —— 任何密钥只回 mask() 过的打码值。
+    #   ② **不落盘 dashboard 密码/会话** —— token 只活在内存 `self._ffl_token`，
+    #      进程一停即失效；仓内任何文件都不写它。
+    #   ③ **没登录就如实说没登录** —— 不假装拿到了供应商清单（反假执行）。
+
+    def _ffl(self):
+        """按需取 FreeLLMAPI 客户端（拿不到就如实报，不抛裸异常）。"""
+        from gbt_allinone.llm import freellmapi as ffl
+        return ffl
+
+    def _ffl_token_get(self) -> str:
+        return str(getattr(self, "_ffl_token", "") or "")
+
+    def settings(self) -> dict:
+        """设置面读数：分组的现状。**密钥是第一组**，其余如实标 pending。"""
+        try:
+            ffl = self._ffl()
+        except Exception as e:                                    # noqa: BLE001
+            return {"ok": False, "error": f"freellmapi 客户端不可用: {type(e).__name__}",
+                    "groups": []}
+
+        probe = ffl.probe()
+        token = self._ffl_token_get()
+        keys = {"id": "keys", "title": "密钥",
+                "desc": "本地免费大模型池（FreeLLMAPI）的供应商密钥",
+                "server": probe, "authed": bool(token)}
+        if not probe.get("up"):
+            keys["status"] = "server_down"
+            keys["note"] = "服务没起 —— 先起 FreeLLMAPI 桌面版（端口读它自己的 config.json）"
+        elif not token:
+            keys["status"] = "need_login"
+            keys["note"] = ("要读供应商、配密钥，需 dashboard 会话。密码不落盘，"
+                            "请在本页现场登录（走官方 /api/auth/login）")
+        else:
+            p = ffl.providers(token)
+            keys["status"] = "ok" if p.get("ok") else "error"
+            if p.get("ok"):
+                keys["summary"] = p.get("summary") or {}
+                keys["providers"] = p.get("providers") or []
+                keys["unconfigured"] = p.get("unconfigured") or []
+                keys["expected"] = p.get("expected")
+                keys["matches_expected"] = p.get("matches_expected")
+            else:
+                keys["note"] = p.get("error", "")
+                if p.get("status") == 401:
+                    keys["status"] = "need_login"
+                    keys["note"] = "会话已失效，请重新登录"
+
+        return {"ok": True, "groups": [
+            keys,
+            {"id": "compute", "title": "模型与算力", "status": "pending",
+             "desc": "L1 官方独立连接口 / L2 免费池 / L3 本地 的优先级（待接 official.py）"},
+            {"id": "body", "title": "本体", "status": "pending",
+             "desc": "窗口 / 屏幕 / 输入 / 进程 的开关与权限（待接 body_bus）"},
+            {"id": "transformer", "title": "变压器", "status": "pending",
+             "desc": "压缩与快速输出开关（待接变压器）"},
+        ]}
+
+    def settings_action(self, op: str, payload: dict | None = None) -> dict:
+        """设置面的写动作。**只做配置，不做执行** —— 能力调用仍走 run_task，不绕门。
+
+        op：probe / login / logout / providers / add_key / health
+        """
+        p = payload or {}
+        op = str(op or "").strip().lower()
+        _SUPPORTED = ("probe", "login", "logout", "providers", "add_key", "health")
+        # op 校验**放在最前**：否则未知 op 会先撞上"还没登录"，报错话术不准
+        # （实测：settings_action("乱来", {}) 原来回的是 401 还没登录，而不是"未知动作"）。
+        if op not in _SUPPORTED:
+            return {"ok": False, "op": op, "error": f"未知设置动作 {op!r}",
+                    "supported": list(_SUPPORTED)}
+        try:
+            ffl = self._ffl()
+        except Exception as e:                                    # noqa: BLE001
+            return {"ok": False, "op": op, "error": f"客户端不可用: {type(e).__name__}"}
+
+        if op == "probe":
+            return {"ok": True, "op": op, "probe": ffl.probe()}
+
+        if op == "login":
+            r = ffl.login(str(p.get("email") or ""), str(p.get("password") or ""))
+            # token 只留内存；**返回值里也把它抹掉**，只回打码指纹，免得漏进日志/前端。
+            if r.get("ok"):
+                self._ffl_token = r["token"]
+                return {"ok": True, "op": op, "user": r.get("user"),
+                        "token_fp": ffl.mask(r["token"]), "stored": "memory-only"}
+            return {"ok": False, "op": op,
+                    "error": r.get("error", "登录失败"),
+                    "hint": "密码不落盘；核对 FreeLLMAPI dashboard 的账号密码"}
+
+        if op == "logout":
+            self._ffl_token = ""
+            return {"ok": True, "op": op, "note": "内存里的会话已清"}
+
+        token = self._ffl_token_get()
+        if not token:
+            return {"ok": False, "op": op, "status": 401,
+                    "error": "还没登录 —— 先 login 再操作（密码不落盘）"}
+
+        if op == "providers":
+            r = ffl.providers(token)
+            if r.get("ok"):
+                r = {**r, "op": op}
+            return {**r, "op": op}
+
+        if op == "add_key":
+            platform = str(p.get("platform") or "").strip()
+            key = str(p.get("key") or "")
+            if not platform:
+                return {"ok": False, "op": op, "error": "缺少 platform"}
+            a = ffl.add_key(token, platform, key, str(p.get("label") or "面板配置"))
+            if not a.get("ok"):
+                return {**a, "op": op}
+            # **写完必须验**：没验过的不许叫「配好了」（反假执行）。
+            h = ffl.health_check(token, a.get("id")) if a.get("id") else {
+                "ok": False, "error": "对方没回 id，无法健康检查"}
+            return {"ok": bool(a.get("ok")), "op": op, "platform": platform,
+                    "id": a.get("id"), "masked": a.get("masked"),
+                    "added": True, "verified": bool(h.get("ok")),
+                    "health": h.get("result") or h.get("error"),
+                    "note": ("已配且已验通过" if h.get("ok") else
+                             "已写入，但**健康检查没过** —— 不算配好")}
+
+        if op == "health":
+            kid = p.get("key_id")
+            if kid in (None, ""):
+                return {"ok": False, "op": op, "error": "缺少 key_id"}
+            h = ffl.health_check(token, kid)
+            return {**h, "op": op}
+
+        return {"ok": False, "op": op, "error": f"未实现的设置动作 {op!r}"}
+
+
+    # ═════════ 大脑执行层 · 排布图与连接网络（Owner：「逼真和真实执行的感觉」）═════════
+    # 铁律：图上每个节点、每条边都要能在源码上指出处；状态必须是真事件。
+    # 结构与状态都由 `gbt_allinone/tools/brain_graph.py` 现算，本方法只做搬运与兜底。
+
+    def brain_graph(self, limit: int = 400) -> dict:
+        """大脑执行层：**结构**（从源码 AST 算）+ **实时状态**（从 audit.jsonl 真事件）。
+        任何一半拿不到都如实说哪一半没有，**不拿另一半假装整体可用**。"""
+        out = {"ok": True, "structure": None, "live": None, "errors": {}}
+        try:
+            from gbt_allinone.tools import brain_graph as bg
+        except Exception as e:                                    # noqa: BLE001
+            return {"ok": False, "errors": {"import": f"{type(e).__name__}: {str(e)[:120]}"},
+                    "note": "数据层不可用 —— 不编一张图出来"}
+        try:
+            out["structure"] = bg.structure()
+        except Exception as e:                                    # noqa: BLE001
+            out["errors"]["structure"] = f"{type(e).__name__}: {str(e)[:120]}"
+        try:
+            # 布局服务端算（Sugiyama 分层），页面只负责画 —— 职责分开
+            out["layout"] = bg.layout(out["structure"])
+        except Exception as e:                                    # noqa: BLE001
+            out["errors"]["layout"] = f"{type(e).__name__}: {str(e)[:120]}"
+        try:
+            out["live"] = bg.live_state(limit=int(limit or 400))
+        except Exception as e:                                    # noqa: BLE001
+            out["errors"]["live"] = f"{type(e).__name__}: {str(e)[:120]}"
+        out["ok"] = not out["errors"]
+        if out["errors"]:
+            out["note"] = "部分失败，见 errors —— 「拿不到」就说拿不到"
+        return out
+
+    # ═════════ 窗口 6 · 赏金台（h1mcp · 阶段一 本机只读）═════════
+    # Owner 2026-09-22：「还有这个要在面板上……我记得已经做了没接上」。
+    # 实测断点（不是推测）：赏金台 `holo_pet_w3/h1/` 此前**只有一条数据路** ——
+    #   preload.cjs:31  `h1: () => invoke("w3:h1")`
+    #   main.cjs:1204  `ipcMain.handle("w3:h1", () => w3H1())`
+    #   h1.js:8-9      只认 `window.gbtW3.h1`
+    # DSH 面板宿主是**浏览器 iframe，没有 Electron** ⇒ `window.gbtW3` 不存在 ⇒
+    # h1.js 走 `if (!api)` 如实打「桥断」。页做得再好，在面板里也永远是空壳。
+    # 本方法补的是**第二条同源只读出口**，让同一份 render 能跑在浏览器里。
+    #
+    # 🔴 与 Electron 侧 w3H1() 的口径必须一致，四条纪律写在最前：
+    #   ① **单一真源**：路径一律读 `holo_pet_w3/shell/windows.json` 的 windows[id=h1].config，
+    #      与 main.cjs::h1ConfiguredPath 同一份登记 —— 两处不许各自写死一个路径。
+    #   ② **零副作用**：只 stat / read / 读环境变量。不起子进程、不发网络、不写盘。
+    #   ③ **凭据只报布尔**：不回显值，连用户名都不回显。
+    #   ④ **取不到就不许绿**：ok=False 并带原因，绝不拿假绿糊过去。
+    H1_CRED_VARS = (
+        ("H1_USERNAME", "HackerOne 用户名", "h1mcp v0.1.4"),
+        ("H1_API_KEY", "API 令牌（二进制实际读取名）", "h1mcp v0.1.4"),
+        ("H1_API_TOKEN", "历史口径名（h1mcp v0.1.4 不读取）", None),
+    )
+
+    @staticmethod
+    def _h1_expand(raw: str) -> str:
+        """展开注册表里的 %LOCALAPPDATA% / %APPDATA%（与 main.cjs 的正则同规则）。"""
+        return re.sub(r"%([^%]+)%", lambda m: os.environ.get(m.group(1), m.group(0)), str(raw))
+
+    def _h1_paths(self) -> tuple[str | None, str | None, str]:
+        """取 (二进制, 草稿目录, 路径来源)。来源要报出来 —— 这样「单一真源」是可证的。"""
+        binary = os.environ.get("GBT_H1_BINARY") or None
+        drafts = os.environ.get("GBT_H1_DRAFTS") or None
+        source = "env" if (binary or drafts) else "default"
+        try:
+            reg_path = _REPO_ROOT / "holo_pet_w3" / "shell" / "windows.json"
+            reg = json.loads(reg_path.read_text(encoding="utf-8"))
+            entry = next((w for w in (reg.get("windows") or []) if w.get("id") == "h1"), None)
+            cfg = (entry or {}).get("config") or {}
+            got = False
+            if not binary and isinstance(cfg.get("binary_path"), str) and cfg["binary_path"].strip():
+                binary = self._h1_expand(cfg["binary_path"].strip())
+                got = True
+            if not drafts and isinstance(cfg.get("drafts_path"), str) and cfg["drafts_path"].strip():
+                drafts = self._h1_expand(cfg["drafts_path"].strip())
+                got = True
+            if got:
+                source = "holo_pet_w3/shell/windows.json"
+        except Exception:                                          # noqa: BLE001
+            pass
+        if not binary:
+            local = os.environ.get("LOCALAPPDATA")
+            binary = str(Path(local) / "gbt_allinone" / "bin" / "h1mcp.exe") if local else None
+        if not drafts:
+            roaming = os.environ.get("APPDATA")
+            drafts = str(Path(roaming) / "h1mcp" / "drafts") if roaming else None
+        return binary, drafts, source
+
+    def h1(self) -> dict:
+        """窗口 6 · 赏金台：本机只读体检（阶段一）。
+
+        信封与 Electron 侧 w3H1() 逐字段对齐 —— 前端 `h1.js` 两条路共用一份 render：
+          通过 → {"ok": True,  "data":  body}
+          取不到 → {"ok": False, "error": 原因, "panel": body}   ← 半截数据也要能渲染，但**不许绿**
+        """
+        binary_path, drafts_path, cfg_source = self._h1_paths()
+
+        binary = {"path": binary_path, "present": False, "bytes": None, "tag": None,
+                  "sha256": None, "recorded_sha256": None, "sha_match": None,
+                  "sidecar_present": False, "reason": None}
+        if not binary_path:
+            binary["reason"] = "LOCALAPPDATA 不可用 -> 拿不到稳定工具目录"
+        elif not os.path.exists(binary_path):
+            binary["reason"] = "二进制不存在（未安装或路径不符）"
+        else:
+            try:
+                binary["present"] = True
+                binary["bytes"] = os.path.getsize(binary_path)
+                with open(binary_path, "rb") as fh:                 # 分块读，7MB 也只用一次内存
+                    digest = hashlib.sha256()
+                    while True:
+                        chunk = fh.read(1024 * 1024)
+                        if not chunk:
+                            break
+                        digest.update(chunk)
+                    binary["sha256"] = digest.hexdigest()
+                sidecar = binary_path + ".sha256"
+                if os.path.exists(sidecar):
+                    binary["sidecar_present"] = True
+                    txt = Path(sidecar).read_text(encoding="utf-8", errors="replace")
+                    hm = re.search(r"[0-9a-fA-F]{64}", txt)
+                    if hm:
+                        binary["recorded_sha256"] = hm.group(0).lower()
+                    vm = re.search(r"tag=([^\r\n]+)", txt)
+                    if vm:
+                        binary["tag"] = vm.group(1).strip()
+                if binary["sha256"] and binary["recorded_sha256"]:
+                    binary["sha_match"] = binary["sha256"] == binary["recorded_sha256"]
+                if binary["sha_match"] is False:
+                    binary["reason"] = "侧车哈希与产物不一致（产物被替换过）"
+            except Exception as e:                                  # noqa: BLE001
+                binary["reason"] = f"读取失败：{type(e).__name__}"
+
+        cred_items = [{"name": n, "role": r, "read_by": by,
+                       "configured": bool(os.environ.get(n))}      # 只报布尔，不回显值
+                      for (n, r, by) in self.H1_CRED_VARS]
+        creds_ready = all(c["configured"] for c in cred_items
+                          if c["name"] in ("H1_USERNAME", "H1_API_KEY"))
+
+        drafts = {"path": drafts_path, "initialized": False, "count": None,
+                  "files": [], "reason": None}
+        if not drafts_path:
+            drafts["reason"] = "APPDATA 不可用 -> 拿不到草稿目录"
+        elif not os.path.isdir(drafts_path):
+            drafts["reason"] = "目录不存在（未初始化）"
+        else:
+            try:
+                names = sorted(n for n in os.listdir(drafts_path)
+                               if n.lower().endswith(".json"))[:50]
+                drafts["initialized"] = True
+                drafts["count"] = len(names)
+                for n in names:
+                    row = {"name": n, "bytes": None, "mtime": None, "title": None,
+                           "program_handle": None, "parse_error": None}
+                    try:
+                        p = Path(drafts_path) / n
+                        st = p.stat()
+                        row["bytes"] = st.st_size
+                        row["mtime"] = datetime.fromtimestamp(st.st_mtime).isoformat()
+                        doc = json.loads(p.read_text(encoding="utf-8", errors="replace"))
+                        if isinstance(doc.get("title"), str):
+                            row["title"] = doc["title"]
+                        if isinstance(doc.get("program_handle"), str):
+                            row["program_handle"] = doc["program_handle"]
+                    except Exception as e:                          # noqa: BLE001
+                        row["parse_error"] = type(e).__name__
+                    drafts["files"].append(row)
+            except Exception as e:                                  # noqa: BLE001
+                drafts["reason"] = f"目录读取失败：{type(e).__name__}"
+
+        ready = binary["present"] is True and binary["sha_match"] is True and creds_ready
+        body = {
+            "readonly": True,
+            "stage": "stage1-local-readonly",
+            "note": "只读：不调 API、不起子进程、不写文件；凭据只报配置状态，不回显值。",
+            "badge": "ok" if ready else ("warn" if binary["present"] else "off"),
+            "config_source": cfg_source,
+            "binary": binary,
+            "credentials": {"ready": creds_ready, "items": cred_items},
+            "drafts": drafts,
+            "api_surfaces": [
+                {"id": "programs_scope", "title": "程序与 scope", "state": "pending",
+                 "reason": "阶段二未接入（走 mcp_bridge 能力层，需 Owner 单独放行）"},
+                {"id": "reports", "title": "我的报告", "state": "pending",
+                 "reason": "阶段二未接入（同上）"},
+                {"id": "earnings", "title": "收益", "state": "pending",
+                 "reason": "阶段二未接入（同上）"},
+            ],
+            "sensitive_note": "敏感档动作不接：submit_report / submit_draft / add_comment / "
+                              "close_report / update_report_severity / request_disclosure。",
+            "transport": "panel_server HTTP（同源；DSH 面板内嵌走这条）",
+        }
+        if not binary["present"]:
+            return {"ok": False, "error": "h1mcp 取不到：" + (binary["reason"] or "未知原因"),
+                    "panel": body}
+        return {"ok": True, "data": body}
+
+
 class _Handler(BaseHTTPRequestHandler):
     """静态资源与本地 API；默认只由 launcher 在 127.0.0.1 上启动。"""
 
@@ -2726,14 +3277,64 @@ class _Handler(BaseHTTPRequestHandler):
     def dedupe(self) -> MessageDeduper:
         return self.server.dedupe  # type: ignore[attr-defined]
 
+    def _note_capability_call(self, kind: str, ok: bool) -> None:
+        """记一次**真实发生**的能力调用（能力球"能源输送"的唯一数据源）。
+
+        Owner 2026-09-22：「只要 AI 在动，能力球里面相对应的能力就会像输送能源
+        一样的动起来」。
+
+        🔴 纪律（写在这里防以后被改成装饰）：
+          · 本方法**只在 /api/capability 真正把调用派出去之后**被调用
+          · **没有**任何"演示 / 模拟 / 假事件"入口
+          · 环形缓冲上限 80 条，只保留最近 10 分钟 —— 老事件自己退场
+          ⇒ 球上亮的，永远是**真发生过的**。这是铁律 6 在视觉层的落点。
+        """
+        import time as _t
+        now = _t.time()
+        if not hasattr(self, "_recent_calls") or self._recent_calls is None:
+            self._recent_calls = []
+        self._recent_calls.append({"kind": str(kind or ""), "ok": bool(ok), "at": now})
+        # 只留最近 10 分钟 且 不超 80 条
+        keep = [c for c in self._recent_calls if now - float(c.get("at") or 0) <= 600.0]
+        self._recent_calls = keep[-80:]
+
     def _send_json(self, value, status: int = HTTPStatus.OK) -> None:
         raw = json.dumps(value, ensure_ascii=False, default=str).encode("utf-8")
         self.send_response(int(status))
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Cache-Control", "no-store")
+        self._send_cors()
         self.send_header("Content-Length", str(len(raw)))
         self.end_headers()
         self.wfile.write(raw)
+
+    # ── 同机直连放行（只放行本机回环上的 DSH 宿主源，**不是 `*`**）──────────────
+    # 为什么需要：DSH 宿主里 `/gbt-master/api/*` 的内嵌反代**当前不生效**
+    # （实测 HTTP 404「该路径不在可服务白名单内」—— 静态路由赢了前缀匹配，
+    #  因为宿主进程自 09-21 22:29 起未重启，加载的是没有反代那段代码的旧插件）。
+    # 于是凡声明 apiShim 的页在宿主内都拿不到本机服务。
+    # 放行之后，宿主里的页可以直连 `http://127.0.0.1:8765/api/*`；
+    # 反代一旦生效，前端会优先走同源那条，这段就成了兜底 —— 两条路都在明面上。
+    CORS_ORIGINS = ("http://127.0.0.1:3080", "http://localhost:3080")
+
+    def _send_cors(self) -> None:
+        origin = self.headers.get("Origin")
+        if origin in self.CORS_ORIGINS:
+            self.send_header("Access-Control-Allow-Origin", origin)
+            self.send_header("Vary", "Origin")
+
+    def do_OPTIONS(self):  # noqa: N802
+        """预检：只回本面板服务真正提供的方法，不放宽任何东西。"""
+        self.send_response(HTTPStatus.NO_CONTENT)
+        origin = self.headers.get("Origin")
+        if origin in self.CORS_ORIGINS:
+            self.send_header("Access-Control-Allow-Origin", origin)
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "content-type, accept")
+            self.send_header("Access-Control-Max-Age", "300")
+            self.send_header("Vary", "Origin")
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def _read_json(self) -> dict:
         try:
@@ -2750,18 +3351,27 @@ class _Handler(BaseHTTPRequestHandler):
             return _HERE / "index.html"
         if path.startswith("/holo_pet/"):
             path = path[len("/holo_pet/"):]
-        if path.startswith("/tripo-out/"):
-            base = _ROOT
-            relative = path.lstrip("/")
-        else:
-            base = _HERE
-            relative = path.lstrip("/")
-        candidate = (base / relative).resolve()
-        try:
-            candidate.relative_to(base.resolve())
-        except ValueError:
-            return None
-        return candidate if candidate.is_file() else None
+        relative = path.lstrip("/")
+        # 两级根：① 面板自己的目录（holo_pet/）② **仓库根**（上一级）。
+        # 为什么加第二级：能力球 `capabilities.html` 在仓库根，它不是面板的私有件，
+        # 但**只有从面板端口打开**才能用上 /api/message（大脑）、/api/recent-calls
+        # （能源流转的 HEAT 来源）、/api/events（她说话）。
+        # 实测用 file:// 打开时那几个接口全连不上 ⇒ 麦克风 not-allowed、热流永远不亮。
+        # 安全：**每一级各自过一遍路径穿越守卫**，越出自己那级就 continue，越界拿不到东西。
+        for base in (_HERE, _REPO_ROOT):
+            if base is _REPO_ROOT:
+                # 仓库根只认白名单里的**顶层文件**（不许带子目录），
+                # 否则 .git/ memory/ delivery/ 会跟着一起发出去。
+                if relative not in _REPO_ROOT_ALLOW:
+                    continue
+            candidate = (base / relative).resolve()
+            try:
+                candidate.relative_to(base.resolve())
+            except ValueError:
+                continue
+            if candidate.is_file():
+                return candidate
+        return None
 
     def _serve_static(self, url_path: str) -> bool:
         file_path = self._static_path(url_path)
@@ -2806,6 +3416,31 @@ class _Handler(BaseHTTPRequestHandler):
             return
         if parsed.path == "/api/studio":
             self._send_json(self.bridge.studio())
+            return
+        if parsed.path == "/api/settings":
+            self._send_json(self.bridge.settings())
+            return
+        if parsed.path == "/api/brain-graph":
+            self._send_json(self.bridge.brain_graph(
+                _query_int(parsed.query, "limit") or 400))
+            return
+        if parsed.path == "/api/h1":
+            # 窗口 6 赏金台的**第二条数据路**（第一条是 Electron IPC w3:h1）。
+            # 为什么需要它：DSH 面板宿主是浏览器 iframe，没有 Electron ⇒ 只有 IPC 的口
+            # 在面板里永远是空壳（Owner 2026-09-22 说的「做了没接上」就是这个）。
+            self._send_json(self.bridge.h1())
+            return
+        if parsed.path == "/api/recent-calls":
+            # 能力球用 fetch(默认 GET) 轮询这个口拿"最近谁被真正调过"。
+            # 2026-09-22 修：这段原先错放在 do_POST 里，而客户端发的是 GET
+            # ⇒ 能量传输动画**从来没通过**（我之前只声明"接上了"，没端到端验；
+            #   被 `test_app_surface_matches_real_routes` 补登记时抓出来）。
+            # 只读口就该是 GET，一并挪正。
+            calls = getattr(self.bridge, "_recent_calls", None)
+            if calls is None:
+                calls = getattr(self, "_recent_calls", [])
+            self._send_json({"ok": True, "calls": list(calls),
+                             "source": "panel_server._recent_calls"}, HTTPStatus.OK)
             return
         if parsed.path == "/api/events":
             since = _query_int(parsed.query, "since")
@@ -2892,6 +3527,16 @@ class _Handler(BaseHTTPRequestHandler):
                     body,
                 ))
                 return
+            if parsed.path == "/api/settings/action":
+                body = self._read_json()
+                result = self.bridge.settings_action(
+                    str(body.get("op") or "probe"),
+                    body,
+                )
+                self._send_json(result,
+                                HTTPStatus.OK if result.get("ok")
+                                else HTTPStatus.BAD_REQUEST)
+                return
             if parsed.path == "/api/research":
                 body = self._read_json()
                 self._send_json(self.bridge.research(
@@ -2905,11 +3550,20 @@ class _Handler(BaseHTTPRequestHandler):
                 return
             if parsed.path == "/api/capability":
                 body = self._read_json()
+                _kind = body.get("kind") or body.get("action") or ""
                 result = self.bridge.capability(
-                    body.get("kind") or body.get("action") or "",
+                    _kind,
                     body.get("payload") or {},
                     bool(body.get("confirm")),
                 )
+                # ── 记录这次真实调用（能力球"能源输送"的数据源）──────────────
+                # Owner 2026-09-22：「只要 AI 在动，能力球里面相对应的能力就会像
+                # 输送能源一样的动起来」。**只记真正走到这里的调用** ——
+                # 不许为了让球动而伪造事件（铁律 6 严禁假执行）。
+                try:
+                    self._note_capability_call(_kind, bool(result.get("ok")))
+                except Exception:
+                    pass
                 self._send_json(
                     result,
                     HTTPStatus.OK if result.get("ok") else HTTPStatus.BAD_REQUEST,

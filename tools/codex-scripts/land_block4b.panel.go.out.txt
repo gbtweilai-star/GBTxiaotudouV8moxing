@@ -1,0 +1,90 @@
+﻿========================================================================
+### 落刀部件：panel
+========================================================================
+
+--- 0. 前置：生产基线 + 回滚点 ---
+P0-1 生产 sha256 == 归档基线                                   '6176f90086a214f54d73910 expect='6176f90086a214f54d739 PASS
+P0-2 生产行数                                                1290                     expect=1290                   PASS
+P0-3 生产换行符 LF（无 CR）                                      False                    expect=False                  PASS
+P0-4 生产 mtime                                            '2026-09-16 13:38:44'    expect='2026-09-16 13:38:44'  PASS
+P0-5 preblock4b.bak == 生产（逐字节，写盘前已就位）                    True                     expect=True                   PASS
+P0-6 回滚点 sha256                                          '6176f90086a214f54d73910 expect='6176f90086a214f54d739 PASS
+
+--- 1. 取镜像正文（剥横幅） ---
+P1-1 镜像 sha256 == 归档                                     '141dcb531a9e483d459a36b expect='141dcb531a9e483d459a3 PASS
+P1-2 镜像换行符 LF（无 CR）                                      False                    expect=False                  PASS
+P1-3 演练横幅边界标记数                                           2                        expect=2                      PASS
+P1-4 正文行数                                                1344                     expect=1344                   PASS
+P1-5 正文末行                                                '    raise SystemExit(ma expect='    raise SystemExit( PASS
+P1-6 正文内无横幅标记                                            False                    expect=False                  PASS
+P1-7 被剥掉的行数（空行 + 横幅）                                     16                       expect=16                     PASS
+P1-8 净增行数                                                54                       expect=54                     PASS
+
+--- 2. 改动区间（锚点唯一命中 + 与设计表逐项一致） ---
+P2-1 非等区间数                                               9                        expect=9                      PASS
+  T0 insert   生产  175-174  -> 正文  175-180   del=0   add=6   锚点命中=1
+      上文: self._thread_owner = None
+      下文: self._delta_buf: list[str] = []
+  T1 replace  生产  234-237  -> 正文  240-256   del=4   add=17  锚点命中=1
+      上文: 
+      下文: """
+  T2 replace  生产  240-240  -> 正文  259-261   del=1   add=3   锚点命中=1
+      上文: with self._lock:
+      下文: return True
+  T3 delete   生产  251-252  -> 正文  272-271   del=2   add=0   锚点命中=1
+      上文: codex_home=codex_cfg.get("codex_home") or None,
+      下文: )
+  T4 insert   生产  254-253  -> 正文  273-288   del=0   add=16  锚点命中=1
+      上文: )
+      下文: if not server.alive:
+  T5 insert   生产  276-275  -> 正文  311-313   del=0   add=3   锚点命中=1
+      上文: （收口前 :208 server.stop() 正是这颗雷）。
+      下文: """
+  T6 insert   生产  279-278  -> 正文  317-318   del=0   add=2   锚点命中=1
+      上文: server = self._codex
+      下文: self._codex = None
+  T7 insert   生产  280-279  -> 正文  320-332   del=0   add=13  锚点命中=1
+      上文: self._codex = None
+      下文: if server is None:
+  T8 insert   生产  283-282  -> 正文  336-336   del=0   add=1   锚点命中=1
+      上文: # S3 谁挂谁摘：只摘自己挂上的，别人的钩子一个也不碰。
+      下文: try:
+P2-2 每一处区间与设计表逐项一致                                       0                        expect=0                      PASS
+P2-3 每一处锚点（改动块±1 行）唯一命中                                  True                     expect=True                   PASS
+
+--- 3. 非改动区 + 静态取证 + 语法 ---
+P3-1 非改动区间逐行一致                                           True                     expect=True                   PASS
+P3-2 出口换行符 LF                                            False                    expect=False                  PASS
+P3-3 AST：新增函数 == 设计                                      set()                    expect=set()                  PASS
+P3-4 AST：删除函数 == 空                                       set()                    expect=set()                  PASS
+P3-5 AST：源码变动的函数 == 设计白名单                                {'HoloBridge.__init__',  expect={'HoloBridge.__init__' PASS
+P3-6 AST：_unlisten 写入点                                   3                        expect=3                      PASS
+P3-7 AST：_unapproval_listen 写入点                          3                        expect=3                      PASS
+P3-8 AST：无 server.stop() / 无 shutdown_shared             []                       expect=[]                     PASS
+P3-9 add_listener 挂载点 == 1                               1                        expect=1                      PASS
+P3-10 add_approval_listener 挂载点 == 1                     1                        expect=1                      PASS
+P3-11 CB.get_shared_server 调用点 == 3                      3                        expect=3                      PASS
+P3-12 AST：无构造 kwarg on_event= / on_approval=（docstring 提及不算） []                       expect=[]                     PASS
+P3-14 owner_session 包裹点数 == 生产（三处入口未碰）                   7                        expect=7                      PASS
+P3-15 owner_session 包裹点数 == 7                            7                        expect=7                      PASS
+P3-16 语法闸门 py_compile（临时副本）                              True                     expect=True                   PASS
+
+--- 4. 落刀 ---
+  落地后复读磁盘：
+    sha256 : d5a1fbddedb7f298da3100a48cb72973cc36af7a86dddfd16e9dcb6ae0ea3e4a
+    bytes  : 58101 lines: 1344
+    mtime  : 2026-09-16 14:26:27
+    字节 == 内存值 : True
+    生产 py_compile rc = 0 
+
+  -- panel_server.py 改动前 -> 改动后（1-based） --
+    T0 insert    175-174  ->  175-180 
+    T1 replace   234-237  ->  240-256 
+    T2 replace   240-240  ->  259-261 
+    T3 delete    251-252  ->  272-271 
+    T4 insert    254-253  ->  273-288 
+    T5 insert    276-275  ->  311-313 
+    T6 insert    279-278  ->  317-318 
+    T7 insert    280-279  ->  320-332 
+    T8 insert    283-282  ->  336-336 
+  回滚点: C:\Users\ADMIN\Desktop\GBT小土豆V8\.scratch\panel_server.py.preblock4b.bak

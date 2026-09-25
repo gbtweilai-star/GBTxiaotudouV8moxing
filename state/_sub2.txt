@@ -1,0 +1,6 @@
+{
+ "ok": true,
+ "job_id": "demo-001",
+ "云上键": "pipeline/jobs/demo-001/spec.json",
+ "tail": "\n ⛅️ wrangler 4.111.0 (update available 4.138.0)\n───────────────────────────────────────────────\nResource location: remote \n\nCreating object \"pipeline/jobs/demo-001/spec.json\" in bucket \"gbt-bigfiles\".\nUpload complete.\n"
+}

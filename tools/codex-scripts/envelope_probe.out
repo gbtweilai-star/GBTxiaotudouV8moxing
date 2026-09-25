@@ -1,0 +1,40 @@
+受信基线 is_trusted() = False （须为 False，证明未用全局兜底）
+
+共享单例已注入 Mock：alive=True  cli=C:\Users\ADMIN\AppData\Local\Programs\OpenAI\Codex\bin\codex.exe
+
+=== 只读能力 ===
+codex_status  -> {"gbt_stamp": {"framework": "GBT小土豆", "version": "8.0.0", "mark": "GBT", "developer": "自由的风", "ownership": "independent-personal", "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"}, "gbt_result": {"status": "ok", "kind": "codex_status", "result": {"ok": true, "codex_path": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\OpenAI\\Codex\\bin\\codex.exe", "connected": true, "protocol": "json-rp
+codex_tools   -> {"gbt_stamp": {"framework": "GBT小土豆", "version": "8.0.0", "mark": "GBT", "developer": "自由的风", "ownership": "independent-personal", "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"}, "gbt_result": {"status": "ok", "kind": "codex_tools", "result": {"ok": true, "tools": ["gbt_capability", "gbt_mirror", "gbt_preflight", "gbt_nexus", "gbt_universal_plug", "gbt_tentacle", "gbt_native_browser",
+
+=== 三条路由（面板 P1/P3 改走的那三条）===
+codex_thread_new -> {"gbt_stamp": {"framework": "GBT小土豆", "version": "8.0.0", "mark": "GBT", "developer": "自由的风", "ownership": "independent-personal", "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"}, "gbt_result": {"status": "ok", "kind": "codex_thread_new", "result": {"thread": {"id": "thread-mirror-1", "cwd": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8", "ephemeral": true}, "model": "mock-v2-model"}}, "ok": tr
+   thread_id = <ERR>
+
+codex_turn_send  -> {"gbt_stamp": {"framework": "GBT小土豆", "version": "8.0.0", "mark": "GBT", "developer": "自由的风", "ownership": "independent-personal", "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"}, "gbt_result": {"status": "ok", "kind": "codex_turn_send", "result": {"turn": {"id": "turn-mirror-1"}}}, "ok": true, "kind": "codex_turn_send", "result": {"status": "ok", "kind": "codex_turn_send", "result": {
+   turn_id = <ERR>
+
+codex_interrupt  -> {"gbt_stamp": {"framework": "GBT小土豆", "version": "8.0.0", "mark": "GBT", "developer": "自由的风", "ownership": "independent-personal", "note": "本作品由 GBT小土豆V8 框架生成 · 开发者：自由的风 · 独立私人框架，与任何企业公司无关"}, "gbt_result": {"status": "ok", "kind": "codex_interrupt", "result": {}}, "ok": true, "kind": "codex_interrupt", "result": {"status": "ok", "kind": "codex_interrupt", "result": {}}, "error": null, "status": "o
+
+=== 非法 effort 走 thread/start 的后果（第④步的靶子）===
+带非法 effort 的 thread_new -> ok=True  thread=<ERR>
+
+=== 信封形状对照表 ===
+label                  | ok         | result   | result键    | 关键路径
+------------------------------------------------------------------------------------------------------------
+codex_status           | True       | dict     | ['kind', 'result', 'status'] | ok=True  result.codex_path=None  result.connected=None
+codex_tools            | True       | dict     | ['kind', 'result', 'status'] | ok=True  result.tools=None
+codex_thread_new       | True       | dict     | ['kind', 'result', 'status'] | ok=True  result.thread.id=<ERR>  result.model=None
+codex_turn_send        | True       | dict     | ['kind', 'result', 'status'] | ok=True  result.turn.id=<ERR>
+codex_interrupt        | True       | dict     | ['kind', 'result', 'status'] | ok=True  result={'status': 'ok', 'kind': 'codex_in
+codex_thread_new(+effort) | True       | dict     | ['kind', 'result', 'status'] | ok=True  result.thread.id=<ERR>
+
+=== Mock 收到的帧 ===
+   initialize         effort_present=True  raw=None     verdict=accept
+   initialized        effort_present=True  raw=None     verdict=accept
+   thread/start       effort_present=True  raw=None     verdict=accept
+   turn/start         effort_present=True  raw=None     verdict=accept
+   turn/interrupt     effort_present=True  raw=None     verdict=accept
+   thread/start       effort_present=True  raw=None     verdict=accept
+   mock.in 帧数 = 6
+
+已留档 .scratch/envelope_probe.json / .scratch/envelope_probe.mock.jsonl

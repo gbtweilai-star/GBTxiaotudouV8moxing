@@ -6,11 +6,33 @@
 import sys as _sys
 from pathlib import Path as _P
 _sys.path.insert(0, str(_P(__file__).resolve().parent))
+
+
+# ── 病因钩子：吞错统一收口 + 导航入口病因（**必须放在 sys.path 修正之后**）。
+#    教训（2026-09-22 实测）：放在 insert 之前 ⇒ `from nav_etiology import …` 导入期就失败，
+#    静默退回垫片 ⇒ 63 处"收口"一个病因都没真记上 = **假收口**。
+try:
+    from nav_etiology import (record_swallow as _record_swallow,
+                              etiology as _etiology,
+                              enrich as _enrich_cause)
+except Exception:  # noqa: BLE001
+    def _record_swallow(_e, _mod="?", _op=""):
+        import sys as _s
+        print(f"⚠️ {_mod}: 吞错: {_e}", file=_s.stderr)
+        return "action_no_effect"
+
+    def _etiology(_m, _o=""):
+        def _d(fn):
+            return fn
+        return _d
+
+    def _enrich_cause(r, _m="?", _o=""):
+        return r
 # publish沙盒(非项目根cwd)执行兜底: 类定义不访问core符号, 吞异常安全
 try:
     from omni_core import *  # noqa: F401,F403
 except Exception as _e:
-    print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
+    _record_swallow(_e, "omni_mouse")
 
 
 class OmniMouseMixin:
@@ -39,7 +61,7 @@ class OmniMouseMixin:
 
     def click_window(self, target, x_offset=100, y_offset=50):
         win = _find_window(target)
-        if not win: return {"ok": False, "error": f"未找到窗口: {target}"}
+        if not win: return refusal("window_not_found", f"未找到窗口: {target}", ("window",))
         r = win["rect"]
         _mouse_move(r["left"] + x_offset, r["top"] + y_offset)
         time.sleep(0.1)
@@ -48,7 +70,7 @@ class OmniMouseMixin:
 
     def focus_window(self, target):
         win = _find_window(target)
-        if not win: return {"ok": False, "error": f"未找到窗口: {target}"}
+        if not win: return refusal("window_not_found", f"未找到窗口: {target}", ("window",))
         ok = _focus_window(win["hwnd"])
         return {"ok": ok, "window": win["title"]}
 
@@ -71,7 +93,7 @@ class OmniMouseMixin:
                 except Exception:
                     continue
             if not win:
-                return {"ok": False, "error": f"未找到窗口: {target}"}
+                return refusal("window_not_found", f"未找到窗口: {target}", ("window",))
             # 窗口子树找目标控件
             def _find_ctrl(h, d=0):
                 if d > 10:
@@ -88,7 +110,7 @@ class OmniMouseMixin:
                         if r:
                             return r
                 except Exception as _e:
-                    print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
+                    _record_swallow(_e, "omni_mouse")
                 return None
 
             if control_text:
@@ -98,7 +120,7 @@ class OmniMouseMixin:
                 ctrl = win
 
             if not ctrl:
-                return {"ok": False, "error": f"窗口[{target}]内未找到控件: {control_text}"}
+                return refusal("control_not_found", f"窗口[{target}]内未找到控件: {control_text}", ("control",))
 
             try:
                 if action == "click":
@@ -110,7 +132,7 @@ class OmniMouseMixin:
                             return {"ok": True, "method": "uia_invoke", "window": target,
                                     "control": ctrl.Name or control_text, "occluded_safe": True}
                     except Exception as _e:
-                        print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
+                        _record_swallow(_e, "omni_mouse")
                     # 回退: SelectionItemPattern (菜单/列表项)
                     try:
                         pat = ctrl.GetSelectionItemPattern()
@@ -119,7 +141,7 @@ class OmniMouseMixin:
                             return {"ok": True, "method": "uia_select", "window": target,
                                     "control": ctrl.Name or control_text, "occluded_safe": True}
                     except Exception as _e:
-                        print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
+                        _record_swallow(_e, "omni_mouse")
                     # 回退: 物理点击 (置前后点)
                     try:
                         _focus_window(win.NativeWindowHandle)
@@ -130,7 +152,7 @@ class OmniMouseMixin:
                         return {"ok": True, "method": "physical_after_focus", "window": target,
                                 "control": ctrl.Name or control_text, "occluded_safe": False}
                     except Exception as e:
-                        return {"ok": False, "error": f"触发失败: {e}"}
+                        return refusal("action_failed", f"触发失败: {e}", ())
                 elif action == "set":
                     # ValuePattern 直写输入框 (无物理输入)
                     try:
@@ -140,8 +162,8 @@ class OmniMouseMixin:
                             return {"ok": True, "method": "uia_setvalue", "window": target,
                                     "control": ctrl.Name or control_text, "occluded_safe": True}
                     except Exception as _e:
-                        print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
-                    return {"ok": False, "error": "控件不支持 ValuePattern 写入"}
+                        _record_swallow(_e, "omni_mouse")
+                    return refusal("action_failed", "控件不支持 ValuePattern 写入", ())
                 elif action == "get":
                     try:
                         pat = ctrl.GetValuePattern()
@@ -149,13 +171,13 @@ class OmniMouseMixin:
                             return {"ok": True, "method": "uia_getvalue", "window": target,
                                     "control": ctrl.Name or control_text, "value": pat.Value}
                     except Exception as _e:
-                        print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
+                        _record_swallow(_e, "omni_mouse")
                     # ⛔ 2026-08-04 修复: ValuePattern不可用时如实报告 — 此前返回ok:True但value为空(假get)
                     return {"ok": False, "error": "控件不支持ValuePattern读取",
                             "window": target, "name": ctrl.Name, "control_type": ctrl.ControlTypeName}
-                return {"ok": False, "error": f"未知action: {action}"}
+                return refusal("unknown_action", f"未知action: {action}", ("action",))
             except Exception as e:
-                return {"ok": False, "error": str(e)[:150]}
+                return refusal("action_failed", str(e)[:150], ())
 
     def type_to_window(self, target, text, activate=True):
         """无视遮挡窗口级输入 — 置前目标窗口→输入→恢复原前台
@@ -163,7 +185,7 @@ class OmniMouseMixin:
         """
         win = _find_window(target)
         if not win:
-            return {"ok": False, "error": f"未找到窗口: {target}"}
+            return refusal("window_not_found", f"未找到窗口: {target}", ("window",))
         # 记录当前前台
         import win32gui as _wg
         prev = _wg.GetForegroundWindow()
@@ -175,15 +197,15 @@ class OmniMouseMixin:
                     try:
                         _focus_window(win["hwnd"])
                     except Exception as _e:
-                        print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
+                        _record_swallow(_e, "omni_mouse")
                 return {"ok": True, "window": win["title"], "text_len": len(text),
                         "method": _uia_r["method"], "occluded_safe": True,
                         "control": _uia_r.get("ctrl", "")}
         except Exception as _e:
-            print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "omni_mouse")
         ok = _focus_window(win["hwnd"])
         if not ok:
-            return {"ok": False, "error": f"无法激活窗口: {target} (UIA无可编辑控件且物理激活失败)"}
+            return refusal("action_failed", f"无法激活窗口: {target} (UIA无可编辑控件且物理激活失败)", ())
         time.sleep(0.15)
         _keyboard_type(text)
         # 恢复原前台 (除非 activate=True 保持)
@@ -191,7 +213,7 @@ class OmniMouseMixin:
             try:
                 _wg.SetForegroundWindow(prev)
             except Exception as _e:
-                print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "omni_mouse")
         return {"ok": True, "window": win["title"], "text_len": len(text),
                 "method": "window_focus_input", "occluded_safe": True}
 
@@ -199,7 +221,7 @@ class OmniMouseMixin:
         """无视遮挡窗口点击 — 置前→点击→恢复 (增强版click_window)"""
         win = _find_window(target)
         if not win:
-            return {"ok": False, "error": f"未找到窗口: {target}"}
+            return refusal("window_not_found", f"未找到窗口: {target}", ("window",))
         import win32gui as _wg
         prev = _wg.GetForegroundWindow()
         ok = _focus_window(win["hwnd"])
@@ -225,20 +247,20 @@ class OmniMouseMixin:
                                             return {"ok": True, "method": "uia_invoke",
                                                     "control": (c.Name or "")[:50]}
                                     except Exception as _e:
-                                        print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
+                                        _record_swallow(_e, "omni_mouse")
                                     rr = _find_invokable(c, d + 1)
                                     if rr:
                                         return rr
                             except Exception as _e:
-                                print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
+                                _record_swallow(_e, "omni_mouse")
                             return None
                         rr = _find_invokable(w)
                         if rr:
                             return {"ok": True, "window": win["title"], "method": rr["method"],
                                     "control": rr["control"], "occluded_safe": True}
             except Exception as _e:
-                print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
-            return {"ok": False, "error": f"无法激活窗口: {target}"}
+                _record_swallow(_e, "omni_mouse")
+            return refusal("action_failed", f"无法激活窗口: {target}", ())
         time.sleep(0.15)
         r = win["rect"]
         _mouse_move(r["left"] + x_offset, r["top"] + y_offset)
@@ -248,7 +270,7 @@ class OmniMouseMixin:
             if prev and prev != win["hwnd"]:
                 _wg.SetForegroundWindow(prev)
         except Exception as _e:
-            print(f"⚠️ omni_mouse: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "omni_mouse")
         return {"ok": True, "window": win["title"], "clicked_at": (r["left"]+x_offset, r["top"]+y_offset),
                 "method": "focus_click_restore", "occluded_safe": True}
 
@@ -262,7 +284,7 @@ class OmniMouseMixin:
 
     def click_relative(self, base_text: str, dx: int = 0, dy: int = 0):
         r = self.find_text(base_text)
-        if not r.get("found"): return {"ok": False, "error": f"未找到 '{base_text}'"}
+        if not r.get("found"): return refusal("text_not_found", f"未找到 '{base_text}'", ("text",))
         tx, ty = r["x"] + dx, r["y"] + dy
         _mouse_move(tx, ty); time.sleep(0.03); _mouse_click()
         return {"ok": True, "base": base_text, "offset": (dx, dy), "clicked": (tx, ty)}
@@ -273,7 +295,7 @@ class OmniMouseMixin:
         """
         r = self.find_text(text)
         if not r.get("found"):
-            return {"ok": False, "error": f"未找到 '{text}'"}
+            return refusal("text_not_found", f"未找到 '{text}'", ("text",))
         tx = r["x"] + r.get("w", 0) // 2
         ty = r["y"] + r.get("h", 0) // 2
         _mouse_move(tx, ty); time.sleep(0.03)

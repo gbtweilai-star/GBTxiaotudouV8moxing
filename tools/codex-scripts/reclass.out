@@ -1,0 +1,25 @@
+有真身对照的根级 .py: 38
+
+[1] 逐字节相同 DUP: 26
+[2] 仅行尾差异（内容相同）: 6
+     __init__.py      根=CRLF(759B/17行)  真身=LF(742B/17行)
+     __main__.py      根=CRLF(100B/4行)  真身=mixed(crlf=1,lf=3)(97B/4行)
+     _paths.py        根=CRLF(404B/14行)  真身=LF(390B/14行)
+     bt_control.py    根=CRLF(16467B/307行)  真身=LF(16160B/307行)
+     soul.py          根=CRLF(3465B/74行)  真身=LF(3391B/74行)
+     transfer.py      根=CRLF(5778B/145行)  真身=LF(5633B/145行)
+
+[3] 真实内容差异 STALE: 6
+     api.py           根=CRLF 34749B/781行  真身=LF 40365B/906行  差=+125行
+     auth_gate.py     根=CRLF 6558B/165行  真身=mixed(crlf=157,lf=81) 9973B/238行  差=+73行
+     caps_registry.py 根=CRLF 20519B/528行  真身=mixed(crlf=520,lf=47) 22071B/567行  差=+39行
+     engine.py        根=CRLF 23396B/555行  真身=mixed(crlf=551,lf=5) 23524B/556行  差=+1行
+     pipeline.py      根=CRLF 20729B/445行  真身=mixed(crlf=437,lf=12) 20979B/449行  差=+4行
+     selfscan.py      根=CRLF 15542B/337行  真身=mixed(crlf=334,lf=4) 15558B/338行  差=+1行
+
+=== 真身 EOL 分布（全部对照） ===
+Counter({'CRLF': 26, 'LF': 6, 'mixed(crlf=1,lf=3)': 1, 'mixed(crlf=157,lf=81)': 1, 'mixed(crlf=520,lf=47)': 1, 'mixed(crlf=551,lf=5)': 1, 'mixed(crlf=437,lf=12)': 1, 'mixed(crlf=334,lf=4)': 1})
+=== 根副本 EOL 分布（全部对照） ===
+Counter({'CRLF': 38})
+
+JSON 落盘:.scratch/reclass.json

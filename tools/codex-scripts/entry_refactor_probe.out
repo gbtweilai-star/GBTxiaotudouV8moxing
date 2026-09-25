@@ -1,0 +1,54 @@
+=== 0. 基线 ===
+A1 主线程未进入会话                                                False  expect=False  PASS
+A2 对照组：裸线程直调（应未受信）                                         False  expect=False  PASS
+O1 对照组线程名                                                  Thread-0 (control) (observation)
+
+=== 1. P1 主对话（send -> 后台 gbt-holo-turn -> _run_turn） ===
+O2 P1 请求线程名（在此层包 owner_session）                            Thread-1 (do_POST) (observation)
+A3 P1 codex_thread_new 身份受信                                True   expect=True   PASS
+A4 P1 codex_thread_new 执行线程                                gbt-holo-turn expect=gbt-holo-turn PASS
+A5 P1 codex_turn_send 身份受信                                 True   expect=True   PASS
+A6 P1 codex_turn_send 执行线程                                 gbt-holo-turn expect=gbt-holo-turn PASS
+O3 P1 thread_new payload keys                              ['developer_instructions', 'dynamic_tools', 'effort', 'ephemeral', 'model', 'sandbox'] (observation)
+O4 P1 turn_send payload keys                               ['effort', 'text', 'thread_id'] (observation)
+A7 双层信封消费正确（拿到 thread id）                                  thread-mirror-1 expect=thread-mirror-1 PASS
+A8 双层信封消费正确（拿到 turn id）                                    turn-mirror-1 expect=turn-mirror-1 PASS
+
+=== 2. P2 快捷动作（quick -> 后台 gbt-holo-* -> api.run_task） ===
+A9  P2 身份受信（承重包裹仍在）                                        True   expect=True   PASS
+A10 P2 执行线程为后台 worker（非请求线程）                               gbt-holo-sense_status expect=gbt-holo-sense_status PASS
+A11 P2 承重包裹未被删除（源码含 owner_session）                         True   expect=True   PASS
+
+=== 3. P3 中断（do_POST -> interrupt 同线程直调） ===
+O5 P3 调用线程名（未包 owner_session）                              Thread-3 (do_POST) (observation)
+A12 P3 身份受信（函数内部自包）                                        True   expect=True   PASS
+A13 P3 执行线程 == 调用线程（无跨线程）                                  Thread-3 (do_POST) expect=Thread-3 (do_POST) PASS
+A14 P3 调用发生（走路由出口）                                         True   expect=True   PASS
+
+=== 4. 真实出网帧（M1-M4） ===
+A15 M1 thread/start 已出网                                    True   expect=True   PASS
+A16 M2 thread/start 帧内 effort 数 = 0（路由白名单拦截）               0      expect=0      PASS
+A17 M3 turn/start 带 effort 出网                              True   expect=True   PASS
+A18 M3 turn/start effort 类型保持 str                          True   expect=True   PASS
+A19 M4 中断走真 turn/interrupt（非 turn/steer）                   True   expect=True   PASS
+A20 M4 出网帧里没有 turn/steer                                   0      expect=0      PASS
+
+=== 5. 账本原文摘录 ===
+  [panel.send] codex_thread_new   | thread=gbt-holo-turn            | trusted=True  | keys=['developer_instructions', 'dynamic_tools', 'effort', 'ephemeral', 'model', 'sandbox']
+  [panel.send] codex_turn_send    | thread=gbt-holo-turn            | trusted=True  | keys=['effort', 'text', 'thread_id']
+  [panel.send] tentacle_status    | thread=gbt-holo-sense_status    | trusted=True  | keys=[]
+  [panel.send] codex_interrupt    | thread=Thread-3 (do_POST)       | trusted=True  | keys=['thread_id', 'turn_id']
+
+  --- mock.recv ---
+  [mock.recv ] thread/start     | effort=False | raw=None     | type=None  | warn
+  [mock.recv ] turn/start       | effort=True  | raw='high'   | type=str   | accept
+
+  --- panel.emit（真实出网字节） ---
+  [panel.emit] initialize         | effort=False | e0839b1dc1b1ceb4   | None | 174B
+  [panel.emit] initialized        | effort=False | e9781e8d8bfd8c05   | None | 58B
+  [panel.emit] thread/start       | effort=False | 64cc669832134e49   | None | 18415B
+  [panel.emit] turn/start         | effort=True  | afd012aafcdb843a   | str | 162B
+  [panel.emit] turn/interrupt     | effort=False | fc6c30a850df0531   | None | 126B
+
+断言 20 项 · PASS 20 · FAIL 0 ；观察项 5 条
+VERDICT: PASS 第②步块1（入口改造）镜像验证通过

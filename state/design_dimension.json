@@ -1,0 +1,565 @@
+{
+ "built_from": "state\\skill_atlas.json",
+ "lines": [
+  {
+   "id": "L1",
+   "name": "定档与审美",
+   "outlet": "三档转盘 + 三轴选型 + AI 味禁令与验收清单",
+   "members": [
+    {
+     "name": "gbt-aesthetic",
+     "channel": "agent-skill",
+     "desc": "GBT小土豆V8 的审美能力。做设计、美化界面、给别的项目打磨视觉时用。它把「好看」拆成可执行、可复核的四件事：先做设计读数、再定三档转盘、然后按三轴选型（形态×品牌语言×普适手艺）、最后过 AI 味"
+    }
+   ],
+   "rules": [
+    {
+     "path": "DESIGN.md",
+     "exists": true
+    },
+    {
+     "path": "OUTPUT_RULES.md",
+     "exists": true
+    },
+    {
+     "path": "tools/codex-scripts/audit_aesthetic.py",
+     "exists": true
+    },
+    {
+     "path": "tools/codex-scripts/fixtures/aesthetic-sins.html",
+     "exists": true
+    }
+   ]
+  },
+  {
+   "id": "L2",
+   "name": "界面实现",
+   "outlet": "可跑界面：HTML/App 页面、组件、原型",
+   "members": [
+    {
+     "name": "frontend-design",
+     "channel": "agent-skill",
+     "desc": "Create distinctive, production-grade frontend interfaces with high design quality. Use this skill wh"
+    },
+    {
+     "name": "frontend-dev",
+     "channel": "design-asset",
+     "desc": "Full-stack frontend with cinematic animations, AI-generated media via MiniMax API, and generative ar"
+    },
+    {
+     "name": "frontend-skill",
+     "channel": "design-asset",
+     "desc": "Create visually strong landing pages, websites, and app UIs with restrained composition. OpenAI's pr"
+    },
+    {
+     "name": "frontend-slides",
+     "channel": "agent-skill",
+     "desc": "Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. U"
+    },
+    {
+     "name": "web-artifacts-builder",
+     "channel": "design-asset",
+     "desc": "Build complex claude.ai HTML artifacts with React and Tailwind. Anthropic's reference workflow for s"
+    },
+    {
+     "name": "web-design-guidelines",
+     "channel": "design-asset",
+     "desc": "Web design guidelines and standards by the Vercel engineering team. Covers layout, typography, color"
+    },
+    {
+     "name": "web-perf",
+     "channel": "agent-skill",
+     "desc": "Analyzes web performance using Chrome DevTools MCP. Measures Core Web Vitals (LCP, INP, CLS) and sup"
+    },
+    {
+     "name": "web-search-plus",
+     "channel": "agent-skill",
+     "desc": "Unified search skill with Intelligent Auto-Routing. Uses multi-signal analysis to automatically sele"
+    }
+   ],
+   "rules": [
+    {
+     "path": "REDESIGN.md",
+     "exists": true
+    },
+    {
+     "path": "UI-check.md",
+     "exists": true
+    },
+    {
+     "path": "CODE_INGESTION.md",
+     "exists": true
+    },
+    {
+     "path": "design-assets-index/",
+     "exists": true
+    }
+   ]
+  },
+  {
+   "id": "L3",
+   "name": "设计稿与设计系统",
+   "outlet": "设计令牌/设计系统/设计稿 ↔ 代码双向",
+   "members": [
+    {
+     "name": "design-brief",
+     "channel": "agent-skill",
+     "desc": "Parse a structured design brief written in I-Lang protocol format into a concrete design spec. Elimi"
+    },
+    {
+     "name": "design-consultation",
+     "channel": "design-asset",
+     "desc": "Build a complete design system from scratch with creative risks and realistic product mockups. Usefu"
+    },
+    {
+     "name": "design-md",
+     "channel": "design-asset",
+     "desc": "Create and manage DESIGN.md files. Useful for capturing design direction, tokens, and visual rules i"
+    },
+    {
+     "name": "design-review",
+     "channel": "design-asset",
+     "desc": "Designer Who Codes: visual audit then fixes with atomic commits and before/after screenshots. Useful"
+    },
+    {
+     "name": "figma-code-connect-components",
+     "channel": "design-asset",
+     "desc": "Connect Figma design components to code components using Code Connect so design-system updates flow "
+    },
+    {
+     "name": "figma-create-design-system-rules",
+     "channel": "design-asset",
+     "desc": "Generate project-specific design system rules for Figma-to-code workflows. Useful for capturing toke"
+    },
+    {
+     "name": "figma-create-new-file",
+     "channel": "design-asset",
+     "desc": "Create a new blank Figma Design or FigJam file. Useful as the first step in scripted design-system o"
+    },
+    {
+     "name": "figma-generate-design",
+     "channel": "design-asset",
+     "desc": "Build or update screens in Figma from code or description using design system components. Translate "
+    },
+    {
+     "name": "figma-generate-library",
+     "channel": "design-asset",
+     "desc": "Build or update a professional-grade design system library in Figma from a codebase. Useful for keep"
+    },
+    {
+     "name": "figma-implement-design",
+     "channel": "design-asset",
+     "desc": "Translate Figma designs into production-ready code with 1:1 visual fidelity. Useful for handing off "
+    },
+    {
+     "name": "figma-use",
+     "channel": "design-asset",
+     "desc": "Run Figma Plugin API scripts for canvas writes, inspections, variables, and design-system work. Prer"
+    }
+   ],
+   "rules": [
+    {
+     "path": "DESIGN.md",
+     "exists": true
+    },
+    {
+     "path": "PRD_INGESTION.md",
+     "exists": true
+    },
+    {
+     "path": "审美相关skill/design-systems/",
+     "exists": true
+    }
+   ]
+  },
+  {
+   "id": "L4",
+   "name": "动效与合成",
+   "outlet": "动效与视频合成（HTML 合成 / React / GSAP 三层）",
+   "note": "工作区内**没有**本线可指的规则/素材（原挂的 `visual-asset-director.md` 现读是「素材视觉审查」面，只在评审里提到 motion 一词，**产权属 L6/L2**，已摘）。GSAP 真知识落在**装机目录**：`hyperframes-animation/adapters/gsap*.md`（`~/.agents/skills` 与 `~/.claude/skills` 各一份，约 33 KB，**工作区里没有这份**）⇒ 读 GSAP 要出工作区。",
+   "members": [
+    {
+     "name": "gsap-core",
+     "channel": "design-asset",
+     "desc": "Core GSAP API with gsap.to(), from(), fromTo(), easing, duration, stagger, and defaults. Production-"
+    },
+    {
+     "name": "gsap-react",
+     "channel": "design-asset",
+     "desc": "GSAP React integration with useGSAP hook, refs, gsap.context(), cleanup, and SSR. Ships safe motion "
+    },
+    {
+     "name": "gsap-scrolltrigger",
+     "channel": "design-asset",
+     "desc": "GSAP ScrollTrigger for scroll-linked animations, pinning, scrub, and refresh handling. Useful for ed"
+    },
+    {
+     "name": "gsap-timeline",
+     "channel": "design-asset",
+     "desc": "GSAP Timelines with sequencing, position parameter, labels, nesting, and playback control. Useful fo"
+    },
+    {
+     "name": "hyperframes-animation",
+     "channel": "agent-skill",
+     "desc": "All animation knowledge for HyperFrames — atomic motion rules, multi-phase scene blueprints, scene t"
+    },
+    {
+     "name": "hyperframes-audio",
+     "channel": "agent-skill",
+     "desc": "Use when audio already placed in a HyperFrames composition needs to be mixed: fade-in/fade-out, cros"
+    },
+    {
+     "name": "hyperframes-cli",
+     "channel": "agent-skill",
+     "desc": "Use the HyperFrames CLI development loop: init, add, catalog, capture, lint, check, snapshot, compar"
+    },
+    {
+     "name": "hyperframes-core",
+     "channel": "agent-skill",
+     "desc": "The HyperFrames composition contract — build one renderable project. Use for composition structure, "
+    },
+    {
+     "name": "hyperframes-creative",
+     "channel": "agent-skill",
+     "desc": "Non-animation creative direction for HyperFrames videos. Use for design spec (frame.md / design.md) "
+    },
+    {
+     "name": "hyperframes-keyframes",
+     "channel": "agent-skill",
+     "desc": "Use when a HyperFrames composition needs a punch-in, punch-out, zoom, reframe, Ken Burns treatment, "
+    },
+    {
+     "name": "hyperframes-registry",
+     "channel": "agent-skill",
+     "desc": "Search, install, and wire registry blocks and components into HyperFrames compositions. Use BEFORE h"
+    },
+    {
+     "name": "hyperframes-studio",
+     "channel": "agent-skill",
+     "desc": "Use when building or editing a HyperFrames project that people open in Studio: how the timeline shou"
+    },
+    {
+     "name": "remotion-best-practices",
+     "channel": "agent-skill",
+     "desc": "Router for all Remotion skills"
+    },
+    {
+     "name": "remotion-captions",
+     "channel": "agent-skill",
+     "desc": "Transcribing, displaying and animating captions"
+    },
+    {
+     "name": "remotion-create",
+     "channel": "agent-skill",
+     "desc": "Create a new Remotion video"
+    },
+    {
+     "name": "remotion-docs",
+     "channel": "agent-skill",
+     "desc": "Search Remotion documentation"
+    },
+    {
+     "name": "remotion-interactivity",
+     "channel": "agent-skill",
+     "desc": "Structure Remotion markup for interactivity"
+    },
+    {
+     "name": "remotion-maps",
+     "channel": "agent-skill",
+     "desc": "Remotion Map animation knowledge"
+    },
+    {
+     "name": "remotion-markup",
+     "channel": "agent-skill",
+     "desc": "Content, animation and effects best practices"
+    },
+    {
+     "name": "remotion-multimedia",
+     "channel": "agent-skill",
+     "desc": "Interacting with Mediabunny"
+    },
+    {
+     "name": "remotion-render",
+     "channel": "agent-skill",
+     "desc": "Export a Remotion video"
+    },
+    {
+     "name": "remotion-saas",
+     "channel": "agent-skill",
+     "desc": "Build an app with Remotion"
+    },
+    {
+     "name": "remotion-studio",
+     "channel": "agent-skill",
+     "desc": "Preview a Remotion video"
+    },
+    {
+     "name": "remotion-upgrade",
+     "channel": "agent-skill",
+     "desc": "Upgrade Remotion, and related packages"
+    }
+   ],
+   "rules": []
+  },
+  {
+   "id": "L5",
+   "name": "演示与文档",
+   "outlet": "幻灯片 / 报告 / PDF→网页或幻灯片",
+   "members": [
+    {
+     "name": "glmv-pdf-to-ppt",
+     "channel": "agent-skill",
+     "desc": "Convert a PDF (research paper, report, or any document) into a polished multi-slide HTML presentatio"
+    },
+    {
+     "name": "glmv-pdf-to-web",
+     "channel": "agent-skill",
+     "desc": "Convert a PDF (research paper, technical report, or project document) into a beautiful single-page a"
+    },
+    {
+     "name": "glmv-prd-to-app",
+     "channel": "agent-skill",
+     "desc": "Build a complete, production-ready full-stack web application from PRD documents, prototype images, "
+    },
+    {
+     "name": "pptx",
+     "channel": "agent-skill",
+     "desc": "Read, generate, and adjust PowerPoint slides, layouts, and templates. Useful for executive decks, tr"
+    },
+    {
+     "name": "pptx-generator",
+     "channel": "design-asset",
+     "desc": "Create and edit PowerPoint presentations from scratch with PptxGenJS — MiniMax's production-tested d"
+    },
+    {
+     "name": "pptx-html-fidelity-audit",
+     "channel": "agent-skill",
+     "desc": "Audit a python-pptx export against its source HTML deck, identify layout/content drift (footer overf"
+    },
+    {
+     "name": "pptx-swarm",
+     "channel": "agent-skill",
+     "desc": "Create new editable PowerPoint/PPT/PPTX slide decks using the PPTD swarm workflow. Use when the user"
+    }
+   ],
+   "rules": [
+    {
+     "path": "OUTPUT_RULES.md",
+     "exists": true
+    }
+   ]
+  },
+  {
+   "id": "L6",
+   "name": "出图与素材",
+   "outlet": "图像/素材产出（含 3D、抠图、超分、修图）",
+   "members": [
+    {
+     "name": "autoglm-browser-agent",
+     "channel": "agent-skill",
+     "desc": "Intelligent browser automation agent that can perform any task requiring a browser. Including but no"
+    },
+    {
+     "name": "autoglm-file-upload",
+     "channel": "agent-skill",
+     "desc": "Use the AutoGLM Upload Mix API to upload local files such as images and documents, then obtain a fil"
+    },
+    {
+     "name": "autoglm-generate-image",
+     "channel": "agent-skill",
+     "desc": "Use the AutoGLM text-to-image API to generate an image from a text prompt. Use this skill when the u"
+    },
+    {
+     "name": "autoglm-generate-image-seedream",
+     "channel": "agent-skill",
+     "desc": "Use the AutoGLM Seedream text-to-image / image-to-image (image editing) API to generate images from "
+    },
+    {
+     "name": "autoglm-image-recognition",
+     "channel": "agent-skill",
+     "desc": "Use the AutoGLM Image Recognition API to analyze and describe image content. Use this skill when the"
+    },
+    {
+     "name": "autoglm-open-link",
+     "channel": "agent-skill",
+     "desc": "Use the AutoGLM Open Link API to open a specific webpage and extract its main body text. Use this sk"
+    },
+    {
+     "name": "autoglm-remove-bg",
+     "channel": "agent-skill",
+     "desc": "去除图片的纯色/近纯色背景，输出透明底 PNG。当需要把 AI 生成的 logo / 图标 / 主视觉 从白底、卡片底或纯色底抠成透明，以便放到任意背景上时使用。用本地 Python（Pillow） "
+    },
+    {
+     "name": "autoglm-search-image",
+     "channel": "agent-skill",
+     "desc": "Use the AutoGLM image search API to search for related images based on a user query. Use this skill "
+    },
+    {
+     "name": "autoglm-websearch",
+     "channel": "agent-skill",
+     "desc": "Use the AutoGLM Web Search API to search the web. Use this skill when the user needs online search, "
+    },
+    {
+     "name": "fal-3d",
+     "channel": "design-asset",
+     "desc": "Generate 3D models from text or images via fal.ai. Useful for game assets, AR previews, product mock"
+    },
+    {
+     "name": "fal-generate",
+     "channel": "design-asset",
+     "desc": "Generate images and videos using fal.ai AI models. Production-grade catalogue covering Flux, SDXL, i"
+    },
+    {
+     "name": "fal-image-edit",
+     "channel": "design-asset",
+     "desc": "AI-powered image editing with style transfer, background removal, object removal, and inpainting via"
+    },
+    {
+     "name": "fal-kling-o3",
+     "channel": "design-asset",
+     "desc": "Generate images and videos with Kling O3 — Kling's most powerful model family — via fal.ai."
+    },
+    {
+     "name": "fal-lip-sync",
+     "channel": "design-asset",
+     "desc": "Create talking head videos and lip sync audio to video via fal.ai. Useful for explainer avatars, mul"
+    },
+    {
+     "name": "fal-realtime",
+     "channel": "design-asset",
+     "desc": "Real-time and streaming AI image generation via fal.ai. Suited for moodboard exploration, draft vari"
+    },
+    {
+     "name": "fal-restore",
+     "channel": "design-asset",
+     "desc": "Restore and fix image quality — deblur, denoise, fix faces, and restore old documents using fal.ai's"
+    },
+    {
+     "name": "fal-train",
+     "channel": "design-asset",
+     "desc": "Train custom AI models (LoRA) on fal.ai for personalized image generation tailored to a brand, chara"
+    },
+    {
+     "name": "fal-tryon",
+     "channel": "design-asset",
+     "desc": "Virtual try-on — see how clothes look on a person via fal.ai's hosted try-on models. Useful for ecom"
+    },
+    {
+     "name": "fal-upscale",
+     "channel": "design-asset",
+     "desc": "Upscale and enhance image and video resolution using AI super-resolution models hosted on fal.ai."
+    },
+    {
+     "name": "fal-video-edit",
+     "channel": "design-asset",
+     "desc": "Edit existing videos using AI — remix style, upscale, remove background, and add audio via fal.ai's "
+    },
+    {
+     "name": "fal-vision",
+     "channel": "design-asset",
+     "desc": "Analyze images — segment objects, detect, run OCR, describe, and answer visual questions via fal.ai "
+    },
+    {
+     "name": "venice-audio-music",
+     "channel": "design-asset",
+     "desc": "Music generation queueing, retrieval, and completion endpoints via Venice.ai. Suited for jingles, ba"
+    },
+    {
+     "name": "venice-audio-speech",
+     "channel": "design-asset",
+     "desc": "Text-to-speech models, voices, formats, and streaming via Venice.ai. Useful for narration, voiceover"
+    },
+    {
+     "name": "venice-image-edit",
+     "channel": "design-asset",
+     "desc": "Image edits, upscaling, and background removal via the Venice.ai API."
+    },
+    {
+     "name": "venice-image-generate",
+     "channel": "design-asset",
+     "desc": "Image generation endpoints and available styles via the Venice.ai API."
+    },
+    {
+     "name": "venice-video",
+     "channel": "design-asset",
+     "desc": "Video generation and transcription workflows via the Venice.ai API."
+    }
+   ],
+   "rules": [
+    {
+     "path": "visual-asset-director.md",
+     "exists": true
+    },
+    {
+     "path": "design-assets-index/",
+     "exists": true
+    }
+   ]
+  },
+  {
+   "id": "L7",
+   "name": "视频与成片",
+   "outlet": "成片：剪辑/字幕/配音/导出（含能力域 video 4 位）",
+   "note": "工作区内**没有**本线专属规则文件（原挂的两件现读都不是规则：`IMAGE_GENERATION.md`是**生图面 L6** 的规程、全文只在第 38 行提到 video 一次；`render/` 是数字人项目的**PNG 产物**目录 260 文件 / 57 MB，成片落点是 `video-out/`）—— **产物与落点都不是规则**。L7 的口径在成员规程里（`gbt-video` / `gbt-video-tools` / `gbt-chengfeng` / `hyperframes-*`）与总规程 §4 两道闸。",
+   "members": [
+    {
+     "name": "chengfeng-check-updates",
+     "channel": "agent-skill",
+     "desc": "剪辑环境的唯一管理者：就绪检查（skills 是否最新 → Runtime 是否配套）、Skills 更新激活、Runtime 安装与体检。用户说检查更新、安装剪辑环境、装播放器、检查剪辑环境、剪辑环"
+    },
+    {
+     "name": "chengfeng-cut",
+     "channel": "agent-skill",
+     "desc": "剪辑中文口播原素材：逐词转录、词典修字出修字表、五轮扫描找口误与重复、汇总表与重复句子表、打开 Studio 让用户复核、复盘沉淀用户偏好与词典。只产出一份已复核的删词账本，不切媒体、不做字幕、不做分"
+    },
+    {
+     "name": "chengfeng-export",
+     "channel": "agent-skill",
+     "desc": "把剪好的口播烧成一个成片文件：账本切片段、推近、字幕、HTML 画面层，一次全部烧进 mp4。用户说导出、出成片、烧字幕、渲染、导出视频、生成最终文件时使用。不要用于生成删词候选、写字幕、做画面动画。"
+    },
+    {
+     "name": "chengfeng-report-bug",
+     "channel": "agent-skill",
+     "desc": "整理、脱敏并上报 chengfeng-videocut 的 GitHub Bug。用户说上报 Bug、反馈剪口播问题、提交 GitHub Issue、这个问题告诉开发者，或要求继续提交已预览的 Bug"
+    },
+    {
+     "name": "chengfeng-subtitle",
+     "channel": "agent-skill",
+     "desc": "给剪好的口播做字幕：直接用已有的逐词稿加账本算出剪后时间（不必导出、不必重新转录）、用词典和作者文稿改写听错的专名、按句子分屏、在 Studio 里逐屏复核。用户说做字幕、加字幕、改字幕、重新分屏、字"
+    },
+    {
+     "name": "chengfeng-videocut-workbench",
+     "channel": "agent-skill",
+     "desc": "操作 chengfeng-videocut 剪辑工作台的已有工程，通过 Runtime CLI 查工程与词句位置、添加或替换画面覆盖层、移除画面、删除明确指定的词句或片段、拆分裁剪移动已有片段、调整画"
+    },
+    {
+     "name": "chengfeng-visual",
+     "channel": "agent-skill",
+     "desc": "给剪好的口播配画面：在录屏上盖 HTML 层（圈重点标注 / 小黑整屏动画 / 推近），层绑字幕屏、由播放器逐帧驱动、直接在预览里看。用户说做分镜、配画面、加动画、圈重点、B-roll、做 story"
+    },
+    {
+     "name": "video-downloader",
+     "channel": "design-asset",
+     "desc": "Download videos from YouTube and other platforms for offline viewing, editing, or archival with supp"
+    },
+    {
+     "name": "video-pipeline",
+     "channel": "agent-skill",
+     "desc": "短视频/长视频从分镜到成片的生产契约：分镜表结构、镜头三契约（视线/景深/渲染路由）、转场与剪辑边界校验、成本前置闸、双人审闸。蒸馏自 ttalkkaklab/social-flow（Apache-2"
+    },
+    {
+     "name": "video-transcript-downloader",
+     "channel": "agent-skill",
+     "desc": "Download videos, audio, subtitles, and clean paragraph-style transcripts from YouTube and any other "
+    },
+    {
+     "name": "video-use",
+     "channel": "agent-skill",
+     "desc": "Edit any video by conversation. Transcribe, cut, color grade, generate overlay animations, burn subt"
+    }
+   ],
+   "rules": []
+  }
+ ],
+ "total_members": 88
+}

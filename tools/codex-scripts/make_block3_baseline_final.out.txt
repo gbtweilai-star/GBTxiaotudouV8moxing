@@ -1,0 +1,15 @@
+﻿落盘: C:\Users\ADMIN\Desktop\GBT小土豆V8\.scratch\block3_baseline_final.json
+生产 sha256[:8] = 8812426d | 行数 = 1239
+断言 22 项 PASS 13 FAIL 9
+   FAIL: C1 零 resume（不是被拒，是压根没发）
+   FAIL: C2 换连接(守卫关) -> 预判丢弃 new=1
+   FAIL: C2 零 resume
+   FAIL: C1 == C2：换连接路径与守卫开关解耦
+   FAIL: 换连接后 owner 令牌确实变了（C1 记录新令牌）
+   FAIL: 审计 panel_thread_owner_changed >= 2（C1/C2 预判丢弃）
+   FAIL: 审计 panel_thread_rebuild >= 4
+   FAIL: 审计 panel_thread_reuse >= 1（B 复用）
+   FAIL: 审计 panel_thread_reuse_failed >= 1（D 被拒）
+改前两格:
+  换连接+守卫关 -> resume帧=1 verdict=accept hit=False new=0 (静默复用陈旧 tid = 病灶)
+  换连接+守卫开 -> resume帧=1 verdict=reject hit=False new=1 (反应式兜底（发了、被拒、才重建）)

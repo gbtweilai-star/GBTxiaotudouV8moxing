@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<!-- CSP：**离线自包含**的硬保证。`default-src 'none'` + `connect-src 'none'` 把出网焊死；
+     three 是本地 vendored 的（见 ./vendor/），所以 `script-src 'self'` 够用。
+     ⚠️ 本页**不能用 ES module**：`file://` 下 `<script type="module">` 会被 CORS 挡掉
+     （实跑 `net::ERR_FAILED`，页面静默空白），而壳的 `main.cjs` 没关 `webSecurity`。
+     ⇒ 走 vendored 的**经典脚本**版（`vendor/*.global.js`）。 -->
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'" />
+<title>GBT小土豆V8 · 神经可视化工作台</title>
+<link rel="stylesheet" href="../window.css" />
+<link rel="stylesheet" href="../deck3d.css" />
+<link rel="stylesheet" href="../skin-mission-control.css" />
+<link rel="stylesheet" href="brain.css" />
+<link rel="stylesheet" href="intercom.css" />
+</head>
+<body class="brain-app">
+
+<!-- ══ 左栏：执行路线（真数据） ══ -->
+<aside class="brain-rail">
+  <header class="rail-head">
+    <span class="rail-mark" aria-hidden="true"></span>
+    <div>
+      <div class="rail-brand">GBT<b>小土豆</b>V8 · 神经工作台</div>
+      <div class="rail-sub">Neural Workbench · V8</div>
+    </div>
+  </header>
+
+  <div class="rail-scroll">
+    <section class="rail-sec">
+      <h3>执行路线 · 欠的活</h3>
+      <div id="rail-steps"><p class="rail-empty">读数据中…</p></div>
+    </section>
+    <section class="rail-sec">
+      <h3>真脉冲 · 审计事件</h3>
+      <div id="rail-pulses"><p class="rail-empty">读数据中…</p></div>
+    </section>
+    <!-- 主脑语音对讲（主人令 2026-09-23）：
+         **打开本页 = 开始监听 · 关掉本页 = 停止监听**，不设任何开关控件。
+         三条腿分开报（采集 / 离线识别 / 出声），安静 ≠ 坏了 ≠ 被门拒。 -->
+    <section class="rail-sec">
+      <h3>主脑语音对讲 · 打开本页即监听</h3>
+      <div id="rail-voice"><p class="rail-empty">读数据中…</p></div>
+    </section>
+    <!-- 生成后端轮询池（genrouter）：几条腿可用 · 今天出了几张 · 谁在等凭据。
+         数据来自 `state/genpool.json`，由 brain-feed 带进 brain-data.js —— **本页不 fetch**。 -->
+    <section class="rail-sec">
+      <h3>生成后端 · 轮询池</h3>
+      <div id="rail-genpool"><p class="rail-empty">读数据中…</p></div>
+    </section>
+    <section class="rail-sec">
+      <h3>结构 · 以源码为准</h3>
+      <div id="rail-struct"><p class="rail-empty">读数据中…</p></div>
+    </section>
+  </div>
+
+  <footer class="rail-foot">
+    快照 <span id="rail-at">—</span><br />
+    皮肤 mission-control · 数据 brain-feed.py
+  </footer>
+</aside>
+
+<!-- ══ 中栏：3D 舞台 ══ -->
+<main class="brain-stage">
+  <canvas id="brain-canvas"></canvas>
+
+  <div class="brain-overlay">
+    <div class="bar top-bar">
+      <div class="tabs">
+        <button type="button" class="tab" data-view="brain" data-active="true">全脑</button>
+        <button type="button" class="tab" data-view="cortex">皮层</button>
+        <button type="button" class="tab" data-view="bundle">束长</button>
+        <button type="button" class="tab" data-view="route">执行路线</button>
+      </div>
+      <div class="stats">
+        <span class="stat"><span class="lb">束长</span><span class="vl" id="st-bundles">—</span></span>
+        <span class="stat"><span class="lb">能力位</span><span class="vl cy" id="st-caps">—</span></span>
+        <span class="stat"><span class="lb">脉冲 6h</span><span class="vl ok" id="st-pulse">—</span></span>
+        <span class="stat"><span class="lb">FPS</span><span class="vl" id="st-fps">—</span></span>
+      </div>
+    </div>
+
+    <div class="detail" id="detail">
+      <span class="x" id="detail-x">✕</span>
+      <h3 id="d-name">—</h3>
+      <div class="cat" id="d-cat">—</div>
+      <div class="row"><span class="k">类型</span><span class="v" id="d-type">—</span></div>
+      <div class="row"><span class="k">所属束</span><span class="v" id="d-bundle">—</span></div>
+      <div class="row"><span class="k">免卡直跑</span><span class="v" id="d-safe">—</span></div>
+      <div class="row"><span class="k">近期调用</span><span class="v" id="d-calls">—</span></div>
+      <div class="row"><span class="k">说明</span><span class="v" id="d-desc">—</span></div>
+    </div>
+
+    <!-- 悬停读数：**固定位置**，不做浮动 tooltip（CSP 不许内联样式；仪器面板也不这么读） -->
+    <div class="readout" id="readout">
+      <span class="k">指向</span><span class="v" id="ro-name">—</span>
+      <span class="k">束</span><span class="v" id="ro-bundle">—</span>
+      <span class="k">状态</span><span class="v" id="ro-state">—</span>
+    </div>
+
+    <div class="legend">
+      <span class="legend-row"><span class="legend-mark lm-ok"></span>免卡直跑</span>
+      <span class="legend-row"><span class="legend-mark lm-gold"></span>需授权</span>
+      <span class="legend-row"><span class="legend-mark lm-fault"></span>仅登记未实现</span>
+      <span class="legend-row"><span class="legend-mark lm-cy"></span>执行脉冲</span>
+    </div>
+
+    <div class="stale" id="stale">审计账本里没有 call 事件 —— 如实报静默，不用随机数冒充在跑</div>
+
+    <div class="bar bottom-bar">
+      <span class="st"><span class="dot ok"></span>门禁在线 · 作用域 <b id="st-scopes">—</b></span>
+      <span class="st"><span class="dot ok"></span>审计留痕 · 脉冲 <b id="st-pulses">—</b></span>
+      <!-- 第 58 轮加：**同步读数**。落后多少秒是现算的 —— 不写"实时"两个字骗人。 -->
+      <span class="st"><span class="dot" id="dot-sync"></span>快照 <b id="snap-at">—</b>
+        · 落后 <b id="snap-lag">—</b> · 渲染 <b id="hd-info">—</b></span>
+      <span class="st st-right">开发者：自由的风 · 守护：公主土豆</span>
+    </div>
+  </div>
+</main>
+
+<!-- ══ 右栏：能力面板阵列（风哥令「各项能力面板设计好专业化的排列，该有的全都要有」）══
+     规格全部取自 mission-control 的组件表：数据格 / 遥测条 / 徽章 / 进度条 / 分区标题。
+     **每一个数字都是现算的真值**；取不到就写「—」，不编。 -->
+<aside class="brain-rack">
+  <div class="rack-scroll">
+
+    <section class="rail-sec">
+      <h3>总览 · 遥测</h3>
+      <div class="rack-tiles">
+        <div class="mc-tile"><div class="mc-tile-label">束长</div><div class="mc-tile-value" id="k-bundles">—</div></div>
+        <div class="mc-tile"><div class="mc-tile-label">能力位</div><div class="mc-tile-value" id="k-caps">—</div></div>
+        <div class="mc-tile"><div class="mc-tile-label">免卡</div><div class="mc-tile-value ok" id="k-safe">—</div></div>
+        <div class="mc-tile"><div class="mc-tile-label">需授权</div><div class="mc-tile-value" id="k-gated">—</div></div>
+        <div class="mc-tile"><div class="mc-tile-label">仅登记</div><div class="mc-tile-value alert" id="k-dead">—</div></div>
+        <div class="mc-tile"><div class="mc-tile-label">真依赖边</div><div class="mc-tile-value cy" id="k-edges">—</div></div>
+      </div>
+    </section>
+
+    <section class="rail-sec">
+      <h3>束长阵列 · 29 域</h3>
+      <div class="rack-bundles" id="rack-bundles"><p class="rail-empty">读数据中…</p></div>
+    </section>
+
+    <section class="rail-sec">
+      <h3>依赖最密的边</h3>
+      <div id="rack-edges"><p class="rail-empty">读数据中…</p></div>
+    </section>
+
+    <section class="rail-sec">
+      <h3>门禁 · 作用域</h3>
+      <div class="rack-scopes" id="rack-scopes"><p class="rail-empty">读数据中…</p></div>
+    </section>
+
+  </div>
+</aside>
+
+<!-- 依赖序：入口库 → shader → pass → 控制器 → 本窗逻辑。全部**经典脚本**（file:// 下 ESM 走不通）。 -->
+<script src="vendor/three.global.js"></script>
+<script src="vendor/Pass.global.js"></script>
+<script src="vendor/CopyShader.global.js"></script>
+<script src="vendor/LuminosityHighPassShader.global.js"></script>
+<script src="vendor/MaskPass.global.js"></script>
+<script src="vendor/ShaderPass.global.js"></script>
+<script src="vendor/RenderPass.global.js"></script>
+<script src="vendor/EffectComposer.global.js"></script>
+<script src="vendor/UnrealBloomPass.global.js"></script>
+<script src="vendor/OrbitControls.global.js"></script>
+<script src="brain-data.js"></script>
+<script src="brain.js"></script>
+<!-- 生成后端轮询池读数：只读 brain-data.js 里的 genpool 块，**自己不发任何请求**。 -->
+<script src="genpool.js"></script>
+<!-- 语音对讲：**必须最后加载** —— 它要在 brain.js 起来之后才去问宿主状态。 -->
+<script src="intercom.js"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+﻿========================================================================
+### 落刀部件：bridge
+========================================================================
+
+--- 0. 前置：生产基线 + 回滚点 ---
+P0-1 生产 sha256 == 归档基线                                   '6dbd2076ca9ad63001830eb expect='6dbd2076ca9ad63001830 PASS
+P0-2 生产行数                                                1503                     expect=1503                   PASS
+P0-3 生产换行符 LF（无 CR）                                      False                    expect=False                  PASS
+P0-4 生产 mtime                                            '2026-09-15 19:20:37'    expect='2026-09-15 19:20:37'  PASS
+P0-5 preblock4b.bak == 生产（逐字节，写盘前已就位）                    True                     expect=True                   PASS
+P0-6 回滚点 sha256                                          '6dbd2076ca9ad63001830eb expect='6dbd2076ca9ad63001830 PASS
+
+--- 1. 取镜像正文（剥横幅） ---
+P1-1 镜像 sha256 == 归档                                     '1bc54d6da43ba3a7762c593 expect='1bc54d6da43ba3a7762c5 PASS
+P1-2 镜像换行符 LF（无 CR）                                      False                    expect=False                  PASS
+P1-3 演练横幅边界标记数                                           2                        expect=2                      PASS
+P1-4 正文行数                                                1558                     expect=1558                   PASS
+P1-5 正文末行                                                '    raise SystemExit(_d expect='    raise SystemExit( PASS
+P1-6 正文内无横幅标记                                            False                    expect=False                  PASS
+P1-7 被剥掉的行数（空行 + 横幅）                                     13                       expect=13                     PASS
+P1-8 净增行数                                                55                       expect=55                     PASS
+
+--- 2. 改动区间（锚点唯一命中 + 与设计表逐项一致） ---
+P2-1 非等区间数                                               7                        expect=7                      PASS
+  T0 insert   生产  174-173  -> 正文  174-178   del=0   add=5   锚点命中=1
+      上文: self._listeners_lock = threading.Lock()
+      下文: self.server_info: dict = {}
+  T1 insert   生产  418-417  -> 正文  423-437   del=0   add=15  锚点命中=1
+      上文: 
+      下文: def _dispatch_server_request(self, msg: dict) -> None:
+  T2 insert   生产  443-442  -> 正文  463-473   del=0   add=11  锚点命中=1
+      上文: # 审批 / 提问 / MCP 交互：交给上层用户决定；无处理器时安全拒绝
+      下文: decision = None
+  T3 insert   生产  444-443  -> 正文  475-475   del=0   add=1   锚点命中=1
+      上文: decision = None
+      下文: if self.on_approval is not None:
+  T4 insert   生产  447-446  -> 正文  479-480   del=0   add=2   锚点命中=1
+      上文: decision = self.on_approval(method, params)
+      下文: except Exception:  # noqa: BLE001
+  T5 insert   生产  450-449  -> 正文  484-495   del=0   add=12  锚点命中=1
+      上文: if decision is None:
+      下文: decision = self._default_denial(method)
+  T6 insert   生产  451-450  -> 正文  497-505   del=0   add=9   锚点命中=1
+      上文: decision = self._default_denial(method)
+      下文: self._respond(req_id, result=decision)
+P2-2 每一处区间与设计表逐项一致                                       0                        expect=0                      PASS
+P2-3 每一处锚点（改动块±1 行）唯一命中                                  True                     expect=True                   PASS
+
+--- 3. 非改动区 + 静态取证 + 语法 ---
+P3-1 非改动区间逐行一致                                           True                     expect=True                   PASS
+P3-2 出口换行符 LF                                            False                    expect=False                  PASS
+P3-3 AST：新增函数 == 设计                                      {'CodexAppServer.add_app expect={'CodexAppServer.add_a PASS
+P3-4 AST：删除函数 == 空                                       set()                    expect=set()                  PASS
+P3-5 AST：源码变动的函数 == 设计白名单                                {'CodexAppServer.__init_ expect={'CodexAppServer.__ini PASS
+P3-6 新增 add_approval_listener 定义点 == 1                   1                        expect=1                      PASS
+P3-7 审计 approval_request 落点存在                            True                     expect=True                   PASS
+P3-8 审计 approval_decision 落点存在                           True                     expect=True                   PASS
+P3-9 审批订阅容器 _approval_listeners 存在                       True                     expect=True                   PASS
+P3-10 审批容器锁存在                                            True                     expect=True                   PASS
+P3-11 AST：_approval_listeners 引用数 >= 6                   True                     expect=True                   PASS
+      （_approval_listeners 引用数 = 6）
+P3-16 语法闸门 py_compile（临时副本）                              True                     expect=True                   PASS
+
+--- 4. 落刀 ---
+  落地后复读磁盘：
+    sha256 : 47bcb0a51bb0ba30a1e0a7d81cafc61201b180e287c328a875e610535eef0e93
+    bytes  : 67079 lines: 1558
+    mtime  : 2026-09-16 14:26:09
+    字节 == 内存值 : True
+    生产 py_compile rc = 0 
+
+  -- codex_bridge.py 改动前 -> 改动后（1-based） --
+    T0 insert    174-173  ->  174-178 
+    T1 insert    418-417  ->  423-437 
+    T2 insert    443-442  ->  463-473 
+    T3 insert    444-443  ->  475-475 
+    T4 insert    447-446  ->  479-480 
+    T5 insert    450-449  ->  484-495 
+    T6 insert    451-450  ->  497-505 
+  回滚点: C:\Users\ADMIN\Desktop\GBT小土豆V8\.scratch\codex_bridge.py.preblock4b.bak

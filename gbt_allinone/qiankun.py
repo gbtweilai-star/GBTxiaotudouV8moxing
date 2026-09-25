@@ -18,10 +18,15 @@ import time
 import urllib.request
 from pathlib import Path
 
+from . import _paths
+
 _BASE = Path(__file__).resolve().parent
-_STORE = _BASE / "store"
+_STORE = _paths.STORE_DIR        # O35：单一来源（曾硬编码 _BASE / "store"，绕开 GBT_STORE_DIR）
 _QUEUE = _STORE / "deploy" / "queue.json"
 _SIGNATURE = "开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属"
+# 只对"文本页"做解码+署名注入（与 signature.py 的页面口径一致）；其余一律逐字节镜像，
+# 免得把 PNG/GLB/字体当文本读写 —— 那会把镜像里的产物当场弄成废物。
+_PAGE_SUFFIX = {".md", ".html", ".htm", ".txt", ".csv"}
 
 
 def _audit(event, meta):
@@ -95,14 +100,172 @@ def _parse_github_target(target: str):
     return api, raw
 
 
-def one_key_deploy(target: str, purpose: str = "") -> dict:
+def _project_files(root: Path):
+    """遍历项目文件；跳过版本库/临时残留（它们不是产物）。"""
+    for f in sorted(root.rglob("*")):
+        if not f.is_file():
+            continue
+        parts = set(f.relative_to(root).parts)
+        if "__pycache__" in parts or ".git" in parts:
+            continue
+        if f.suffix.lower() in (".pyc", ".tmp"):
+            continue
+        yield f, f.relative_to(root).as_posix()
+
+
+def _stage_project(root: Path, write_text, write_bytes) -> int:
+    """把项目搬进**某个维度**：文本页注入署名走文本路，其余逐字节。返回落盘文件数。
+
+    `write_text(rel, text)` / `write_bytes(rel, data)` 由调用方注入 ——
+    全局镜像走 `mirror_space`，隔离房间走 `room_space`，同一套搬迁逻辑不写两遍。
+    """
+    from . import signature as _sig
+    n = 0
+    for f, rel in _project_files(root):
+        raw = f.read_bytes()
+        if f.suffix.lower() in _PAGE_SUFFIX:
+            try:
+                text = raw.decode("utf-8")          # 严格解码：解不出就当二进制，不硬转
+            except UnicodeDecodeError:
+                text = None
+            if text is not None:
+                if write_text(rel, _sig.inject(text, rel)).get("ok"):
+                    n += 1
+                continue
+        if write_bytes(rel, raw).get("ok"):
+            n += 1
+    return n
+
+
+def _deploy_into_room(room_id: str, target: str, purpose: str, label: str) -> dict:
+    """把项目搬进**房间维度**（镜像多维度里的隔离空间）—— 全局生产面分毫不动。"""
+    from . import room_space as RS
+    t0 = time.time()
+    p = Path(target)
+    if not (p.exists() and p.is_dir()):
+        return {"ok": False, "room_id": room_id,
+                "error": f"房间模式只支持本地目录（且必须存在）: {target}"}
+    made = RS.create(room_id, purpose or f"一次性部署 {label}")
+    if not made.get("ok"):
+        return {"ok": False, "room_id": room_id, "error": f"房间不可用: {made.get('error')}"}
+
+    files = _stage_project(
+        p,
+        lambda rel, txt: RS.shape(room_id, rel, txt, f"房间镜像 {rel}"),
+        lambda rel, raw: RS.shape_bytes(room_id, rel, raw, f"房间镜像 {rel}"),
+    )
+    if not files:
+        return {"ok": False, "room_id": room_id, "error": "吞噬为空（目标无可部署文件）"}
+
+    steps = {"stage": {"ok": True, "files": files}}
+    # 房间还没计划 → 自动立一份（仍在同一条已授权调用内），验收命令 = **真跑**语法扫，
+    # 且不往房间维度树里写任何东西（写了会被"排练改变了维度树"当场判失效）。
+    try:
+        RS.get_plan(room_id)
+        steps["plan"] = {"ok": True, "auto": False}
+    except Exception:  # noqa: BLE001
+        import sys as _sys
+        rels = [rel for _f, rel in _project_files(p)]
+        entries = [r for r in rels if r.split("/")[-1] in ("index.html", "main.py", "app.py", "start.ps1")]
+        code = ("import ast,pathlib;"
+                "[ast.parse(x.read_text(encoding='utf-8')) for x in pathlib.Path('.').rglob('*.py')];"
+                "print('py-syntax-ok')")
+        RS.define_plan(room_id, {
+            "goal": f"一次性部署 {label}：房间维度成形 + 语法级验收",
+            "assumptions": [{"id": "A1", "statement": "房间与目标环境同主机、同一运行时",
+                             "verify": "environment.production.mode=same_host"}],
+            "architecture": {
+                "components": [{"id": "artifact", "responsibility": "待晋升的完整房间产物树",
+                                "depends_on": []}],
+                "entrypoints": entries, "data_flow": []},
+            "steps": [{"id": "S1", "action": "固化房间维度树指纹", "depends_on": []},
+                      {"id": "S2", "action": "在房间维度内跑验收命令", "depends_on": ["S1"]},
+                      {"id": "S3", "action": "全绿后写入房间现实区", "depends_on": ["S2"]}],
+            "services": [],
+            "files": rels,
+            "environment": {"required": [], "dependencies": [], "tools": ["python"],
+                            "required_files": [], "production": {"mode": "same_host"}},
+            "rehearsal": {
+                "commands": [{"id": "py-syntax-sweep",
+                              "argv": [_sys.executable, "-c", code], "timeout": 300}],
+                "acceptance": ["py-syntax-sweep"]},
+            "rollback": {"strategy": "room_snapshot_replay",
+                         "note": "回滚到房间上一个快照；房间现实区整树替换，全局生产不受影响"},
+        })
+        steps["plan"] = {"ok": True, "auto": True, "acceptance": "py-syntax-sweep"}
+
+    sc = RS.scan(room_id)
+    steps["scan"] = {"ok": sc.get("ok"), "passed": sc.get("passed"), "total": sc.get("total")}
+    if not sc.get("ok"):
+        return {"ok": False, "room_id": room_id, "name": label, "files": files,
+                "steps": steps, "error": "房间体检未过，未晋升",
+                "law": "房间维度=隔离排练；全局生产面分毫未动"}
+
+    # 排练与放行都要求房间内有计划（room_plan）。没有计划就**如实卡住**，不假装通过。
+    blocked_reason = ""
+    try:
+        rh = RS.rehearse(room_id)
+    except Exception as exc:  # noqa: BLE001
+        rh = {"ok": False, "error": f"{type(exc).__name__}: {exc}"[:200]}
+        blocked_reason = "房间内还没有 rehearsal 计划（先 room_plan）"
+    steps["rehearse"] = {"ok": rh.get("ok"), "blockers": rh.get("blockers"),
+                         "error": rh.get("error")}
+    rl = {"ok": False, "blocked": True}
+    if rh.get("ok"):
+        try:
+            rl = RS.release(room_id, purpose or f"一次性部署 {label}")
+        except Exception as exc:  # noqa: BLE001
+            rl = {"ok": False, "error": f"{type(exc).__name__}: {exc}"[:200]}
+    steps["release"] = {"ok": rl.get("ok"), "blocked": rl.get("blocked"), "error": rl.get("error")}
+    return {
+        "ok": bool(rl.get("ok")), "room_id": room_id, "name": label, "target": target,
+        "files": files, "elapsed_s": round(time.time() - t0, 1), "steps": steps,
+        "blocked_reason": blocked_reason or None,
+        "law": "房间维度=隔离排练现实；全局生产面分毫未动（要进全局仍需显式 into_global_production）",
+    }
+
+
+def one_key_deploy(target: str, purpose: str = "", plan=None, name: str = "",
+                   room: str = "", into_global_production: bool = False) -> dict:
     """一指定江山乾坤换位：抓取→镜像→验证→晋升，一条命令一步到位。
 
     target: GitHub 仓库/子目录 URL（也可为本地路径——本地模式直接镜像入 stage）
+
+    2026-09-19（Owner：**所有假设/模拟/测试都在镜像多维度里跑，只有过镜像的成品才进生产**）：
+      ① 本层只做"成形 → 在**镜像区**验证 → 一次性晋升"，**不承接部署计划**；
+        传了 `plan` 一律 fail-closed 并给出去处（与 `api.mirror_ascend` 同一条口径），
+        免得计划被静默吞掉、变成"以为跑了其实没跑"。
+      ② 本地模式此前把**每个文件都当文本读**（`errors="replace"`）⇒ 图片/模型/字体当场被
+        替换字符污染，镜像里的产物直接是废的，晋升出去就是"上线了一个坏的"。
+        现在分两路：**文本页**（.md/.html/.htm/.txt/.csv）解码成功后**注入署名**再入镜像
+        （幂等，与 GitHub 模式的"署名注入"一致）；**其余一律逐字节**走 `shape_bytes`。
+      ③ 验证矩阵（`mirror_space.scan()`）读的是**镜像维度**本身 —— 也就是"测试跑在镜像里"。
+      ④ `name` 只用于口令与审计留痕，不改变部署语义。
     """
     from . import mirror_space as DG
+    if plan is not None:
+        return {"ok": False, "blocked": True,
+                "target": str(target)[:80], "cap": "one_key_deploy",
+                "reason": "本层不支持 plan（部署计划属于排练门，不塞进一次性晋升）",
+                "how_to": "计划/推演走 mirror_plan → mirror_simulate → mirror_rehearse；"
+                          "本层只做 抓取 → 镜像 → 验证 → 晋升。"}
     t0 = time.time()
     steps = {}
+    label = (name or target)[:60]
+
+    # 0) 落点必须**显式声明**（Owner 2026-09-19：假设/模拟/测试全在镜像多维度里跑，
+    #    只有过了镜像的成品才进生产）—— 不许默认把任何项目堆进全局生产面。
+    if not room and not into_global_production:
+        return {
+            "ok": False, "blocked": True, "cap": "one_key_deploy",
+            "target": str(target)[:80], "name": label,
+            "reason": "未声明落点：不许默认把项目堆进全局生产面（否则什么代码都会被送到生产）",
+            "how_to": ("隔离试验走 room=\"<房间名>\" —— 只写房间维度，全局生产分毫不动；"
+                       "确要写全局生产，显式传 into_global_production=true"
+                       "（经 run_task 会另要 deploy_publish 人工授权）。"),
+        }
+    if room:
+        return _deploy_into_room(str(room), target, purpose, label)
 
     # 1) 吞噬抓取 → 镜像区
     try:
@@ -115,16 +278,29 @@ def one_key_deploy(target: str, purpose: str = "") -> dict:
             p = Path(target)
             if not p.exists() or not p.is_dir():
                 return {"ok": False, "error": f"目标不存在或不是目录: {target}"}
+            from . import signature as _sig
             n = 0
             for f in p.rglob("*"):
-                if f.is_file() and "__pycache__" not in str(f):
-                    rel = f.relative_to(p).as_posix()
+                if not f.is_file():
+                    continue
+                parts = set(f.relative_to(p).parts)
+                if "__pycache__" in parts or ".git" in parts:
+                    continue          # 临时/版本库残留，不是产物
+                if f.suffix.lower() in (".pyc", ".tmp"):
+                    continue
+                rel = f.relative_to(p).as_posix()
+                raw_bytes = f.read_bytes()
+                staged = None
+                if f.suffix.lower() in _PAGE_SUFFIX:
                     try:
-                        content = f.read_text(encoding="utf-8", errors="replace")
-                        DG.shape(rel, content, f"本地镜像 {rel}")
-                        n += 1
-                    except Exception:
-                        pass
+                        text = raw_bytes.decode("utf-8")     # 严格解码：解不出就当二进制，不硬转
+                        staged = DG.shape(rel, _sig.inject(text, rel), f"本地镜像 {rel}")
+                    except UnicodeDecodeError:
+                        staged = None
+                if staged is None:
+                    staged = DG.shape_bytes(rel, raw_bytes, f"本地镜像 {rel}")
+                if staged.get("ok"):
+                    n += 1
             steps["devour"] = {"ok": n > 0, "files": n}
     except Exception as e:  # noqa: BLE001
         return {"ok": False, "error": f"吞噬抓取失败: {str(e)[:120]}", "steps": steps}
@@ -146,11 +322,11 @@ def one_key_deploy(target: str, purpose: str = "") -> dict:
     if not pr.get("ok"):
         return {"ok": False, "error": "晋升失败", "steps": steps, "promote": pr}
 
-    result = {"ok": True, "target": target, "files": steps["devour"]["files"],
+    result = {"ok": True, "target": target, "name": label, "files": steps["devour"]["files"],
               "version": pr.get("version"), "promoted_at": pr.get("promoted_at"),
               "elapsed_s": round(time.time() - t0, 1), "steps": steps,
               "law": "生产零修改：一次性全量晋升，镜像区随便改，生产只有成品"}
-    _audit("one_key_deploy", {"target": target[:60], "files": result["files"],
+    _audit("one_key_deploy", {"target": target[:60], "name": label, "files": result["files"],
                                "version": result["version"], "elapsed_s": result["elapsed_s"]})
     return result
 

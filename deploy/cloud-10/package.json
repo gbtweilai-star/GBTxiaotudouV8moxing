@@ -1,0 +1,10 @@
+{
+  "name": "gbt-cloud-10",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "GBT小土豆V8 · 10 云插件拼接网（形态 A 单 isolate / 形态 B 服务绑定）",
+  "_hand_written": "本件是手写的，不是生成物；gen 只管 src/mesh.generated.js 与 modules/",
+  "_developer": "自由的风",
+  "_guardian": "公主土豆"
+}

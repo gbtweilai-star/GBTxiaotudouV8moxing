@@ -1,0 +1,29 @@
+{"tag": "A0 主线程 · 未进入会话", "value": false, "expect": false, "ok": true}
+{"tag": "A1 主线程 · 已进入会话", "value": true, "expect": true, "ok": true}
+{"tag": "A2 子线程 · 父线程已进入会话", "value": false, "expect": false, "ok": true}
+{"tag": "A3 线程池 worker · 父线程已进入会话", "value": false, "expect": false, "ok": true}
+{"tag": "A4 孙线程 · 会话线程内再开线程", "value": false, "expect": false, "ok": true}
+{"tag": "A5 主线程 · 会话已退出", "value": false, "expect": false, "ok": true}
+{"tag": "B0 主线程 · ctx.run 读原会话", "value": true, "expect": true, "ok": true}
+{"tag": "B1 新线程 · 直接 ctx.run（手动传播）", "value": true, "expect": true, "ok": true}
+{"tag": "B2 线程池 worker · ctx.run 在提交后被调", "value": true, "expect": true, "ok": true}
+{"tag": "B3 主线程 · ctx.run 后再确认会话语义不变", "value": false, "expect": false, "ok": true}
+{"tag": "C0 主线程 · 仅环境变量", "value": true, "expect": true, "ok": true}
+{"tag": "C1 子线程 · 仅环境变量", "value": true, "expect": true, "ok": true}
+{"tag": "C2 线程池 worker · 仅环境变量", "value": true, "expect": true, "ok": true}
+{"tag": "C3 撤掉环境变量后主线程立刻回到未受信", "value": false, "expect": false, "ok": true}
+{"tag": "D1 P1 · _run_turn 是否继承请求线程的 owner_session", "value": false, "expect": false, "ok": true}
+{"tag": "D2 P1 · _run_turn 自包 owner_session 后", "value": true, "expect": true, "ok": true}
+{"tag": "D3 P2 · quick.run 线程（:946 自带 owner_session）", "value": true, "expect": true, "ok": true}
+{"tag": "D4 P2 · 摘掉 :946 那层 owner_session 后（证明该层是承重的）", "value": false, "expect": false, "ok": true}
+{"tag": "D5 P3 · 调用层包 owner_session（同线程、无跨界）", "value": true, "expect": true, "ok": true}
+{"tag": "D6 P3 · 调用层不包 owner_session（今天真实基线）", "value": false, "expect": false, "ok": true}
+{"tag": "D7 P3 · 改造后 interrupt() 内部自包（任意线程可调）", "value": true, "expect": true, "ok": true}
+{"tag": "O1 并发入口限制", "value": "同一 Context 不可两线程同时 enter（RuntimeError）"}
+{"tag": "O2 P1 请求线程名（owner_session 在此层）", "value": "Thread-1 (do_POST)"}
+{"tag": "O3 P1 实际执行线程", "value": "gbt-holo-turn"}
+{"tag": "O4 P2 实际执行线程 / kind", "value": "gbt-holo-screen / tentacle"}
+{"tag": "O5 P3 实际执行线程 / thread_id / turn_id", "value": "Thread-5 (do_POST) / thread-from-old-process / turn-stub"}
+{"tag": "O6 P3 未包时的执行线程", "value": "Thread-6 (do_POST)"}
+{"tag": "O7 P3 改造后写法执行线程 / kind", "value": "Thread-7 (do_POST) / codex_interrupt"}
+VERDICT: PASS

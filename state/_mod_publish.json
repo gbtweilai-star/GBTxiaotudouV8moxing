@@ -1,0 +1,12 @@
+{
+ "编号": "08",
+ "模块": "publish",
+ "运行地": "cloud",
+ "依赖编号": [
+  "07"
+ ],
+ "版本": "2026-09-24.1",
+ "状态": "已验",
+ "证据": "py -3.14 tools/codex-scripts/publish.py check => 现读 deploy_publish grants_available=0 · ai_can_grant=False · 15 个作用域全 0; send demo-005 => 授权闸拦住 rc=3; send --room 排练房间（注入授权=1）=> 过两闸 rc=0 只给唯一门命令; 自检 5/5。诚实范围：**发布门卫不是发布器**，真发布走唯一门 run_task",
+ "at": "2026-09-25T00:10:00"
+}

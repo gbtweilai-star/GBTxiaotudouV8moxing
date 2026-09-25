@@ -93,6 +93,21 @@ def _pick_posture(hits: dict) -> str:
     return "default"
 
 
+def run(op="status", **params) -> dict:
+    """能力入口（只读 · R-H194 补）：status / advise。**只说怎么说话，不替人说。**
+
+    为什么补：本能力位此前没有 `run()`，编排内核接不上 ⇒ 孤儿。
+    """
+    op = str(op or "status")
+    if op == "advise":
+        return {"ok": True, "readonly": True,
+                "advice": advise(params.get("user_text", ""), params.get("situation", ""))}
+    if op == "status":
+        return {"ok": True, "readonly": True, "module": "tactics",
+                "note": "策略角色点：识别通信信号 —— 只输出『怎么说』，不替用户说话"}
+    raise ValueError("未知 op %r（可用：status/advise）" % (op,))
+
+
 def advise(user_text: str = "", situation: str = "") -> dict:
     """给当前沟通场景一个分寸建议。
 

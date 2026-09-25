@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT灏忓湡璞哣8\tools\codex-scripts\render-agent.py", line 219, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\ADMIN\Desktop\GBT灏忓湡璞哣8\tools\codex-scripts\render-agent.py", line 215, in main
+    return a.func(a)
+           ~~~~~~^^^
+  File "C:\Users\ADMIN\Desktop\GBT灏忓湡璞哣8\tools\codex-scripts\render-agent.py", line 179, in cmd_run
+    art.unlink()
+    ~~~~~~~~~~^^
+  File "C:\Users\ADMIN\AppData\Local\Python\pythoncore-3.14-64\Lib\pathlib\__init__.py", line 1042, in unlink
+    os.unlink(self)
+    ~~~~~~~~~^^^^^^
+FileNotFoundError: [WinError 2] 绯荤粺鎵句笉鍒版寚瀹氱殑鏂囦欢銆? 'C:\\Users\\ADMIN\\Desktop\\GBT灏忓湡璞哣8\\state\\render-jobs\\demo-002\\out.mp4'

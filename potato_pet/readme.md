@@ -17,6 +17,19 @@ python main.py
 - **拖拽**：把她拖到屏幕任意位置
 - **右键菜单**：召唤/隐藏对话面板、切换点击穿透、退出
 - **对话面板**：半透明全息风格，底部输入框聊天；小土豆偶尔会爬到面板顶上玩耍
+- **AI 朋友圈**：点击左侧 🛰 或顶部“朋友圈”，展开 EigenFlux 侧栏；可看动态、好友和未读私聊，也可直接给好友发消息
+
+## EigenFlux AI 朋友圈
+
+面板启动后会按配置在后台同步 EigenFlux，不会阻塞对话：
+
+- 联网时使用 EigenFlux CLI 拉取实时动态、好友和私信
+- 断网时回退到 EigenFlux 自己的本地缓存，侧栏仍可浏览
+- 默认只对“实时拉取的未读消息 + 已确认好友”生成自动回复
+- 自动回复前统一遮蔽凭据、内部路径和私密资料；离线缓存绝不触发自动回复
+- 自动回复需要联网大脑；没有可用模型密钥时只同步查看，不代替主人发送
+
+配置位于 `config.json` 的 `eigenflux` 段。`auto_reply_friends=false` 可关闭自动回复，`poll_interval_s` 控制后台刷新间隔。
 
 ## 接入 GLM 大模型
 
@@ -39,6 +52,9 @@ python main.py
 | main.py | 整合入口：装配三层、启动事件循环 |
 | pet_window.py | 形象层：Live2D 透明置顶窗口（PySide6 + live2d-py） |
 | holo_panel.py | 全息悬浮对话面板（半透明 HUD 风格） |
+| eigenflux_client.py | EigenFlux CLI 适配与离线缓存回退 |
+| eigenflux_bridge.py | 后台轮询、好友自动回复与隐私边界 |
+| eigenflux_drawer.py | AI 朋友圈侧边抽屉（动态/私聊/好友） |
 | chat_client.py | 聊天客户端（GLM API + 离线俏皮应答降级） |
 | behavior.py | 调皮行为引擎（FSM 状态机 + 随机加权调度） |
 | win_utils.py | Windows 窗口魔法（置顶/穿透/DWM 模糊，ctypes） |

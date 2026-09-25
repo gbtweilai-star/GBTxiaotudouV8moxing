@@ -1,0 +1,16 @@
+{
+ "插件编号": "P04",
+ "名称": "remotion",
+ "做什么": "本地渲染引擎①：React 合成→Chrome 出帧→ffmpeg 编码 MP4",
+ "落点": "LOCAL",
+ "真命令": "npx --no-install remotion render <comp> <out> --entry-point src/index.tsx",
+ "关联模块": "06 render",
+ "状态": "✅ 已真跑",
+ "出处": "hello.mp4 90 帧 3.000000 s 141318 B 1080p30",
+ "触手": [
+  "T01"
+ ],
+ "声明触手根数": 3,
+ "at": "2026-09-25T02:47:01",
+ "边界": "这是**契约登记**，不是函数部署（deploy 是发布动作，须主人点头）"
+}

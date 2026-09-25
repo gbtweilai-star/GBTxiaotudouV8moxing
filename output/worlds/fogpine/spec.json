@@ -1,0 +1,11 @@
+{
+ "name": "fogpine",
+ "reference_image": "holo_pet/assets/digital-human/samples/Owner-三视图-原图.png",
+ "spec_text": "雾松林日落",
+ "biome": "针叶林",
+ "time_of_day": "sunset",
+ "density": 1.0,
+ "terrain_height": 1.0,
+ "version": 2,
+ "created": "2026-09-25 16:48:13"
+}

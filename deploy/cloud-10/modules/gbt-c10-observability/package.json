@@ -1,0 +1,8 @@
+{
+  "name": "gbt-c10-observability",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "可观测与审计落账（主人给的对应名：dsh-observability）",
+  "_generated": "tools/codex-scripts/cloud-mesh.py gen"
+}

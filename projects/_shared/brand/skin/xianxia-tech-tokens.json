@@ -1,0 +1,83 @@
+{
+  "_说明": "对话页皮肤「仙侠×科技」的三档配色 —— **落盘备份**。",
+  "_为什么必须落盘": [
+    "动态 Cordis 插件**只活在当前进程里**（官方口径：definitions do not survive a process restart）。",
+    "本配色原先**只存在于运行中的那个包**（pluginId=xian-5 / packageId=pkg-9）⇒ 进程一重启就彻底没了，盘上没有第二份。",
+    "故如实抄录在此。**它不是'量出来的读数'，是我定的设计值** —— 出处：本次会话 `cordis_define` 的 client 源码。"
+  ],
+  "_这份备份不做什么": [
+    "**不会自己生效**：它是数据，不是插件。重启后要重新 define + run 才回到页面上。",
+    "**不碰任何源码、不碰主题基座**：应用方式是官方 `theme.overrideTokens(source, tokens)`。"
+  ],
+  "_怎么重新应用": {
+    "步骤": [
+      "1) cordis_define（kind:new，idPrefix 用 3–6 个小写字母，如 xian）",
+      "2) code.client 里 apply(ctx) → const t = ctx.get('theme'); if (t===undefined) return; ctx.effect(() => t.overrideTokens('gbt-xianxia-tech-skin', PALETTES[ACTIVE]))",
+      "3) cordis_run（客户端包需主人批准）"
+    ],
+    "切档": "只改 ACTIVE：'A' 冷青仙侠 / 'B' 金紫仙门 / 'C' 水墨霓虹",
+    "立刻还原": "cordis_stop <pluginId> —— overrideTokens 的 disposer 会精确还原它盖住的那一层",
+    "令牌名从哪来": "**实查** Client `Theme.listTokens`（13 个，全部 requiresLightAndDark=true），不是我记的",
+    "覆盖方法从哪来": "**实查** Client `Service.listService {service:'theme'}` —— 原文明确 tokens 必须是 `令牌名 → {light, dark}`，给裸字符串会抛错"
+  },
+  "_设计取舍": [
+    "底色深但不纯黑：长时间写代码伤眼，且仙侠要「夜色」不是「黑洞」。",
+    "品牌色用青玉/鎏金/品红而**不用正红**：正红会与 state-error 撞车 —— 这是编程面板，报错色必须一眼可辨。",
+    "文字两级对比度优先于好看。"
+  ],
+  "ACTIVE": "A",
+  "palettes": {
+    "A": {
+      "名": "冷青仙侠",
+      "desc": "靛蓝夜空 · 青玉灵光 · 细霓虹",
+      "--dsw-alias-bg-base": { "light": "#EEF3F8", "dark": "#0B1120" },
+      "--dsw-alias-bg-layer-1": { "light": "#F7FAFD", "dark": "#111A2B" },
+      "--dsw-alias-bg-layer-2": { "light": "#FFFFFF", "dark": "#16233A" },
+      "--dsw-alias-bg-overlay": { "light": "#FFFFFF", "dark": "#0E1728" },
+      "--dsw-alias-border-l1": { "light": "#D3DEEA", "dark": "#1E3A5F" },
+      "--dsw-alias-border-l2": { "light": "#B4C4D6", "dark": "#2A4A73" },
+      "--dsw-alias-brand-primary": { "light": "#0E8C7E", "dark": "#35D6C4" },
+      "--dsw-alias-label-primary": { "light": "#0B1120", "dark": "#E6EDF6" },
+      "--dsw-alias-label-secondary": { "light": "#4A5A6E", "dark": "#93A3B8" },
+      "--dsw-alias-state-error-primary": { "light": "#C0271E", "dark": "#F85149" },
+      "--dsw-alias-state-success-primary": { "light": "#1F7A31", "dark": "#3FB950" },
+      "--dsw-alias-state-warn-primary": { "light": "#9A6B00", "dark": "#D29922" },
+      "--dsw-specific-sidebar-fill": { "light": "#E8EFF6", "dark": "#0A101C" }
+    },
+    "B": {
+      "名": "金紫仙门",
+      "desc": "深紫天幕 · 鎏金殿影 · 暖霓虹",
+      "--dsw-alias-bg-base": { "light": "#F6F1FA", "dark": "#150B26" },
+      "--dsw-alias-bg-layer-1": { "light": "#FBF7FE", "dark": "#1D1130" },
+      "--dsw-alias-bg-layer-2": { "light": "#FFFFFF", "dark": "#271741" },
+      "--dsw-alias-bg-overlay": { "light": "#FFFFFF", "dark": "#180D2A" },
+      "--dsw-alias-border-l1": { "light": "#DCCDEA", "dark": "#3A2456" },
+      "--dsw-alias-border-l2": { "light": "#C3AEDA", "dark": "#55377B" },
+      "--dsw-alias-brand-primary": { "light": "#9A6A12", "dark": "#F0B54A" },
+      "--dsw-alias-label-primary": { "light": "#1A0F2B", "dark": "#F2E9FA" },
+      "--dsw-alias-label-secondary": { "light": "#574A6B", "dark": "#A99BBE" },
+      "--dsw-alias-state-error-primary": { "light": "#C0271E", "dark": "#F85149" },
+      "--dsw-alias-state-success-primary": { "light": "#1F7A31", "dark": "#3FB950" },
+      "--dsw-alias-state-warn-primary": { "light": "#9A6B00", "dark": "#D29922" },
+      "--dsw-specific-sidebar-fill": { "light": "#F0E8F8", "dark": "#120821" }
+    },
+    "C": {
+      "名": "水墨霓虹",
+      "desc": "墨黑留白 · 品红/青双霓虹",
+      "--dsw-alias-bg-base": { "light": "#F4F4F6", "dark": "#08080A" },
+      "--dsw-alias-bg-layer-1": { "light": "#FBFBFC", "dark": "#101014" },
+      "--dsw-alias-bg-layer-2": { "light": "#FFFFFF", "dark": "#17171D" },
+      "--dsw-alias-bg-overlay": { "light": "#FFFFFF", "dark": "#0C0C10" },
+      "--dsw-alias-border-l1": { "light": "#DCDCE2", "dark": "#2A2A33" },
+      "--dsw-alias-border-l2": { "light": "#C2C2CC", "dark": "#3D3D4A" },
+      "--dsw-alias-brand-primary": { "light": "#C22A78", "dark": "#FF5CB0" },
+      "--dsw-alias-label-primary": { "light": "#0A0A0C", "dark": "#EDEDF2" },
+      "--dsw-alias-label-secondary": { "light": "#5A5A66", "dark": "#9A9AA6" },
+      "--dsw-alias-state-error-primary": { "light": "#C0271E", "dark": "#F85149" },
+      "--dsw-alias-state-success-primary": { "light": "#1F7A31", "dark": "#3FB950" },
+      "--dsw-alias-state-warn-primary": { "light": "#9A6B00", "dark": "#D29922" },
+      "--dsw-specific-sidebar-fill": { "light": "#ECECEF", "dark": "#0A0A0D" }
+    }
+  },
+  "署名": "开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属"
+}

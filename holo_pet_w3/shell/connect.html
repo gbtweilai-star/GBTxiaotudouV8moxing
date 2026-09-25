@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>GBT小土豆V8 · 对话面接入</title>
+<!-- 皮肤：**只引壳的 token**（window.css + deck3d.css 的 :root）。
+     🔴 2026-09-23 改：本页原来自带一整套配色（#0b0a12 / #e9e4dc / #5b4a8f…），
+     跟新壳皮肤不是一套 —— 被 tools/codex-scripts/audit_skin.py 当场抓成"壳里混进第二套皮"。
+     风哥令「别跟旧皮肤混到一起去」。本页现在**零裸色值**。 -->
+<link rel="stylesheet" href="../window.css" />
+<link rel="stylesheet" href="../deck3d.css" />
+<style>
+  /* 本块只写**版式**；颜色一律 var()。出现裸色值即违规。 */
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: linear-gradient(180deg, var(--gbt-deep-2), var(--gbt-deep));
+    color: var(--gbt-text);
+    font: 14px/1.75 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-user-select: text; user-select: text;
+  }
+  .card {
+    width: min(760px, 92vw); padding: 30px 34px;
+    border: 1px solid var(--gbt-line); border-radius: var(--gbt3d-radius);
+    background: var(--gbt-glass-hi);
+    box-shadow: inset 0 1px 0 var(--gbt-spec), 0 30px 70px -40px var(--gbt-void);
+  }
+  h1 { margin: 0 0 6px; font-size: 20px; letter-spacing: .02em;
+       text-shadow: 0 0 22px var(--gbt-glow-cyan); }
+  .sub { color: var(--gbt-dim); font-size: 12.5px; margin-bottom: 22px; }
+  code { background: var(--gbt-deep); color: var(--gbt-gold); padding: 1.5px 6px;
+         border-radius: 5px; border: 1px solid var(--gbt-hair);
+         font-family: Consolas, monospace; font-size: 12.5px; }
+  .why { border-left: 3px solid var(--gbt-warn); padding: 10px 14px; margin: 0 0 20px;
+         background: var(--gbt-warn-bg); border-radius: 0 8px 8px 0; }
+  .why b { color: var(--gbt-gold); }
+  ol { margin: 0 0 20px; padding-left: 22px; }
+  li { margin: 7px 0; }
+  .warn { color: var(--gbt-fault); }
+  .ok { color: var(--gbt-ok); }
+  .foot { color: var(--gbt-off); font-size: 12px; border-top: 1px solid var(--gbt-hair);
+          padding-top: 14px; }
+  .u { width: 100%; box-sizing: border-box; padding: 11px 13px; border-radius: 9px;
+       border: 1px solid var(--gbt-edge); background: var(--gbt-deep);
+       color: var(--gbt-text); font: 13px Consolas, monospace; }
+  .u:focus { outline: none; border-color: var(--gbt-edge-lit);
+             box-shadow: 0 0 0 3px var(--gbt-cyan-bg); }
+  .go { margin-top: 11px; padding: 10px 20px; border-radius: 9px;
+        border: 1px solid var(--gbt-edge); background: var(--gbt-violet);
+        color: var(--gbt-text); font: 600 13px/1 inherit; cursor: pointer; }
+  .go:hover { border-color: var(--gbt-edge-lit); }
+  .msg { margin-left: 12px; font-size: 12.5px; color: var(--gbt-dim); }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>对话面需要一条「带 token 的 URL」</h1>
+  <div class="sub">GBT小土豆V8 桌面壳 · 窗口 <code id="wid">dsh-chat</code> · 批次 W9</div>
+
+  <div class="why">
+    <b>这不是壳坏了，是 DSH 的设计。</b><br />
+    实测（2026-09-23）：<code>GET http://127.0.0.1:3080/</code> 回 <b>HTTP 401</b>，正文原文 ——
+    <br /><code>dsh web authentication required; reopen the URL printed by dsh web.</code>
+  </div>
+
+  <ol>
+    <li>去看 <b>启动 <code>dsh web</code> 的那个终端</b>，它会打印一条<b>带 token 的完整 URL</b>。</li>
+    <li>把那条 URL 粘进下面这个框，按「接上对话面」。</li>
+    <li>URL <b>只留在内存</b>，壳<b>不落盘、不回显</b> —— 返回值只给你 <code>host</code>。</li>
+  </ol>
+
+  <div class="row">
+    <input id="u" class="u" type="text" spellcheck="false" autocomplete="off"
+           placeholder="http://127.0.0.1:3080/?token=…（从 dsh web 的终端里复制）" />
+    <button id="go" class="go" type="button">接上对话面</button>
+    <span id="msg" class="msg"></span>
+  </div>
+
+  <p class="warn">⚠️ 本页<b>故意不提供</b>「自动找到 token」的功能：那等于替你翻凭据。</p>
+  <p class="ok">✅ 在此之前，对话面照常在浏览器里用 —— 本壳<b>没有动过 DSH 一个字节</b>（有守卫脚本为证）。</p>
+
+  <div class="foot">
+    开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属<br />
+    守卫：<code>py -3.14 tools/codex-scripts/desktop-shell-guard.py</code>（B1d 就是这一条）
+  </div>
+</div>
+<script>
+  // 只把窗口 id 显示出来；**不读凭据、不发请求、不写盘**。
+  // URL 走 preload 暴露的动作口交给主进程；主进程只回 host（token 不回显）。
+  try {
+    const q = new URLSearchParams(location.search);
+    const id = q.get('id'); if (id) document.getElementById('wid').textContent = id;
+  } catch (e) { /* 引导页不因参数出错而崩 */ }
+
+  /* 🔴 颜色也从 token 读，**不在 JS 里写色号** ——
+     皮肤只有一个真源（CSS 的 :root）；JS 里再写一遍就是"第二套皮的开始"。
+     这正是 audit_skin.py 要防的事（它连 `0xRRGGBB` 数字字面量一起扫）。 */
+  const TOKEN = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const C_FAULT = TOKEN('--gbt-fault'), C_OK = TOKEN('--gbt-ok'), C_DIM = TOKEN('--gbt-dim');
+
+  const msg = document.getElementById('msg');
+  const say = (t, color) => { msg.textContent = t; msg.style.color = color || C_DIM; };
+
+  document.getElementById('go').addEventListener('click', async () => {
+    const url = document.getElementById('u').value.trim();
+    if (!url) { say('先把 URL 粘进来', C_FAULT); return; }
+    const api = window.gbtW3;
+    if (!api || typeof api.connectDsh !== 'function') {
+      say('拿不到壳的动作口（preload 没加载？）', C_FAULT); return;
+    }
+    say('正在交给对话框…');
+    try {
+      const r = await api.connectDsh({ url });
+      if (r && r.ok) {
+        say('已交给对话框：' + r.host + '（URL 未落盘、未回显）', C_OK);
+        // 立刻清空输入框：不让带 token 的串留在可见的界面里
+        document.getElementById('u').value = '';
+      } else {
+        say('没接上：' + ((r && (r.error || r.rule)) || '未知原因'), C_FAULT);
+      }
+    } catch (e) {
+      say('调用出错：' + String(e).slice(0, 120), C_FAULT);
+    }
+  });
+</script>
+</body>
+</html>

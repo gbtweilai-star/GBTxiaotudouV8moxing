@@ -110,8 +110,17 @@ def assert_stack_unchanged(before: dict, after: dict) -> dict:
 
 
 def gaps_ledger(rows: Optional[List[dict]] = None) -> dict:
-    """红线④⑤：短板台账 —— **挂原生面**，且**不许出现 model 字段**。"""
-    rows = [dict(r) for r in (rows or []) if isinstance(r, dict)]
+    """红线④⑤：短板台账 —— **挂原生面**，且**不许出现 model 字段**。
+
+    🔴 2026-09-22 第 45 轮修（错报治理 · **台账定义了却从不被读**）：
+    原来这行是 `rows = [dict(r) for r in (rows or []) ...]` ——
+    传 `None` 时用的是**空列表**，**永远不读本文件里那份 `GAPS`**。
+    实测后果：直接调 `gaps_ledger()`（"给我看短板台账"的自然调用）会返回
+    **`count=0`** —— 一个**假的"没有死角"**；而盘上明明摆着 G1..Gn（带 R-H196/R-H202/R-H203 的
+    出处与 closed/open 状态）。这正是本轮普查（只写不读，全工作区 2655 文件）抓出来的那类：
+    **收集了却从不交付**。⇒ 不传参时**默认就是那份台账**；显式传（含显式传空）仍按传的来。
+    """
+    rows = [dict(r) for r in (GAPS if rows is None else rows) if isinstance(r, dict)]
     bad = []
     for i, r in enumerate(rows):
         if "model" in r:
@@ -121,6 +130,10 @@ def gaps_ledger(rows: Optional[List[dict]] = None) -> dict:
             if not str(r.get(f) or "").strip():
                 bad.append({"index": i, "rule": "missing_field", "why": "缺字段 " + f})
     return {"ok": not bad, "readonly": True, "count": len(rows),
+            # 🔴 第 45 轮补：**把台账本身交出去**。原来只回 count + fields + problems，
+            #    于是"给我看短板台账"拿不到任何一条短板 —— 计数有了、内容还是没有。
+            #    （这正是本轮那条病的完整形状：**收集了却从不交付**。）
+            "rows": rows,
             "fields": list(LEDGER_FIELDS), "problems": bad,
             "bind_to": "native_surface（原生面）",
             "rule": "短板台账挂在原生能力上；换模型不改变台账"}

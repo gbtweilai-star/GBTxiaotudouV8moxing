@@ -20,7 +20,8 @@ import sys
 
 from .api import list_capabilities, run_task
 from .store import query_log
-from .caps_registry import DISABLED_CAPS
+# 🔴 事故对策（2026-09-25）：改走容错取表层，别让注册表被并发重写时把 GUI 也一起拖死
+from .caps_tables import DISABLED_CAPS, UNIMPLEMENTED_CAPS
 
 _NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 
@@ -301,7 +302,7 @@ def run_gui():
     btn_tent = ctk.CTkButton(left, text="触手面板", command=on_tentacle, fg_color="#0d9488", hover_color="#0f766e")
     btn_tent.pack(pady=6)
 
-    lbl = ctk.CTkLabel(left, text=f"良性能力 {len(caps)} 个\n被禁用危险能力 {len(DISABLED_CAPS)} 个",
+    lbl = ctk.CTkLabel(left, text=f"良性能力 {len(caps)} 个\n登记未实现 {len(UNIMPLEMENTED_CAPS)} 个（禁止已解开）",
                        justify="left")
     lbl.pack(pady=6)
 

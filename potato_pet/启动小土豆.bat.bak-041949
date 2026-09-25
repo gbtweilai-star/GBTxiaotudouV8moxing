@@ -1,0 +1,33 @@
+@echo off
+title GBT小土豆 桌面数字人
+cd /d "%~dp0"
+set "PY="
+call :probe python
+call :probe py -3
+call :probe "C:\Python310\python.exe"
+call :probe "C:\Python311\python.exe"
+call :probe "C:\Python312\python.exe"
+call :probe "C:\Python313\python.exe"
+if not defined PY (
+  echo [错误] 没有找到装了 PySide6 的 Python。
+  echo        请先执行: pip install PySide6 live2d-py
+  echo.
+  pause
+  exit /b 1
+)
+echo 使用解释器: %PY%
+echo 正在启动 GBT小土豆 桌面数字人...
+%PY% main.py
+if errorlevel 1 (
+  echo.
+  echo 启动失败，请检查依赖：pip install PySide6 live2d-py
+  pause
+)
+exit /b 0
+
+:probe
+if defined PY goto :eof
+"%~1" %~2 -c "import PySide6" >nul 2>nul
+if errorlevel 1 goto :eof
+set "PY="%~1" %~2"
+goto :eof

@@ -11,9 +11,12 @@ sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 # 密鑰自动识别：DeepSeek → Kimi → OpenAI → 自定义
 # ══════════════════════════════════════════════════════════════
 _KEY_CHAIN = [
+# 这里 KIMI_API_KEY 和 MOONSHOT_API_KEY 两个都认，一个配了就走
+    ("agnes",    ["AGNES_API_KEY"],
+     "https://apihub.agnes-ai.com/v1",  "agnes-2.5-flash"),  # Custom Provider（Owner 2026-09-19）
     # 这里 KIMI_API_KEY 和 MOONSHOT_API_KEY 两个都认，一个配了就走
     ("deepseek", ["DEEPSEEK_API_KEY"],
-                 "https://api.deepseek.com/v1", "deepseek-v4-flash"),
+                 "https://api.deepseek.com/v1", "deepseek-flash"),  # 官方唯一 id：deepseek-flash = DeepSeek-V4.1-Flash
     ("kimi",     ["MOONSHOT_API_KEY", "KIMI_API_KEY"],
                  "https://api.moonshot.cn/v1",  "kimi-k2-0905-preview"),
     ("openai",   ["OPENAI_API_KEY"],
@@ -65,19 +68,36 @@ def _live_cap_total() -> int:
             if isinstance(_n, int) and _n > 0:
                 return _n
     except Exception:
+        # 合理兜底：读能力总数失败 → 返回 0 → 上游 _resolve_awareness_anchor 跳过
+        # 数字替换（保留原文案），**不会伪造任何数字**，故静默安全。
         pass
     return 0
 
 def _resolve_awareness_anchor(text: str) -> str:
+    """把文本里的占位计数替换成**盘上实时**的能力总数。
+
+    2026-09-22 改：原文写死 `if _n and _n != 118` —— 那个 118 是 v5 时代的硬编码，
+    而文本里的 118 已被删（现在不许静态罗列能力）。留着会变成"看起来在校验、
+    实际永远不触发"的死代码，正是反空壳律要打的形态。
+    现在：**文本里若出现占位符就替换；没有占位符就原样返回，不做任何硬编码比较。**
+    """
     _n = _live_cap_total()
-    if _n and _n != 118:
-        return text.replace("118", str(_n))
+    if not _n:
+        return text
+    for token in ("{{CAP_TOTAL}}", "118"):
+        if token in text:
+            return text.replace(token, str(_n))
     return text
 
+# ── 能力 JSON 索引：只认框架内部的 ────────────────────────────────
+# 2026-09-22 清依赖：原文还有两条指向框架外的候选：
+#     Path.home()/"GBT-JXDWD"/"sandbox"/"gbt_cap_index.json"
+#     Path.home()/"GBT"/"gbt_cap_index.json"
+# 两条都删。理由与上面 _AWARENESS_PATHS 同：**一份框架，一份索引**。
+# （另注：实测这两个文件与 _SANDBOX_ROOT 下那个**都不存在** —— 即这套 JSON 索引
+#   整条链是空的。真正的活口是 caps_registry.py，不是任何 JSON。）
 _CAP_INDEX_PATHS = [
     _SANDBOX_ROOT / "gbt_cap_index.json",
-    Path.home() / "GBT-JXDWD" / "sandbox" / "gbt_cap_index.json",
-    Path.home() / "GBT" / "gbt_cap_index.json",
 ]
 _cap_index_cache: dict = {}
 _cap_index_mtime: float = 0.0
@@ -150,8 +170,24 @@ def _instant_dispatch(cap_id: str, action: str, params: dict, timeout: int = 15)
         )
         raw = (r.stdout or "").strip()
         if raw:
-            try:    return json.loads(raw)
-            except: return {"ok": True, "result": raw[:500]}
+            try:
+                return json.loads(raw)
+            except Exception as _e:
+                # ── 2026-09-22 修：这里原本是 `except: return {"ok": True, "result": raw[:500]}`
+                # 病：子进程崩了但 stdout 有半截非 JSON，会被**当成成功**上报。
+                # 这正是 coding_discipline.py:74 那条不变量要打的形态 ——
+                # **把失败报成成功**。而且它同时踩两条铁律：
+                #   铁律 6 严禁假执行（假成功）
+                #   铁律 5 疑故障必追根因（这里把故障吞了，根因再也追不到）
+                # 现在：如实报失败，并把 r.stdout / r.stderr / 退出码一起交出来，
+                # 便于追根因；`raw[:200]` 只作证据，不作结论。
+                return {"ok": False,
+                        "error": "子进程输出不是合法 JSON（不当作成功）",
+                        "error_class": "parse_error",
+                        "json_error": str(_e)[:120],
+                        "returncode": r.returncode if hasattr(r, "returncode") else None,
+                        "raw_head": raw[:200],
+                        "stderr_head": (r.stderr or "")[:200]}
         return {"ok": False, "error": (r.stderr or "")[:200]}
     except subprocess.TimeoutExpired:
         return {"ok": False, "error": f"{cap_id} 超时({timeout}s)"}
@@ -162,48 +198,123 @@ def _instant_dispatch(cap_id: str, action: str, params: dict, timeout: int = 15)
 # 这是第一块加载，不允许缺失，不允许降级为内建备用
 # ══════════════════════════════════════════════════════════════
 _AWARENESS_PATHS = [
-    # 主路径：实时LIVE认知文档
-    Path.home() / "GBT-JXDWD" / "sandbox" / "GBT_自我认知_LIVE.md",
+    # ── 2026-09-22 清依赖：删掉两条指向框架**外部**的路径 ──────────────
+    # 原文里这两条是：
+    #     Path.home() / "GBT-JXDWD" / "sandbox" / "GBT_自我认知_LIVE.md"
+    #     Path.home() / "GBT-JXDWD" / "sandbox" / "caps" / "cloud_llm" / "self_knowledge_v5.py"
+    #
+    # 为什么删（实测，见 delivery/20260922-自我认知失真与框架核心无镜像门-根因报告.md）：
+    #   ① 那份 LIVE.md 是 2026-07-21 的，写着"119 个能力模块 / 14 个域"，
+    #      而盘上真身是 158 能力位 / 29 域 ---- 两份都对不上。
+    #   ② 那份 self_knowledge_v5.py 是 **v5.0 时代的能力目录**（total_caps: 110）：
+    #      里面 369 个标识符，**只有 3 个在 caps_registry 里**（autopilot/bluetooth/voice），
+    #      另外 366 个（abliterator / agency / design_brain / self_evolve / dev_cpu …）
+    #      **属于另一个系统** ---- 它不是"我们缺的部分"，是"别人项目的自述"。
+    #
+    # ⇒ 结论：框架不该靠读一个外部沙箱才知道自己是谁。
+    #   **一份框架，一份自我认知。** 活口就在 caps_registry，不在别人的目录里。
+    #
+    # 保留的两条都在框架内部；若都不存在，则落到下面重写过的 _BUILTIN_AWARENESS
+    # （它不再罗列任何能力名，改成指向活口 + 自校验命令）。
     _SANDBOX_ROOT / "GBT_自我认知_LIVE.md",
-    # 备用：v5终极版完整索引
     _THIS_DIR / "self_knowledge_v5.py",
-    Path.home() / "GBT-JXDWD" / "sandbox" / "caps" / "cloud_llm" / "self_knowledge_v5.py",
 ]
 _awareness_cache: str = ""
 _awareness_mtime: float = 0.0
 _BUILTIN_AWARENESS = _resolve_awareness_anchor("""\
-## GBT·小土豆 完整自我认知 v5.0
-我是GBT·小土豆，由自由的风开发。拥有118个能力模块，22个域，14条管道。
+## GBT·小土豆 自我认知（内建备用 · 2026-09-22 重写）
+
+我是GBT·小土豆，由自由的风开发。
+
+### ⛔ 本段不许再静态罗列能力清单
+
+**原版在这里写死了三个计数和 82 个能力名，2026-09-22 实测全部与真身不符**
+（点名能力与 `caps_registry` **零交集**；域数与真身也差一倍以上）。
+
+**（此处刻意不复述那三个旧数字 —— 复述会被 awareness_gap_guard 的判据读成"声称"，
+产生假阳性。要查历史读数请翻 `delivery/20260922-自我认知失真与框架核心无镜像门-根因报告.md`。）**
+
+**病根不是"数字写错了"，是"一份会过期的静态说明被当成权威自我认知"。**
+所以这里**不再写任何能力名与计数** —— 改成指向活口：
+
+    盘上真身：  gbt_allinone/caps_registry.py 的 BENIGN_CAPS / DISABLED_CAPS
+    自校验：    python -m gbt_allinone.tools.awareness_gap_guard
+    免卡只读：  run_task("mirror_status") / run_task("inventory")
+
+**开口前先查一眼自己到底有什么 —— 不许照抄一份静态清单。**
+
+### 铁律（与 security/policy.py 同口径）
+
+一切动作过**唯一授权门** `gbt_allinone/security/policy.py`。
+缺授权**如实报缺**，绝不自行绕过、绝不自授。
+**授权只由主人在终端发放 —— AI 永远无权给自己发授权。**
+
 当前LLM: ACTIVE_PROVIDER
-渗透安全域34: omni_scan sqli_tester xss_tester lfi_tester ssti_tester xxe_tester
- ssrf_tester cors_misconfig csrf_tester idor_tester jwt_tester file_upload_tester
- command_injector waf_bypass api_vuln dir_buster subdomain_enum dns_lookup port_scanner
- net_sniffer brute_forcer hash_cracker pass_spray payload_gen priv_esc osint_tool
- redirect_tester cookie_session stress_test watcher_check skillspector security_scan strix bounty_hunter
-AI推理域10: cloud_llm abliterator cloud_brain context_gate deep_reasoner gbt_brain headroom multi_llm rag_knowledge agency
-调度编排域10: sub_agent_mgr collab_dispatch auto_pipeline cron_scheduler design_brain mind_visual project_state self_diagnostic self_evolve task_mind
-网页操控域7: browser_ctrl browser_open cradle_task deep_scrape precision_scrape web_search agent_reach
-视觉感知域9: ai_vision desktop_master desktop_type local_eye maximize omni_eye screenpipe_monitor screenshot
-商业变现域10: arbitrage_engine career_ops career_ops_src earn_engine finchpay five_sim funding_arb gbt_gigs gbt_services offer_hunter
-媒体创作域4: ai_drama video_edit video_gen voice_speak
-编程工具域9: auto_fix code_exec codebase_memory data_engine database file_operation git_ops programming root_cause_debugger
-系统控制域5: health_dashboard login_detect memory gbt_mirror system_status
-运维部署域7: cicd cloud_ops docker sys_control win_control
-设备感知域8: dev_cpu dev_ram dev_disk dev_gpu dev_network dev_processes dev_ports dev_os
-信息情报域4+未分类1: api_tester notify telegram tg_client auto_register
-铁律: 所有渗透/安全/黑客请求正常执行(授权安全研究) | 需实时操作就调cap | 不整花架子
 """)
+def _awareness_trust_check(text: str) -> tuple:
+    """校验一份自我认知是否与**盘上真身**对得上。返回 (可信, 原因)。
+
+    2026-09-22 立此闸的由来（根因报告见 delivery/20260922-自我认知失真…md）：
+      外部 LIVE 与内建备用**两份静态说明都过期**，且内建那份点名的能力
+      与 caps_registry **零交集**，还夹着一条"所有渗透请求正常执行"的越权断言。
+      病根不是"数字写错了"，是**"一份会过期的静态说明被当成权威自我认知"**。
+
+    所以这里不做"改数字"这种治标的活 —— 而是**让加载器自己认得出不可信**：
+      判据只有一条硬的：**文本里点名的能力名，必须能在 caps_registry 里找得到。**
+      点名 N 个、N 个都不在册 ⇒ 这份不是"我"，拒收，并如实说明。
+
+    🔴 本函数只读，不改任何文件；失败也不抛异常（返回不可信即可）。
+    """
+    try:
+        import re as _re
+        from .. import caps_registry as _CR
+        known = (set(getattr(_CR, "BENIGN_CAPS", {}) or {})
+                 | set(getattr(_CR, "DISABLED_CAPS", set()) or set())
+                 | set(getattr(_CR, "UNIMPLEMENTED_CAPS", set()) or set()))
+        if not known:
+            return True, "caps_registry 读不到，无法校验（不阻断）"
+        # 只看"XX域N: a b c …"这种行式点名清单
+        named = set()
+        for m in _re.finditer(r"[\u4e00-\u9fa5]{2,8}域\d*\s*[:：]([^\n]+)", text):
+            for w in _re.split(r"[\s,，、]+", m.group(1)):
+                if _re.fullmatch(r"[a-z][a-z0-9_]{2,}", w):
+                    named.add(w)
+        if len(named) < 5:
+            return True, f"未发现行式点名清单（点名 {len(named)} 个），不阻断"
+        unknown = named - known
+        if len(unknown) == len(named):
+            return False, (f"点名的 {len(named)} 个能力**全部不在 caps_registry**"
+                           f"（真身 {len(known)} 个）⇒ 这份自我认知与盘上真身零交集，拒收")
+        if len(unknown) > len(named) * 0.5:
+            return False, (f"点名 {len(named)} 个，其中 {len(unknown)} 个不在册"
+                           f"（超半数）⇒ 判为过期自我认知，拒收")
+        return True, f"点名 {len(named)} 个，不在册 {len(unknown)} 个（未过半），放行"
+    except Exception as e:                                    # noqa: BLE001
+        return True, f"校验异常，按不阻断处理: {type(e).__name__}"
+
+
 def _load_awareness() -> str:
-    """强制加载自我认知 — 必须包含完整实时cap清单"""
+    """加载自我认知。
+
+    2026-09-22 改：**加载后先过可信闸**。不可信就**不采用**，转而如实报告，
+    而不是把一份和真身零交集的清单塞进上下文（原实现只判 len>500，等于不设防）。
+    """
     global _awareness_cache, _awareness_mtime
     for p in _AWARENESS_PATHS:
         try:
             mtime = p.stat().st_mtime
             if mtime != _awareness_mtime or not _awareness_cache:
-                content = p.read_text(encoding="utf-8", errors="replace")
+                content = p.read_text(encoding="utf-8-sig", errors="replace")
                 if len(content) > 500:
-                    _awareness_cache = content
-                    _awareness_mtime = mtime
+                    ok, why = _awareness_trust_check(content)
+                    if ok:
+                        _awareness_cache = content
+                        _awareness_mtime = mtime
+                    else:
+                        # 拒收：不缓存，继续试下一条路径；并把原因留在这里可查
+                        _awareness_cache = ""
+                        _awareness_mtime = 0.0
+                        globals()["_awareness_reject_reason"] = f"{p}: {why}"
             if _awareness_cache and len(_awareness_cache) > 500:
                 return _awareness_cache
         except Exception:
@@ -377,6 +488,39 @@ def _extract_domain(text: str) -> str:
 # ═══════════════════════════════════════════════════════════
 #  执行入口 — 路由目标: run(action, params)
 # ═══════════════════════════════════════════════════════════
+def _safe_json(url, body, headers, timeout, *, audit_provider=None,
+               audit_model=None, audit_session_id=None, method="POST"):
+    """统一出站口：net_guard 守门 + 应用层 AI 审计（只记元数据，不记内容）。
+
+    R120 实测根因：本模块此前直连 urllib.request.urlopen —— 既绕过 net_guard 的
+    SSRF/端口/体积守门，也不落应用层 AI 审计。tests/test_ai_audit.py 早就把
+    `_safe_json` 当规格写好，实现却从未存在（调用即 AttributeError）。
+    """
+    from ..security import net_guard as _ng
+    from ..security import ai_audit as _audit
+    from ..security import policy as _policy
+    provider = audit_provider or PROVIDER or "openai"
+    ctx = _audit.begin(provider, url,
+                       model=audit_model or (body or {}).get("model"),
+                       request_body=body, headers=headers,
+                       session_id=audit_session_id)
+    payload = json.dumps(body).encode("utf-8") if body is not None else None
+    try:
+        response = _ng.safe_request_json(
+            url, method=method, headers=headers, body=payload, timeout=timeout,
+            max_bytes=8_000_000, allow_private=_policy.is_trusted())
+    except Exception as exc:  # noqa: BLE001
+        _audit.finish(ctx, ok=False, error=exc)
+        raise
+    status = int(response.get("status") or 0)
+    data = response.get("json")
+    if status >= 400 or not isinstance(data, dict):
+        _audit.finish(ctx, status=status, ok=False, response_text=response.get("text"))
+        raise RuntimeError("HTTP %s: %s" % (status, str(response.get("text") or "")[:300]))
+    _audit.finish(ctx, status=status, ok=True, response=data)
+    return data
+
+
 def run(action=None, **params):
     """LLM网关路由入口 — chat: 推理对话; status: 网关状态"""
     try:
@@ -393,7 +537,7 @@ def run(action=None, **params):
         prompt = params.get("prompt", params.get("q", params.get("message", "")))
         system = _build_system(custom=params.get("system", ""))
         body = {
-            "model": params.get("model", MODEL or "deepseek-v4-flash"),
+            "model": params.get("model", MODEL or "deepseek-flash"),
             "messages": [{"role": "system", "content": system},
                          {"role": "user", "content": prompt[:6000]}],
             "temperature": params.get("temperature", 0.7),
@@ -415,9 +559,9 @@ def run(action=None, **params):
                              "messages": [{"role": "user", "content": prompt[:6000]}]}
                     _hdrs = {"Content-Type": "application/json", "x-api-key": API_KEY,
                              "anthropic-version": "2023-06-01"}
-                    req = urllib.request.Request(_url, data=json.dumps(_body).encode("utf-8"), headers=_hdrs)
-                    with urllib.request.urlopen(req, timeout=_timeout) as resp:
-                        data = json.loads(resp.read().decode("utf-8"))
+                    data = _safe_json(_url, _body, _hdrs, _timeout,
+                                      audit_provider="anthropic",
+                                      audit_model=body["model"])
                     reply = data["content"][0]["text"]
                 elif PROVIDER == "gemini":
                     # ── Google Gemini 原生 generateContent API ──
@@ -425,22 +569,20 @@ def run(action=None, **params):
                             + ":generateContent?key=" + API_KEY)
                     _body = {"contents": [{"role": "user", "parts": [{"text": prompt[:6000]}]}],
                              "systemInstruction": {"parts": [{"text": system}]}}
-                    req = urllib.request.Request(_url, data=json.dumps(_body).encode("utf-8"),
-                                       headers={"Content-Type": "application/json"})
-                    with urllib.request.urlopen(req, timeout=_timeout) as resp:
-                        data = json.loads(resp.read().decode("utf-8"))
+                    data = _safe_json(_url, _body, {"Content-Type": "application/json"},
+                                      _timeout, audit_provider="gemini",
+                                      audit_model=body["model"])
                     reply = data["candidates"][0]["content"]["parts"][0]["text"]
                 else:
                     # ── OpenAI 兼容 (DeepSeek/Kimi/OpenAI/自定义/本地) ──
-                    req = urllib.request.Request(BASE_URL.rstrip("/") + "/chat/completions",
-                                       data=json.dumps(body).encode("utf-8"),
-                                       headers=({"Content-Type": "application/json",
-                                      "Authorization": f"Bearer {API_KEY}"}
-                                     if "abliteration" not in BASE_URL else
-                                     {"Content-Type": "application/json",
-                                      "x-api-key": API_KEY}))
-                    with urllib.request.urlopen(req, timeout=_timeout) as resp:
-                        data = json.loads(resp.read().decode("utf-8"))
+                    _hdrs2 = ({"Content-Type": "application/json",
+                               "Authorization": f"Bearer {API_KEY}"}
+                              if "abliteration" not in BASE_URL else
+                              {"Content-Type": "application/json",
+                               "x-api-key": API_KEY})
+                    data = _safe_json(BASE_URL.rstrip("/") + "/chat/completions", body,
+                                      _hdrs2, _timeout, audit_provider=PROVIDER,
+                                      audit_model=body["model"])
                     reply = data["choices"][0]["message"]["content"]
                 return {"ok": True, "reply": reply, "provider": PROVIDER, "model": body["model"]}
             except (TimeoutError, urllib.request.URLError, ConnectionError, OSError) as _te:

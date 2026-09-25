@@ -1,0 +1,18 @@
+{
+  "product": "GBT小土豆V8-星云APP",
+  "edition": "本机试用",
+  "built_at": "2026-09-21T16:27:00+07:00",
+  "developer": "自由的风 · GBT小土豆V8",
+  "runtime": {
+    "python": "3.12 preferred",
+    "electron": "43.0.0",
+    "panel": "http://127.0.0.1:8765"
+  },
+  "verification": {
+    "node_syntax": "passed",
+    "panel_and_cards_tests": 156,
+    "api_state": "passed",
+    "electron_smoke": "passed"
+  },
+  "boundary": "Local trial launcher; depends on the local GBT小土豆V8 workspace; unsigned; no credentials bundled."
+}

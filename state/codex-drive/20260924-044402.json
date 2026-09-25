@@ -1,0 +1,14 @@
+{
+ "时间": "2026-09-24T04:40:39",
+ "带现状": false,
+ "沙箱": "read-only",
+ "任务": "本机要把 OpenPose+LoRA+Stable Diffusion 做成自动化流水线，你打算怎么做？用不超过 12 行说要点。",
+ "提示字数": 65,
+ "第一次": {
+  "exit": 0,
+  "耗时s": 203.0,
+  "命中冷却": false
+ },
+ "答复": "本机做不了高速全链路，拆成三段流水线：\n\n- 路由走万能插：`omni.py` 人话→能力位，执行统一用 `five-dim.py cap`\n- 姿态段本机轻跑：照片/预设→OpenPose 骨架 PNG，CPU+cv2，耗时低不出显存\n- 生成段上云GPU：Realistic_Vision_V5.1 + ControlNet OpenPose + LoRA 三件套必须在同一扩散步内生效\n- 本机 7.4GB 仅能慢跑，8 步≈22min，推荐单卡 ComfyUI 云，`gen_comfy` 只改 base URL\n- 后处理/放大放第二云或本地，避免与总验收器抢内存\n- 镜像 rehearsal 验证姿态落点与 LoRA 身份后，再声明落点进生产\n",
+ "成败": "✅ 拿到答复"
+}

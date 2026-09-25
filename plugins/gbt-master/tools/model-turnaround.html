@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>转面渲染 · GBT小土豆V8</title>
+<style>
+  html,body{margin:0;height:100%;background:#101319;overflow:hidden}
+  canvas{display:block}
+  #hud{position:fixed;left:10px;top:8px;z-index:9;background:rgba(16,19,25,.74);border:1px solid rgba(124,77,255,.42);
+       border-radius:9px;padding:6px 11px;color:#E8ECF8;font:12px/1.5 system-ui,"Microsoft YaHei",sans-serif}
+  b{color:#00E5FF}
+  #err{position:fixed;left:10px;bottom:10px;z-index:9;max-width:94%;color:#ff6b81;background:rgba(16,19,25,.9);
+       border:1px solid rgba(255,107,129,.5);border-radius:9px;padding:7px 11px;display:none;
+       font:12px/1.45 system-ui,"Microsoft YaHei",sans-serif}
+</style>
+<script type="importmap">
+{"imports":{"three":"/holo_pet/node_modules/three/build/three.module.js","three/addons/":"/holo_pet/node_modules/three/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div id="hud">转面渲染 · 视角 <b id="view">—</b> · 顶点 <b id="v">—</b> · 贴图 <b id="tex">—</b></div>
+<div id="err"></div>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const q = new URLSearchParams(location.search);
+const MODEL = q.get("model") || "";
+const VIEW = (q.get("view") || "front").toLowerCase();
+// 视角：front 正 / left 左 / right 右 / back 背 / three-quarter 四分之三
+const YAWS = { front: 0, back: Math.PI, left: -Math.PI / 2, right: Math.PI / 2, "three-quarter": -Math.PI / 5 };
+// `?yaw=<弧度>` 优先：用于扫描定位"哪些朝向会被背面剔除"，不受预设名干扰
+const YAW_Q = q.get("yaw");
+const yaw = YAW_Q !== null && YAW_Q !== "" ? parseFloat(YAW_Q)
+          : (YAWS[VIEW] !== undefined ? YAWS[VIEW] : 0);
+const SIZE = parseInt(q.get("size") || "900", 10);
+const DIST = parseFloat(q.get("dist") || "0");     // 0 = 自动按身高取景
+const ZOOM = parseFloat(q.get("zoom") || "1.06");  // 取景留白系数
+const SIDE = (q.get("side") || "").toLowerCase();  // double = 强制双面（探针）
+const WIRE = q.get("wire") === "1";                // 线框（探针）
+// 材质探针：normal = 把法线画成颜色（查法线坏没坏）；basic = 素色去贴图（查贴图坏没坏）
+const MAT = (q.get("mat") || "").toLowerCase();
+// `real=0` 关闭"真人化"（用来做前后对照）—— 默认开
+const REAL = q.get("real") !== "0";
+
+function fail(msg) {
+  window.__err = String(msg);
+  const el = document.getElementById("err");
+  el.style.display = "block";
+  el.textContent = "加载失败：" + msg;
+}
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setSize(SIZE, SIZE);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.02;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x101319);
+const cam = new THREE.PerspectiveCamera(30, 1, 0.01, 200);
+
+// ── IBL：程序化影棚环境 ────────────────────────────────────────────────────
+// 🔴 这一条是"看着像 CG"的头号原因。three.js 官方对 MeshPhysicalMaterial 的原话：
+//    "For best results, always specify an environment map when using this material."
+//    没有环境贴图 ⇒ 皮肤只有来自方向光的镜面高光，没有环境的漫反射包裹，
+//    于是无论怎么调参数都像塑料。RoomEnvironment 是**程序化**的（不依赖外部 HDRI 文件），
+//    在离线机器上也能跑。
+if (REAL) {
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 1.0;
+}
+
+// 三点影棚光：主光偏左上、辅光右侧补、背光勾边；半球光兜底
+// 🔴 强度是**配比出来的**，不是拍脑袋：加上 IBL 之后环境已经承担了绝大部分漫反射，
+//    方向光若还留着原来的 2.6/1.15/1.5 就会叠爆（实测：黑衣冲成灰褐、皮肤惨白）。
+//    影棚口径 —— 主光负责形，辅光只提暗部，勾边给轮廓，半球光几乎只做底色。
+const key = new THREE.DirectionalLight(0xffffff, 1.10); key.position.set(2.4, 4.2, 3.4); scene.add(key);
+const fill = new THREE.DirectionalLight(0xbfd4ff, 0.30); fill.position.set(-3.0, 1.6, 2.2); scene.add(fill);
+const rim = new THREE.DirectionalLight(0xffe6c9, 0.65); rim.position.set(-1.4, 2.6, -3.6); scene.add(rim);
+scene.add(new THREE.HemisphereLight(0xd9f8ff, 0x1a2030, 0.30));
+
+document.getElementById("view").textContent = VIEW;
+
+let verts = 0, texCount = 0;
+new GLTFLoader().load(MODEL, (gltf) => {
+  const model = gltf.scene;
+  // 蒙皮网格绑定空间的包围盒会被 three 误剔除 —— 关掉（viewer 的坑，不是模型的）
+  model.traverse((o) => { if (o.isSkinnedMesh) o.frustumCulled = false; });
+
+  const box = new THREE.Box3().setFromObject(model);
+  const size = box.getSize(new THREE.Vector3()), center = box.getCenter(new THREE.Vector3());
+  // 定心 + 缩放：世界坐标 = position + k·p ⇒ 想要 k·(p-center) 就位，position = -k·center
+  const k = 1.70 / Math.max(size.y, 0.01);
+  model.scale.setScalar(k);
+  model.position.set(-center.x * k, -center.y * k, -center.z * k);
+  const pivot = new THREE.Group();
+  pivot.add(model);
+  pivot.rotation.y = yaw;
+  scene.add(pivot);
+
+  model.traverse((o) => {
+    if (o.isMesh && o.geometry && o.geometry.attributes.position) verts += o.geometry.attributes.position.count;
+    if (o.isMesh && o.material) {
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      for (const m of mats) {
+        if (m && m.map) texCount++;
+        if (m) { m.envMapIntensity = 1.0; }
+        if (m && SIDE === "double") m.side = THREE.DoubleSide;
+        if (m && WIRE) { m.wireframe = true; }
+        if (m) m.needsUpdate = true;
+      }
+      // 材质探针：换掉材质本体才能把"贴图坏"与"法线坏"分开看
+      if (MAT === "normal") o.material = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
+      else if (MAT === "basic") o.material = new THREE.MeshBasicMaterial({ color: 0xc8ccd4, side: THREE.DoubleSide });
+      else if (MAT === "lambert") o.material = new THREE.MeshLambertMaterial({ color: 0xc8ccd4, side: THREE.DoubleSide });
+      else if (REAL) {
+        // ── 真人皮肤材质 ───────────────────────────────────────────────────
+        // 逐条都有依据，不是"看起来差不多"：
+        //  · metalness = 0 —— 实测源模型金属度均值 **0.127**，而真人皮肤必须是 0。
+        //    金属度会把漫反射压掉、让皮肤发灰发假（这是"像塑料"的直接来源）。
+        //  · ior = 1.4 —— 皮肤的折射率（文献常见区间 1.33–1.44），低于非金属默认 1.5。
+        //  · specularIntensity ≈ 0.5 —— 皮肤镜面反射弱；默认 1.0 会给出"油光塑料壳"。
+        //  · diffuseRoughness ≈ 0.65 —— 用 EON 保能量粗糙漫反射，避免明暗交界处过暗
+        //    （默认 Lambert 项在皮肤这种强次表面材质上会显得"脏"）。
+        //  · sheen ≈ 0.22 —— 模拟**绒毛/汗毛**的边缘散射（velus hair），这是让皮肤
+        //    从"光滑塑料"变成"有生命"的关键一层，尤其逆光时的边缘光。
+        //  · clearcoat 只给一点点 —— 真人 T 区/唇部有薄油膜，全脸加就是塑料。
+        const src = Array.isArray(o.material) ? o.material[0] : o.material;
+        const phys = new THREE.MeshPhysicalMaterial({
+          map: src.map || null,
+          normalMap: src.normalMap || null,
+          roughnessMap: src.roughnessMap || null,
+          metalnessMap: src.metalnessMap || null,
+          aoMap: src.aoMap || null,
+          color: src.color ? src.color.clone() : new THREE.Color(0xffffff),
+          metalness: 0.0,
+          roughness: 1.0,
+          ior: 1.4,
+          specularIntensity: 0.42,
+          specularColor: new THREE.Color(0xfff2ea),
+          diffuseRoughness: 0.65,
+          sheen: 0.12,
+          sheenColor: new THREE.Color(0xffd9c0),
+          sheenRoughness: 0.75,
+          clearcoat: 0.05,
+          clearcoatRoughness: 0.55,
+          envMapIntensity: 0.85,
+          side: THREE.DoubleSide,
+        });
+        if (phys.normalMap) phys.normalScale = new THREE.Vector2(0.85, 0.85);
+        for (const t of [phys.map, phys.normalMap, phys.roughnessMap, phys.metalnessMap, phys.aoMap]) {
+          if (t) t.anisotropy = 8;
+        }
+        o.material = phys;
+      }
+    }
+  });
+
+  const half = Math.max(size.y * k, size.x * k, size.z * k) * 0.5;
+  // focus：把镜头对准某个部位（看脸部专件必须有特写，全身图根本判不了）
+  // 🔴 `ty` 必须用**世界坐标**：模型整体被缩放了 k = 1.70/size.y 倍，头在原始坐标里
+  //    是 y≈0.405，到世界坐标就是 0.405·k ≈ 0.69（≈ 0.81·half）。第一版直接拿 0.40 当
+  //    世界坐标用，镜头对着**胸口** —— 特写图里全是胸，压根看不到脸。
+  const FOCUS = (q.get("focus") || "").toLowerCase();
+  let ty = half * 0.02, dd = DIST > 0 ? DIST : (half * ZOOM) / Math.tan((cam.fov * Math.PI / 180) / 2);
+  if (FOCUS === "head") { ty = half * 0.81; dd *= 0.34; }
+  else if (FOCUS === "face") { ty = half * 0.82; dd *= 0.16; }
+  else if (FOCUS === "torso") { ty = half * 0.24; dd *= 0.55; }
+  // 🔴 远裁剪面必须跟着距离走：模型带游离几何（多视图重建常留细柱/底板）时包围盒会被撑大，
+  //    相机被推到 far 之外 ⇒ 整幅**全空**（正面那张空白图就是这么来的，而读数却是绿的）。
+  cam.near = Math.max(dd * 0.001, 0.001);
+  cam.far = dd * 6 + 10;
+  cam.position.set(0, ty + half * 0.12, dd);
+  cam.lookAt(0, ty, 0);
+  cam.updateProjectionMatrix();
+  renderer.render(scene, cam);
+
+  document.getElementById("v").textContent = String(verts);
+  document.getElementById("tex").textContent = String(texCount);
+  window.__dbg = {
+    view: VIEW, verts, tex: texCount, dist: dd,
+    rawSize: [+size.x.toFixed(3), +size.y.toFixed(3), +size.z.toFixed(3)],
+    rawCenter: [+center.x.toFixed(3), +center.y.toFixed(3), +center.z.toFixed(3)],
+    far: +cam.far.toFixed(2),
+  };
+  window.__shot = true;
+}, undefined, (e) => fail(e && e.message ? e.message : e));
+</script>
+</body>
+</html>

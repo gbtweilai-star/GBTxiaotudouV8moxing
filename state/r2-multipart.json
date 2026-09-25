@@ -1,0 +1,16 @@
+{
+ "models/control_openpose-fp16.safetensors": {
+  "整文件字节": 722596338,
+  "整文件sha256": "337a30c5636697704370bd2413b43cebf1937abcdccc96f3525018ad5c220702",
+  "分片数": 3,
+  "每片上限MiB": 256,
+  "恢复命令": "python tools/codex-scripts/r2-move.py restore models/control_openpose-fp16.safetensors --parts 3 --sha256 337a30c5636697704370bd2413b43cebf1937abcdccc96f3525018ad5c220702 --bytes 722596338"
+ },
+ "models/Realistic_Vision_V5.1_fp16-no-ema.safetensors": {
+  "整文件字节": 2132625894,
+  "整文件sha256": "99a75a901f4fec732056930a89fa34cf360f6f72d75ce5bf333ddf82adf8dd2a",
+  "分片数": 8,
+  "每片上限MiB": 256,
+  "恢复命令": "python tools/codex-scripts/r2-move.py restore models/Realistic_Vision_V5.1_fp16-no-ema.safetensors --parts 8 --sha256 99a75a901f4fec732056930a89fa34cf360f6f72d75ce5bf333ddf82adf8dd2a --bytes 2132625894"
+ }
+}

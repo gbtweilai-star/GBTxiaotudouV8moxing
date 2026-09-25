@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T01:46:06.317Z",
+  "generatedAt": "2026-09-25T03:37:27.612Z",
   "counts": {
     "ok": 0,
     "auth": 0,
@@ -11,7 +11,7 @@
     {
       "name": "autoclaw-productivity",
       "status": "error",
-      "durationMs": 88,
+      "durationMs": 195,
       "transport": "HTTP http://127.0.0.1:19681/mcp",
       "error": "SSE error: Unable to connect. Is the computer able to access the url?",
       "tools": []
@@ -19,7 +19,7 @@
     {
       "name": "autoclaw-github",
       "status": "error",
-      "durationMs": 72,
+      "durationMs": 167,
       "transport": "HTTP http://127.0.0.1:19681/github/mcp",
       "error": "SSE error: Unable to connect. Is the computer able to access the url?",
       "tools": []
@@ -27,7 +27,7 @@
     {
       "name": "notion",
       "status": "error",
-      "durationMs": 71,
+      "durationMs": 165,
       "transport": "HTTP https://mcp.notion.com/mcp",
       "error": "SSE error: Unable to connect. Is the computer able to access the url?",
       "tools": []
@@ -35,7 +35,7 @@
     {
       "name": "connector:cloudflare",
       "status": "error",
-      "durationMs": 68,
+      "durationMs": 164,
       "transport": "HTTP https://mcp.cloudflare.com/mcp",
       "error": "SSE error: Unable to connect. Is the computer able to access the url?",
       "tools": []
@@ -43,7 +43,7 @@
     {
       "name": "connector:vercel",
       "status": "error",
-      "durationMs": 67,
+      "durationMs": 161,
       "transport": "HTTP https://mcp.vercel.com/",
       "error": "SSE error: Unable to connect. Is the computer able to access the url?",
       "tools": []

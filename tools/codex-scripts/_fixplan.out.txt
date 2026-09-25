@@ -1,0 +1,6 @@
+declared: 20 | unused: []
+bare outside :root: []
+VERDICT test1(declared used): PASS
+VERDICT test4(no bare): PASS
+brand present: True
+bytes: 14887 lines: 358

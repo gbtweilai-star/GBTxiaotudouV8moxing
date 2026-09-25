@@ -1,0 +1,172 @@
+{
+ "updated": "2026-09-22 22:17:31",
+ "stages": [
+  {
+   "id": "S0",
+   "name": "素材与合规",
+   "ok": true,
+   "note": "齐全"
+  },
+  {
+   "id": "S1",
+   "name": "几何生成",
+   "ok": true,
+   "note": "齐全"
+  },
+  {
+   "id": "S2",
+   "name": "姿态规范(T-pose)",
+   "ok": true,
+   "note": "S2 门: ✅ 人工已复核（AI目视复核(GBT小土豆V8) · 待Owner复看 @ 2026-09-22 22:03:19）· 五条 = 双臂水平 / 双腿直立 / 正面全身 / 无遮挡物 / 白底"
+  },
+  {
+   "id": "S3",
+   "name": "重拓扑/分部位LOD",
+   "ok": true,
+   "note": "4.33 MB（上限 12）"
+  },
+  {
+   "id": "S4",
+   "name": "UV + PBR 贴图",
+   "ok": true,
+   "note": "✅ 贴图 3 张 · 槽位 ['baseColor', 'metalRough', 'normal'] · baseColor 2048x2048JPEG、metalRough 1024x1024PNG、normal 1024x1024JPEG"
+  },
+  {
+   "id": "S5",
+   "name": "标准骨架(VRM Humanoid)",
+   "ok": true,
+   "note": "齐全"
+  },
+  {
+   "id": "S6",
+   "name": "蒙皮权重",
+   "ok": true,
+   "note": "关节 22 · VRM 必需骨缺 0 · 权重和 1.0000~1.0000"
+  },
+  {
+   "id": "S7",
+   "name": "表情/BlendShape",
+   "ok": true,
+   "note": "✅ morph 已挂 + expressions.preset 已写 + **形变落在头区**（自证）"
+  },
+  {
+   "id": "S8",
+   "name": "动画/重定向",
+   "ok": true,
+   "note": "✅ idle 8.00s/22轨 旋转闭合差 0.000000、walk 1.10s/23轨 旋转闭合差 0.000000 步幅比 0.550 · 旋转闭合最差 0.000000（阈 0.001） · 步幅比 [0.55]（需 0.5–0.8）"
+  },
+  {
+   "id": "S9",
+   "name": "次级动力学",
+   "ok": true,
+   "note": "齐全"
+  },
+  {
+   "id": "S10",
+   "name": "标准格式封装(VRM)",
+   "ok": true,
+   "note": "✅ humanoid 必需骨 15/15 · springs 7 链 · 带四参关节 7 · meta GBT小土豆 · 数字人"
+  },
+  {
+   "id": "S11",
+   "name": "Web 运行时",
+   "ok": true,
+   "note": "齐全"
+  },
+  {
+   "id": "S12",
+   "name": "验收(客观+人眼)",
+   "ok": true,
+   "note": "✅ 字段 34 个 · 必填齐"
+  },
+  {
+   "id": "S13",
+   "name": "发布与账本",
+   "ok": true,
+   "note": "齐全"
+  }
+ ],
+ "pass": 14,
+ "total": 14,
+ "providers": {
+  "local": {
+   "ok": true,
+   "note": "",
+   "caps": [
+    "mesh.decimate",
+    "mesh.convert",
+    "mesh.spring",
+    "skin.auto",
+    "rig.auto",
+    "anim.make",
+    "expr.make",
+    "pack.vrm",
+    "render.shot",
+    "gate.check",
+    "anim.retarget"
+   ]
+  },
+  "tripo": {
+   "ok": true,
+   "note": "{\"key\":\"tsk_Ge6r…BEzE\",\"source\":\"profile:default\",\"profile\":\"default\",\"region\":\"",
+   "caps": [
+    "geom.generate",
+    "geom.texture",
+    "mesh.decimate",
+    "mesh.convert",
+    "rig.auto"
+   ]
+  },
+  "meshy": {
+   "ok": false,
+   "note": "命令不在 PATH：meshy",
+   "caps": [
+    "geom.generate",
+    "geom.texture",
+    "mesh.decimate",
+    "rig.auto",
+    "anim.retarget"
+   ]
+  },
+  "hunyuan3d": {
+   "ok": false,
+   "note": "ModuleNotFoundError: No module named 'hy3dgen'",
+   "caps": [
+    "geom.generate",
+    "geom.texture",
+    "mesh.decimate"
+   ]
+  },
+  "comfyui": {
+   "ok": false,
+   "note": "ModuleNotFoundError: No module named 'folder_paths'",
+   "caps": [
+    "geom.generate",
+    "geom.texture",
+    "rig.auto",
+    "skin.auto",
+    "mesh.decimate"
+   ]
+  },
+  "blender": {
+   "ok": false,
+   "note": "命令不在 PATH：blender",
+   "caps": [
+    "mesh.decimate",
+    "mesh.convert",
+    "rig.auto",
+    "skin.auto",
+    "anim.retarget",
+    "render.shot"
+   ]
+  },
+  "mixamo": {
+   "ok": null,
+   "note": "需人工/浏览器（无法本机探测）",
+   "caps": [
+    "rig.auto",
+    "anim.retarget"
+   ]
+  }
+ }
+}

@@ -1,0 +1,3 @@
+
+--- 最近一张已关 ---
+fc-20260921T105952-pa7v.json {"stamp": null, "evidence": ["unittest(索引): py -3.10 .scratch/_rh333_tests.py => ran = 246（failures = 0 · errors = 0）", "unittest(骨架): py -3.10 -m unittest gbt_allinone.tests.test_hunyuan_video => Ran 6 tests OK", "unittest(新能力位): py -3.10 -m unittest gbt_allinone.tests.test_ledger_note => Ran 7 tests OK", "run_task(真落行): py -3.10 .scratch/_rh642_append.py => run_task('ledger_note',{'op':'append',…}) status=ok · ok=True · 物理行=1 · 226782 → 228483（+3665 字节）", "readings: py -3.10 .scratch/_rh642_review.py => ✅ 全绿：**🔴 混元图纸本刀没被写过 · §9 段数仍 54 · 半角引号仍 6 · 本题材料的十二个串在图纸里全 0 · 图纸自己那 15 处 `红线` 仍在** · **🔴 复算（剔我的行与 memory）：`焦点栈`/`预判注入`/`白日梦`/`消息抢占`/`六层架构`/`数字意识` 六个全 0/0；`TICK` 82/82 · `ACI` 206/206 · `看门

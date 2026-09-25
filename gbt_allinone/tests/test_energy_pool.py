@@ -26,6 +26,26 @@ from gbt_allinone.tools import orchestration_kernel as ok  # noqa: E402
 from gbt_allinone import caps_registry as CR  # noqa: E402
 
 
+def key_on_disk(key_ref) -> "Path":
+    """把 `key_ref`（如 `store/secrets/agnes_api.dpapi`）还原成**绝对路径**。
+
+    🔴 2026-09-22 第 35 轮加（**为了不再犯我自己刚犯的那个错**）：
+    我第一版写成 `ep._secrets_dir().parent / key_ref`，自以为 `.parent` 是包根，
+    实际 `_secrets_dir()` 已经是 `gbt_allinone/store/secrets` ⇒ `.parent` 是
+    `gbt_allinone/store`，拼出来的是 **`store/store/secrets/…`**（多一层），
+    于是"文件明明在盘上"被判成不在 ⇒ **我自己造了一条假红**（本会话第 5 次装置错）。
+    救命的是我把**实际路径打进了失败信息**，一眼看出多了一层。
+
+    ⇒ 正确做法：`key_ref` 的前缀就是模块自己的 `SECRETS_DIR` 常量，**按它剥掉再接绝对根**，
+    两边同源，不会各算各的。
+    """
+    rel = str(key_ref or "")
+    prefix = ep.SECRETS_DIR.rstrip("/") + "/"
+    if rel.startswith(prefix):
+        rel = rel[len(prefix):]
+    return ep._secrets_dir() / rel
+
+
 class RedLineTests(unittest.TestCase):
     def test_five_redlines_each_have_a_gate(self):
         r = ep.run("redlines")
@@ -84,10 +104,33 @@ class ForensicsAndSkeletonTests(unittest.TestCase):
         self.assertEqual(st["tier_known"], [])
 
     def test_dpapi_missing_is_reported(self):
+        """`dpapi_on_disk` / `dpapi_missing` 必须**与盘上事实一致**（不许写死某一项）。
+
+        🔴 2026-09-22 第 35 轮重写（错报治理）。原来这里写死：
+        `assertIn("agnes", st["dpapi_missing"], "agnes_api.dpapi 不在盘上 ⇒ 必须如实报缺")`。
+        实测（本轮）：`gbt_allinone/store/secrets/agnes_api.dpapi` **在盘上（314 字节）**
+        ⇒ 代码报 `可用` 是**对的**，是这条判据的**前提过期了**（主人后来补了钥匙）。
+        它的真意是"缺了就如实报缺"，不是"agnes 必须缺"。
+
+        ⇒ 改成**当下实测的不变量**：报"在盘"的必须真在盘、报"缺"的必须真不在盘，
+        两栏还必须互斥且覆盖全部能源。这样它既守得住原意，
+        又不会因为主人补/撤一把钥匙而翻红 —— **判据不许把某一刻的盘上事实写死。**
+        """
         st = ep.run("status")
-        self.assertIn("deepseek", st["dpapi_on_disk"])
-        self.assertIn("agnes", st["dpapi_missing"],
-                      "agnes_api.dpapi 不在盘上 ⇒ 必须如实报缺")
+        items = {x["name"]: x for x in st["energies"]}
+        on = set(st["dpapi_on_disk"])
+        missing = set(st["dpapi_missing"])
+
+        self.assertEqual(on & missing, set(), "同一项不能既算在盘又算缺：%s" % (on & missing))
+        self.assertEqual(on | missing, set(items),
+                         "两栏必须覆盖全部能源（有项没被算进任何一栏 = 读数漏项）")
+        self.assertTrue(on, "一个 .dpapi 都不在盘 ⇒ 这一栏没得判，是空话")
+        for name in on:
+            f = key_on_disk(items[name]["key_ref"])
+            self.assertTrue(f.is_file(), "报了『在盘』却查不到文件：%s" % f)
+        for name in missing:
+            f = key_on_disk(items[name]["key_ref"])
+            self.assertFalse(f.is_file(), "报了『缺 key』却其实在盘：%s" % f)
 
     def test_module_has_no_network_or_write_paths(self):
         src = Path(ep.__file__).read_text(encoding="utf-8")
@@ -120,13 +163,23 @@ class AbstractionAndDeriverTests(unittest.TestCase):
         self.assertIn(src.status, ep.STATUSES)
 
     def test_sources_built_from_disk(self):
+        """每个能源的 status 必须**与它自己那把 .dpapi 在不在盘上一致**。
+
+        🔴 2026-09-22 第 35 轮重写（错报治理）：原来写死
+        `by["agnes"]["status"] == "缺key"`（附言"agnes_api.dpapi 不在盘上"）与
+        `by["deepseek"]["status"] == "可用"`。实测 agnes 的 .dpapi **在盘上** ⇒ 前提过期。
+        真正要守的不变量是**一致性**：`status == "可用"` ⟺ `key_ref` 指向的文件真在盘上。
+        """
         r = ep.run("sources")
-        self.assertEqual(r["count"], 2)
+        self.assertGreater(r["count"], 0, "一个能源都没有 ⇒ 这一栏是空话")
         by = {s["source_id"]: s for s in r["sources"]}
-        self.assertEqual(by["deepseek"]["status"], "可用",
-                         "deepseek_api.dpapi 在盘上")
-        self.assertEqual(by["agnes"]["status"], "缺key",
-                         "agnes_api.dpapi 不在盘上 ⇒ 缺key（如实）")
+        for sid, s in by.items():
+            f = key_on_disk(s["key_ref"])
+            on_disk = bool(s["key_ref"]) and f.is_file()
+            expect = "可用" if on_disk else "缺key"
+            self.assertEqual(s["status"], expect,
+                             "%s 的 status 与盘上事实不符（key_ref=%s ⇒ %s 在盘=%s）"
+                             % (sid, s["key_ref"], f, on_disk))
         self.assertTrue(all(s["grade"] == "未知" for s in r["sources"]))
         # 判据卡在真问题上：key_ref 必须是 **DPAPI 引用**，且**不含密钥形状**
         # （上一版我拿 "secret" 做子串判据 ⇒ 被路径 `store/secrets/` 误伤，属判据扩大化）
@@ -136,6 +189,39 @@ class AbstractionAndDeriverTests(unittest.TestCase):
             self.assertIsNone(
                 re.search(r"\b(?:sk|ak|lt)[-_][A-Za-z0-9_\-]{16,}\b", s["key_ref"]),
                 "key_ref 里不许出现密钥形状")
+
+    def test_status_mapping_under_a_controlled_disk(self):
+        """盘 → status 的映射必须在**受控盘态**下验证（当前盘态 7 把钥匙全在 ⇒ 测不出谎报）。
+
+        🔴 2026-09-22 第 35 轮加，**因为变异测试逼出来的**：把
+        `status="可用" if has_key else "缺key"` 变异成 `status="可用"`（永远谎报可用）后，
+        上面那条"与盘上一致"的判据 **照样全绿** —— 因为 7 个 `.dpapi` 现在都在盘上，
+        "一直说可用"与事实**恰好一致**。
+        ⇒ 没有"缺 key 的能源"时，那条不变量是**空的**。
+        这里把扫描根换成只放一把钥匙的**受控临时目录**，谎报立刻现形。
+        （实测：变异成永远"可用" ⇒ 本用例红；恢复 ⇒ 绿。）
+        """
+        import tempfile
+        prof = ep._profiles()
+        self.assertGreaterEqual(len(prof), 2,
+                                "至少要有两个能源才判得出『缺』（现在只有 %d 个）" % len(prof))
+        first = sorted(prof)[0]
+        with tempfile.TemporaryDirectory() as td:
+            sdir = Path(td)
+            (sdir / str(prof[first]["file"])).write_bytes(b"probe")   # 只放这一把
+            real = ep._secrets_dir
+            ep._secrets_dir = lambda: sdir
+            try:
+                srcs = {s.source_id: s for s in ep.build_sources()}
+            finally:
+                ep._secrets_dir = real
+        self.assertEqual(srcs[first].status, "可用", "受控盘上放了钥匙的必须报可用")
+        for k in sorted(srcs):
+            if k == first:
+                continue
+            self.assertEqual(srcs[k].status, "缺key",
+                             "%s 的钥匙不在受控盘上 ⇒ 必须报『缺key』"
+                             "（一律报可用 = 谎报，这条就是抓它的）" % k)
 
     def test_derived_code_passes_our_own_redline(self):
         """🔴 自洽带牙：**衍生器生成的代码，必须能过红线③自己的闸**。"""
@@ -147,12 +233,32 @@ class AbstractionAndDeriverTests(unittest.TestCase):
         self.assertNotIn("openai", r["code"])
 
     def test_missing_energy_derives_nothing(self):
-        r = ep.run("derive_code", source_id="agnes")
-        self.assertIn("不生成调用代码", r["code"],
-                      "缺 key 的能源 ⇒ 不生成代码，如实报缺")
-        self.assertIn("raise RuntimeError", r["code"])
+        """缺 key 的能源 ⇒ **不生成调用代码、如实报缺**（用**受控输入**测，不赌盘上缺谁）。
+
+        🔴 2026-09-22 第 35 轮重写（错报治理）：原来写死 `source_id="agnes"` 并假定它缺 key。
+        实测 agnes 的 .dpapi **在盘上** ⇒ 衍生器**正确地**为它生成了调用代码，
+        而判据却喊"该报缺" —— 一个"缺 key"判据拿一个不缺 key 的能源去测，
+        测的就不是它声称的那件事。
+        ⇒ 主判据改成**受控合成输入**（一条 `status="缺key"` 的能源）：
+        这条分支**永远可测**，不随盘上钥匙增减而失效；端到端那条真缺才跑。
+        """
+        # ① 不变量（受控输入 ⇒ 永远可测）：status 为缺 key ⇒ 必须拒绝生成、且给可执行的失败
+        synth = ep.EnergySource(source_id="合成-缺key", key_ref="store/secrets/nope.dpapi",
+                                status="缺key")
+        code = ep.NativeDeriver().derive_client_code(synth)
+        self.assertIn("不生成调用代码", code, "缺 key 的能源 ⇒ 不生成代码，如实报缺")
+        self.assertIn("raise RuntimeError", code)
+        # ② 不存在的能源：必须报 unknown_source（不猜、不编）
         self.assertEqual(ep.run("derive_code", source_id="不存在")["rule"],
-                         "unknown_source")
+                         "unknown_source", "不存在的能源必须报 unknown_source")
+        # ③ 端到端（盘上真缺才跑；都有 key 就具名 skip —— 不把"没测"说成"通过"）
+        missing = list(ep.run("status")["dpapi_missing"])
+        if not missing:
+            self.skipTest("盘上所有能源都有 key ⇒ **端到端**这条今天无从验证"
+                          "（受控输入那条上面已验过；撤掉一把 .dpapi 即可连端到端一起真验）")
+        r = ep.run("derive_code", source_id=missing[0])
+        self.assertIn("不生成调用代码", r["code"],
+                      "缺 key 的能源（%s）⇒ 不生成调用代码" % missing[0])
 
     def test_video_pipeline_by_capability(self):
         t2v = ep.run("derive_pipeline", capability="文生视频")
@@ -200,10 +306,23 @@ class PoolAndSelfDevTests(unittest.TestCase):
         self.assertEqual(bad["rule"], "key_must_be_dpapi")
 
     def test_pool_loads_from_disk(self):
+        """挑能源：**挑中的必须是当下真可用的**，且注册表要覆盖盘上全部能源。
+
+        🔴 2026-09-22 第 35 轮重写（错报治理）：原来写死
+        `picked["source_id"] == "deepseek"`（附言"agnes 缺key ⇒ 只有 deepseek 可用"）。
+        实测 agnes 的 .dpapi **在盘上**，两个都可用，池子按优先级挑了 agnes ⇒ 判据翻红。
+        「挑中谁」取决于盘上有几把钥匙 —— 那是**会变的**，不该进判据；
+        该进判据的是**不变量**：挑中的必须可用、必须属于注册表、没可用时必须如实返回 None。
+        """
         r = ep.run("pool", capability="text")
-        self.assertEqual(r["registered"], ["agnes", "deepseek"])
-        self.assertEqual(r["picked"]["source_id"], "deepseek",
-                         "agnes 缺key ⇒ 只有 deepseek 可用")
+        srcs = {s["source_id"]: s for s in ep.run("sources")["sources"]}
+        self.assertEqual(sorted(r["registered"]), sorted(srcs),
+                         "注册表必须覆盖盘上全部能源（漏一个 = 读数不全）")
+        picked = r["picked"]
+        self.assertIsNotNone(picked, "有可用能源却挑不出来 ⇒ 挑能源这条链断了")
+        self.assertIn(picked["source_id"], srcs)
+        self.assertEqual(srcs[picked["source_id"]]["status"], "可用",
+                         "挑中了一个**不可用**的能源：%s" % picked["source_id"])
 
     def test_self_dev_eight_layers_vs_six_step_pipeline(self):
         s = ep.run("self_dev_layers")

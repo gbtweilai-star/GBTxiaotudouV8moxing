@@ -1,0 +1,29 @@
+captured: 120
+types: {'activity': 67, 'chunk': 49, 'reply': 1, 'thinking': 1, 'turn_finished': 1, 'mind': 1}
+max seq: 4433
+recent(>=11:44): 120
+  2026-09-21T11:46:01 chunk {"type": "chunk", "at": "2026-09-21T11:46:01", "text": "在", "seq": 4409, "boot": "baf907510440"}
+  2026-09-21T11:46:01 chunk {"type": "chunk", "at": "2026-09-21T11:46:01", "text": "授权", "seq": 4410, "boot": "baf907510440"}
+  2026-09-21T11:46:01 chunk {"type": "chunk", "at": "2026-09-21T11:46:01", "text": "范围", "seq": 4411, "boot": "baf907510440"}
+  2026-09-21T11:46:01 chunk {"type": "chunk", "at": "2026-09-21T11:46:01", "text": "内", "seq": 4412, "boot": "baf907510440"}
+  2026-09-21T11:46:01 chunk {"type": "chunk", "at": "2026-09-21T11:46:01", "text": "操作", "seq": 4413, "boot": "baf907510440"}
+  2026-09-21T11:46:01 chunk {"type": "chunk", "at": "2026-09-21T11:46:01", "text": "浏览", "seq": 4414, "boot": "baf907510440"}
+  2026-09-21T11:46:01 chunk {"type": "chunk", "at": "2026-09-21T11:46:01", "text": "器", "seq": 4415, "boot": "baf907510440"}
+  2026-09-21T11:46:01 chunk {"type": "chunk", "at": "2026-09-21T11:46:01", "text": "和", "seq": 4416, "boot": "baf907510440"}
+  2026-09-21T11:46:01 chunk {"type": "chunk", "at": "2026-09-21T11:46:01", "text": "本", "seq": 4417, "boot": "baf907510440"}
+  2026-09-21T11:46:02 chunk {"type": "chunk", "at": "2026-09-21T11:46:02", "text": "机", "seq": 4418, "boot": "baf907510440"}
+  2026-09-21T11:46:02 chunk {"type": "chunk", "at": "2026-09-21T11:46:02", "text": "工具", "seq": 4419, "boot": "baf907510440"}
+  2026-09-21T11:46:02 chunk {"type": "chunk", "at": "2026-09-21T11:46:02", "text": "，把", "seq": 4420, "boot": "baf907510440"}
+  2026-09-21T11:46:02 chunk {"type": "chunk", "at": "2026-09-21T11:46:02", "text": "想", "seq": 4421, "boot": "baf907510440"}
+  2026-09-21T11:46:02 chunk {"type": "chunk", "at": "2026-09-21T11:46:02", "text": "法", "seq": 4422, "boot": "baf907510440"}
+  2026-09-21T11:46:02 chunk {"type": "chunk", "at": "2026-09-21T11:46:02", "text": "做", "seq": 4423, "boot": "baf907510440"}
+  2026-09-21T11:46:02 chunk {"type": "chunk", "at": "2026-09-21T11:46:02", "text": "成", "seq": 4424, "boot": "baf907510440"}
+  2026-09-21T11:46:02 chunk {"type": "chunk", "at": "2026-09-21T11:46:02", "text": "可", "seq": 4425, "boot": "baf907510440"}
+  2026-09-21T11:46:02 chunk {"type": "chunk", "at": "2026-09-21T11:46:02", "text": "验证", "seq": 4426, "boot": "baf907510440"}
+  2026-09-21T11:46:02 chunk {"type": "chunk", "at": "2026-09-21T11:46:02", "text": "的", "seq": 4427, "boot": "baf907510440"}
+  2026-09-21T11:46:02 chunk {"type": "chunk", "at": "2026-09-21T11:46:02", "text": "成果", "seq": 4428, "boot": "baf907510440"}
+  2026-09-21T11:46:02 chunk {"type": "chunk", "at": "2026-09-21T11:46:02", "text": "。", "seq": 4429, "boot": "baf907510440"}
+  2026-09-21T11:46:02 reply {"type": "reply", "at": "2026-09-21T11:46:02", "text": "我能帮你编写和调试代码、设计可交互界面、检索资料、处理文档与数据，并在授权范围内操作浏览器和本机工具，把想法做成可验证的成果。", "seq": 4430, "boot": "baf907510440"}
+  2026-09-21T11:46:02 thinking {"type": "thinking", "at": "2026-09-21T11:46:02", "active": false, "seq": 4431, "boot": "baf907510440"}
+  2026-09-21T11:46:02 turn_finished {"type": "turn_finished", "at": "2026-09-21T11:46:02", "status": "completed", "turn_id": "01a0c248-c7ed-7c02-a922-4950a246803b", "seq": 4432, "boot": "baf907510440"}
+  2026-09-21T11:46:02 mind {"type": "mind", "at": "2026-09-21T11:46:02", "pulse": {"ok": true, "event": "task_succeeded", "mood": "安静", "mood_intensity": 0.68, "expression": "bored", "color": "#7dd3fc", "valence": 0.7712, "pres

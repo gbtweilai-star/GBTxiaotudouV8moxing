@@ -1,0 +1,22 @@
+=== _*.py 按顶层目录 ===
+  .scratch                   2939 个    11.63 MB
+  gbt_allinone                 15 个     0.01 MB
+  审美相关skill                     1 个     0.00 MB
+
+=== 非 .scratch 的 _*.py（16 个，逐个看是不是真模块）===
+    gbt_allinone\__init__.py
+    gbt_allinone\__main__.py
+    gbt_allinone\_paths.py
+    gbt_allinone\adapters\__init__.py
+    gbt_allinone\integration\__init__.py
+    gbt_allinone\llm\__init__.py
+    gbt_allinone\recon\__init__.py
+    gbt_allinone\recon\last30days\__init__.py
+    gbt_allinone\recon\last30days\_pids.py
+    gbt_allinone\recon\last30days\engine\__init__.py
+    gbt_allinone\security\__init__.py
+    gbt_allinone\tentacle\__init__.py
+    gbt_allinone\tentacle\brain\__init__.py
+    gbt_allinone\tests\__init__.py
+    gbt_allinone\tools\__init__.py
+    审美相关skill\design-skeletons\last30days\scripts\lib\__init__.py

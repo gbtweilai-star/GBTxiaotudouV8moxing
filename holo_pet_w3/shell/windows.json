@@ -40,6 +40,122 @@
       "default": { "x": 700, "y": 160, "w": 980, "h": 660, "visible": false },
       "config": { "binary_path": "%LOCALAPPDATA%\\gbt_allinone\\bin\\h1mcp.exe", "drafts_path": "%APPDATA%\\h1mcp\\drafts" },
       "note": "窗口 6 · 批次 W8。阶段一只读：默认不开，由托盘菜单唤起（《宿主不打扰律》，与 eigenflux 同款）。"
+    },
+    {
+      "id": "dsh-chat",
+      "title": "GBT小土豆V8 · 对话（DeepSeek Harness）",
+      "role": "child",
+      "needs_url": true,
+      "port": 3080,
+      "alwaysOnTop": false,
+      "transparent": false,
+      "frame": true,
+      "resizable": true,
+      "default": { "x": 140, "y": 90, "w": 1200, "h": 820, "visible": false },
+      "note": "窗口 A · 批次 W9（一体式第一块砖）。**它是 DSH 的窗，不是我们的窗** —— 壳只负责把对话面装进来，不改它一行。",
+      "constraint": {
+        "measured": "2026-09-23 实测：GET http://127.0.0.1:3080/ => HTTP 401",
+        "body": "dsh web authentication required; reopen the URL printed by dsh web.",
+        "means": "对话面要的是 **dsh web 启动时打印的那条带 token 的 URL**，不是裸 URL。",
+        "rule": "**本注册表不写 token、不写 URL**（凭据不许明文落盘）；带 token 的 URL 只能由主人在**运行时**提供。"
+      }
+    },
+    {
+      "id": "exec-deck",
+      "title": "GBT小土豆V8 · 执行面",
+      "file": "../exec-deck/index.html",
+      "role": "child",
+      "alwaysOnTop": true,
+      "transparent": true,
+      "frame": false,
+      "resizable": true,
+      "default": { "x": 260, "y": 130, "w": 880, "h": 700, "visible": false },
+      "note": "窗口 C · 批次 W10。**它是快照，不是实时** —— 页面上写着生成时刻与重生成命令。数据源：tools/codex-scripts/exec-deck.py（只汇总不重算，四块各有单一来源）。",
+      "data_source": {
+        "generator": "py -3.14 tools/codex-scripts/exec-deck.py --html holo_pet_w3/exec-deck/index.html",
+        "why_snapshot": "改成让页面去 fetch 面板服务的新路由，就要**改 panel_server.py 并重启它**（它正在 8765 跑）—— 为一个视图去动产品面 + 重启服务，量级不对。本仓已有同样的做法（capabilities.html：快照内嵌 + 写明重生成命令）。",
+        "refresh": "手动跑上面那条命令（快照文件就地覆盖）"
+      }
+    },
+    {
+      "id": "code-deck",
+      "title": "GBT小土豆V8 · 代码台",
+      "file": "../code-deck/index.html",
+      "role": "child",
+      "alwaysOnTop": true,
+      "transparent": true,
+      "frame": false,
+      "resizable": true,
+      "default": { "x": 300, "y": 150, "w": 940, "h": 720, "visible": false },
+      "note": "窗口 D · 批次 W11。**快照，不是实时** —— 页上写着生成时刻与重生成命令。数据源：tools/codex-scripts/code-deck.py（只汇总不重算，五块各有单一来源）。",
+      "data_source": {
+        "generator": "py -3.14 tools/codex-scripts/code-deck.py --html holo_pet_w3/code-deck/index.html",
+        "why_snapshot": "同窗 C：改成页面去 fetch 新路由就得改 panel_server.py 并重启它（正在 8765 跑），为一个视图动产品面 + 重启服务，量级不对。",
+        "refresh": "手动跑上面那条命令（快照文件就地覆盖）"
+      },
+      "visual": {
+        "layer": "../deck3d.css",
+        "note": "立体视觉层**与窗 C 共用同一份**（一处定义、两页引用）。真实透视 + 分层 translateZ + 自转 + 6 面真立方体 + 3D 网格地面，**全部 CSS，零脚本**。"
+      },
+      "capability": {
+        "reads_via": "run_task（唯一门）—— 读动作落审计账本，审计格可复查本页每一次读取",
+        "read_kinds": ["project_context", "git_read"],
+        "write_path": "code_patch（dry_run 免卡；apply 要 filesystem_write）→ git_write（要 filesystem_write）",
+        "note": "本页**不试探授权**：探一次会消耗一次性人工授权，所以只报「要什么作用域」与主人该敲哪条命令。见 tools/codex-scripts/code-deck.py 模块头。"
+      }
+    },
+    {
+      "id": "brain",
+      "title": "GBT小土豆V8 · 神经工作台",
+      "file": "../brain/index.html",
+      "role": "child",
+      "alwaysOnTop": true,
+      "transparent": false,
+      "frame": false,
+      "resizable": true,
+      "default": { "x": 120, "y": 70, "w": 1360, "h": 860, "visible": false },
+      "note": "窗口 E · 批次 W12。**活的，不是快照** —— 真三维执行现场：皮层核 + 29 真实能力域 + 161 能力位 + 108 条真依赖边 + 审计脉冲。默认不开（《宿主不打扰律》），由托盘菜单唤起。",
+      "data_source": {
+        "generator": "py -3.14 tools/codex-scripts/brain-feed.py --out holo_pet_w3/brain/brain-data.js",
+        "why_snapshot": "窗口走 file:// + `connect-src 'none'`，fetch 读不到本地 json；数据以经典脚本内嵌（本仓已有做法）。页上写着快照时刻与重建命令。",
+        "refresh": "跑上面那条命令（brain-data.js 就地覆盖）"
+      },
+      "visual": {
+        "layer": "skin-mission-control.css",
+        "source": "审美相关skill/design-systems/mission-control/DESIGN.md",
+        "note": "**专业皮肤**，不是手搓：表面/描边照抄该系统，数据色沿用白皮书冻结的品牌三色。机检 tools/codex-scripts/audit_skin.py（准用集从 :root 现算）。"
+      },
+      "deps": {
+        "vendored": "brain/vendor/（three@0.180.0 **经典脚本版**：file:// 下 ESM 被 CORS 挡死，见 vendor_three.py）",
+        "rebuild_vendor": "py -3.14 tools/codex-scripts/vendor_three.py --write --classic"
+      },
+      "capability": {
+        "reads_via": "brain-feed.py 从**真实源码**算出（caps_registry / api.py 分派支路 / audit.jsonl / policy.py）",
+        "per_cap_pages": "brain/caps/<kind>.html —— 161 条能力各自一页（cap-pages.py 生成）",
+        "note": "不用随机数冒充在跑：没有审计事件就如实报静默。"
+      }
+    },
+    {
+      "id": "eye",
+      "title": "GBT小土豆V8 · 触手视觉回传",
+      "file": "../eye/index.html",
+      "role": "child",
+      "alwaysOnTop": true,
+      "transparent": false,
+      "frame": false,
+      "resizable": true,
+      "default": { "x": 200, "y": 110, "w": 1180, "h": 760, "visible": false },
+      "note": "窗口 F · 批次 W13（Owner 2026-09-23：「专门设立一个独立窗口来显示触手看到的东西，就像带个摄像头传回画面」）。**画面是真帧，不是画的** —— `cap tentacle {\"action\":\"see\"}` 是 DXGI 直读显卡帧缓冲，**与显示屏同源**；经 run_task 唯一门取回后逐字节落盘，本窗只负责显示。默认不开（《宿主不打扰律》），由托盘菜单唤起。",
+      "data_source": {
+        "generator": "py -3.14 tools/codex-scripts/eye-feed.py --loop",
+        "why_snapshot": "同窗 E：走 file:// + `connect-src 'none'`，页面 fetch 不到本地 json ⇒ 帧以**真图像文件**落 `frames/`（环形覆盖，不删文件），清单走**经典脚本** `frames.js`。",
+        "refresh": "跑上面那条命令（frames/ 与 frames.js 就地覆盖；页面每 1.2s 换 query 重读，实测换 query 能绕开 file:// 缓存）"
+      },
+      "capability": {
+        "reads_via": "run_task（唯一门）—— 在 sync_exec 信封内取帧，账本记 synced:true · entry:outer",
+        "scope": "取帧（see）**只读，不需作用域**。本窗**不做任何输入 / 鼠标 / 键盘动作** ⇒ 绝不触碰 desktop_control。",
+        "honest": "取不到帧就写 `ok:false` + 真原因，页面标 `lost`；**不写占位图、不拿旧帧冒充新帧**。过期（>4s 无新帧）标 `静默 Ns`，回看旧帧时 REC 熄灭并打「回看」标 —— 实时与回看必须一眼可分。"
+      }
     }
   ]
 }

@@ -1,0 +1,19 @@
+--- bluetooth ---
+{"status": "ok", "kind": "bluetooth", "result": {"ok": true, "ble_backend": "bleak", "classic_backend": "win-bluetooth-stack", "ops": ["scan", "connect", "read", "write", "classic", "status"], "note": "scan/connect/read/write 控制 BLE 设备；classic 报告已配对经典设备"}}
+--- notion ---
+{"ok": true, "configured": true, "credential_source": "dpapi", "credential_protected": true, "api_version": "2022-06-28", "cached_entries": 0, "last_error": ""}
+--- eigenflux ---
+{"ok": true, "enabled": true, "installed": true, "authenticated": true, "ready": true, "server": "eigenflux"}
+--- xingyun ---
+{"ok": true, "configured": true, "credential_source": "dpapi", "credential_protected": true, "app_id_masked": "6cdd****", "gateway_server": "https://nebula-agent.xingyun3d.com/user/v1/ttsa_v2/session", "sdk": {"local_bundle": "xingyun_e2e.latest.js", "local_bytes": 820991, "available": true, "cdn": "https://media.xingyun3d.com/xingyun3d/general/litesdk/xmovAvatar_e2e@latest.js"}}
+--- life ---
+{"ok": true, "state": "alive", "events": 169, "first_at": "2026-09-11T19:39:11", "last_at": "2026-09-21T11:46:02+07:00", "counts": {"milestone": 60, "lesson": 92, "chapter": 1, "commitment": 1, "task": 7, "charter": 7, "mistake": 1}, "chapters": 1, "commitments": 1, "habits": 0, "vault": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\life_vault", "last_export": {"at": "2026-09-17T14:22:21+07:00", "vault": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\life_vault", "events": 101, "conflicts":
+--- studio tools ---
+  youtube-factory ready=False missing=['PEXELS_API_KEY']
+  vidu         ready=False missing=['vidu', 'VIDU_TOKEN']
+  ffmpeg-video-editor ready=True missing=[]
+--- observer ---
+status: wired_not_verified | handshake: stale
+  blocker: dsh_default_full_access | `~/.dsh/settings.yaml` 的 `permission.defaultPreset = danger-full-access` —— DSH 默认是**全权限**，不是只读。旁观者只读必须**显式配置**，不能把「它天生只读」当既成事实。
+  blocker: handshake_not_verified | 握手状态 **STALE**（最近一次 2026-09-19T02:35:12）：起 `--profile sdk` 属敏感档，要有明确授权；没记录就是「没测」，不是「测了不通」。
+  blocker: observer_functions_not_built | 首刀**只证握手**：提醒 / 意见 / 建议这三件职能**尚未实现**，也不做 `session/prompt`。别把「握手通」读成「旁观者能干活了」。

@@ -1,0 +1,189 @@
+test_alerts_structure (__main__.TestFramework) ... ok
+test_all_list_marks_dangerous_disabled (__main__.TestFramework) ... ok
+test_audit_backend_records (__main__.TestFramework) ... ok
+test_audit_signal_grading (__main__.TestFramework) ... ok
+test_auth_gate_ai_cannot_grant (__main__.TestFramework) ... ok
+test_auth_gate_flow (__main__.TestFramework) ... ok
+test_autopilot_dry_run (__main__.TestFramework) ... ok
+test_autopilot_requires_goal (__main__.TestFramework) ... ok
+test_autopilot_validates_llm_plan (__main__.TestFramework) ... ok
+test_benign_list_excludes_dangerous (__main__.TestFramework) ... ok
+test_bluetooth_capability (__main__.TestFramework) ... FAIL
+test_brain_execute (__main__.TestFramework) ... ok
+test_brain_health_five_dims (__main__.TestFramework) ... INFO:comtypes.client._code_cache:Imported existing <module 'comtypes.gen' from 'C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\.pylibs\\comtypes\\gen\\__init__.py'>
+INFO:comtypes.client._code_cache:Using writeable comtypes cache directory: 'C:\Users\ADMIN\Desktop\GBT小土豆V8\gbt_allinone\.pylibs\comtypes\gen'
+ok
+test_brain_route_cn (__main__.TestFramework) ... ok
+test_brain_unify_chain (__main__.TestFramework) ... ok
+test_codex_caps_contract (__main__.TestFramework)
+契约测试（B 档第一步）：5 个官方 Codex 能力已注册，且走统一契约信封。 ... ok
+test_codex_caps_contract_placeholder (__main__.TestFramework)
+占位：第二步接入 api.py 后，本用例替换为"写操作未授权必被拒"的行为断言。 ... ok
+test_count_words (__main__.TestFramework) ... ok
+test_cross_scan_clean (__main__.TestFramework) ... ok
+test_dangerous_denied (__main__.TestFramework) ... ok
+test_desktop_commander_brand (__main__.TestFramework) ... ok
+test_desktop_commander_tentacle (__main__.TestFramework) ... ok
+test_devour_cycle (__main__.TestFramework) ... ok
+test_devour_github_real (__main__.TestFramework) ... FAIL
+test_engine_dag_with_template (__main__.TestFramework) ... ok
+test_engine_fail_fast_records_error (__main__.TestFramework) ... ok
+test_engine_resume_reuses_done_nodes (__main__.TestFramework) ... ok
+test_ghost_guard_clean (__main__.TestFramework) ... ok
+test_ghost_guard_nine_dims (__main__.TestFramework) ... ok
+test_health_ok (__main__.TestFramework) ... ok
+test_inventory_dual_view (__main__.TestFramework) ... ok
+test_longrun_fail_then_escalate (__main__.TestFramework) ... ok
+test_longrun_rejects_unregistered_kind (__main__.TestFramework) ... ok
+test_longrun_success_flow (__main__.TestFramework) ... ok
+test_mcp_full_chain (__main__.TestFramework) ... FAIL
+test_mcp_requires_server (__main__.TestFramework) ... ok
+test_no_stamp_when_disabled (__main__.TestFramework) ... ok
+test_observer_effect_quiet_probe (__main__.TestFramework) ... ok
+test_osint_guard_blocks_private (__main__.TestFramework) ... ok
+test_osint_scan_public (__main__.TestFramework) ... ok
+test_perf_baseline (__main__.TestFramework)
+性能基线守卫：热路径能力超时即失败（防退化）。 ... ok
+test_pipeline_publish_and_block (__main__.TestFramework) ... ok
+test_platform_profile_reads_workspace (__main__.TestFramework) ... ok
+test_policy_scopes_are_registered (__main__.TestFramework)
+契约测试：policy 引用的每个作用域都必须注册在 auth_gate.SCOPES。 ... ok
+test_quant_is_real (__main__.TestFramework) ... ok
+test_quant_params_reads_real_values (__main__.TestFramework) ... ok
+test_quant_strategy_reads_real_engine (__main__.TestFramework) ... ok
+test_redaction_fallback_never_leaks (__main__.TestFramework)
+契约测试：脱敏失败时 _redacted 绝不返回未脱敏原文（覆盖 5 种失败场景）。 ... ok
+test_root_fix_debt_ceiling (__main__.TestFramework) ... ok
+test_root_fix_pit_and_prework (__main__.TestFramework) ... ok
+test_schedule_define_tick_status (__main__.TestFramework) ... ok
+test_schedule_rejects_missing_workflow (__main__.TestFramework) ... ok
+test_sec_defenses_all_pass (__main__.TestFramework) ... ok
+test_sec_llm_configured (__main__.TestFramework) ... FAIL
+test_sec_surface_real (__main__.TestFramework) ... ok
+test_selfscan_clean (__main__.TestFramework) ... ok
+test_selfscan_detects_broken_routing (__main__.TestFramework) ... ok
+test_selfscan_recovered_semantics (__main__.TestFramework) ... ok
+test_services_inspect (__main__.TestFramework) ... ok
+test_services_register_unregister (__main__.TestFramework) ... ok
+test_signature_no_env_overreach (__main__.TestFramework) ... ok
+test_soul_loaded (__main__.TestFramework) ... ok
+test_stamp_on_success (__main__.TestFramework) ... ok
+test_tactics_failure_overrides (__main__.TestFramework) ... ok
+test_tactics_fatigue (__main__.TestFramework) ... ok
+test_tactics_urgency (__main__.TestFramework) ... ok
+test_tentacle_active_window (__main__.TestFramework) ... FAIL
+test_tentacle_chain (__main__.TestFramework) ... FAIL
+test_tentacle_eye_ready (__main__.TestFramework) ... ok
+test_tentacle_manifest (__main__.TestFramework) ... ok
+test_tentacle_monitor_snapshot (__main__.TestFramework) ... ok
+test_tentacle_process_list (__main__.TestFramework) ... ok
+test_tentacle_requires_action (__main__.TestFramework) ... ok
+test_tentacle_screenshot_diff (__main__.TestFramework) ... FAIL
+test_tentacle_see (__main__.TestFramework) ... FAIL
+test_tentacle_status_coverage (__main__.TestFramework) ... ok
+test_tentacle_unknown_method (__main__.TestFramework) ... ok
+test_tentacle_vision_snapshot_full_frame (__main__.TestFramework) ... FAIL
+test_transfer_ops (__main__.TestFramework) ... ok
+test_transmit_pulse_contract (__main__.TestFramework)
+契约测试：transmit.pulse() 返回 {status, queue_size, last_transmission}， ... ok
+test_truth_scan_readonly (__main__.TestFramework) ... ok
+test_unknown_cap_error (__main__.TestFramework) ... ok
+test_user_error_source_classification (__main__.TestFramework) ... ok
+test_wf_cache (__main__.TestFramework) ... ok
+test_wf_define_rejects_bad_fallback (__main__.TestFramework) ... ok
+test_wf_fallback (__main__.TestFramework) ... ok
+test_wf_fanin_aggregation (__main__.TestFramework) ... ok
+test_wf_resume_via_api (__main__.TestFramework) ... ok
+test_wf_retry_backoff (__main__.TestFramework) ... ok
+test_wf_routes (__main__.TestFramework) ... ok
+test_wf_routes_validation (__main__.TestFramework) ... ok
+test_wf_subworkflow (__main__.TestFramework) ... ok
+test_wf_timeout (__main__.TestFramework) ... ok
+test_wf_when_conditional (__main__.TestFramework) ... ok
+test_bad_line_reported_not_fatal (__main__.TestRecordGrid) ... ok
+test_decode_bytes_handles_bom_and_gbk (__main__.TestRecordGrid) ... ok
+test_emit_rejects_outside_store (__main__.TestRecordGrid) ... ok
+test_emit_writes_inside_store (__main__.TestRecordGrid) ... ok
+test_parse_success_path (__main__.TestRecordGrid) ... ok
+test_profile_and_draft (__main__.TestRecordGrid) ... ok
+test_registered_and_routed (__main__.TestRecordGrid) ... ok
+test_roundtrip_is_idempotent (__main__.TestRecordGrid) ... ok
+test_unknown_op_is_honest_failure (__main__.TestRecordGrid) ... ok
+test_unknown_vocabulary_kept_not_dropped (__main__.TestRecordGrid) ... ok
+
+======================================================================
+FAIL: test_bluetooth_capability (__main__.TestFramework)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\gbt_allinone\tests\test_framework.py", line 394, in test_bluetooth_capability
+    self.assertIn(r["result"].get("ok"), (True, False))
+AssertionError: None not found in (True, False)
+
+======================================================================
+FAIL: test_devour_github_real (__main__.TestFramework)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\gbt_allinone\tests\test_framework.py", line 636, in test_devour_github_real
+    self.assertTrue(r["result"].get("ok"))
+AssertionError: None is not true
+
+======================================================================
+FAIL: test_mcp_full_chain (__main__.TestFramework)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\gbt_allinone\tests\test_framework.py", line 610, in test_mcp_full_chain
+    self.assertTrue(r['result'].get('ok'))
+AssertionError: None is not true
+
+======================================================================
+FAIL: test_sec_llm_configured (__main__.TestFramework)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\gbt_allinone\tests\test_framework.py", line 603, in test_sec_llm_configured
+    self.assertTrue(r["result"].get("ok"))
+AssertionError: None is not true
+
+======================================================================
+FAIL: test_tentacle_active_window (__main__.TestFramework)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\gbt_allinone\tests\test_framework.py", line 571, in test_tentacle_active_window
+    self.assertTrue(r["result"].get("ok"))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_tentacle_chain (__main__.TestFramework)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\gbt_allinone\tests\test_framework.py", line 553, in test_tentacle_chain
+    self.assertTrue(r["result"].get("ok"))
+AssertionError: None is not true
+
+======================================================================
+FAIL: test_tentacle_screenshot_diff (__main__.TestFramework)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\gbt_allinone\tests\test_framework.py", line 559, in test_tentacle_screenshot_diff
+    self.assertTrue(r["result"].get("ok"))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_tentacle_see (__main__.TestFramework)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\gbt_allinone\tests\test_framework.py", line 469, in test_tentacle_see
+    self.assertTrue(r["result"].get("ok"))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_tentacle_vision_snapshot_full_frame (__main__.TestFramework)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\gbt_allinone\tests\test_framework.py", line 478, in test_tentacle_vision_snapshot_full_frame
+    self.assertTrue(res.get("ok"))
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 104 tests in 19.235s
+
+FAILED (failures=9)

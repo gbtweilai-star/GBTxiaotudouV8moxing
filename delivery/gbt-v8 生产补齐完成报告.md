@@ -105,3 +105,15 @@
 ---
 
 > 开发者：自由的风 · GBT 小土豆 V8 · 本署名不可删除、不可篡改归属
+
+---
+
+## 更正（2026-09-18）
+
+针对本文第 23 行「依赖兜底：自动挂框架自带 .pylibs（与 tentacle/bridge 同机制）」：
+
+- **事实**：该口径当时未生效。正解 `dependency_paths.activate_local_dependencies()` 只在 preflight 的 3 处被惰性调用；四处 cap/bridge 手打 `sys.path.insert(0, .pylibs)`，把 legacy 树顶到 `sys.path[0]`，影子系统包。
+- **证据**：`.pylibs` 自 2026-09-11 10:07:57 建成起即为 cp313 树（`_cffi_backend.cp313-win_amd64.pyd` / `pythoncom313.dll`），全树无 cp312 件；本报告成文于 2026-09-13 05:00:47 ⇒ **成文时该描述即不成立**。
+- **现状**：四处已收敛至 `dependency_paths.activate_local_dependencies()`（2026-09-18）。
+- **影响**：H-07 显示失败 15 → 9（净修复 6，无回归）。
+- **附注（2026-09-18 实测）**：运行期解释器为 cpython-312（`numpy 2.4.6` 来自系统 site-packages）；`.pylibs` 盘上为 cp313/cp314 ⇒ ABI overlay 路径 `.pylibs/cp312` 不存在、从未激活。修复的实际机制是「移除 `sys.path[0]` 手打、让系统包胜出」，**不是**「overlay 生效」。

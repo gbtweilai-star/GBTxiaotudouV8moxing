@@ -1,0 +1,8 @@
+passports: 26
+    v21 promoted=2026-09-17T18:02:12 files=14 purpose=S7：W3 上帝视角 V3/V6 界面级 + 吸附形状转换修正 + O8 状态探针免审计 + 面板层品牌清洗第一刀（风哥 2026-09-1
+    v22 promoted=2026-09-17T19:16:06 files=14 purpose=D9 壳先落地：W3 起动命令 + 权威源口径修正
+    v23 promoted=2026-09-17T19:33:16 files=15 purpose=R64 · 深空紫盲区标记接上（W3 品牌三色全部在屏上生效）
+    v24 promoted=2026-09-17T20:02:13 files=16 purpose=W7 · EigenFlux 独立窗口接入（窗口5）：注册表条目 + 最小页 + README口径 + 壳可见性
+    v25 promoted=2026-09-18T04:50:36 files=19 purpose=R110 全面生产推进：工具面板(刀2b) + 赏金台窗口(R108d) 跨维晋升
+    v26 promoted=2026-09-19T09:11:08 files=19 purpose=APP 修复：星云渲染门如实降级 + 自动切回本地 3D 形象；发布链路签名修复（2026-09-19）
+timelines: ['v21', 'v22', 'v23', 'v24', 'v25', 'v26']

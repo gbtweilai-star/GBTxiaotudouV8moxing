@@ -1,0 +1,15 @@
+== _z42 TTL 跨越观察 · start 2026-09-18 14:14:45 ==
+预判条目创建时刻 = 13:17:12（由 _z41 Age=3288 @ 14:12:00 反推）
+
+  H       14:14:45 -> 200  X-Cache=MISS, HIT, HIT Age=3453   served_by=ga-kjfk8660038-LGA, cache-bkk2280027-BKK
+  H       14:15:45 -> 200  X-Cache=MISS, HIT, HIT Age=3513   served_by=ga-kjfk8660038-LGA, cache-bkk2280029-BKK
+  H       14:16:45 -> 200  X-Cache=MISS, HIT, HIT Age=3573   served_by=ga-kjfk8660038-LGA, cache-bkk2280034-BKK
+  H       14:17:45 -> 406  X-Cache=MISS, MISS     Age=-      served_by=ga-kjfk8660038-LGA, cache-bkk2280029-BKK
+  ** 跨 TTL / 条目重建 @ 14:17:45 —— 连打 3 次确认 **
+  H#c1    14:17:49 -> 406  X-Cache=MISS, MISS     Age=-      served_by=ga-kjfk8660038-LGA, cache-bkk2280037-BKK
+  H#c2    14:17:53 -> 406  X-Cache=MISS, MISS     Age=-      served_by=ga-kjfk8660038-LGA, cache-bkk2280026-BKK
+  H#c3    14:17:57 -> 406  X-Cache=MISS, MISS     Age=-      served_by=ga-kjfk8660038-LGA, cache-bkk2280024-BKK
+  S#c     14:18:01 -> 406  X-Cache=MISS, MISS     Age=-      served_by=ga-kjfk8660066-LGA, cache-bkk2280033-BKK
+
+== 收尾 14:18:01 · 共 4 次 H 采样 · 判定 = 甲-已跨TTL ==
+   最后 Age = 3573

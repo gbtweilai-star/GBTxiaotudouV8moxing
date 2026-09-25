@@ -1,0 +1,12 @@
+{
+ "编号": "03",
+ "模块": "asset-pool",
+ "运行地": "cloud",
+ "依赖编号": [
+  "01"
+ ],
+ "版本": "2026-09-24.1",
+ "状态": "已验",
+ "证据": "py -3.14 tools/codex-scripts/asset-pool.py put .scratch/remotion-smoke/out/hello.png --kind image --name hello-smoke.png => ok:true · 往返 ✅ 拉回逐字节一致 · 44054 字节 · sha256 e4d29912aaa2e23d… · 已进索引 true · 云上键 pipeline/assets/image/hello-smoke.png",
+ "at": "2026-09-24T23:44:20"
+}

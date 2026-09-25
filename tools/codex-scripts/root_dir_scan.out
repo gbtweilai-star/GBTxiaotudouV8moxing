@@ -1,0 +1,73 @@
+待查根级子目录: ['adapters', 'deploy', 'docs', 'integration', 'llm', 'recon', 'security', 'tentacle', 'tests']
+
+[adapters] 根=2 真身=2 | DUP=2 DIFF=0 ROOT_ONLY=0
+    DUP        __init__.py  (5B)
+    DUP        workspace_adapter.py  (2520B)
+
+[deploy] 根=12 真身=12 | DUP=10 DIFF=2 ROOT_ONLY=0
+    DUP        backup.ps1  (8424B)
+    DIFF       bootstrap_deps.ps1  (2674B)
+    DUP        Caddyfile  (3263B)
+    DIFF       check_repo_clean.ps1  (1560B)
+    DUP        DEPLOY.md  (25320B)
+    DUP        docker-compose.yml  (2419B)
+    DUP        Dockerfile  (2321B)
+    DUP        env.example  (3951B)
+    DUP        healthcheck.ps1  (10382B)
+    DUP        install_service_windows.ps1  (14308B)
+    DUP        run_isolated.ps1  (6033B)
+    DUP        selfcheck_configs.py  (11650B)
+
+[docs] 根=2 真身=6 | DUP=2 DIFF=0 ROOT_ONLY=0
+    DUP        fusion-acceptance.md  (4343B)
+    DUP        wallet-ledger-architecture.md  (3911B)
+
+[integration] 根=5 真身=5 | DUP=5 DIFF=0 ROOT_ONLY=0
+    DUP        __init__.py  (705B)
+    DUP        auth.py  (7912B)
+    DUP        INTEGRATION.md  (17006B)
+    DUP        platform_client.py  (14321B)
+    DUP        smoke_test.py  (14642B)
+
+[llm] 根=3 真身=3 | DUP=1 DIFF=2 ROOT_ONLY=0
+    DIFF       __init__.py  (60B)
+    DUP        bridge.py  (2863B)
+    DIFF       cloud_llm.py  (28274B)
+
+[recon] 根=3 真身=3 | DUP=3 DIFF=0 ROOT_ONLY=0
+    DUP        __init__.py  (119B)
+    DUP        guard.py  (2596B)
+    DUP        scanner.py  (16724B)
+
+[security] 根=3 真身=8 | DUP=1 DIFF=2 ROOT_ONLY=0
+    DUP        __init__.py  (100B)
+    DIFF       abl_gateway.py  (5195B)
+    DIFF       security_brain.py  (23167B)
+
+[tentacle] 根=20 真身=24 | DUP=10 DIFF=10 ROOT_ONLY=0
+    DIFF       __init__.py  (99B)
+    DUP        brain/__init__.py  (184B)
+    DIFF       brain/gatekeeper.py  (1721B)
+    DUP        brain/tentacle_transmission.py  (1006B)
+    DIFF       brain/transmit.py  (1200B)
+    DUP        bridge.py  (8497B)
+    DIFF       dc_brand_preload.js  (931B)
+    DUP        desktop_commander.py  (9312B)
+    DUP        mcp_bridge.py  (6975B)
+    DIFF       omni_controller.py  (30314B)
+    DUP        omni_core.py  (21909B)
+    DIFF       omni_domain.py  (26556B)
+    DIFF       omni_keyboard.py  (3804B)
+    DIFF       omni_mouse.py  (14145B)
+    DUP        omni_process.py  (25772B)
+    DIFF       omni_read.py  (18277B)
+    DUP        omni_tentacle.py  (11796B)
+    DUP        omni_vision.py  (8149B)
+    DIFF       omni_window.py  (22364B)
+    DUP        vision_bus.py  (11527B)
+
+[tests] 根=2 真身=10 | DUP=1 DIFF=1 ROOT_ONLY=0
+    DUP        __init__.py  (5B)
+    DIFF       test_framework.py  (39022B)
+
+JSON 落盘:.scratch/root_dir_scan.json

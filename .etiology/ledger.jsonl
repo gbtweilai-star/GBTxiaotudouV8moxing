@@ -1,0 +1,11 @@
+{"op": "bisect", "repo": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\dsh-gbtdh\\rca\\repo", "culprit": null, "ok": false, "at": "2026-09-23 00:00:43"}
+{"op": "ddmin", "before": 12, "after": 1, "ok": true, "at": "2026-09-23 00:00:43"}
+{"op": "faultloc", "tests": 3, "top": [[42, 1.0], [90, 0.7071067811865475], [10, 0.5]], "ok": true, "at": "2026-09-23 00:00:43"}
+{"op": "correlate", "metrics": 2, "onsets": 0, "ok": false, "at": "2026-09-23 00:00:43"}
+{"op": "playbook", "asked": 8, "ok": false, "at": "2026-09-23 00:00:43"}
+{"op": "szz", "repo": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\dsh-gbtdh\\rca\\repo", "found": 1, "ok": true, "at": "2026-09-23 00:00:44"}
+{"op": "bisect", "repo": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\dsh-gbtdh\\rca\\repo", "culprit": null, "ok": false, "at": "2026-09-23 00:01:44"}
+{"op": "correlate", "metrics": 2, "onsets": 2, "ok": true, "at": "2026-09-23 00:01:45"}
+{"op": "playbook", "asked": 8, "ok": true, "at": "2026-09-23 00:01:45"}
+{"op": "bisect", "repo": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\dsh-gbtdh\\rca\\repo2", "culprit": "0019b598b57676ae7b3f46daf99d1ccadf52bc96", "ok": true, "at": "2026-09-23 00:02:12"}
+{"op": "bisect", "repo": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\dsh-gbtdh\\rca\\repo2", "culprit": "dd48a5242336fcf293f68d826bf88c88bc015ed4", "ok": true, "at": "2026-09-23 00:02:43"}

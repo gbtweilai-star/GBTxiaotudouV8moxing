@@ -1,0 +1,639 @@
+{
+  "version": 1,
+  "verified_at": null,
+  "note": "登记表 = 人写的静态声明。任何一项都不代表本机已核验；实测结果只写在 state/ 下。blocked_by: none=今天可跑 / audit=需平台应用或权限审核 / qualification=需主体资质 / no_api=官方无接口，不做绕行。route 描述『我们怎么驱动它』，不是平台事实；unattended_allowed 默认 false。定案 2026-09-18：无人值守落在每行 unattended_allowed，本舱区恒不启用（触手路由没有可证伪的探针，平台对自动化是静默降权，观测不到）；路由分流的实现见 holo_pet/panel_server.py 的 _gates_for —— 触手路由下官方四门为『不适用』，既不是『未核验』也不是绿。 定案 2026-09-18（判据 D）：调研信源的采集态分三层读 —— 登记读本文件的 research，最近一次采集结局读 state/runs/<id>.json，最后一次成功读 state/last_seen.json；六态判定只写在 holo_pet/research_status.py。单源采集失败只让那一行显示失败：不连坐其它源，也不清它的水位（失败写 runs，成功才写 last_seen）。判据 E（2026-09-18）：一次采集的汇总走 run_report —— 失败源的 severity=red（机器可读的标红），且**不沿用旧值**：本次值只来自 state/runs/<id>.json，历史水位只进 history 袋子，本次没采到就是 null（未知），run_report.this_run_items_total 只累加本次 outcome=ok 的源。run_report 是派生视图，不落盘、不缓存。",
+  "channels": [
+    {
+      "id": "telegram",
+      "name": "Telegram",
+      "region": "intl",
+      "level": "L1",
+      "official_api": true,
+      "publish_flow": "bot sendMessage/sendVideo",
+      "auth": "bot_token",
+      "gate": "零审核：自建 Bot 即可",
+      "credential_field": "bot_token",
+      "verify": {
+        "status": "unverified",
+        "how": "GET https://api.telegram.org/bot<token>/getMe 返回 ok=true"
+      },
+      "blocked_by": "none",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "discord",
+      "name": "Discord",
+      "region": "intl",
+      "level": "L1",
+      "official_api": true,
+      "publish_flow": "webhook / bot message",
+      "auth": "webhook_url",
+      "gate": "零审核：频道 Webhook 即发",
+      "credential_field": "webhook_url",
+      "verify": {
+        "status": "unverified",
+        "how": "对该 webhook 发一次空 payload，看是否回 204/400 而非 401"
+      },
+      "blocked_by": "none",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "region": "intl",
+      "level": "L1",
+      "official_api": true,
+      "publish_flow": "release / repo content",
+      "auth": "pat",
+      "gate": "公开 REST，零审核",
+      "credential_field": "pat",
+      "verify": {
+        "status": "unverified",
+        "how": "GET https://api.github.com/rate_limit 看 X-RateLimit-Remaining>0"
+      },
+      "blocked_by": "none",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "x",
+      "name": "X (Twitter)",
+      "region": "intl",
+      "level": "L2",
+      "official_api": true,
+      "publish_flow": "POST /2/tweets",
+      "auth": "oauth2_user",
+      "gate": "开发者应用 + 付费档位；免费档写入额度极低",
+      "credential_field": "access_token",
+      "verify": {
+        "status": "unverified",
+        "how": "GET /2/users/me 回 200 且 header 显示剩余写入额度"
+      },
+      "blocked_by": "audit",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "reddit",
+      "name": "Reddit",
+      "region": "intl",
+      "level": "L2",
+      "official_api": true,
+      "publish_flow": "POST /api/submit",
+      "auth": "oauth2_user",
+      "gate": "需注册 OAuth 应用并人工审核",
+      "credential_field": "client_secret",
+      "verify": {
+        "status": "unverified",
+        "how": "GET /api/v1/me 回 200"
+      },
+      "blocked_by": "audit",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "youtube",
+      "name": "YouTube Shorts",
+      "region": "intl",
+      "level": "L2",
+      "official_api": true,
+      "publish_flow": "videos.insert（可续传）",
+      "auth": "oauth2_user",
+      "gate": "未审计项目上传锁定私密；100 次/天",
+      "credential_field": "access_token",
+      "verify": {
+        "status": "unverified",
+        "how": "GET /youtube/v3/channels?part=id&mine=true 回 200"
+      },
+      "blocked_by": "audit",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "tiktok",
+      "name": "TikTok",
+      "region": "intl",
+      "level": "L2",
+      "official_api": true,
+      "publish_flow": "init -> 分片 PUT -> status/fetch",
+      "auth": "oauth2_user",
+      "gate": "未过审客户端所发内容只能私密可见",
+      "credential_field": "access_token",
+      "verify": {
+        "status": "unverified",
+        "how": "调 creator_info/query 只读接口，200 即通、401 即未授权"
+      },
+      "blocked_by": "audit",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "instagram",
+      "name": "Instagram Reels",
+      "region": "intl",
+      "level": "L2",
+      "official_api": true,
+      "publish_flow": "media 建容器 -> media_publish",
+      "auth": "oauth2_user",
+      "gate": "需商业/创作者账号并绑定主页",
+      "credential_field": "access_token",
+      "verify": {
+        "status": "unverified",
+        "how": "GET /me?fields=id,username 回 200 且账号类型为 BUSINESS/CREATOR"
+      },
+      "blocked_by": "audit",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "wechat_mp",
+      "name": "微信公众号",
+      "region": "cn",
+      "level": "L2",
+      "official_api": true,
+      "publish_flow": "草稿箱 -> 发布",
+      "auth": "app_secret",
+      "gate": "需认证；个人订阅号接口受限",
+      "credential_field": "app_secret",
+      "verify": {
+        "status": "unverified",
+        "how": "GET /cgi-bin/token 拿到 access_token 后再调 /cgi-bin/get_api_domain_ip"
+      },
+      "blocked_by": "qualification",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "linkedin",
+      "name": "LinkedIn",
+      "region": "intl",
+      "level": "L2",
+      "official_api": true,
+      "publish_flow": "ugcPosts / videos",
+      "auth": "oauth2_user",
+      "gate": "需公司主页 + 应用审核",
+      "credential_field": "access_token",
+      "verify": {
+        "status": "unverified",
+        "how": "GET /v2/me 回 200 且具备 w_organization_social 授权"
+      },
+      "blocked_by": "audit",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "weibo",
+      "name": "微博",
+      "region": "cn",
+      "level": "L2",
+      "official_api": true,
+      "publish_flow": "statuses/share",
+      "auth": "oauth2_user",
+      "gate": "开放平台需提交申请",
+      "credential_field": "access_token",
+      "verify": {
+        "status": "unverified",
+        "how": "GET /2/account/get_uid.json 回 200"
+      },
+      "blocked_by": "audit",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "douyin",
+      "name": "抖音",
+      "region": "cn",
+      "level": "L3",
+      "official_api": true,
+      "publish_flow": "create -> 上传 -> 发布",
+      "auth": "oauth2_user",
+      "gate": "需主体资质并申请发布权限",
+      "credential_field": "client_secret",
+      "verify": {
+        "status": "unverified",
+        "how": "先确认开放平台是否已授予 video.create 权限（未授予则不测）"
+      },
+      "blocked_by": "qualification",
+      "route": "tentacle",
+      "unattended_allowed": false,
+      "enabled": false
+    },
+    {
+      "id": "kuaishou",
+      "name": "快手",
+      "region": "cn",
+      "level": "L3",
+      "official_api": true,
+      "publish_flow": "create -> 上传 -> 发布",
+      "auth": "oauth2_user",
+      "gate": "需开放平台资质",
+      "credential_field": "access_token",
+      "verify": {
+        "status": "unverified",
+        "how": "先确认开放平台资质是否通过（未通过则不测）"
+      },
+      "blocked_by": "qualification",
+      "route": "tentacle",
+      "unattended_allowed": false,
+      "enabled": false
+    },
+    {
+      "id": "bilibili",
+      "name": "B 站",
+      "region": "cn",
+      "level": "L3",
+      "official_api": true,
+      "publish_flow": "预上传 -> 分片 -> 提交",
+      "auth": "oauth2_user",
+      "gate": "开放平台权限以企业/邀请制为主",
+      "credential_field": "access_token",
+      "verify": {
+        "status": "unverified",
+        "how": "先确认是否已获开放平台邀请（未获则不测）"
+      },
+      "blocked_by": "qualification",
+      "route": "tentacle",
+      "unattended_allowed": false,
+      "enabled": false
+    },
+    {
+      "id": "xiaohongshu",
+      "name": "小红书",
+      "region": "cn",
+      "level": "L3",
+      "official_api": true,
+      "publish_flow": "未公开",
+      "auth": "unknown",
+      "gate": "无公开内容发布开放平台",
+      "credential_field": "",
+      "verify": {
+        "status": "unverified",
+        "how": "先向官方确认有无对外发布接口；无则保持 L3"
+      },
+      "blocked_by": "no_api",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "wechat_channels",
+      "name": "微信视频号",
+      "region": "cn",
+      "level": "L3",
+      "official_api": false,
+      "publish_flow": "无",
+      "auth": "none",
+      "gate": "官方明确不提供代用户发布接口",
+      "credential_field": "",
+      "verify": {
+        "status": "unverified",
+        "how": "不需要核验：无接口即无接口，不做浏览器绕行"
+      },
+      "blocked_by": "no_api",
+      "route": "tentacle",
+      "unattended_allowed": false,
+      "enabled": false
+    },
+    {
+      "id": "zhihu",
+      "name": "知乎",
+      "region": "cn",
+      "level": "L3",
+      "official_api": false,
+      "publish_flow": "无",
+      "auth": "none",
+      "gate": "无公开发布接口",
+      "credential_field": "",
+      "verify": {
+        "status": "unverified",
+        "how": "不需要核验：无接口即无接口"
+      },
+      "blocked_by": "no_api",
+      "route": "tentacle",
+      "unattended_allowed": false
+    },
+    {
+      "id": "substack",
+      "name": "Substack",
+      "region": "intl",
+      "level": "L3",
+      "official_api": false,
+      "publish_flow": "无（可用邮件入口）",
+      "auth": "none",
+      "gate": "无公开发布 API",
+      "credential_field": "",
+      "verify": {
+        "status": "unverified",
+        "how": "不需要核验：以邮件投递替代"
+      },
+      "blocked_by": "no_api",
+      "route": "tentacle",
+      "unattended_allowed": false
+    }
+  ],
+  "promo": [
+    {
+      "id": "enterprise_license",
+      "name": "企业营业执照",
+      "kind": "qualification",
+      "level": "L2",
+      "gate": "需工商主体，个人不可代办",
+      "cost": "注册+年报",
+      "blocks": [
+        "douyin",
+        "kuaishou",
+        "bilibili",
+        "weibo",
+        "ad_juliang",
+        "ad_cili",
+        "ad_tencent"
+      ],
+      "verify": {
+        "status": "unverified",
+        "how": "看营业执照上的统一社会信用代码是否可与平台后台主体一致"
+      }
+    },
+    {
+      "id": "tax_registration",
+      "name": "税务登记 / 开票",
+      "kind": "qualification",
+      "level": "L2",
+      "gate": "与执照同主体，需能开票",
+      "cost": "记账+发票",
+      "blocks": [
+        "ad_juliang",
+        "ad_cili",
+        "ad_tencent",
+        "corp_bank_account"
+      ],
+      "verify": {
+        "status": "unverified",
+        "how": "看最近一期纳税申报或已开出的一张发票"
+      }
+    },
+    {
+      "id": "corp_bank_account",
+      "name": "对公账户",
+      "kind": "payment",
+      "level": "L2",
+      "gate": "需执照 + 法人到场或视频核身",
+      "cost": "开户费",
+      "blocks": [
+        "payment_channel",
+        "ad_juliang",
+        "ad_cili",
+        "ad_tencent"
+      ],
+      "verify": {
+        "status": "unverified",
+        "how": "看银行回单上的户名与执照主体是否一致"
+      }
+    },
+    {
+      "id": "payment_channel",
+      "name": "支付渠道（微信支付/支付宝商户）",
+      "kind": "payment",
+      "level": "L2",
+      "gate": "需执照 + 对公账户 + 行业类目审核",
+      "cost": "费率",
+      "blocks": [
+        "payment_channel"
+      ],
+      "verify": {
+        "status": "unverified",
+        "how": "商户平台自查是否已开通且商户号可用"
+      }
+    },
+    {
+      "id": "ad_juliang",
+      "name": "巨量引擎",
+      "kind": "ads",
+      "level": "L2",
+      "gate": "需执照 + 行业资质，投放内容另审",
+      "cost": "预充值",
+      "blocks": [
+        "douyin"
+      ],
+      "verify": {
+        "status": "unverified",
+        "how": "登录后台看账户是否已通过资质审核且余额>0"
+      }
+    },
+    {
+      "id": "ad_cili",
+      "name": "磁力引擎",
+      "kind": "ads",
+      "level": "L2",
+      "gate": "同上",
+      "cost": "预充值",
+      "blocks": [
+        "kuaishou"
+      ],
+      "verify": {
+        "status": "unverified",
+        "how": "登录后台看账户资质状态"
+      }
+    },
+    {
+      "id": "ad_tencent",
+      "name": "腾讯广告",
+      "kind": "ads",
+      "level": "L2",
+      "gate": "同上",
+      "cost": "预充值",
+      "blocks": [
+        "wechat_mp",
+        "wechat_channels"
+      ],
+      "verify": {
+        "status": "unverified",
+        "how": "登录后台看账户资质状态"
+      }
+    },
+    {
+      "id": "icp_beian",
+      "name": "ICP 备案 / 软著",
+      "kind": "qualification",
+      "level": "L2",
+      "gate": "需主体 + 域名 + 服务器国内落地",
+      "cost": "周期 2~4 周",
+      "blocks": [
+        "wechat_mp",
+        "payment_channel"
+      ],
+      "verify": {
+        "status": "unverified",
+        "how": "工信部备案系统查该域名的备案主体"
+      }
+    },
+    {
+      "id": "apple_developer",
+      "name": "Apple Developer",
+      "kind": "infra",
+      "level": "L1",
+      "gate": "个人可注册，无需企业主体",
+      "cost": "99 美元/年",
+      "blocks": [
+        "appstore_release"
+      ],
+      "verify": {
+        "status": "unverified",
+        "how": "登录开发者后台看成员资格是否 Active"
+      }
+    },
+    {
+      "id": "google_play_developer",
+      "name": "Google Play 开发者",
+      "kind": "infra",
+      "level": "L1",
+      "gate": "一次性注册费即可",
+      "cost": "25 美元一次性",
+      "blocks": [
+        "play_release"
+      ],
+      "verify": {
+        "status": "unverified",
+        "how": "登录 Play Console 看账号是否未被封停"
+      }
+    },
+    {
+      "id": "domain_email",
+      "name": "域名 + 邮箱",
+      "kind": "infra",
+      "level": "L1",
+      "gate": "零门槛，但多数平台注册要它做验证",
+      "cost": "域名年费",
+      "blocks": [
+        "x",
+        "reddit",
+        "linkedin",
+        "ad_juliang"
+      ],
+      "verify": {
+        "status": "unverified",
+        "how": "对该邮箱发一封验证信，确认可收"
+      }
+    },
+    {
+      "id": "llm_budget",
+      "name": "模型额度",
+      "kind": "infra",
+      "level": "L1",
+      "gate": "自备 API key 与预算",
+      "cost": "按量计费",
+      "blocks": [
+        "content_production"
+      ],
+      "verify": {
+        "status": "unverified",
+        "how": "调一次最小 token 请求，看是否 200 且返回 usage"
+      }
+    }
+  ],
+  "research": [
+    {
+      "id": "arxiv",
+      "name": "arXiv",
+      "kind": "paper",
+      "enabled": true,
+      "transport": "http_json",
+      "endpoint": "http://export.arxiv.org/api/query",
+      "probe": "arxiv_api_ping",
+      "interval": "daily",
+      "baseline": "rolling_7d",
+      "limit_per_run": 50,
+      "note": "已有模块，直接复用"
+    },
+    {
+      "id": "hackernews",
+      "name": "Hacker News",
+      "kind": "heat",
+      "enabled": true,
+      "transport": "http_json",
+      "endpoint": "https://hacker-news.firebaseio.com/v0/topstories.json",
+      "probe": "hn_api_ping",
+      "interval": "daily",
+      "baseline": "rolling_7d",
+      "limit_per_run": 100,
+      "note": "官方公开 API，零凭据"
+    },
+    {
+      "id": "github",
+      "name": "GitHub Trending",
+      "kind": "code",
+      "enabled": true,
+      "transport": "http_json",
+      "endpoint": "https://api.github.com/search/repositories",
+      "probe": "github_rate_limit",
+      "interval": "daily",
+      "baseline": "rolling_7d",
+      "limit_per_run": 50,
+      "note": "需只读 token，免费额度足够"
+    },
+    {
+      "id": "huggingface",
+      "name": "Hugging Face",
+      "kind": "model",
+      "enabled": false,
+      "transport": "http_json",
+      "endpoint": "https://huggingface.co/api/models",
+      "probe": "hf_api_ping",
+      "interval": "daily",
+      "baseline": "rolling_7d",
+      "limit_per_run": 50,
+      "note": "公开只读"
+    },
+    {
+      "id": "jobs",
+      "name": "招聘信号",
+      "kind": "money_demand",
+      "enabled": false,
+      "transport": "http_json",
+      "endpoint": "",
+      "probe": "jobs_api_ping",
+      "interval": "weekly",
+      "baseline": "rolling_30d",
+      "limit_per_run": 50,
+      "note": "企业真掏钱的方向；逐站登记 ToS 后才启用"
+    },
+    {
+      "id": "pricing",
+      "name": "API 定价变动",
+      "kind": "money_supply",
+      "enabled": false,
+      "transport": "http_json",
+      "endpoint": "",
+      "probe": "pricing_fetch",
+      "interval": "weekly",
+      "baseline": "rolling_30d",
+      "limit_per_run": 30,
+      "note": "谁在涨价/降价，逐站登记选择器"
+    },
+    {
+      "id": "funding",
+      "name": "融资信号",
+      "kind": "money_flow",
+      "enabled": false,
+      "transport": "http_json",
+      "endpoint": "",
+      "probe": "funding_feed_ping",
+      "interval": "weekly",
+      "baseline": "rolling_30d",
+      "limit_per_run": 30,
+      "note": "钱流向哪；部分源需订阅"
+    }
+  ],
+  "open": [
+    "channels/promo 两张表的官方文档尚未逐条核验：所有行 verify.status 一律 unverified，谁把它改成 verified 谁必须先给出 verify.how 的实测输出。",
+    "platforms[] 未写入本文件：现役平台参考数据在 holo_pet/social_platforms.py 的 PLATFORM_SPECS。两处并存会漂移，迁移未定前不复制第二份真相。",
+    "第六节判据（跑前定死）在原文里被截断，未收到全文，故此文件未附判据块。",
+    "subject_verified 是否升为第五门禁、与 app_registered 的从属关系未定。",
+    "channels 行（18/18）没有 enabled 字段；带 enabled 的只有 research 的 4 条 false（huggingface/jobs/pricing/funding）与 3 条 true（arxiv/hackernews/github）。research 的 enabled 自 2026-09-18 起已有消费者：holo_pet/research_status.py 把显式 false 判成『未启用』（不计入采集失败、不参与计数）；channels 的 enabled 仍无消费者。若要给 channels 也加 enabled，须先定三件事：谁读它、与 blocked_by 的关系、与 social.json platforms_enabled[] 的优先级（此三者未定前不加字段）。",
+    "探针文件里 reachable 与 authorized 两个字段的放行关系未定（需过审平台仅 reachable=true 不足）。",
+    "触手路径的未决：走 native_browser（CDP，可 navigate/click/type/get_cookies）还是走 tentacle（66 项 see/click/type/list_windows，纯桌面）。两条都是浏览器自动化，实测前不选；无人值守开关的落点已定案（见 note），不再挂在这里。",
+    "探针 TTL 已定案：默认 12h（social_platforms.DEFAULT_PROBE_TTL_SECONDS = 12*3600），可由 social.json 的 probe_ttl_seconds 覆盖；判据 P6 卡 12h 两侧边界。",
+    "调研侧的显示与判定已落地（holo_pet/research_status.py + /api/research），但**采集器本身仍未实现**：state/runs/ 里现在一个文件都没有，所以面板只能如实显示『已登记 · 未采集』。第一个真实采集器落地时，谁写 runs/<id>.json 谁负责同时写 last_seen.json 的水位；两者分写，不许合并。",
+    "run_report 是否要落成文件（谁写、何时写、写在哪）未定：现在它是 /api/research 里的派生视图，`derived=true`。落盘会引入『缓存』这条沿用旧值的通路，所以默认不落；若将来要落，必须先定『过期即作废』的判据。"
+  ]
+}

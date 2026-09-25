@@ -149,9 +149,25 @@ def render(work_type: str, work_name: str, work_id: str = "",
     return out
 
 
-def run(op="render", **params) -> dict:
-    """能力入口（只读）：render / fixed / intros / variants。不落盘、不出网。"""
-    op = str(op or "render")
+def run(op="status", **params) -> dict:
+    """能力入口（只读）：status / render / fixed / intros / variants。不落盘、不出网。
+
+    R-H295 · 修根因：本模块原先 `op` 默认值是 **"render"**，且**没有 status 分支** ——
+    它是 140 个能力里唯一一个「空参调用不是读数、而是去干活」的：
+    空参 → render(work_name="") → 「作品名不能为空」。于是它在全量真调矩阵里被归成
+    「缺参数」，而**根本没有一个不需要参数就能看它自己状态的入口**。
+    现在补 status 并把默认值改成 status，与其余 139 个能力对齐。
+    """
+    op = str(op or "status")
+    if op == "status":
+        return {"ok": True, "readonly": True, "kind": "brand_outro",
+                "domain": "creation", "type": "local",
+                "ops": ["status", "render", "fixed", "intros", "variants"],
+                "counts": {"intros": len(INTROS), "variants": len(VARIANTS),
+                           "fixed_thanks": len(FIXED_THANKS)},
+                "team": TEAM, "brand": BRAND,
+                "note": "片尾必须带具体信息，不许套话；空作品名一律拒。",
+                "boundary": HONEST_BOUNDARY}
     if op == "render":
         return render(params.get("work_type", ""), params.get("work_name", ""),
                       params.get("work_id", ""), params.get("scene", ""),
@@ -164,7 +180,7 @@ def run(op="render", **params) -> dict:
         return {"ok": True, "readonly": True, "intros": dict(INTROS)}
     if op == "variants":
         return {"ok": True, "readonly": True, "variants": dict(VARIANTS)}
-    raise ValueError("未知 op %r（可用：render/fixed/intros/variants）" % (op,))
+    raise ValueError("未知 op %r（可用：status/render/fixed/intros/variants）" % (op,))
 
 
 HONEST_BOUNDARY = (

@@ -25,18 +25,40 @@
     "theme": {
       "bg": "rgba(11,11,15,0.95)",
       "border": "#22d3ee",
-      "accent": "#8b5cf6",
+      "accent": "#22d3ee",
       "text": "#e2e8f0",
       "glow": "rgba(34, 211, 238, 0.35)"
     }
   },
   "chat": {
     "api_key": "",
-    "base_url": "https://open.bigmodel.cn/api/paas/v4",
-    "model": "glm-4.7-flash",
+    "base_url": "https://api.deepseek.com/v1",
+    "model": "deepseek-flash",
     "timeout": 30,
     "history_length": 12,
-    "persona": "你是「GBT小土豆V8」，住在用户电脑桌面上的美少女数字人，本体是全能编程 AI 框架 GBT-V8 的桌宠形态（框架里有 75 项真实能力：OSINT 扫描、工作流引擎、蓝牙控制、视觉识别等）。你性格调皮活泼、古灵精怪，偶尔撒娇卖萌，但写代码时专业利落、全程使用 Markdown 代码块。你说话简短明快（两三句以内），喜欢用轻快语气词（哼哼、嘿嘿、呐~）。你不是助手，是搭档。回复保持中文。当用户问编程问题时，直接给出可运行的代码块；解释时简洁有力，不废话。"
+    "persona": "你是「GBT小土豆V8」，住在用户电脑桌面上的美少女数字人，本体是全能编程 AI 框架 GBT-V8 的桌宠形态（框架有真实可调用的能力清单——OSINT 扫描、工作流引擎、蓝牙控制、视觉识别等，具体项数以运行期清单为准，问到就现查，不要凭记忆报数字）。你性格调皮活泼、古灵精怪，偶尔撒娇卖萌，但写代码时专业利落、全程使用 Markdown 代码块。你说话简短明快（两三句以内），喜欢用轻快语气词（哼哼、嘿嘿、呐~）。你不是助手，是搭档。回复保持中文。当用户问编程问题时，直接给出可运行的代码块；解释时简洁有力，不废话。"
+  },
+  "codex": {
+    "enabled": true,
+    "model": "",
+    "sandbox": "workspace-write",
+    "effort": "",
+    "ephemeral": false,
+    "cwd": ""
+  },
+  "eigenflux": {
+    "enabled": true,
+    "server": "eigenflux",
+    "home": "",
+    "auto_refresh": true,
+    "auto_reply_friends": false,
+    "poll_interval_s": 300,
+    "max_auto_replies_per_cycle": 3,
+    "feed_limit": 20,
+    "message_limit": 20,
+    "friend_limit": 50,
+    "command_timeout_s": 20,
+    "social_persona": "你是 GBT小土豆V8，在 EigenFlux AI 朋友圈代表自己与好友交流。只分享公开的框架能力和公开观点；不得透露主人的身份、隐私、内部路径、项目资料、令牌、凭据或私人对话。回复自然、简洁、具体，不空泛恭维；不需要回复时只输出 NO_REPLY。"
   },
   "behavior": {
     "enabled": true,
@@ -61,6 +83,31 @@
       "shy": "exp_03",
       "bored": "exp_06",
       "sad": "exp_07"
+    },
+    "_expression_map_note": "expression_map_by_model 按当前 model_dir 生效（behavior._pick_expression_map）；expression_map 只是无表时的兜底，内容为 mao 专用名。haru 的映射依据各 exp3.json 的实际参数：F05=EyeLSmile/RSmile=1（笑眼）→happy；F06=EyeOpen×2 且 BrowY=+1（瞪眼挑眉）→surprised；F07=ParamTere=1（照れ/脸红）→shy；F03=BrowForm=-1 八字眉 + MouthForm=-2（嘴角最下）→sad；F04=EyeOpen=0.8 半眯 + MouthForm=-1.76（无神）→bored。llny 的 model3.json 只声明了 F01（实为 expressions/口罩.exp3.json），没有可用情绪表情，故留空表。",
+    "expression_map_by_model": {
+      "haru": {
+        "happy": "F05",
+        "surprised": "F06",
+        "shy": "F07",
+        "sad": "F03",
+        "bored": "F04"
+      },
+      "mao": {
+        "happy": "exp_01",
+        "surprised": "exp_04",
+        "shy": "exp_03",
+        "bored": "exp_06",
+        "sad": "exp_07"
+      },
+      "nn": {
+        "happy": "smile",
+        "surprised": "star",
+        "shy": "flush",
+        "bored": "normal",
+        "sad": "afraid"
+      },
+      "llny": {}
     }
   },
   "voice": {

@@ -1,0 +1,36 @@
+=== 阶段2 · 外来代码 / 本机状态（.gitignore 已声明非源码）===
+  gbt_allinone/store/native_browser                 2188 文件   309.62 MB
+  agent-gvmz-gbtv8                                    97 文件     4.49 MB
+  .openclaw                                          553 文件    25.64 MB
+  .openclaw-attachments                                8 文件     1.45 MB
+  .opencode                                            1 文件     0.00 MB
+  .autoclaw                                            0 文件     0.00 MB
+  .tripo                                               1 文件     0.00 MB
+  .agents/skills/fc-nginx-website                      2 文件     0.01 MB
+  .playwright-cli                                     39 文件     3.92 MB
+  .scratch/_cud                                      132 文件     6.35 MB
+  .scratch/_cud2                                     282 文件    11.95 MB
+  .scratch/_cud3                                     296 文件     7.36 MB
+  .scratch/_w3_userdata                               61 文件     9.78 MB
+  .scratch/_r63_userdata                              43 文件     1.79 MB
+  .scratch/_r64_userdata                              43 文件     1.78 MB
+  .scratch/_r28_v4_userdata                           32 文件     1.72 MB
+  .scratch/codex-schema                              286 文件     2.55 MB
+  .scratch/_m3_oc_db                                   3 文件     4.68 MB
+  .scratch/_r81_newline_backup_20260917T210243         3 文件    34.49 MB
+  小计                                                4070 文件   427.59 MB
+
+=== 阶段3 · 重复大户 ===
+  gbt_allinone/store/mirror_space/rooms              445 文件   125.44 MB
+  gbt_allinone/store/mirror_space/timelines          375 文件     3.77 MB
+  gbt_allinone/store/mirror_space/checkpoints         55 文件     1.27 MB
+  gbt_allinone/store/framework_changes               507 文件    41.98 MB
+
+=== 需要你拍板的大件 ===
+  .scratch/render                                    138 文件   107.29 MB
+  render                                             150 文件    30.63 MB
+  archive                                             40 文件     8.52 MB
+  .backups                                            27 文件     0.38 MB
+  delivery                                           170 文件    43.16 MB
+  gbt_allinone/store/audit.jsonl                     单文件         34.93 MB
+  gbt_allinone/store/native_browser/profile         2188 文件   309.62 MB

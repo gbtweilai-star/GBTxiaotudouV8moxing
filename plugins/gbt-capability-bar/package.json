@@ -1,0 +1,26 @@
+{
+  "name": "@gbt/dsh-client-ui-capability",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GBT小土豆V8 · 能力栏：把本体的 158 项能力挂进对话面板右侧栏（只读展示，不碰 DSH 内部）",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": { "default": "./lib/index.js" },
+    "./client": { "default": "./lib/client.js" },
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.2"
+  },
+  "dsh": {
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-ui-sidebar-right",
+        "@deepseek-ai/dsh-client-locale"
+      ],
+      "platform": "web"
+    }
+  }
+}

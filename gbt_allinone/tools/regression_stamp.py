@@ -66,6 +66,16 @@ import tempfile
 import time
 from pathlib import Path
 
+# 🔴 2026-09-23 第 40 轮补：**报告通道的编码也是判据的一部分**。
+# 实测（`test_regression_stamp.py` 三条同时红）：本器 606 行那句
+#   `print('[stamp] 依赖面未变 = True … ⇒ **结论**')`
+# 里的 `⇒`（U+21D2）在 **cp936 管道**下抛 `UnicodeEncodeError: 'gbk' codec can't encode …`
+# ⇒ 子进程当场崩 ⇒ 父进程找不到「依赖面未变 = True」这个标记 ⇒ 测试报红。
+# 红的是**打印**，不是判据；但读数的人只会看到"印章坏了"。
+# 同目录的 clean_residue / probe-* / dup-source-inventory 早就都锁了 UTF-8，本器漏了。
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = Path(__file__).resolve().parent.parent.parent
 SCRATCH = ROOT / '.scratch'
 
@@ -254,6 +264,23 @@ def compare_scope(old: dict, cur: dict) -> tuple:
     return diffs, unknown, disclosed
 
 
+def comparability_token(diffs: list, unknown: list) -> str:
+    """口径比对的**机读令牌**（三态，`--same-as` 用）。
+
+    🔴 2026-09-23 第 51 轮抽出（原来这段判断**埋在 `cmd_run` 的打印里**，没法判）：
+      原文只有一句 `same = not diffs` ⇒ **明明有 N 项无法比对**，
+      只要没有确凿差异就照样打 `comparability=same_scope`。
+      人读那行括号里写了「未知项见上」，**但令牌把那句话丢了** ——
+      下游只认 `same_scope`，会直接拿两次的红集对比，而**有些轴根本没验过**。
+      ⇒ 抽成纯函数，好让判据直接钉住这三态（埋在打印里的逻辑没人守得住）。
+    """
+    if diffs:
+        return 'not_comparable'
+    if unknown:
+        return 'same_scope_unverified_axes'
+    return 'same_scope'
+
+
 def collect(argv: list) -> dict:
     return {
         'at': time.strftime('%Y-%m-%dT%H:%M:%S'),
@@ -261,6 +288,25 @@ def collect(argv: list) -> dict:
         'store': {'GBT_STORE_DIR_env': os.environ.get('GBT_STORE_DIR') or None,
                   'bound_STORE_DIR': _store_dir()},
         'identity': _identity(),
+        # 🔴 2026-09-23 第 51 轮加（**护照里的"四元组"一直是残缺的**）：
+        #    `framework_gate.py:334` 从印章里取的是
+        #    `("python", "store", "comparability", "identity")`，
+        #    而这里原来**没有 `python`、也没有 `comparability`** ⇒ 那个 `if k in data`
+        #    **静默跳过**它们，护照里只记到 **2/4**，且一声不响。
+        #    实测（`.scratch/stamp_four_tuple_probe.py`）：盘上 **52 个印章，齐的 0 个（0%）**。
+        #    ⇒ 这里补上 `python`（与 `_scope_of` 里那个字符串同形，便于人读与比对）。
+        'python': '%s %s' % (sys.version.split()[0], sys.implementation.cache_tag),
+        # `comparability` 也是护照四元组要的一项 ⇒ **必须每个章都有**。
+        # ⚠️ 第一版我把它写在 `cmd_run` 里 —— 于是 `stamp` 子命令盖的章**照样缺这一项**
+        #    （实测当场发现：`stamp` 走的是 `collect()` 而不过 `cmd_run`）。
+        #    ⇒ 默认值放进 `collect()` 本身，**与入口无关**；`--same-as` 那一支再覆盖成真值。
+        #    `not_requested` 是**诚实的默认**：没请求比对，本就是这个状态，不是"漏了"。
+        'comparability': 'not_requested',
+        # 🔴 2026-09-23 第 52 轮加：**内容指纹**（口径四要素管不了"内容有没有被改"）。
+        #    第 51 轮两份回归读数都被并发写入污染，而我是事后按 mtime 考古才发现的 ⇒
+        #    从这一轮起，印章自己带"跑之前树长什么样"。
+        #    第 53 轮：**只写摘要进 .json**（明细 951 行会把印章撑大），明细留在内存里做 diff。
+        'tree': _compact(_fingerprint()),
         'interpreter': {'version': sys.version.split()[0],
                         'cache_tag': sys.implementation.cache_tag,
                         'executable': sys.executable},
@@ -269,6 +315,46 @@ def collect(argv: list) -> dict:
         'deps': _deps(),
         'git': _git_head(),
     }
+
+
+def _fingerprint(with_rows: bool = False, subdir: str = "") -> dict:
+    """整棵（剪枝后）代码树的内容指纹 —— 范围口径复用 `scan_scope`（**只有一份实现**）。
+
+    `with_rows=True` ⇒ 另带逐文件明细，好在"树被改了"时**指名是谁动的**（第 53 轮加）。
+    `subdir` ⇒ **只算依赖面那一刀**（第 56 轮加）。
+    """
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from scan_scope import tree_fingerprint
+        return tree_fingerprint(ROOT, with_rows=with_rows, subdir=(subdir or None))
+    except Exception as e:                                   # noqa: BLE001
+        # 取不到就**如实报错**，不许返回一个看起来正常的空指纹（那会让"没变化"变成一句空话）
+        return {'sha256': None, 'files': None, 'bytes': None,
+                'unreadable': [], 'error': '%s: %s' % (type(e).__name__, e)}
+
+
+# 依赖面 = 包（**保守超集**：实测依赖面 199 个文件 ⊂ 包内 351+ 个 .py）
+DEPS_SUBDIR = 'gbt_allinone'
+
+
+def _compact(fp: dict) -> dict:
+    """去掉逐文件明细的那一份 —— **印章文件不该被 951 行明细撑大**。
+
+    ⚠️ 但明细**不是丢掉**：它在内存里留着做 `_diff`（见 `cmd_run`），
+       只是**不写进 .json**。判据里有一条专门看这件事。
+    """
+    return {k: v for k, v in (fp or {}).items() if k != 'rows'}
+
+
+def _diff(before: dict, after: dict) -> dict:
+    """是谁动的 —— "不作收据"必须能指名，否则又绕回考古（第 53 轮）。"""
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from scan_scope import diff_trees
+        return diff_trees(before, after)
+    except Exception as e:                                   # noqa: BLE001
+        return {'available': False, 'added': [], 'removed': [], 'changed': [],
+                'note': '取不出差异：%s: %s' % (type(e).__name__, e)}
 
 
 def write_stamp(stamp: dict, tag: str = 'stamp') -> Path:
@@ -347,6 +433,17 @@ def cmd_run(args) -> int:
     child_env = os.environ.copy()
     child_env['GBT_STORE_DIR'] = store_dir
     child_env['PYTHONPATH'] = str(site_dir) + os.pathsep + child_env.get('PYTHONPATH', '')
+    # 🔴 2026-09-23 第 53 轮修（**我把"跑前"那一份挪到了跑后 ⇒ 永远报"树没变"**）：
+    #    第 52 轮 `before` 取自 `collect()`（在**孩子跑之前**算的），是对的；
+    #    第 53 轮我为了拿"带明细"的那一份，顺手改成 `before = _fingerprint(...)` 写在**跑完那几行里**
+    #    —— 于是两次指纹**都在孩子跑完之后**取，**任何改动都测不出来**。
+    #    实测当场撞到：让孩子建一个新 .py 文件，读数照样是
+    #    「树指纹未变 = True（962 个文件）」—— **一个永远说"干净"的机制，比没有更坏**。
+    #    ⇒ "跑前"必须在**这里**（孩子启动之前）取，带明细存在内存里，跑完再用。
+    tree_before_full = _fingerprint(with_rows=True)
+    # 🔴 第 56 轮：**依赖面**那一刀（实测依赖面 199 个文件全在包里；近几轮"导致不作收据"
+    #    的 13 个改动里 12 个在包外、与本次读数无关 ⇒ **收据看这一份**）。
+    deps_before_full = _fingerprint(with_rows=True, subdir=DEPS_SUBDIR)
     mem = _memory()
     need = float(args.need_memory or 0)
     if need and (not mem.get('ok') or float(mem.get('avail_gb') or 0) < need):
@@ -373,6 +470,10 @@ def cmd_run(args) -> int:
         return 2
     stamp = collect(sys.argv)
     stamp['store']['requested'] = store_dir
+    # 跑前那一份**带明细**的指纹（第 53 轮）：摘要进印章，明细留内存做 diff。
+    # ⚠️ 它必须来自**孩子启动之前**取的那一次（`tree_before_full`），
+    #    不许在这里重新算 —— 那样"跑前"就成了"跑后"，改动一律测不出来（第 53 轮踩过）。
+    stamp['tree'] = _compact(tree_before_full)
     path = write_stamp(stamp, 'stamp')
     print_stamp(stamp, path)
     print('  store(请求) %s' % store_dir)
@@ -458,9 +559,9 @@ def cmd_run(args) -> int:
             print('  读不到旧基线：%s' % old['_error'])
             print('  comparability=unknown')
             print('reason_code=baseline_unreadable')
+            stamp['comparability'] = 'unknown'
         else:
             diffs, unknown, disclosed = compare_scope(_scope_of(old), _scope_of(stamp))
-            same = not diffs
             for k, a, b in diffs:
                 print('  [X ] %-12s 旧=%s  新=%s' % (k, a, b))
             for k in unknown:
@@ -470,14 +571,69 @@ def cmd_run(args) -> int:
                     print('  [~~ ] %-12s 旧=%s  新=%s（只披露，不判口径）' % item)
                 else:
                     print('  [~~ ] %-12s 旧基线未记录（只披露，不判口径）' % item)
-            if same:
-                print('  [OK] 已记录项全部一致（未知项见上）')
-                print('  comparability=same_scope')
-            else:
+            # 🔴 2026-09-23 第 51 轮修：三态令牌（见 `comparability_token` 的注释）。
+            #    原来只有 `same = not diffs` ⇒ "有未知轴"被说成了"同口径"。
+            token = comparability_token(diffs, unknown)
+            if token == 'not_comparable':
                 print('  **本次不可与原基线同口径比较**：红集差异不得直接判为"代码坏了"；只允许逐名比对。')
                 print('  comparability=not_comparable')
                 print('reason_code=not_comparable')
+            elif token == 'same_scope_unverified_axes':
+                print('  [OK] 已记录项全部一致 —— **但有 %d 项旧基线没记录（%s），'
+                      '这些轴这次没验过**，别把"没有确凿差异"当成"全轴同口径"。'
+                      % (len(unknown), '、'.join(unknown)))
+                print('  comparability=same_scope_unverified_axes')
+                print('reason_code=unknown_axes_present')
+            else:
+                print('  [OK] 已记录项全部一致（且无未知项）')
+                print('  comparability=same_scope')
+            stamp['comparability'] = token
     print('[stamp] rc=%s' % p.returncode)
+    # 🔴 2026-09-23 第 52 轮：跑完**再算一次指纹** —— 这是"这次读数干不干净"的**证明**。
+    after = _fingerprint(with_rows=True)
+    before = tree_before_full                       # ← **孩子跑之前**取的那一份（第 53 轮修）
+    stamp['tree_after'] = _compact(after)
+    same_tree = (before.get('sha256') is not None and before.get('sha256') == after.get('sha256'))
+    stamp['tree_changed'] = (not same_tree)
+    delta = None if same_tree else _diff(before, after)
+    stamp['tree_delta'] = delta
+    # 🔴 第 56 轮：**收据的有效性看依赖面**（整仓的 tree_changed 只作披露）。
+    dep_after = _fingerprint(with_rows=True, subdir=DEPS_SUBDIR)
+    stamp['deps_subdir'] = DEPS_SUBDIR
+    stamp['deps_after'] = _compact(dep_after)
+    same_deps = (deps_before_full.get('sha256') is not None
+                 and deps_before_full.get('sha256') == dep_after.get('sha256'))
+    stamp['deps_changed'] = (not same_deps)
+    dep_delta = None if same_deps else _diff(deps_before_full, dep_after)
+    stamp['deps_delta'] = dep_delta
+    if before.get('sha256') is None or after.get('sha256') is None \
+            or deps_before_full.get('sha256') is None or dep_after.get('sha256') is None:
+        print('[stamp] ⚠️ 树指纹**取不到**（%s / %s）⇒ **本次无法证明"跑的时候树没被改"**'
+              % (before.get('error'), deps_before_full.get('error')))
+        print('           tree_changed=unknown')
+    elif not stamp['deps_changed']:
+        # 🔴 第 56 轮：**依赖面没变 ⇒ 收据成立**（哪怕整仓被别的会话改过）
+        print('[stamp] 依赖面未变 = True（%d 个文件 / %s…）⇒ **收据成立**'
+              % (dep_after.get('files'), str(dep_after.get('sha256'))[:12]))
+        if stamp['tree_changed']:
+            names = []
+            for kind in ('changed', 'added', 'removed'):
+                names += (delta or {}).get(kind) or []
+            print('           （面外另有 %d 个文件动过：%s%s —— **与本次读数无关**）'
+                  % (len(names), '、'.join(names[:4]), '…' if len(names) > 4 else ''))
+    else:
+        print('[stamp] !! **依赖面在跑的中途被改了** —— 这份读数**不能当收据**，只能当冒烟：')
+        print('           跑前 %s…  跑后 %s…'
+              % (str(deps_before_full.get('sha256'))[:12], str(dep_after.get('sha256'))[:12]))
+        if not (dep_delta or {}).get('available'):
+            print('           ⚠️ %s' % (dep_delta or {}).get('note'))
+        else:
+            for kind, label in (('changed', '改了'), ('added', '新增'), ('removed', '删了')):
+                names = dep_delta.get(kind) or []
+                if names:
+                    shown = '、'.join(names[:6]) + ('…（共 %d 个）' % len(names)
+                                                    if len(names) > 6 else '')
+                    print('           %s %d 个：%s' % (label, len(names), shown))
     stamp['result'] = {'rc': int(p.returncode), 'store_match': store_match,
                        'child_report': report, 'verdict': _verdict(text)}
     path.write_text(json.dumps(stamp, ensure_ascii=False, indent=2), encoding='utf-8')

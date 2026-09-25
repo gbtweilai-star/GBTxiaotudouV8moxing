@@ -1,0 +1,61 @@
+{
+  "at": "2026-09-23T14:57:46",
+  "verdict": "PASS",
+  "what": "GBT小土豆V8 一体式桌面壳 · 装机包（electron-builder --win --dir · portable）",
+  "artifact": {
+    "exe": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\dist\\win-unpacked\\GBT小土豆V8.exe",
+    "exe_bytes": 235706368,
+    "files": 306,
+    "bytes": 378299836,
+    "electronVersion": "43.0.0"
+  },
+  "checks": [
+    {
+      "check": "可执行文件",
+      "ok": true,
+      "detail": "GBT小土豆V8.exe · 224.8 MB · sha16 e1b93ac2c874dc68"
+    },
+    {
+      "check": "整包体量",
+      "ok": true,
+      "detail": "306 文件 / 360.8 MB"
+    },
+    {
+      "check": "app 面非空",
+      "ok": true,
+      "detail": "228 文件 / 3.8 MB"
+    },
+    {
+      "check": "壳与 extraResources 齐件",
+      "ok": true,
+      "detail": "全在"
+    },
+    {
+      "check": "窗口数与源一致",
+      "ok": true,
+      "detail": "包内 8 扇 · 源 8 扇 · godview, eigenflux, h1, dsh-chat, exec-deck, code-deck, brain, eye"
+    },
+    {
+      "check": "负规则·触手截图未进包",
+      "ok": true,
+      "detail": "零命中"
+    },
+    {
+      "check": "负规则·依赖目录未进包",
+      "ok": true,
+      "detail": "零命中"
+    },
+    {
+      "check": "electron 版本定值",
+      "ok": true,
+      "detail": "electronVersion='43.0.0'"
+    },
+    {
+      "check": "包与源码同源",
+      "ok": true,
+      "detail": "逐字节一致 20 个文件"
+    }
+  ],
+  "why_measured_not_reported": "回执不采信 `npm run pack` 的 stdout：实测它打印 'no node modules returned while searching directories'，**而它确实往 holo_pet_w3/ 装了一个 node_modules**。照抄 stdout 的回执当场就是假的。",
+  "note": "负规则两条（触手截图 / 依赖目录不许进包）是这份回执的重点。"
+}

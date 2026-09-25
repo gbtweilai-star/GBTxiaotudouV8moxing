@@ -1,0 +1,5 @@
+调度表: {"persona-evolve": {"workflow": "persona-evolve", "every_seconds": 600, "enabled": true, "defined_at": "2026-09-21T12:38:44", "last_run_ts": 0, "last_status": "never"}}
+
+手动 tick（模拟心跳到点）:
+{"ran": [{"schedule": "persona-evolve", "workflow": "persona-evolve", "status": "ok", "run_id": "persona-evolve-1789969260640"}], "count": 1}
+  persona-evolve: last_status=ok last_at=2026-09-21T12:41:00

@@ -1,0 +1,28 @@
+=== framework_changes ===
+    baseline.json 
+    blindspot_log.jsonl 
+    passports (505, 43922957)
+
+=== native_browser 里都是什么 ===
+   profile                       2206 文件   309.8 MB
+
+=== .scratch 构成（前 15）===
+   render                                     138 文件   107.3 MB
+   _r81_newline_backup_20260917T210243          3 文件    34.5 MB
+   shots                                       26 文件    20.4 MB
+   _cud2                                      299 文件    12.0 MB
+   _w3_userdata                                63 文件     9.8 MB
+   _cud3                                      308 文件     7.4 MB
+   _cud                                       137 文件     6.3 MB
+   _m3_oc_db                                    3 文件     4.7 MB
+   workspace_inventory.json (文件)                1 文件     3.9 MB
+   vision_probe                                 2 文件     2.9 MB
+   codex-schema                               286 文件     2.5 MB
+   _r63_userdata                               45 文件     1.8 MB
+   _r64_userdata                               45 文件     1.8 MB
+   _m5_skill_dupes_backup_20260918T083038     376 文件     1.7 MB
+   _r28_v4_userdata                            33 文件     1.7 MB
+
+=== agent-gvmz-gbtv8 是不是独立 git 仓 ===
+   log: fatal: your current branch 'master' does not have any commits yet
+   remote: 

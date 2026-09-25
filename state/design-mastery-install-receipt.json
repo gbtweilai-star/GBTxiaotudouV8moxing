@@ -1,0 +1,136 @@
+{
+ "at": "2026-09-22T23:18:41",
+ "src": "skills\\gbt-design-mastery",
+ "targets": [
+  {
+   "label": "openclaw-managed",
+   "dst": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-design-mastery",
+   "files": [
+    {
+     "rel": "SKILL.md",
+     "bytes": 32213,
+     "sha256": "626AD99709CD117915EAA5D50FDD2C9D56C504524788968A933BC7CE216B0DEF",
+     "installed_sha256": "626AD99709CD117915EAA5D50FDD2C9D56C504524788968A933BC7CE216B0DEF",
+     "identical": true
+    },
+    {
+     "rel": "references/L1-定档与审美.md",
+     "bytes": 42125,
+     "sha256": "2D67625997E3B794E8F12C678F0B4BD9DF5EE5032623515214E77114BAA67205",
+     "installed_sha256": "2D67625997E3B794E8F12C678F0B4BD9DF5EE5032623515214E77114BAA67205",
+     "identical": true
+    },
+    {
+     "rel": "references/L2-界面实现.md",
+     "bytes": 33355,
+     "sha256": "D7AB32A1BFD57F3EE7008BCF559839A75EA2B690ACB58CDA7F99119A506A7C98",
+     "installed_sha256": "D7AB32A1BFD57F3EE7008BCF559839A75EA2B690ACB58CDA7F99119A506A7C98",
+     "identical": true
+    },
+    {
+     "rel": "references/L3-设计稿与设计系统.md",
+     "bytes": 41774,
+     "sha256": "2ACBDD298FF58FB3B1DC9E51FC9614C1F910C7C4CF4C65FE59654CF775AD9E86",
+     "installed_sha256": "2ACBDD298FF58FB3B1DC9E51FC9614C1F910C7C4CF4C65FE59654CF775AD9E86",
+     "identical": true
+    },
+    {
+     "rel": "references/L4-动效与合成.md",
+     "bytes": 41992,
+     "sha256": "31E2C8B35C53CDAB0CDE98631E8F89F9CFD699790685DBBBDDD9E3E049B702EA",
+     "installed_sha256": "31E2C8B35C53CDAB0CDE98631E8F89F9CFD699790685DBBBDDD9E3E049B702EA",
+     "identical": true
+    },
+    {
+     "rel": "references/L5-演示与文档.md",
+     "bytes": 29888,
+     "sha256": "CE9C6FF2764A866DD1AB156FC504D678A7BD7B11245BE852B94163572C4FF732",
+     "installed_sha256": "CE9C6FF2764A866DD1AB156FC504D678A7BD7B11245BE852B94163572C4FF732",
+     "identical": true
+    },
+    {
+     "rel": "references/L6-出图与素材.md",
+     "bytes": 43335,
+     "sha256": "47DB5BEACBFDC5316969CF14FADBFC414A21472DDAE486A043E839ACC836F4D0",
+     "installed_sha256": "47DB5BEACBFDC5316969CF14FADBFC414A21472DDAE486A043E839ACC836F4D0",
+     "identical": true
+    },
+    {
+     "rel": "references/L7-视频与成片.md",
+     "bytes": 53879,
+     "sha256": "1E42DFBD5620BB9AE873BAEA6C63A85BA72ED6B01056BC8ACDB7D6F447EB36BE",
+     "installed_sha256": "1E42DFBD5620BB9AE873BAEA6C63A85BA72ED6B01056BC8ACDB7D6F447EB36BE",
+     "identical": true
+    }
+   ],
+   "extra_in_dst": [],
+   "all_identical": true
+  },
+  {
+   "label": "dsh-project",
+   "dst": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-design-mastery",
+   "files": [
+    {
+     "rel": "SKILL.md",
+     "bytes": 32213,
+     "sha256": "626AD99709CD117915EAA5D50FDD2C9D56C504524788968A933BC7CE216B0DEF",
+     "installed_sha256": "626AD99709CD117915EAA5D50FDD2C9D56C504524788968A933BC7CE216B0DEF",
+     "identical": true
+    },
+    {
+     "rel": "references/L1-定档与审美.md",
+     "bytes": 42125,
+     "sha256": "2D67625997E3B794E8F12C678F0B4BD9DF5EE5032623515214E77114BAA67205",
+     "installed_sha256": "2D67625997E3B794E8F12C678F0B4BD9DF5EE5032623515214E77114BAA67205",
+     "identical": true
+    },
+    {
+     "rel": "references/L2-界面实现.md",
+     "bytes": 33355,
+     "sha256": "D7AB32A1BFD57F3EE7008BCF559839A75EA2B690ACB58CDA7F99119A506A7C98",
+     "installed_sha256": "D7AB32A1BFD57F3EE7008BCF559839A75EA2B690ACB58CDA7F99119A506A7C98",
+     "identical": true
+    },
+    {
+     "rel": "references/L3-设计稿与设计系统.md",
+     "bytes": 41774,
+     "sha256": "2ACBDD298FF58FB3B1DC9E51FC9614C1F910C7C4CF4C65FE59654CF775AD9E86",
+     "installed_sha256": "2ACBDD298FF58FB3B1DC9E51FC9614C1F910C7C4CF4C65FE59654CF775AD9E86",
+     "identical": true
+    },
+    {
+     "rel": "references/L4-动效与合成.md",
+     "bytes": 41992,
+     "sha256": "31E2C8B35C53CDAB0CDE98631E8F89F9CFD699790685DBBBDDD9E3E049B702EA",
+     "installed_sha256": "31E2C8B35C53CDAB0CDE98631E8F89F9CFD699790685DBBBDDD9E3E049B702EA",
+     "identical": true
+    },
+    {
+     "rel": "references/L5-演示与文档.md",
+     "bytes": 29888,
+     "sha256": "CE9C6FF2764A866DD1AB156FC504D678A7BD7B11245BE852B94163572C4FF732",
+     "installed_sha256": "CE9C6FF2764A866DD1AB156FC504D678A7BD7B11245BE852B94163572C4FF732",
+     "identical": true
+    },
+    {
+     "rel": "references/L6-出图与素材.md",
+     "bytes": 43335,
+     "sha256": "47DB5BEACBFDC5316969CF14FADBFC414A21472DDAE486A043E839ACC836F4D0",
+     "installed_sha256": "47DB5BEACBFDC5316969CF14FADBFC414A21472DDAE486A043E839ACC836F4D0",
+     "identical": true
+    },
+    {
+     "rel": "references/L7-视频与成片.md",
+     "bytes": 53879,
+     "sha256": "1E42DFBD5620BB9AE873BAEA6C63A85BA72ED6B01056BC8ACDB7D6F447EB36BE",
+     "installed_sha256": "1E42DFBD5620BB9AE873BAEA6C63A85BA72ED6B01056BC8ACDB7D6F447EB36BE",
+     "identical": true
+    }
+   ],
+   "extra_in_dst": [],
+   "all_identical": true
+  }
+ ],
+ "all_identical": true,
+ "why_two_targets": "本机 DSH 的 dsh-skill-filesystem 不扫 ~/.openclaw-autoclaw/skills；只装那里对 DSH 会话无效（现读实测）。"
+}

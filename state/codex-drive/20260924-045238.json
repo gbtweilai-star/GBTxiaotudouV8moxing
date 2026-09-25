@@ -1,0 +1,30 @@
+{
+ "时间": "2026-09-24T04:46:24",
+ "带现状": true,
+ "沙箱": "read-only",
+ "任务": "帮我生成一个 Stable Diffusion OpenPose+LoRA 的 ComfyUI 自动化工作流模板，并说明如何与 GBT小土豆V8 框架协作实现免费无限生产",
+ "提示字数": 8732,
+ "第一次": {
+  "exit": 0,
+  "耗时s": 76.6,
+  "命中冷却": true
+ },
+ "换钉": {
+  "ok": true,
+  "status": "already",
+  "钉的": "auto",
+  "读数": {
+   "活": true,
+   "状态": 200,
+   "status": "completed",
+   "落到": "meta/muse-glimmer-30b",
+   "耗时s": 1.2
+  }
+ },
+ "重试一次": {
+  "exit": 0,
+  "耗时s": 291.9
+ },
+ "答复": "已验的闭环别重做，你这条链在盘上已经跑通：\n\n**已验件**\n- `tools/codex-scripts/comfy-pose-lora.py`：五步闭环客户端，节点入参按 `/object_info` 白名单过滤，已验 1366.3 s / 8 步 LCM / 三件套同时生效。\n- 模型真身已 sha256 验真并在盘上：\n  `models/checkpoints/Realistic_Vision_V5.1_fp16-no-ema.safetensors` 2,132,625,894 B\n  `models/controlnet/control_openpose-fp16.safetensors` 722,596,338 B\n  `models/loras/lcm-lora-sdv1-5.safetensors` 134,621,556 B\n- 骨架生成：`tools/codex-scripts/openpose-skeleton.py`，产出 `render/comfy-pose/*-pose-overlay.png` 已闭环回检 Chamfer 中位 0.00 px。\n- 调度层：`tools/codex-scripts/genrouter.py` 已有轮询池，本机 `comfy_local` 兜底 + `pollinations` 无 key 云腿，已验出图。\n\n### OpenPose+LoRA 工作流模板\n\n可直接喂给 ComfyUI 的最小 JSON，节点名与 `comfy-pose-lora.py` 的 `build()` 完全一致，不改就能复跑：\n\n```json\n{\n  \"4\": {\"class_type\":\"CheckpointLoaderSimple\",\"inputs\":{\"ckpt_name\":\"Realistic_Vision_V5.1_fp16-no-ema.safetensors\"}},\n  \"13\":{\"class_type\":\"LoraLoader\",\"inputs\":{\"lora_name\":\"lcm-lora-sdv1-5.safetensors\",\"strength_model\":1.0,\"strength_clip\":1.0,\"model\":[\"4\",0],\"clip\":[\"4\",1]}},\n  \"6\":{\"class_type\":\"CLIPTextEncode\",\"inputs\":{\"text\":\"photo of a young woman standing, full body, cinematic light\",\"clip\":[\"13\",1]}},\n  \"7\":{\"class_type\":\"CLIPTextEncode\",\"inputs\":{\"text\":\"lowres, blurry, watermark, text, extra fingers\",\"clip\":[\"13\",1]}},\n  \"10\":{\"class_type\":\"ControlNetLoader\",\"inputs\":{\"control_net_name\":\"control_openpose-fp16.safetensors\"}},\n  \"11\":{\"class_type\":\"LoadImage\",\"inputs\":{\"image\":\"gbt-pose-stand-std.png\"}},\n  \"12\":{\"class_type\":\"ControlNetApplyAdvanced\",\"inputs\":{\"positive\":[\"6\",0],\"negative\":[\"7\",0],\"control_net\":[\"10\",0],\"image\":[\"11\",0],\"strength\":1.0,\"start_percent\":0.0,\"end_percent\":1.0,\"model\":[\"13\",0],\"clip\":[\"13\",1],\"vae\":[\"4\",2]}},\n  \"5\":{\"class_type\":\"EmptyLatentImage\",\"inputs\":{\"width\":512,\"height\":512,\"batch_size\":1}},\n  \"3\":{\"class_type\":\"KSampler\",\"inputs\":{\"seed\":12345,\"steps\":8,\"cfg\":2.0,\"sampler_name\":\"lcm\",\"scheduler\":\"normal\",\"denoise\":1.0,\"model\":[\"13\",0],\"positive\":[\"12\",0],\"negative\":[\"12\",1],\"latent_image\":[\"5\",0]}},\n  \"8\":{\"class_type\":\"VAEDecode\",\"inputs\":{\"samples\":[\"3\",0],\"vae\":[\"4\",2]}},\n  \"9\":{\"class_type\":\"SaveImage\",\"inputs\":{\"filename_prefix\":\"gbt_pose_lora\",\"images\":[\"8\",0]}}\n}\n```\n\n调用即用：\n```bash\npython tools/codex-scripts/comfy-pose-lora.py --pose gbt-pose-stand-std.png \\\n  --prompt \"photo of a young woman standing, full body, cinematic light\" \\\n  --lora lcm-lora-sdv1-5.safetensors --steps 8 --cfg 2.0 --sampler lcm\n```\n服务地址可改：`--base http://127.0.0.1:8188`，换云 ComfyUI 只改 base。\n\n### 与 GBT小土豆V8 协作做“免费无限生产”\n\n- **唯一入口**：人话 → `python tools/codex-scripts/omni.py \"<人话>\"` 路由 → `python tools/codex-scripts/five-dim.py cap <能力位> '{\"op\":\"...\"}'` 执行。不要裸调 `gbt_allinone` 模块。\n- **出图腿走 genrouter**：`genrouter.py` 轮询池已登记 `comfy_local` + `pollinations` + Cloudflare 等。本机 7.4 GB、无 CUDA 时：\n  ① 姿势 `openpose-skeleton.py` 本机秒级 CPU 生成；\n  ② 扩散必须同一张卡，三件套不可拆云，本机慢跑 8 步 ≈ 22 分钟/张 为真无限兜底；\n  ③ 云腿只用于 `genrouter` 的图生成层，换 `base` 地址即可接入，无需改工作流。\n- **免费无限的边界**：三件套必须在同一去噪过程里生效，不能把 ControlNet 放 A 云、底模放 B 云。官方 44 个云插件无 ControlNet，Cloudflare Workers AI 无图像 LoRA。免费额度靠轮询 + 本机兜底实现“不停机”。\n- **接大脑执行层**：`genrouter` 的 `comfy_local` 腿已可换 base。把 `comfy-pose-lora.py` 的拼图逻辑接入 `gen_comfy`，即可让 `run_task` → `genrouter` 直接下发 OpenPose+LoRA 任务。\n\n未验项照实标：`--write` 模式未验、连续驱动稳定性未验、身份 LoRA 未训。\n",
+ "成败": "✅ 拿到答复"
+}

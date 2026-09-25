@@ -34,6 +34,8 @@ def _key():
                         k = line.split("=", 1)[1].strip()
                         break
         except Exception:  # noqa: BLE001
+            # 合理兜底：读 .env 失败 → k 保持空串 → configured() 如实返回 False。
+            # 静默是安全的：失败结果对调用方可见（未配置），不掩盖、不伪造。
             pass
     return k
 
@@ -73,24 +75,35 @@ def chat(prompt, system="", model=None, max_tokens=2000, temperature=0.7, timeou
         "max_tokens": int(max_tokens),
         "temperature": float(temperature),
     }
-    req = urllib.request.Request(
-        f"{_BASE}/chat/completions",
-        data=json.dumps(body).encode("utf-8"),
-        headers={"Content-Type": "application/json",
-                 "Authorization": f"Bearer {k}"},
-    )
+    # R120：出站统一走 net_guard（SSRF/端口/体积守门）+ 应用层 AI 审计。
+    # 此前这段直连 urllib.request.urlopen，两道门都没过。
+    from . import net_guard as _ng
+    from . import ai_audit as _audit
+    url = f"{_BASE}/chat/completions"
+    headers = {"Content-Type": "application/json",
+               "Authorization": f"Bearer {k}"}
     t0 = time.time()
+    ctx = _audit.begin("abliteration", url, model=body["model"],
+                       request_body=body, headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            data = json.loads(r.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        try:
-            err = e.read().decode("utf-8")[:200]
-        except Exception:  # noqa: BLE001
-            err = str(e)
-        return {"ok": False, "error": f"HTTP {e.code}: {err}"}
+        response = _ng.safe_request_json(
+            url, method="POST", headers=headers,
+            body=json.dumps(body).encode("utf-8"), timeout=timeout)
     except Exception as e:  # noqa: BLE001
+        _audit.finish(ctx, ok=False, error=e)
         return {"ok": False, "error": f"{type(e).__name__}: {e}"[:200]}
+    if response["status"] >= 400:
+        _audit.finish(ctx, status=response["status"], ok=False,
+                      response_text=response.get("text"))
+        return {"ok": False,
+                "error": f"HTTP {response['status']}: "
+                         f"{str(response.get('text') or '')[:200]}"}
+    data = response.get("json")
+    if not isinstance(data, dict):
+        _audit.finish(ctx, status=response["status"], ok=False,
+                      response_text=response.get("text"))
+        return {"ok": False, "error": "abliteration 返回非 JSON 对象"}
+    _audit.finish(ctx, status=response["status"], ok=True, response=data)
 
     msg = (data.get("choices") or [{}])[0].get("message", {}) or {}
     content = msg.get("content") or ""

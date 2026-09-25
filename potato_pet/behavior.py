@@ -180,6 +180,11 @@ class BehaviorEngine(QObject):
         super().__init__(parent)
         # 兼容两种传参：完整配置（含 "behavior" 键）或直接就是 behavior 段
         cfg = config.get("behavior") if isinstance(config, dict) else None
+        pet_model = ""
+        if isinstance(config, dict):
+            pet_cfg = config.get("pet")
+            if isinstance(pet_cfg, dict):
+                pet_model = str(pet_cfg.get("model_dir") or "")
         if cfg is None and isinstance(config, dict) and any(
             k in config for k in ("idle_interval_ms", "wander_interval_ms",
                                   "play_interval_ms", "sleep_after_minutes")
@@ -201,9 +206,11 @@ class BehaviorEngine(QObject):
         self._motion_aliases.setdefault("interact", "TapBody")
         self._motion_aliases.setdefault("talk", "Idle")
         self._motion_aliases.setdefault("head", "TapBody")
-        self._expression_map = {
-            str(k): str(v) for k, v in dict(self.cfg.get("expression_map", {})).items()
-        }
+        # 表情映射按模型选表：实测四套模型的表情名完全不同
+        # （haru=F01..F08 / mao=exp_01..exp_08 / nn=normal..flush / llny=F01），
+        # config 里原来只有一张 mao 专用的表，而默认模型是 haru →
+        # 点击头部/身体、情绪跟随、心智脉冲触发的每一次表情切换全部静默无效。
+        self._expression_map = self._pick_expression_map(pet_model)
 
         # ---- FSM 状态 ----
         self.state = IDLE
@@ -212,6 +219,7 @@ class BehaviorEngine(QObject):
         self._last_play = 0.0
         self._home_pos: tuple[int, int] | None = None
         self._last_fired: dict[str, float] = {}
+        self._mind_pulse: dict = {}
 
         # ---- 插值移动 ----
         self._move_target: tuple[int, int] | None = None
@@ -297,7 +305,25 @@ class BehaviorEngine(QObject):
         return self._call("play_motion", self._motion_aliases.get(group, group), priority)
 
     def _set_expression(self, emotion: str):
-        return self._call("set_expression", self._expression_map.get(emotion, emotion))
+        """按当前模型的表情表切换表情；表里没有就跳过（不再传无效名字）。"""
+        name = self._expression_map.get(str(emotion))
+        if not name:
+            return False
+        return self._call("set_expression", name)
+
+    def _pick_expression_map(self, model: str) -> dict:
+        """按模型取表情表；缺表时退回旧键 expression_map（向后兼容）。"""
+        by_model = self.cfg.get("expression_map_by_model")
+        if isinstance(by_model, dict) and model and model in by_model:
+            table = by_model.get(model)
+            if not isinstance(table, dict) or not table:
+                logger.info("model %s 没有可用表情映射，表情切换将跳过", model)
+                return {}
+            return {str(k): str(v) for k, v in table.items()}
+        if isinstance(by_model, dict) and model:
+            logger.warning("config 缺少 %s 的表情映射，退回 expression_map", model)
+        return {str(k): str(v)
+                for k, v in dict(self.cfg.get("expression_map", {})).items()}
 
     def _say(self, text: str):
         return self._call("say", text)
@@ -410,6 +436,25 @@ class BehaviorEngine(QObject):
             self._home_pos = (int(rect[0]), int(rect[1]))
         self._set_state(IDLE, "drag end")
 
+    def apply_mind(self, pulse: dict) -> None:
+        """吸收心智脉冲，只调节微表情和主动互动倾向，不覆盖主行为状态。"""
+        if not isinstance(pulse, dict):
+            return
+        self._mind_pulse = pulse
+        if not self._running:
+            return
+        # 微表情只在对话态跟随心智；IDLE 仍由原行为引擎掌控，
+        # 避免定时心智脉冲把无聊、打盹或正在做的微动作反复覆盖。
+        if self.state != TALK:
+            return
+        meta = pulse.get("metacognition") or {}
+        if meta.get("should_pause"):
+            self._set_expression("surprised")
+            return
+        expression = str(pulse.get("expression") or "")
+        if expression in ("happy", "sad", "shy", "bored", "surprised"):
+            self._set_expression(expression)
+
     # ------------------------------------------------------ hold timers
     def _on_interact_hold(self):
         if self._running and self.state == INTERACT:
@@ -436,9 +481,20 @@ class BehaviorEngine(QObject):
             "bored_face": 0.4 + 0.5 * min(idle_min, 6.0),
             "act_cute": min(5.0, 0.25 + 1.1 * min(idle_min, 5.0)),
         }
+        mind = self._mind_pulse if isinstance(self._mind_pulse, dict) else {}
+        needs = mind.get("needs") or {}
+        owner = mind.get("owner_model") or {}
+        connection = float(needs.get("connection") or 0.0)
+        rest = float(needs.get("rest") or 0.0)
+        if connection >= 0.62:
+            weights["act_cute"] *= 1.25
+        if owner.get("state") == "fatigued" or rest >= 0.68:
+            weights["act_cute"] *= 0.15
+            weights["idle_motion"] *= 1.35
         if (
             bool(self.cfg["auto_summon_panel"])
             and idle_min >= float(self.cfg["summon_after_minutes"])
+            and owner.get("state") != "fatigued"
             and self._call("get_panel_rect") is None
             and self._off_cooldown("summon")
         ):

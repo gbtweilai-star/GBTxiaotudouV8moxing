@@ -1,0 +1,8 @@
+{
+  "name": "gbt-c09-policy-guard",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "权限与安全策略门（主人给的对应名：dsh-policy-guard）",
+  "_generated": "tools/codex-scripts/cloud-mesh.py gen"
+}

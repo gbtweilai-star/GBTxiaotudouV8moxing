@@ -1,0 +1,8 @@
+{
+  "name": "gbt-c03-uncensored-lane",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "无审查通道（自托管权重 · 文本 + 图像）（主人给的对应名：dsh-llm-qwen-abliterated）",
+  "_generated": "tools/codex-scripts/cloud-mesh.py gen"
+}

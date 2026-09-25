@@ -1,0 +1,402 @@
+[
+  {
+    "member_id": "M-001",
+    "name": "现役-3D侦察兵",
+    "specialty": "视觉",
+    "status": "空编",
+    "current_task": "DD-01",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-002",
+    "name": "现役-空白面排查兵",
+    "specialty": "前端",
+    "status": "空编",
+    "current_task": "DD-02",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-003",
+    "name": "现役-安装节工程兵",
+    "specialty": "系统",
+    "status": "空编",
+    "current_task": "DD-03",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-004",
+    "name": "预备-抢修-04",
+    "specialty": "抢修",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-005",
+    "name": "预备-前端-05",
+    "specialty": "前端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-006",
+    "name": "预备-后端-06",
+    "specialty": "后端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-007",
+    "name": "预备-视觉-07",
+    "specialty": "视觉",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-008",
+    "name": "预备-系统-08",
+    "specialty": "系统",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-009",
+    "name": "预备-抢修-09",
+    "specialty": "抢修",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-010",
+    "name": "预备-前端-10",
+    "specialty": "前端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-011",
+    "name": "预备-后端-11",
+    "specialty": "后端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-012",
+    "name": "预备-视觉-12",
+    "specialty": "视觉",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-013",
+    "name": "预备-系统-13",
+    "specialty": "系统",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-014",
+    "name": "预备-抢修-14",
+    "specialty": "抢修",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-015",
+    "name": "预备-前端-15",
+    "specialty": "前端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-016",
+    "name": "预备-后端-16",
+    "specialty": "后端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-017",
+    "name": "预备-视觉-17",
+    "specialty": "视觉",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-018",
+    "name": "预备-系统-18",
+    "specialty": "系统",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-019",
+    "name": "预备-抢修-19",
+    "specialty": "抢修",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-020",
+    "name": "预备-前端-20",
+    "specialty": "前端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-021",
+    "name": "预备-后端-21",
+    "specialty": "后端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-022",
+    "name": "预备-视觉-22",
+    "specialty": "视觉",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-023",
+    "name": "预备-系统-23",
+    "specialty": "系统",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-024",
+    "name": "预备-抢修-24",
+    "specialty": "抢修",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-025",
+    "name": "预备-前端-25",
+    "specialty": "前端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-026",
+    "name": "预备-后端-26",
+    "specialty": "后端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-027",
+    "name": "预备-视觉-27",
+    "specialty": "视觉",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-028",
+    "name": "预备-系统-28",
+    "specialty": "系统",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-029",
+    "name": "预备-抢修-29",
+    "specialty": "抢修",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-030",
+    "name": "预备-前端-30",
+    "specialty": "前端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-031",
+    "name": "预备-后端-31",
+    "specialty": "后端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-032",
+    "name": "预备-视觉-32",
+    "specialty": "视觉",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-033",
+    "name": "预备-系统-33",
+    "specialty": "系统",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-034",
+    "name": "预备-抢修-34",
+    "specialty": "抢修",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-035",
+    "name": "预备-前端-35",
+    "specialty": "前端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-036",
+    "name": "预备-后端-36",
+    "specialty": "后端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-037",
+    "name": "预备-视觉-37",
+    "specialty": "视觉",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-038",
+    "name": "预备-系统-38",
+    "specialty": "系统",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-039",
+    "name": "预备-抢修-39",
+    "specialty": "抢修",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-040",
+    "name": "预备-前端-40",
+    "specialty": "前端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-041",
+    "name": "预备-后端-41",
+    "specialty": "后端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-042",
+    "name": "预备-视觉-42",
+    "specialty": "视觉",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-043",
+    "name": "预备-系统-43",
+    "specialty": "系统",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-044",
+    "name": "预备-抢修-44",
+    "specialty": "抢修",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-045",
+    "name": "预备-前端-45",
+    "specialty": "前端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-046",
+    "name": "预备-后端-46",
+    "specialty": "后端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-047",
+    "name": "预备-视觉-47",
+    "specialty": "视觉",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-048",
+    "name": "预备-系统-48",
+    "specialty": "系统",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-049",
+    "name": "预备-抢修-49",
+    "specialty": "抢修",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  },
+  {
+    "member_id": "M-050",
+    "name": "预备-前端-50",
+    "specialty": "前端",
+    "status": "空编",
+    "current_task": "",
+    "backed_by": ""
+  }
+]

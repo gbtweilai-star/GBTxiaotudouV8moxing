@@ -1,0 +1,1 @@
+{"ok": true, "status": "done", "key": "fb7893f708163e71", "pose": "stand.png", "prompt": "a photo of a young woman standing, full body, soft studio light", "seed": 20260923, "size": [256, 256], "steps": 1, "elapsed_s": 342.8, "images": [{"file": "render\\pose-batch\\1790201207-stand-fb7893f708163e71.png", "bytes": 81372, "sha256_head": "efed18a7dbd07730"}]}

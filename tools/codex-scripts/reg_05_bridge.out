@@ -1,0 +1,45 @@
+test_codex_chat_delegates_to_run_once (__main__.TestCodexApiRouting) ... FAIL
+test_codex_chat_requires_message (__main__.TestCodexApiRouting) ... ok
+test_codex_status_returns_stamped_result (__main__.TestCodexApiRouting) ... ok
+test_command_approval_roundtrip (__main__.TestCodexBridgeProtocol) ... ok
+test_default_denial_when_no_handler (__main__.TestCodexBridgeProtocol) ... ok
+test_handshake_reports_server_info (__main__.TestCodexBridgeProtocol) ... ok
+test_interrupt_returns (__main__.TestCodexBridgeProtocol) ... ok
+test_thread_start_and_models (__main__.TestCodexBridgeProtocol) ... ok
+test_turn_streams_events_and_calls_dynamic_tool (__main__.TestCodexBridgeProtocol) ... ok
+test_developer_instructions_carry_discipline (__main__.TestCodexBridgeTools) ... ok
+test_doctor_live_flag_marks_turn_step (__main__.TestCodexBridgeTools) ... ok
+test_doctor_reports_missing_codex_cleanly (__main__.TestCodexBridgeTools) ... ok
+test_dynamic_tool_specs_are_wellformed (__main__.TestCodexBridgeTools) ... ok
+test_mind_tool_routes_full_cycle_inputs (__main__.TestCodexBridgeTools) ... ok
+test_mirror_op_mapping (__main__.TestCodexBridgeTools) ... ok
+test_native_browser_schema_exposes_cookie_values_switch (__main__.TestCodexBridgeTools) ... ok
+test_native_browser_tool_routes_to_browser_native (__main__.TestCodexBridgeTools) ... ok
+test_nexus_rejects_unknown_mode (__main__.TestCodexBridgeTools) ... ok
+test_nexus_requires_goal (__main__.TestCodexBridgeTools) ... ok
+test_nexus_sense_reaches_tentacle_status (__main__.TestCodexBridgeTools) ... ok
+test_nexus_tool_is_exposed (__main__.TestCodexBridgeTools) ... ok
+test_nexus_unify_reaches_brain_unify (__main__.TestCodexBridgeTools) ... ok
+test_status_reports_local_codex_presence (__main__.TestCodexBridgeTools) ... ok
+test_tentacle_tool_routes_action_and_status (__main__.TestCodexBridgeTools) ... ok
+test_tool_success_checks_nested_capability_result (__main__.TestCodexBridgeTools) ... ok
+test_universal_plug_parallel_routes_to_brain_execute (__main__.TestCodexBridgeTools) ... ok
+test_universal_plug_routes_to_workflow_engine (__main__.TestCodexBridgeTools) ... ok
+test_unknown_tool_is_reported_not_raised (__main__.TestCodexBridgeTools) ... ok
+test_run_once_completes_and_returns_reply (__main__.TestCodexRunOnce) ... ok
+test_run_once_rejects_empty_message (__main__.TestCodexRunOnce) ... ok
+
+======================================================================
+FAIL: test_codex_chat_delegates_to_run_once (__main__.TestCodexApiRouting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT–°Õ¡∂πV8\gbt_allinone\tests\test_codex_bridge.py", line 358, in test_codex_chat_delegates_to_run_once
+    patched.assert_called_once()
+  File "C:\Python310\lib\unittest\mock.py", line 908, in assert_called_once
+    raise AssertionError(msg)
+AssertionError: Expected 'run_once' to have been called once. Called 0 times.
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.691s
+
+FAILED (failures=1)

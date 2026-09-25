@@ -1,0 +1,30 @@
+{
+ "时间": "2026-09-24T04:48:35",
+ "带现状": true,
+ "沙箱": "read-only",
+ "任务": "Stable Diffusion OpenPose+LoRA ComfyUI 自动化工作流模板，说明如何与 GBT小土豆V8 框架实现免费无限生产",
+ "提示字数": 8720,
+ "第一次": {
+  "exit": 0,
+  "耗时s": 388.1,
+  "命中冷却": true
+ },
+ "换钉": {
+  "ok": true,
+  "status": "already",
+  "钉的": "auto",
+  "读数": {
+   "活": true,
+   "状态": 200,
+   "status": "completed",
+   "落到": "meta/muse-glimmer-30b",
+   "耗时s": 0.5
+  }
+ },
+ "重试一次": {
+  "exit": 0,
+  "耗时s": 442.0
+ },
+ "答复": "**现状不重做**：三件真身 sha256 已验、CPU ComfyUI 0.37 / torch-cpu 已起、`comfy-pose-lora.py` 闭环已跑通 281703 B 图、Codex 默认走万能插已进上下文。按这套硬件出方案。\n\n**可复用的模板骨架**\n- 启动与探活\n  `pwsh -File tools/codex-scripts/comfy-serve.ps1`  # CPU 127.0.0.1:8188，PID/日志可停\n  `python tools/codex-scripts/comfy-run.py --probe`\n- 件验\n  `pwsh -File tools/codex-scripts/comfy-fetch-models.ps1`  # Realistic_Vision_V5.1_fp16-no-ema / control_openpose-fp16 / lcm-lora-sdv1-5，三 sha256 逐字节对上\n- 生成闭环客户端\n  `python tools/codex-scripts/comfy-pose-lora.py --pose gbt-pose.png --prompt \"...\" --lora lcm-lora-sdv1-5.safetensors --steps 8 --cfg 2.0 --sampler lcm`\n  五步：探活 → 问服务认件 → POST /prompt → 轮询 history → 逐字节写 PNG。模型名、节点入参均由 `/object_info` 现算，不写死。\n\n**接入 GBT 小土豆 V8 框架**\n- 人话入口 → 万能插\n  `python tools/codex-scripts/omni.py \"<人话>\"` 路由\n  执行唯一门：`python tools/codex-scripts/five-dim.py cap <能力位> '{\"op\":\"...\"}'`\n  禁止直接调 `gbt_allinone` 模块函数，写镜像/生产必须 `run_task` 授权门并显式声明落点。\n- 批量无限生产\n  用一根触手驱动 Codex：`python tools/codex-scripts/codex-drive.py \"批量按.pose.tsv 生成\"`  \n  默认 `--sandbox read-only`、自动带 `memory/在办清单.md` 尾部现状、429 命中 `freellm-alive.py pin` 自愈重试一次，留痕 `state/codex-drive/*.json`。\n- 排练再晋升\n  镜像多维度 `room_create → room_plan → room_simulate → room_rehearse → room_release`。成品才 `five-dim.py cap ... run_task` 进生产，`one_key_deploy` 必须 `room=\"<房间名>\"` 或 `into_global_production=true` 且有主人授权。\n\n**本机约束**\n- 无 CUDA、内存 7.4GB → 只能 CPU，LCM-LoRA 将 SD1.5 压到 4-8 步，OpenPose 控制姿态，Base 用逼真 Vision V5.1。\n- 不许 44 个云 ControlNet、也不许把三件套拆云端训，CPU 上三件必须同卡同步。\n\n这是已验可复跑的免费无限生产链：本地开源模型 + CPU LCM 加速 + OpenPose 定姿 + Codex 驱动批量 + 万能插授权门控制落点。\n",
+ "成败": "✅ 拿到答复"
+}

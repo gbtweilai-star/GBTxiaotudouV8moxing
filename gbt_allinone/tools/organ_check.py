@@ -42,6 +42,33 @@ def _on_list(caps: dict, prefixes: tuple) -> list:
     return sorted(n for n in caps if any(n == p or n.startswith(p) for p in prefixes))
 
 
+def _probe_err(organ: str, exc: BaseException) -> dict:
+    """R-H295 · ⑥ G1/G2：探针**量不了**时的结构化证据。
+
+    《触手覆盖矩阵.md》§三：门组 4 个模块只有 3 个能报"做不了"，本文件是缺的那个。
+    原来失败记的是自由文本 `f"err {type(exc).__name__}"` —— 人看得见，
+    机器读不出"是缺依赖、契约变了、还是导入不到"。证据要能被机器读，才算证据。
+    （值仍是 JSON 可显示的 dict，不改变 ev 的用法。）
+    """
+    return {
+        "ok": False,
+        "unavailable": True,
+        "denied": False,
+        "rule": "organ_probe_unavailable",
+        "action": "probe_" + str(organ),
+        # 🔴 2026-09-22 修（错报治理）：原来只给 `missing`，而这一支是**探针量不了**，
+        # 不是"这个器官不存在"。机器读 `missing` 会得出"缺件"的错误结论 ⇒
+        # 补 `unknown`（未测）并把口径写进 note：**未测 ≠ 不存在**。
+        # `missing` 保留不动（不破坏既有消费者），但语义由 note 说清。
+        "missing": [str(organ)],
+        "unknown": [str(organ)],
+        "note": "探针**量不了**（未测）—— 不等于该器官不存在；缺依赖 / 契约变了 / 导入不到，"
+                "看 why 里的异常类型",
+        "why": "%s: %s" % (type(exc).__name__, str(exc)[:160]),
+        "text": "err %s" % type(exc).__name__,   # 保留原可读文本，便于人眼对照
+    }
+
+
 def probe_vision(caps):
     """视觉总线：器官侧=装配期就绪（冷态第一次取眼即成功）。"""
     ev = {}
@@ -49,7 +76,7 @@ def probe_vision(caps):
         from gbt_allinone.tentacle import bridge as TB
         ev["装配期就绪 eye_ready()"] = TB.eye_ready()
     except Exception as exc:  # noqa: BLE001
-        ev["装配期就绪 eye_ready()"] = f"err {type(exc).__name__}"
+        ev["装配期就绪 eye_ready()"] = _probe_err("装配期就绪 eye_ready()", exc)
     listed = _on_list(caps, ("vision", "tentacle_vision", "shot", "screenshot"))
     c1 = ("清单条目 " + str(listed), GREEN if listed else UNK)
     c2 = ("默认路径无显式取帧调用", UNK)
@@ -68,7 +95,7 @@ def probe_tentacle(caps):
         ev["invoke 契约"] = sig
         ev["action 是否必填"] = "method" in sig
     except Exception as exc:  # noqa: BLE001
-        ev["invoke 契约"] = f"err {type(exc).__name__}"
+        ev["invoke 契约"] = _probe_err("invoke 契约", exc)
     try:
         from gbt_allinone.tentacle import bridge as TB
         ev["邻域映射条目"] = len(getattr(TB, "TENTACLE_NEIGHBORHOOD_MAP", {}) or {})
@@ -97,7 +124,7 @@ def probe_life(caps):
         ev['含常驻段标记 ' + LIFE_MARK] = LIFE_MARK in both
         ev['只有文字提醒（未挂载）'] = (LIFE_MARK not in both) and ('生命档案' in both)
     except Exception as exc:  # noqa: BLE001
-        ev["默认指令"] = f"err {type(exc).__name__}"
+        ev["默认指令"] = _probe_err("默认指令", exc)
     listed = _on_list(caps, ("life", "archive", "memory"))
     mounted = bool(ev.get("含常驻段标记 " + LIFE_MARK))
     return ("清单条目 " + str(listed), GREEN if listed else UNK), ("默认路径无显式查询", UNK), \
@@ -122,7 +149,7 @@ def probe_charter(caps):
         except Exception:  # noqa: BLE001
             ev['契约已进默认指令'] = 'err'
     except Exception as exc:  # noqa: BLE001
-        ev["system_prompt"] = f"err {type(exc).__name__}"
+        ev["system_prompt"] = _probe_err("system_prompt", exc)
     listed = _on_list(caps, ("charter", "constitution"))
     return ("清单条目 " + str(listed), GREEN if listed else UNK), ("默认路径无显式调用", UNK), \
            ("是否需显式调用", UNK), ("默认生效" if ev.get("含章号区段") else "未注入（CHARTER 章号区段不在注入面）", GREEN if ev.get("含章号区段") else RED), ev
@@ -138,7 +165,7 @@ def probe_brainexec(caps):
         ev["score"] = h.get("score")
         ev["healthy/total"] = f'{h.get("healthy_dims")}/{h.get("total_dims")}'
     except Exception as exc:  # noqa: BLE001
-        ev["health"] = f"err {type(exc).__name__}"
+        ev["health"] = _probe_err("health", exc)
     listed = _on_list(caps, ("brain_",))
     return (listed, GREEN if listed else RED), ("要显式调 brain_unify 才走全链", RED), \
            ("需先决定调哪个 brain_*", RED), ("装配期自检就绪" if ev.get("health ok") else "未自检",
@@ -205,7 +232,7 @@ def probe_topicwatch(caps):
                          "no_name_in_seed": "topic_watch" not in s,
                          "in_alt": "topic_watch" in alts})
     except Exception as exc:  # noqa: BLE001
-        ev["route 探针"] = f"err {type(exc).__name__}"
+        ev["route 探针"] = _probe_err("route 探针", exc)
     n = len(TOPIC_SEEDS)
     best_n = sum(1 for h in hits if h["best_hit"])
     c3_n = sum(1 for h in hits if h["best_hit"] and h["no_name_in_seed"])

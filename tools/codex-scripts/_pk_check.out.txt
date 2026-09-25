@@ -1,0 +1,15 @@
+bedrocks: 4 | laws: 10 | red: 10
+machine laws: ('short', 'warm', 'sincere', 'calm', 'measure')
+human laws  : ('linger', 'precise', 'blank', 'awake', 'empathy')
+
+  一字不差 OK  止损律（郝伯特）
+  一字不差 OK  主动律（狄更斯）
+  一字不差 OK  洞察律（毛姆）
+  一字不差 OK  静待律（洛克菲勒）
+
+--- 表达闸 正例 ---
+{"ok": true, "readonly": true, "denied": false, "hits": [], "sentences": 1, "machine_laws_checked": ["short", "warm", "sincere", "calm", "measure"], "human_pending": ["linger", "precise", "blank", "awake", "empathy"], "note": "机器可判的十律已过；回/准/留/醒/同 五律只有人能判，未判 ⇒ 不声称通过"}
+--- 表达闸 反例 ---
+{"ok": false, "readonly": true, "denied": true, "hits": [{"key": "no_rambling", "why": "句数 4 > 3 ⇒ 拒（短律）"}, {"key": "no_chicken_soup", "why": "出现鸡汤词『加油』⇒ 拒（温律）"}, {"key": "no_chicken_soup", "why": "出现鸡汤词『你可以的』⇒ 拒（温律）"}, {"key": "no_preaching", "why": "出现说教词『你应该』⇒ 拒（温律）"}, {"key": "no_apology_loop", "why": "『抱歉』出现 2 次 ⇒ 拒"}], "sentences": 4, "machine_laws_checked": ["short", "warm", "sincere", "cal
+--- 行动闸 ---
+{"ok": false, "readonly": true, "denied": true, "bedrock": "wait_ruin", "bedrock_name": "静待律", "source": "洛克菲勒", "message": "不要报复，烂苹果会自己掉下来。专注自身，静待其衰。", "red_line": "不许与烂人纠缠、不许自证报复", "red": "no_entanglement", "trigger": "遭遇烂人烂事、恶意攻击", "action": "专注自身", "note": ""}

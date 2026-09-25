@@ -1,0 +1,2 @@
+{"at": "2026-09-24T23:19:00", "key": "vault-smoke/hello.mp4", "bytes": 141318, "sha256": "73b2311f5bbc7de7410a660afebed1fbf6facf2ae272376a7fe608b96305a66e", "verified": true, "kept_local": true}
+{"at": "2026-09-24T23:22:57", "key": "spill/0.pack", "bytes": 156886936, "sha256": "dac38b2ab9d19d57c664ba826ac7a0cdefef73eb7e35e7bc56a36bb469e7ba00", "verified": true, "kept_local": false}

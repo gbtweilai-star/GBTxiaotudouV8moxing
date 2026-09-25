@@ -1,0 +1,16 @@
+{
+ "ok": true,
+ "job_id": "demo-003",
+ "worker": "t2",
+ "engine": "remotion",
+ "鏈湴浜х墿": "C:\\Users\\ADMIN\\Desktop\\GBT灏忓湡璞哣8\\state\\render-jobs\\demo-003\\t2\\out.mp4",
+ "瀛楄妭": 141318,
+ "sha256_鍓?6": "73b2311f5bbc7de7",
+ "鏈湴娓叉煋鑰楁椂s": 24.5,
+ "鏃ュ織灏?: "0s\nRendered 90/90\nEncoded 90/90\n+                    C:\\Users\\ADMIN\\Desktop\\GBT灏忓湡璞哣8\\state\\render-jobs\\demo-003\\t2\\out.mp4 141.3 kB\n<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, stat 'C:\\Users\\ADMIN\\Desktop\\GBT灏忓湡璞哣8\\.scratch\\remotion-smoke\\node_modules\\.cache\\webpack\\remotion-production-4.0.527\\c2316e4faff9065ecf3c6ddc20b47a7a\\0.pack'\n",
+ "鎺ㄥ洖浜?: true,
+ "浜戜笂閿?: "pipeline/jobs/demo-003/artifacts/out.mp4",
+ "浜戜笂鍥炴墽灏?: "\n 鉀咃笍 wrangler 4.111.0 (update available 4.138.0)\n鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€?攢鈹€鈹€\nResource location: remote \n\nCreating object \"pipeline/jobs/demo-003/artifacts/out.mp4\" in bucket \"gbt-bigfiles\".\nUpload complete.\n",
+ "鐘舵€佸凡鍥炲啓": true,
+ "鏈湴浜х墿宸查噴鏀?: true
+}

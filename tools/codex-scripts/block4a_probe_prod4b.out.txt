@@ -1,0 +1,58 @@
+﻿==============================================================================
+块4-A 探针 · 目标=prod4b（panel_server.py）sha256[:8]=d5a1fbdd
+==============================================================================
+
+-- S1 面板先建连接：attach 后订阅计数 --
+S1 attach 成功                                             True             expect=True             PASS
+S1 共享实例即面板拿到的那条                                          True             expect=True             PASS
+S1 attach 后 len(_listeners)（镜像 1 / 生产 0）                 1                expect=1                PASS
+S1 server.on_event 槽未被面板占用（镜像 None）                      True             expect=True             PASS
+S1 server.on_approval 槽归属（4-A 期占槽 True / 4-B 期不占槽 False） False            expect=False            PASS
+S1 主判据：进程内直投 -> 面板回调命中                                   1                expect=1                PASS
+S1 stop 后 len(_listeners) 回落基线                           0                expect=0                PASS
+S1 stop 后 on_event 槽已清（兼容回落生效）                           True             expect=True             PASS
+S1 stop 后共享连接仍存活（S2 铁律：只解挂不销毁）                           True             expect=True             PASS
+S1 stop 后 CB.status().connected                          True             expect=True             PASS
+
+-- S2 路由先建（无钩子，api.py 真实形态）--
+S2 attach 成功                                             True             expect=True             PASS
+S2 复用的就是路由那条连接                                           True             expect=True             PASS
+S2 len(_listeners)（镜像 1 / 生产 0）                          1                expect=1                PASS
+S2 镜像：面板已挂上、收到事件流（期望 True）                               True             expect=True             PASS
+S2 attach 前 srv.on_event                                 None (observation)
+
+-- S3 attach -> stop 循环 3 次：订阅不累积 --
+S3 三轮计数序列（镜像 [1,0]*3 / 生产 [0,0]*3）                       [1, 0, 1, 0, 1,  expect=[1, 0, 1, 0, 1,  PASS
+S3 三轮后共享连接仍存活                                            True             expect=True             PASS
+
+-- S4 路由先建（路由有钩子）：两钩子是否共存 --
+S4 路由钩子已在槽里（srv.on_event is route_hook）                  True             expect=True             PASS
+S4 attach 成功                                             True             expect=True             PASS
+S4 镜像：面板已挂上（期望 True）                                     True             expect=True             PASS
+S4 镜像：路由钩子原样保住（期望 True）                                  True             expect=True             PASS
+S4 len(_listeners)（镜像 1 / 生产 0）                          1                expect=1                PASS
+
+-- S4b 面板先建（路由后挂钩子）：反向顺序 --
+S4b attach 成功                                            True             expect=True             PASS
+S4b 路由拿到的是同一条（复用，未新建）                                    True             expect=True             PASS
+S4b 镜像：面板已挂上（期望 True）                                    True             expect=True             PASS
+S4b 镜像：on_event 槽仍空（面板没抢单槽，期望 True）                      True             expect=True             PASS
+S4b 镜像：路由钩子经 kwargs 仍被静默丢弃（路由侧本块未改，期望 True）              True             expect=True             PASS
+S4/S4b 成对：镜像面板侧与挂载顺序解耦（两半区同形）                            (1, 1)           expect=(1, 1)           PASS
+
+-- S5 第二判据：GBT_MOCK_PUSH=1 真帧端到端（面板先建）--
+S5 attach 成功                                             True             expect=True             PASS
+S5 真帧进共享单例 -> 面板收到 delta（期望 True）                        True             expect=True             PASS
+
+-- S6 第二判据：推流端到端（路由先建，生产真实形态）--
+S6 attach 成功                                             True             expect=True             PASS
+S6 镜像：路由先建时推流仍到面板（期望 True）                               True             expect=True             PASS
+S5/S6 mock 账本有 mock.push（推流确实发出）                         True             expect=True             PASS
+mock.push 末条原文                                           {"layer": "mock", "event": "mock.push", "origin": "b4aprobe", "received": true, "raw_value": "mock-push-delta", "type": "notification", "schema_verdict": "accept", "method": "item/agentMessage/delta", "raw_tid": "thread-mirror-1", "frame_bytes": 127, "frame_bytes_hash": "c6f88a8e78b3db12", "note": "推送通知（无 id，服务端主动发；第二判据用）", "timestamp": "2026-09-16T14:28:30"} (observation)
+S5 面板收到 chunk 原文                                         {"type": "chunk", "at": "2026-09-16T14:28:30", "text": "mock-push-delta"} (observation)
+S6 面板收到 chunk 原文                                         {"type": "chunk", "at": "2026-09-16T14:28:30", "text": "mock-push-delta"} (observation)
+本轮 mock 子进程全部回收（poll() 全非 None）                          True             expect=True             PASS
+本轮 mock 子进程数                                             9 (observation)
+
+断言 33 项 · PASS 33 · FAIL 0 ；观察项 5 条
+落盘： block4a_probe_prod4b_brprod.json / block4a_probe_prod4b_brprod_ledger.jsonl

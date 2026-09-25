@@ -1,0 +1,8 @@
+{
+  "name": "gbt-c05-tool-file",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "文件读写（对象存储）（主人给的对应名：dsh-tool-file）",
+  "_generated": "tools/codex-scripts/cloud-mesh.py gen"
+}

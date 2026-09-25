@@ -14,6 +14,56 @@ Before doing anything else:
 
 Do not ask permission. Just do it.
 
+---
+
+## 🚨 生产面红线（Owner 2026-09-19 定 · 与「最高优先级规则」同级 · 开工先读这一节）
+
+### 一、镜像多维度是唯一的试验场，生产只收成品
+
+- **所有假设、模拟、推演、测试、打磨，一律在「镜像多维度」里跑**——隔离房间
+  （`room_create` → `room_plan` → `room_simulate` → `room_parity` → `room_rehearse` → `room_release`）
+  或镜像部署区（`mirror_shape` → `mirror_rehearse` → `mirror_release`）。
+  房间是**隔离排练现实**，不覆盖全局 `mirror_space/reality`。
+- **只有过了镜像的成品才能进生产**。生产零修改，一次性全量晋升。
+- 🔴 **不许把项目默认堆进全局生产面**。`one_key_deploy` 必须**显式声明落点**：
+  `room="<房间名>"`（只写房间，生产分毫不动）或 `into_global_production=true`
+  （写全局生产，必须人工授权）。不声明落点 = 直接拒绝，**任何代码都别想溜进生产**。
+
+### 二、门只有一处，绕过去就是违规
+
+- 🔴 **写生产/镜像的动作一律走 `run_task`**。**禁止**直接调模块函数
+  （`mirror_space.ascend()` · `deployment_rehearsal.release()` · `qiankun.one_key_deploy()` ·
+  `room_space.release()`）—— 那会**绕过授权门**。实测教训（2026-09-19）：一次"成功"的晋升
+  就是这么绕出来的，功能生效但**纪律上是未经授权的生产写入**。
+- 需要授权的作用域：`mirror_ascend` / `mirror_release` / `one_key_deploy` / `pipeline_submit` /
+  `pipeline_rollback` / `mirror_rewind` / `room_release` → **`deploy_publish`**；
+  `mirror_rehearse` / `room_rehearse` → `process_execute` + `filesystem_write`；
+  `mirror_shape` / `room_shape` / `mirror_plan` / `mirror_simulate` / `mirror_parity` → `filesystem_write`。
+  `mirror_scan` / `mirror_status` 只读，不需授权。
+- **授权只能主人在终端发放**（`python -m gbt_allinone auth grant --scope deploy_publish --ttl 600`）
+  或主人手写 `store/auth_grants.jsonl`。**AI 永远无权给自己发授权**；
+  缺授权就如实报缺什么，**不许找旁路、不许改 `security/policy.py`**。
+
+### 三、什么算"成品"（废物不许上线）
+
+- 部署前必须在**镜像里**过验证矩阵：非空 · 无空文件 · 文本页携带署名的
+  （`.md`/`.html`/`.htm`/`.txt`/`.csv` 自动注入）· 无 `_*.py` / `.tmp` / `__pycache__` 残留 ·
+  有入口（`index.html` / `main.py` / `app.py` / `start.ps1`）。缺一项 = 卡住，**不许半成品上线**。
+- **二进制必须逐字节**落盘（`mirror_space.shape_bytes` / `room_space.shape_bytes`）。
+  把 PNG/GLB/字体当文本读写 = 把镜像里的产物当场弄成废物。
+
+### 四、读数口径（没印章的结论不采信）
+
+- 沙箱身份 ≠ 真实用户：沙箱内 `whoami` = `desktop-vpvp0bp\codexsandboxoffline`。
+  该身份下 `C:\Python312\python.exe` 起不来（`Lib` 的 junction 真身读不到 ⇒ stdlib 落到 cwd）。
+  **是身份不同，不是"权限策略挡的"。**
+- 回归一律走四元组印章：
+  `python -m gbt_allinone.tools.regression_stamp run --expect-python 3.14 --store fresh -- <命令>`。
+  本仓声明口径是 **3.14.5 / cpython-314**。跨口径（换解释器 / 换 store / 换身份）时工具打
+  `not_comparable`，**红集差异不得直接判为"代码坏了"**，只允许逐名比对。
+
+---
+
 ## 设计任务判断
 
 - 是设计任务——请求涉及「设计 / redesign / 改版 / 视觉升级 / UI / 界面 / 页面 / 组件 / 设计系统 / 现有代码项目 / 原型 / 生成图片 / 生图 / 图片编辑 / 修图 / 海报 / 网页 / App / 视觉 / Figma / HTML 稿 / 落地页 / 设计稿 / PPT / 幻灯片」等关键词 → 务必进入设计流程

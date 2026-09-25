@@ -24,6 +24,19 @@ omni_controller.py — 万能操控中枢 (OmniController)
   omni.status()
 """
 import sys, json, time, logging, threading, subprocess
+# R-H295 · ⑥ G2：统一拒绝形状（与其余 6 个 mixin 同源）。
+# 本文件此前**没有**这一口，于是它的失败返回只能是裸 dict
+# —— 与 omni_core.refusal 立的那一个形状不一致。
+try:
+    from omni_core import refusal  # noqa: F401
+except Exception:  # noqa: BLE001 —— 独立加载时退回本地形状
+    def refusal(rule, why, missing=None, action='', **extra):
+        out = {'ok': False, 'unavailable': True, 'denied': False,
+               'rule': str(rule or 'unavailable'), 'action': str(action or ''),
+               'missing': list(missing or ()), 'why': str(why or '')[:240]}
+        out.update(extra)
+        return out
+
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Any, Callable
@@ -31,6 +44,28 @@ from collections import deque
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
+
+
+# ── 病因钩子：吞错统一收口 + 导航入口病因（**必须放在 sys.path 修正之后**）。
+#    教训（2026-09-22 实测）：放在 insert 之前 ⇒ `from nav_etiology import …` 导入期就失败，
+#    静默退回垫片 ⇒ 63 处"收口"一个病因都没真记上 = **假收口**。
+try:
+    from nav_etiology import (record_swallow as _record_swallow,
+                              etiology as _etiology,
+                              enrich as _enrich_cause)
+except Exception:  # noqa: BLE001
+    def _record_swallow(_e, _mod="?", _op=""):
+        import sys as _s
+        print(f"⚠️ {_mod}: 吞错: {_e}", file=_s.stderr)
+        return "action_no_effect"
+
+    def _etiology(_m, _o=""):
+        def _d(fn):
+            return fn
+        return _d
+
+    def _enrich_cause(r, _m="?", _o=""):
+        return r
 
 logger = logging.getLogger("GBT.OmniController")
 
@@ -117,7 +152,7 @@ class AppController:
             return {"ok": True, "pid": proc.pid, "app": app_name, "status": "launched"}
         except Exception as e:
             self.alert.add("error", "app_controller", f"启动失败: {app_name}", {"error": str(e)})
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
     def terminate(self, pid: int) -> dict:
         """终止进程"""
@@ -126,7 +161,7 @@ class AppController:
             self._processes.pop(pid, None)
             return {"ok": True, "pid": pid, "status": "terminated"}
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
     def status(self, pid: int = None) -> dict:
         """进程状态"""
@@ -162,9 +197,9 @@ class AppController:
             from caps.process_injector.run import do_inject
             return do_inject({"pid": pid, "shellcode": code, "method": "python"})
         except ImportError:
-            return {"ok": False, "error": "process_injector cap未安装"}
+            return refusal("dependency_unavailable", "process_injector cap未安装", ("process_injector",))
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -200,20 +235,21 @@ class BrowserController:
                     ws.close()
                     return resp
         except Exception as e:
-            return {"ok": False, "error": str(e)[:150]}
+            return refusal("action_failed", str(e)[:150], ())
 
     def list_tabs(self) -> List[dict]:
         """列出所有标签页"""
         pages = self._cdp_get("/json")
         return pages if isinstance(pages, list) else []
 
+    @_etiology("omni_controller", "navigate")
     def navigate(self, url: str, tab_id: int = None) -> dict:
         """导航到URL"""
         tabs = self.list_tabs()
         page = tabs[0] if not tab_id else next((t for t in tabs if t.get("id") == tab_id), tabs[0])
         ws_url = page.get("webSocketDebuggerUrl", "")
         if not ws_url:
-            return {"ok": False, "error": "无可用WebSocket"}
+            return refusal("not_available", "无可用WebSocket", ("websocket",))
         result = self._ws_cmd(ws_url, "Page.navigate", {"url": url})
         return {"ok": True, "url": url, "result": result}
 
@@ -244,7 +280,7 @@ class BrowserController:
         tabs = self.list_tabs()
         page = tabs[0] if tabs else None
         if not page:
-            return {"ok": False, "error": "无可用页面"}
+            return refusal("not_available", "无可用页面", ("page",))
         result = self._ws_cmd(page.get("webSocketDebuggerUrl", ""), "Network.getAllCookies", params)
         return {"ok": True, "cookies": (result or {}).get("result", {}).get("cookies", [])}
 
@@ -253,7 +289,7 @@ class BrowserController:
         tabs = self.list_tabs()
         page = tabs[0] if tabs else None
         if not page:
-            return {"ok": False, "error": "无可用页面"}
+            return refusal("not_available", "无可用页面", ("page",))
         params = {"cookies": cookies}
         if url:
             params["url"] = url
@@ -289,7 +325,7 @@ class BrowserController:
         tabs = self.list_tabs()
         page = tabs[0] if tabs else None
         if not page:
-            return {"ok": False, "error": "无可用页面"}
+            return refusal("not_available", "无可用页面", ("page",))
         # 清除浏览数据
         self._ws_cmd(page.get("webSocketDebuggerUrl", ""), "Storage.clearDataForOrigin", {
             "origin": "*", "storageTypes": "all"
@@ -335,7 +371,7 @@ class GameController:
         """发送外设指令 (键盘)"""
         pid = self._game_processes.get(game_name)
         if not pid:
-            return {"ok": False, "error": f"游戏 {game_name} 未运行"}
+            return refusal("action_failed", f"游戏 {game_name} 未运行", ())
         try:
             import pyautogui
             for key in keys:
@@ -343,7 +379,7 @@ class GameController:
                 time.sleep(delay)
             return {"ok": True, "game": game_name, "keys_sent": keys}
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
     def send_mouse(self, game_name: str, action: str, x: int = 0, y: int = 0, button: str = "left") -> dict:
         """发送鼠标指令"""
@@ -359,7 +395,7 @@ class GameController:
                 pyautogui.scroll(y)
             return {"ok": True, "game": game_name, "action": action, "x": x, "y": y}
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
     def get_performance(self, pid: int = None) -> dict:
         """获取性能参数 (CPU/内存/GPU)"""
@@ -382,9 +418,9 @@ class GameController:
                     "gpu": self._get_gpu_info(),
                 }
         except ImportError:
-            return {"ok": False, "error": "psutil未安装"}
+            return refusal("dependency_unavailable", "psutil未安装", ("psutil",))
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
     def _get_gpu_info(self) -> dict:
         """获取GPU信息"""
@@ -414,7 +450,7 @@ class GameController:
                 kernel32.SetPriorityClass(current_pid, 0x80)  # HIGH_PRIORITY_CLASS
             return {"ok": True, "game": game_name, "low_latency": enable}
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -454,62 +490,62 @@ class TUIController:
     def keyboard_type(self, text: str, interval: float = 0.03) -> dict:
         """键盘输入"""
         if not self._has_pyautogui:
-            return {"ok": False, "error": "pyautogui未安装"}
+            return refusal("dependency_unavailable", "pyautogui未安装", ("pyautogui",))
         try:
             import pyautogui
             pyautogui.typewrite(text, interval=interval)
             return {"ok": True, "text": text, "chars": len(text)}
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
     def keyboard_press(self, key: str) -> dict:
         """按键"""
         if not self._has_pyautogui:
-            return {"ok": False, "error": "pyautogui未安装"}
+            return refusal("dependency_unavailable", "pyautogui未安装", ("pyautogui",))
         try:
             import pyautogui
             pyautogui.press(key)
             return {"ok": True, "key": key}
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
     def keyboard_hotkey(self, *keys) -> dict:
         """组合键"""
         if not self._has_pyautogui:
-            return {"ok": False, "error": "pyautogui未安装"}
+            return refusal("dependency_unavailable", "pyautogui未安装", ("pyautogui",))
         try:
             import pyautogui
             pyautogui.hotkey(*keys)
             return {"ok": True, "keys": list(keys)}
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
     def mouse_move(self, x: int, y: int) -> dict:
         """鼠标移动"""
         if not self._has_pyautogui:
-            return {"ok": False, "error": "pyautogui未安装"}
+            return refusal("dependency_unavailable", "pyautogui未安装", ("pyautogui",))
         try:
             import pyautogui
             pyautogui.moveTo(x, y)
             return {"ok": True, "x": x, "y": y}
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
     def mouse_click(self, x: int = None, y: int = None, button: str = "left") -> dict:
         """鼠标点击"""
         if not self._has_pyautogui:
-            return {"ok": False, "error": "pyautogui未安装"}
+            return refusal("dependency_unavailable", "pyautogui未安装", ("pyautogui",))
         try:
             import pyautogui
             pyautogui.click(x, y, button=button)
             return {"ok": True, "x": x, "y": y, "button": button}
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
     def screenshot(self, region: dict = None) -> dict:
         """屏幕截图"""
         if not self._has_mss:
-            return {"ok": False, "error": "mss未安装"}
+            return refusal("dependency_unavailable", "mss未安装", ("mss",))
         try:
             import base64, io
             from PIL import Image
@@ -525,7 +561,7 @@ class TUIController:
                 b64 = base64.b64encode(buf.getvalue()).decode()
             return {"ok": True, "screenshot_base64": b64[:100] + "...", "size": img.size}
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
     def voice_speak(self, text: str) -> dict:
         """语音播报"""
@@ -536,7 +572,7 @@ class TUIController:
         except ImportError:
             return {"ok": True, "text": text, "note": "TTS未安装，跳过语音播报"}
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
     def voice_listen(self) -> dict:
         """语音输入"""
@@ -548,9 +584,9 @@ class TUIController:
             text = r.recognize_google(audio, language="zh-CN")
             return {"ok": True, "text": text}
         except ImportError:
-            return {"ok": False, "error": "speech_recognition未安装"}
+            return refusal("dependency_unavailable", "speech_recognition未安装", ("speech_recognition",))
         except Exception as e:
-            return {"ok": False, "error": str(e)[:100]}
+            return refusal("action_failed", str(e)[:100], ())
 
 
 # ═══════════════════════════════════════════════════════════════

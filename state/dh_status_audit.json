@@ -1,0 +1,619 @@
+{
+ "at": "2026-09-23T01:39:51",
+ "status_file": "holo_pet\\assets\\digital-human\\STATUS.json",
+ "referenced": [
+  "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\digihuman-pipeline",
+  "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\digihuman-pipeline",
+  "gbt_allinone/tripo.py",
+  "holo_pet/assets/digital-human/phase1-generate.py",
+  "plugins/gbt-master/tools/audit-avatar-baseline.py",
+  "plugins/gbt-master/tools/clean-samples.py",
+  "plugins/gbt-master/tools/polish-samples.py",
+  "plugins/gbt-master/tools/shot-skeleton.py",
+  "raw/mixamo-input/model-lowpoly.glb",
+  "raw/mixamo-input/model.fbx",
+  "raw/phase1/model.glb",
+  "raw/phase1/tripo-preview.png",
+  "raw/phase2a-tpose/T-pose参考-规范化.png",
+  "raw/phase2a/model.glb",
+  "raw/portrait-bust-low-rigged.glb",
+  "raw/portrait-bust.glb",
+  "raw/rig/model-pose-test.glb",
+  "raw/rig/model-rigged-4k-graft.glb",
+  "raw/rig/model-rigged-4k.glb",
+  "raw/rig/model-rigged-anim.glb",
+  "raw/rig/model-rigged-hi-pose.glb",
+  "raw/rig/model-rigged-hi.glb",
+  "raw/rig/model-rigged.glb",
+  "raw/rig/model-springs-hair.glb",
+  "raw/rig/skeleton.json",
+  "references/pitfalls.md",
+  "render/减面版-四方对照.png",
+  "render/减面版-正面.png",
+  "render/减面版-脸.png",
+  "render/动画条-idle.png",
+  "render/动画条-walk.png",
+  "render/数字人-Phase1-侧45.png",
+  "render/数字人-Phase1-正视图.png",
+  "render/数字人-Phase1-背面.png",
+  "render/数字人-Phase1-转正.png",
+  "render/绑骨-姿态测试-抬左臂45.png",
+  "render/绑骨-形变验收.png",
+  "render/绑骨-绑定姿势Tpose.png",
+  "render/绑骨-骨架落在实体上.png",
+  "render/骨架复核-弹簧档idle.png",
+  "render/骨架复核-弹簧档静止态.png",
+  "render/骨架复核-数字人idle.png",
+  "render/骨架复核-数字人walk.png",
+  "render/骨架复核-数字人静止态.png",
+  "render/高模绑骨-Tpose.png",
+  "render/高模绑骨-三方对照.png",
+  "render/高模绑骨-抬左臂45.png",
+  "samples/Day2-JK黑白甜酷-精修-白底.png",
+  "scripts/run-pipeline.ps1",
+  "tools/codex-scripts/audit-dh-status.py",
+  "tools/codex-scripts/audit-skill-roots.py",
+  "tools/codex-scripts/autorig-skeleton.py",
+  "tools/codex-scripts/five-dim.py"
+ ],
+ "present": [
+  {
+   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\digihuman-pipeline",
+   "resolved": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\digihuman-pipeline",
+   "base": "绝对路径",
+   "refs": [
+    "$.skill_solidified.path",
+    "$.skill_solidified.installed_roots[0]"
+   ],
+   "bytes": null
+  },
+  {
+   "path": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\digihuman-pipeline",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\digihuman-pipeline",
+   "base": "绝对路径",
+   "refs": [
+    "$.skill_solidified.source"
+   ],
+   "bytes": null
+  },
+  {
+   "path": "gbt_allinone/tripo.py",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tripo.py",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.pipeline.module",
+    "$.rig_routes_inventory.routes[0]",
+    "$.repo_pipeline_drift"
+   ],
+   "bytes": 10873
+  },
+  {
+   "path": "holo_pet/assets/digital-human/phase1-generate.py",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\phase1-generate.py",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase1_runner"
+   ],
+   "bytes": 7771
+  },
+  {
+   "path": "plugins/gbt-master/tools/audit-avatar-baseline.py",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\plugins\\gbt-master\\tools\\audit-avatar-baseline.py",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.tools[0]",
+    "$.current_asset_verdict.verification.tool"
+   ],
+   "bytes": 8566
+  },
+  {
+   "path": "plugins/gbt-master/tools/clean-samples.py",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\plugins\\gbt-master\\tools\\clean-samples.py",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.samples_prepared.tool"
+   ],
+   "bytes": 4507
+  },
+  {
+   "path": "plugins/gbt-master/tools/polish-samples.py",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\plugins\\gbt-master\\tools\\polish-samples.py",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.polish_pass.tool"
+   ],
+   "bytes": 6882
+  },
+  {
+   "path": "plugins/gbt-master/tools/shot-skeleton.py",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\plugins\\gbt-master\\tools\\shot-skeleton.py",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.current_asset_verdict.verification.skeleton_evidence.tool"
+   ],
+   "bytes": 10211
+  },
+  {
+   "path": "raw/mixamo-input/model-lowpoly.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\mixamo-input\\model-lowpoly.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase2_route_a.artifacts.减面 GLB（给我们自己看）"
+   ],
+   "bytes": 2929984
+  },
+  {
+   "path": "raw/mixamo-input/model.fbx",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\mixamo-input\\model.fbx",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase2_route_a.artifacts.Mixamo 上传件"
+   ],
+   "bytes": 1832252
+  },
+  {
+   "path": "raw/phase1/model.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\phase1\\model.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase1.artifact"
+   ],
+   "bytes": 45754652
+  },
+  {
+   "path": "raw/phase1/tripo-preview.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\phase1\\tripo-preview.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase1.preview_from_tripo"
+   ],
+   "bytes": 99099
+  },
+  {
+   "path": "raw/phase2a-tpose/T-pose参考-规范化.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\phase2a-tpose\\T-pose参考-规范化.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase2_route_a.artifacts.T-pose 参考"
+   ],
+   "bytes": 751616
+  },
+  {
+   "path": "raw/phase2a/model.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\phase2a\\model.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase2_route_a.artifacts.高保真 T-pose 模型"
+   ],
+   "bytes": 46589472
+  },
+  {
+   "path": "raw/portrait-bust-low-rigged.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\portrait-bust-low-rigged.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.assets_now.面板档_半身"
+   ],
+   "bytes": 4284904
+  },
+  {
+   "path": "raw/portrait-bust.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\portrait-bust.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.assets_now.出图档_头肩"
+   ],
+   "bytes": 45810164
+  },
+  {
+   "path": "raw/rig/model-pose-test.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\rig\\model-pose-test.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase2_local_rig.artifacts.pose_test"
+   ],
+   "bytes": 3511200
+  },
+  {
+   "path": "raw/rig/model-rigged-4k-graft.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\rig\\model-rigged-4k-graft.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.assets_now.嫁接件"
+   ],
+   "bytes": 125377996
+  },
+  {
+   "path": "raw/rig/model-rigged-4k.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\rig\\model-rigged-4k.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.assets_now.出图档_4K"
+   ],
+   "bytes": 90862608
+  },
+  {
+   "path": "raw/rig/model-rigged-anim.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\rig\\model-rigged-anim.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase3_motion.artifacts",
+    "$.assets_now.实时档",
+    "$.current_asset_verdict.verification.panel_asset.path"
+   ],
+   "bytes": 3374080
+  },
+  {
+   "path": "raw/rig/model-rigged-hi-pose.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\rig\\model-rigged-hi-pose.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase2_local_rig_hi.artifacts.高模姿态测试"
+   ],
+   "bytes": 74033720
+  },
+  {
+   "path": "raw/rig/model-rigged-hi.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\rig\\model-rigged-hi.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase2_local_rig_hi.artifacts.高模绑骨"
+   ],
+   "bytes": 64887140
+  },
+  {
+   "path": "raw/rig/model-rigged.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\rig\\model-rigged.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase2_local_rig.artifacts.rigged",
+    "$.phase2_local_rig_hi.artifacts.低模绑骨"
+   ],
+   "bytes": 3319032
+  },
+  {
+   "path": "raw/rig/model-springs-hair.glb",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\rig\\model-springs-hair.glb",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.current_asset_verdict.verification.spring_asset.path"
+   ],
+   "bytes": 4148772
+  },
+  {
+   "path": "raw/rig/skeleton.json",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\rig\\skeleton.json",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase2_local_rig.artifacts.skeleton"
+   ],
+   "bytes": 2829
+  },
+  {
+   "path": "references/pitfalls.md",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\digihuman-pipeline\\references\\pitfalls.md",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\digihuman-pipeline",
+   "refs": [
+    "$.skill_solidified.files[2]"
+   ],
+   "bytes": 35609
+  },
+  {
+   "path": "render/减面版-四方对照.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\减面版-四方对照.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase2_route_a.renders[2]"
+   ],
+   "bytes": 326724
+  },
+  {
+   "path": "render/减面版-正面.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\减面版-正面.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase2_route_a.renders[0]"
+   ],
+   "bytes": 87381
+  },
+  {
+   "path": "render/减面版-脸.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\减面版-脸.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase2_route_a.renders[1]"
+   ],
+   "bytes": 125245
+  },
+  {
+   "path": "render/动画条-idle.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\动画条-idle.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase3_motion.renders[1]"
+   ],
+   "bytes": 174258
+  },
+  {
+   "path": "render/动画条-walk.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\动画条-walk.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase3_motion.renders[0]"
+   ],
+   "bytes": 198069
+  },
+  {
+   "path": "render/数字人-Phase1-侧45.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\数字人-Phase1-侧45.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase1.renders[1]"
+   ],
+   "bytes": 81230
+  },
+  {
+   "path": "render/数字人-Phase1-正视图.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\数字人-Phase1-正视图.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase1.renders[3]"
+   ],
+   "bytes": 83277
+  },
+  {
+   "path": "render/数字人-Phase1-背面.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\数字人-Phase1-背面.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase1.renders[2]"
+   ],
+   "bytes": 86130
+  },
+  {
+   "path": "render/数字人-Phase1-转正.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\数字人-Phase1-转正.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase1.renders[0]"
+   ],
+   "bytes": 95001
+  },
+  {
+   "path": "render/绑骨-姿态测试-抬左臂45.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\绑骨-姿态测试-抬左臂45.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase2_local_rig.renders[1]"
+   ],
+   "bytes": 86624
+  },
+  {
+   "path": "render/绑骨-形变验收.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\绑骨-形变验收.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase2_local_rig.renders[2]"
+   ],
+   "bytes": 149042
+  },
+  {
+   "path": "render/绑骨-绑定姿势Tpose.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\绑骨-绑定姿势Tpose.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase2_local_rig.renders[0]"
+   ],
+   "bytes": 87332
+  },
+  {
+   "path": "render/绑骨-骨架落在实体上.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\绑骨-骨架落在实体上.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase2_local_rig.renders[3]"
+   ],
+   "bytes": 46498
+  },
+  {
+   "path": "render/骨架复核-弹簧档idle.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\骨架复核-弹簧档idle.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.current_asset_verdict.verification.skeleton_evidence.images[4]"
+   ],
+   "bytes": 29115
+  },
+  {
+   "path": "render/骨架复核-弹簧档静止态.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\骨架复核-弹簧档静止态.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.current_asset_verdict.verification.skeleton_evidence.images[3]"
+   ],
+   "bytes": 29199
+  },
+  {
+   "path": "render/骨架复核-数字人idle.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\骨架复核-数字人idle.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.current_asset_verdict.verification.skeleton_evidence.images[1]"
+   ],
+   "bytes": 100904
+  },
+  {
+   "path": "render/骨架复核-数字人walk.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\骨架复核-数字人walk.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.current_asset_verdict.verification.skeleton_evidence.images[2]"
+   ],
+   "bytes": 101676
+  },
+  {
+   "path": "render/骨架复核-数字人静止态.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\骨架复核-数字人静止态.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.current_asset_verdict.verification.skeleton_evidence.images[0]"
+   ],
+   "bytes": 10701
+  },
+  {
+   "path": "render/高模绑骨-Tpose.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\高模绑骨-Tpose.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase2_local_rig_hi.renders[1]"
+   ],
+   "bytes": 94233
+  },
+  {
+   "path": "render/高模绑骨-三方对照.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\高模绑骨-三方对照.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase2_local_rig_hi.renders[0]"
+   ],
+   "bytes": 209069
+  },
+  {
+   "path": "render/高模绑骨-抬左臂45.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\render\\高模绑骨-抬左臂45.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase2_local_rig_hi.renders[2]"
+   ],
+   "bytes": 93185
+  },
+  {
+   "path": "samples/Day2-JK黑白甜酷-精修-白底.png",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\samples\\Day2-JK黑白甜酷-精修-白底.png",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human",
+   "refs": [
+    "$.phase1.input"
+   ],
+   "bytes": 236128
+  },
+  {
+   "path": "scripts/run-pipeline.ps1",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\digihuman-pipeline\\scripts\\run-pipeline.ps1",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\digihuman-pipeline",
+   "refs": [
+    "$.skill_solidified.files[1]"
+   ],
+   "bytes": 10022
+  },
+  {
+   "path": "tools/codex-scripts/audit-dh-status.py",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\audit-dh-status.py",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.skill_solidified.readings_gate"
+   ],
+   "bytes": 11265
+  },
+  {
+   "path": "tools/codex-scripts/audit-skill-roots.py",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\audit-skill-roots.py",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.skill_solidified.drift_gate"
+   ],
+   "bytes": 15131
+  },
+  {
+   "path": "tools/codex-scripts/autorig-skeleton.py",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\autorig-skeleton.py",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.phase2_local_rig.tool"
+   ],
+   "bytes": 7930
+  },
+  {
+   "path": "tools/codex-scripts/five-dim.py",
+   "resolved": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\five-dim.py",
+   "base": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8",
+   "refs": [
+    "$.discipline"
+   ],
+   "bytes": 9441
+  }
+ ],
+ "missing": [],
+ "size_ok": [
+  {
+   "ref": "raw/mixamo-input/model.fbx",
+   "field": "$.phase2_route_a.artifacts.Mixamo 上传件",
+   "claimed": 1835008,
+   "actual": 1832252,
+   "delta_pct": -0.15
+  },
+  {
+   "ref": "raw/rig/model-rigged.glb",
+   "field": "$.phase2_local_rig.artifacts.rigged",
+   "claimed": 3323985,
+   "actual": 3319032,
+   "delta_pct": -0.15
+  },
+  {
+   "ref": "raw/rig/model-rigged-hi.glb",
+   "field": "$.phase2_local_rig_hi.artifacts.高模绑骨",
+   "claimed": 64885882,
+   "actual": 64887140,
+   "delta_pct": 0.0
+  },
+  {
+   "ref": "raw/rig/model-rigged.glb",
+   "field": "$.phase2_local_rig_hi.artifacts.低模绑骨",
+   "claimed": 3323985,
+   "actual": 3319032,
+   "delta_pct": -0.15
+  },
+  {
+   "ref": "raw/rig/model-rigged-anim.glb",
+   "field": "$.phase3_motion.artifacts",
+   "claimed": 3376414,
+   "actual": 3374080,
+   "delta_pct": -0.07
+  },
+  {
+   "ref": "raw/rig/model-rigged-anim.glb",
+   "field": "$.assets_now.实时档",
+   "claimed": 3376414,
+   "actual": 3374080,
+   "delta_pct": -0.07
+  },
+  {
+   "ref": "raw/rig/model-rigged-4k.glb",
+   "field": "$.assets_now.出图档_4K",
+   "claimed": 90859110,
+   "actual": 90862608,
+   "delta_pct": 0.0
+  },
+  {
+   "ref": "raw/portrait-bust.glb",
+   "field": "$.assets_now.出图档_头肩",
+   "claimed": 45812285,
+   "actual": 45810164,
+   "delta_pct": -0.0
+  },
+  {
+   "ref": "raw/portrait-bust-low-rigged.glb",
+   "field": "$.assets_now.面板档_半身",
+   "claimed": 4288675,
+   "actual": 4284904,
+   "delta_pct": -0.09
+  },
+  {
+   "ref": "raw/rig/model-rigged-4k-graft.glb",
+   "field": "$.assets_now.嫁接件",
+   "claimed": 120020008,
+   "actual": 125377996,
+   "delta_pct": 4.46
+  }
+ ],
+ "size_warn": []
+}

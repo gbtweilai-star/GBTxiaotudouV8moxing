@@ -13,12 +13,17 @@
   ① 不造第四处真相（不复制正文）　② 检索结果必须带出处　③ 预算按**可用**内存算
   ④ 可用不足 ⇒ 降级如实报　　　　⑤ 归档内容不许改写身份
 
-本骨架只读：**不写盘、不建真索引、不出网**。
+**R-H236 起它不再是纯只读骨架** —— 下面多了**真库**（本地 sqlite3 + FTS5 全文索引）。
+但仍然：**不复制正文**（只存引用与词）、**不出网**、**库文件不许明文密钥**。
 """
 from __future__ import annotations
 
 import re
+import sqlite3
+import time
+from contextlib import contextmanager
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 CAP_KIND = "context_vault"
@@ -29,6 +34,18 @@ CAP_TYPE = "internal"
 BUDGET_RATIO = 0.25            # 留 3/4 给进程与系统
 BUDGET_FLOOR_BYTES = 512 * 1024
 BUDGET_CAP_BYTES = 64 * 1024 * 1024
+
+# ── R-H236 · 真库（本地 · 零依赖：标准库 sqlite3 + FTS5）──
+VAULT_DIR = "gbt_allinone/store/context_vault"
+DB_NAME = "index.sqlite3"
+DB_SCHEMA = (
+    "create table if not exists docs ("
+    " source_ref text primary key, layer text not null,"
+    " terms text not null, n integer not null, at text not null)",
+    "create virtual table if not exists postings using fts5("
+    " source_ref unindexed, terms)",
+)
+_SECRET_RX = re.compile(r"\b(?:sk|ak|lt|ghp)[-_][A-Za-z0-9_\-]{16,}\b")
 
 # 分层
 LAYERS = (
@@ -204,6 +221,145 @@ class ContextVault:
                 "note": "**按预算取满即停**；没取完就如实说 `truncated`"}
 
 
+def db_path(root: Optional[str] = None) -> Path:
+    """真库路径（默认 `store/context_vault/index.sqlite3`）。"""
+    if root:
+        return Path(root)
+    base = Path(__file__).resolve().parents[1]          # gbt_allinone/
+    return base / "store" / "context_vault" / DB_NAME
+
+
+def check_db_no_secret(path: Any = None) -> dict:
+    """红线⑥（R-H236）：**库文件不许有明文密钥**。"""
+    if not path:
+        return {"ok": False, "denied": True, "rule": "no_db_path",
+                "why": "要给出库文件路径才能查（**未测不按绿**）"}
+    p = Path(str(path))
+    if not p.is_file():
+        return {"ok": False, "denied": True, "rule": "db_not_found",
+                "path": str(p)}
+    blob = p.read_bytes()
+    m = _SECRET_RX.search(blob.decode("utf-8", errors="ignore"))
+    if m:
+        return {"ok": False, "denied": True, "rule": "plaintext_key_in_db",
+                "seen": m.group(0)[:12] + "…",
+                "why": "库文件里出现明文密钥形状 ⇒ **库里只许有引用与词**，"
+                       "密钥只进 DPAPI"}
+    return {"ok": True, "readonly": True, "bytes": len(blob),
+            "note": "库文件无明文密钥形状"}
+
+
+class VaultStore:
+    """**真库**：本地 sqlite3 + FTS5（零依赖 · 不出网 · 不复制正文）。
+
+    - `add()`：只写 `source_ref` 与**词**（`terms`），**不写正文**
+    - `search()`：FTS5 全文检索 → 打分 → **按预算裁剪**
+    - `count()` / `status()`：可核对"读写一致"
+    """
+
+    def __init__(self, path: Any = None) -> None:
+        self.path = Path(str(path)) if path else db_path()
+
+    # ── 内部 ──
+    # ⚠️ 实测踩过：`with sqlite3.connect(...)` **只提交、不关闭** ⇒ 句柄泄漏，
+    #    临时目录删不掉（NotADirectoryError）。必须**显式 close**。
+    @contextmanager
+    def _conn(self):
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        con = sqlite3.connect(str(self.path))
+        try:
+            for ddl in DB_SCHEMA:
+                con.execute(ddl)
+            yield con
+            con.commit()
+        finally:
+            con.close()
+
+    def add(self, source_ref: str = "", text: str = "",
+            layer: str = "warm") -> dict:
+        ref = str(source_ref or "").strip()
+        if not ref:
+            return {"ok": False, "denied": True, "rule": "no_source_ref",
+                    "why": "归档条目**必须有出处**（source_ref）"}
+        if layer not in {x["key"] for x in LAYERS}:
+            return {"ok": False, "denied": True, "rule": "bad_layer",
+                    "layer": layer}
+        if _SECRET_RX.search(ref) or _SECRET_RX.search(str(text or "")):
+            return {"ok": False, "denied": True, "rule": "plaintext_key_in_db",
+                    "why": "不许把密钥形状的东西写进库（连引用都不许）"}
+        toks = sorted(set(tokenize(text)))
+        with self._conn() as con:
+            con.execute("delete from postings where source_ref=?", (ref,))
+            con.execute(
+                "insert or replace into docs(source_ref,layer,terms,n,at)"
+                " values(?,?,?,?,?)",
+                (ref, layer, " ".join(toks), len(toks),
+                 time.strftime("%Y-%m-%dT%H:%M:%S")))
+            con.execute("insert into postings(source_ref,terms) values(?,?)",
+                        (ref, " ".join(toks)))
+        return {"ok": True, "readonly": True, "source_ref": ref,
+                "terms": len(toks), "db": str(self.path),
+                "note": "**只写引用与词，不写正文**"}
+
+    def count(self) -> int:
+        with self._conn() as con:
+            return int(con.execute("select count(*) from docs").fetchone()[0])
+
+    def search(self, query: str = "", budget_bytes: int = 0,
+               max_items: int = 10) -> dict:
+        q = [t for t in tokenize(query)]
+        if not q:
+            return {"ok": False, "denied": True, "rule": "empty_query"}
+        match = " OR ".join(q)
+        with self._conn() as con:
+            # ⚠️ 实测踩过：postings 是 **FTS5 虚表**，**没有 layer 列**
+            #    （第一版直接从 postings 里 select layer ⇒ no such column）
+            #    ⇒ 两步取：FTS5 只出 source_ref，其余字段回 docs 查
+            refs_hit = [r[0] for r in con.execute(
+                "select source_ref from postings where postings match ? limit 200",
+                (match,)).fetchall()]
+            meta = dict(con.execute("select source_ref, layer from docs").fetchall())
+            lens = dict(con.execute("select source_ref, n from docs").fetchall())
+            terms_map = dict(con.execute(
+                "select source_ref, terms from docs").fetchall())
+            rows = [(r, meta.get(r, "?"), terms_map.get(r, "")) for r in refs_hit]
+            extra = lens
+        scored = []
+        for ref, layer, terms in rows:
+            toks = str(terms).split()
+            sc = sum(1 for t in q if t in toks)
+            if sc:
+                scored.append((sc, ref, layer, extra.get(ref, len(toks))))
+        scored.sort(key=lambda x: (-x[0], x[1]))
+        out, used, truncated = [], 0, False
+        for sc, ref, layer, n in scored:
+            cost = max(64, int(n) * 8)
+            if budget_bytes and used + cost > budget_bytes:
+                truncated = True
+                break
+            used += cost
+            out.append({"source_ref": ref, "layer": layer,
+                        "score": sc, "cost": cost})
+            if len(out) >= max_items:
+                truncated = len(scored) > len(out)
+                break
+        guard = must_cite(out)
+        if not guard.get("ok"):
+            return guard
+        return {"ok": True, "readonly": True, "query": query, "hits": out,
+                "used_bytes": used, "budget_bytes": budget_bytes,
+                "truncated": truncated, "db": str(self.path),
+                "engine": "sqlite3 FTS5（零依赖 · 本地）"}
+
+    def status(self) -> dict:
+        exists = self.path.is_file()
+        return {"ok": True, "readonly": True, "db": str(self.path),
+                "exists": exists,
+                "bytes": self.path.stat().st_size if exists else 0,
+                "docs": self.count() if exists else 0,
+                "is_real_db": exists}
+
+
 def run(op="status", **params) -> dict:
     """能力入口（只读骨架）：status / layers / redlines / budget / gate_index /
     gate_cite / check_identity / search。不写盘、不建真索引、不出网。"""
@@ -214,7 +370,23 @@ def run(op="status", **params) -> dict:
                 "proposition": "**内存多大，上下文就多长**（按**可用**内存算）",
                 "positioning": "**索引 + 检索层**，不是第四处存储（正文引用不复制）",
                 "ratio": BUDGET_RATIO, "cap_bytes": BUDGET_CAP_BYTES,
-                "note": "快速搜索 = 倒排求交 → 打分 → **按预算裁剪**"}
+                "engine": "**真库：sqlite3 + FTS5**（零依赖 · 纯本地 · R-H236 起）",
+                "db_default": str(db_path()),
+                "note": "快速搜索 = FTS5 全文检索 → 打分 → **按预算裁剪**；"
+                        "**不复制正文** + **库文件不许明文密钥**"}
+    # ── R-H236 · 真库（本地持久化）──
+    if op == "db_status":
+        return VaultStore(params.get("db")).status()
+    if op == "db_add":
+        return VaultStore(params.get("db")).add(
+            params.get("source_ref") or "", params.get("text") or "",
+            params.get("layer") or "warm")
+    if op == "db_search":
+        return VaultStore(params.get("db")).search(
+            params.get("query") or "", int(params.get("budget_bytes") or 0),
+            int(params.get("max_items") or 10))
+    if op == "db_check_secret":
+        return check_db_no_secret(params.get("db") or db_path())
     if op == "layers":
         return {"ok": True, "readonly": True,
                 "layers": [dict(x) for x in LAYERS]}
@@ -238,7 +410,8 @@ def run(op="status", **params) -> dict:
                         int(params.get("budget_bytes") or 0),
                         int(params.get("max_items") or 10))
     raise ValueError("未知 op %r（可用：status/layers/redlines/budget/gate_index/"
-                     "gate_cite/check_identity/search）" % (op,))
+                     "gate_cite/check_identity/search/db_status/db_add/"
+                     "db_search/db_check_secret）" % (op,))
 
 
 HONEST_BOUNDARY = (

@@ -1,0 +1,64 @@
+{
+ "updated": "2026-09-22 22:33:52",
+ "stages": [
+  {
+   "id": "S0",
+   "name": "素材",
+   "ok": true,
+   "note": "素材就位（人工/技能产出）"
+  },
+  {
+   "id": "S1",
+   "name": "创意(生成)",
+   "ok": true,
+   "note": "云片段产出（计费动作须确认）"
+  },
+  {
+   "id": "S2",
+   "name": "剪",
+   "ok": true,
+   "note": "切分/删段"
+  },
+  {
+   "id": "S3",
+   "name": "动效(HyperFrames)",
+   "ok": true,
+   "note": "10.0s · 1920x1080 · 30/1 · 音轨无 · 30KB"
+  },
+  {
+   "id": "S4",
+   "name": "批量(Remotion)",
+   "ok": false,
+   "note": "待产出 video-out/batch.mp4"
+  },
+  {
+   "id": "S5",
+   "name": "精修",
+   "ok": false,
+   "note": "待产出 video-out/final.mp4"
+  },
+  {
+   "id": "S6",
+   "name": "验收",
+   "ok": false,
+   "note": "无成片可验"
+  },
+  {
+   "id": "S7",
+   "name": "发布与账本",
+   "ok": false,
+   "note": "跑一次 status 即生成"
+  }
+ ],
+ "pass": 4,
+ "total": 8,
+ "providers": {
+  "hyperframes": true,
+  "remotion": false,
+  "ffmpeg": true,
+  "videocut": null,
+  "video-use": null,
+  "arkcli": false,
+  "autoglm": true
+ }
+}

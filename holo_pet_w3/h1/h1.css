@@ -10,7 +10,7 @@
   margin: 8px 0;
   padding: 8px 10px;
   border: 1px solid var(--gbt-line-soft);
-  border-radius: 8px;
+  border-radius: var(--gbt-radius);
   background: var(--gbt-panel);
   font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
   font-size: 12px;
@@ -21,6 +21,30 @@
   margin: 8px 0;
   padding: 10px;
   border: 1px dashed var(--gbt-off);
-  border-radius: 8px;
+  border-radius: var(--gbt-radius);
   color: var(--gbt-dim);
 }
+
+/* ── 布局纠错（2026-09-22 · 实测发现，不是推测）──────────────────────────
+ * `window.css` §10 的注释早就写明：`.gbt-wide` 的语义是「**单卡**铺满整屏」
+ * （position:absolute + inset:8px），一个视图里只放一张才成立。
+ * 本页**没有视图切换**（gbt-view=0），却给五张卡全挂了 .gbt-wide
+ * ⇒ 五张卡全 absolute 到同一格。
+ * 实测几何（真 Chrome，1020×1400，宿主源）：
+ *   ① y=54 h=1310 ② y=54 h=1310 ③ y=54 h=1310 ④ y=54 h=1310 ⑤ y=54 h=1310
+ *   五张边界框逐字相同，两两全相交 = 10 对；文字互相叠印，只看得见最后一张。
+ * 同一坑驾驶舱已踩过一次，那里用 `#view-cockpit` 作用域修的 —— 这里照办：
+ * **只在本页作用域内**让卡回到常规流、主区自己滚，不碰 window.css（别的窗口没这用法）。
+ */
+.gbt-main {
+  display: block;
+  overflow-y: auto;
+  padding: 8px;
+}
+.gbt-main > .gbt-card {
+  position: static;
+  inset: auto;
+  overflow: visible;
+  margin: 0 0 8px;
+}
+.gbt-main > .gbt-card:last-child { margin-bottom: 0; }

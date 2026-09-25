@@ -1,0 +1,30 @@
+{
+ "时间": "2026-09-24T04:50:24",
+ "带现状": true,
+ "沙箱": "read-only",
+ "任务": "生成 Stable Diffusion OpenPose+LoRA ComfyUI 自动化工作流模板，输出 JSON 节点流，说明如何与 GBT小土豆V8 框架协作实现免费无限生产",
+ "提示字数": 8737,
+ "第一次": {
+  "exit": 0,
+  "耗时s": 155.8,
+  "命中冷却": true
+ },
+ "换钉": {
+  "ok": true,
+  "status": "already",
+  "钉的": "auto",
+  "读数": {
+   "活": true,
+   "状态": 200,
+   "status": "completed",
+   "落到": "meta/muse-glimmer-30b",
+   "耗时s": 2.4
+  }
+ },
+ "重试一次": {
+  "exit": 0,
+  "耗时s": 384.7
+ },
+ "答复": "**已验基线就用这条，不要重复造**\n\n已有的可复跑闭环是 `tools/codex-scripts/comfy-pose-lora.py`，在办清单 §三十八 验过：\nCheckpoint → LoRA → CLIP×2 → ControlNetApplyAdvanced → KSampler → VAEDecode → SaveImage\n节点 `12` 无 `model/clip` 入参、`scheduler=sgm_uniform`、`end_percent=0.9`，与 `build()` 逐字节一致。\n本机无 CUDA、内存 7.4 GB，路线是 CPU + LCM 8 步，已验 1366.3 s 单。\n\n### ComfyUI OpenPose+LoRA 节点流模板\n符合已验 `build()` 的最小可跑 JSON，文件名全部来自本仓实盘：Realistic_Vision、control_openpose、lcm-lora、input/gbt-pose-stand-std.png。\n\n```json\n{\n  \"4\": {\"class_type\":\"CheckpointLoaderSimple\",\"inputs\":{\"ckpt_name\":\"Realistic_VisionV5.1_Realism.safetensors\"}},\n  \"13\": {\"class_type\":\"LoraLoader\",\"inputs\":{\"lora_name\":\"lcm-lora-sdv1-5.safetensors\",\"strength_model\":1.0,\"strength_clip\":1.0,\"model\":[\"4\",0],\"clip\":[\"4\",1]}},\n  \"6\": {\"class_type\":\"CLIPTextEncode\",\"inputs\":{\"text\":\"photo of a young woman standing, full body, cinematic light\",\"clip\":[\"13\",1]}},\n  \"7\": {\"class_type\":\"CLIPTextEncode\",\"inputs\":{\"text\":\"lowres, blurry, watermark, text, extra fingers, deformed hands\",\"clip\":[\"13\",1]}},\n  \"5\": {\"class_type\":\"EmptyLatentImage\",\"inputs\":{\"width\":512,\"height\":512,\"batch_size\":1}},\n  \"10\": {\"class_type\":\"ControlNetLoader\",\"inputs\":{\"control_net_name\":\"control_openpose.pth\"}},\n  \"11\": {\"class_type\":\"LoadImage\",\"inputs\":{\"image\":\"gbt-pose-stand-std.png\"}},\n  \"12\": {\"class_type\":\"ControlNetApplyAdvanced\",\"inputs\":{\"positive\":[\"6\",0],\"negative\":[\"7\",0],\"control_net\":[\"10\",0],\"image\":[\"11\",0],\"strength\":1.0,\"start_percent\":0.0,\"end_percent\":0.9,\"vae\":[\"4\",2]}},\n  \"3\": {\"class_type\":\"KSampler\",\"inputs\":{\"seed\":123456,\"steps\":8,\"cfg\":2.0,\"sampler_name\":\"lcm\",\"scheduler\":\"sgm_uniform\",\"denoise\":1.0,\"model\":[\"13\",0],\"positive\":[\"12\",0],\"negative\":[\"12\",1],\"latent_image\":[\"5\",0]}},\n  \"8\": {\"class_type\":\"VAEDecode\",\"inputs\":{\"samples\":[\"3\",0],\"vae\":[\"4\",2]}},\n  \"9\": {\"class_type\":\"SaveImage\",\"inputs\":{\"filename_prefix\":\"gbt_pose_lora\",\"images\":[\"8\",0]}}\n}\n```\n\n### 与 GBT小土豆V8 协作的落地做法\n- **默认走万能插**：人话路由 `python tools/codex-scripts/omni.py \"<人话>\"` → 执行 `python tools/codex-scripts/five-dim.py cap <能力位> '{...}'`，禁止直调 `gbt_allinone` 模块函数。\n- **能力位**：`comfyui_local` domain=creative，五原语 LOAD/GENERATE/CONTROL/POST/EXPORT。生成后必须落盘到本地/飞书仓库并写 `trace_store`，`source_kind=\"comfyui\"`。\n- **免费无限生产**：本机 CPU 路线 + LCM 8 步 + OpenPose ControlNet 约束姿势 + LoRA 控制风格。单张可复跑，镜像排练 `mirror_shape/rehearse`→成品后显式 `room=\"<房间名>\"` 或 `into_global_production=true` 走 `run_task` 授权门写生产，零修改直晋升。\n- **现成工具**：直接用 `comfy-pose-lora.py --probe --list` 认件、`--pose ... --prompt ... --steps 8 --cfg 2.0 --sampler lcm` 执行，服务白名单过滤入参避免版本差异报错。不要按本机没有的显卡出方案。\n\n未验项：`--write` 模式未跑过，连续驱动稳定性未验，均如实标未验。\n",
+ "成败": "✅ 拿到答复"
+}

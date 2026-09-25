@@ -1,0 +1,62 @@
+# GBT小土豆V8 · 10 云插件拼接网 · **本地验收专用**配置
+# 开发者：自由的风 · 守护者：公主土豆 · 禁止删除
+#
+# 🔴🔴 本文件**只给本机验收用，绝对不许拿去 deploy**。🔴🔴
+# 理由：这里挂了一个**假 database_id** 的 D1 绑定 —— miniflare 在本地模式下不看 id，
+# 会在 `.wrangler/state` 下建一个本地 SQLite；可**一旦真 deploy，它会去找一个不存在的库**。
+#
+# 为什么要有它：`wrangler.toml`（部署配置）里 D1 **故意留空** ——
+# 主人账号里现读那 4 个库都是别的用途（orders/caps/wallet），
+# 往别人的库里建我们的表 = 把主人的库弄脏。但 07 号宣称的「D1 降级落点」
+# 又必须能真的验一遍（否则就是"宣称有、代码没有"）。
+# ⇒ 本地验 D1 走这份；部署那份保持干净。`cloud-mesh.py check` 有一条判据盯着这件事：
+#    **部署配置里不许出现 D1 绑定**（防止哪天有人顺手把它填上去）。
+#
+# 用法：
+#   wrangler dev -c deploy/cloud-10/wrangler.dev.toml --port 8791 --local
+#   # 07 号 index/query 的 sink 必须是 d1；**重启 dev 后再查一次**，数据还在才叫持久。
+
+name = "gbt-potato-cloud-10-dev"
+main = "src/worker.js"
+compatibility_date = "2025-01-01"
+workers_dev = true
+
+[ai]
+binding = "AI"
+
+[vars]
+LLM_ENDPOINT = ""
+UNCENSORED_ENDPOINT = ""
+NS_PREFIX = "mesh10/"
+# 本地验收用的配置授权（与部署配置同口径，免得"本机过、云上不过"）
+# ⚠️ 别用 `--var GRANTED_SCOPES:a,b,c` 传：带逗号的值会被 wrangler 拆成多个变量（本轮当场踩到）。
+GRANTED_SCOPES = "external_llm,filesystem_read,filesystem_write,network_read"
+# 本机真图像端点（ComfyUI 包出来的那一层 · tools/codex-scripts/local-image-endpoint.py）
+IMAGE_ENDPOINT = "http://127.0.0.1:8114/v1"
+# 本地冒烟用的一次性口令（**不是真凭据**，只在本机 dev 里用）
+GBT_IDENTITY = "你是 GBT小土豆V8（开发者：自由的风），只用这个身份回答。"
+
+[[kv_namespaces]]
+binding = "MEM"
+id = "dev-local-mem"
+
+[[kv_namespaces]]
+binding = "CTX"
+id = "dev-local-ctx"
+
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "gbt-dev-files"
+
+[[r2_buckets]]
+binding = "LEDGER"
+bucket_name = "gbt-dev-ledger"
+
+# 🔴 假 id：本地模式不看它；deploy 会失败 —— 这正是我们要的"别拿去部署"的保险。
+[[d1_databases]]
+binding = "DB"
+database_name = "gbt-memory-dev"
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[observability]
+enabled = true

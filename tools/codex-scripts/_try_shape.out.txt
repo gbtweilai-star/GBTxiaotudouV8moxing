@@ -1,0 +1,39 @@
+{
+  "status": "denied",
+  "kind": "mirror_shape",
+  "denied": true,
+  "message": "capability requires human authorization",
+  "reason": "需要人工授权（filesystem_write）：写入、移动、删除或自动整理文件",
+  "error": "需要人工授权（filesystem_write）：写入、移动、删除或自动整理文件",
+  "scopes": [
+    "filesystem_write"
+  ],
+  "missing": [
+    "filesystem_write"
+  ],
+  "how_to_grant": [
+    "终端运行: python -m gbt_allinone auth grant --scope filesystem_write --ttl 600",
+    "或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）"
+  ],
+  "note": "授权一次性消耗；AI 调用路径无权自行发放",
+  "ok": false,
+  "result": {
+    "status": "denied",
+    "kind": "mirror_shape",
+    "denied": true,
+    "message": "capability requires human authorization",
+    "reason": "需要人工授权（filesystem_write）：写入、移动、删除或自动整理文件",
+    "error": "需要人工授权（filesystem_write）：写入、移动、删除或自动整理文件",
+    "scopes": [
+      "filesystem_write"
+    ],
+    "missing": [
+      "filesystem_write"
+    ],
+    "how_to_grant": [
+      "终端运行: python -m gbt_allinone auth grant --scope filesystem_write --ttl 600",
+      "或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）"
+    ],
+    "note": "授权一次性消耗；AI 调用路径无权自行发放"
+  }
+}

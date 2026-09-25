@@ -1,0 +1,12 @@
+心跳间隔: 600 秒
+启动前线程: None
+启动后线程: gbt-persona-heartbeat | alive: True
+再挂一次仍是同一条: True
+停后 alive: False | stop 事件: True
+调度表: {}
+手动 tick: {"ran": [], "count": 0}
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\Desktop\GBT小土豆V8\.scratch\_hb_verify.py", line 25, in <module>
+    print("tick 后 last_status:", st2["schedules"]["persona-evolve"].get("last_status"))
+                                  ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+KeyError: 'persona-evolve'

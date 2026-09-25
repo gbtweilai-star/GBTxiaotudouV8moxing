@@ -1,0 +1,7 @@
+EigenFluxClient 可用: True
+client: EigenFluxClient
+  eigenflux 异常: TypeError 'bool' object is not callable
+
+承诺条数: 0 | 未关的: 0
+owner_model.state: focused
+调度: {'persona-evolve': 'ok'}

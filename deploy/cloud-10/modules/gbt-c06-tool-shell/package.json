@@ -1,0 +1,8 @@
+{
+  "name": "gbt-c06-tool-shell",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "命令执行（隔离容器）（主人给的对应名：dsh-tool-shell）",
+  "_generated": "tools/codex-scripts/cloud-mesh.py gen"
+}

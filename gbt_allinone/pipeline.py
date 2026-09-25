@@ -10,7 +10,7 @@ v2 升级（同日第十批后）：AI 框架在大模型配合下自主完成�
            可选精修循环（refine_rounds>0）：LLM 审查→给出修改→镜像快照→复审，
            每轮快照带血缘链（refined_from），最多 N 轮，避免无限循环
   Stage 2  门禁审计（gate）：P0 机械维度（完整/归属/审计/策略——恒开、毫秒级、确定性）
-           + P1 质量维度（review=True 时 LLM 评分，阈值 60）
+           + P1 质量维度（review=True 时 LLM 按评分卡打分，阈值 97）
            任一不过 → 阻断进隔离区，如实报原因
   Stage 3  版本化生产（publish）：过闸后原子写入生产区（当前版），
            同时归档历史版本（.versions/<name>/vN），护照带版本号与血缘，
@@ -37,12 +37,56 @@ _RECORDS = _PIPE / "records"
 
 # P0 机械维度：恒开（确定性、毫秒级）
 REQUIRED_DIMENSIONS = ["integrity", "ownership", "audit"]
-# P1 质量维度：review=True 时开启（LLM 评分）
-QUALITY_THRESHOLD = 60
+# P1 质量维度：review=True 时开启（LLM 按评分卡打分）
+# 及格线（Owner 2026-09-19）：**作品必须 ≥97 才算合格**（此前为 60）。
+# ⚠️ 只把数字从 60 抬到 97 是空门：模型没有评分卡时会挤在 80-95，97 要么永远不过、
+# 要么被模型学会"逢考必报 97"。所以同刀加评分卡，并且**总分由我们按维度加权算出来**，
+# 不采信模型自报的总分 —— 少一类可被话术带跑的数。
+QUALITY_THRESHOLD = 97
+
+# 评分卡：维度 → (权重, 说明)。总分 = Σ(维度分×权重) ÷ Σ权重，保留 1 位小数；各维度 0-100。
+QUALITY_RUBRIC = (
+    ("clarity",      1.0, "表达是否清楚、无歧义、读完不用猜"),
+    ("correctness",  1.5, "事实/逻辑/数据是否正确，有没有硬错"),
+    ("completeness", 1.2, "声明用途要求的内容是否齐全，没缺件"),
+    ("craft",        1.2, "细节打磨程度：结构、节奏、格式、可读性"),
+    ("originality",  0.8, "是否有自己的东西，不是套模板凑字"),
+    ("safety",       1.3, "署名/归属/隐私/授权边界是否合规"),
+)
 
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _score_of(v) -> float:
+    """总分 = 按评分卡对维度分加权（**不采信模型自报的总分**）。
+
+    拿不到维度分时退回旧的 `score` 字段，保证老调用方不炸；两者都没有 → 0（判不过）。
+    """
+    if not isinstance(v, dict):
+        return 0.0
+    dims = v.get("dims")
+    if isinstance(dims, dict) and dims:
+        num = den = 0.0
+        for k, w, _d in QUALITY_RUBRIC:
+            den += w
+            try:
+                num += float(dims.get(k) or 0) * w
+            except (TypeError, ValueError):
+                pass
+        return round(num / den, 1) if den else 0.0
+    try:
+        return float(v.get("score") or 0)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _dims_brief(v) -> str:
+    """维度分明细（进审计令牌）——让"97 分"看得见是哪几维撑起来的，可复核。"""
+    if not isinstance(v, dict) or not isinstance(v.get("dims"), dict):
+        return "-"
+    return ",".join(f"{k}:{v['dims'].get(k)}" for k, _w, _d in QUALITY_RUBRIC)
 
 
 def _ensure():
@@ -87,10 +131,10 @@ def _llm_call(prompt: str, max_tokens: int = 800) -> dict:
 
     绝不伪造评审：两个引擎都不可用时如实报错。
     """
-    # 引擎 1：DeepSeek 桥
+    # 引擎 1：统一大模型口（Owner 2026-09-19：全部统一大模型；模块不再直连 bridge）
     try:
-        from .llm import bridge as LB
-        r = LB.chat(prompt, max_tokens=max_tokens, timeout=90)
+        from .llm import unified as LLM
+        r = LLM.ask(prompt, max_tokens=max_tokens, timeout=90, purpose="pipeline.review")
         if r.get("ok") and str(r.get("reply", "")).strip():
             return {"ok": True, "text": r["reply"], "engine": "deepseek"}
     except Exception:  # noqa: BLE001
@@ -121,9 +165,12 @@ def _llm_review(name: str, content: str, meta: dict) -> dict:
     prompt = (f"你是生产门禁的质量评审员。产物名: {name}\n"
               f"声明用途: {purpose}\n"
               f"产物内容（节选前1200字）:\n{content[:1200]}\n\n"
+              f"按评分卡逐维度打分（每项 0-100 整数，宁可低不要虚高）：\n"
+              + "".join(f'  - {k}：{d}\n' for k, _w, d in QUALITY_RUBRIC)
+              + f"及格线 {QUALITY_THRESHOLD}/100（加权总分由系统按维度算，不要自己编总分）。\n"
               f"严格输出 JSON（不要多余文字）: "
-              f'{{"score": <0-100整数>, "verdict": "<pass|fail>", '
-              f'"issues": ["<问题1>", "<问题2>"]}}')
+              f'{{"dims": {{{", ".join(chr(34) + k + chr(34) + ": <0-100整数>" for k, _w, _d in QUALITY_RUBRIC)}}}, '
+              f'"verdict": "<pass|fail>", "issues": ["<问题1>", "<问题2>"]}}')
     r = _llm_call(prompt, max_tokens=600)
     if not r.get("ok"):
         # LLM 评审失败：如实标注质量维度不可用，不让门禁静默通过
@@ -187,7 +234,7 @@ def _llm_review(name: str, content: str, meta: dict) -> dict:
             return _audit_token("quality", name, False,
                                 f"评审 JSON 解析失败（含净化重试）: {ex2} | 原文: {js[:80]}")
     try:
-        score = int(v.get("score", 0))
+        score = _score_of(v)
     except (TypeError, ValueError):
         score = 0
     score_ok = score >= QUALITY_THRESHOLD
@@ -197,7 +244,8 @@ def _llm_review(name: str, content: str, meta: dict) -> dict:
                             f"score={score}/100, verdict={v.get('verdict')}"
                             f"（分数与判定分歧，以分数为准）, issues={str(v.get('issues', ''))[:100]}")
     passed = score_ok and verdict_ok
-    detail = f"score={score}/100, issues={str(v.get('issues', ''))[:120]}"
+    detail = (f"score={score}/100 (线 {QUALITY_THRESHOLD}), dims={_dims_brief(v)}, "
+              f"issues={str(v.get('issues', ''))[:120]}")
     return _audit_token("quality", name, passed, detail)
 
 
@@ -356,11 +404,19 @@ def submit(name: str, content, meta=None, review: bool = False,
     (_RECORDS / f"{rec_id}.json").write_text(
         json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    if "status" not in record:
+        # 未走 stage3 发布分支时补齐顶层状态：发布过 → published，否则视为被门禁拦下
+        stage3 = record.get("stage3_publish") or {}
+        record["status"] = stage3.get("status") or "blocked"
     try:
         from .store import audit
         audit("pipeline_" + record["status"], {"rec_id": rec_id, "name": name,
                                                "sha256": current_digest[:12],
-                                               "refined": len(lineage)})
+                                               "refined": len(lineage),
+                                               # 观察者足迹标记（2026-09-19）：护栏自检故意提交一次
+                                               # 会被门禁拦下的产物，那是**负对照**，不是现行故障。
+                                               # 不标记 → selfscan 下一枪会把它读成 runtime fault（假 P0/P1）。
+                                               "probe": bool(meta.get("probe"))})
     except Exception:
         pass
     return record
@@ -368,14 +424,24 @@ def submit(name: str, content, meta=None, review: bool = False,
 
 def list_records(limit=20) -> dict:
     _ensure()
-    files = sorted(_RECORDS.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)[:limit]
+    # 🔴 2026-09-22 第 41 轮修（错报治理 · 与 `agency_tentacles.catalog` 同一类）：
+    #    原来 `"count": len(out)` 只是**这一页**的条数（`[:limit]` 之后），
+    #    读的人问"流水线一共多少条记录"会拿到页大小。
+    #    同仓的样板是 `tentacle/omni_fs.py:162` 的 `file_list`：**count + truncated 一起给**。
+    #    ⇒ 补 `total`（目录里一共有几个）+ `truncated`，并保留 `count` 原义（本页条数）。
+    _all = sorted(_RECORDS.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    files = _all[:limit]
     out = []
     for f in files:
         try:
             out.append(json.loads(f.read_text(encoding="utf-8")))
         except Exception:
             continue
-    return {"records": out, "count": len(out)}
+    return {"records": out, "count": len(out), "total": len(_all),
+            "limit": limit, "truncated": len(_all) > limit,
+            "count_note": ("count=本页条数；total=记录总数；"
+                           + ("**本次被 limit 截断**（还有 %d 条没列）" % (len(_all) - len(files))
+                              if len(_all) > limit else "本次未截断（total 全部列出）"))}
 
 
 def versions(name: str) -> dict:

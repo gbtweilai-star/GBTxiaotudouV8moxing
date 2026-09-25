@@ -3,16 +3,16 @@ import sys
 
 from .api import list_capabilities, run_task
 from .store import audit, query_log, log_count
-from .caps_registry import DISABLED_CAPS
+from .caps_registry import UNIMPLEMENTED_CAPS
 
 
 def cmd_list():
-    print("== 可用能力（良性，可执行）==")
+    print("== 可用能力（真能调，可执行）==")
     for c in list_capabilities(filter_dangerous=True):
         print(f"  - {c['name']:<14} [{c['domain']}] {c['desc']}")
-    print("== 被安全策略禁用的危险能力 ==")
-    for k, reason in DISABLED_CAPS.items():
-        print(f"  - {k:<16} blocked: {reason}")
+    print("== 登记未实现的能力（只有名字、没有实现；禁止已解开，它们**不是**被挡住的）==")
+    for k, reason in UNIMPLEMENTED_CAPS.items():
+        print(f"  - {k:<16} unimplemented: {reason}")
     print(f"== 审计日志条数: {log_count()} ==")
 
 

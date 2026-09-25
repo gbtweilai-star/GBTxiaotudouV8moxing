@@ -16,17 +16,74 @@ except Exception:
 class OmniProcessMixin:
     """process 域能力 — 21 方法"""
 
-    def launch(self, app: str, args: list = None):
+    def _proc_names(self) -> set:
+        """当前进程名集合（小写、去 .exe）。取不到就返回空集 —— 那是"没得比"，不是"没起来"。"""
+        names = set()
+        try:
+            import psutil
+            for pr in psutil.process_iter(["name"]):
+                n = str((pr.info or {}).get("name") or "").lower()
+                if n:
+                    names.add(n[:-4] if n.endswith(".exe") else n)
+        except Exception:  # noqa: BLE001
+            pass
+        return names
+
+    def launch(self, app: str, args: list = None, verify_s: float = 6.0):
+        """启动应用 + **验证它真的起来了**（铁律⑤：每步亲眼验证）。
+
+        R-H295 · 修根因（假成功）：原来兜底路径 `cmd /c start "" <app>` **只要 cmd 自己起得来
+        就报 `ok: True`** —— 而 Windows 的 `start` 对**不存在的目标照样返回 0**
+        （只在 stderr 打印 "The system cannot find the file …"）。实测：
+        `launch('绝对不存在的程序_zzz')` 报 `ok=True`，而屏幕上什么都没出现。
+        这是"看着有、其实没成"的典型 —— 面板上一个绿勾，背后什么都没发生。
+
+        现在起完之后**真的去看**：轮询进程表，出现匹配 `app` 的新进程才算成；
+        到点还没出现 ⇒ 返回结构化拒绝 `launch_unverified`（不报绿、不猜）。
+        """
         import subprocess
+        before = self._proc_names()
+        key = str(app or "").strip().lower()
+        key = key.rsplit("\\", 1)[-1].rsplit("/", 1)[-1]
+        if key.endswith(".exe"):
+            key = key[:-4]
+
+        method = None
         try:
             # B602 修复：列表参数 + shell=False（不再混用 shell=True 拼接）
-            if args: subprocess.Popen([app] + args, shell=False)
-            else: subprocess.Popen([app], shell=False)
-            time.sleep(1); return {"ok": True, "launched": app}
+            if args:
+                subprocess.Popen([app] + args, shell=False)
+            else:
+                subprocess.Popen([app], shell=False)
+            method = "popen"
         except Exception:
             # Windows start 语义兜底（路径含空格的注册应用名），保留 shell 但只接受单一应用名
-            try: subprocess.Popen(['cmd', '/c', 'start', '', str(app)], shell=False); time.sleep(1); return {"ok": True, "launched": app, "method": "shell_start"}
-            except Exception as e: return {"ok": False, "error": str(e)[:100]}
+            try:
+                subprocess.Popen(['cmd', '/c', 'start', '', str(app)], shell=False)
+                method = "shell_start"
+            except Exception as e:  # noqa: BLE001
+                return refusal("action_failed", str(e)[:100], (), "launch")
+
+        # ── 动后验证：不看一眼不算成 ──
+        deadline = time.time() + max(0.5, float(verify_s))
+        seen_new = set()
+        while time.time() < deadline:
+            time.sleep(0.4)
+            now = self._proc_names()
+            seen_new = now - before
+            if key and any(key in n for n in seen_new):
+                return {"ok": True, "launched": app, "method": method,
+                        "verified": True, "new_processes": sorted(seen_new)[:6]}
+        if not key:
+            return refusal("launch_unverified", "app 名为空，无法验证是否真的起来",
+                           ("app_name",), "launch")
+        return refusal(
+            "launch_unverified",
+            "命令已发出（method=%s）但 %.1fs 内没看到匹配 '%s' 的新进程 —— "
+            "不报绿：Windows start 对不存在的目标也返回 0，所以'发出去了'不等于'起来了'。"
+            "这段时间新增进程：%s" % (method, verify_s, key, sorted(seen_new)[:6] or "（无）"),
+            ("running_process",), "launch", attempted=app, method_used=method,
+            new_processes=sorted(seen_new)[:6])
 
     def kill(self, target: str):
         try:
@@ -38,8 +95,8 @@ class OmniProcessMixin:
             if killed: return {"ok": True, "killed": killed}
             win = _find_window(target)
             if win: psutil.Process(win["pid"]).kill(); return {"ok": True, "killed": [{"pid": win["pid"], "window": win["title"][:50]}]}
-            return {"ok": False, "error": f"未找到进程: {target}"}
-        except ImportError: return {"ok": False, "error": "psutil 不可用"}
+            return refusal("process_not_found", f"未找到进程: {target}", ("process",))
+        except ImportError: return refusal("dependency_unavailable", "psutil 不可用", ("psutil",))
 
     def process_list(self, filter_name: str = None):
         try:
@@ -95,7 +152,7 @@ class OmniProcessMixin:
                     priority="critical" if _heavy else "normal")
             except Exception: pass  # 容错: 非关键路径
             return result
-        except ImportError: return {"ok": False, "error": "psutil 不可用"}
+        except ImportError: return refusal("dependency_unavailable", "psutil 不可用", ("psutil",))
 
     def app_running(self, name: str):
         try:
@@ -131,7 +188,7 @@ class OmniProcessMixin:
                 }
             return result
         except Exception as e:
-            return {"ok": False, "error": str(e)[:200]}
+            return refusal("action_failed", str(e)[:200], ())
 
     def deep_diagnose(self):
         """深度诊断 — 穿透式交叉扫描 (全层 + N触手网格 + 共识评分)"""
@@ -248,11 +305,11 @@ class OmniProcessMixin:
     def task_guide_complete(self, node_id: str = None, evidence: str = "") -> dict:
         """标记当前任务节点完成，自动推进到下一个"""
         if not hasattr(self, '_task_guide'):
-            return {"ok": False, "error": "无活跃任务指引"}
+            return refusal("action_failed", "无活跃任务指引", ())
 
         node = self._task_guide.get("current_node") if not node_id else self._task_guide_find_node(node_id)
         if not node:
-            return {"ok": False, "error": f"节点不存在: {node_id}"}
+            return refusal("action_failed", f"节点不存在: {node_id}", ())
 
         node["status"] = "completed"
         node["completed_at"] = datetime.now().isoformat()
@@ -277,7 +334,7 @@ class OmniProcessMixin:
     def task_guide_status(self) -> dict:
         """当前任务指引状态"""
         if not hasattr(self, '_task_guide'):
-            return {"ok": False, "error": "无活跃任务指引"}
+            return refusal("action_failed", "无活跃任务指引", ())
         
         guide = self._task_guide
         return {
@@ -293,7 +350,7 @@ class OmniProcessMixin:
     def task_guide_next(self) -> dict:
         """获取下一个待执行任务（不推进状态）"""
         if not hasattr(self, '_task_guide'):
-            return {"ok": False, "error": "无活跃任务指引"}
+            return refusal("action_failed", "无活跃任务指引", ())
         
         next_node = self._task_guide_find_next_pending(self._task_guide["nodes"])
         return {

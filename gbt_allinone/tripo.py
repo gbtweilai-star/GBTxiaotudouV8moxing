@@ -89,17 +89,21 @@ def text_to_model(prompt, out_format="glb"):
             "raw": r}
 
 
-def image_to_model(image_path, out_format="glb"):
-    """图片生成 3D 模型（先上传文件再引用 task_id）。"""
+def upload_file(image_path):
+    """上传本地图片到 Tripo，返回 file_token（多视图/单视图都复用它）。
+
+    Tripo v3 实测：`POST /files` 返回 `data.file_token`（旧文档写的 image_token 已作废）。
+    """
     if not _key():
         return {"ok": False, "status": "needs_dependency", "missing": "TRIPO_API_KEY"}
-    # 1. 上传文件
     boundary = "----gbttripo"
     with open(image_path, "rb") as f:
         img_data = f.read()
+    ext = os.path.splitext(image_path)[1].lower()
+    mime = "image/jpeg" if ext in (".jpg", ".jpeg") else "image/png"
     body = (f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; "
             f"filename=\"{os.path.basename(image_path)}\"\r\n"
-            f"Content-Type: image/png\r\n\r\n").encode() + img_data + \
+            f"Content-Type: {mime}\r\n\r\n").encode() + img_data + \
         f"\r\n--{boundary}--\r\n".encode()
     response = net_guard.safe_request_json(
         BASE + "/files", method="POST", body=body,
@@ -112,11 +116,42 @@ def image_to_model(image_path, out_format="glb"):
         return {"ok": False,
                 "error": f"HTTP {response['status']}: {response.get('text', '')[:300]}"}
     up = response.get("json") or {}
-    image_token = up.get("data", {}).get("image_token")
-    if not image_token:
+    token = up.get("data", {}).get("file_token") or up.get("data", {}).get("image_token")
+    if not token:
         return {"ok": False, "error": "上传失败", "raw": up}
-    # 2. 图生 3D
-    r = _post("/generation/image-to-model", {"file": {"image_token": image_token}})
+    return {"ok": True, "file_token": token, "raw": up}
+
+
+def image_to_model(image_path, out_format="glb", model="v3.1-20260211"):
+    """图片生成 3D 模型（先上传文件再引用 file_token）。"""
+    if not _key():
+        return {"ok": False, "status": "needs_dependency", "missing": "TRIPO_API_KEY"}
+    up = upload_file(image_path)
+    if not up.get("ok"):
+        return up
+    # 图生 3D（Tripo v3: file 字段用 file_token，不要包成 {"image_token": ...}）
+    r = _post("/generation/image-to-model", {"file": {"file_token": up["file_token"]},
+                                             "model": model})
+    return {"ok": r.get("code") == 0, "task_id": r.get("data", {}).get("task_id"),
+            "raw": r}
+
+
+def multiview_to_model(image_paths, model="v3.1-20260211"):
+    """多视图生成 3D 模型（正/侧/背… 一起喂，几何比单视图准）。
+
+    image_paths: 2–4 张图，建议顺序 [front, left, back, right]。返回 task_id。
+    """
+    if not _key():
+        return {"ok": False, "status": "needs_dependency", "missing": "TRIPO_API_KEY"}
+    if not 2 <= len(image_paths) <= 4:
+        return {"ok": False, "error": "多视图需要 2–4 张图"}
+    files = []
+    for p in image_paths:
+        up = upload_file(p)
+        if not up.get("ok"):
+            return {"ok": False, "error": f"上传失败 {p}: {up.get('error')}"}
+        files.append({"type": "png", "file_token": up["file_token"]})
+    r = _post("/generation/multiview-to-model", {"files": files, "model": model})
     return {"ok": r.get("code") == 0, "task_id": r.get("data", {}).get("task_id"),
             "raw": r}
 
@@ -137,6 +172,16 @@ def rig_check(task_id):
         return {"ok": False, "status": "needs_dependency", "missing": "TRIPO_API_KEY"}
     r = _post("/animations/rig-check", {"original_model_task_id": task_id})
     d = r.get("data", {})
+    # Tripo v3: rig-check 也是异步的，返回 task_id，需轮询
+    check_task_id = d.get("task_id")
+    if check_task_id:
+        st = wait_task(check_task_id, max_wait_s=180, poll_s=5)
+        if st.get("status") == "success":
+            out = st.get("output", {})
+            return {"ok": True, "rig_type": out.get("rig_type"),
+                    "eligible": out.get("riggable", False)}
+        else:
+            return {"ok": False, "error": f"rig-check 失败: {json.dumps(st, ensure_ascii=False)[:300]}"}
     return {"ok": r.get("code") == 0, "rig_type": d.get("rig_type"),
             "eligible": d.get("eligible", False)}
 
@@ -221,13 +266,13 @@ def status():
                 "hint": "platform.tripo3d.ai 注册（送免费积分）→ 创建 Key → setx TRIPO_API_KEY"}
     bal = balance()
     return {"ok": True, "configured": True, "balance": bal.get("balance"),
-            "ops": ["text_to_model", "image_to_model", "rig_check", "rig",
-                    "animate", "wait_task", "full_pipeline"]}
+            "ops": ["text_to_model", "image_to_model", "multiview_to_model", "upload_file",
+                    "rig_check", "rig", "animate", "wait_task", "full_pipeline"]}
 
 
 def run(op="status", **params):
-    """tripo 统一入口：status/text_to_model/image_to_model/rig_check/rig/
-    animate/wait_task/full_pipeline。"""
+    """tripo 统一入口：status/balance/text_to_model/image_to_model/multiview_to_model/
+    upload_file/rig_check/rig/animate/wait_task/full_pipeline。"""
     if op == "status":
         if not _key():
             return {"ok": True, "configured": False,
@@ -239,6 +284,10 @@ def run(op="status", **params):
         return text_to_model(params.get("prompt", ""), params.get("out_format", "glb"))
     if op == "image_to_model":
         return image_to_model(params.get("image_path", ""))
+    if op == "multiview_to_model":
+        return multiview_to_model(params.get("image_paths", []))
+    if op == "upload_file":
+        return upload_file(params.get("image_path", ""))
     if op == "task_status":
         return task_status(params.get("task_id", ""))
     if op == "rig_check":
@@ -252,4 +301,5 @@ def run(op="status", **params):
     if op == "full_pipeline":
         return full_pipeline(params.get("prompt", ""), params.get("animations"))
     raise ValueError(f"未知 op: {op}（可用: status/balance/text_to_model/image_to_model/"
-                     f"task_status/rig_check/rig/animate/wait_task/full_pipeline）")
+                     f"multiview_to_model/upload_file/task_status/rig_check/rig/animate/"
+                     f"wait_task/full_pipeline）")

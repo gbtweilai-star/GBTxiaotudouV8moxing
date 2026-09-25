@@ -1,4 +1,4 @@
-﻿"""GBT 量化技术能力（读取 Workspace 项目真实代码，返回真实技术分析）。
+"""GBT 量化技术能力（读取 Workspace 项目真实代码，返回真实技术分析）。
 
 只读：解析量化引擎/回测 API 的类、信号、参数模型。不读取 .env/密钥，不触发任何交易。"""
 import re
@@ -33,12 +33,33 @@ def _extract_enums(text):
 
 
 def _extract_dataclass_fields(text):
-    """提取标 @dataclass 的类及其字段。"""
+    """提取标 @dataclass 的类及其字段。
+
+    🔴 2026-09-22 修（深蒸 finance 域时抓到的真缺陷 —— **假空**，不是推测）：
+    原正则 `@dataclass\\s*\\nclass\\s+(\\w+):\\n((?:[ \\t]+\\w+.*\\n)+)` 要求**类体首行以 \\w 开头**，
+    而真实类体首行常是 docstring / 注释 ⇒ **整块失配**：文件里明明有两个 @dataclass，
+    读数却报 `dataclasses: []`（实测 `cis_quant_engine.py` → `[]`，放宽版才命中
+    `['CISPosition','CISConfig']`）。"看起来没有"和"真没有"是两件事，这条是前者。
+    改法：先按行锚定类头（不会被 `@dataclass` 里的 `dataclass` 字样干扰），
+    再逐行收**带注解的字段**，跳过 docstring/注释/装饰器/方法定义，遇到缩进结束即止。
+    """
     out = []
-    for m in re.finditer(r"@dataclass\s*\nclass\s+(\w+):\n((?:[ \t]+\w+.*\n)+)", text):
+    for m in re.finditer(r"(?m)^[ \t]*@dataclass[^\n]*\n[ \t]*class[ \t]+(\w+)[ \t]*:", text):
         cls = m.group(1)
-        fields = [l.strip().split("=")[0].strip().lstrip(":")[0].split(":")[0].strip()
-                  for l in m.group(2).splitlines() if l.strip()]
+        fields = []
+        for line in text[m.end():].splitlines():
+            if not line.strip():
+                continue
+            if not line[:1].isspace():      # 缩进结束 = 类体结束
+                break
+            s = line.strip()
+            if s.startswith(("#", '"', "'", "@", "def ", "class ")):
+                continue
+            if s.startswith(("return", "if ", "for ", "while ", "with ", "try", "except", "else", "elif")):
+                continue
+            name = s.split(":")[0].strip().lstrip("*")
+            if ":" in s and name.isidentifier():
+                fields.append(name)
         out.append({"class": cls, "fields": fields})
     return out
 
@@ -67,7 +88,13 @@ def quant_backtest():
         if not p.exists():
             continue
         t = p.read_text(encoding="utf-8", errors="ignore")
-        classes = re.findall(r"class\s+(\w+)", t)
+        # 🔴 2026-09-22 修（同批抓到的第二处缺陷 —— **假名**）：
+        # 原正则 `class\s+(\w+)` **不加行锚**，而 `@dataclass` 这个词本身含 "class" 字样
+        # ⇒ 从 `dataclass` 尾部起匹配、`\s+` 吃掉换行、`(\w+)` 抓走下一行的字面量 `class`：
+        # 实测 `backtest_engine_v3.py` 的 classes = ['class','class','BaseStrategy',…]
+        # —— 两条垃圾进榜，**真类名（Position/Trade）反被吃掉**。
+        # 改法：行锚 `(?m)^\s*class\s+(\w+)`，行首必须是 class 本身。
+        classes = re.findall(r"(?m)^[ \t]*class[ \t]+(\w+)", t)
         funcs = re.findall(r"def\s+(\w+)", t)
         params = re.findall(r"(\w+)\s*:\s*[A-Za-z_][\w.]*\s*=\s*([^\n,]+)", t)
         report.append({"file": p.name, "classes": classes[:20], "functions": funcs[:20],
@@ -89,11 +116,21 @@ def platform_profile(ttl: int = 30):
     profile = {"workspace": str(WS), "exists": WS.exists(), "top_level_dirs": [],
                "quant_py": 0, "py_total": 0}
     if WS.exists():
+        from .tools import scan_scope                     # 局部导入：避免模块级串环
         profile["top_level_dirs"] = sorted(d.name for d in WS.iterdir() if d.is_dir())
-        py = list(WS.rglob("*.py"))
-        profile["py_total"] = sum(1 for f in py if "__pycache__" not in f.parts)
+        # 仓内 .py 走**唯一扫描口径**（tools/scan_scope）：剪枝发生在进入子目录之前。
+        # 2026-09-22 修：此前 `WS.rglob("*.py")` 会把 vendor/pylibs(3106)、
+        # _upstream(889)、.shadow-repo(627) 全数吞进去 —— 本机实测直接把
+        # `platform_profile` 拖到走不完。这是**生产路径**，不是测试，性质更重。
+        # 现在只算本仓代码面，并**把被排除的量一并报出来**：
+        # 免得"数字变小了却说不清小在哪"（那和作假只差一层纸）。
+        profile["py_total"] = sum(1 for _ in scan_scope.iter_files(WS, suffixes=(".py",)))
+        profile["py_excluded"] = {k: v["py_files"]
+                                  for k, v in scan_scope.corpus_sizes(WS).items()
+                                  if v.get("exists")}
         qdir = WS / "01_量化收割引擎"
-        profile["quant_py"] = sum(1 for f in qdir.rglob("*.py") if "__pycache__" not in f.parts) if qdir.exists() else 0
+        profile["quant_py"] = sum(1 for _ in scan_scope.iter_files(qdir, suffixes=(".py",))) \
+            if qdir.exists() else 0
     _PROFILE_CACHE["ts"] = _t.time()
     _PROFILE_CACHE["data"] = profile
     return dict(profile)

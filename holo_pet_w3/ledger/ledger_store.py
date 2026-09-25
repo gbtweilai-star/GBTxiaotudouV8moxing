@@ -137,24 +137,92 @@ def tail(layer: str, n: int = 20, root: Path | None = None) -> list:
     return rows
 
 
-def verify(round_id: str, root: Path | None = None) -> dict:
-    """四路对齐判据：同一 ``round_id`` 的四路指纹必须一致。
+def verify(key: str, root: Path | None = None, key_field: str | None = None,
+           layers=None) -> dict:
+    """四路对齐判据 —— 逐条照《M9判据收口.md》§3.2 实现。
 
-    任一路缺行 → **INCONCLUSIVE**（不是 PASS 也不是 FAIL，见《M9判据收口.md》§四）。
+    权威口径（原文）：
+      · 关联键：**`raw_tid`**（上游线程 id），用来把同一条请求串起来
+      · 帧指纹：**`frame_bytes_hash`**（8 字节十六进制）
+      · `frame_bytes` 用于二次核对 —— **hash 相等而长度不等，按异常处理**
+      · PASS         同一条请求（同一 `raw_tid`）在各处都有记录，且 hash 一致
+      · FAIL         各处都有记录，但 hash 不一致（帧被改过 / 被截断）
+      · INCONCLUSIVE 任一处没有记录 —— 自成一档，不许折算 PASS
+
+    R-H295 更正（原实现的 bug）：原来按 `round_id` 对齐，而
+      ① 四路探针**从来不写 `round_id`**；
+      ② `raw_tid`（权威关联键）在 `codex_bridge.py` / `panel_server.py` / 三个探针镜像里
+         **出现 0 次** —— 即 PASS 条件按构造不可达，这条判据一直是空转的。
+    现在：默认按 `raw_tid` 找；找不到该键的行就**如实报 INCONCLUSIVE 并说明缺的是哪个键**，
+    绝不拿 `frame_bytes_hash` 当关联键替代 —— §3.1 的判例已经否掉过这条路
+    （「上一轮看到的 2 个跨层命中是帧字节恰好相同，不是同一条链」）。
+    `key_field` 仅用于显式指定别的键（如历史数据的 `round_id`），默认 None = 按 raw_tid。
+
+    R-H295 · `layers`：**默认仍然是全部四路（严格）**。之所以加这个口，是因为
+    权威判据与账本层数**对不上**：M9 §一.2 载明「面板层探针**已被块 4 收口作废**」、
+    §一 更直接写了原四层判据「**作废——它在结构上不可能成立**」，存活的是
+    **三观测点**（panel_emit / singleton_emit / upstream_recv ↔ panel.send / bridge / mock.recv）。
+    于是按四路严格判，`panel.send` 永远填不上 ⇒ 永远 INCONCLUSIVE，判据变成一句空话。
+    调用方可以显式传自己认的观测点；回执里会带上 `layers_required` 与 `layers_absent`，
+    **谁把哪几路算进判据是可审计的** —— 不许悄悄放宽。
     """
-    seen = {}
-    for layer in LAYERS:
-        hits = [r for r in tail(layer, 200, root) if r.get("round_id") == round_id]
-        seen[layer] = hits[-1].get("frame_bytes_hash") if hits else None
-    missing = [k for k, v in seen.items() if not v]
-    if missing:
-        return {"verdict": "INCONCLUSIVE", "round_id": round_id,
-                "missing": missing, "seen": seen,
-                "note": "缺观测点 = 没验成，必须重跑；不许折算 PASS"}
-    unique = set(seen.values())
-    if len(unique) == 1:
-        return {"verdict": "PASS", "round_id": round_id, "hash": seen[LAYERS[0]], "seen": seen}
-    return {"verdict": "FAIL", "round_id": round_id, "seen": seen, "note": "四路指纹不一致"}
+    fields = [key_field] if key_field else ["raw_tid", "round_id"]
+    required = list(layers) if layers else list(LAYERS)
+    unknown = [x for x in required if x not in LAYERS]
+    if unknown:
+        return {"verdict": "INVALID", "key": key, "key_field": None,
+                "why": "未知账本层：%s（只认 %s）" % (unknown, "/".join(LAYERS)),
+                "layers_required": required}
+    used_field = None
+    hashes: dict[str, list] = {}
+    lens: dict[str, list] = {}
+
+    for layer in required:
+        hits = []
+        for fld in fields:
+            hits = [r for r in tail(layer, 500, root) if r.get(fld) == key]
+            if hits:
+                used_field = used_field or fld
+                break
+        # R-H295：按**该键下的全部行**比对指纹集合，不是"每路取最后一行"。
+        # 实测教训：一条 thread（raw_tid=t1）上会有多条请求（hash 各不相同），
+        # 「取最后一行」会把不同请求拿来互比 —— 那是在比两条不同的请求，结论没意义。
+        hashes[layer] = sorted(str(r.get("frame_bytes_hash")) for r in hits
+                               if r.get("frame_bytes_hash"))
+        lens[layer] = sorted(int(r.get("frame_bytes")) for r in hits
+                             if r.get("frame_bytes") is not None)
+
+    empty = [k for k, v in hashes.items() if not v]
+    if empty:
+        return {
+            "verdict": "INCONCLUSIVE", "key": key, "key_field": used_field,
+            "missing": empty, "hashes": hashes, "rows": {k: len(v) for k, v in hashes.items()},
+            "layers_required": required,
+            "layers_absent": [x for x in LAYERS if x not in required],
+            "note": ("缺观测点 = 没验成，必须重跑；不许折算 PASS。"
+                     + ("" if used_field else
+                        "（四路都没有带 raw_tid/round_id 的行 —— 关联键没被任何观测点盖章，"
+                        "这不是「一致」，是「没得比」）")),
+        }
+
+    # 该键下各路的帧指纹集合必须逐条一致
+    unique = {tuple(v) for v in hashes.values()}
+    if len(unique) != 1:
+        return {"verdict": "FAIL", "key": key, "key_field": used_field,
+                "hashes": hashes, "rows": {k: len(v) for k, v in hashes.items()},
+                "layers_required": required,
+                "note": "该键下各路的帧指纹集合不一致（帧在链路上被改过 / 被截断 / 漏记）"}
+
+    # 指纹集合一致 → 再按 frame_bytes 二次核对（权威口径：长度不等按异常处理）
+    if len({tuple(v) for v in lens.values()}) != 1:
+        return {"verdict": "FAIL", "key": key, "key_field": used_field,
+                "hashes": hashes, "frame_bytes": lens,
+                "layers_required": required,
+                "note": "指纹一致但 frame_bytes 不等 —— 按异常处理（二次核对不过）"}
+
+    return {"verdict": "PASS", "key": key, "key_field": used_field,
+            "hashes": hashes[required[0]], "rows": {k: len(v) for k, v in hashes.items()},
+            "frame_bytes": lens, "layers_required": required}
 
 
 def self_test(root: Path | None = None) -> dict:

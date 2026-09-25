@@ -6,6 +6,28 @@
 import sys as _sys
 from pathlib import Path as _P
 _sys.path.insert(0, str(_P(__file__).resolve().parent))
+
+
+# ── 病因钩子：吞错统一收口 + 导航入口病因（**必须放在 sys.path 修正之后**）。
+#    教训（2026-09-22 实测）：放在 insert 之前 ⇒ `from nav_etiology import …` 导入期就失败，
+#    静默退回垫片 ⇒ 63 处"收口"一个病因都没真记上 = **假收口**。
+try:
+    from nav_etiology import (record_swallow as _record_swallow,
+                              etiology as _etiology,
+                              enrich as _enrich_cause)
+except Exception:  # noqa: BLE001
+    def _record_swallow(_e, _mod="?", _op=""):
+        import sys as _s
+        print(f"⚠️ {_mod}: 吞错: {_e}", file=_s.stderr)
+        return "action_no_effect"
+
+    def _etiology(_m, _o=""):
+        def _d(fn):
+            return fn
+        return _d
+
+    def _enrich_cause(r, _m="?", _o=""):
+        return r
 # publish沙盒(非项目根cwd)执行兜底: 类定义不访问core符号, 吞异常安全
 try:
     from omni_core import *  # noqa: F401,F403
@@ -174,6 +196,7 @@ class OmniWindowMixin:
         return {"ok": False, "found": False,
                 "error": f"滚动{max_scrolls}次未找到 '{text}'", "scrolled": max_scrolls}
 
+    @_etiology("omni_window", "wait_window")
     def wait_window(self, target: str, timeout: float = 30):
         end = time.time() + timeout
         while time.time() < end:
@@ -182,6 +205,7 @@ class OmniWindowMixin:
             time.sleep(0.5)
         return {"ok": False, "error": f"超时: {target}", "timeout": timeout}
 
+    @_etiology("omni_window", "wait_window_gone")
     def wait_window_gone(self, target: str, timeout: float = 30):
         end = time.time() + timeout
         while time.time() < end:
@@ -242,7 +266,7 @@ class OmniWindowMixin:
             _content_exp = str(data)
         _res_exp = _gk_exp.publish(str(_fp_export), _content_exp, "omni_tentacle_export")
         if not _res_exp.get("ok"):
-            return {"ok": False, "error": f"导出被管线拒绝: {_res_exp.get('error','?')[:150]}"}
+            return refusal("rejected_by_pipeline", f"导出被管线拒绝: {_res_exp.get('error','?')[:150]}", ())
         return {"ok": True, "filepath": filepath, "format": format, "channel": "mirror_pipeline"}
 
     def monitor(self, triggers: list, duration: float = 0, interval: float = 0.3):
@@ -355,11 +379,11 @@ class OmniWindowMixin:
         try:
             r = self.wait_text(text, _timeout)
         except Exception as e:
-            return {"ok": False, "error": f"wait_text异常: {str(e)[:100]}"}
+            return refusal("action_failed", f"wait_text异常: {str(e)[:100]}", ())
         if not (r.get("ok") and r.get("status") == "appeared"):
             return {"ok": False, "status": "timeout", "error": r.get("error", "文字未出现")}
         if not hasattr(self, action):
-            return {"ok": False, "error": f"action不存在: {action}"}
+            return refusal("action_failed", f"action不存在: {action}", ())
         try:
             res = getattr(self, action)(text, **kwargs)
             return {"ok": True, "text": text, "action": action,
@@ -370,10 +394,11 @@ class OmniWindowMixin:
                 return {"ok": True, "text": text, "action": action,
                         "result": res.get("ok", False) if isinstance(res, dict) else bool(res)}
             except Exception as e:
-                return {"ok": False, "error": f"{action}(kwargs)异常: {str(e)[:100]}"}
+                return refusal("action_failed", f"{action}(kwargs)异常: {str(e)[:100]}", ())
         except Exception as e:
-            return {"ok": False, "error": f"{action}异常: {str(e)[:100]}"}
+            return refusal("action_failed", f"{action}异常: {str(e)[:100]}", ())
 
+    @_etiology("omni_window", "watch_and_click")
     def watch_and_click(self, text: str, timeout: float = 30):
         """监控+点击 — 等到文字出现立刻点击"""
         r = self.wait_text(text, timeout)
@@ -386,7 +411,7 @@ class OmniWindowMixin:
             time.sleep(0.03)
             _mouse_click()
             return {"ok": True, "clicked": text, "at": _pos}
-        return {"ok": False, "error": f"未等到 '{text}'"}
+        return refusal("action_failed", f"未等到 '{text}'", ())
 
     def watch_sequence(self, sequence: list, timeout_per_step: float = 10):
         """监控序列 — 等待一系列文字依次出现"""
@@ -414,4 +439,4 @@ class OmniWindowMixin:
                         return {"ok": True, "found": tx, "position": (f["x"], f["y"])}
                 except Exception: pass  # 容错: 单文字快查失败继续
             _t.sleep(0.5)
-        return {"ok": False, "error": f"超时({timeout}s), 以下均未出现: {texts}"}
+        return refusal("timeout", f"超时({timeout}s), 以下均未出现: {texts}", ())

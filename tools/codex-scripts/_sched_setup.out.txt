@@ -1,0 +1,4 @@
+wf_define: {"ok": true, "name": "persona-evolve", "nodes": 1}
+wf_run status: ok | nodes: {'evolve': 'ok'} | run_id: persona-evolve-1789969124147
+sched_define: {"ok": true, "name": "persona-evolve", "workflow": "persona-evolve", "every_seconds": 600}
+sched_status: {"schedules": {"persona-evolve": {"workflow": "persona-evolve", "every_seconds": 600, "enabled": true, "defined_at": "2026-09-21T12:38:44", "last_run_ts": 0, "last_status": "never"}}, "count": 1}

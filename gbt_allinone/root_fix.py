@@ -17,7 +17,10 @@ Owner 定调（2026-09-11）：发现问题必须追踪根源彻底修复，不�
 import json
 import re
 import time
+import hashlib
 from pathlib import Path
+
+from . import _paths
 
 _BASE = Path(__file__).resolve().parent
 
@@ -131,8 +134,8 @@ def law() -> dict:
 
 # ── 坑册（pit_log）：一个坑踩两次 = 根治失败 ──
 
-_PIT_PATH = _BASE / 'store' / 'pit_log.json'
-_WORKLOG_PATH = _BASE / 'store' / 'work_log.jsonl'
+_PIT_PATH = _paths.STORE_DIR / 'pit_log.json'
+_WORKLOG_PATH = _paths.STORE_DIR / 'work_log.jsonl'
 _PROTECT_FILES = [
     # 源码保护清单：这些文件被删/被清空 = 框架残废，开工查看必须先验
     '_paths.py', 'api.py', 'caps_registry.py', 'engine.py', 'store.py',
@@ -232,6 +235,63 @@ def pre_work(task: str = '') -> dict:
 
 # ── 工作日志：每次工作都会成长、有据可查 ──
 
+# 幂等窗口（秒）：**同内容**在窗口内只落一条。
+#
+# 为什么需要（今晚实测到的）：落账脚本跑第二遍时，`at` 每次都不同 ⇒ 拿时间戳当身份等于没做幂等。
+# 实测后果：`work_log.jsonl` 多一条 + 生命事件多一条（`life/events.jsonl` 第 165/166 行），
+# 而 `work_log_mirrored` 还报 `duplicate=false` —— 镜像那层按**含 at 的 digest** 判，永远不重合。
+#
+# 口径（承 O73 与 `POST /webhook` 契约）：**写入前查指纹**，不靠事后删。
+# 保护点是**唯一收口** —— 在这里挡住，主账与生命事件两个 sink 一起不再重复。
+_WORKLOG_DEDUPE_WINDOW_S = 300.0
+_WORKLOG_SCAN_TAIL = 40
+
+
+def _worklog_fingerprint(row: dict) -> str:
+    """内容指纹：**只取 action/title/detail，不含 at** —— 时间戳不参与身份。"""
+    parts = (
+        str(row.get('action') or ''),
+        ' '.join(str(row.get('title') or '').split()),
+        ' '.join(str(row.get('detail') or '').split()),
+    )
+    return hashlib.sha256('\u241f'.join(parts).encode('utf-8')).hexdigest()[:32]
+
+
+def _worklog_recent() -> list:
+    """只读尾巴（不整文件载入）。"""
+    try:
+        text = _WORKLOG_PATH.read_text(encoding='utf-8')
+    except Exception:
+        return []
+    rows = []
+    for line in text.strip().split('\n')[-_WORKLOG_SCAN_TAIL:]:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rows.append(json.loads(line))
+        except ValueError:
+            continue
+    return rows
+
+
+def _worklog_duplicate_of(row: dict, window_s: float | None = None):
+    """写入前查：同指纹且未过窗口 ⇒ `(True, 旧行, 年龄秒)`；否则 `(False, None, None)`。"""
+    window = _WORKLOG_DEDUPE_WINDOW_S if window_s is None else float(window_s)
+    fingerprint = _worklog_fingerprint(row)
+    now = time.time()
+    for prev in reversed(_worklog_recent()):
+        if _worklog_fingerprint(prev) != fingerprint:
+            continue
+        try:
+            age = now - time.mktime(time.strptime(str(prev.get('at')), '%Y-%m-%dT%H:%M:%S'))
+        except Exception:                                        # noqa: BLE001
+            continue
+        if 0 <= age <= window:
+            return True, prev, int(age)
+    return False, None, None
+
+
 def work_log(action: str, title: str, detail: str = '') -> dict:
     """记工作日志（action: start/done/lesson）——收工必记债值与测试结果，成长可回放。"""
     if action not in ('start', 'done', 'lesson'):
@@ -246,10 +306,35 @@ def work_log(action: str, title: str, detail: str = '') -> dict:
             row['debt_total'] = patch_debt().get('合计')
         except Exception:
             pass
+    duplicate, prev, age = _worklog_duplicate_of(row)
+    if duplicate:
+        _audit('work_log_duplicate_skipped', {
+            'action': action, 'title': title[:60],
+            'fingerprint': _worklog_fingerprint(row)[:16],
+            'age_s': age, 'window_s': _WORKLOG_DEDUPE_WINDOW_S,
+        })
+        return {'ok': True, 'duplicate': True, 'skipped': True, 'row': row,
+                'first_at': (prev or {}).get('at'), 'age_s': age,
+                'window_s': _WORKLOG_DEDUPE_WINDOW_S}
     with _WORKLOG_PATH.open('a', encoding='utf-8') as fh:
         fh.write(json.dumps(row, ensure_ascii=False) + chr(10))
     _audit('work_log', {'action': action, 'title': title[:60]})
-    return {'ok': True, 'row': row}
+    # R117 · 推式镜像成生命事件：life_archive.remember_work_log() 本来就是为这条日志
+    # 写的（source.kind = "root_fix.work_log"，按 digest 幂等），但此前只有
+    # ingest_sources() 的拉式回填、没有一处推送 —— 于是"日志落盘即形成生命事件"
+    # 不成立，test_root_fix_work_log_mirrors_into_life_timeline 一直是红。
+    # 不连坐：工作日志是主账、生命事件是副本；副本失败主账照写，并且落审计（不静默）。
+    try:
+        from . import life_archive
+        _mirrored = life_archive.remember_work_log(row)
+        _audit('work_log_mirrored', {'action': action, 'ok': bool(_mirrored.get('ok', True)),
+                                     'duplicate': bool(_mirrored.get('duplicate'))})
+    except Exception as exc:  # noqa: BLE001
+        _audit('work_log_mirror_failed', {'action': action,
+                                          'error': f'{type(exc).__name__}: {exc}'})
+    # 成功路径也**明说** `duplicate: False` —— 不让"键不存在"去表达"没重复"
+    # （同族教训：`[取不到]` 与 `0` 必须分得开，别让缺席当答案）。
+    return {'ok': True, 'duplicate': False, 'skipped': False, 'row': row}
 
 
 def work_log_read(limit: int = 20) -> dict:

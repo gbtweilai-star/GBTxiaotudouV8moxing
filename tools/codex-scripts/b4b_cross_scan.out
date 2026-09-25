@@ -1,0 +1,3 @@
+﻿outer keys: ['error', 'gbt_result', 'gbt_stamp', 'kind', 'ok', 'result', 'status']
+ok = True
+findings = 0

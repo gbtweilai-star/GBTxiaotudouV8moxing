@@ -1,0 +1,14 @@
+﻿原探针 sha256 = 46cec5fc63c8d5f95892685ba77d4146ff0d8a4e76ee85614200da7a658868a8
+原探针行数   = 250
+原探针 asrt() 断言调用数 = 23
+
+R1 命中 1 次  PASS
+R2 命中 1 次  PASS
+R3 命中 1 次  PASS
+R4 命中 1 次  PASS
+
+新探针 asrt() 断言调用数 = 23 （应与原值相同）
+py_compile = PASS
+已备份原探针 -> block3_probe.py.pre_target_switch.bak
+新探针 sha256 = b14fab184dc09dbcf10d24521b31c35f7370ba28dc43fc600fe98facc51d133d
+新探针行数   = 269

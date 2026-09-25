@@ -1,4 +1,3 @@
-const MODEL_URL = "/tripo-out/retarget-cd45adb1/model.glb";
 const MAX_TIMELINE_ITEMS = 90;
 const MAX_TIMELINE_DETAIL = 180;
 
@@ -47,6 +46,9 @@ const app = {
   speechOutput: false,
   recognizer: null,
   recognitionActive: false,
+  voiceConversation: false,
+  speaking: false,
+  voiceRestartTimer: null,
   drag: null,
   mood: "calm",
   sensory: {},
@@ -66,6 +68,7 @@ function setThinking(active) {
   const state = $("#thinking-state");
   state.textContent = app.thinking ? "执行中" : "待命";
   state.classList.toggle("is-thinking", app.thinking);
+  setLocalAvatarState(app.thinking ? "thinking" : "idle");
 }
 
 function nowLabel() {
@@ -448,6 +451,15 @@ function setVoiceRecognition(active) {
   voiceRipple.classList.toggle("is-open", app.recognitionActive);
 }
 
+function scheduleVoiceRestart(delay = 450) {
+  window.clearTimeout(app.voiceRestartTimer);
+  if (!app.voiceConversation || app.speaking || app.recognitionActive || !app.recognizer) return;
+  app.voiceRestartTimer = window.setTimeout(() => {
+    if (!app.voiceConversation || app.speaking || app.recognitionActive) return;
+    try { app.recognizer.start(); } catch { /* recognizer may still be closing */ }
+  }, delay);
+}
+
 function setupVoiceInput() {
   const SpeechRecognition = browserSpeechRecognition();
   if (!SpeechRecognition) {
@@ -457,25 +469,37 @@ function setupVoiceInput() {
   }
   const recognizer = new SpeechRecognition();
   recognizer.lang = "zh-CN";
-  recognizer.continuous = false;
+  recognizer.continuous = true;
   recognizer.interimResults = true;
   recognizer.onstart = () => {
     setVoiceRecognition(true);
+    setLocalAvatarState("listening");
     pulseSense("ear", 2200);
   };
-  recognizer.onend = () => setVoiceRecognition(false);
+  recognizer.onend = () => {
+    setVoiceRecognition(false);
+    if (!app.thinking && !app.speaking) setLocalAvatarState("idle");
+    scheduleVoiceRestart();
+  };
   recognizer.onerror = (event) => {
     setVoiceRecognition(false);
-    toast(`语音输入不可用：${event.error || "未知错误"}`, "error");
+    const fatal = ["not-allowed", "service-not-allowed", "audio-capture"].includes(event.error);
+    if (fatal) app.voiceConversation = false;
+    if (event.error !== "no-speech") toast(`语音输入不可用：${event.error || "未知错误"}`, "error");
   };
   recognizer.onresult = (event) => {
     pulseSense("ear", 1800);
     let transcript = "";
+    let finalTranscript = "";
     for (let i = event.resultIndex; i < event.results.length; i += 1) {
       transcript += event.results[i][0].transcript;
+      if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript;
     }
     input.value = transcript.trim();
     resizeComposer();
+    if (finalTranscript.trim() && app.voiceConversation && !app.thinking && !app.sending) {
+      sendMessage(finalTranscript.trim());
+    }
   };
   app.recognizer = recognizer;
 }
@@ -483,23 +507,38 @@ function setupVoiceInput() {
 function speakIfEnabled(text) {
   const value = String(text || "").trim();
   if (!app.speechOutput || !value) return;
+  app.speaking = true;
+  if (app.recognitionActive) app.recognizer?.stop();
   const agent = xingyun.phase === "running" ? xingyun.agent : null;
   if (agent && typeof agent.speak === "function") {
     try {
       agent.speak(value.slice(0, 900));
       pulseSense("mouth", 1800);
+      window.setTimeout(() => { app.speaking = false; scheduleVoiceRestart(); }, Math.min(30000, 1200 + value.length * 180));
       return;
     } catch (error) {
       console.warn("[holo_pet] xingyun speak failed:", error);
     }
   }
-  if (!("speechSynthesis" in window)) return;
+  if (!("speechSynthesis" in window)) {
+    app.speaking = false;
+    scheduleVoiceRestart();
+    return;
+  }
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(value.slice(0, 900));
   utterance.lang = "zh-CN";
   utterance.rate = 1.02;
   utterance.pitch = 1.08;
-  utterance.onstart = () => pulseSense("mouth", 1800);
+  utterance.onstart = () => {
+    setLocalAvatarState("speaking");
+    pulseSense("mouth", 1800);
+  };
+  utterance.onend = utterance.onerror = () => {
+    app.speaking = false;
+    setLocalAvatarState("idle");
+    scheduleVoiceRestart();
+  };
   window.speechSynthesis.speak(utterance);
 }
 
@@ -1498,6 +1537,12 @@ function setupComposer() {
 //
 // 域标签只做**显示**（英文域名同时保留，便于和注册表逐条对上）——
 // 真值仍以服务端目录为准，前端不判断能力是否存在、也不判断是否启用。
+//
+// 2026-09-22 补：注册表实有 **29 个域**，原表只写了 22 个，
+// 漏掉的 9 个（brain / collab / framework / image_video / infra /
+// integration / social / tools / video）下的能力在能力栏里**显示不出中文标签**。
+// ⇒ 现象是"面板少了一截能力"，根因只是前端少了一张标签。
+// 判据来源：`grep '"domain":' caps_registry.py` 去重后与下表逐一比对。
 const CAPABILITY_DOMAIN_LABELS = {
   system: "系统",
   llm: "内核 / 推理",
@@ -1520,6 +1565,17 @@ const CAPABILITY_DOMAIN_LABELS = {
   automation: "自动化",
   digital_human: "数字人",
   devour: "吞天",
+  // ── 2026-09-22 补的 9 个（此前缺失，导致这些域的能力在栏里无中文标签）──
+  brain: "脑域",
+  collab: "协作",
+  framework: "框架",
+  image_video: "图像 / 视频",
+  infra: "基建",
+  integration: "集成",
+  social: "社交",
+  tools: "工具",
+  video: "视频",
+  // ──────────────────────────────────────────────────────────────
   dangerous: "被禁用",
 };
 
@@ -1528,6 +1584,30 @@ function domainLabel(domain) {
   if (!key) return "未分类";
   const cn = CAPABILITY_DOMAIN_LABELS[key];
   return cn && cn !== key ? `${cn} · ${key}` : key;
+}
+
+// 能力 chip 的状态图标：项目既有的内联单线 SVG（styles.css 里 svg 基样式 1.7 描边 +
+// currentColor，.quick-chip svg 13px）。**不用 emoji 当状态图标** —— emoji 会跟着系统
+// 字体变形状，和其余图标不是一套笔触；且只靠图形表意会让状态读不出来。
+const CAPABILITY_CHIP_ICONS = {
+  needs_params: '<path d="m4 20 4-1 11-11a2.1 2.1 0 0 0-3-3L5 16l-1 4Z"/><path d="m14.5 6.5 3 3"/>',
+  needs_confirm: '<path d="M12 4 2.5 20h19L12 4Z"/><path d="M12 10v4.5M12 17.4v.2"/>',
+  disabled: '<path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z"/><path d="m6 18 12-12"/>',
+};
+
+function capabilityChipIcon(kind) {
+  const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  icon.setAttribute("viewBox", "0 0 24 24");
+  icon.setAttribute("aria-hidden", "true");
+  icon.innerHTML = CAPABILITY_CHIP_ICONS[kind] || "";
+  return icon;
+}
+
+// 图标是**常驻子节点**，文案是独立文本节点 —— 换文案时不能碰 chip.textContent
+// （那会把 SVG 一起清掉，弹回"只剩文字"的老样子）。
+function setChipLabel(chip, text) {
+  const label = chip.querySelector("[data-chip-label]");
+  if (label) label.textContent = text; else chip.textContent = text;
 }
 
 // 一个域一个折叠块，块内按原样平铺 chip（复用既有 class，不动样式表）。
@@ -1546,10 +1626,17 @@ function buildCapabilityChips(rows, armed) {
         + (row.params_hint ? `\n${row.params_hint}` : "")
       : `${row.kind} · ${row.domain || "未分类"}\n${row.desc}`;
     const label = () => {
-      if (row.requires_params) return `${row.kind} ✎`;
-      return row.needs_confirmation ? `${row.kind} ⚠` : row.kind;
+      if (row.requires_params) return `${row.kind} · 需要参数`;
+      return row.needs_confirmation ? `${row.kind} · 需确认` : row.kind;
     };
-    chip.textContent = label();
+    // 状态图标 + 状态文字双通道：图标只是辅助，读不出来也能从文案知道状态。
+    const iconKind = row.requires_params ? "needs_params"
+      : (row.needs_confirmation ? "needs_confirm" : "");
+    if (iconKind) chip.appendChild(capabilityChipIcon(iconKind));
+    const labelNode = document.createElement("span");
+    labelNode.dataset.chipLabel = "1";
+    labelNode.textContent = label();
+    chip.appendChild(labelNode);
     chip.addEventListener("click", async () => {
       // 入参契约（R-H98）：需要参数的能力**不发空调用**（{} 撞出去只会得到一个看不懂的错），
       // 当场把"缺哪几个参数"如实说清楚；要跑就从终端/脚本把参数带上。
@@ -1565,16 +1652,16 @@ function buildCapabilityChips(rows, armed) {
       const confirmed = armed.has(row.kind);
       if (row.needs_confirmation && !confirmed) {
         armed.add(row.kind);
-        chip.textContent = `${row.kind} · 再点一次确认`;
+        setChipLabel(chip, `${row.kind} · 再点一次确认`);
         addTimeline(`能力 ${row.kind} 需要确认`, row.desc, "system", true);
         window.setTimeout(() => {
           armed.delete(row.kind);
-          chip.textContent = label();
+          setChipLabel(chip, label());
         }, 8000);
         return;
       }
       armed.delete(row.kind);
-      chip.textContent = label();
+      setChipLabel(chip, label());
       try {
         const result = await postJson("/api/capability", {
           kind: row.kind,
@@ -1613,7 +1700,12 @@ function buildDisabledSection(rows) {
     chip.dataset.capability = row.kind;
     chip.dataset.disabled = "1";
     chip.title = `${row.kind}\n${row.desc}\n理由：${row.reason || "安全策略"}`;
-    chip.textContent = `${row.kind} ⛔`;
+    // 同一套 SVG 状态图标 + 状态文字：这里画的是"已封禁"，不再用 ⛔。
+    chip.appendChild(capabilityChipIcon("disabled"));
+    const labelNode = document.createElement("span");
+    labelNode.dataset.chipLabel = "1";
+    labelNode.textContent = `${row.kind} · 已封禁`;
+    chip.appendChild(labelNode);
     grid.appendChild(chip);
   });
   section.appendChild(grid);
@@ -1755,7 +1847,7 @@ function buildTreeNodes(node, level) {
 
 // 旁观者（独立观察位）+ 项目树。
 // 只读：这里只 GET 两个取证面，**不启动 DSH、不下发任何动作** —— 那是敏感档，等风哥批。
-async function setupObserverAndTree() {
+async function setupObserverAndTree(catalog) {
   const strip = document.querySelector(".quick-strip");
   if (!strip || !strip.parentElement) return;
   let status = null;
@@ -1766,6 +1858,8 @@ async function setupObserverAndTree() {
   ]);
   if (observerResult.ok) status = observerResult.data;
   if (treeResult.ok) tree = treeResult.data;
+  // 页脚沙箱芯片用同一份读数（同一次请求，不再多打一发）。
+  updateSandboxChip(status && status.ok ? (status.sandbox || null) : null);
   if (!status && !tree) return;   // 原因已经在上面的提示里说过了，不再重复刷屏
 
   const details = document.createElement("details");
@@ -1956,7 +2050,7 @@ async function renderOverview(catalog) {
 
   row.innerHTML = tiles.map(([k, v, cls]) =>
     `<span class="nd ${cls}">${k}：${v}</span>`).join("")
-    + `<div style="margin-top:3px;color:#888">本块只读：六格全走 GET`
+    + `<div style="margin-top:3px;color:var(--muted)">本块只读：六格全走 GET`
     + `（/api/state · /api/purge · /api/capabilities）—— 不执行任何动作。</div>`;
 }
 
@@ -2023,7 +2117,7 @@ function renderWorkspace(catalog, strip) {
     try {
       payload = ta.value.trim() ? JSON.parse(ta.value) : {};
     } catch (err) {
-      out.style.color = "#e06c75";
+      out.style.color = "var(--alert-quiet)";
       out.textContent = "参数不是合法 JSON：" + (err && err.message);
       return;
     }
@@ -2033,13 +2127,13 @@ function renderWorkspace(catalog, strip) {
       const res = await postJson("/api/capability", {
         kind: sel.value, payload, confirm: !!picked.needs_confirmation,
       });
-      out.style.color = res && res.ok ? "#7fd18a" : "#e06c75";
+      out.style.color = res && res.ok ? "var(--success)" : "var(--alert-quiet)";
       out.textContent = JSON.stringify({
         ok: res && res.ok, status: res && res.status, denied: res && res.denied,
         missing: res && res.missing, error: res && res.error, result: res && res.result,
       }, null, 1).slice(0, 1500);
     } catch (err) {
-      out.style.color = "#e06c75";
+      out.style.color = "var(--alert-quiet)";
       out.textContent = "执行被拒或失败：" + ((err && err.message) || "unknown");
     }
     btn.disabled = false;
@@ -2052,7 +2146,7 @@ function renderWorkspace(catalog, strip) {
   row.appendChild(out);
   card.appendChild(row);
   const note = document.createElement("div");
-  note.style.cssText = "margin-top:4px;color:#e06c75";
+  note.style.cssText = "margin-top:4px;color:var(--alert-quiet)";
   note.textContent = "红线：不可逆动作照卡（auth_gate 不动）；可逆动作免卡（人类视角执行律）。"
     + "只读卡①②③④ 不执行——**只有这块能干活**。";
   card.appendChild(note);
@@ -2080,8 +2174,8 @@ async function renderMusicCard(strip) {
   const row = document.createElement("div");
   row.className = "wf-run";
   if (!res.ok || !res.data || !res.data.ok) {
-    sum.textContent = "音乐发布平台 · 三层只读 ⚠ 取不到";
-    sum.style.color = "#d1a34e";
+    sum.textContent = "音乐发布平台 · 三层只读 · 取不到";
+    sum.style.color = "var(--warning)";
     row.textContent = "数据源 /api/music 不可用（HTTP " + (res.status || "?")
       + "）—— 面板进程还是旧代码，双击桌面「启动桌面数字人」重启后刷新即可。";
     card.appendChild(sum);
@@ -2099,9 +2193,9 @@ async function renderMusicCard(strip) {
     return `<span class="nd">${c.ring}·${c.cn} ${c.count}：${names}</span>`;
   }).join("");
   row.innerHTML = chips
-    + `<div style="margin-top:4px;color:#e06c75">红线：<b>全部标『未核实』</b>`
+    + `<div style="margin-top:4px;color:var(--alert-quiet)">红线：<b>全部标『未核实』</b>`
     + ` —— "在"不等于"能用"；本卡只呈现，<b>不加任何执行能力</b>。</div>`
-    + `<div style="margin-top:3px;color:#888">优先集成：${(d.priority || []).join(" → ")}`
+    + `<div style="margin-top:3px;color:var(--muted)">优先集成：${(d.priority || []).join(" → ")}`
     + ` · 数据源：${d.source || "/api/music"}</div>`;
   card.appendChild(row);
   box.appendChild(card);
@@ -2130,8 +2224,8 @@ async function renderPurgeCard(strip) {
   row.className = "wf-run";
   if (!res.ok || !res.data || !res.data.ok) {
     // 旧面板进程（路由还没加载）也走这里：**看得见**地说明白，不装作没这回事
-    sum.textContent = "净化刀 · 读数 ⚠ 取不到";
-    sum.style.color = "#d1a34e";
+    sum.textContent = "净化刀 · 读数 · 取不到";
+    sum.style.color = "var(--warning)";
     row.textContent = "数据源 /api/purge 不可用（HTTP " + (res.status || "?")
       + "）—— 面板进程还是旧代码，双击桌面「启动桌面数字人」重启面板后刷新即可。";
     card.appendChild(sum);
@@ -2153,11 +2247,11 @@ async function renderPurgeCard(strip) {
     + `<span class="nd">trace ${bs.trace || 0}</span>`
     + `<span class="nd">legacy ${bs.legacy || 0}</span>`
     + `<span class="nd">recovered ${bs.recovered || 0}</span>`
-    + `<div style="margin-top:4px;color:#e06c75">口径：anomalies 含 guard/trace/legacy/recovered`
+    + `<div style="margin-top:4px;color:var(--alert-quiet)">口径：anomalies 含 guard/trace/legacy/recovered`
     + `（连"已恢复"也含）—— 它是报警源总量，<b>不是净化成绩</b>；成绩只看 runtime_faults。</div>`
-    + `<div style="margin-top:3px;color:#888">净化前 runtime_faults ${before.runtime_faults}`
+    + `<div style="margin-top:3px;color:var(--muted)">净化前 runtime_faults ${before.runtime_faults}`
     + `（${before.at} · ${before.source}） → 今 ${d.runtime_faults}</div>`
-    + `<div style="margin-top:3px;color:#888">数据源：${d.source || "/api/purge"}`
+    + `<div style="margin-top:3px;color:var(--muted)">数据源：${d.source || "/api/purge"}`
     + `（只读，不绕过 API 摸底层）</div>`;
   card.appendChild(row);
   box.appendChild(card);
@@ -2181,7 +2275,7 @@ function cardErrorBox(strip, err, where) {
   const sum = document.createElement("summary");
   sum.textContent = "只读卡片渲染失败 · 不是\"没有卡片\"，是\"画不出来\""
                     + (where ? "（" + where + "）" : "");
-  sum.style.color = "#e06c75";
+  sum.style.color = "var(--alert-quiet)";
   card.appendChild(sum);
   const body = document.createElement("div");
   body.className = "wf-run";
@@ -2237,7 +2331,7 @@ function renderReadonlyCards(catalog, strip) {
     + `<div style="margin-top:4px">红线：<span class="nd denied">ARM ≠ LIVE</span>`
     + `<span class="nd">准备态永不点亮</span>`
     + `<span class="nd">硬件门禁未全绿不 LIVE</span></div>`
-    + `<div style="color:#888;margin-top:3px">技能定义：gbt_allinone/tools/projection_skill.py（只读 · 不执行）</div>`;
+    + `<div style="color:var(--muted);margin-top:3px">技能定义：gbt_allinone/tools/projection_skill.py（只读 · 不执行）</div>`;
   proj.appendChild(pv);
 
   // ② 穿透网 · 七栏读数（从目录派生；**未核实就标未核实**）
@@ -2254,18 +2348,18 @@ function renderReadonlyCards(catalog, strip) {
     + `<span class="nd denied">disabled ${disabled.length}</span>`
     + `<span class="nd">domains ${domains.size}</span>`
     + `<span class="nd unverified">penetrate_ready 0</span>`
-    + `<div style="margin-top:3px;color:#888">数据源：/api/capabilities（total/items/domains）· 只读，不加执行能力</div>`;
+    + `<div style="margin-top:3px;color:var(--muted)">数据源：/api/capabilities（total/items/domains）· 只读，不加执行能力</div>`;
   net.appendChild(nv);
 }
 
 async function setupCapabilityCatalog() {
   const strip = document.querySelector(".quick-strip");
-  if (!strip || !strip.parentElement) return;
+  if (!strip || !strip.parentElement) return null;
   let catalog = null;
   const catalogResult = await fetchJsonOrExplain("/api/capabilities", "能力总目录取不到");
-  if (!catalogResult.ok) return;   // 原因已经提示过
+  if (!catalogResult.ok) return null;   // 原因已经提示过
   catalog = catalogResult.data;
-  if (!catalog || !catalog.ok || !Array.isArray(catalog.items)) return;
+  if (!catalog || !catalog.ok || !Array.isArray(catalog.items)) return null;
 
   const enabled = catalog.items.filter((row) => row.enabled);
   const disabled = catalog.items.filter((row) => !row.enabled);
@@ -2308,6 +2402,7 @@ async function setupCapabilityCatalog() {
   if (appRoutes.length) details.appendChild(buildAppSurfaceSection(appRoutes));
   if (appPending.length) details.appendChild(buildPendingSection(appPending));
   strip.parentElement.insertBefore(details, strip);
+  return catalog;
 }
 
 // 视频工坊（自作电影）：工具就绪度 + 最火的几家短视频平台。
@@ -2358,7 +2453,7 @@ async function setupStudio() {
     const gates = p.gates || {};
     const open = (data.gate_names || []).filter((g) => gates[g]).length;
     const api = p.official_api === true
-      ? "官方接口✓"
+      ? "官方接口 · 有"
       : p.official_api === false ? "无官方接口" : "接口未记录";
     const chip = document.createElement("button");
     chip.type = "button";
@@ -2441,8 +2536,18 @@ function setupVoiceControls() {
   setupVoiceInput();
   microphoneButton.addEventListener("click", () => {
     if (!app.recognizer) return;
-    if (app.recognitionActive) app.recognizer.stop();
-    else app.recognizer.start();
+    app.voiceConversation = !app.voiceConversation;
+    microphoneButton.title = app.voiceConversation ? "停止连续语音对话" : "开始连续语音对话";
+    if (!app.voiceConversation) {
+      window.clearTimeout(app.voiceRestartTimer);
+      if (app.recognitionActive) app.recognizer.stop();
+      toast("连续语音对话已停止");
+    } else {
+      app.speechOutput = true;
+      voiceOutputButton.setAttribute("aria-pressed", "true");
+      scheduleVoiceRestart(0);
+      toast("连续语音对话已开启");
+    }
   });
   voiceOutputButton.addEventListener("click", () => {
     app.speechOutput = !app.speechOutput;
@@ -2513,150 +2618,79 @@ function setupDragging() {
   wake();
 }
 
-async function bootAvatar() {
-  const fallback = $("#stage-fallback");
-  const reason = $("#fallback-reason");
-  let THREE;
-  let GLTFLoader;
-  try {
-    THREE = await import("three");
-    ({ GLTFLoader } = await import("three/addons/loaders/GLTFLoader.js"));
-  } catch (error) {
-    reason.textContent = "3D 形象暂未就绪";
-    setAvatarStatus("3D 引擎待安装", "warn");
-    console.warn("[holo_pet] three.js unavailable:", error);
+// 页脚「沙箱」芯片：**只报真读到的策略**。
+// 以前这里写死一句「沙箱：工作区可写」——它夹在一排会实时更新的芯片中间，
+// 看着像实时读数，其实无论策略如何都恒显示"可写"，属于假的肯定态。
+// 真值走 /api/observer（bridge.observer 读 settings.defaultPreset 与 cordis patch）。
+// 拿不到就如实报"未知"，按本仓红线不静默降级成肯定式断言。
+function updateSandboxChip(sandbox) {
+  const chip = $("#chip-sandbox");
+  if (!chip) return;
+  if (!sandbox) {
+    setChipLabel(chip, "沙箱 · 未知（observer 读不到）");
+    chip.classList.add("status-chip--warn");
+    chip.title = "/api/observer 读不到 —— 状态未知，不推断。";
     return;
   }
-
-  const canvas = $("#avatar-canvas");
-  let renderer;
-  try {
-    renderer = new THREE.WebGLRenderer({
-      canvas,
-      alpha: true,
-      antialias: true,
-      powerPreference: "high-performance",
-    });
-  } catch (error) {
-    reason.textContent = "当前浏览器或显卡无法建立 WebGL 上下文";
-    setAvatarStatus("WebGL 不可用", "error");
-    return;
-  }
-
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setClearAlpha(0);
-  if ("outputColorSpace" in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
-  if ("toneMapping" in renderer) renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
-
-  const key = new THREE.DirectionalLight(0xd8f4ff, 2.5);
-  key.position.set(2.6, 3.6, 3.8);
-  const fill = new THREE.DirectionalLight(0xffc66f, 0.92);
-  fill.position.set(-3.2, 1.6, 2.4);
-  const rim = new THREE.DirectionalLight(0x00e5ff, 1.7);
-  rim.position.set(-1.4, 2.8, -3.4);
-  const purple = new THREE.PointLight(0x7c4dff, 1.4, 5.0);
-  purple.position.set(1.5, 0.4, -1.0);
-  scene.add(key, fill, rim, purple, new THREE.AmbientLight(0x92b8d6, 0.7));
-
-  const particleCount = 520;
-  const positions = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount; i += 1) {
-    const radius = 0.7 + Math.random() * 2.2;
-    const angle = Math.random() * Math.PI * 2;
-    positions[i * 3] = Math.cos(angle) * radius;
-    positions[i * 3 + 1] = (Math.random() - 0.45) * 3.8;
-    positions[i * 3 + 2] = Math.sin(angle) * radius;
-  }
-  const particleGeometry = new THREE.BufferGeometry();
-  particleGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  const particleMaterial = new THREE.PointsMaterial({
-    color: 0x73edff,
-    size: 0.008,
-    transparent: true,
-    opacity: 0.72,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-  });
-  const particles = new THREE.Points(particleGeometry, particleMaterial);
-  scene.add(particles);
-
-  setAvatarStatus("正在加载银发数字人…", "warn");
-  let gltf;
-  try {
-    gltf = await new Promise((resolve, reject) => {
-      new GLTFLoader().load(MODEL_URL, resolve, undefined, reject);
-    });
-  } catch (error) {
-    reason.textContent = "GLB 加载失败；检查模型文件是否完整";
-    setAvatarStatus("模型加载失败", "error");
-    console.warn("[holo_pet] GLB load failed:", error);
-    return;
-  }
-
-  const model = gltf.scene;
-  // Tripo retarget GLB is authored with the character's left/right axis on Z.
-  // Rotate the root before fitting so the face and arms are presented front-on.
-  const MODEL_YAW = -Math.PI / 2;
-  model.rotation.y = MODEL_YAW;
-  scene.add(model);
-  const box = new THREE.Box3().setFromObject(model);
-  const size = box.getSize(new THREE.Vector3());
-  const center = box.getCenter(new THREE.Vector3());
-  model.position.sub(center);
-  model.position.y += size.y * 0.015;
-  const baseModelY = model.position.y;
-
-  const vFov = (camera.fov * Math.PI) / 180;
-  const fitHeight = size.y / (2 * Math.tan(vFov / 2));
-  const fitWidth = size.x / (2 * Math.tan(vFov / 2) * 0.62);
-  const distance = Math.max(fitHeight, fitWidth) * 1.16;
-  camera.position.set(0, size.y * 0.04, distance);
-  camera.lookAt(0, size.y * 0.015, 0);
-
-  const clips = gltf.animations || [];
-  const idleClip = clips.find((clip) => /idle/i.test(clip.name))
-    || clips.find((clip) => /walk/i.test(clip.name))
-    || clips[0];
-  let mixer = null;
-  if (idleClip) {
-    mixer = new THREE.AnimationMixer(model);
-    mixer.clipAction(idleClip).play();
-    setAvatarStatus(`银发数字人 · ${idleClip.name}`, "live");
-  } else {
-    setAvatarStatus("数字人已载入 · 无骨骼动画", "warn");
-  }
-
-  const clock = new THREE.Clock();
-  let elapsed = 0;
-  const resize = () => {
-    const width = canvas.clientWidth || 1;
-    const height = canvas.clientHeight || 1;
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-  };
-  resize();
-  window.addEventListener("resize", resize);
-
-  fallback.classList.add("is-hidden");
-  renderer.setAnimationLoop(() => {
-    const delta = clock.getDelta();
-    elapsed += delta;
-    if (mixer) mixer.update(delta);
-    model.rotation.y = MODEL_YAW + Math.sin(elapsed * 0.28) * 0.055;
-    model.position.y = baseModelY + Math.sin(elapsed * 0.9) * 0.004;
-    particles.rotation.y = elapsed * 0.045;
-    particles.position.y = Math.sin(elapsed * 0.55) * 0.025;
-    particleMaterial.opacity = 0.55 + Math.sin(elapsed * 1.4) * 0.12;
-    renderer.render(scene, camera);
-  });
+  const preset = sandbox.read_only_configured
+    ? "read-only"
+    : (sandbox.settings_default_preset || sandbox.patch_sandbox || "");
+  setChipLabel(chip, preset ? `沙箱 · ${preset}` : "沙箱 · 未配置");
+  chip.classList.toggle("status-chip--warn", Boolean(sandbox.read_only_configured));
+  chip.title = [
+    `settings.defaultPreset：${sandbox.settings_default_preset || "未配置"}`,
+    `cordis patch sandbox：${sandbox.patch_sandbox || "无"}`,
+    `read-only 已配置：${sandbox.read_only_configured ? "是" : "否"}`,
+    sandbox.authority || "",
+    sandbox.caveat || "",
+  ].filter(Boolean).join("\n");
 }
 
-const AVATAR_SOURCE_KEY = "gbt-holo-avatar-source";
+const localAvatar = { source: "local", state: "idle" };
+
+function setLocalAvatarState(state, detail = "") {
+  const fallback = $("#stage-fallback");
+  if (!fallback || localAvatar.source !== "local") return;
+  localAvatar.state = state || "idle";
+  fallback.dataset.state = localAvatar.state;
+  const labels = {
+    idle: "永久免费本地运行 · 待命",
+    listening: "正在听你说话",
+    thinking: "正在思考与执行",
+    speaking: "正在播报",
+    happy: "心情很好",
+    alert: "需要你的注意",
+  };
+  const reason = $("#fallback-reason");
+  if (reason) reason.textContent = detail || labels[localAvatar.state] || labels.idle;
+}
+
+function syncAvatarSourceButtons() {
+  const localButton = $("#btn-avatar-local");
+  const xingyunButton = $("#btn-avatar-xingyun");
+  const localActive = localAvatar.source === "local";
+  [localButton, xingyunButton].forEach((button) => button && button.classList.remove("is-active"));
+  if (localButton) {
+    localButton.classList.toggle("is-active", localActive);
+    localButton.setAttribute("aria-pressed", localActive ? "true" : "false");
+  }
+  if (xingyunButton) {
+    xingyunButton.classList.toggle("is-active", !localActive);
+    xingyunButton.setAttribute("aria-pressed", localActive ? "false" : "true");
+  }
+}
+
+function showAvatarFallback(reasonText, tone = "warn") {
+  localAvatar.source = "local";
+  const fallback = $("#stage-fallback");
+  if (fallback) fallback.classList.remove("is-hidden");
+  const layer = $("#xingyun-layer");
+  if (layer) layer.hidden = true;
+  setLocalAvatarState("idle", reasonText || "永久免费本地运行 · 待命");
+  syncAvatarSourceButtons();
+  setAvatarStatus("本地数字人在线", tone === "error" ? "warn" : "live");
+}
+
 const XINGYUN_SDK_URL = "./xingyun_e2e.latest.js";
 
 // ── HUD 响应体 Hook（五条附加条件全带：白名单硬编码 / 只读副本 / 失败静默 /
@@ -2762,14 +2796,12 @@ function installHudResponseHook() {
 }
 
 const xingyun = {
-  source: "local",
   phase: "idle",
   agent: null,
   sdkPromise: null,
   progress: 0,
   micActive: false,
   lastReply: "",
-  localBooted: false,
 };
 
 function setXingyunHud(text, tone = "warn") {
@@ -2874,8 +2906,8 @@ async function startXingyun() {
     setXingyunHud(detail, "error");
     setAvatarStatus("星云数字人未连接", "error");
     addTimeline("星云数字人未连接", detail, "error");
-    toast(`${detail}，已切回本地 3D 形象`, "error");
-    setAvatarSource("local", { persist: false });
+    toast(`${detail}，已显示降级形象`, "error");
+    showAvatarFallback(detail, "error");
     return;
   }
 
@@ -2983,15 +3015,14 @@ async function startXingyun() {
   }
   xingyun.phase = "failed";
   const finalDetail = String((lastError && lastError.message) || lastError || "未知错误");
-  // 本机渲染门挡住 ⇒ 不装作"连接失败"，如实说原因并**自动切回本地 3D 形象**，
+  // 本机渲染门挡住 ⇒ 不装作"连接失败"，如实说原因并**显示纯样式降级形象**，
   // 否则舞台会永远停在"正在检查 3D 渲染引擎"（主人两次说"还是空白"就是这一格）。
   if (isCapabilityGateFailure(lastError, hudBusiness)) {
     const why = describeRendererGate();
     setXingyunHud("本机 3D 渲染不满足星云要求（需硬件加速 WebGL2）", "error");
-    setAvatarStatus("已切回本地 3D 形象", "warn");
     addTimeline("星云形象不可用：本机渲染限制", why, "error");
-    toast("星云形象需硬件加速 WebGL2；本机是软件渲染，已自动切回本地 3D 形象", "warn", 7000);
-    setAvatarSource("local", { persist: false });
+    toast("星云形象需硬件加速 WebGL2；本机是软件渲染，已显示降级形象", "warn", 7000);
+    showAvatarFallback("星云数字人需硬件加速 WebGL2（本机为软件渲染）", "warn");
     return;
   }
   // 文案优先级：业务码文案 > SDK 模糊文案（前者是证据，后者只是症状）
@@ -3002,41 +3033,24 @@ async function startXingyun() {
   }
   setAvatarStatus("星云数字人连接失败", "error");
   addTimeline("星云数字人连接失败", finalDetail, "error");
-  toast("星云数字人连接失败，可点右上角切回本地形象", "error", 6000);
+  toast("星云数字人连接失败，已显示降级形象", "error", 6000);
+  showAvatarFallback("星云数字人连接失败", "error");
 }
 
-function setAvatarSource(source, options = {}) {
-  const next = source === "xingyun" ? "xingyun" : "local";
-  xingyun.source = next;
+function startXingyunAvatar() {
+  localAvatar.source = "xingyun";
+  syncAvatarSourceButtons();
   const layer = $("#xingyun-layer");
-  const canvas = $("#avatar-canvas");
   const fallback = $("#stage-fallback");
-  $$("#avatar-source button").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.source === next);
-  });
-  if (next === "xingyun") {
-    if (canvas) canvas.style.visibility = "hidden";
-    if (fallback) fallback.classList.add("is-hidden");
-    if (layer) layer.hidden = false;
-    void startXingyun();
-  } else {
-    if (layer) layer.hidden = true;
-    if (canvas) canvas.style.visibility = "visible";
-    void stopXingyun("source_switch");
-    if (!xingyun.localBooted) {
-      xingyun.localBooted = true;
-      void bootAvatar();
-    } else {
-      setAvatarStatus("本地 3D 形象", "live");
-    }
-  }
-  if (options.persist !== false) {
-    try {
-      window.localStorage.setItem(AVATAR_SOURCE_KEY, next);
-    } catch (error) {
-      console.warn("[holo_pet] avatar source persist failed:", error);
-    }
-  }
+  if (fallback) fallback.classList.add("is-hidden");
+  if (layer) layer.hidden = false;
+  void startXingyun();
+}
+
+function startLocalAvatar() {
+  void stopXingyun("switch_to_local");
+  showAvatarFallback("永久免费本地运行 · 待命", "live");
+  addTimeline("本地数字人已启用", "原创程序化形象 · 免费运行 · 星云仅作手动备用", "success");
 }
 
 function setupAvatarSource() {
@@ -3052,26 +3066,12 @@ function setupAvatarSource() {
         devicePixelRatio: window.devicePixelRatio || 1,
       });
     }
-    if (typeof window.gbtDesktop.onToggleSource === "function") {
-      window.gbtDesktop.onToggleSource(() => {
-        setAvatarSource(xingyun.source === "xingyun" ? "local" : "xingyun");
-      });
-    }
     if (typeof window.gbtDesktop.onClickThrough === "function") {
       window.gbtDesktop.onClickThrough((active) => {
         toast(active ? "鼠标穿透已开启，Ctrl+Alt+H 可恢复" : "鼠标穿透已关闭", "info");
       });
     }
   }
-  let saved = "";
-  try {
-    saved = window.localStorage.getItem(AVATAR_SOURCE_KEY) || "";
-  } catch (error) {
-    saved = "";
-  }
-  $$("#avatar-source button").forEach((button) => {
-    button.addEventListener("click", () => setAvatarSource(button.dataset.source));
-  });
   const micButton = $("#btn-xy-mic");
   if (micButton) {
     micButton.addEventListener("click", async () => {
@@ -3092,6 +3092,16 @@ function setupAvatarSource() {
         setXingyunMic(false);
         toast(`语音识别不可用：${error.message || error}`, "error");
       }
+    });
+  }
+  const localButton = $("#btn-avatar-local");
+  const xingyunButton = $("#btn-avatar-xingyun");
+  if (localButton) localButton.addEventListener("click", startLocalAvatar);
+  if (xingyunButton) xingyunButton.addEventListener("click", startXingyunAvatar);
+  if (window.gbtDesktop && typeof window.gbtDesktop.onToggleSource === "function") {
+    window.gbtDesktop.onToggleSource(() => {
+      if (localAvatar.source === "local") startXingyunAvatar();
+      else startLocalAvatar();
     });
   }
   const interruptButton = $("#btn-xy-interrupt");
@@ -3123,7 +3133,7 @@ function setupAvatarSource() {
     const agent = xingyun.agent;
     if (agent && typeof agent.destroy === "function") void agent.destroy("page_unload");
   });
-  setAvatarSource(saved === "local" ? "local" : "xingyun");
+  startLocalAvatar();
 }
 
 function buildDesktopDock() {
@@ -3131,12 +3141,6 @@ function buildDesktopDock() {
   if (!stage || $(".desktop-dock")) return;
   const dock = document.createElement("div");
   dock.className = "desktop-dock";
-  const sourceButton = document.createElement("button");
-  sourceButton.type = "button";
-  sourceButton.textContent = "切换形象";
-  sourceButton.addEventListener("click", () => {
-    setAvatarSource(xingyun.source === "xingyun" ? "local" : "xingyun");
-  });
   const throughButton = document.createElement("button");
   throughButton.type = "button";
   throughButton.textContent = "鼠标穿透";
@@ -3160,14 +3164,14 @@ function buildDesktopDock() {
       window.gbtDesktop.quit();
     }
   });
-  dock.append(sourceButton, throughButton, panelButton, quitButton);
+  dock.append(throughButton, panelButton, quitButton);
   stage.appendChild(dock);
 }
 
-function boot() {
+async function boot() {
   setupComposer();
-  setupCapabilityCatalog();
-  setupObserverAndTree();
+  const catalog = await setupCapabilityCatalog();
+  await setupObserverAndTree(catalog);
   setupStudio();
   setupBluetooth();
   setupVoiceControls();

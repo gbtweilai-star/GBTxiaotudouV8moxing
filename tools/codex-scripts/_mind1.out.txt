@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "state": "awake",
+  "mood": "安静",
+  "expression": "bored",
+  "presence": "熟悉中",
+  "lesson_count": 0,
+  "history_count": 21,
+  "reflection_count": 5,
+  "owner_model": {
+    "state": "focused",
+    "emotion": "专注",
+    "energy": 0.72,
+    "focus": "deep",
+    "urgency": 0.12,
+    "current_need": "保持低干扰，把细节收束到结论",
+    "confidence": 0.52,
+    "evidence": [
+      "专注:deep",
+      "时段:上午"
+    ],
+    "rule": "这是带置信度的推断，不冒充主人真实想法。"
+  },
+  "operations": [
+    "status",
+    "pulse",
+    "observe",
+    "remember_lesson",
+    "recall",
+    "decide",
+    "pre_work",
+    "cycle",
+    "appraise",
+    "infer_owner",
+    "simulate",
+    "metacognition"
+  ]
+}

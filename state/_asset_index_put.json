@@ -1,0 +1,10 @@
+{
+ "image": {
+  "hello-smoke.png": {
+   "bytes": 44054,
+   "sha256": "e4d29912aaa2e23d569bcae410c8ad4dece0edff38fd2e1cbd35c29319c6091e",
+   "at": "2026-09-24T23:43:05",
+   "src": "hello.png"
+  }
+ }
+}

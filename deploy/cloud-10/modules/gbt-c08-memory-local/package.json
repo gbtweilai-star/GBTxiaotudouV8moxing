@@ -1,0 +1,8 @@
+{
+  "name": "gbt-c08-memory-local",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "键值持久化（主人给的对应名：dsh-memory-local）",
+  "_generated": "tools/codex-scripts/cloud-mesh.py gen"
+}

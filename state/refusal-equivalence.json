@@ -1,0 +1,105 @@
+{
+ "at": "2026-09-25T08:37:20",
+ "逐条": {
+  "check_rel/空": {
+   "说明": "缺 path ⇒ 拒",
+   "结果": "拒:CreateError:缺少 path：写入必须给写入根下的相对路径"
+  },
+  "check_rel/正常": {
+   "说明": "相对路径 ⇒ 过",
+   "结果": "过:str:a/b.txt"
+  },
+  "check_rel/反斜杠": {
+   "说明": "反斜杠归一 ⇒ 过",
+   "结果": "过:str:a/b.txt"
+  },
+  "check_rel/绝对": {
+   "说明": "/etc/passwd ⇒ 拒",
+   "结果": "拒:CreateError:path 不许是绝对路径：'/etc/passwd'"
+  },
+  "check_rel/盘符": {
+   "说明": "C:/x ⇒ 拒",
+   "结果": "拒:CreateError:path 不许带盘符：'C:/x'"
+  },
+  "check_rel/上跳": {
+   "说明": "../../x ⇒ 拒",
+   "结果": "拒:CreateError:path 不许含 '..'：'../../x'"
+  },
+  "check_rel/超长": {
+   "说明": "300 字符 ⇒ 拒",
+   "结果": "拒:CreateError:path 过长：300 > 240"
+  },
+  "check_content/None": {
+   "说明": "None ⇒ 空串",
+   "结果": "过:str:"
+  },
+  "check_content/正常": {
+   "说明": "短文本 ⇒ 过",
+   "结果": "过:str:hi"
+  },
+  "check_content/非字符串": {
+   "说明": "int ⇒ 拒",
+   "结果": "拒:CreateError:content 必须是字符串（本刀只写文本）：int"
+  },
+  "check_content/上限内": {
+   "说明": "等于上限 ⇒ 过",
+   "结果": "过:str:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  "check_content/超限": {
+   "说明": "上限+1 ⇒ 拒",
+   "结果": "拒:CreateError:content 超上限：200001 > 200000 字符（拒绝而不是截断）"
+  },
+  "require_enabled/开": {
+   "说明": "enabled=True ⇒ 过",
+   "结果": "过:NoneType:"
+  },
+  "require_enabled/关": {
+   "说明": "enabled=False ⇒ 拒",
+   "结果": "拒:CreateError:create.enabled = false：总开关关掉即全部动作拒绝"
+  },
+  "resolve_target/不指定": {
+   "说明": "不带 target_source ⇒ 过",
+   "结果": "过:tuple:('state/text_exit.txt', 'default')"
+  },
+  "resolve_target/default带target": {
+   "说明": "default 却自带 target ⇒ 拒",
+   "结果": "拒:CreateError:target_source=default 不许自带 target —— 默认出口取值只来自设置页（'state/tex"
+  },
+  "resolve_target/非法来源": {
+   "说明": "target_source=bogus ⇒ 拒",
+   "结果": "拒:CreateError:target_source 只允许 default/user/agent_suggested：'bogus'"
+  },
+  "write_root_checked/现进程": {
+   "说明": "写根闸门（只读调用）",
+   "结果": "过:WindowsPath:C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\outputs"
+  }
+ },
+ "**造不出用例的**": {},
+ "**不可直探（会改状态）**": {
+  "file_operation._op_write": "写入口：直探会真落盘（备份+覆盖），只许走门",
+  "api._run_benign(wf_define)": "执行能力：直探会跑真动作"
+ },
+ "经门探": {
+  "create/越界路径": {
+   "说明": "越界 path ⇒ 门先挡",
+   "类别": "门先挡",
+   "结果": "门先挡（denied）｜缺作用域 ['filesystem_write']"
+  },
+  "create/盘符路径": {
+   "说明": "带盘符 ⇒ 门先挡",
+   "类别": "门先挡",
+   "结果": "门先挡（denied）｜缺作用域 ['filesystem_write']"
+  },
+  "create/超长路径": {
+   "说明": "超长 ⇒ 门先挡",
+   "类别": "门先挡",
+   "结果": "门先挡（denied）｜缺作用域 ['filesystem_write']"
+  },
+  "wf_define/写工作流": {
+   "说明": "wf_define ⇒ 门先挡",
+   "类别": "本体拒",
+   "结果": "门没挡（该 kind 零作用域）· 本体拒（需要 name 与非空 nodes 列表）⇒ 零副作用"
+  }
+ },
+ "口径": "只探纯校验函数；有副作用的入口如实列进不可直探、**再经唯一门探它的未授权现状**，**不静默跳过**"
+}

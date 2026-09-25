@@ -26,15 +26,21 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional
 
 # 真 import（不是字符串）：编排内核与这些只读能力**真的接上了线**
-from . import (a1art_skill, auto_switch, context_vault,
+from . import (a1art_skill, auto_publish, auto_switch, awesome_tools_index,
+               cloud_pc, context_vault, feishu_embed, libtv_workflow,
                account_registry, ai_capability_net, brand_outro, caps_called_audit,
                code_art_kernel,
+               gate_visibility,
+               absorb_loop,
                director_mood, dream_replay, emotion_projection, energy_pool,
+               h3_video_gen,
                hook_registry, local_brain,
                libtv_skill,
                projection_skill, render_evolution, research_intel, scene_anchor,
                coverage_auditor, meta_cognition, model_key_pool, shared_resources,
-               tentacle_cognition, verification_watch)
+               observer_anchor, proactive_report,
+               tentacle_cognition, verification_watch,
+               stigmergy)
 from .. import tactics          # `tactics.py` 在包根，不在 tools/
 
 _READONLY_MODULES = {
@@ -42,6 +48,8 @@ _READONLY_MODULES = {
     "hook_registry": hook_registry,
     "brand_outro": brand_outro,
     "emotion_projection": emotion_projection,
+    "observer_anchor": observer_anchor,
+    "proactive_report": proactive_report,
     "research_intel": research_intel,
     # R-H193 · 甲第一步（补最底层的 6 个孤儿）：都是只读面、都有 run()，**真 import** 进来。
     "account_registry": account_registry,
@@ -79,6 +87,24 @@ _READONLY_MODULES = {
     "auto_switch": auto_switch,
     # R-H230 · 落地即接线：归档库是**调度前的取上下文点**（只索引不复制）
     "context_vault": context_vault,
+    # R-H239 · 落地即接线：飞书窗口是**外部入口**（走浏览器触手，不用 API）
+    "feishu_embed": feishu_embed,
+    # R-H246 · 落地即接线：LibTV 画布编排（节点/连线/批量跑）
+    "libtv_workflow": libtv_workflow,
+    # R-H248 · 落地即接线：门可见性审计是**调度前的自检面**（不知道门看不见什么 ⇒ 账实不符的种子）
+    "gate_visibility": gate_visibility,
+    # R-H250 · 落地即接线：H3mini 是**外部视频能源**（本地带不动 ⇒ api 模式 + requires_external_key）
+    "h3_video_gen": h3_video_gen,
+    # R-H258 · 落地即接线：吞天闭环是**吸收前的纪律面**（垃圾不清 ⇒ 越吞越脏）
+    "absorb_loop": absorb_loop,
+    # R-H284 · 落地即接线：云电脑是**算力落点**（她住云上，身份源仍在本地）
+    "cloud_pc": cloud_pc,
+    # R-H284 · 落地即接线：全自动发布是**不可逆动作的门**（发布那几下必须过门）
+    "auto_publish": auto_publish,
+    # R-H285 · 落地即接线：Awesome Tools 是**能力地图**（只引用不复制、只映射不照搬）
+    "awesome_tools_index": awesome_tools_index,
+    # R-H353 · 落地即接线：协作层的**间接通道**（信息素场地；与 collab_gateway 并排）
+    "stigmergy": stigmergy,
     # 注：`sec_chain`（安全面 HackerBrain）**故意不接** —— 安全面的入口语义要单独判，
     # 不随手给它造调用方（避免"为了数字好看而造假线"）。
 }

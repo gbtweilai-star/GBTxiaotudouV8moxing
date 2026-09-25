@@ -1,0 +1,47 @@
+# GBT小土豆V8 原生端点 · dsh-llm-qwen-local 接线片段（**可直接粘进 web profile**）
+#
+# 现读依据（2026-09-25）：
+#   · 插件真存在：dsh-llm-qwen-local@0.4.1（starefinger）· 要求 dsh ≥ 0.1.2-rc.1
+#   · 我们跑的 dsh：**0.1.5-rc.3** ⇒ 兼容；依赖的 @deepseek-ai/dsh-attachment 在盘
+#   · 它的 config 契约（逐字来自插件 README）：baseURL / apiKeyEnv / models[{id,name,multimodal,reasoning}]
+#   · 换真算力 = **只改 baseURL 一行**；其余（模型 id / 显示名 / 推理档位）就是"我们自己的身份"
+#
+# ⚠️ 装上它需要主人授权（process_execute）：
+#     dsh plugin --profile web add dsh-llm-qwen-local
+#     dsh --profile web --dump-config        # 验收：下面这一行出现在配置里
+#
+# 🔴 记牢三条：
+#   ① 这是**适配器**，没有任何审查开关 —— "无限制"取决于 vLLM 上跑的是哪个权重；
+#   ② 密钥走 apiKeyEnv（host credentials），**不落 settings.yaml**；
+#   ③ baseURL 现在指向**本机假端点**（tools/codex-scripts/mock-vllm-endpoint.py，只验接线）；
+#      拿到 GPU 后把它换成真 vLLM 地址即可，其余不动。
+
+- id: llm-qwen-local
+  name: dsh-llm-qwen-local
+  config:
+    # ① 现在是假端点（本机 8111，只验形状）；GPU 到位后换成 http://<GPU 机器>:8000/v1
+    baseURL: http://127.0.0.1:8111/v1
+    # ② 密钥只给**环境变量名**，值由 host credentials 管
+    apiKeyEnv: GBT_LLM_API_KEY
+    defaultContextWindow: 262144          # 对齐 vLLM 的 --max-model-len 262144
+    maxTokens: 32768
+    models:
+      - id: gbt-potato-v8                 # ← 我们自己的模型 id
+        name: GBT小土豆V8 原生
+        contextWindow: 262144
+        maxTokens: 32768
+        multimodal: true                  # Qwen3.8-27B 是多模态（image-text-to-text）
+        preserveThinking: true
+        reasoning:
+          efforts:
+            - { id: off,    wire: none }
+            - { id: low,    wire: low }
+            - { id: medium, wire: medium }
+            - { id: xhigh,  wire: xhigh }
+          defaultEffort: xhigh
+
+# 【真 vLLM 侧要带的 flag】（插件 README 明确要求；缺一条行为就变）
+#   vllm serve <权重路径> --served-model-name gbt-potato-v8 \
+#     --reasoning-parser qwen3 \                 # 缺了：整段推理会落进 message.content
+#     --enable-auto-tool-choice --tool-call-parser qwen3_coder \   # 工具调用
+#     --max-model-len 262144

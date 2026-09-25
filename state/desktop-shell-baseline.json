@@ -1,0 +1,32 @@
+{
+ "at": "2026-09-23T06:15:57",
+ "dsh_config_hashes": {
+  "settings.yaml": "89484d2d54ba74c2d421d336744ea36388be67a5390bd05dac9b9e03eccd7227",
+  "settings.yaml.bak": "<absent>",
+  "agent-presets": "<absent>",
+  ".agent-presets": "85a69baa418c43e2ebbf68c945e2b5e0e7e73c3d53ba004d8b0f17a7a49ac4f9"
+ },
+ "ports": {
+  "dsh": 3080,
+  "panel": 8765
+ },
+ "note": "只记哈希与端口，不记内容/密钥。B2/B3 拿它比。",
+ "dsh_structure": {
+  "settings.yaml": {
+   "keys_sha256": "a53884351a6785b3",
+   "keys_n": 328,
+   "lines_n": 475,
+   "defaultPreset": "danger-full-access"
+  },
+  "settings.yaml.bak": {
+   "keys_sha256": "<unreadable>"
+  },
+  "agent-presets": {
+   "keys_sha256": "<unreadable>"
+  },
+  ".agent-presets": {
+   "keys_sha256": "<unreadable>"
+  }
+ },
+ "structure_backfilled_at": "2026-09-23T07:16:10"
+}

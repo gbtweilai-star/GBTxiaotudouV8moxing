@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>骨架复核 · GBT小土豆V8</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0d16;color:#E8ECF8;font:13px/1.5 system-ui,"Microsoft YaHei",sans-serif}
+  #hud{position:fixed;left:12px;top:10px;z-index:9;background:rgba(10,13,22,.72);border:1px solid rgba(124,77,255,.4);border-radius:10px;padding:8px 12px}
+  b{color:#00E5FF}
+  #err{position:fixed;left:12px;bottom:12px;z-index:9;max-width:92%;color:#ff6b81;background:rgba(10,13,22,.85);border:1px solid rgba(255,107,129,.5);border-radius:10px;padding:8px 12px;display:none}
+</style>
+<script type="importmap">
+{"imports":{"three":"/holo_pet/node_modules/three/build/three.module.js","three/addons/":"/holo_pet/node_modules/three/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div id="hud">骨架复核 · 关节数 <b id="j">—</b> · 顶点 <b id="v">—</b> · 弹簧骨 <b id="s">—</b> · 动作 <b id="c">—</b> · t=<b id="t">0</b>s</div>
+<div id="err"></div>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+const q = new URLSearchParams(location.search);
+const clipName = q.get("clip") || "preset:idle";
+const at = parseFloat(q.get("t") || "0");
+// 🔴 模型路径必须走真身。2026-09-22 实测：这里原先写死
+//    `/holo_pet/assets/digital-human/tripo-human.glb` —— 那个文件**全树不存在**
+//    （资产已整理进 `assets/digital-human/raw/` 分层），于是这个"骨架存证"工具
+//    每次都在**空场景**上截图，还自称"骨架复核"（属"工具在撒谎"那一族）。
+//    现在默认指向真身，并支持 `?model=` 换件；载不到就**红字报出**，不静默出图。
+const MODEL = q.get("model") || "/holo_pet/assets/digital-human/raw/rig/model-rigged-anim.glb";
+const SPRING_RE = /skirt|hair|spring/i;
+// ⚠️ 口径：HUD 里印的是 three.js **净化过**的骨名 —— GLTFLoader 的 `sanitizeNodeName`
+//    会去掉 `[ ] . : /`，所以 GLB 里真名 `mixamorig:SkirtF` 到这里显示成 `mixamorigSkirtF`。
+//    （2026-09-22 直接读 GLB 的 JSON chunk 核对过：31 节点 / 7 命中 / 29 个名字带冒号。）
+//    **别把净化名当原始骨名引用** —— 要原始名就去看 GLB 或 audit-avatar-baseline.py 的输出。
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(760, 900); renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x0a0d16);
+const camera = new THREE.PerspectiveCamera(28, 760 / 900, 0.01, 100);
+const grid = new THREE.GridHelper(4, 8, 0x22304d, 0x16203a);
+scene.add(grid);
+scene.add(new THREE.HemisphereLight(0xd9f8ff, 0x101828, 2.2));
+const key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(2, 4, 4); scene.add(key);
+
+function fail(msg) {
+  const s = String(msg);
+  window.__err = s;
+  const el = document.getElementById("err");
+  el.style.display = "block";
+  el.textContent = "加载失败：" + s;
+}
+
+let mixer = null, joints = 0;
+new GLTFLoader().load(MODEL, (gltf) => {
+  const model = gltf.scene;
+  // 蒙皮网格的包围盒在绑定空间里，three 常会误判剔除 —— 关掉它（这是 viewer 的坑，不是模型的）
+  model.traverse((o) => { if (o.isSkinnedMesh) o.frustumCulled = false; });
+
+  const box = new THREE.Box3().setFromObject(model);
+  const size = box.getSize(new THREE.Vector3()), center = box.getCenter(new THREE.Vector3());
+  // 🔴 定心 + 缩放的顺序是**一条真算术**，2026-09-22 修：
+  //    世界坐标 = position + k·p，想让 k·(p-center) 就位 ⇒ position 必须是 **-k·center**。
+  //    旧稿写的是 `position.sub(center)` 再缩放（= -center + k·p）⇒ 偏移 = center·(k-1)，
+  //    于是模型被推出画面右下角、半截在框外（旧存证图就是这么来的）。
+  const k = 1.65 / Math.max(size.y, 0.01);
+  model.scale.setScalar(k);
+  model.position.set(-center.x * k, -center.y * k, -center.z * k);
+  scene.add(model);
+  grid.position.y = -1.65 / 2;              // 网格落到脚下，不再横穿模型
+  camera.position.set(0, 0, 4.2); camera.lookAt(0, 0, 0);
+
+  // 骨架可视化：three 自带的 SkeletonHelper，把骨骼链直接画出来
+  const helper = new THREE.SkeletonHelper(model);
+  helper.material.linewidth = 3;
+  helper.material.color = new THREE.Color(0xff4d6d);   // 红：骨架
+  scene.add(helper);
+
+  let skin = null;
+  model.traverse((o) => { if (o.isSkinnedMesh && !skin) skin = o; });
+  const bones = skin ? skin.skeleton.bones : [];
+  joints = bones.length;
+  const springs = bones.filter((b) => SPRING_RE.test(b.name || "")).map((b) => b.name);
+  let verts = 0;
+  model.traverse((o) => { if (o.isMesh && o.geometry && o.geometry.attributes.position) verts += o.geometry.attributes.position.count; });
+
+  // 🔴 2026-09-22 实测：实心网格会把红色骨链**整条挡在身体里**，图上只剩几个青点 ——
+  //    那就不叫"骨架复核"了。默认把身体调成半透明（`?ghost=0` 可关），骨链才看得见。
+  //    弹簧档再进一步：它的**绑定姿态**（没有弹簧动力学驱动时）会把头发拉成一柱冲天，
+  //    半透明图会被误读成"头发坏了"。所以弹簧档走 `?body=0` —— **只画骨架，不画皮**。
+  //    🔴 注意别写成 `model.visible = false`：关节上的青色小方块是**骨的子节点 Mesh**，
+  //    那样连点一起关掉，图上只剩几根 1px 线（WebGL 不支持 linewidth，粗细调不动）。
+  //    只关 `isMesh` 才能"留骨架、去皮"。
+  if (q.get("body") === "0") {
+    model.traverse((o) => { if (o.isMesh) o.visible = false; });
+  } else if (q.get("ghost") !== "0") {
+    model.traverse((o) => {
+      if (!o.isMesh) return;
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      for (const m of mats) {
+        if (!m) continue;
+        m.transparent = true;
+        m.opacity = 0.30;
+        m.depthWrite = false;
+        m.side = THREE.DoubleSide;
+      }
+    });
+  }
+
+  document.getElementById("j").textContent = String(joints);
+  document.getElementById("v").textContent = String(verts);
+  document.getElementById("s").textContent = springs.length ? (springs.length + "（" + springs.join(" ") + "）") : "0";
+  window.__dbg = {
+    model: MODEL,
+    sizeY: +size.y.toFixed(4), scale: +k.toFixed(5),
+    center: [ +center.x.toFixed(3), +center.y.toFixed(3), +center.z.toFixed(3) ],
+    joints, verts, springs,
+    clips: (gltf.animations || []).map((a) => a.name),
+  };
+
+  // 关节用小方块标出来，一眼数得清
+  if (skin) {
+    const g = new THREE.SphereGeometry(0.012, 8, 8);
+    const m = new THREE.MeshBasicMaterial({ color: 0x00E5FF });
+    for (const b of bones) b.add(new THREE.Mesh(g, m));
+  }
+
+  const clip = clipName === "none" ? null
+    : ((gltf.animations || []).find((a) => a.name === clipName) || (gltf.animations || [])[0]);
+  document.getElementById("c").textContent = clip ? clip.name : "静态（不播动作 / bind pose）";
+  if (clip) {
+    mixer = new THREE.AnimationMixer(model);
+    const action = mixer.clipAction(clip);
+    action.play();
+    action.paused = true;
+    action.time = at;
+    mixer.update(0);
+  }
+  document.getElementById("t").textContent = String(at);
+  renderer.render(scene, camera);
+  window.__shot = true;
+}, undefined, (err) => fail(err && err.message ? err.message : err));
+</script>
+</body>
+</html>

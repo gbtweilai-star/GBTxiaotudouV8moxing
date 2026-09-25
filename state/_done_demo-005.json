@@ -1,0 +1,13 @@
+{
+ "job_id": "demo-005",
+ "at": "2026-09-24T23:57:01",
+ "engine": "assemble",
+ "artifact": "pipeline/jobs/demo-005/artifacts/out.mp4",
+ "bytes": 11813,
+ "sha256": "8b86262e33f88052c61199a9362b5eaa588cdddc11d412d3f3d6bb12937533c2",
+ "worker": "T01",
+ "帧数": 3,
+ "fps": 30,
+ "done": true,
+ "执行地": "LOCAL-触手（数据面在云）"
+}

@@ -1,0 +1,11 @@
+{
+ "name": "fogpine",
+ "version": 2,
+ "ops": [
+  {
+   "from": "pending_pins"
+  }
+ ],
+ "note": "按 pin 减树、降饱和",
+ "status": "not_wired"
+}

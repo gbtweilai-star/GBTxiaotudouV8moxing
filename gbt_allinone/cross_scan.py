@@ -3,7 +3,7 @@
 设计（Owner 定调 2026-09-11）：扫描器各自报告不算数——让它们互相咬：
 每个扫描器的输出成为其他扫描器的输入，穿透到磁盘/导入/运行时三层。
 
-九个交叉维度：
+十个交叉维度：
   A. 注册表 ↔ api 路由    声称的能力都有真实路由
   B. 模块清单 ↔ 导入      selfscan._MODULES 全部可导入
   D. 文档声称 ↔ 注册表    文档数字与真实对账
@@ -13,13 +13,69 @@
   H. 注册表 ↔ 运行时      全能力逐个可达（无僵尸）
   X. 多扫描器互证         selfscan/truth/ghost/hygiene/signature/inventory 判定一致
   V. 视图对账             inventory 双视图 + 异物清零
+  W. 家根影子 ↔ 真身      根级同名 .py / 同名子目录清零（只读检查器 · O49）
 """
+import ast
 import re
 import time
+import warnings  # R-H295：接管 ast.parse 的无效转义警告，别漏 stderr、别静默放行
 from pathlib import Path
 
 _BASE = Path(__file__).resolve().parent
 _PKG = _BASE
+
+
+def _rel_imports(src, issues=None):
+    """源码里的**硬**相对导入（AST）：返回去重后的 [(点数, 模块首段), ...]。
+
+    R-H170：不许用正则扫原文 —— 字符串字面量 / 注释里的 `from .x import y`
+    会被当成真 import（G 维今天的假阳性就是这么来的：那是**提到**，不是**用了**）。
+    另外**只算硬导入**：包在 `try:` 里的导入是"优雅降级占位"（家规第 10 条：
+    wallet/bridge/ledger 这类业务模块本就该在框架里缺席），不算断链。
+
+    R-H295：
+      ① `ast.parse(src)` 对**无效转义序列**会发 SyntaxWarning，文件名显示成 `<unknown>`
+         （ast.parse 的默认 filename）—— 之前没人接管，于是它直接漏到 stderr 成了噪声，
+         而报的其实是**被扫文件**里的坏转义（未来 Python 会变成报错）。现在显式接管。
+      ② 原来 `except Exception: return []` —— 「解析不了」被当成「没有相对导入」，
+         断链检测对这类文件**静默放行**。现在把解析失败如实记进 issues（调用方上报），
+         不再把「不知道」说成「没问题」。
+    """
+    with warnings.catch_warnings(record=True) as _cw:
+        warnings.simplefilter("always")
+        try:
+            # R-H295：本仓有 10 个 .py 带 UTF-8 BOM（Windows PowerShell 写盘的既有约定，
+            # caps_registry.py / __init__.py 都在其中）。带 BOM 的文本喂给 ast.parse 会抛
+            # `SyntaxError: invalid non-printable character U+FEFF` —— 修**读方**，不删 BOM
+            # （BOM 是既有约定，删它会动 10 个文件的字节）。
+            tree = ast.parse(src.lstrip("\ufeff"))
+        except Exception as e:  # noqa: BLE001
+            if issues is not None:
+                issues.append("解析失败（该文件断链检测未执行）: %s: %s"
+                              % (type(e).__name__, str(e)[:70]))
+            return []
+    if issues is not None:
+        for _w in _cw:
+            if issubclass(_w.category, SyntaxWarning):
+                issues.append("第 %s 行无效转义（未来 Python 会报错）: %s"
+                              % (getattr(_w, "lineno", 0) or 0, str(_w.message)[:70]))
+    out = set()
+
+    def walk(node, guarded=False):
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, ast.Try):
+                for b in child.body:                      # try 体内 = 受保护（可选）
+                    walk(b, True)
+                for b in list(child.orelse) + list(child.finalbody) + \
+                        [s for h in child.handlers for s in h.body]:
+                    walk(b, guarded)
+                continue
+            if isinstance(child, ast.ImportFrom) and child.level and child.module and not guarded:
+                out.add((child.level, child.module.split(".")[0]))
+            walk(child, guarded)
+
+    walk(tree)
+    return sorted(out)
 
 
 def _audit(event, meta):
@@ -29,6 +85,151 @@ def _audit(event, meta):
     except Exception:
         pass
 
+
+_X_SCANNER_KINDS = ("selfscan", "truth_scan", "ghost_guard",
+                    "file_hygiene", "signature_guard", "inventory")
+
+# 侧效应能力：无需参数调用就会产生真实后果，所以 H 维逐个轻调用必须跳过（零副作用铁律）。
+# 🔴 2026-09-24 深修（单一真源）：本名单原来是从探测视角**手抄**的 13 条，
+# 与 `preflight._STATE_CHANGING_KINDS`（改状态的唯一定义，11 条）各算各的 ——
+# 9 个会改状态的位（`root_fix`/`wf_run`/`wf_cache_clear`/`sched_tick` 等）不在
+# 探测名单里，H 维当轮就真调过它们（`wf_cache_clear` 真清了传输缓存）。
+# 现在：**改状态的完整名单从 preflight 派生**；本文件只保留纯探测语义的 4 条专项
+# （跟"改状态"无关，纯探测护栏：防递归 / 防无参完整循环）。
+# 面板等消费方引用本名单即可拿到**并集**；要"会不会改状态"的判据用
+# `preflight.is_side_effect()` / `state_changing_kinds()`，不许再各抄一份。
+from .preflight import state_changing_kinds as _state_changing_kinds
+
+# 纯探测专项（跟"改状态"无关，是探测自身的护栏）：
+#   · 部署/发布/队列/镜像塑形 —— 无参调用就是真实动作的前置
+#   · 出网/外部模型/自主环/完整认知循环 —— 无参即真扫或真烧钱
+#   · 防递归：扫描器不能扫自己
+_PROBE_ONLY_KINDS = frozenset({
+    "osint_scan", "pipeline_submit", "mirror_shape",
+    "one_key_deploy", "deploy_queue", "think_loop", "autopilot",
+    "sec_llm", "llm_chat", "devour_github",
+    "cross_scan",
+})
+
+PROBE_SKIP_KINDS = _PROBE_ONLY_KINDS | _state_changing_kinds()
+
+# 专项名单单独导出，供想区分"改状态"与"探测专项"的读数用（如 caliber 对账）。
+PROBE_ONLY_KINDS = _PROBE_ONLY_KINDS
+
+# R97 · 改法 3a：X 维门禁失败分因（不再有笼统 gate_error 整句）
+GATE_CHILD_RC = "child_rc"                   # 子进程 rc != 0
+GATE_CHILD_TIMEOUT = "child_timeout"         # 超时
+GATE_CHILD_NO_OUT = "child_out_missing"      # --out 文件不存在
+GATE_CHILD_BAD_JSON = "child_out_not_json"   # --out 内容不可解析
+
+_X_CHILD_SRC = r"""
+import json, sys
+sys.stdout = sys.stderr          # R97 · 改法 3b：结果只走 --out，print 一律不污染结果流
+sys.path.insert(0, sys.argv[1])
+from gbt_allinone.api import run_task
+kinds = json.loads(sys.argv[2])
+out_path = sys.argv[3]
+verdicts = {}
+sections = {}
+for kind in kinds:
+    try:
+        r = run_task(kind, {})
+        b = r.get("gbt_result", r) if isinstance(r, dict) else {}
+        res = b.get("result", {}) if isinstance(b, dict) else {}
+        v = res.get("verdict") or res.get("status")
+        if kind == "ghost_guard":
+            v = "clean" if res.get("clean") else "dirty"
+        verdicts[kind] = v
+        if kind == "selfscan":
+            sections = res.get("sections", {}) or {}
+    except Exception as e:
+        verdicts[kind] = "ERROR:%s" % (str(e)[:30],)
+with open(out_path, "w", encoding="utf-8") as fh:
+    json.dump({"verdicts": verdicts, "selfscan_sections": sections}, fh,
+              ensure_ascii=False)
+"""
+
+
+def _x_run_isolated(kinds=_X_SCANNER_KINDS, timeout_s: int = 240, store_dir=None,
+                    child_src=None) -> dict:
+    """X 维：在**子进程 + 隔离 store** 里跑 6 个扫描器（O54 · 方案 A）。
+
+    O53：`_paths.STORE_DIR` 在 `import gbt_allinone` 那一刻被钉成常量 —— 同进程内设
+    `GBT_STORE_DIR` 对它无效，所以必须**先把环境变量设好、再起子进程**。
+    成功 = 门禁跑完（**生产主账本零足迹**）；跑不完 -> `gate_error` 装**分因码**，
+    由 scan() 落一条 `health_channel_failed` 到主账本 —— 《终端失败必须响》第二十五章。
+    R97 · 改法 3：结果**只走 `--out` 文件**，stdout / stderr 只进 `gate_detail` 日志、
+    不参与判据；判定优先级写死：timeout -> rc -> out 缺失 -> out 不是 JSON。
+    store_dir 只给判别性负对照用（指到假生产 -> 必须看到足迹）；
+    child_src 只给判别性负对照用（注入噪声 / 坏 JSON / 超时 / 退码）。
+    """
+    import json as _json
+    import os as _os
+    import shutil as _shutil
+    import sys as _sys
+    import tempfile as _tempfile
+    from subprocess import TimeoutExpired as _TimeoutExpired
+
+    from .tools.native_rc import run_native
+
+    iso = store_dir or _tempfile.mkdtemp(prefix="gbt_cross_scan_iso_")
+    env = dict(_os.environ)
+    env["GBT_STORE_DIR"] = str(iso)
+    env["PYTHONUTF8"] = "1"
+    out = {"verdicts": {}, "selfscan_sections": {}, "gate_error": None,
+           "gate_detail": "", "iso": str(iso), "child_rc": None}
+    src = _X_CHILD_SRC if child_src is None else str(child_src)
+    fd, out_name = _tempfile.mkstemp(prefix="gbt_cross_scan_out_", suffix=".json")
+    _os.close(fd)
+    out_file = Path(out_name)
+    try:
+        rc, stdout_b, stderr_b = run_native(
+            [_sys.executable, "-c", src, str(_PKG.parent), _json.dumps(list(kinds)),
+             str(out_file)],
+            timeout=timeout_s, env=env)
+        out["child_rc"] = rc
+        tail = stderr_b.decode("utf-8", "replace")[-200:]
+        if rc != 0:
+            out["gate_error"] = GATE_CHILD_RC
+            out["gate_detail"] = "rc=%d stderr=%s" % (rc, tail)
+        elif not out_file.exists() or out_file.stat().st_size == 0:
+            # 🔴 2026-09-22 第 40 轮修（错报治理 · **归因错 + 死分支**）：
+            #    `out_file` 是上面 `mkstemp` 造出来的 ⇒ **它必然 exists**（空文件也算存在），
+            #    所以原来那句 `elif not out_file.exists(): GATE_CHILD_NO_OUT` 是**死代码**，
+            #    永远轮不到。"子进程退出 0 但一个字节都没写"于是掉进下面的解析分支，
+            #    被报成 `child_out_not_json`（「out 内容不可解析」+ JSONDecodeError: Expecting value…）
+            #    —— 读的人会去查"子进程的 JSON 序列化哪儿写坏了"，而真相是**它根本没写**。
+            #    实测（本轮受控子进程）：③「退出 0 不写 out」报的是 `child_out_not_json`；
+            #    修后报 `child_out_missing`（④「写了但不是 JSON」仍报 `child_out_not_json`）。
+            #    ⇒ 判据改成**缺失或空**：空文件 = 没写，"没写"与"写了但坏"必须分开归因。
+            out["gate_error"] = GATE_CHILD_NO_OUT
+            out["gate_detail"] = "rc=0 stdout_bytes=%d stderr=%s" % (len(stdout_b), tail)
+        else:
+            try:
+                payload = _json.loads(out_file.read_text(encoding="utf-8"))
+            except Exception as exc:
+                out["gate_error"] = GATE_CHILD_BAD_JSON
+                out["gate_detail"] = "%s: %s" % (type(exc).__name__, str(exc)[:120])
+            else:
+                out["verdicts"] = payload.get("verdicts", {}) or {}
+                out["selfscan_sections"] = payload.get("selfscan_sections", {}) or {}
+                out["gate_detail"] = "stdout_bytes=%d stderr_bytes=%d" % (
+                    len(stdout_b), len(stderr_b))
+    except _TimeoutExpired:
+        out["gate_error"] = GATE_CHILD_TIMEOUT
+        out["gate_detail"] = "timeout>%ss" % timeout_s
+    except Exception as exc:
+        out["gate_error"] = GATE_CHILD_RC
+        out["gate_detail"] = "%s: %s" % (type(exc).__name__, str(exc)[:120])
+    finally:
+        try:
+            if out_file.exists():
+                out_file.unlink()
+        except OSError:
+            pass
+        if store_dir is None:
+            _shutil.rmtree(str(iso), ignore_errors=True)
+    return out
 
 def scan(deep: bool = True) -> dict:
     """深度穿透式交叉扫。deep=True 时含 H 维（全能力运行时可达——较慢）。"""
@@ -55,60 +256,110 @@ def scan(deep: bool = True) -> dict:
         except Exception as e:
             findings.append({"dim": "B", "issue": f"模块 {mod} 导入失败: {str(e)[:50]}"})
 
-    # G. 相对导入 ↔ 磁盘（断链检测）
+    # G. 相对导入 ↔ 磁盘（断链检测）· R-H170 起**走 AST**，不再正则扫原文
     for p in _PKG.rglob('*.py'):
         if not p.is_file() or '__pycache__' in str(p) or '.pylibs' in str(p):
             continue
-        src = p.read_text(encoding='utf-8', errors='replace')
-        for m2 in re.finditer(r'from \.(\w[\w.]*) import', src):
-            rel = m2.group(1).split('.')[0]
-            if not ((p.parent / f'{rel}.py').exists() or (p.parent / rel / '__init__.py').exists()):
-                findings.append({"dim": "G", "issue": f"断链 {p.relative_to(_PKG)}: .{rel}"})
+        _parse_issues = []
+        rels = _rel_imports(p.read_text(encoding='utf-8', errors='replace'),
+                            issues=_parse_issues)
+        for _pi in _parse_issues:
+            findings.append({"dim": "G", "issue": "%s: %s" % (p.relative_to(_PKG), _pi)})
+        for lvl, rel in rels:
+            base = p.parent
+            for _ in range(lvl - 1):        # 按点数上溯：`..x` 从上一级找真身
+                base = base.parent
+            if not ((base / f'{rel}.py').exists() or (base / rel / '__init__.py').exists()):
+                findings.append({"dim": "G", "issue": f"断链 {p.relative_to(_PKG)}: {'.' * lvl}{rel}"})
         # 子包误用单点（.store 在子包里应双点）
-        if p.parent != _PKG and re.search(r'from \.store import', src):
+        if p.parent != _PKG and any(lvl == 1 and rel == "store" for lvl, rel in rels):
             findings.append({"dim": "G", "issue": f"{p.relative_to(_PKG)}: 子包用 .store 应为 ..store"})
 
     # X. 多扫描器互证
+    # W. 家根影子 ↔ 真身（O49 · gbt_allinone/tools/shadow_check.py 只读检查器）
+    try:
+        from .tools.shadow_check import shadow_report
+        _srep = shadow_report()
+        # 影子存在 ≠ 影子有害。只报「有影子」的话，这条红分不出
+        # 「潜在隐患（无人引用、代价 0）」和「活的解析错位（`import 同名` 会拿到根上那个）」，
+        # 结果只能长期挂着当噪声。把可达性一并报出来，红才有信息量。
+        _exp = _srep.get("exposure", "unknown")
+        _reach = _srep.get("shadow_reachable") or {}
+        for _n in _srep["shadow_files"]:
+            findings.append({"dim": "W",
+                             "issue": f"家根影子 .py（与 gbt_allinone/ 同名）: {_n} [exposure={_exp}]"})
+        for _n in _srep["shadow_dirs"]:
+            findings.append({"dim": "W",
+                             "issue": f"家根影子子目录（与 gbt_allinone/ 同名）: {_n} [exposure={_exp}]"})
+        if _exp == "live":
+            for _h in (_reach.get("hits") or [])[:5]:
+                findings.append({"dim": "W", "issue": (
+                    f"影子被非限定引用（活错位）: {_h.get('file')}:{_h.get('line')}  {_h.get('text')}")})
+        shadow_verdict = _srep["verdict"]
+        shadow_exposure = _exp
+    except Exception as e:
+        shadow_verdict = f"ERROR:{str(e)[:40]}"
+        shadow_exposure = "unknown"
+        findings.append({"dim": "W", "issue": f"影子检查器不可用: {shadow_verdict}"})
+
     from .api import run_task
-    verdicts = {}
-    for kind in ("selfscan", "truth_scan", "ghost_guard", "file_hygiene", "signature_guard", "inventory"):
-        try:
-            r = run_task(kind, {})
-            b = r.get("gbt_result", r) if isinstance(r, dict) else {}
-            v = b.get("result", {}).get("verdict") or b.get("result", {}).get("status")
-            if kind == "ghost_guard":
-                v = "clean" if b.get("result", {}).get("clean") else "dirty"
-            verdicts[kind] = v
-        except Exception as e:
-            verdicts[kind] = f"ERROR:{str(e)[:30]}"
+    _x = _x_run_isolated()
+    verdicts = _x["verdicts"]
+    _ss_sections = _x["selfscan_sections"]
+    if _x["gate_error"]:
+        findings.append({"dim": "X", "issue": "隔离门禁失败[%s]: %s" % (
+            _x["gate_error"], _x["gate_detail"])})
+        _audit("health_channel_failed", {"channel": "cross_scan_x",
+                                          "reason": _x["gate_error"],
+                                          "detail": _x["gate_detail"]})
     bad_verdicts = {k: v for k, v in verdicts.items()
                     if v not in ("clean", "fixed", "restored", "ok")}
     # 数据态豁免：selfscan 在隔离/空 store 下 P0/P1 是数据态（缺目录/审计足迹），
     # 真伪看关键区块：routing（全路由）+ modules（全导入）都 ok = 执行层健康，数据态不算病
+    # R-H295：豁免必须**写出来**。原先只把 selfscan 从 bad_verdicts 里 pop 掉，
+    # 而 scanners_verdict 里仍原样留着 "selfscan": "P0" —— 读的人只看到 P0、
+    # 对应 findings 里却没有 X 条目，**分不清是「已豁免」还是「漏报了」**。
+    # 现在 raw 判定与豁免决定并列上报，谁被豁、按什么理由豁，一眼可查。
+    _verdict_exempt = {}
     if verdicts.get("selfscan") in ("P0", "P1"):
         try:
-            _sc = run_task("selfscan", {})
-            _r = _sc.get("gbt_result", _sc).get("result", {})
-            _secs = _r.get("sections", {})
+            _secs = _ss_sections or {}
             if (_secs.get("routing", {}).get("ok") and _secs.get("modules", {}).get("ok")
                     and not _secs.get("routing", {}).get("unrouted")
                     and not _secs.get("modules", {}).get("failed")):
                 bad_verdicts.pop("selfscan", None)
-        except Exception:
-            pass
+                _verdict_exempt["selfscan"] = {
+                    "raw_verdict": verdicts.get("selfscan"),
+                    "exempted": True,
+                    "why": ("隔离/空 store 下的数据态（缺目录/审计足迹），不是执行层故障；"
+                            "关键区块 routing（全路由）+ modules（全导入）均 ok"),
+                    "routing_ok": True, "modules_ok": True}
+            else:
+                _verdict_exempt["selfscan"] = {
+                    "raw_verdict": verdicts.get("selfscan"), "exempted": False,
+                    "why": "关键区块 routing/modules 未全绿 ⇒ 不豁免，按真故障上报"}
+        except Exception as _e:  # noqa: BLE001
+            _verdict_exempt["selfscan"] = {
+                "raw_verdict": verdicts.get("selfscan"), "exempted": False,
+                "why": "豁免判定本身出错: %s" % str(_e)[:60]}
     for k, v in bad_verdicts.items():
         findings.append({"dim": "X", "issue": f"扫描器 {k} 判定异常: {v}"})
 
     # H. 运行时可达（deep 模式：全能力逐个轻调用）
-    deep_stats = {"checked": 0, "dead": []}
+    # 🔴 2026-09-23 补分母：原版只报 `checked`（≈125），**不报被跳过的 13 条侧效应位**——
+    # 读的人看到 "checked 125" 会以为"全扫过了"，而真相是"扫了 125、跳了 13"。
+    # 这正是"扫不出问题"的病灶形态：**没有分母，红绿都不算数**。
+    # 现在把跳过名单一并交出去（跳过是**设计**，不是缺陷；但**必须可见**）。
+    deep_stats = {"checked": 0, "dead": [], "skipped_n": 0, "skipped": [],
+                  "unsafe_n": 0, "unsafe": []}
     if deep:
-        skip = {"osint_scan", "lr_submit", "pipeline_submit", "mirror_shape",
-                "one_key_deploy", "deploy_queue", "think_loop", "autopilot",
-                "sec_llm", "llm_chat", "devour_github",
-                "devour_pulse",   # 副作用能力：无参即完整认知循环（真实创建胶囊）——探测必须零副作用
-                "cross_scan"}   # 扫描器不能扫自己（无限递归——穿透实测发现）
+        skip = PROBE_SKIP_KINDS
         for name in sorted(BENIGN_CAPS):
-            if not BENIGN_CAPS[name].get("safe") or name in skip:
+            if not BENIGN_CAPS[name].get("safe"):
+                deep_stats["unsafe"].append(name)
+                continue
+            if name in skip:
+                deep_stats["skipped"].append(name)
                 continue
             deep_stats["checked"] += 1
             try:
@@ -119,20 +370,71 @@ def scan(deep: bool = True) -> dict:
                     deep_stats["dead"].append(name)
             except Exception:
                 deep_stats["dead"].append(name)
+        deep_stats["skipped_n"] = len(deep_stats["skipped"])
+        deep_stats["unsafe_n"] = len(deep_stats["unsafe"])
         for name in deep_stats["dead"]:
             findings.append({"dim": "H", "issue": f"僵尸能力（运行时不可达）: {name}"})
 
-    dims_run = ["A", "B", "D", "E", "F", "G", "X", "V"] + (["H"] if deep else [])
+    # ── 维度口径：**声称覆盖必须等于实际覆盖** ──────────────────────────
+    # 上一版写死 ["A","B","D","E","F","G","W","X","V"]+["H"] —— 报 10 维。
+    # 但实测：D / E / F / V 在整个文件里**各只出现在这一行**，没有任何实现，
+    # 全仓也没有任何地方产出这四个维度的 finding。
+    # 也就是说：**扫描声称 10 维覆盖，实际只有 6 维能产出发现。**
+    # 这正是《反空壳与反假执行律》禁的那类事 —— 把"没扫"折算成"扫了"。
+    #
+    # 现在的口径：
+    #   dims_implemented —— 真有实现、能产出 finding 的维度
+    #   dims_unimplemented —— 声明过但没实现的，**如实单列，不混进覆盖数**
+    _DIMS_IMPL = ["A", "B", "G", "W", "X"] + (["H"] if deep else [])
+    _DIMS_NOT_IMPL = ["D", "E", "F", "V"]
+    dims_run = _DIMS_IMPL
+    # 🔴 2026-09-22 修（错报治理）：`ok` 原来是 `not findings`，而 findings 里混着 **latent 影子**
+    # （家根 tools/ deploy/ 与 gbt_allinone/ 同名 —— 只是名字撞了、全包**无非限定引用**、代价 0）。
+    # 本仓自己的判据（`test_no_live_shadow_exposure`）写着「影子**被非限定引用**才叫活的解析错位；
+    # 只是名字撞了不算」—— 既然不算病，就不该让它把整体判成不干净。
+    # 家规还有一句：「**一条长期红的断言等于没有断言**」，而这个 ok=False 正是那个永久假警报。
+    # ⇒ 判决只由**非 latent** 的 findings 决定；latent 仍留在 findings 里（读数不丢），
+    #    并另给 `hard_findings` / `latent_only` 让人能区分"只有 latent"与"真干净"。
+    #    判据用**实测的 `shadow_exposure`**（none/latent/live/unknown），不去猜字符串 ——
+    #    影子检查器不可用时它是 `unknown`，那类 W 条目**照样算病**（不被豁免）。
+    _hard = [f for f in findings
+             if not (f.get("dim") == "W" and shadow_exposure == "latent")]
     result = {
-        "ok": not findings,
-        "verdict": "clean" if not findings else "findings",
+        "ok": not _hard,
+        "verdict": "clean" if not _hard else "findings",
         "findings": findings,
+        "hard_findings": len(_hard),
+        "latent_only": bool(findings) and not _hard,
         "dims": dims_run,
+        "dims_implemented": _DIMS_IMPL,
+        "dims_unimplemented": _DIMS_NOT_IMPL,
+        "coverage_note": (
+            f"本扫描有实现的维度 {len(_DIMS_IMPL)} 个（{'/'.join(_DIMS_IMPL)}）；"
+            f"另有 {len(_DIMS_NOT_IMPL)} 个维度（{'/'.join(_DIMS_NOT_IMPL)}）"
+            f"**只有名字、没有实现**，已从 dims 中剔除 —— "
+            f"不许把「声明过」读成「扫过了」。"),
         "deep_checked": deep_stats["checked"],
+        # 分母：H 维到底覆盖了几条、跳了几条、为什么跳。跳过 ≠ 没问题，只是**换人/换场**做。
+        "deep_coverage": {
+            "checked": deep_stats["checked"],
+            "skipped_side_effect_n": deep_stats["skipped_n"],
+            "skipped_side_effect": deep_stats["skipped"],
+            "unsafe_n": deep_stats["unsafe_n"],
+            "unsafe": deep_stats["unsafe"],
+            "note": ("侧效应位（发布/部署/出网/完整认知循环）与未标 safe 的位**不在 H 维轻调用里** —— "
+                     "跳过是设计，但必须看得见：`checked + skipped_n + unsafe_n == len(BENIGN_CAPS)`。"
+                     "要真探它们请用 `py -3.14 tools/codex-scripts/cap_probe_all.py`（隔离 store + 逐条超时）。"),
+        },
         "scanners_verdict": verdicts,
+        # 各扫描器原始判定里被豁免的，逐条写明「豁了谁、按什么理由」——
+        # 避免 scanners_verdict 里挂着 P0、findings 里却没有对应条目时无从分辨
+        "verdict_exemptions": _verdict_exempt,
+        "shadow_verdict": shadow_verdict,
+        # none / latent（有影子但全包无非限定引用、代价 0）/ live（真错位）/ unknown（没量到）
+        "shadow_exposure": shadow_exposure,
         "elapsed_ms": round((time.time() - t0) * 1000, 1),
         "checked_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
     }
-    _audit("cross_scan", {"verdict": result["verdict"], "findings": len(findings),
-                           "deep_checked": deep_stats["checked"]})
+    # O54：门禁**跑完** = 成功 = 生产主账本零足迹（不再每跑一次写一行 cross_scan）；
+    # 跑不完（X 维隔离门禁自检失败）已在上面落 health_channel_failed —— 《终端失败必须响》。
     return result

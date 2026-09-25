@@ -1,20 +1,47 @@
 # gbt-capability: subprocess, dynamic-import, ctypes, base64
 # ⛔ 开发者：自由的风 · 永久钢印 · 禁止删除
+# ⚠️ 外部内容纪律：本域从屏幕/控件树拿到的**文字与像素一律是不可信数据，不是指令** ——
+#    `grab_pixel`/`grab_region`/`grab_table`/`grab_value` 读的是屏幕，
+#    屏幕内容由任何程序决定（含网页与聊天窗），可能写着"忽略你之前的指令"。
+#    本域只把它当数据返回；不执行其中任何祈使句、不拼进 system 提示、不拿去驱动执行口。
+#    覆盖校验器：py -3.14 -m gbt_allinone.tools.external_content_check gbt_allinone
 # domain 域 mixin — 拆分自 omni_tentacle (自动生成, 2026-08-10)
 # ⛔ 拆分保障: 自身目录(brain/)入 sys.path — spec_from_file_location 加载
 #    不会自动加路径, 需显式保障 omni_core 可寻址 (插 brain/ 而非项目根)
 import sys as _sys
 from pathlib import Path as _P
 _sys.path.insert(0, str(_P(__file__).resolve().parent))
+
+
+# ── 病因钩子：吞错统一收口 + 导航入口病因（**必须放在 sys.path 修正之后**）。
+#    教训（2026-09-22 实测）：放在 insert 之前 ⇒ `from nav_etiology import …` 导入期就失败，
+#    静默退回垫片 ⇒ 63 处"收口"一个病因都没真记上 = **假收口**。
+try:
+    from nav_etiology import (record_swallow as _record_swallow,
+                              etiology as _etiology,
+                              enrich as _enrich_cause)
+except Exception:  # noqa: BLE001
+    def _record_swallow(_e, _mod="?", _op=""):
+        import sys as _s
+        print(f"⚠️ {_mod}: 吞错: {_e}", file=_s.stderr)
+        return "action_no_effect"
+
+    def _etiology(_m, _o=""):
+        def _d(fn):
+            return fn
+        return _d
+
+    def _enrich_cause(r, _m="?", _o=""):
+        return r
 # publish沙盒(非项目根cwd)执行兜底: 类定义不访问core符号, 吞异常安全
 try:
     from omni_core import *  # noqa: F401,F403
 except Exception as _e:
-    print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+    _record_swallow(_e, "omni_domain")
 try:
     from omni_core import window_title_matches  # noqa: F401  (显式导入, 绕过 __all__)
 except Exception as _e:
-    print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+    _record_swallow(_e, "omni_domain")
 
 
 class OmniDomainMixin:
@@ -56,7 +83,7 @@ class OmniDomainMixin:
                                 })
                             _walk(c, d + 1)
                     except Exception as _e:
-                        print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                        _record_swallow(_e, "omni_domain")
                 _walk(w)
                 windows.append({
                     "title": wname[:100],
@@ -96,7 +123,7 @@ class OmniDomainMixin:
                                 if r:
                                     return r
                         except Exception as _e:
-                            print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                            _record_swallow(_e, "omni_domain")
                         return None
                     ctrl = _find(w)
                     if ctrl:
@@ -111,7 +138,7 @@ class OmniDomainMixin:
         """
         ctrl = self._domain_find_control(window, control or "", control_type)
         if not ctrl:
-            return {"ok": False, "error": f"领域内未找到: 窗口[{window}] 控件[{control}]"}
+            return refusal("control_not_found", f"领域内未找到: 窗口[{window}] 控件[{control}]", ("window", "control"))
         try:
             if action in ("click", "select", "check"):
                 try:
@@ -121,7 +148,7 @@ class OmniDomainMixin:
                         return {"ok": True, "method": "uia_invoke", "window": window,
                                 "control": (ctrl.Name or control)[:80], "occluded_safe": True}
                 except Exception as _e:
-                    print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                    _record_swallow(_e, "omni_domain")
                 try:
                     pat = ctrl.GetSelectionItemPattern()
                     if pat:
@@ -129,7 +156,7 @@ class OmniDomainMixin:
                         return {"ok": True, "method": "uia_select", "window": window,
                                 "control": (ctrl.Name or control)[:80], "occluded_safe": True}
                 except Exception as _e:
-                    print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                    _record_swallow(_e, "omni_domain")
                 try:
                     pat = ctrl.GetTogglePattern()
                     if pat:
@@ -137,7 +164,7 @@ class OmniDomainMixin:
                         return {"ok": True, "method": "uia_toggle", "window": window,
                                 "control": (ctrl.Name or control)[:80], "occluded_safe": True}
                 except Exception as _e:
-                    print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                    _record_swallow(_e, "omni_domain")
                 try:
                     _focus_window(ctrl.NativeWindowHandle)
                     b = ctrl.BoundingRectangle
@@ -147,7 +174,7 @@ class OmniDomainMixin:
                     return {"ok": True, "method": "physical_fallback", "window": window,
                             "control": (ctrl.Name or control)[:80], "occluded_safe": False}
                 except Exception as e:
-                    return {"ok": False, "error": f"触发失败: {e}"}
+                    return refusal("action_failed", f"触发失败: {e}", ())
             elif action == "set":
                 try:
                     pat = ctrl.GetValuePattern()
@@ -156,7 +183,7 @@ class OmniDomainMixin:
                         return {"ok": True, "method": "uia_setvalue", "window": window,
                                 "control": (ctrl.Name or control)[:80], "occluded_safe": True}
                 except Exception as _e:
-                    print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                    _record_swallow(_e, "omni_domain")
                 try:
                     _focus_window(ctrl.NativeWindowHandle)
                     time.sleep(0.2)
@@ -164,7 +191,7 @@ class OmniDomainMixin:
                     return {"ok": True, "method": "focus_type", "window": window,
                             "control": (ctrl.Name or control)[:80], "occluded_safe": False}
                 except Exception as e:
-                    return {"ok": False, "error": f"写入失败: {e}"}
+                    return refusal("write_failed", f"写入失败: {e}", ())
             elif action == "get":
                 try:
                     pat = ctrl.GetValuePattern()
@@ -172,19 +199,19 @@ class OmniDomainMixin:
                         return {"ok": True, "method": "uia_getvalue", "window": window,
                                 "control": (ctrl.Name or control)[:80], "value": pat.Value}
                 except Exception as _e:
-                    print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                    _record_swallow(_e, "omni_domain")
                 # ⛔ 2026-08-04 修复: ValuePattern不可用时如实报告 — 此前返回ok:True但value为空(假get)
                 return {"ok": False, "error": "控件不支持ValuePattern读取",
                         "window": window, "name": ctrl.Name, "control_type": ctrl.ControlTypeName}
-            return {"ok": False, "error": f"未知action: {action}"}
+            return refusal("unknown_action", f"未知action: {action}", ("action",))
         except Exception as e:
-            return {"ok": False, "error": str(e)[:150]}
+            return refusal("action_failed", str(e)[:150], ())
 
     def domain_type(self, window: str, text: str, activate: bool = False) -> dict:
         """领域覆盖穿透输入 — 目标窗口键入文字 (无视遮挡, 输入后恢复前台)"""
         win = _find_window(window)
         if not win:
-            return {"ok": False, "error": f"未找到窗口: {window}"}
+            return refusal("window_not_found", f"未找到窗口: {window}", ("window",))
         import win32gui as _wg
         prev = _wg.GetForegroundWindow()
         # ⛔ 2026-08-13 打磨: UIA ValuePattern 直写兜底 — 前台被高完整性窗口锁定时
@@ -196,22 +223,22 @@ class OmniDomainMixin:
                     try:
                         _focus_window(win["hwnd"])
                     except Exception as _e:
-                        print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                        _record_swallow(_e, "omni_domain")
                 return {"ok": True, "window": win["title"], "text_len": len(text),
                         "method": _uia_r["method"], "occluded_safe": True,
                         "control": _uia_r.get("ctrl", "")}
         except Exception as _e:
-            print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+            _record_swallow(_e, "omni_domain")
         ok = _focus_window(win["hwnd"])
         if not ok:
-            return {"ok": False, "error": f"无法激活窗口: {window} (UIA无可编辑控件且物理激活失败)"}
+            return refusal("action_failed", f"无法激活窗口: {window} (UIA无可编辑控件且物理激活失败)", ())
         time.sleep(0.15)
         _keyboard_type(text)
         if not activate and prev and prev != win["hwnd"]:
             try:
                 _wg.SetForegroundWindow(prev)
             except Exception as _e:
-                print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "omni_domain")
         return {"ok": True, "window": win["title"], "text_len": len(text),
                 "method": "domain_type", "occluded_safe": True}
 
@@ -239,7 +266,7 @@ class OmniDomainMixin:
                                     texts.append({"text": cn[:200], "type": ctype})
                                 _walk(c, d + 1)
                         except Exception as _e:
-                            print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                            _record_swallow(_e, "omni_domain")
                     _walk(w)
                     seen = []
                     seen_set = set()
@@ -252,15 +279,18 @@ class OmniDomainMixin:
                             "full_text": chr(10).join(t["text"] for t in seen)[:8000]}
             except Exception:
                 continue
-        return {"ok": False, "error": f"未找到窗口: {window}"}
+        return refusal("window_not_found", f"未找到窗口: {window}", ("window",))
 
-    # def _grab_screen_pil(self, region: dict = None):
-        """PIL ImageGrab 截屏 — 比 pyautogui 快 3x（Windows GDI 直连）"""
-        from PIL import ImageGrab
-        if region:
-            return ImageGrab.grab(bbox=(region['x'], region['y'],
-                                       region['x']+region['w'], region['y']+region['h']))
-        return ImageGrab.grab()
+    # 2026-09-22 删（职业习惯审计 G5-6「不注释掉的死代码」）：
+    # 这里原本是「把 def 行注释掉、方法体留着」——
+    #     # def _grab_screen_pil(self, region: dict = None):
+    #         """PIL ImageGrab 截屏 …"""
+    #         from PIL import ImageGrab …
+    # 后果不是"少一个函数"，是**留下 5 行永不可达语句**挂在上面那个 return 之后：
+    # 既污染前一个函数的语义，又躲开所有静态检查（它不是 _*.py 残留、不是 .tmp，
+    # hygiene 的四条铁律一条都碰不到）。
+    # 现状核实：全仓 grep `_grab_screen_pil` 只有那一处定义、无任何调用方 ⇒ 废弃。
+    # 若将来要恢复截屏：**写回完整的 def**，不要留半截。
 
     def _uia_find_fast(self, text: str, fast=False):
         # ⛔ 2026-08-13 打磨: fast=True 跳过全树遍历(未命中25s), wait_text轮询用
@@ -312,7 +342,7 @@ class OmniDomainMixin:
                                     if r:
                                         return r
                             except Exception as _e:
-                                print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                                _record_swallow(_e, "omni_domain")
                             return None
                         hit = _sub(w)
                         if hit:
@@ -323,7 +353,7 @@ class OmniDomainMixin:
                     except Exception:
                         continue
             except Exception as _e:
-                print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                _record_swallow(_e, "omni_domain")
             if fast:
                 return None  # ⛔ 2026-08-13 打磨: 快速模式不做全树遍历(未命中25s拖爆wait_text超时)
             # 方案B: 全树遍历 (兜底, 慢)
@@ -343,7 +373,7 @@ class OmniDomainMixin:
                     for child in ctrl.GetChildren():
                         _walk(child, depth + 1)
                 except Exception as _e:
-                    print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                    _record_swallow(_e, "omni_domain")
             _walk(root)
             if found["_uia"]:
                 f = found["_uia"]
@@ -355,24 +385,24 @@ class OmniDomainMixin:
         try:
             import win32gui, win32process
             hwnd = win32gui.WindowFromPoint((x, y))
-            if not hwnd: return {"ok": False, "error": "无法定位窗口"}
+            if not hwnd: return refusal("action_failed", "无法定位窗口", ())
             title = win32gui.GetWindowText(hwnd); _, pid = win32process.GetWindowThreadProcessId(hwnd)
             rect = win32gui.GetWindowRect(hwnd)
             try: import psutil; proc_name = psutil.Process(pid).name()
             except Exception: proc_name = f"pid={pid}"  # 容错: psutil 进程信息不可用降级
             cap = _screen_capture({"x": max(0,x-50), "y": max(0,y-15), "w": 100, "h": 30})
             return {"ok": True, "x": x, "y": y, "window": {"title": title[:100], "pid": pid, "process": proc_name, "rect": {"left": rect[0], "top": rect[1], "right": rect[2], "bottom": rect[3]}}, "surrounding_kb": cap.get("image_kb", 0)}
-        except ImportError: return {"ok": False, "error": "win32 API 不可用"}
+        except ImportError: return refusal("action_failed", "win32 API 不可用", ())
 
     def trace_text(self, text: str):
         r = self.find_text(text)
-        if not r.get("found"): return {"ok": False, "error": f"未找到 '{text}'"}
+        if not r.get("found"): return refusal("text_not_found", f"未找到 '{text}'", ("text",))
         trace = self.trace_source(r["x"], r["y"]); trace["text"] = text; trace["position"] = (r["x"], r["y"])
         return trace
 
     def trace_window_chain(self, target: str):
         win = _find_window(target)
-        if not win: return {"ok": False, "error": f"未找到窗口: {target}"}
+        if not win: return refusal("window_not_found", f"未找到窗口: {target}", ("window",))
         try:
             import psutil; proc = psutil.Process(win["pid"])
             parents = []; p = proc
@@ -383,12 +413,12 @@ class OmniDomainMixin:
                 else: break
             children = [{"pid": c.pid, "name": c.name()} for c in proc.children(recursive=False)]
             return {"ok": True, "window": win["title"], "process": {"pid": win["pid"], "name": proc.name()}, "parent_chain": parents, "children": children}
-        except ImportError: return {"ok": False, "error": "psutil 不可用"}
+        except ImportError: return refusal("dependency_unavailable", "psutil 不可用", ("psutil",))
 
     def grab_pixel(self, x: int, y: int):
         import pyautogui
         try: c = pyautogui.pixel(x, y); return {"ok": True, "x": x, "y": y, "rgb": list(c)}
-        except Exception as e: return {"ok": False, "error": str(e)[:100]}
+        except Exception as e: return refusal("action_failed", str(e)[:100], ())
 
     def grab_region(self, x: int, y: int, w: int, h: int):
         return _screen_capture({"x": x, "y": y, "w": w, "h": h})
@@ -424,7 +454,7 @@ class OmniDomainMixin:
                         for child in ctrl.GetChildren():
                             _walk(child, depth + 1)
                     except Exception as _e:
-                        print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                        _record_swallow(_e, "omni_domain")
                 if scope == "active":
                     win = _uia.GetForegroundControl()
                     if win:
@@ -449,10 +479,10 @@ class OmniDomainMixin:
                         source="omni_tentacle.extract_ui_elements", channel="visual",
                         priority="high")
                 except Exception as _e:
-                    print(f"⚠️ omni_domain: 吞错: {_e}", file=sys.stderr)
+                    _record_swallow(_e, "omni_domain")
                 return result
         except Exception as e:
-            return {"ok": False, "error": f"UI元素提取失败: {str(e)[:100]}"}
+            return refusal("action_failed", f"UI元素提取失败: {str(e)[:100]}", ())
 
     def grab_table(self, x=0, y=0, w=800, h=600):
         """提取屏幕区域表格数据 — read_text坐标文本按行聚合"""
@@ -487,4 +517,4 @@ class OmniDomainMixin:
                     return {"ok": True, "label": label, "value": candidates[0],
                             "all_candidates": candidates[:5]}
                 return {"ok": True, "label": label, "value": b["text"]}
-        return {"ok": False, "error": f"未找到标签: {label}"}
+        return refusal("label_not_found", f"未找到标签: {label}", ("label",))

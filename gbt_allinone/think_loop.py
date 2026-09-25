@@ -19,6 +19,7 @@ LLM 只有提案权，无执行权；推演在镜像维度，现实只收成品�
 import json
 import time
 
+from . import _paths
 from .store import audit
 
 
@@ -27,8 +28,14 @@ class ThinkLoopError(Exception):
 
 
 def _llm(prompt, max_tokens=600, timeout=60):
-    from .llm import bridge as LB
-    r = LB.chat(prompt, max_tokens=max_tokens, timeout=timeout)
+    # 🔴 2026-09-25 收口（主人令：「所有的运行读取 GBT小土豆V8 大模型」）：
+    #    原来**直连** `llm.bridge.chat` —— 而统一口自己写着「框架内所有模块必须经此口调用模型；
+    #    模块自己 import bridge **视为漂移**」（`llm/unified.py::status` 的原话）。
+    #    改走 `llm.unified.ask`：**返回与 `bridge.chat` 同形**（ok/reply/provider/model），
+    #    另多两样：`drift`（落到别家会**如实报**，不静默降级）与审计落点（只落元数据、不落正文）。
+    #    两态复验见 `tools/codex-scripts/gbt-model-align.py doors`：绕过 1 → 0。
+    from .llm import unified as LLM
+    r = LLM.ask(prompt, max_tokens=max_tokens, timeout=timeout, purpose="think_loop")
     if r.get("ok") and str(r.get("reply", "")).strip():
         return r["reply"].strip()
     return None
@@ -108,8 +115,7 @@ def _step_reflect(goal, steps_so_far):
         "evidence": f"goal={goal[:60]}",
     }
     try:
-        from pathlib import Path
-        p = Path(__file__).resolve().parent / "store" / "polish_insights.json"
+        p = _paths.STORE_DIR / "polish_insights.json"
         data = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"insights": []}
         nums = [i.get("no", 0) for i in data.get("insights", []) if isinstance(i.get("no"), int)]
         insight["no"] = (max(nums) + 1) if nums else 1

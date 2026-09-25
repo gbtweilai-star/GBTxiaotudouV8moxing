@@ -1,0 +1,1 @@
+{"draft_id": "DR-DD-01-视觉", "task_id": "DD-01", "specialty": "视觉", "member_slot": "M-001", "at": "2026-09-19T07:32:05", "status": "待派单", "honest_note": "本单只代表「该派一个人去」，**不代表已经有人**。要真的补上，必须由 root spawn 一名成员并回填 backed_by。", "how_to_fulfil": "① root 开一个成员 → ② 拿到成员 id → `dd_squadron --assign M-001 <成员id>`"}

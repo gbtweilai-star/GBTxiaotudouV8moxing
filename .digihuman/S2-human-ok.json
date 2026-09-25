@@ -1,0 +1,13 @@
+{
+ "confirmed_by": "AI目视复核(GBT小土豆V8) · 待Owner复看",
+ "at": "2026-09-22 22:03:19",
+ "artifact": "holo_pet\\assets\\digital-human\\raw\\phase2a-tpose\\T-pose参考-规范化.png",
+ "five": [
+  "双臂水平",
+  "双腿直立",
+  "正面全身",
+  "无遮挡物",
+  "白底"
+ ],
+ "note": "人工复核：打开规范化图逐条看过（源码 run-pipeline.ps1:73 要求）"
+}

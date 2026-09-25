@@ -1,0 +1,23 @@
+{
+  "name": "gbt-potato-master-v9",
+  "version": "1.8.1",
+  "private": true,
+  "description": "GBT小土豆V8 · 总面板：把工作区的可视化面板接进 DSH（只走公开扩展位，不改 DSH 源码）。包名即 specifier —— 改代码要换它才能不重启换代，见 README。",
+  "type": "module",
+  "main": "lib/host.js",
+  "exports": {
+    ".": "./lib/host.js",
+    "./host": "./lib/host.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ],
+      "platform": "web"
+    }
+  }
+}

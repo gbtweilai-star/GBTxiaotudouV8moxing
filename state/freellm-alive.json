@@ -1,0 +1,41 @@
+{
+ "探测时间": "2026-09-24T04:25:26",
+ "逐个": {
+  "auto": {
+   "活": true,
+   "状态": 200,
+   "status": "completed",
+   "落到": "meta/muse-glimmer-30b",
+   "耗时s": 1.9
+  },
+  "fusion": {
+   "活": true,
+   "状态": 200,
+   "status": "completed",
+   "落到": "fusion",
+   "耗时s": 27.9
+  },
+  "meta/muse-glimmer-30b": {
+   "活": true,
+   "状态": 200,
+   "status": "completed",
+   "落到": "meta/muse-glimmer-30b",
+   "耗时s": 1.1
+  },
+  "nvidia/nemotron-3-ultra-550b-a55b": {
+   "活": true,
+   "状态": 200,
+   "status": "completed",
+   "落到": "nvidia/nemotron-3-ultra-550b-a55b",
+   "耗时s": 0.8
+  }
+ },
+ "活着的": [
+  "auto",
+  "fusion",
+  "meta/muse-glimmer-30b",
+  "nvidia/nemotron-3-ultra-550b-a55b"
+ ],
+ "死了的": [],
+ "_口径": "每个模型只发一次 max_output_tokens=16 的极小请求；死活以网关回包为准，不看 /v1/models 名单（名单里有 ≠ 能用）。"
+}

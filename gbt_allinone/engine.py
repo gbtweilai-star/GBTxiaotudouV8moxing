@@ -228,7 +228,8 @@ def _ev(node, results):
 
 def _invoke(kind, params, timeout=None):
     """调用能力；timeout 秒超时则如实返回超时错误（不拖垮整个工作流）。"""
-    from .api import run_task
+    # 内部引擎走 core：对外契约层只服务外部调用方，内部保持既有形状与异常语义。
+    from .api import _run_task_core as run_task
     if not timeout:
         return run_task(kind, params)
     box = {}
@@ -537,9 +538,45 @@ def get_run(run_id: str) -> dict:
     return json.loads(f.read_text(encoding="utf-8"))
 
 
-def list_runs(name=None, limit=20) -> dict:
+def list_workflows() -> dict:
+    """列出工作流**定义**（只读）。
+
+    R-H99b 由来：想给万能插做可视化时发现**没有正规数据出口**——`wf_status` 只回运行记录，
+    `engine` 侧只有 define/run/resume，没人能"列出有哪些工作流、各自什么形状"。
+    没有这一步，任何可视化都只能去偷读 `store/workflows.json`（绕过能力层，口径就散了）。
+    这里只读 `_load()`（本模块自己的账本），不执行、不写盘。
+    """
+    data = _load()
+    out = []
+    for name, wf in data.items():
+        nodes = list(wf.get("nodes") or [])
+        out.append({
+            "name": name,
+            "node_count": len(nodes),
+            "nodes": [{
+                "id": n.get("id"),
+                "kind": n.get("kind"),
+                "depends_on": list(n.get("depends_on") or []),
+                "has_fallback": bool(n.get("fallback")),
+                "routes": len(n.get("routes") or []) if isinstance(n.get("routes"), list) else 0,
+                "cache": bool(n.get("cache")),
+            } for n in nodes],
+        })
+    out.sort(key=lambda r: r["name"])
+    return {"workflows": out, "count": len(out)}
+
+
+def list_runs(name=None, limit=20, include_workflows: bool = False) -> dict:
+    """最近运行记录；`include_workflows=True` 时**顺带**带回工作流定义（可视化的正规出口）。
+
+    默认输出形状与改动前逐字段一致（`{"runs": [...]}`），新字段只在显式要的时候出现 ——
+    不让"看一眼记录"的既有调用方被悄悄改口径。
+    """
     if not _RUNS_DIR.exists():
-        return {"runs": []}
+        out = {"runs": []}
+        if include_workflows:
+            out.update(list_workflows())
+        return out
     files = sorted(_RUNS_DIR.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
     runs = []
     for f in files:
@@ -552,4 +589,7 @@ def list_runs(name=None, limit=20) -> dict:
         runs.append(rec)
         if len(runs) >= limit:
             break
-    return {"runs": runs}
+    out = {"runs": runs}
+    if include_workflows:
+        out.update(list_workflows())
+    return out

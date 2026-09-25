@@ -1,0 +1,17 @@
+{
+ "job_id": "demo-005",
+ "engine": "assemble",
+ "project": ".scratch/remotion-smoke",
+ "out": "out.mp4",
+ "stages": [
+  [
+   "04",
+   "frame-cache"
+  ],
+  [
+   "07",
+   "assemble"
+  ]
+ ],
+ "备注": "装配专单：帧已在云(04)，本单只跑 07 编码装配。**故意不复用 demo-003** —— 那单的产物是真 3 秒成片，装配会把它的产物键覆盖成 0.1 秒片段，等于毁掉一个已验产物。"
+}

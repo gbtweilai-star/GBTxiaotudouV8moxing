@@ -8,19 +8,64 @@ import platform
 import time
 from pathlib import Path
 
-from .caps_registry import BENIGN_CAPS, DISABLED_CAPS, all_caps
+# 🔴 2026-09-25 事故对策：**不再硬 import `caps_registry` 的表**。
+#    它在 05:14–05:45 之间被另一个作者并发重写，多次删掉 `UNIMPLEMENTED_CAPS`/`DISABLED_CAPS`
+#    ⇒ 硬 import 直接 ImportError ⇒ **整个能力 API 起不来**，连 `framework_gate` 也一起躺下
+#    （它 import 包 ⇒ 撞同一处）⇒ **连护照都开不了**。取表改走容错的 `caps_tables`；
+#    "表必须齐"由哨兵闸 `caps-registry-guard check` 响亮报（判据在那里，不在这里）。
+from .caps_tables import BENIGN_CAPS, DISABLED_CAPS, UNIMPLEMENTED_CAPS, all_caps
 from .store import audit, query_log
 from .soul import stamp_result, STAMP
 
-# 安全开关：危险/破解能力默认禁用，且不提供绕过入口。
+
+def _near_cap_names(name, limit=4):
+    """给**打偏的能力位名**找最近邻（只读；只给候选，绝不替人改路由）。
+
+    🔴 为什么加这一条（2026-09-23 磨三层流畅度时自己撞的）：
+    我把大脑执行层的读口 `wf_status` 记成了 `wf_list`，拿到的只有一句
+    `unknown capability` —— **死路**：输出里看不出这个域到底有哪些名字，
+    只能去翻注册表源码。三层（万能插 / 五维合一 / 面板 / CLI）**全过这道门**，
+    所以修在这里是**一处修、四层受益**，而不是四个入口各补一次。
+
+    为什么用 difflib 而不是自己写编辑距离：那已经是标准解，自造一份只会多一处会过期的实现。
+    候选面 = **全部注册名 + 只登记未实现的名字** —— 后者也要能指出来，
+    否则人会把「名字打错」和「名字对但没实现」这两种**完全不同的死法**混成一种。
+    """
+    import difflib
+    pool = list(BENIGN_CAPS.keys()) + list(UNIMPLEMENTED_CAPS.keys())
+    if not pool:
+        return []
+    close = difflib.get_close_matches(str(name), pool, n=limit, cutoff=0.6)
+    if close:
+        return close
+    # 编辑距离兜不住"同族但字面差得远"（如 `caps` 之于 `caps_called_audit`）
+    # ⇒ 再补一层**同前缀**候选，让人至少看得到同族有哪些，不至于连方向都没有。
+    pre = str(name).split("_")[0]
+    if not pre:
+        return []
+    fam = sorted(p for p in pool if p.startswith(pre + "_"))
+    return fam[:limit]
+
+# 历史开关：2026-09-23 Owner 令把禁止全部解开后，这里**不再拦任何名字**。
+# 保号原因：外部/旧脚本仍会读它（读到 False 以为"危险能力被关着"是**过度解读**——
+# 真正把关的是 policy.py 的作用域门 + 落点门，不是这个常量）。
 DANGEROUS_ENABLED = False
 
 
 def list_capabilities(filter_dangerous=True):
-    """返回能力清单。filter_dangerous=True 时剔除被禁用的危险能力。"""
+    """返回能力清单。
+
+    filter_dangerous=True（默认）只留**真能调**的能力（`status == "enabled"`）：
+      · 解禁前，被拒名单的 11 条状态是 `"disabled"` —— 要剔掉；
+      · 解禁后它们状态是 `"unimplemented"`（只有名字、没有实现）—— **同样要剔掉**。
+        否则面板/CLI 会把 11 个空名字当"良性能力"播出去，那是**假绿**：
+        报得出名字、点下去只会得到 `unknown capability`。
+    filter_dangerous=False 才把登记未实现的 11 条一并列出（口径 = 全登记面；**条数现算，别写死**
+    —— 2026-09-23 接 `code_patch` 时这里写死的"158"当场过期）。
+    """
     items = all_caps()
     if filter_dangerous:
-        items = [i for i in items if i.get("status") != "disabled"]
+        items = [i for i in items if i.get("status") == "enabled"]
     return items
 
 
@@ -97,6 +142,13 @@ def _run_benign(kind, payload, policy_decision=None):
     if kind == "audit_query":
         ev = (payload or {}).get("event")
         return {"total": len(query_log()), "sample": query_log(event=ev, limit=10)}
+    # 本地数据工具（第 54–55 轮接入）：**只读**，结果从返回里给 ⇒ 作用域天然为空。
+    # 口径见 `tools/datakit.py` 的模块 docstring：不给落盘版（会写盘却没有 policy 分支＝绕门）。
+    if kind == "datakit":
+        from .tools import datakit as _dk
+        kw = dict(payload or {})
+        op = str(kw.pop("op", "tools"))
+        return _dk.run(op, **kw)
     # 外部业务能力（量化项目桥）：模块挂载即用，未挂载如实报缺口
     if kind in ("quant_strategy", "quant_backtest", "platform_profile",
                 "quant_params"):
@@ -145,8 +197,40 @@ def _run_benign(kind, payload, policy_decision=None):
     # 万能插执行引擎（V8：替代子代理的并行编排层）
     if kind == "wf_define":
         from . import engine
-        return engine.define_workflow((payload or {}).get("name", ""),
-                                      (payload or {}).get("nodes", []))
+        p = payload or {}
+        # 🔴 2026-09-23 磨（三层操作流畅度）：支持 `{"file": "state/xxx.json"}`。
+        # 为什么非做不可：一条 5 节点的工作流写成 JSON 有 300+ 字符，塞进命令行要同时打赢
+        # PowerShell / cmd / bash 三层引号规则 —— 实测我自己第一次传都得先 `Get-Content -Raw`
+        # 才敢传。**要人先学会转义才肯用的入口，等于没有入口。**
+        # 口径收紧：只认**仓内 `state/` 下的相对路径**，绝对路径与 `..` 一律拒 ——
+        # 免得这个便利口悄悄变成"任意文件读取"。
+        _src = p.get("file")
+        if _src and not p.get("nodes"):
+            import json as _json
+            _base = (Path(__file__).resolve().parents[1] / "state").resolve()
+            _rel = str(_src).replace("\\", "/").lstrip("/")
+            if _rel.startswith("state/"):
+                _rel = _rel[len("state/"):]
+            _cand = (_base / _rel).resolve()
+            try:
+                _cand.relative_to(_base)
+            except ValueError:
+                return {"status": "error", "kind": kind, "error_class": "user_error",
+                        "message": "wf_define 的 file 只允许仓内 state/ 下的相对路径（不许绝对路径或 ..）"}
+            if not _cand.is_file():
+                return {"status": "error", "kind": kind, "error_class": "user_error",
+                        "message": "工作流定义文件不存在: state/%s" % _rel}
+            try:
+                _d = _json.loads(_cand.read_text(encoding="utf-8"))
+            except Exception as e:                               # noqa: BLE001
+                return {"status": "error", "kind": kind, "error_class": "user_error",
+                        "message": "工作流定义文件不是合法 JSON: %s" % type(e).__name__}
+            p = {**_d, **{k: v for k, v in p.items() if k != "file"}}
+            _out = engine.define_workflow(p.get("name", ""), p.get("nodes", []))
+            if isinstance(_out, dict):
+                _out["_source_file"] = "state/%s" % _rel     # 可审计：这条定义是从哪个文件读的
+            return _out
+        return engine.define_workflow(p.get("name", ""), p.get("nodes", []))
     if kind == "wf_run":
         from . import engine
         return engine.run_workflow((payload or {}).get("name", ""),
@@ -192,7 +276,13 @@ def _run_benign(kind, payload, policy_decision=None):
     if kind == "sec_scan":
         from .security.security_brain import HackerBrain
         p = payload or {}
-        return HackerBrain().scan_vulnerabilities(p.get("severity", "medium"))
+        # R-H295：透传 limit —— 原来固定截断 20 条且未排序，critical 永远取不到，
+        # 连带 sec_chain 拿到空料。现在先按严重度排序再截断，并允许调用方取回全量。
+        # 同时透传 include_non_production：默认只把生产层结论算进 total/critical，
+        # 非生产层（.scratch 备份/快照/镜像、archive、tests 夹具）跳过多少如实报。
+        return HackerBrain().scan_vulnerabilities(
+            p.get("severity", "medium"), limit=p.get("limit"),
+            include_non_production=bool(p.get("include_non_production", False)))
     if kind == "sec_chain":
         from .security.security_brain import HackerBrain
         p = payload or {}
@@ -369,10 +459,25 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import emotion_projection as _ep
         p = payload or {}
         return _ep.run(p.get("op", "model"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "proactive_report":
+        from .tools import proactive_report as _pr
+        p = payload or {}
+        return _pr.run(p.get("op", "model"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "observer_anchor":
+        from .tools import observer_anchor as _oa
+        p = payload or {}
+        return _oa.run(p.get("op", "axioms"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "persona_kernel":
+        from .tools import persona_kernel as _pk
+        p = payload or {}
+        # 空参落到只读 constitution（与其余能力口径一致）；evolve 才写盘。
+        return _pk.run(p.get("op", "constitution"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "brand_outro":
         from .tools import brand_outro as _bo
         p = payload or {}
-        return _bo.run(p.get("op", "render"), **{k: v for k, v in p.items() if k != "op"})
+        # R-H295：空参必须落到只读 status（与其余 139 个能力口径一致）。
+        # 原先这里默认 "render"，空参直接去干活 → 「作品名不能为空」→ 被误判成缺参数。
+        return _bo.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "shared_resources":
         from .tools import shared_resources as _sr
         p = payload or {}
@@ -389,7 +494,8 @@ def _run_benign(kind, payload, policy_decision=None):
     if kind in ("music_intel", "video_intel", "film_intel"):
         from .tools import research_intel as _ri
         p = payload or {}
-        return _ri.run(p.get("op", "group"), group=kind)   # 只读骨架：不联网、不抓数、不写盘
+        return _ri.run(p.get("op", "group"), group=kind,
+                       **{k: v for k, v in p.items() if k not in ("op", "group")})
     if kind == "music_publishing":
         from .tools import music_publishing as _mp
         p = payload or {}
@@ -429,6 +535,57 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import context_vault as _cv
         p = payload or {}
         return _cv.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "feishu_embed":
+        # 只读骨架：**不打开浏览器、不出网、不落盘、不发密钥**
+        from .tools import feishu_embed as _fe
+        p = payload or {}
+        return _fe.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "libtv_workflow":
+        # 只读骨架：**不建节点、不连线、不跑任务、不出网、不落盘**
+        from .tools import libtv_workflow as _lw
+        p = payload or {}
+        return _lw.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "gate_visibility":
+        # 只读骨架：**不改门、不动监视范围、不写 store**（只把三态算出来）
+        from .tools import gate_visibility as _gv
+        p = payload or {}
+        return _gv.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "h3_video_gen":
+        # 只读骨架：**不装技能、不出网、不落盘、不发密钥**（只登记契约与判据）
+        from .tools import h3_video_gen as _h3
+        p = payload or {}
+        return _h3.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "absorb_loop":
+        # 只读骨架：**不跑吞噬、不删文件、不写 store**（只算三阶段与四条闸）
+        from .tools import absorb_loop as _al
+        p = payload or {}
+        return _al.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "cloud_pc":
+        # 只读骨架：**不开通、不连、不释放**（只给形状与五个闸）
+        from .tools import cloud_pc as _cpc
+        p = payload or {}
+        return _cpc.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "auto_publish":
+        # 只读骨架：**不发、不提、不改价**（只给边界与六个闸）
+        from .tools import auto_publish as _ap
+        p = payload or {}
+        return _ap.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "awesome_tools_index":
+        # 只读骨架（**地图**）：**不装工具、不跑工具、不拼请求**
+        from .tools import awesome_tools_index as _ati
+        p = payload or {}
+        return _ati.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "stigmergy":
+        # 协作层·间接通道：**只有 DEPOSIT 会写（只追加）**，其余全是读数
+        from .tools import stigmergy as _stg
+        p = payload or {}
+        return _stg.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "ledger_note":
+        # 台账登记（R-H600）：RULES/PREVIEW 只读；**只有 APPEND 会写**，
+        # 且只往**固定那一份**台账的文件尾追加**一行**（目标由模块自己推，调用方传不了路径）
+        from .tools import ledger_note as _led
+        p = payload or {}
+        return _led.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "capability_net":
         from .tools import ai_capability_net as _net
         _b = _net.build_net()
@@ -437,6 +594,23 @@ def _run_benign(kind, payload, policy_decision=None):
                 "counts": {"total": len(_b["nodes"]), "local": len(_b["local"]),
                            "external": len(_b["external"])},
                 "honest_boundary": _b["honest_boundary"]}
+    if kind == "code_patch":
+        # **改代码的唯一过门入口**（2026-09-23 接）。
+        # 为什么放在能力位而不是让 agent 直接编辑：走这里 ⇒ 天然带上唯一门的
+        # 授权 / 审计 / 信封 / preflight；**改前改后哈希与回执**也一并落盘。
+        # 🔴 **不吞异常**：本能力的 `CodePatchError(ValueError)` 让它往上抛，
+        # 由下面统一的 `except (ValueError, …)` 收敛成 `status: error` + `error_class: user_error`。
+        # （第一版在这里 catch 成错误 dict ⇒ 外层被判成 `status: ok`：读数自相矛盾。）
+        from .tools import code_patch as _cp
+        return _cp.run(payload or {})
+    if kind == "git_read":
+        # 版本库**只读面**：零作用域（policy 里不挂任何 scope），永远 shell=False。
+        from .tools import git_repo as _gr
+        return _gr.run_read(payload or {})
+    if kind == "git_write":
+        # 版本库**写面**：policy 里**永远**挂 filesystem_write（不按 op 判）。
+        from .tools import git_repo as _gr2
+        return _gr2.run_write(payload or {})
     if kind == "root_fix":
         from . import root_fix
         p = payload or {}
@@ -650,6 +824,53 @@ def _run_benign(kind, payload, policy_decision=None):
     if kind == "devour_pulse":
         from .devour import devour_pulse as _pulse
         return _pulse()
+    if kind == "agency_tentacles":
+        from .tools import agency_tentacles as _at
+        p = payload or {}
+        return _at.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "media_pipeline":
+        from .tools import media_pipeline as _mp
+        p = payload or {}
+        return _mp.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "edit_pipeline":
+        from .tools import edit_core as _ec
+        p = payload or {}
+        return _ec.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "audio_extract":
+        # 从视频里取声音（本机 ffmpeg，零出网）。写面由模块自己收窄 ——
+        # 理由见 `tools/audio_extract.py` 模块头：policy 对未登记 kind 零作用域，而 policy.py 只有主人能改。
+        from .tools import audio_extract as _ae
+        p = payload or {}
+        return _ae.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "audio_mix":
+        # 混音 + 母带（三方向音乐维度的 04-mix / 05-master 两格）。同一套纪律。
+        from .tools import audio_mix as _am
+        p = payload or {}
+        return _am.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "media_publish":
+        # 三方向发布到赚钱平台：备好发布包 → **停在主人的授权门**（零出网、绝不假装已发布）
+        from .tools import media_publish as _mp
+        p = payload or {}
+        return _mp.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "media_run":
+        # 三方向自动化工作流执行器：一次调用跑完一条链（每步落真件 + 同批登记许可）
+        from .tools import media_run as _mr
+        p = payload or {}
+        return _mr.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "media_license":
+        # 素材许可账（三方向流程台「家规第 2 条」的**逐件**数据源）。
+        # 写面只落 projects/_shared/licenses/；media_flow 的门只读它（判定归门，登记归能力位）。
+        from .tools import media_license as _ml
+        p = payload or {}
+        return _ml.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "tentacle_pipeline":
+        from .tools import tentacle_pipeline as _tp
+        p = payload or {}
+        return _tp.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "long_run_supervisor":
+        from .tools import long_run_supervisor as _lrs
+        p = payload or {}
+        return _lrs.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
 
     # 触手契约层（V8：MCP——抓住契约协议=接入整个工具生态）
     if kind == "mcp_connect":
@@ -752,6 +973,11 @@ def _run_benign(kind, payload, policy_decision=None):
                 opt["thread_id"] = str(p["thread_id"])
             if p.get("timeout"):
                 opt["timeout"] = float(p["timeout"])
+            # 2026-09-22：生产路由默认把这轮输出收进自进化知识库
+            # （Owner：「记录大模型的技术输出来提升自己、进化自己」）。
+            # 默认开在**路由层**而不是 run_once 的默认值上 —— 这样单元测试直接调
+            # run_once 时不会往真 store 里写东西，两边都不脏。
+            opt["record_kb"] = bool(p.get("record_kb", True))
             return _CB.run_once(message, **opt)
         thread_id = str(p.get("thread_id") or "").strip()
         if kind == "codex_thread_new":
@@ -840,25 +1066,39 @@ def _run_benign(kind, payload, policy_decision=None):
     if kind == "voice":
         from . import voice_cap
         p = payload or {}
+        # 🔴 2026-09-23 第 59 轮修：这里原先是**白名单派发**，只转发 text/voice/rate/out/audio
+        #    ⇒ `op=listen` 的 seconds/culture/min_confidence/timeout **从来传不进去**
+        #    （永远用默认 6 秒），而调用方看不出被丢了参数 —— 静默失效。
+        #    实测抓法：传 `"wav": "<路径>"` 走门，读数里 `wasapi-record` 那条腿**照样跑**
+        #    ⇒ 说明载荷没到。补全 listen 的全部参数（不改变任何作用域判定）。
         return voice_cap.run(p.get("op", "tts"),
                              text=p.get("text"), voice=p.get("voice"),
                              rate=p.get("rate", 0), out=p.get("out"),
-                             audio=p.get("audio"))
+                             audio=p.get("audio"),
+                             seconds=p.get("seconds", 6.0),
+                             culture=p.get("culture", "zh-CN"),
+                             min_confidence=p.get("min_confidence", 0.0),
+                             timeout=p.get("timeout"),
+                             wav=p.get("wav"))
     if kind == "voice_orchestra":
         from . import voice_orchestra as _vo
         p = payload or {}
-        return _vo.run(p.get("op", "list"), domain=p.get("domain"),
+        # R-H295：空参落到只读 status（先报本机可跑性），与其余能力口径一致。
+        return _vo.run(p.get("op", "status"), domain=p.get("domain"),
                        keyword=p.get("keyword"), scene=p.get("scene"))
     if kind == "browser":
         from . import browser_cap
         p = payload or {}
+        # 原生浏览器（op=native/deep/controller/cdp）由 browser_cap 这一层门面转 native_browser，
+        # 分发细节见 browser_cap.native()；作用域判定仍完全在 security/policy.py。
         return browser_cap.run(p.get("op", "open"),
                                url=p.get("url"), query=p.get("query"),
                                engine=p.get("engine", "bing"),
                                timeout=p.get("timeout", 20),
                                max_chars=p.get("max_chars", 20000),
                                allow_private=_policy_allow_private(policy_decision),
-                               **{k: v for k, v in p.items() if k in ("act", "selector", "value", "out", "headless")})
+                               **{k: v for k, v in p.items()
+                                  if k in ("act", "action", "cmd", "selector", "value", "out", "headless")})
     if kind == "bluetooth":
         from . import bluetooth_cap
         p = payload or {}
@@ -875,14 +1115,20 @@ def _run_benign(kind, payload, policy_decision=None):
                               intent=p.get("intent", ""),
                               address=p.get("address"),
                               scan_timeout=p.get("scan_timeout", 6.0))
-    if kind == "tripo":
-        from . import tripo
-        p = payload or {}
-        fn = getattr(tripo, p.get("op", "status"), None)
-        if fn is None:
-            return {"status": "error", "message": f"未知 op: {p.get('op')}"}
-        kwargs = {k: v for k, v in p.items() if k not in ("op", "_probe")}
-        return fn(**kwargs)
+    # 🔴 2026-09-25 **假绿修复**：这里原来**没有兜底 return** —— 函数走到末尾就**隐式返回 None**，
+    #    而 `run_task` 在 L1543 无条件把它包成 `{"status": "ok", "kind": kind, "result": None}`。
+    #    实测后果：登记在 `BENIGN_CAPS` 却**没有分派分支**的位（`claude_code` / `codebuddy` /
+    #    `ul_tars_desktop`）真调返回 **`status: ok` + 内层 `result: None`** ⇒
+    #    **报成功，但什么都没干**（比"没这个能力"更坏：调用方分不清"干了没输出"和"根本没干"）。
+    #    ⇒ 兜底必须**如实说**：「登记了、门没接」。这条与 `caps_registry` 无关（那个文件正被
+    #    另一个作者并发改写），所以不冲突。
+    return {"status": "not_wired", "kind": kind, "ok": False,
+            "error_class": "not_wired",
+            "message": ("能力位「%s」**已登记，但没有分派分支** —— "
+                        "`_run_benign` 里找不到 `if kind == \"%s\"`。" % (kind, kind)),
+            "读法": "**不是「实现坏了」，也不是「被门拒」**，是「**名字有了、门没接**」",
+            "怎么修": "在 `gbt_allinone/api.py::_run_benign` 里给它接一个分支；"
+                   "或把它从 `BENIGN_CAPS` 移进 `UNIMPLEMENTED_CAPS`（只有名字、没有实现）"}
 
 
 # 用法错误基类导入（源头分类用——这些异常类全部继承 Exception，语义=调用方问题）
@@ -966,10 +1212,118 @@ def run_task(kind, payload=None, stamp=True, safe=False, probe=False):
                    "error_class": "runtime_fault"}
     else:
         raw = _run_task_core(kind, payload, stamp=stamp, probe=probe)
-    return _normalize_envelope(kind, raw)
+    return _verify_result(kind, payload, _normalize_envelope(kind, raw), probe=probe)
+
+
+# ═══════════ 机检门：让**她自己**执行时也自检（Owner 2026-09-22「乙」）═══════════
+# Owner：「把这套门接到 run_task 上，让她自己执行时也走五维 + 机检 ——
+#         这才是'框架打磨成高难度任务都可轻松完成'的正题，而不是只锁住我一个人」
+#
+# 设计要点（为什么这样接不会自噬）：
+#   · 门只看**结果**，**不重跑路径** ⇒ 不会有 sync_exec.run → run_task → sync_exec.run 的递归。
+#   · 载荷里没有 `_verify` 时，行为与改动前**逐字节等价**（零影响）。
+#   · 载荷里带 `_verify` 时，声明被满足才算成功：不满足 ⇒ `ok` 置 False 并列出哪一条没过。
+#     这与 step_close 那套同源：**判据是机器算的，不是谁嘴上说的**。
+#
+# 声明写法（都可机检）：
+#     "_verify": {"ok": True}                      # 信封 ok 必须为真
+#     "_verify": {"equals": {"status": "ok"}}      # result 里的字段必须等于
+#     "_verify": {"has_keys": ["out", "bytes"]}    # result 里必须有这些键
+#     "_verify": {"min": {"frames_got": 1}}        # result 里的数值必须 >=
+#     "_verify": {"not_empty": ["path"]}           # result 里的字段非空
+def _verify_result(kind, payload, env, *, probe=False):
+    """按 `_verify` 声明机检结果。没有声明 ⇒ 原样返回（零影响）。"""
+    decl = None
+    try:
+        if isinstance(payload, dict):
+            decl = payload.get("_verify")
+    except Exception:                                               # noqa: BLE001
+        decl = None
+    if not isinstance(decl, dict) or not decl:
+        return env
+
+    res = env.get("result") if isinstance(env, dict) else None
+    resd = res if isinstance(res, dict) else {}
+
+    def _get(key):
+        """**两层信封都要找**（2026-09-22 实测教训）。
+
+        本框架是双层：`env["result"]` 其实是 `{kind, result, status}`，
+        真正的数据在 `env["result"]["result"]` 里。我第一版只看浅层，
+        于是 `has_keys: ["platform"]` 明明该满足却被判失败 —— **尺子量错了层**。
+        ⇒ 先看浅层，找不到再下钻一层。
+        """
+        if key in resd:
+            return resd[key], True
+        inner = resd.get("result")
+        if isinstance(inner, dict) and key in inner:
+            return inner[key], True
+        return None, False
+
+    failed = []
+
+    if "ok" in decl and bool(env.get("ok")) != bool(decl["ok"]):
+        failed.append(f"ok: 期望 {bool(decl['ok'])} 实得 {bool(env.get('ok'))}")
+    for k, v in (decl.get("equals") or {}).items():
+        got, found = _get(k)
+        if not found:
+            got = env.get(k)
+        if got != v:
+            failed.append(f"equals[{k}]: 期望 {v!r} 实得 {got!r}")
+    for k in (decl.get("has_keys") or []):
+        if not _get(k)[1]:
+            failed.append(f"has_keys: result 里缺 {k!r}（浅层与内层都找过了）")
+    for k, v in (decl.get("min") or {}).items():
+        got, found = _get(k)
+        try:
+            if not found or float(got) < float(v):
+                failed.append(f"min[{k}]: 期望 >= {v} 实得 {got!r}")
+        except Exception:                                           # noqa: BLE001
+            failed.append(f"min[{k}]: 实得 {got!r} 不是可比较的数值")
+    for k in (decl.get("not_empty") or []):
+        got, found = _get(k)
+        if not found:
+            got = env.get(k)
+        if got in (None, "", [], {}):
+            failed.append(f"not_empty[{k}]: 实得空")
+
+    if isinstance(env, dict):
+        env["verified"] = not failed
+        env["verify_declared"] = True
+        if failed:
+            env["verify_failed"] = failed[:6]
+            env["ok"] = False           # 声明没被满足 ⇒ 这次调用**不算成功**
+    if not probe:
+        try:
+            audit("verify_pass" if not failed else "verify_fail",
+                  {"kind": kind, "failed": failed[:4], "checked": len(decl)})
+        except Exception:                                           # noqa: BLE001
+            pass
+    return env
 
 
 def _run_task_core(kind, payload=None, stamp=True, probe=False):
+    """**唯一那道门**（2026-09-23 加默认同步）。
+
+    这一层只做一件事：进门先 `auto_envelope()` —— 没在信封里就自己开一个，
+    已经在里头就原样不动。为什么收在这里而不是给三层各写一遍：
+
+      · 五维合一（`five-dim.py cap`）本来就有自己的信封，这里是 `outer`，**不覆盖**；
+      · 万能插（`omni.py run`）走 `five-dim.py cap` 子进程，同上；
+      · **大脑执行层**（`engine.py` 是 `from .api import _run_task_core as run_task` 直连内层，
+        `brain_execute` / `brain_unify` / `think_loop` 也都在进程内往下调）**原先没有自己的默认** ——
+        面板 `panel_server.capability()`、`python -m gbt_allinone`、任何直调都算"信封外"。
+      收在门口 ⇒ 三条主道 + 面板 + CLI + 复合能力**一处生效**，不靠谁记得先 open。
+
+    归属如实分格：`auto` = 门口替你开的默认同步；`outer` = 外层早就开着（主动信封）。
+    两者**不是一回事**，混成一格就会把"我把默认打开了"冒充成"纪律执行得好"。
+    """
+    from .tools.sync_exec import auto_envelope
+    with auto_envelope():
+        return _run_task_core_body(kind, payload, stamp=stamp, probe=probe)
+
+
+def _run_task_core_body(kind, payload=None, stamp=True, probe=False):
     """统一入口：按 kind 调用能力。危险/未知能力一律安全拒绝。
 
     stamp=True（默认）时，成功结果附带 GBT 钢印，声明独立私人框架出处。
@@ -983,22 +1337,66 @@ def _run_task_core(kind, payload=None, stamp=True, probe=False):
     _probe = bool(probe) or bool(payload.get("_probe"))
 
     def _audit(event, meta=None):
-        """探针调用不写账；非探针调用与改动前逐字节等价。"""
-        if not _probe:
-            audit(event, meta)
+        """探针调用不写账；非探针调用与改动前逐字节等价。
+
+        ── 2026-09-22 加一笔：**信封归属**（Owner：「五维合一必须给我钉死」）──
+        只**记录**"这次调用有没有走在五维合一的信封里"，**不改任何行为**：
+        不挡路、不降级、不改返回值。为什么要记：
+          `sync_exec.audit_sync()` 量的"无脑操作率"原先只能靠文本配对
+          （数 sync_ear…sync_mouth 之间夹了什么），一旦有嵌套或异常就配不准。
+          这里由入口**亲笔**记一笔，尺子就从"猜"变成"读"。
+        读不到标记（比如 api 被单独 import）时按 False 记，并**不报错** ——
+        记录本身绝不能把执行弄崩。
+        """
+        if _probe:
+            return
+        m = dict(meta or {})
+        try:
+            # 2026-09-23 加 `synced_via`：信封归属**要说清是靠什么进的** ——
+            # "ctx"=同进程真信封；"env"=继承来的标记（跨进程传播，可伪造，只当传播机制）；
+            # None=确实在信封外。不分这一格，"靠继承标记"就会冒充"真在信封里"。
+            from .tools.sync_exec import envelope_source, envelope_entry
+            _src = envelope_source()
+            m["synced"] = _src is not None
+            if _src:
+                m["synced_via"] = _src
+            # 2026-09-23 补：**不在信封里也要记"为什么"**。
+            # 病根（本轮实测）：`--no-envelope` 的负对照调用在账本上与"没人开信封"**长得一模一样**
+            #   ⇒ 审计视角没法区分"显式负对照"与"真漏了"，只能一律报 PENDING（假警报）。
+            # 记法：只要 `envelope_entry()` 有值就写出来（`off`=显式不进 / `auto`/`outer`=在里头）。
+            _ent = envelope_entry()
+            if _ent:
+                m["synced_entry"] = _ent
+        except Exception:                                           # noqa: BLE001
+            m["synced"] = False
+            m["synced_probe_error"] = True
+        audit(event, m)
 
     _audit("call", {"kind": kind, "payload_keys": [k for k in payload if k != "_probe"],
                     "coding_discipline": bool(payload.get("_coding_discipline")),
                     **({"probe": True} if _probe else {})})
 
-    # 危险/破解能力：禁用，不提供可执行路径
-    if kind in DISABLED_CAPS:
-        _audit("denied", {"kind": kind, "reason": DISABLED_CAPS[kind]})
-        return {"status": "denied", "kind": kind,
-                "message": "capability disabled by safety policy",
-                "reason": DISABLED_CAPS[kind]}
-
+    # 2026-09-23 Owner 令：**禁止已全部解开**。
+    # 原处是 `if kind in DISABLED_CAPS: return {"status":"denied", ...}`。
+    # 解禁前实测：那 11 条**没有实现**（不在 BENIGN_CAPS、api.py 零引用、全仓无实现文件）。
+    # ⇒ 旧分支挡的是空气；旧消息还**误导诊断**（让人以为"是策略挡住所以扫不出问题"，
+    #    而真相是"根本没做"）。现在让它们走到下面的 unknown_capability 分支，
+    #    得到**如实**的"未实现"，而不是"被安全策略禁用"。
+    # 名字不丢：`caps_registry.UNIMPLEMENTED_CAPS` 仍登记着它们。
     if kind not in BENIGN_CAPS:
+        # 🔴 2026-09-23 磨（三层流畅度）：原来只回一句 `unknown capability` —— **死路**。
+        # 现在返回值里带上最近邻候选。纪律不变：**只给建议，不替人改路由** ——
+        # 自动改路 = 猜着替人干活，比报错更危险。名字打偏了就应该停下来问人。
+        _suggest = _near_cap_names(kind)
+        # 🔴 2026-09-23 **为什么账本这一段逐字节不动**（这条是拿一次红灯换来的）：
+        # 第一版我把建议也写进了 `_audit(... reason=..., did_you_mean=[...])`，
+        # 结果 `test_api_probe.py::test_default_sequence_matches_pre_change_golden` 立刻判红 ——
+        # 那条金标比的是**整份 meta 逐字节**（`_canonical` = 全字段 json.dumps），
+        # 它守的是「默认行为相对改前不许漂」。那是**绊线，不是绊脚石**。
+        # 我本可以像前两次那样"重冻金标"，但那是**第三次**，而且只为一个措辞 ——
+        # 重冻次数一多，绊线就废了。更干净的切法：**账本只记稳定、可解析的事实**
+        # （`reason_code: "unknown_capability"` 已经足够机器消费），
+        # 而"人读的那句话"属于**表现层**，放返回值里。两边各归其位，绊线一根不动。
         _audit("user_error", {
             "kind": kind,
             "reason": "unknown capability",
@@ -1006,8 +1404,16 @@ def _run_task_core(kind, payload=None, stamp=True, probe=False):
             "error_class": "user_error",
             **({"probe": True} if _probe else {}),
         })
-        return {"status": "error", "kind": kind, "message": "unknown capability",
-                "error_class": "user_error"}
+        _msg = "unknown capability（没有这个能力位名）"
+        if _suggest:
+            _msg += "。你是不是要：%s" % " / ".join(_suggest)
+        _r = {"status": "error", "kind": kind, "message": _msg,
+              "error_class": "user_error"}
+        if _suggest:
+            _r["did_you_mean"] = _suggest
+            _r["how_to_list"] = ("看全部真名：python tools/codex-scripts/omni.py list --domain <域>"
+                                 "（域清单：omni.py list）")
+        return _r
 
     from .security import policy as _policy
     decision = _policy.authorize(kind, payload)
@@ -1168,8 +1574,14 @@ def _run_task_core(kind, payload=None, stamp=True, probe=False):
             lease.finish("user_error", {"error": str(e)[:160]})
         _audit("user_error", {"kind": kind, "reason": str(e)[:160],
                               **({"probe": True} if _probe else {})})
+        # 2026-09-23 加 `reason_code` 透传：能力自己带的机读错误码（`e.code`）一起交出去。
+        # 为什么：光有一句中文 message，"没找到"和"找到多处"读起来是同一类错，
+        # 调用方只能靠猜。带码之后 `code_patch` / `git_*` 这类能力的失败**可机读**。
+        # 通用改动（任何 raise 出带 `.code` 的 ValueError 的能力都受益），不是特例。
+        _rc = getattr(e, "code", None)
         return {"status": "error", "kind": kind, "message": str(e),
-                "error_class": "user_error"}
+                "error_class": "user_error",
+                **({"reason_code": _rc} if isinstance(_rc, str) and _rc else {})}
     except Exception as e:  # noqa: BLE001
         if lease is not None:
             lease.finish("error", {"error": str(e)[:160]})

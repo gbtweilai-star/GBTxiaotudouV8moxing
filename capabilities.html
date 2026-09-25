@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>能力球 · GBT小土豆V8</title>
+<!-- 内联 data: icon：不依赖路径（DSH 宿主 / file:// 都成立）。
+     ⚠ 这条要留在**模板**里：先前它是手补在生成产物上的，一旦重新生成就被冲掉，
+     浏览器转而去请求 /favicon.ico 拿 404，控制台就挂一条红字（实测踩过）。 -->
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAWklEQVR42mNgGAWjYBSMglEwCkbBKBgFo2AUjIJRMApGwSgYBaNgFIyCUTAKRsEoGAWjYBSMglEwCkbBKBgFo2AUjIJRMApGwSgYBaNgFIyCUTAKRsEoAAB2gAH/8kQ0dQAAAABJRU5ErkJggg==">
+<style>
+:root{
+  --ochre:#C9884A;--earth:#7A5230;--flesh:#F0D9B5;
+  --deep:#0B0805;--deep2:#150E08;
+  --sig:#00E5FF;                 /* 信号青：只在激活/选中/扫描时 */
+  --ok:#D9964F;--warn:#E8B04A;--stub:#6B5540;--fault:#A2453A;--ark:#8E6BD8;
+  --line:rgba(201,136,74,.22);--text:#F4E9D8;--dim:#BCA88F;
+  --faint:rgba(188,168,143,.45);
+  --r:12px;--rc:7px;--rp:999px;
+  --mono:"SF Mono","JetBrains Mono",Consolas,ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;color:var(--text);overflow:hidden;
+  background:radial-gradient(1100px 760px at 50% 44%,rgba(201,136,74,.13),transparent 64%),
+    radial-gradient(700px 520px at 84% 8%,rgba(0,229,255,.055),transparent 62%),
+    linear-gradient(180deg,var(--deep),var(--deep2));
+  font:14px/1.6 "Microsoft YaHei UI","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+
+/* ── 3D 舞台 ── */
+#stage{position:fixed;inset:0;cursor:grab}
+#stage.drag{cursor:grabbing}
+#gl{display:block;width:100%;height:100%}
+
+/* ── HUD：科技感靠这几层叠出来 ── */
+.hud{position:fixed;pointer-events:none;z-index:5;
+  font:500 10.5px/1.7 var(--mono);letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
+.hud.tl{top:20px;left:24px}
+.hud.tr{top:20px;right:24px;text-align:right}
+.hud.bl{bottom:20px;left:24px}
+.hud.br{bottom:20px;right:24px;text-align:right}
+.hud b{color:var(--text);font-weight:600}
+.hud .cy{color:var(--sig)}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.heart{width:9px;height:9px;border-radius:var(--rp);background:var(--ochre);
+  box-shadow:0 0 14px var(--ochre);animation:beat 3.4s ease-in-out infinite}
+@keyframes beat{0%,100%{opacity:1;transform:scale(1)}45%{opacity:.32;transform:scale(.7)}}
+.title{font:700 15px/1.2 "Microsoft YaHei UI",system-ui,sans-serif;letter-spacing:.02em;color:var(--text)}
+h1.big{margin:2px 0 4px;font:700 clamp(20px,2.3vw,30px)/1.1 "Microsoft YaHei UI",system-ui,sans-serif;
+  letter-spacing:-.02em;
+  background:linear-gradient(180deg,#FFF7EA,var(--flesh) 58%,rgba(188,168,143,.5));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hint{color:var(--dim);font-size:11.5px;max-width:52ch;letter-spacing:0;text-transform:none;
+  font-family:"Microsoft YaHei UI",system-ui,sans-serif;line-height:1.55}
+.hint b{color:var(--ochre)}
+.hint i{color:var(--sig);font-style:normal}
+.legend{display:flex;flex-direction:column;gap:5px;align-items:flex-end}
+.legend s{text-decoration:none;display:flex;align-items:center;gap:7px;justify-content:flex-end}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:var(--rp)}
+.li-free{background:var(--ok);box-shadow:0 0 9px var(--ok)}
+.li-guarded{background:transparent;border:1.6px solid var(--warn)}
+.li-stub{background:transparent;border:1.6px dashed var(--stub)}
+.li-disabled{background:var(--fault)}
+.li-unimplemented{background:var(--fault);opacity:.62}
+.li-external{background:transparent;border:1.6px solid var(--ark)}
+.kv{display:flex;gap:14px;justify-content:flex-end}
+.kv span{color:var(--faint)}
+.kv b{color:var(--text)}
+
+/* ── 配色切换器：颜色可切，是这一版对"颜色还是没变"的正面回答 ── */
+.pal{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:9px;
+  pointer-events:auto}
+.pal-lbl{font:500 10px/1 var(--mono);letter-spacing:.1em;color:var(--faint)}
+.pal-lbl b{color:var(--text);font-weight:600}
+.pi{width:22px;height:22px;padding:0;border-radius:var(--rp);cursor:pointer;
+  border:2px solid rgba(255,255,255,.16);background:transparent;transition:transform .15s ease}
+.pi:hover{transform:scale(1.16)}
+.pi.on{border-color:#fff;box-shadow:0 0 12px rgba(255,255,255,.45);transform:scale(1.1)}
+.pi-ochre{background:linear-gradient(135deg,#E0A45E,#8A5A2C)}
+.pi-cyan{background:linear-gradient(135deg,#7CF3FF,#1E7FA8)}
+.pi-violet{background:linear-gradient(135deg,#C79BF5,#5B2A96)}
+.pi-bio{background:linear-gradient(135deg,#8CFFD4,#1E9E6E)}
+/* 换了配色，界面底色也跟着走 —— 不然只是球变了、壳没变 */
+html[data-p="cyan"] body{background:
+  radial-gradient(1100px 760px at 50% 44%,rgba(63,182,216,.15),transparent 64%),
+  radial-gradient(700px 520px at 84% 8%,rgba(124,243,255,.06),transparent 62%),
+  linear-gradient(180deg,#04090E,#08141C)}
+html[data-p="violet"] body{background:
+  radial-gradient(1100px 760px at 50% 44%,rgba(162,107,232,.16),transparent 64%),
+  radial-gradient(700px 520px at 84% 8%,rgba(229,155,255,.06),transparent 62%),
+  linear-gradient(180deg,#08050F,#150A24)}
+html[data-p="bio"] body{background:
+  radial-gradient(1100px 760px at 50% 44%,rgba(63,214,154,.14),transparent 64%),
+  radial-gradient(700px 520px at 84% 8%,rgba(140,255,212,.06),transparent 62%),
+  linear-gradient(180deg,#03090A,#06161A)}
+
+/* 悬浮读数：鼠标靠近哪个节点就报哪个 */
+#peek{position:fixed;z-index:6;pointer-events:none;padding:7px 11px;border:1px solid var(--line);
+  border-radius:var(--rc);background:rgba(11,8,5,.92);backdrop-filter:blur(6px);
+  font:600 11px/1.5 var(--mono);color:var(--text);display:none;white-space:nowrap}
+#peek em{font-style:normal;color:var(--dim);font-weight:400}
+#peek .st{color:var(--sig)}
+
+/* ── 单项页面：从 3D 里"拉出来"的一张卡 ── */
+#sheet{position:fixed;inset:0;z-index:20;display:none;
+  background:linear-gradient(180deg,rgba(11,8,5,.86),rgba(21,14,8,.94));
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  overflow:auto;padding:30px 26px 60px}
+#sheet.on{display:block;animation:rise .26s ease}
+@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.99)}to{opacity:1;transform:none}}
+.sheet-in{max-width:1040px;margin:0 auto}
+.crumb{font:500 10px/1 var(--mono);color:var(--faint);letter-spacing:.16em;text-transform:uppercase}
+h2.big{margin:9px 0 6px;font:700 clamp(26px,3.3vw,42px)/1.06 "Microsoft YaHei UI",system-ui,sans-serif;
+  letter-spacing:-.025em;
+  background:linear-gradient(180deg,#FFF7EA,var(--flesh) 58%,rgba(188,168,143,.5));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin:11px 0 20px}
+.b{border:1px solid currentColor;border-radius:var(--rp);padding:2px 11px;
+  font:600 10.5px/1.7 var(--mono);letter-spacing:.06em}
+.b-free{color:var(--ok)}.b-guarded{color:var(--warn)}.b-stub{color:var(--stub)}
+.b-disabled{color:var(--fault)}.b-external{color:var(--ark)}.b-dom{color:var(--sig)}.b-risk{color:var(--dim)}
+.b-unimplemented{color:var(--fault);opacity:.8}
+.lede{color:var(--dim);font-size:14.5px;max-width:74ch;margin:0 0 22px}
+.card{border:1px solid var(--line);border-radius:var(--r);background:rgba(21,14,8,.72);
+  padding:17px 19px;margin:0 0 15px;box-shadow:0 22px 50px -30px rgba(0,0,0,.9)}
+.card h3{margin:0 0 11px;font:650 11px/1 var(--mono);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--faint)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+td{padding:6px 0;border-bottom:1px solid rgba(201,136,74,.13);vertical-align:top}
+td:first-child{width:158px;color:var(--faint);font:11.5px/1.6 var(--mono)}
+code{font:12px/1.5 var(--mono);color:var(--sig);background:rgba(0,229,255,.07);
+  padding:1px 6px;border-radius:var(--rc)}
+label{display:block;margin:0 0 11px}
+label span{display:block;font:600 10.5px/1 var(--mono);color:var(--faint);
+  letter-spacing:.1em;margin-bottom:5px}
+input,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:var(--rc);
+  background:rgba(8,6,4,.8);color:var(--text);font:13px/1.5 var(--mono)}
+input:focus,textarea:focus{outline:none;border-color:var(--sig);
+  box-shadow:0 0 0 3px rgba(0,229,255,.1)}
+button{margin-top:5px;padding:10px 22px;border:1px solid var(--sig);border-radius:var(--rc);
+  background:rgba(0,229,255,.12);color:var(--sig);font:600 13px/1 inherit;cursor:pointer}
+button:hover{background:rgba(0,229,255,.2)}
+button[disabled]{opacity:.4;cursor:not-allowed;border-color:var(--line);
+  color:var(--faint);background:transparent}
+button.ghost{border-color:var(--line);color:var(--dim);background:transparent;margin-right:9px}
+button.ghost:hover{border-color:var(--ochre);color:var(--ochre)}
+pre{margin:0;padding:13px;border:1px solid var(--line);border-radius:var(--rc);
+  background:rgba(8,6,4,.85);color:var(--dim);font:12px/1.6 var(--mono);
+  overflow:auto;max-height:400px;white-space:pre-wrap;word-break:break-word}
+.empty{color:var(--faint);font-size:12.5px}
+.warnbox{border-color:rgba(162,69,58,.6);background:rgba(162,69,58,.1)}
+.sig{margin-top:34px;padding-top:13px;border-top:1px solid var(--line);
+  color:var(--faint);font:500 11px/1.8 var(--mono);letter-spacing:.06em}
+@media(max-width:760px){.hud.tr,.hud.br{display:none}}
+</style>
+</head>
+<body>
+
+<div id="stage"><canvas id="gl"></canvas></div>
+<div id="peek"></div>
+
+<div class="hud tl">
+  <div class="topbar"><span class="heart"></span><span class="title">GBT小土豆V8</span></div>
+  <h1 class="big">能力球</h1>
+  <div class="hint" id="hint"><b id="h-caps">…</b>铺在一个真球面上，按 <b id="h-doms">…</b>成片。
+    <b>拖拽转它</b>，鼠标停在节点上看读数，<i>点节点进它的独立页面</i>。
+    <span id="h-src" style="opacity:.75"></span></div>
+</div>
+
+<div class="hud tr">
+  <div class="legend">
+    <s><span>免卡 <b id="lg-free">…</b></span><i class="li-free"></i></s>
+    <s><span>要授权 <b id="lg-guarded">…</b></span><i class="li-guarded"></i></s>
+    <s><span><b>空心＝桩 <b id="lg-stub">…</b></b></span><i class="li-stub"></i></s>
+    <s><span>只登记 · 未实现 <b id="lg-disabled">…</b></span><i class="li-unimplemented"></i></s>
+    <s><span>Ark 云端 <b id="lg-external">…</b></span><i class="li-external"></i></s>
+  </div>
+</div>
+
+<div class="hud bl">
+  <div class="kv"><span>形态即状态</span><b>实心＝可动</b><span>·</span>
+    <b>琥珀环＝过门可用</b><span>·</span><b>空心虚线＝还没长出来</b><span>·</span>
+    <b>紫环＝Ark 云端（外部 CLI，本页不代调）</b></div>
+</div>
+
+<div class="hud br">
+  <div class="kv"><span>拖拽旋转</span><span>·</span><span>悬停读数</span><span>·</span>
+    <span class="cy">1/2/3/4 换配色</span><span>·</span><span class="cy">ESC 关闭</span></div>
+  <div class="kv" style="margin-top:6px">
+    <span id="feed">实时源 · 检测中…</span>
+  </div>
+  <div class="pal">
+    <span class="pal-lbl">配色 · <b id="pname">星紫 · 幻</b></span>
+    <button data-pk="ochre"  class="pi pi-ochre"  onclick="applyPalette('ochre')"  title="赭石 · 暖"></button>
+    <button data-pk="cyan"   class="pi pi-cyan"   onclick="applyPalette('cyan')"   title="深空青 · 冷"></button>
+    <button data-pk="violet" class="pi pi-violet" onclick="applyPalette('violet')" title="星紫 · 幻"></button>
+    <button data-pk="bio"    class="pi pi-bio"    onclick="applyPalette('bio')"    title="生物荧光 · 生机"></button>
+  </div>
+</div>
+
+<div id="sheet"><div class="sheet-in" id="sheet-in"></div></div>
+
+<script>
+'use strict';
+/* ── 现读优先：内嵌快照只当"外观字典"与离线兜底 ─────────────────────────────
+   🔴 2026-09-22：**这段必须留在模板里**（同上一条 favicon 的教训）——
+   先前"写死 183 项 / 31 域 / 图例五个数字"是在**生成产物**上手补的，一旦重新生成就被冲掉；
+   而生成时的数字（`len(allc)`、`stats[...]`）**生成完就冻结**，注册表一变面板就开始骗人。
+   现在模板产出的页面：**先按快照画**（不白屏）→ 拿 `/api/capabilities` 现读 → **以现读为准重建**；
+   提示语与图例数字全部现算；取不到现读就保持快照并写明「快照 · 取不到现读」。 */
+const CAPS_SNAPSHOT=[{"kind": "a1art_skill", "domain": "image_video", "domain_cn": "影像", "desc": "a1.art API 技能（只读骨架·门）：五原语 LOOKUP→UPLOAD→GENERATE→OPTIMIZE→POLL；密钥只走 DPAPI/密钥池、结果必须落盘、不调不支持组件、810012 如实报", "handler": "a1art_skill", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "absorb_loop", "domain": "brain", "domain_cn": "脑域", "desc": "吞天闭环（只读骨架）：蒸馏 DISTILL → 提炼 REFINE → 吸收 ABSORB + 回灌 FED_BACK；四条机械闸（stage_dirty 阶段间不许留垃圾 / loop_not_closed 三阶段必须齐且回灌 / junk_left_silently 垃圾要么清要么登记 / not_resumable 中断必须留续跑点）+ 五条红线（吞完清场/闭环可续/每阶段留痕 source_kind=absorb/不吞未取证来源/垃圾不许静默留）", "handler": "absorb_loop", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "account_registry", "domain": "data", "domain_cn": "数据", "desc": "AI 账号登记表只读校验：一人一号（不共用账号/不共用凭证/只记路径/不许无主账号）", "handler": "account_registry", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "agency_tentacles", "domain": "tentacle", "domain_cn": "触手", "desc": "职业触手中枢：吸收 Agency Agents 职业资料；每根触手独立统一大模型会话与隔离镜像房间；支持并发汇总", "handler": "agency_tentacles", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "alerts", "domain": "system", "domain_cn": "系统", "desc": "框架声带：近期异常摘要+根源线索（按能力聚合）", "handler": "alerts", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "audit_query", "domain": "data", "domain_cn": "数据", "desc": "只读查询统一数据后台日志", "handler": "audit_query", "scopes": ["audit_read"], "risk": "medium", "params": [], "state": "guarded"}, {"kind": "auth_gate_status", "domain": "system", "domain_cn": "系统", "desc": "人工授权门状态：各作用域可用授权数（只读；授权只能人发放）", "handler": "auth_gate_status", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "auto_publish", "domain": "social", "domain_cn": "社交", "desc": "社交推广 / 发布作品 / 收益平台·**全自动执行**（只读骨架·门）：五原语 PLAN/COMPOSE/PUBLISH/TRACK/SETTLE；核心口径 = **全自动 = 除「发布/提现/改价」之外全自动**（那几下不可逆+涉钱 ⇒ 必须过门：逐条确认或有 TTL 的令牌，默认 0 张）；六条红线（发布过门/密钥DPAPI/每次留痕 source_kind=publish/一人一号/收益只汇总不代提/不刷量）；平台名单**主人未给 ⇒ 一个平台名都不编**；type=external", "handler": "auto_publish", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "auto_switch", "domain": "mind", "domain_cn": "心智", "desc": "自动化切换引擎（只读骨架·内调）：意图分析(L1解析+L2交叉验证+L3置信度)→任务分级→模型切换→原生执行→验证审计；接线点只有 Intent JSON；五条红线（低置信先问主人/不许直接执行/每次切换记 model_used/不可逆二次确认/身份不许改写）", "handler": "auto_switch", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "autopilot", "domain": "llm", "domain_cn": "内核", "desc": "自主编排环：目标→LLM拆解→本地校验→执行→自检→修复循环（轮数上限防失控）", "handler": "autopilot", "scopes": ["external_llm"], "risk": "high", "params": ["params", "hint"], "state": "guarded"}, {"kind": "awesome_tools_index", "domain": "tools", "domain_cn": "工具", "desc": "Awesome Tools 蒸馏索引（只读骨架·地图）：四原语 INDEX/LOOKUP/MAP/VERIFY；三条带牙判据（**索引只读** index_not_readonly / **映射可追** map_without_source / **未核实不标绿** unverified_green）+ 五条红线（只读/映射带出处/未核实不标绿/只引用不复制/不绕官方入口）；主人明确配对的六个重点工具（CC Switch→auto_switch · MoneyPrinterTurbo/Huobao Drama/LocalMiniDrama→video_pipeline · CowAgent→im_multiplex · OpenClaw Monitor→god_view）**全部 unverified（盘上 0 命中）**；仓库内容未取证 ⇒ 索引池为空且**不编**；type=external", "handler": "awesome_tools_index", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "bluetooth", "domain": "device", "domain_cn": "设备", "desc": "蓝牙设备控制：扫描附近 BLE 设备、连接读写 GATT 特征（操控空调/灯/音箱等家居设备）、经典蓝牙状态报告", "handler": "bluetooth", "scopes": ["device_control"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "brain_execute", "domain": "llm", "domain_cn": "内核", "desc": "大脑执行层·执行维：单能力直调或多能力并行（万能插线程池）", "handler": "brain_execute", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "brain_health", "domain": "llm", "domain_cn": "内核", "desc": "大脑执行层·健康维：五维自检评分（路由/执行/触手/视觉/审计）", "handler": "brain_health", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "brain_route", "domain": "llm", "domain_cn": "内核", "desc": "大脑执行层·路由维：意图→能力动态路由（语义匹配+备选建议）", "handler": "brain_route", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "brain_unify", "domain": "llm", "domain_cn": "内核", "desc": "大脑执行层·五维合一：一次跑完 route → execute → verify → health（**是顺序串链，数据顺着走**：route 的 best.kind 喂给 execute，chain 字典逐步累积）。🔴 2026-09-22 更正：这里原先写着「**星形**，unify 直接分别调四维，**不是**串链，那三条边在源码里查不到」—— **那句是错的**，已实测推翻：能力位 `brain_unify` 由 `api.py:313` 直接调 `brain_exec.unify()`，而该函数 **405/419/423/428 行**就是那三条边（route→execute→verify→health），`tests/test_framework.py:1209 test_brain_unify_chain` 也一直在测它。⇒ **别再把「自报是话术」用在这个位上**。唯一真实的那半条限定：`execute()` 只在**没给 kind** 时才会自己再调一次 route（`brain_exec.py:259`），而 unify 一定把 kind 传下去 ⇒ 不会双路由。⚠️ 口径补一句（2026-09-22 第二次独立复核后加，免得再来一轮争论）：**叫它「星形」也不算错** —— 从**调用图**看确实是 unify 这一个中枢分别调四维；错的只有原先那句「**那三条边在源码里查不到**」（它们在 405/419/423/428 行）。**串链说的是执行顺序与数据流，星形说的是调用图，两个层次，别互相否掉。**", "handler": "brain_unify", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "brain_vault", "domain": "mind", "domain_cn": "心智", "desc": "脑库接入：Obsidian 记忆库的读（recall=记忆总纲+收集箱）/ 写（remember=追加一条）/ 体检（status）—— 追加式、**没有任何删除路径**，写进去的想忘都忘不了", "handler": "brain_vault", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "brain_verify", "domain": "llm", "domain_cn": "内核", "desc": "大脑执行层·验证维：触手肉眼验证现实（视觉指纹+UIA穿透读回）", "handler": "brain_verify", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "brand_outro", "domain": "creation", "domain_cn": "创作", "desc": "品牌片尾只读渲染：署名/自述/致谢三层 + 四条红线（署名不造假·致谢不套话·承诺可追溯·观众不当流量）", "handler": "brand_outro", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "browser", "domain": "automation", "domain_cn": "自动化", "desc": "浏览器自动化入口（良性子集）。op=open/search/fetch/automate 走 browser_cap 三级后端；op=native（别名 deep/controller/cdp）走原生浏览器窗口 native_browser.py（Chrome DevTools Protocol，自带最小 RFC6455 客户端、零第三方依赖），动作放 action：status/list_tabs/get_title/get_url/get_text/dom_query/get_cookies/intercept_events/intercept_status 为只读免卡，launch/ensure/create_tab/close_tab/activate_tab/navigate/reload/back/forward/click_element/type_text/execute_script/inject_script/set_cookies/privacy_mode/intercept_requests/intercept_stop/pin_window 需 browser_control，screenshot 另需 filesystem_write", "handler": "browser", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "bt_control", "domain": "device", "domain_cn": "设备", "desc": "AI 智能蓝牙操控：自然语言意图→扫描识别设备→协议匹配→组装指令→写入执行→验证（协议库只收公开文档协议，未知如实报告）", "handler": "bt_control", "scopes": ["device_control"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "capability_net", "domain": "tools", "domain_cn": "工具", "desc": "穿透网七栏只读读数：indexed/entry_known/reachable/verified×2/has_test/penetrate_ready", "handler": "capability_net", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "caps_called_audit", "domain": "system", "domain_cn": "系统", "desc": "能力位调用点审计（只读）：动态算 called_by，列出零调用点孤儿清单（同名模块自称不算接线）", "handler": "caps_called_audit", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "cloud_pc", "domain": "infra", "domain_cn": "基建", "desc": "云电脑独立窗口（只读骨架·门）：面板加一个**独立窗口**给她（数字人）**安装**云电脑（卡片 + 触手，**不是 iframe**）；五原语 PROVISION/CONNECT/STATUS/SNAPSHOT/RELEASE（逐个标花钱与不可逆）；五条红线（密钥DPAPI/先算账再花钱/每次留痕 source_kind=cloud_pc/不绕官方入口/身份内核不变）；type=external", "handler": "cloud_pc", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "code_art", "domain": "creation", "domain_cn": "创作", "desc": "代码艺术内核（只读骨架）：INDEX/SEED/CANVAS/LAYER/EXPORT 五原语；无种子不许导出", "handler": "code_art", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "code_patch", "domain": "tools", "domain_cn": "工具", "desc": "**改代码的唯一过门入口**（2026-09-23 接）：此前 agent 直接 edit/write 落盘 ⇒ **不过门、没审计、没信封、没改前改后凭据**。三原语 dry_run（**默认，只算不写**）/ apply（落盘，挂 filesystem_write）/ rollback（按回执退回）。九道机械闸：**仓内**（路径解析后必须在仓内）· **find 恰好一次**（0 次 not_found；>1 次 ambiguous —— **绝不替你挑一个**）· **空改动拒写** · `expect_sha256` 对不上拒（防拿陈旧内容改）· **二进制拒改**（前 8KB 有 NUL）· >4MB 拒改 · **逐字节替换**（换行/BOM 一个字节不动 —— 文本层替换会把整个文件行尾改掉）· **原子写**（tmp+os.replace）· **回执可回滚**（记 find/replace/改前改后哈希；回滚前先核 after_sha256，对不上就拒）。type=internal", "handler": "code_patch", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "codex_chat", "domain": "llm", "domain_cn": "内核", "desc": "官方 Codex 同步对话：跑完一个回合并返回文本（需 process_execute + external_llm 授权）", "handler": "codex_chat", "scopes": ["process_execute", "external_llm"], "risk": "high", "params": ["params", "hint"], "state": "guarded"}, {"kind": "codex_interrupt", "domain": "llm", "domain_cn": "内核", "desc": "官方 Codex 写操作：中断当前回合（需 process_execute 授权）", "handler": "codex_interrupt", "scopes": ["process_execute"], "risk": "high", "params": ["params", "hint"], "state": "guarded"}, {"kind": "codex_models", "domain": "llm", "domain_cn": "内核", "desc": "官方 Codex 只读：可用模型清单（需 external_llm 授权）", "handler": "codex_models", "scopes": ["external_llm"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "codex_status", "domain": "llm", "domain_cn": "内核", "desc": "官方 Codex 只读状态：进程/会话/并发上限(1)/空闲回收(600s)", "handler": "codex_status", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "codex_thread_new", "domain": "llm", "domain_cn": "内核", "desc": "官方 Codex 写操作：新建线程（需 process_execute 授权）", "handler": "codex_thread_new", "scopes": ["process_execute"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "codex_tools", "domain": "llm", "domain_cn": "内核", "desc": "官方 Codex 只读：可用动态工具清单（gbt_* **十个**）", "handler": "codex_tools", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "codex_turn_send", "domain": "llm", "domain_cn": "内核", "desc": "官方 Codex 写操作：发送回合并流式回传（需 process_execute 授权，并发上限 1）", "handler": "codex_turn_send", "scopes": ["process_execute", "external_llm"], "risk": "high", "params": ["params", "hint"], "state": "guarded"}, {"kind": "context_vault", "domain": "system", "domain_cn": "系统", "desc": "上下文归档库（只读骨架·内调）：**索引+检索层，不是第四处存储**（只引用不复制正文）；内存多大上下文就多长（按**可用**内存算预算，不足则降级如实报）；快速搜索=倒排求交→打分→按预算裁剪", "handler": "context_vault", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "count_words", "domain": "data", "domain_cn": "数据", "desc": "统计文本词数", "handler": "count_words", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "coverage_auditor", "domain": "system", "domain_cn": "系统", "desc": "触手覆盖审计（只读骨架）：八短板↔八触手组 + 覆盖率读数 + 死角登记 + 五条红线", "handler": "coverage_auditor", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "coze_mail", "domain": "comms", "domain_cn": "通信", "desc": "通信域：对主人自有的单一地址（@coze.email）收发与整理；白名单默认空（全拒）、confirm_token 绑定内容、正文不入档、独立通道 coze_mail", "handler": "coze_mail", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "create", "domain": "creation", "domain_cn": "创作", "desc": "创作出口：创作意图/产物登记 ＋ 仅限 outputs/ 的文本写入；文本出口待接线（如实报 pending、不发网络请求）、覆盖必带 confirm_token ＋ 写前备份 ＋ 双向 SHA、独立通道 create", "handler": "create", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "cross_scan", "domain": "system", "domain_cn": "系统", "desc": "扫描一下/扫一下/深度扫描/交叉扫描/穿透式扫描/全框架扫：深度穿透式交叉验证（注册↔路由↔导入↔断链↔运行时↔多扫描器互证，十维），扫描器互相咬、不各报各的", "handler": "cross_scan", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "deploy_queue", "domain": "pipeline", "domain_cn": "产出", "desc": "AI 接管部署队列：submit 入队 / tick 部署下一个（完一个自动下一个）/ status 全景", "handler": "deploy_queue", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "desktop_commander", "domain": "tentacle", "domain_cn": "触手", "desc": "桌面指挥官（Desktop Commander MCP）：终端+文件系统全能力触手；支持本地 stdio 与 remote 设备模式", "handler": "desktop_commander", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "devour_github", "domain": "devour", "domain_cn": "吞天", "desc": "吞天：吞噬 GitHub 仓库为知识胶囊（自我进化的核心——吸收外部能力）", "handler": "devour_github", "scopes": ["data_export", "filesystem_write"], "risk": "high", "params": ["params", "hint"], "state": "guarded"}, {"kind": "devour_pulse", "domain": "devour", "domain_cn": "吞天", "desc": "吞天：完整认知循环（吞噬→反思→消化→重组→进化）", "handler": "devour_pulse", "scopes": ["data_export", "filesystem_write", "external_llm"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "devour_reflect", "domain": "devour", "domain_cn": "吞天", "desc": "吞天：反思（回顾吞噬历史学习模式，发现弱能力与重组机会）", "handler": "devour_reflect", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "devour_scan", "domain": "devour", "domain_cn": "吞天", "desc": "吞天：能力缺口扫描（域覆盖对照+进化方向）", "handler": "devour_scan", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "director_mood", "domain": "mind", "domain_cn": "心智", "desc": "导演 AI 情绪内核（只读）：七情六欲 + 半衰期；情绪只改『怎么看』，不改『看到什么』", "handler": "director_mood", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "drama", "domain": "creation", "domain_cn": "创作", "desc": "剧本转分镜/拆分镜/分镜/短剧/故事板/剧本理解：剧本 → 结构化镜头表（景别·运镜·时长·情绪·角色位置·描述），字段齐全度与时长和逐条如实报；确定性路径离线只做切分，语义路径走她的模型通道，两条不互相冒充", "handler": "drama", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "dream_replay", "domain": "brain", "domain_cn": "脑域", "desc": "做梦技能只读重演：五原语闭环，不写盘、不执行（巩固默认不开）", "handler": "dream_replay", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "echo", "domain": "data", "domain_cn": "数据", "desc": "回显传入数据，用于联调", "handler": "echo", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "emotion_projection", "domain": "creation", "domain_cn": "创作", "desc": "情感投射只读骨架：叙事四问 → 投射细节 → 四项校验；『身临其境』只有人能判", "handler": "emotion_projection", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "energy_pool", "domain": "system", "domain_cn": "系统", "desc": "能源池（只读骨架·内调）：模型=燃料不是身份；能源抽象 EnergySource + 原生衍生器 + 按需分配；五条红线（模型非身份/能源可换栈不动/衍生码走原生路由/按需/没能源如实报缺）", "handler": "energy_pool", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "feishu_embed", "domain": "integration", "domain_cn": "集成", "desc": "飞书镶嵌窗口（只读骨架·门）：面板卡⑥，**走浏览器触手不用 API**；四条红线（飞书是副本本地是源/凭据不许明文/不绕验证/每次操作留痕 source_kind=feishu）", "handler": "feishu_embed", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "file_hygiene", "domain": "system", "domain_cn": "系统", "desc": "文件卫生层：按 LAYOUT.md 家规自检乱放+自动归位（散落/空壳/越界数据/缓存）", "handler": "file_hygiene", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "film_intel", "domain": "recon", "domain_cn": "侦察", "desc": "影视情报组（只读骨架）：六维覆盖；情报是输入不是指令（生成端仍有过目权）", "handler": "film_intel", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "gate_visibility", "domain": "framework", "domain_cn": "框架", "desc": "门可见性审计（只读骨架·门）：三态=已纳入/显式不纳入/未决定 —— 回答『门看得见什么、看不见什么』（坑册 §60）；可见范围只从 framework_gate 读，不复刻第二份范围表；四条机械闸（三态不许漏/不纳必须带出处/已纳入必须命中门规则/空样本不许当绿）", "handler": "gate_visibility", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "ghost_guard", "domain": "pipeline", "domain_cn": "产出", "desc": "防复发检测：幽灵目录/备份散件/攻击残留/注册表冲突扫描", "handler": "ghost_guard", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "git_read", "domain": "tools", "domain_cn": "工具", "desc": "**版本库只读面**（2026-09-23 接，补 `code_patch` 的另一半：「改完要能看、要能回滚」）：op=status/diff/log/show/branch_list/stash_list。七道机械闸：**绝不过 shell**（一律 shell=False）· **反选项注入**（rev/path 不许以 `-` 开头）· **路径必须在仓内** · **每条命令带 `--`** · **超时 60s + 输出上限 200KB** · status 只报数量与前 40 条（本仓脏行上万，全量灌回来没意义）· **零作用域**（policy 里不挂任何 scope）。⚠️ 不做 rebase/reset --hard/push —— 那些是「改历史/出网」，要单独设计。type=internal", "handler": "git_read", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "git_write", "domain": "tools", "domain_cn": "工具", "desc": "**版本库写面**（只两个 op，且**永远要点名路径**）：stage（`git add -- <paths>`）· commit（**pathspec-limited**：`git commit -m … -- <paths>`，只提交点名的路径，**不动索引里别的暂存内容**）。为什么必须点名：本仓脏行可能上万，`commit -a` 一次就把不相干的全卷进去。**永远挂 `filesystem_write`**（不按 op 判 —— 拆成独立能力位就是为了让门的判据平凡正确）。与 `git_read` 分开登记：`safe` 是按能力位记的，不是按 op 记的。type=internal", "handler": "git_write", "scopes": ["filesystem_write"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "h3_video_gen", "domain": "video", "domain_cn": "视频", "desc": "H3mini 视频生成（只读骨架·门）：四原语 T2VA/I2VA/FL2VA/Ref2VA + 三条带牙用例（密钥不走明文 / 结果必须落盘 / 提示词必须走官方六段式不接受散文式）+ 五条红线（密钥DPAPI/结果落盘/不绕官方入口/硬件门槛先验/每次留痕）；**引用官方仓库技能，不复制 SKILL.md**；type=external", "handler": "h3_video_gen", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "health", "domain": "system", "domain_cn": "系统", "desc": "系统健康信息（平台/Python/时间）", "handler": "health", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "hook_registry", "domain": "system", "domain_cn": "系统", "desc": "钩子矩阵只读注册表：50 钩子/六类/三层 + 三条红线（L3 不许挂触手内·失败隔离·链可中断）", "handler": "hook_registry", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "inventory", "domain": "system", "domain_cn": "系统", "desc": "全息盘点：一次输出你的视图+框架的视图（归属四分类：框架/环境/数据/异物）——对齐两个世界", "handler": "inventory", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "ledger_note", "domain": "system", "domain_cn": "系统", "desc": "**台账登记**（R-H600 立）：三原语 RULES（读七道硬闸）/ PREVIEW（只读预演，不落盘）/ APPEND（**唯一写原语**）。七道机械闸全做成闸、不是口号：**目标固定**（只能写 gbt_allinone/docs/待落刀登记.md，**调用方传不了路径**）· **只追加**（目标末尾必须是换行，否则拒写，不修不补）· **单物理行**（行内不许换行 ⇒ 一刀一个物理行）· **禁半角双引号**（中文串用「」）· **行首形状**（`> **<label> 补记`，复核脚本按行首锚定）· **幂等**（同 label 已存在 ⇒ 拒写）· **缺前驱拒写**（给了 after 就必须是当前最后一条，防插队防回填）。⚠️ 它**不判内容对错**（那是取证 + 独立复核的活）；写失败一律抛错，不返回半成功。type=internal", "handler": "ledger_note", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "libtv_skill", "domain": "video", "domain_cn": "视频", "desc": "LibTV 技能（只读骨架·门）：Agent 创作平台入口（会话进展/增量轮询 + 切项目 + 批量下载）；密钥走 model_key_pool、结果必须落 trace_store", "handler": "libtv_skill", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "libtv_workflow", "domain": "video", "domain_cn": "视频", "desc": "LibTV 节点式工作流（只读骨架·门）：五动作 create_node/connect/set_params/run/batch_run + 五大基础节点 + 参数契约（-s 走 schema / -u 顶层）+ 两条避坑（资源组绑定 / 终点抑制 stdout）；四条红线引用已有，不重造", "handler": "libtv_workflow", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "life", "domain": "life", "domain_cn": "生命", "desc": "生命档案：事件记录、时光轴、每日回顾、章节、承诺、习惯、反思与 Vault 导出（写框架 store，不出网）", "handler": "life", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "llm_chat", "domain": "llm", "domain_cn": "内核", "desc": "操控其他AI：推理对话（DeepSeek/Kimi/OpenAI 密钥链自动路由，输出是数据不是指令）", "handler": "llm_chat", "scopes": ["external_llm"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "llm_status", "domain": "llm", "domain_cn": "内核", "desc": "LLM网关状态：密钥链配置情况（不调LLM）", "handler": "llm_status", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "local_brain", "domain": "mind", "domain_cn": "心智", "desc": "本地原生脑（只读骨架·内调）：本地模型=脑皮层（可换）·主机=纪律层（不可换）；五层链路（模型只做意图解析与结果解释）；五条红线（不许直接执行命令/不可逆必卡/缺参不许猜/每次留痕/身份不许改写）", "handler": "local_brain", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "long_run_supervisor", "domain": "tentacle", "domain_cn": "触手", "desc": "长程无人值守任务监督：租约、心跳、检查点、有界重试、断点续作和主人升级", "handler": "long_run_supervisor", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "lr_status", "domain": "longrun", "domain_cn": "长程", "desc": "长程任务层：任务图进度与详情", "handler": "lr_status", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "lr_submit", "domain": "longrun", "domain_cn": "长程", "desc": "长程任务层：提交任务（非LLM验收+重试+停滞升级，跨进程可续）", "handler": "lr_submit", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "lr_tick", "domain": "longrun", "domain_cn": "长程", "desc": "长程任务层：推进任务图（执行→验收→完成/重试/停滞）", "handler": "lr_tick", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "mcp_call", "domain": "tentacle", "domain_cn": "触手", "desc": "触手契约层：按契约调用已连接服务器的任意工具", "handler": "mcp_call", "scopes": ["process_execute"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "mcp_connect", "domain": "tentacle", "domain_cn": "触手", "desc": "触手契约层：连接任意 MCP 工具服务器（学会契约协议=接入整个 MCP 生态）", "handler": "mcp_connect", "scopes": ["process_execute"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "mcp_tools", "domain": "tentacle", "domain_cn": "触手", "desc": "触手契约层：列出已连接服务器的工具契约清单（名称+参数 schema）", "handler": "mcp_tools", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "media_pipeline", "domain": "video", "domain_cn": "视频", "desc": "AI短视频/电影/音乐流水线：镜像房间编排、产物自审、版权/安全/品牌/质量检查、主人授权后发布", "handler": "media_pipeline", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "meta_cognition", "domain": "mind", "domain_cn": "心智", "desc": "元认知循环（只读骨架）：自省→查内部→查外部→问主人→沉淀 + 五条红线（自省不是自责/不许硬猜/先查后问/问完沉淀/大脑也自省）", "handler": "meta_cognition", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "mind", "domain": "mind", "domain_cn": "心智", "desc": "心智引擎：开工前预演 pre_work、评估、内部状态、经验召回与反思（写框架 store，不出网）", "handler": "mind", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "mirror_ascend", "domain": "pipeline", "domain_cn": "产出", "desc": "镜像空间：跨维晋升（验证全绿才放行；一次性全量写入现实+护照+时间线；现实零修改）", "handler": "mirror_ascend", "scopes": ["deploy_publish"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "mirror_parity", "domain": "pipeline", "domain_cn": "产出", "desc": "镜像空间：沙盒与生产环境契约一致性（平台/Python/依赖/工具/密钥存在性/路径）", "handler": "mirror_parity", "scopes": ["filesystem_write"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "mirror_plan", "domain": "pipeline", "domain_cn": "产出", "desc": "镜像空间：生产前排练计划（假设/架构/步骤/服务与环境契约/验收/回滚）", "handler": "mirror_plan", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "mirror_rehearse", "domain": "pipeline", "domain_cn": "产出", "desc": "镜像空间：生产前排练（静态推演→环境一致性→沙盒闭环→指纹绑定报告）", "handler": "mirror_rehearse", "scopes": ["process_execute", "filesystem_write"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "mirror_release", "domain": "pipeline", "domain_cn": "产出", "desc": "镜像空间：排练全绿后一次性全量晋升生产（树/计划指纹绑定，失败即阻断）", "handler": "mirror_release", "scopes": ["deploy_publish", "process_execute", "filesystem_write"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "mirror_rewind", "domain": "pipeline", "domain_cn": "产出", "desc": "镜像空间：时间线回滚（回到过去的时间线，同样一次性全量替换）", "handler": "mirror_rewind", "scopes": ["deploy_publish"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "mirror_scan", "domain": "pipeline", "domain_cn": "产出", "desc": "镜像空间：维度体检（完整性/署名/纪律/入口——跨维晋升前置）", "handler": "mirror_scan", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "mirror_shape", "domain": "pipeline", "domain_cn": "产出", "desc": "镜像空间：维度成形（假设/架构虚拟/反复打磨全在镜像维度，现实无感知）", "handler": "mirror_shape", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "mirror_simulate", "domain": "pipeline", "domain_cn": "产出", "desc": "镜像空间：静态推演（文件/依赖图/端口/入口/契约/闭环定义，不碰生产）", "handler": "mirror_simulate", "scopes": ["filesystem_write"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "mirror_status", "domain": "pipeline", "domain_cn": "产出", "desc": "镜像空间：维度状态（镜像/现实指纹、现实漂移检测、时间线史）", "handler": "mirror_status", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "model_key_pool", "domain": "llm", "domain_cn": "内核", "desc": "模型密钥池（只读骨架）：按 owner_ai_id 分池、触手只借不拥有、DPAPI 只存路径、超限只上报", "handler": "model_key_pool", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "music_intel", "domain": "recon", "domain_cn": "侦察", "desc": "音乐情报组（只读骨架）：合规红线/过审/流量/画像/竞品/**禁区清单** 六维覆盖", "handler": "music_intel", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "music_publishing", "domain": "creation", "domain_cn": "创作", "desc": "AI 音乐发布平台三层只读归位（生成端/Agent 原生端/分发端）；全部标『未核实』", "handler": "music_publishing", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "observer_anchor", "domain": "mind", "domain_cn": "心智", "desc": "观察者锚点律只读骨架：三公理 + 六短板补齐 + 五条红线（同一方不许既扫又报/审计器必须被审/递归封顶/终止点只能由人设/关键节点人在场）", "handler": "observer_anchor", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "one_key_deploy", "domain": "pipeline", "domain_cn": "产出", "desc": "一指定江山乾坤换位：抓取(GitHub/本地)→镜像→验证→晋升一条命令，一次性上线零修改", "handler": "one_key_deploy", "scopes": ["deploy_publish", "process_execute", "filesystem_write"], "risk": "high", "params": ["params", "hint"], "state": "guarded"}, {"kind": "orchestration_kernel", "domain": "system", "domain_cn": "系统", "desc": "编排内核（三源蒸馏）：状态/动作空间 + 角色/流程 + 可存储图/挂起恢复；只读能力真执行", "handler": "orchestration_kernel", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "osint_scan", "domain": "recon", "domain_cn": "侦察", "desc": "OSINT 扫描（DNS/WHOIS/子域名/端口/指纹/邮箱/IP归属/社交；拒绝内网目标）", "handler": "osint_scan", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "persona_kernel", "domain": "mind", "domain_cn": "心智", "desc": "性格内核 v4.0：外温表达十律 + 内刚四基石（止损/主动/洞察/静待）+ 十条机械红线；四大基石原文一字不差；evolve 是唯一写口（驱动心智演化）", "handler": "persona_kernel", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "pipeline_rollback", "domain": "pipeline", "domain_cn": "产出", "desc": "生产管线：回滚产物到历史版本（回滚也走审计留痕）", "handler": "pipeline_rollback", "scopes": ["deploy_publish"], "risk": "high", "params": ["params", "hint"], "state": "guarded"}, {"kind": "pipeline_status", "domain": "pipeline", "domain_cn": "产出", "desc": "生产管线：查发布记录（发布/阻断全留痕）", "handler": "pipeline_status", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "pipeline_submit", "domain": "pipeline", "domain_cn": "产出", "desc": "生产管线：镜像多维度空间→门禁审计→生产写入（唯一交付通道）", "handler": "pipeline_submit", "scopes": ["deploy_publish"], "risk": "high", "params": [], "state": "guarded"}, {"kind": "pipeline_versions", "domain": "pipeline", "domain_cn": "产出", "desc": "生产管线：产物版本历史与当前指纹（.versions/ 链）", "handler": "pipeline_versions", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "platform_profile", "domain": "project", "domain_cn": "项目", "desc": "读取量化项目结构（真实测绘；外部业务模块 quant_tech，未挂载则如实报缺口）", "handler": "platform_profile", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "proactive_report", "domain": "mind", "domain_cn": "心智", "desc": "主动汇报引擎只读判据层：四类汇报（新奇发现/主人需要/记忆命中/赚钱机会）+ 四维打分 + 不打扰门（静默时段/预算/去重/及格线）+ 短律成句；只判不说", "handler": "proactive_report", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "project_context", "domain": "project", "domain_cn": "项目", "desc": "项目上下文：**文档面**（blueprint 蓝图 / brief 简报 / search 只读检索 / status）＋ **代码结构四面**（2026-09-23 接，补上「专业级编程AI」缺的那半身）：`symbols` 符号（顶层 def/class，可按名问「在哪定义」）· `deps` 依赖（内部 import 边 + 外部三方名）· `calls` 调用图（**复用现成 `tools/call_graph.py`**：find/callers/callees/trace/dead_code，4.2s / 351 文件）· `tests` 测试面（模块被哪些测试**提到**过）· `structure` 三面速览（4.4s，**刻意不含调用图**）。全部只读。⚠️ 四处诚实边界随结果一起带出：符号只收**顶层**；依赖只看 **import 语句**；调用图带**未解析率**（本仓约 0.66，所以「没人调用」先天有缺口）；测试面是**提到过**的代理**不是行覆盖**。", "handler": "project_context", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "projection_card", "domain": "tools", "domain_cn": "工具", "desc": "空间投射只读卡片：5 原语全标未核实 + ARM ≠ LIVE 红线（只呈现不执行）", "handler": "projection_card", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "prompt_bridge", "domain": "llm", "domain_cn": "内核", "desc": "提示词转化挂件（只读/纯本地）：大白话 -> 四段结构化提示词；compile / passthrough / status", "handler": "prompt_bridge", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "quant", "domain": "finance", "domain_cn": "金融", "desc": "量化/回测入口（外部业务模块 quant_tech，未挂载则如实报缺口）", "handler": "quant", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "quant_backtest", "domain": "finance", "domain_cn": "金融", "desc": "读取真实回测 API，返回类/函数/默认参数（外部业务模块 quant_tech，未挂载则如实报缺口）", "handler": "quant_backtest", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "quant_params", "domain": "finance", "domain_cn": "金融", "desc": "读取真实量化引擎的数值型策略参数（动量/ATR/止损；外部业务模块 quant_tech）", "handler": "quant_params", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "quant_strategy", "domain": "finance", "domain_cn": "金融", "desc": "读取真实量化引擎，返回策略信号/仓位模型（外部业务模块 quant_tech，未挂载则如实报缺口）", "handler": "quant_strategy", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "record_grid", "domain": "data", "domain_cn": "数据", "desc": "行式记录网格：陌生文本结构画像/草案骨架/逐行解析/回写自证/词表校验（op=profile|draft|parse|emit|verify|vocab|presets）", "handler": "record_grid", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "render_evolution", "domain": "creation", "domain_cn": "创作", "desc": "渲染进化内核（只读骨架）：五原语 + 三闭环 + 六红线；帕累托前沿机器画、人点", "handler": "render_evolution", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "root_fix", "domain": "system", "domain_cn": "系统", "desc": "根治环：症状五问诊断/补丁债量化/根治铁律——她自己必须懂的根源追踪纪律", "handler": "root_fix", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "scene_anchor", "domain": "creation", "domain_cn": "创作", "desc": "场景锚定只读骨架：8 大类场景 + 灵魂四要素 + 钩子锚场景不锚情绪（作品是为场景做的）", "handler": "scene_anchor", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "sched_define", "domain": "engine", "domain_cn": "引擎", "desc": "定时触发器：定义调度（工作流 + 间隔），无人值守自动执行", "handler": "sched_define", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "sched_status", "domain": "engine", "domain_cn": "引擎", "desc": "定时触发器：查调度状态（上次执行/结果）", "handler": "sched_status", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "sched_tick", "domain": "engine", "domain_cn": "引擎", "desc": "定时触发器：扫描到期调度并执行（可由循环/计划任务驱动）", "handler": "sched_tick", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "sec_chain", "domain": "security", "domain_cn": "安全", "desc": "黑客大脑：利用链构建（从漏洞清单推演攻击路径+影响评估）", "handler": "sec_chain", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "sec_defenses", "domain": "security", "domain_cn": "安全", "desc": "黑客大脑：蓝队防御验证（检查防御措施是否真实生效）", "handler": "sec_defenses", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "sec_llm", "domain": "security", "domain_cn": "安全", "desc": "黑客大脑推理引擎（独立大模型+独立密钥）：abliteration.ai 无限制模型，专用通道不与其他能力混用", "handler": "sec_llm", "scopes": ["external_llm"], "risk": "high", "params": ["params", "hint"], "state": "guarded"}, {"kind": "sec_scan", "domain": "security", "domain_cn": "安全", "desc": "黑客大脑：漏洞扫描（OWASP Top 10 + CWE 模式库，扫描自有代码）", "handler": "sec_scan", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "sec_surface", "domain": "security", "domain_cn": "安全", "desc": "黑客大脑：攻击面测绘（用户输入/网络/文件操作/入口点向量分析+风险评分）", "handler": "sec_surface", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "selfscan", "domain": "system", "domain_cn": "系统", "desc": "体检一下/自检/查毛病/有没有问题/哪里有问题/框架健康：五维扫描（路由/模块/存储/审计/桩缺口），P0断连第一时间报警", "handler": "selfscan", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "shared_resources", "domain": "system", "domain_cn": "系统", "desc": "共享资源池（只读骨架）：虚拟号/邮箱按需租借——资源可共享、身份不共享、每次调用留痕", "handler": "shared_resources", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "signature_guard", "domain": "system", "domain_cn": "系统", "desc": "署名守卫：扫描全框架页面开发者署名完整性，缺失即报可按需自动补回（禁止删除）", "handler": "signature_guard", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "stigmergy", "domain": "collab", "domain_cn": "协作", "desc": "**协作层的间接通道**：Stigmergy（共识主动性 / 信息素场地）。四原语 DEPOSIT/READ/DECAY/FORAGE；只有 DEPOSIT 会写、且**只追加**（挥发是读数，账本可回放）。五条红线做成机械闸：**无源不许留** deposit_without_source · **种类白名单** deposit_kind_not_allowed · **只追加** pheromone_deleted_or_overwritten（静态核本模块源码）· **不留明文密钥** plaintext_key_in_pheromone · **只给读数**（FORAGE 只排序不执行）。与 collab_gateway **并排、不替代**：直连=会话/对等方/收件箱，间接=信息素场地；场地放在 store/collab/stigmergy/。type=internal", "handler": "stigmergy", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "svc_inspect", "domain": "pipeline", "domain_cn": "产出", "desc": "服务巡检：探活已登记服务端口并落审计（只看不动）", "handler": "svc_inspect", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "tactics_advise", "domain": "longrun", "domain_cn": "长程", "desc": "察言观色层：识别沟通信号→给出表达分寸（只调怎么说，不改事实）", "handler": "tactics_advise", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "tentacle", "domain": "tentacle", "domain_cn": "触手", "desc": "触手/眼睛/双手/手：默认调本体原生能力，给意图自动命中，不给方法名也行；桌面动作见 see/read_text/click/type/list_windows（66 项）", "handler": "tentacle", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "tentacle_cognition", "domain": "system", "domain_cn": "系统", "desc": "触手认知包（只读骨架）：任务上下文/角色边界/自检三问/不确定上报/操作留痕 + 五条零容忍红线", "handler": "tentacle_cognition", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "tentacle_manifest", "domain": "tentacle", "domain_cn": "触手", "desc": "触手能力总纲：66 项能力 + 三通道感官 + 六铁律（注入大脑上下文）", "handler": "tentacle_manifest", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "tentacle_pipeline", "domain": "tentacle", "domain_cn": "触手", "desc": "触手自动化流水线：四层七步、三公理、五红线；隔离执行、逐层汇报、dry-run 读数、终审只判不改、发布带回滚", "handler": "tentacle_pipeline", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "tentacle_status", "domain": "tentacle", "domain_cn": "触手", "desc": "触手自诊断：硬件层就绪度 + 依赖分层 + 邻域覆盖", "handler": "tentacle_status", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "think_loop", "domain": "llm", "domain_cn": "内核", "desc": "推演环：理解需求→镜像维度推演→调用工具执行→自我纠错→反向延伸→反思进取→整理结果（完整心智循环）", "handler": "think_loop", "scopes": ["external_llm"], "risk": "high", "params": ["params", "hint"], "state": "guarded"}, {"kind": "topic_watch", "domain": "recon", "domain_cn": "侦察", "desc": "话题追踪：追踪/盯着/有变化/告诉/话题/持续关注/每天给我/早报/动态/最新/行业/新闻/股价/行情/视频。追踪你关心的话题，梳理最新动态，有变化就告诉我。触发词表全量见 topic_watch.INTENT_MAP；命中后转邻域技能链，不新增进程、不复制技能实现。", "handler": "topic_watch", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "trace_store", "domain": "system", "domain_cn": "系统", "desc": "痕迹库只读读数：五张表（wave_samples/traces/trace_links/promotes/obsessions）条数", "handler": "trace_store", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "transfer", "domain": "engine", "domain_cn": "引擎", "desc": "数据传输算子（核心传输工具）：map/filter/merge/unique/sort/pluck/collect 等 14 个纯变换算子", "handler": "transfer", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "trend_watch", "domain": "recon", "domain_cn": "侦察", "desc": "爆火作品观察/热门爆款/热搜/点赞高/涨粉快/用户喜欢什么/什么受欢迎/偏好：每日观测爆火作品的细微点，落成用户偏好台账（作品·平台·热度·细微点·偏好条目），挂现成心跳、零新增进程；拿不到数据如实报缺口，绝不编偏好", "handler": "trend_watch", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "truth_scan", "domain": "system", "domain_cn": "系统", "desc": "真实性审计层：逐能力验证真执行，零假执行铁律（probe 模式含副作用探针）", "handler": "truth_scan", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "verification_watch", "domain": "recon", "domain_cn": "侦察", "desc": "人机验证情报台账（只读）：不主动绕做成机械闸；三部门各一张空台账", "handler": "verification_watch", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "video_intel", "domain": "recon", "domain_cn": "侦察", "desc": "短视频情报组（只读骨架）：六维覆盖；禁区清单优先于流量趋势", "handler": "video_intel", "scopes": [], "risk": "low", "params": [], "state": "stub"}, {"kind": "vision", "domain": "vision", "domain_cn": "视觉", "desc": "视觉/图像识别入口（良性子集，需外部依赖时留待接入）", "handler": "vision", "scopes": ["privacy_read"], "risk": "medium", "params": [], "state": "guarded"}, {"kind": "voice", "domain": "voice", "domain_cn": "语音", "desc": "语音合成/识别入口（良性子集）", "handler": "voice", "scopes": ["audio_output"], "risk": "medium", "params": [], "state": "guarded"}, {"kind": "voice_orchestra", "domain": "voice", "domain_cn": "语音", "desc": "语音技能中枢（多维度场景编排，只读）：技能原子检索 / 场景 Pipeline / 本机可跑性；今日挂 tools tab，升格条件见模块 docstring", "handler": "voice_orchestra", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "wave_probe", "domain": "system", "domain_cn": "系统", "desc": "痕迹触手只读量一次波动（默认只量不写；trigger_mode 与盲区一并回报）", "handler": "wave_probe", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "wf_cache_clear", "domain": "engine", "domain_cn": "引擎", "desc": "万能插：清空传输缓存（同输入复用的节点结果缓存）", "handler": "wf_cache_clear", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "wf_define", "domain": "engine", "domain_cn": "引擎", "desc": "万能插执行引擎：定义工作流（DAG，校验环/依赖/能力合法性）", "handler": "wf_define", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "wf_resume", "domain": "engine", "domain_cn": "引擎", "desc": "万能插执行引擎：从运行记录断点续跑（复用已完成节点，只重跑未完成的）", "handler": "wf_resume", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "wf_run", "domain": "engine", "domain_cn": "引擎", "desc": "万能插执行引擎：分层并行执行工作流，节点结果如实落盘", "handler": "wf_run", "scopes": [], "risk": "low", "params": ["params", "hint"], "state": "free"}, {"kind": "wf_status", "domain": "engine", "domain_cn": "引擎", "desc": "万能插执行引擎：查运行记录（可按工作流名过滤）", "handler": "wf_status", "scopes": [], "risk": "low", "params": [], "state": "free"}, {"kind": "asset_vault_freeze", "domain": "unimplemented", "domain_cn": "只登记未实现", "desc": "只有名字、没有实现（**不是**被安全策略挡住 —— 2026-09-23 禁止已全部解开）", "handler": "", "scopes": [], "risk": "none", "params": [], "state": "unimplemented"}, {"kind": "credential_steal", "domain": "unimplemented", "domain_cn": "只登记未实现", "desc": "只有名字、没有实现（**不是**被安全策略挡住 —— 2026-09-23 禁止已全部解开）", "handler": "", "scopes": [], "risk": "none", "params": [], "state": "unimplemented"}, {"kind": "data_hijack", "domain": "unimplemented", "domain_cn": "只登记未实现", "desc": "只有名字、没有实现（**不是**被安全策略挡住 —— 2026-09-23 禁止已全部解开）", "handler": "", "scopes": [], "risk": "none", "params": [], "state": "unimplemented"}, {"kind": "device_takeover", "domain": "unimplemented", "domain_cn": "只登记未实现", "desc": "只有名字、没有实现（**不是**被安全策略挡住 —— 2026-09-23 禁止已全部解开）", "handler": "", "scopes": [], "risk": "none", "params": [], "state": "unimplemented"}, {"kind": "keylogger", "domain": "unimplemented", "domain_cn": "只登记未实现", "desc": "只有名字、没有实现（**不是**被安全策略挡住 —— 2026-09-23 禁止已全部解开）", "handler": "", "scopes": [], "risk": "none", "params": [], "state": "unimplemented"}, {"kind": "onboarding_gate", "domain": "unimplemented", "domain_cn": "只登记未实现", "desc": "只有名字、没有实现（**不是**被安全策略挡住 —— 2026-09-23 禁止已全部解开）", "handler": "", "scopes": [], "risk": "none", "params": [], "state": "unimplemented"}, {"kind": "paywallbuster", "domain": "unimplemented", "domain_cn": "只登记未实现", "desc": "只有名字、没有实现（**不是**被安全策略挡住 —— 2026-09-23 禁止已全部解开）", "handler": "", "scopes": [], "risk": "none", "params": [], "state": "unimplemented"}, {"kind": "pentest", "domain": "unimplemented", "domain_cn": "只登记未实现", "desc": "只有名字、没有实现（**不是**被安全策略挡住 —— 2026-09-23 禁止已全部解开）", "handler": "", "scopes": [], "risk": "none", "params": [], "state": "unimplemented"}, {"kind": "remote_domain", "domain": "unimplemented", "domain_cn": "只登记未实现", "desc": "只有名字、没有实现（**不是**被安全策略挡住 —— 2026-09-23 禁止已全部解开）", "handler": "", "scopes": [], "risk": "none", "params": [], "state": "unimplemented"}, {"kind": "screen_sniff", "domain": "unimplemented", "domain_cn": "只登记未实现", "desc": "只有名字、没有实现（**不是**被安全策略挡住 —— 2026-09-23 禁止已全部解开）", "handler": "", "scopes": [], "risk": "none", "params": [], "state": "unimplemented"}, {"kind": "social_eng", "domain": "unimplemented", "domain_cn": "只登记未实现", "desc": "只有名字、没有实现（**不是**被安全策略挡住 —— 2026-09-23 禁止已全部解开）", "handler": "", "scopes": [], "risk": "none", "params": [], "state": "unimplemented"}, {"kind": "arkcli-agent", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Create, inspect, update, debug, and interact with BytePlus Ark Managed Agents and their sessions, skills, files, and MCP integrations.", "handler": "arkcli agent --help", "cli_help": "arkcli agent --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-api-explorer", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Inspect and invoke Ark CLI registered actions for BytePlus contract validation or low-level fallback.", "handler": "arkcli api --help", "cli_help": "arkcli api --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-auth", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Manage Ark CLI authentication for BytePlus: browser SSO, two-phase no-browser SSO, status inspection, identity inspection, API key selection, and log…", "handler": "arkcli auth --help", "cli_help": "arkcli auth --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-billing", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Query BytePlus ModelArk split-bill details (settlement amount and token usage billing), with support for filtering by dimensions such as billing mont…", "handler": "arkcli billing list --help", "cli_help": "arkcli billing list --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-chat", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "arkcli +chat: Quickly chat/reason through the data-plane Responses API.", "handler": "arkcli +chat --help", "cli_help": "arkcli +chat --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-config", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Diagnose BytePlus Ark CLI configuration precedence, effective profile, Region, project, base URL, API key, environment, UI language, persisted update…", "handler": "arkcli config --help", "cli_help": "arkcli config --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-connect", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Install, inspect, refresh, or uninstall BytePlus Ark CLI Skills for supported local AI agents or one explicit Skills directory.", "handler": "arkcli +connect --help", "cli_help": "arkcli +connect --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-custommodel", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Manage BytePlus ModelArk custom models identified by `cm-*`: list, inspect, upload, update, delete, quantize, and prepare deployment.", "handler": "arkcli models custommodel --help", "cli_help": "arkcli models custommodel --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-datasets", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Use ArkCLI to create, validate, inspect, update, delete, version, and download datasets.", "handler": "", "cli_help": "", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-deploy", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "arkcli +deploy: The unified preferred entry point for creating inference endpoints (Endpoint) —— **when users say “create/new/create an endpoint” or…", "handler": "arkcli +deploy --help", "cli_help": "arkcli +deploy --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-doctor", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "BytePlus arkcli doctor gateway for CLI, account, error, model, Endpoint and ModelArk/VMP diagnosis, plus ModelArk generation-origin verification for…", "handler": "arkcli doctor --help", "cli_help": "arkcli doctor --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-gen", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Image/video generation entry point: Use arkcli +gen when the user wants to generate an image, draw an image, generate an image/video, generate an ima…", "handler": "arkcli +gen --help", "cli_help": "arkcli +gen --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-helper", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Configure an IDE, editor, or supported local coding agent for BytePlus Platform, Coding Plan, or Coding Plan Team: use arkcli helper configure to con…", "handler": "arkcli helper --help", "cli_help": "arkcli helper --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-iam", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Resolve a BytePlus IAM UserID from a username prefix with `arkcli iam userid`, or return the current identity UserID when no username is supplied.", "handler": "arkcli iam userid --help", "cli_help": "arkcli iam userid --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-infer-endpoint", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "arkcli inference endpoint capability and lifecycle management: query model deployment forms with `arkcli infer endpoint capability get`, or get, list…", "handler": "arkcli infer endpoint --help", "cli_help": "arkcli infer endpoint --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-models", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "arkcli model query capability: activate, list, search, and get details for BytePlus ModelArk public foundation models.", "handler": "arkcli models --help", "cli_help": "arkcli models --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-onboard", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Guide a user through production integration of a BytePlus Ark model: authenticate, verify the account gate, select a deployable model, and reuse a ma…", "handler": "arkcli --help", "cli_help": "arkcli --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-plans", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Manages ARK plans (Coding Plan, personal + team): query holdings, buy, renew, list models, list enterprise seats (`plans team seat-list`), assign sea…", "handler": "arkcli plans --help", "cli_help": "arkcli plans --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-pricing", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Queries BytePlus ModelArk foundation model settlement unit prices (including current-account discounts) and CodingPlan subscription prices.", "handler": "arkcli pricing --help", "cli_help": "arkcli pricing --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-profile", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Manage product-isolated BytePlus profiles: inspect and select profiles, create supported profile types, re-select project scope, synchronize API keys…", "handler": "arkcli profile --help", "cli_help": "arkcli profile --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-resources", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "arkcli resources real-time control-plane queries: list resources and resolve an Endpoint into its authoritative bound model identity, base-model line…", "handler": "arkcli resources --help", "cli_help": "arkcli resources --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-shared", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Shared Ark CLI execution protocol for BytePlus: first-use setup, authentication gates, command routing, structured output, safety, confirmation handl…", "handler": "arkcli --help", "cli_help": "arkcli --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-train-finetune", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "Create, query, and manage model fine-tuning jobs in BytePlus ModelArk with ArkCLI.", "handler": "", "cli_help": "", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-understand", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "arkcli +understand: a multimodal understanding workflow with 12 task-oriented sub-skills across image/video/audio/file modalities on the data-plane R…", "handler": "arkcli +understand --help", "cli_help": "arkcli +understand --help", "scopes": [], "risk": "external", "params": [], "state": "external"}, {"kind": "arkcli-usage", "domain": "arkcli", "domain_cn": "Ark 云端", "desc": "ARK usage queries: `usage stats` (tokens/requests, 5–30 minute delay), `usage plan` / `usage balance --type plan` (plan quota snapshots), `usage bala…", "handler": "arkcli usage stats --help", "cli_help": "arkcli usage stats --help", "scopes": [], "risk": "external", "params": [], "state": "external"}];
+const byKind={}, domDir={}, nodes=[];
+let ORDERED=[], ptsO=[], CAPS=[], CAPS_SOURCE='snapshot', CAPS_HIDDEN=0, CAPS_LIVE_TOTAL=null;
+let CAPS_LIVE_REG=null, CAPS_LIVE_ARK=null, CAPS_ARK_TOTAL=null, ARK_MISSING=false;
+const cv=document.getElementById('gl'), stage=document.getElementById('stage');
+const peek=document.getElementById('peek'), sheet=document.getElementById('sheet'),
+      sheetIn=document.getElementById('sheet-in'), ctx=cv.getContext('2d');
+
+/* ═══ 3D ─────────────────────────────────────────────────────────────
+   右手系：+x 右，+y 下（屏幕），+z 朝观察者。相机在 z=CAM 处看向原点。
+   旋转：先绕 Y 自转(ry)，再绕 X 微倾(rx)。拖拽改 ry/rx，松手保持。      */
+const R3=1.0, CAM=2.15, FOV=1.42;   /* 相机推近、视场加大 —— 让球占满画面，冲击力才够 */
+let ry=-0.5, rx=-0.34, spin=0.0022, dragging=false, lx=0, ly=0;
+const HALO=[], RINGS=[];
+
+/* 由一份能力清单重建球面几何（初始用快照，现读到手后复用同一个函数重建）。
+   ⚠️ `nodes`/`domDir`/`LINKS` 都是**原地改** —— 渲染循环按引用持有它们。 */
+function rebuild(list){
+  CAPS=list;
+  Object.keys(byKind).forEach(function(k){ delete byKind[k]; });
+  Object.keys(domDir).forEach(function(k){ delete domDir[k]; });
+  nodes.length=0;
+  list.forEach(function(c){ byKind[c.kind]=c; });
+  ORDERED=list.slice().sort(function(a,b){ return a.domain<b.domain?-1:a.domain>b.domain?1:
+    (a.kind<b.kind?-1:1); });
+  ptsO=fibSphere(ORDERED.length);
+  ORDERED.forEach(function(c,i){ nodes.push({c, p:ptsO[i], sx:0, sy:0, sc:0, sz:0}); });
+  ORDERED.forEach(function(c,i){
+    const d=domDir[c.domain]||(domDir[c.domain]={x:0,y:0,z:0,n:0});
+    d.x+=ptsO[i][0]; d.y+=ptsO[i][1]; d.z+=ptsO[i][2]; d.n++;
+  });
+  Object.values(domDir).forEach(function(d){
+    const L=Math.hypot(d.x,d.y,d.z)||1; d.x/=L; d.y/=L; d.z/=L;
+  });
+  LINKS.length=0;
+  const byDom={};
+  ORDERED.forEach(function(c,i){ (byDom[c.domain]=byDom[c.domain]||[]).push(i); });
+  Object.keys(byDom).forEach(function(k){
+    const idxs=byDom[k];
+    for(let j=0;j<idxs.length-1;j++) LINKS.push([idxs[j], idxs[j+1]]);
+    if(idxs.length>3) LINKS.push([idxs[idxs.length-1], idxs[0]]);
+  });
+  updateCounts();
+}
+
+function updateCounts(){
+  const n={free:0,guarded:0,stub:0,disabled:0,external:0,unimplemented:0}, doms={};
+  CAPS.forEach(function(c){ if(n[c.state]!==undefined) n[c.state]++; doms[c.domain]=1; });
+  const set=function(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('h-caps', CAPS.length+' 项能力');
+  set('h-doms', Object.keys(doms).length+' 个域');
+  set('lg-free', n.free); set('lg-guarded', n.guarded); set('lg-stub', n.stub);
+  /* 解禁后口径：旧快照里叫 disabled，现读里叫 unimplemented —— 两种都归到同一格，
+     标签写「只登记未实现」：它们不是"被策略挡住的"，是**后面什么都没有**。 */
+  set('lg-disabled', n.unimplemented + n.disabled); set('lg-external', n.external);
+  const src=document.getElementById('h-src');
+  if(src){
+    if(CAPS_SOURCE==='live'){
+      const comp=(CAPS_LIVE_REG!==null)
+        ? '：注册表 '+CAPS_LIVE_REG+(CAPS_LIVE_ARK?(' + Ark 云端 '+CAPS_LIVE_ARK):'')
+          + (CAPS_ARK_TOTAL&&CAPS_LIVE_ARK!==CAPS_ARK_TOTAL?('（Ark 接口报 '+CAPS_ARK_TOTAL+'，只拿到 '+CAPS_LIVE_ARK+'）'):'')
+        : '';
+      src.textContent='（现读 /api/capabilities'+comp
+        +(CAPS_HIDDEN?(' · 快照里 '+CAPS_HIDDEN+' 条已不在现读面，未画'):'')
+        +(ARK_MISSING?' · ⚠ Ark 通道只报了数、没给条目，紫环节点缺失':'')+'）';
+    }else{
+      src.textContent='（内嵌快照 · 取不到现读；数字可能过期）';
+    }
+  }
+  try{ window.__gbtPanelCaps={source:CAPS_SOURCE, count:CAPS.length,
+        domains:Object.keys(doms).length, hidden:CAPS_HIDDEN, liveTotal:CAPS_LIVE_TOTAL,
+        liveRegistry:CAPS_LIVE_REG, liveArk:CAPS_LIVE_ARK, arkTotal:CAPS_ARK_TOTAL,
+        arkMissing:ARK_MISSING, byState:n}; }catch(e){}
+}
+
+/* 现读对齐：注册表 `items` + Ark `app.ark.skills` **两条通道都并**。
+   ⚠️ 接口原文：「能力分四条通道 …… `total` 只数第一条，别拿它当全量」（`total_all_channels`）。 */
+function applyLive(payload){
+  if(!payload) return false;
+  const reg=(payload.items)||[];
+  const ark=((payload.app&&payload.app.ark&&payload.app.ark.skills)||[]);
+  if(!reg.length&&!ark.length) return false;
+  const snap={}; CAPS_SNAPSHOT.forEach(function(c){ snap[c.kind]=c; });
+  const liveKinds={}; const merged=[];
+  reg.forEach(function(it){
+    liveKinds[it.kind]=1;
+    const old=snap[it.kind]||{};
+    let state;
+    if(it.enabled===false) state=(it.status==='unimplemented')?'unimplemented':'disabled';
+    else if(old.state==='stub') state='stub';
+    else state = it.needs_confirmation ? 'guarded' : 'free';
+    merged.push({
+      kind:it.kind, domain:it.domain||old.domain||'unknown',
+      domain_cn:old.domain_cn||it.domain||'未分类',
+      desc:(it.desc&&String(it.desc).trim())||old.desc||'',
+      handler:old.handler||it.kind, scopes:old.scopes||[], risk:old.risk||'unknown',
+      params:it.params||old.params||[], params_hint:it.params_hint||'',
+      enabled:it.enabled!==false, needs_confirmation:!!it.needs_confirmation, state:state
+    });
+  });
+  const ARK_TOTAL=(payload.app&&payload.app.ark&&payload.app.ark.total)||ark.length;
+  if(!ark.length&&ARK_TOTAL>0) ARK_MISSING=true;
+  ark.forEach(function(a){
+    const name=a.name||a.kind;
+    if(!name) return;
+    liveKinds[name]=1;
+    const old=snap[name]||{};
+    merged.push({
+      kind:name, domain:'ark', domain_cn:'Ark 云端',
+      desc:(a.desc&&String(a.desc).trim())||old.desc||'',
+      handler:old.handler||'arkcli', scopes:old.scopes||[], risk:old.risk||'external',
+      params:[], params_hint:a.cli_help||'', enabled:true, needs_confirmation:false,
+      state:'external', version:a.version||'', cli_help:a.cli_help||'', bins:a.bins||[]
+    });
+  });
+  CAPS_HIDDEN=CAPS_SNAPSHOT.filter(function(c){ return !liveKinds[c.kind]; }).length;
+  CAPS_LIVE_TOTAL=merged.length;
+  CAPS_LIVE_REG=reg.length; CAPS_LIVE_ARK=ark.length; CAPS_ARK_TOTAL=ARK_TOTAL;
+  CAPS_SOURCE='live';
+  rebuild(merged);
+  return true;
+}
+
+function fibSphere(n){
+  const out=[], ga=Math.PI*(3-Math.sqrt(5));
+  for(let i=0;i<n;i++){
+    const y=1-(i/Math.max(1,n-1))*2, r=Math.sqrt(Math.max(0,1-y*y)), th=ga*i;
+    out.push([Math.cos(th)*r, y, Math.sin(th)*r]);
+  }
+  return out;
+}
+/* 域分组：同一域的节点在球面上相邻（Fibonacci 是按序铺的，所以按域排序后再铺）
+   —— 这段住在 `rebuild()` 里（快照 / 现读共用同一条铺法）。 */
+
+function rot(p){
+  const cy=Math.cos(ry), sy=Math.sin(ry), cx=Math.cos(rx), sx=Math.sin(rx);
+  let x=p[0]*R3, y=p[1]*R3, z=p[2]*R3;
+  let x1= x*cy + z*sy, z1= -x*sy + z*cy;      // 绕 Y
+  let y1= y*cx - z1*sx, z2= y*sx + z1*cx;     // 绕 X
+  return [x1,y1,z2];
+}
+function proj(v){
+  const zc=CAM - v[2];
+  const k=(FOV*Math.min(cv.width,cv.height)*0.5)/Math.max(0.15,zc);
+  return {x:cv.width/2 + v[0]*k, y:cv.height/2 + v[1]*k, k, z:v[2], zc};
+}
+
+function resize(){
+  const dpr=Math.min(2, window.devicePixelRatio||1);
+  cv.width=Math.round(innerWidth*dpr); cv.height=Math.round(innerHeight*dpr);
+  cv.style.width=innerWidth+'px'; cv.style.height=innerHeight+'px';
+}
+addEventListener('resize',resize); resize();
+
+const C={ok:'#D9964F', warn:'#E8B04A', stub:'#6B5540', fault:'#A2453A', sig:'#00E5FF', ark:'#8E6BD8'};
+
+/* ═══ 四套配色（可切）══════════════════════════════════════════════════
+   Owner 2026-09-22：「这么颜色还是没变？」
+   ⇒ 我读错了"科技风格"：一直守着暖赭石（把它当"创新"），但你要的可能是
+     正经的科技配色。**继续猜是浪费 —— 所以把颜色做成能切的，你看着挑。**
+   每套驱动全部：星云 / 星场 / 节点 / 核心 / 轨道环 / 扫描带 / 界面。
+   键 1 赭石(暖) · 2 深空青(冷·正统科技) · 3 星紫 · 4 生物荧光           */
+const PALETTES={
+  ochre:{cn:'赭石 · 暖', core:['#FFF3DC','#E0A45E','#A9691F','#4A2F14'],
+    ok:'#D9964F', warn:'#E8B04A', stub:'#6B5540', fault:'#A2453A', sig:'#00E5FF', ark:'#8E6BD8',
+    nebA:'rgba(122,82,48,.30)', nebB:'rgba(0,140,170,.16)',
+    starW:'#F0D9B5', starC:'#9FD8E4', rgb:'201,136,74'},
+  cyan:{cn:'深空青 · 冷', core:['#EAFBFF','#63D3F0','#1E7FA8','#0A2C3C'],
+    ok:'#4FD2F0', warn:'#F0C24A', stub:'#3E5A66', fault:'#E0564A', sig:'#7CF3FF', ark:'#9B7CF0',
+    nebA:'rgba(20,80,120,.34)', nebB:'rgba(0,190,220,.18)',
+    starW:'#DCF3FF', starC:'#6FE6FF', rgb:'63,182,216'},
+  violet:{cn:'星紫 · 幻', core:['#F6ECFF','#C79BF5','#7A3FC0','#2A1044'],
+    ok:'#B47CF0', warn:'#F0A94A', stub:'#4E3F63', fault:'#E0507A', sig:'#E59BFF', ark:'#4FD2F0',
+    nebA:'rgba(90,40,150,.34)', nebB:'rgba(230,90,190,.14)',
+    starW:'#F2E6FF', starC:'#E59BFF', rgb:'162,107,232'},
+  bio:{cn:'生物荧光 · 生机', core:['#EFFFF6','#7BE8BC','#1E9E6E','#08301F'],
+    ok:'#4FE0A4', warn:'#D8E04A', stub:'#3A5A4A', fault:'#E06A5A', sig:'#8CFFD4', ark:'#B47CF0',
+    nebA:'rgba(20,110,80,.32)', nebB:'rgba(180,220,60,.12)',
+    starW:'#E6FFF2', starC:'#8CFFD4', rgb:'63,214,154'},
+};
+/* ⚠️ 存储键**必须带版本号**。
+   踩过的坑（2026-09-22）：Owner 反馈"颜色还是没变"。实测原因是——他以前打开过
+   赭石版，浏览器里存着 capPalette=ochre；而读取逻辑是"有存储就用存储"，
+   于是**旧值永远压着代码里的新默认**，改多少次默认都不生效。
+   ⇒ 版本号一升，老键自然失效：新默认生效一次，之后用户的选择照常记住。
+      这是"用户偏好"与"开发者改默认"之间必须留的那道口子。               */
+const LSKEY='capPalette.v2';
+let PKEY='violet';   /* Owner 2026-09-22 选定：星紫 */
+try{ const s=localStorage.getItem(LSKEY); if(s&&PALETTES[s]) PKEY=s; }catch(e){}
+function PAL(){ return PALETTES[PKEY]; }
+function applyPalette(k){
+  PKEY=PALETTES[k]?k:'violet';
+  try{ localStorage.setItem(LSKEY,PKEY); }catch(e){}
+  document.documentElement.setAttribute('data-p',PKEY);
+  const p=PAL();
+  C.ok=p.ok; C.warn=p.warn; C.stub=p.stub; C.fault=p.fault; C.sig=p.sig; C.ark=p.ark;
+  /* 这几行是补一个既有缺口：CSS 里的 --ok/--warn/… 原先**写死在 :root**，
+     切成别的配色时只有 canvas 跟着变，**徽章颜色一直不变** ——
+     Owner 那句"颜色还是没变"里，有一部分就是这个。现在两处一起跟着配色走。 */
+  try{ const rs=document.documentElement.style;
+    rs.setProperty('--ok',p.ok); rs.setProperty('--warn',p.warn);
+    rs.setProperty('--stub',p.stub); rs.setProperty('--fault',p.fault);
+    rs.setProperty('--sig',p.sig); rs.setProperty('--ark',p.ark);
+  }catch(e){}
+  const lbl=document.getElementById('pname'); if(lbl) lbl.textContent=p.cn;
+  document.querySelectorAll('[data-pk]').forEach(function(b){
+    b.classList.toggle('on', b.dataset.pk===PKEY); });
+}
+
+/* ═══ 空间参照物：为什么"纯黑"看起来不立体 ═══════════════════════════
+   一个球悬在纯黑里，眼睛**没有参照** —— 感觉不到它在哪、多大、转多快。
+   所以"更立体"和"背景别太空"其实是同一件事：**补参照系**。
+   补五样：
+     ① 3D 星场（三层视差）—— 近的星转得快，远的几乎不动 ⇒ 一眼看出深度
+     ② 星云 —— 暖赭 + 冷青两团软云，给虚空一个"底"
+     ③ 径向深度钉 —— 每个节点向球心连一小段线，把"球面"这件事画实
+     ④ 域内连线 —— 同域节点在球面上连起来 ⇒ 球面长出"组织"
+     ⑤ 加色发光 + 核心扩散环 + 暗角 —— 冲击力与聚焦
+   ⚠️ 全部确定性（不用随机数），同一份注册表每次画出来一样。          */
+const STAR_LAYERS=[
+  {n:230, r0:2.6, r1:4.6, sp:0.14, sz:0.85, a:0.30},   // 远：几乎不动
+  {n:130, r0:1.8, r1:2.6, sp:0.34, sz:1.5,  a:0.46},   // 中
+  {n:64,  r0:1.42,r1:1.75,sp:0.68, sz:2.3,  a:0.58},   // 近：贴着球飞
+];
+const GA=Math.PI*(3-Math.sqrt(5));
+const STARS=[];
+STAR_LAYERS.forEach(function(L,li){
+  for(let i=0;i<L.n;i++){
+    const y=1-(i/Math.max(1,L.n-1))*2, rr=Math.sqrt(Math.max(0,1-y*y)), th=GA*i;
+    const rad=L.r0+(((i*2654435761)>>>0)%1000)/1000*(L.r1-L.r0);  // 确定性"随机"
+    STARS.push({p:[Math.cos(th)*rr*rad, y*rad, Math.sin(th)*rr*rad],
+                sp:L.sp, sz:L.sz, a:L.a});
+  }
+});
+/* 域内连线容器：内容由 `rebuild()` 现算（快照与现读共用）。 */
+const LINKS=[];
+/* ① 先用内嵌快照画出来（不白屏）；② 再去拿现读 —— 到手就用现读重建整颗球。 */
+rebuild(CAPS_SNAPSHOT);
+fetch('/api/capabilities',{cache:'no-store'}).then(function(r){ return r.json(); })
+  .then(function(j){ if(j&&j.ok!==false) applyLive(j); })
+  .catch(function(){ /* 取不到就保持快照，提示语里已写明"快照 · 取不到现读" */ });
+let tGlobal=0;
+
+/* ═══ 能源输送引擎 ═══════════════════════════════════════════════════
+   Owner：「只要 AI 在动，她能力球里面相对应的能力就会像输送能源一样的动起来」
+
+   🔴 铁律：动画**只被真实调用点亮**。源拿不到 ⇒ HUD 显示"实时源未接"且不发光。
+      绝不许自己空转 —— 那是好看但骗人的装饰（铁律 6）。
+
+   数据源：GET /api/recent-calls  → {ok, calls:[{kind, at, ok}], source}
+   拿不到（file:// 双击打开、或面板没跑）⇒ 不报错、不假装，如实显示。      */
+const HEAT={};            /* kind -> 0..1，被点亮后随时间衰减 */
+const RIPPLE=[];          /* 涟漪：{x,y,r,a} */
+const SPARK=[];           /* 沿链路的脉冲：{from,to,t,dom} */
+let FEED_STATE='unknown'; /* unknown | live | absent */
+let FEED_TRIES=0, lastCallAt=0;
+
+function lightUp(kind,strength){
+  if(!byKind[kind]) return;                 /* 注册表里没有的 kind，不猜、不点亮 */
+  HEAT[kind]=Math.min(1.6,(HEAT[kind]||0)+(strength||1));
+  const n=nodes.find(function(x){return x.c.kind===kind;});
+  if(n) RIPPLE.push({x:n.sx,y:n.sy,r:2,a:0.85,dom:n.c.domain});
+}
+function pollFeed(){
+  FEED_TRIES++;
+  fetch('/api/recent-calls',{cache:'no-store'}).then(function(r){
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  }).then(function(j){
+    FEED_STATE='live';
+    const calls=(j&&j.calls)||[];
+    calls.forEach(function(c){
+      if(c.at && c.at>lastCallAt){ lastCallAt=c.at; lightUp(c.kind,1); }
+    });
+    const el=document.getElementById('feed'); if(el) el.textContent='实时源 · 已接';
+  }).catch(function(){
+    FEED_STATE='absent';
+    const el=document.getElementById('feed');
+    if(el) el.textContent='实时源 · 未接（面板没跑或 file:// 打开）';
+  });
+}
+
+function draw(){
+  const W=cv.width,H=cv.height,cx=W/2,cy=H/2;
+  ctx.clearRect(0,0,W,H);
+
+  /* ⓪-a 星云：给虚空一个"底"，别让球悬在纯黑里 */
+  (function(){
+    const g1=ctx.createRadialGradient(cx-W*0.22,cy-H*0.16,0,cx-W*0.22,cy-H*0.16,W*0.62);
+    g1.addColorStop(0,PAL().nebA); g1.addColorStop(0.5,'rgba(0,0,0,0)');
+    g1.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g1; ctx.fillRect(0,0,W,H);
+    const g2=ctx.createRadialGradient(cx+W*0.26,cy+H*0.20,0,cx+W*0.26,cy+H*0.20,W*0.50);
+    g2.addColorStop(0,PAL().nebB); g2.addColorStop(0.55,'rgba(0,0,0,0)');
+    g2.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g2; ctx.fillRect(0,0,W,H);
+  })();
+
+  /* ⓪-b 3D 星场：三层视差 —— 这一层就是"立体感"的来源 */
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  STARS.forEach(function(s){
+    const c=Math.cos(ry*s.sp), sn=Math.sin(ry*s.sp);
+    const x1=s.p[0]*c + s.p[2]*sn, z1=-s.p[0]*sn + s.p[2]*c;
+    const v=rot([x1,s.p[1],z1]), q=proj(v);
+    if(q.zc<0.2) return;
+    const a=s.a*Math.max(0,Math.min(1,(q.z+1.35)/2.35));
+    const r=Math.max(0.5,s.sz*q.k*0.0016);
+    ctx.globalAlpha=a;
+    ctx.fillStyle= (s.p[1]>0.25)?PAL().starW:PAL().starC;
+    ctx.beginPath(); ctx.arc(q.x,q.y,r,0,Math.PI*2); ctx.fill();
+  });
+  ctx.restore();
+
+  /* ⓪-c 暗角：把视线压回中心 */
+  (function(){
+    const g=ctx.createRadialGradient(cx,cy,Math.min(W,H)*0.30,cx,cy,Math.max(W,H)*0.72);
+    g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,.62)');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  })();
+
+  /* ① 经纬线框（科技感的底）—— 背面淡、正面亮 */
+  const seg=64, R=R3;
+  ctx.lineWidth=Math.max(1,Math.min(W,H)/1400);
+  for(let lat=-60; lat<=60; lat+=30){
+    const la=lat*Math.PI/180, y=Math.sin(la), rr=Math.cos(la);
+    ctx.beginPath();
+    for(let i=0;i<=seg;i++){
+      const t=i/seg*Math.PI*2, v=rot([Math.cos(t)*rr,y,Math.sin(t)*rr]), s=proj(v);
+      i?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y);
+    }
+    ctx.strokeStyle='rgba('+PAL().rgb+','+(lat===0?0.20:0.10)+')'; ctx.stroke();
+  }
+  for(let lon=0; lon<180; lon+=30){
+    const lo=lon*Math.PI/180;
+    ctx.beginPath();
+    for(let i=0;i<=seg;i++){
+      const t=i/seg*Math.PI*2;
+      const v=rot([Math.cos(lo)*Math.cos(t), Math.sin(t), Math.sin(lo)*Math.cos(t)]), s=proj(v);
+      i?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y);
+    }
+    ctx.strokeStyle='rgba('+PAL().rgb+',0.085)'; ctx.stroke();
+  }
+
+  /* ② 域的同心弧 —— 让"域"在球面上看得见成片 */
+  ctx.lineWidth=Math.max(1,Math.min(W,H)/1100);
+  Object.keys(domDir).forEach(k=>{
+    const d=domDir[k], seen=new Set();
+    ORDERED.forEach((c,i)=>{
+      if(c.domain!==k) return;
+      const p=ptsO[i], key=i;
+      if(seen.has(key)) return; seen.add(key);
+      const v=rot([p[0]*0.985,p[1]*0.985,p[2]*0.985]), s=proj(v);
+      if(s.z<-0.15) return;                    // 背面的不画
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,Math.max(1.2,s.k*0.012),0,Math.PI*2);
+      ctx.strokeStyle='rgba('+PAL().rgb+',0.07)'; ctx.stroke();
+    });
+  });
+
+  /* ③ 节点：画家算法 —— 按 z 从远到近画 */
+  nodes.forEach(n=>{
+    const v=rot(n.p), s=proj(v);
+    n.sx=s.x; n.sy=s.y; n.k=s.k; n.z=s.z;
+    const depth=(s.z+1)/2;                       // 0 远 → 1 近
+    n.sc=depth; n.sz=s.z;
+  });
+  const sorted=nodes.slice().sort((a,b)=>a.sz-b.sz);
+
+  /* ③-a 域内连线 + 径向深度钉
+     连线让"域"在球面上真的成片；深度钉把"这是球面、不是散点"画实。*/
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  ctx.lineWidth=Math.max(1,Math.min(W,H)/1600);
+  LINKS.forEach(function(pr){
+    const A=nodes[pr[0]], B=nodes[pr[1]];
+    const zm=(A.sz+B.sz)/2, a=Math.max(0, (zm+0.6)/1.6);
+    if(a<=0.02) return;
+    ctx.strokeStyle='rgba('+PAL().rgb+','+(0.16*a)+')';
+    ctx.beginPath(); ctx.moveTo(A.sx,A.sy); ctx.lineTo(B.sx,B.sy); ctx.stroke();
+  });
+  sorted.forEach(function(n){
+    if(n.sz<-0.35) return;
+    const a=0.10+0.26*((n.sz+1)/2);
+    ctx.strokeStyle='rgba('+PAL().rgb+','+a+')';
+    ctx.beginPath(); ctx.moveTo(n.sx,n.sy);
+    ctx.lineTo(cx+(n.sx-cx)*0.80, cy+(n.sy-cy)*0.80);   // 朝球心收 20%
+    ctx.stroke();
+  });
+  ctx.restore();
+
+  ctx.save();
+  sorted.forEach(n=>{
+    const c=n.c, d=n.sc;
+    const rad=Math.max(1.6, n.k*(0.0055 + 0.0072*d));   // 近大远小
+    const a=0.28 + 0.72*d*d;                            // 近亮远暗
+    const x=n.sx,y=n.sy;
+    ctx.globalAlpha=a;
+    if(c.state==='free'){
+      const g=ctx.createRadialGradient(x,y,0,x,y,rad*3.4);
+      g.addColorStop(0,'rgba(217,150,79,'+(0.85*a)+')');
+      g.addColorStop(0.45,'rgba(217,150,79,'+(0.28*a)+')');
+      g.addColorStop(1,'rgba(217,150,79,0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,rad*3.4,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=C.ok; ctx.beginPath(); ctx.arc(x,y,rad,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(255,240,214,'+(0.5*a)+')';
+      ctx.beginPath(); ctx.arc(x-rad*0.3,y-rad*0.3,rad*0.34,0,Math.PI*2); ctx.fill();
+    } else if(c.state==='guarded'){
+      ctx.strokeStyle=C.warn; ctx.lineWidth=Math.max(1,rad*0.42);
+      ctx.beginPath(); ctx.arc(x,y,rad,0,Math.PI*2); ctx.stroke();
+    } else if(c.state==='stub'){
+      ctx.strokeStyle=C.stub; ctx.lineWidth=Math.max(1,rad*0.38);
+      ctx.setLineDash([rad*0.85, rad*0.75]);
+      ctx.beginPath(); ctx.arc(x,y,rad,0,Math.PI*2); ctx.stroke();
+      ctx.setLineDash([]);
+    } else if(c.state==='external'){
+      /* Ark 云端（外部 CLI）：紫环 + 半实心核。
+         不复用 guarded 的琥珀环 —— 两者含义不同：guarded 是"她自己的能力、过门可用"，
+         external 是"不归本仓能力口管、要经 arkcli 出去"，混成一个颜色就是骗人。 */
+      ctx.strokeStyle=C.ark; ctx.lineWidth=Math.max(1,rad*0.42);
+      ctx.beginPath(); ctx.arc(x,y,rad,0,Math.PI*2); ctx.stroke();
+      ctx.globalAlpha=a*0.55;
+      ctx.fillStyle=C.ark;
+      ctx.beginPath(); ctx.arc(x,y,rad*0.48,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=a;
+    } else {
+      ctx.fillStyle=C.fault; ctx.beginPath(); ctx.arc(x,y,rad*0.86,0,Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  });
+  ctx.restore();
+
+
+  /* ③-b 能源输送：热节点 —— 被真实调用点亮的那些 */
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  sorted.forEach(function(n){
+    const h=HEAT[n.c.kind]||0; if(h<=0.02) return;
+    const a=Math.min(1,h);
+    const x=n.sx,y=n.sy, base=Math.max(1.6,n.k*0.011);
+    /* 白热内核 */
+    const g=ctx.createRadialGradient(x,y,0,x,y,base*7*(0.6+0.7*h));
+    g.addColorStop(0,'rgba(255,255,255,'+(0.85*a)+')');
+    g.addColorStop(0.30,'rgba(220,190,255,'+(0.5*a)+')');
+    g.addColorStop(1,'rgba(160,110,240,0)');
+    ctx.fillStyle=g;
+    ctx.beginPath(); ctx.arc(x,y,base*7*(0.6+0.7*h),0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,'+(0.95*a)+')';
+    ctx.beginPath(); ctx.arc(x,y,base*(0.9+0.9*h),0,Math.PI*2); ctx.fill();
+    /* 沿该域的连线，从核心方向往节点"充电" —— 能源输送的观感来源 */
+    const A=nodes.find(function(z){return z.c.kind===n.c.kind;});
+    ctx.strokeStyle=PAL().sig;
+    ctx.globalAlpha=0.30*a;
+    ctx.lineWidth=Math.max(1.2,Math.min(W,H)/900);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.stroke();
+    ctx.globalAlpha=1;
+  });
+  ctx.restore();
+
+  /* ③-c 涟漪：从被点亮的节点向外扩，边扩边淡 */
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  for(let i=RIPPLE.length-1;i>=0;i--){
+    const p=RIPPLE[i];
+    p.r+=2.6; p.a*=0.955;
+    if(p.a<0.02){ RIPPLE.splice(i,1); continue; }
+    ctx.strokeStyle='rgba(200,160,255,'+p.a+')';
+    ctx.lineWidth=Math.max(1,Math.min(W,H)/1300);
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.stroke();
+  }
+  ctx.restore();
+
+  /* ④ 核心：光源在左上，与球面明暗同源 */
+  const coreP=proj([0,0,0]);
+  const cr=coreP.k*0.098;
+  const cg=ctx.createRadialGradient(coreP.x-cr*0.35,coreP.y-cr*0.4,cr*0.06,coreP.x,coreP.y,cr);
+  const CC=PAL().core;
+  cg.addColorStop(0,CC[0]); cg.addColorStop(0.34,CC[1]);
+  cg.addColorStop(0.72,CC[2]); cg.addColorStop(1,CC[3]);
+  ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(coreP.x,coreP.y,cr,0,Math.PI*2); ctx.fill();
+  /* 大气层 */
+  const ag=ctx.createRadialGradient(coreP.x,coreP.y,cr*0.9,coreP.x,coreP.y,cr*2.3);
+  ag.addColorStop(0,'rgba('+PAL().rgb+',.34)'); ag.addColorStop(1,'rgba('+PAL().rgb+',0)');
+  ctx.fillStyle=ag; ctx.beginPath(); ctx.arc(coreP.x,coreP.y,cr*2.3,0,Math.PI*2); ctx.fill();
+  /* 轨道环：倾斜的科技环 */
+  [1.42,1.72].forEach((rr,idx)=>{
+    ctx.beginPath();
+    for(let i=0;i<=110;i++){
+      const t=i/110*Math.PI*2, tilt=(idx?0.9:-0.55);
+      const v=rot([Math.cos(t)*rr, Math.sin(t)*rr*Math.sin(tilt), Math.sin(t)*rr*Math.cos(tilt)]);
+      const s=proj(v); i?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y);
+    }
+    ctx.strokeStyle=idx?PAL().sig.replace(')',',.24)').replace('#','rgba(').replace('rgb','rgb'):'rgba('+PAL().rgb+',.24)';
+    ctx.lineWidth=Math.max(1,Math.min(W,H)/1500); ctx.stroke();
+  });
+  /* 核心文字 */
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillStyle='rgba(20,13,7,.92)';
+  ctx.font='700 '+Math.round(cr*0.42)+'px "Microsoft YaHei UI",system-ui,sans-serif';
+  ctx.fillText('小土豆', coreP.x, coreP.y-cr*0.16);
+  ctx.font='600 '+Math.round(cr*0.24)+'px ui-monospace,Consolas,monospace';
+  ctx.fillStyle='rgba(20,13,7,.72)';
+  ctx.fillText('CAPS '+CAPS.length, coreP.x, coreP.y+cr*0.32);
+
+  /* ⑤ 扫描面（科技感的动）—— 一道横掠的冷光 */
+  const sy=(performance.now()/5200)%1;
+  const yy=sy*H;
+  const sg=ctx.createLinearGradient(0,yy-70,0,yy+70);
+  sg.addColorStop(0,'rgba(0,229,255,0)'); sg.addColorStop(0.5,'rgba(0,229,255,.075)');
+  sg.addColorStop(1,'rgba(0,229,255,0)');
+  ctx.fillStyle=sg; ctx.fillRect(0,yy-70,W,140);
+}
+
+let mouse={x:-999,y:-999};
+function hitTest(){
+  let best=null, bd=1e9;
+  nodes.forEach(n=>{
+    if(n.sz<-0.05) return;                       // 背面的不响应
+    const dx=n.sx-mouse.x, dy=n.sy-mouse.y, d=dx*dx+dy*dy;
+    if(d<bd){bd=d;best=n;}
+  });
+  return (best && bd < 26*26) ? best : null;
+}
+function loop(){
+  ry += spin;
+  tGlobal += 1;
+  /* 热值衰减：调用过去后自己退场，不留假亮 */
+  Object.keys(HEAT).forEach(function(k){
+    HEAT[k]*=0.972; if(HEAT[k]<0.015) delete HEAT[k]; });
+  /* 真实源轮询：每 ~1.6s 一次 */
+  if(tGlobal%96===0) pollFeed();
+  draw();
+  const h=hitTest();
+  if(h && !dragging){
+    const cn={free:'免卡',guarded:'要授权',stub:'桩',disabled:'禁用',unimplemented:'只登记未实现',external:'Ark云端'}[h.c.state];
+    peek.style.display='block';
+    peek.style.left=(h.sx+14)+'px'; peek.style.top=(h.sy-30)+'px';
+    peek.innerHTML=h.c.kind+' <em>· '+h.c.domain_cn+' ·</em> <span class="st">'+cn+'</span>';
+  } else peek.style.display='none';
+  requestAnimationFrame(loop);
+}
+
+/* 拖拽转球（鼠标 + 触摸） */
+function down(e){dragging=true;stage.classList.add('drag');
+  const t=e.touches?e.touches[0]:e; lx=t.clientX; ly=t.clientY;}
+function move(e){
+  const t=e.touches?e.touches[0]:e;
+  mouse.x=t.clientX*Math.min(2,devicePixelRatio||1);
+  mouse.y=t.clientY*Math.min(2,devicePixelRatio||1);
+  if(!dragging) return;
+  ry += (t.clientX-lx)*0.0062; rx -= (t.clientY-ly)*0.0055;
+  rx=Math.max(-1.2,Math.min(1.2,rx)); lx=t.clientX; ly=t.clientY;
+  if(e.cancelable) e.preventDefault();
+}
+function up(){dragging=false;stage.classList.remove('drag');}
+stage.addEventListener('mousedown',down); addEventListener('mousemove',move);
+addEventListener('mouseup',up); stage.addEventListener('touchstart',down,{passive:true});
+addEventListener('touchmove',move,{passive:false}); addEventListener('touchend',up);
+stage.addEventListener('click',()=>{const h=hitTest(); if(h) openCap(h.c.kind);});
+addEventListener('keydown',e=>{ if(e.key==='Escape') closeCap(); });
+
+/* ═══ 单项页面 ═══ */
+function closeCap(){ sheet.classList.remove('on'); }
+function openCap(kind){
+  const c=byKind[kind];
+  if(!c){ sheetIn.innerHTML='<h2 class="big">没有这项能力</h2><p class="lede">注册表里查不到 <code>'+
+    String(kind).replace(/[<>&]/g,'')+'</code>。前端不猜一个出来。</p>'+
+    '<button class="ghost" onclick="closeCap()">← 回到能力球</button>'; sheet.classList.add('on'); return; }
+  const scopes=c.scopes.length?c.scopes.map(s=>'<code>'+s+'</code>').join(' '):
+    '<span class="empty">无（免卡）</span>';
+  const pr=c.params.length?c.params.map(p=>'<label><span>'+p+'</span><input data-param="'+
+    p+'" placeholder="'+p+' 的值（JSON 或纯文本）"></label>').join(''):
+    '<p class="empty">注册表未声明必填参数 —— 可直接调用，或按需在下方 JSON 里补 payload。</p>';
+  const dis=(c.state==='disabled'||c.state==='unimplemented');
+  const ext=c.state==='external';
+  const cn={free:'可用（免卡）',guarded:'要授权',stub:'还是桩',disabled:'曾被拒（历史状态）',
+            unimplemented:'只有名字 · 没有实现',external:'Ark 云端 · 外部 CLI'}[c.state];
+  /* 外部 CLI 能力（Ark）：**不给"调用"按钮** —— 给了就是骗人，它根本不走 /api/capability。
+     如实写清它走哪条路、真实命令入口是什么。入口来自技能 SKILL.md 的 cliHelp（现读）。 */
+  const callCard = ext
+    ? '<div class="card"><h3>怎么调它</h3>'+
+        '<p class="empty">它<strong>不走本仓的能力口</strong> <code>/api/capability</code>，'+
+        '也<strong>不受 run_task 那道授权门管</strong> —— 它是 Ark 云端的 CLI 能力，要经 <code>arkcli</code> 出去。'+
+        '所以这里<strong>故意没有"调用"按钮</strong>：不是按钮坏了，是不该有这个按钮。</p>'+
+        (c.cli_help
+          ? '<p>它自己的真实入口：<code>'+c.cli_help+'</code></p>'
+          : '<p class="empty">该技能没写 <code>cliHelp</code> —— <strong>别猜命令</strong>，去看它的 SKILL.md。</p>')+
+        '<p class="empty">调用规矩：先过<strong>登录闸</strong>（<code>arkcli auth status</code>）、'+
+        '再过<strong>账号验证闸</strong>（<code>identity.verified</code>；false 时计费写入会被挡）、'+
+        '计费动作<strong>先报价再确认</strong>。详见技能 <code>gbt-arkcli</code>。</p>'+
+      '</div>'
+    : '<div class="card"><h3>调用</h3>'+pr+
+        '<label><span>payload JSON（可选，非空则以此为准）</span>'+
+        '<textarea rows="3" id="pj" placeholder=\'{"op":"status"}\'></textarea></label>'+
+        '<button id="go"'+(dis?' disabled':'')+'>调用'+(dis?'（调不通）':'')+'</button>'+
+        (c.scopes.length&&!dis?'<p class="empty" style="margin-top:10px">这项要授权。面板走同一道门：'+
+          '缺授权就如实报缺，页面不绕。</p>':'')+
+      '</div>';
+  sheetIn.innerHTML=
+    '<button class="ghost" onclick="closeCap()">← 回到能力球</button>'+
+    '<p class="crumb" style="margin-top:16px">'+c.domain+' · '+c.domain_cn+'</p>'+
+    '<h2 class="big">'+c.kind+'</h2>'+
+    '<div class="badges"><span class="b b-'+c.state+'">'+cn+'</span>'+
+    '<span class="b b-dom">'+c.domain_cn+'</span>'+
+    '<span class="b b-risk">risk: '+c.risk+'</span></div>'+
+    '<p class="lede">'+(c.desc||'（注册表未写说明）')+'</p>'+
+    (dis?'<div class="card warnbox"><h3>为什么调不通</h3><p class="empty">它<strong>只有名字、没有实现</strong>'+
+      '（2026-09-23 禁止已全部解开，但解禁**不等于**有实现 —— 全仓零实现文件）。'+
+      '点下去得到的是如实的 <code>unknown capability</code>，<strong>不是</strong>"被安全策略挡住"。'+
+      '本页面不提供调用入口 —— 不是"按钮坏了"，是<strong>后面什么都没有</strong>。</p></div>':'')+
+    (c.state==='stub'?'<div class="card warnbox"><h3>诚实提示</h3><p class="empty">注册表自己标注了它是'+
+      '<strong>骨架 / 未实现</strong>。球面上它是<strong>空心虚线节点</strong>。这里照样给得出页面，但'+
+      '<strong>调它大概率返回占位</strong> —— 那是真实结果，不是页面坏了。</p></div>':'')+
+    '<div class="card"><h3>事实</h3><table>'+
+      '<tr><td>kind</td><td><code>'+c.kind+'</code></td></tr>'+
+      '<tr><td>'+(ext?'CLI 入口':'handler')+'</td><td>'+
+        (ext?(c.cli_help?'<code>'+c.cli_help+'</code>':'<span class="empty">技能未写 cliHelp</span>')
+            :(c.handler?'<code>'+c.handler+'</code>':'<span class="empty">注册表未写</span>'))+'</td></tr>'+
+      '<tr><td>需要授权</td><td>'+(ext?'<span class="empty">不适用（不走本仓那道门）</span>':scopes)+'</td></tr>'+
+      '<tr><td>'+(ext?'来源':'风险等级')+'</td><td>'+(ext?'Ark 云端（外部 CLI）':c.risk)+'</td></tr>'+
+      '</table></div>'+
+    callCard+
+    (ext?'':'<div class="card"><h3>结果</h3><pre id="out">（还没调用）</pre></div>')+
+    '<div class="sig">开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属</div>';
+  const go=document.getElementById('go');
+  if(go&&!dis)go.onclick=async()=>{
+    const out=document.getElementById('out'); out.textContent='调用中…';
+    let payload={};
+    const raw=(document.getElementById('pj').value||'').trim();
+    if(raw){try{payload=JSON.parse(raw)}catch(e){out.textContent='payload 不是合法 JSON：'+e.message;return}}
+    document.querySelectorAll('[data-param]').forEach(i=>{
+      const v=i.value.trim(); if(!v) return;
+      try{payload[i.dataset.param]=JSON.parse(v)}catch(e){payload[i.dataset.param]=v}});
+    try{
+      const r=await fetch('/api/capability',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({kind:c.kind,payload})});
+      out.textContent=JSON.stringify(await r.json(),null,2);
+    }catch(e){out.textContent='调用失败（原样显示，不美化）：'+e;}
+  };
+  sheet.classList.add('on');
+}
+window.closeCap=closeCap; window.openCap=openCap;
+window.applyPalette=applyPalette;
+applyPalette(PKEY);
+pollFeed();
+addEventListener('keydown',function(e){
+  const M={'1':'ochre','2':'cyan','3':'violet','4':'bio'};
+  if(M[e.key]) applyPalette(M[e.key]);
+});
+loop();
+</script>
+</body>
+</html>

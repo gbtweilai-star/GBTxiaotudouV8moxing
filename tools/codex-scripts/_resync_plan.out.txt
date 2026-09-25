@@ -1,0 +1,22 @@
+镜像现状 16 文件 · 工作区 21 文件（已排除 __pycache__）
+
+【新增 5】需写入镜像：
+   + ef_render.js                          4772B
+   + eigenflux/ef.js                       4142B
+   + ledger/sink.py                        7557B
+   + shell/features.cjs                   12788B
+   + tests/test_w9_features.cjs           18858B
+
+【覆盖 7】镜像落后：
+   ~ eigenflux/index.html               镜像  1645B → 工作区   2152B
+   ~ index.html                         镜像  5933B → 工作区  11059B
+   ~ ledger/ledger_store.py             镜像  7212B → 工作区  11488B
+   ~ shell/main.cjs                     镜像 29816B → 工作区  56437B
+   ~ shell/preload.cjs                  镜像  1067B → 工作区   2289B
+   ~ window.css                         镜像  9603B → 工作区  15047B
+   ~ window.js                          镜像 19205B → 工作区  35216B
+
+【一致 9】：README.md, h1/h1.css, h1/h1.js, h1/index.html, shell/layout.cjs, shell/windows.json, tests/run_tests.py, tests/test_brand_tokens.cjs, tests/test_layout_snap.cjs
+
+回灌后镜像 = 21 文件
+被排除的垃圾： ['ledger/__pycache__/ledger_store.cpython-314.pyc', 'ledger/__pycache__/sink.cpython-314.pyc']

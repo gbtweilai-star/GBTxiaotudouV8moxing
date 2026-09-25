@@ -92,10 +92,39 @@ def _classify(p: Path) -> str:
 
 
 def scan(fix: bool = False) -> dict:
-    """全息盘点：家的每一项都有归属。返回四分类清单 + 双视图对账。"""
+    """全息盘点：家的每一项都有归属。返回四分类清单 + 双视图对账。
+
+    R-H295 · ⑥ G1/G2：家的根不存在/读不了时返回**结构化拒绝** ——
+    原来 `_HOME.iterdir()` 会直接抛异常，调用方分不清"家不在"与"程序坏了"。
+    """
     t0 = time.time()
+    if not _HOME.is_dir():
+        return {
+            "ok": False,
+            "unavailable": True,
+            "denied": False,
+            "rule": "inventory_home_missing",
+            "action": "inventory.scan",
+            "missing": ["home"],
+            "why": "家的根不存在或不是目录：%s（盘不了点，不是没东西）" % _HOME,
+            "items": {}, "scanned": False,
+            "note": "盘点不了 ⇒ 没验成，不报『零游离物』。",
+        }
     items = {"framework": [], "environment": [], "data": [], "archive": [], "transient": [], "foreign": []}
-    for p in sorted(_HOME.iterdir()):
+    try:
+        entries = sorted(_HOME.iterdir())
+    except OSError as exc:
+        return {
+            "ok": False,
+            "unavailable": True,
+            "denied": False,
+            "rule": "inventory_home_unreadable",
+            "action": "inventory.scan",
+            "missing": ["read_permission"],
+            "why": "读家的根失败：%s: %s" % (type(exc).__name__, str(exc)[:160]),
+            "items": {}, "scanned": False,
+        }
+    for p in entries:
         if p.name in (".git",):
             continue
         cat = _classify(p)

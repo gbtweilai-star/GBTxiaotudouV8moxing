@@ -1,0 +1,7 @@
+persona_kernel 已登记: True | 能力总数: 142
+
+空参 -> op: constitution
+  版本: 4.0 | 外温: 10 | 内刚: 4 | 红线: 10
+
+行动闸 passive_waiting -> 主动律 | 好东西是抢来的。停止等待分配，立刻主动争取。
+表达闸 -> denied: True | 命中: ['no_chicken_soup', 'no_chicken_soup', 'no_preaching']

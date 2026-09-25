@@ -1,0 +1,40 @@
+@echo off
+title GBT小土豆 - Codex 通道自检
+cd /d "%~dp0.."
+set "PY="
+call :probe python
+call :probe py -3
+call :probe "C:\Python310\python.exe"
+call :probe "C:\Python311\python.exe"
+call :probe "C:\Python312\python.exe"
+call :probe "C:\Python313\python.exe"
+if not defined PY (
+  echo [错误] 未找到可用的 Python，请先安装 Python 3.10+ 并加入 PATH。
+  echo.
+  pause
+  exit /b 1
+)
+echo 使用解释器: %PY%
+echo.
+echo 正在自检 Codex 通道（真实回合会消耗少量额度）...
+echo.
+%PY% -m gbt_allinone.codex_bridge --live
+set "RC=%ERRORLEVEL%"
+echo.
+if "%RC%"=="0" (
+  echo [全绿] 定位、握手、建会话、真实回复四步全部跑通。
+) else (
+  echo [未全绿] 若前三步通过、只有 turn_stream 失败，通常是未登录或网络不通：
+  echo          先在终端执行  codex login  再重试。
+  echo          若 locate 就失败，说明本机还没装 Codex。
+)
+echo.
+pause
+exit /b %RC%
+
+:probe
+if defined PY goto :eof
+"%~1" %~2 -c "import encodings, sys" >nul 2>nul
+if errorlevel 1 goto :eof
+set "PY="%~1" %~2"
+goto :eof

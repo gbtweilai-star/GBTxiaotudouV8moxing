@@ -20,13 +20,26 @@ _mod = None
 
 
 def _get():
-    """懒加载 cloud_llm 模块（单例）。"""
+    """懒加载 cloud_llm 模块（单例）。
+
+    ⚠️ 2026-09-19 修（模块1 语义路径实测撞出来的）：
+    旧写法用 `spec_from_file_location("_cloud_llm_v8", …)` 把 cloud_llm.py 当**裸文件**加载，
+    模块没有父包 ⇒ `cloud_llm._safe_json()` 里的 `from ..security import net_guard` 必然抛
+    `attempted relative import with no known parent package`。
+    因为那条相对导入在 `_safe_json()` 里（**只在真发请求时执行**），所以 `llm_status`
+    这种不联网的调用看着一直是好的 —— **故障只在真调用时现形**，属于最难发现的一类。
+    改法：优先走包内正规加载；只有在包加载不可用时，才退回旧的裸文件加载。
+    """
     global _mod
     if _mod is None:
-        import importlib.util as iu
-        spec = iu.spec_from_file_location("_cloud_llm_v8", str(_HERE / "cloud_llm.py"))
-        _mod = iu.module_from_spec(spec)
-        spec.loader.exec_module(_mod)
+        try:
+            from . import cloud_llm as _pkg_mod
+            _mod = _pkg_mod
+        except Exception:  # noqa: BLE001
+            import importlib.util as iu
+            spec = iu.spec_from_file_location("_cloud_llm_v8", str(_HERE / "cloud_llm.py"))
+            _mod = iu.module_from_spec(spec)
+            spec.loader.exec_module(_mod)
     return _mod
 
 

@@ -1,0 +1,30 @@
+{
+ "时间": "2026-09-24T04:49:09",
+ "带现状": true,
+ "沙箱": "read-only",
+ "任务": "生成一个 Stable Diffusion OpenPose+LoRA 的 ComfyUI 自动化工作流模板，并说明如何与 GBT小土豆V8 框架协作实现免费无限生产",
+ "提示字数": 8730,
+ "第一次": {
+  "exit": 0,
+  "耗时s": 607.9,
+  "命中冷却": true
+ },
+ "换钉": {
+  "ok": true,
+  "status": "already",
+  "钉的": "auto",
+  "读数": {
+   "活": true,
+   "状态": 200,
+   "status": "completed",
+   "落到": "meta/muse-glimmer-30b",
+   "耗时s": 4.3
+  }
+ },
+ "重试一次": {
+  "exit": 0,
+  "耗时s": 166.4
+ },
+ "答复": "**现状回顾（已验过的别重做）**\n\n- 万能插默认已生效：`~/.codex/AGENTS.md` 已写进上下文，且实测问答能按 `five-dim.py cap` 回复【已验】\n- Codex 可控通道 `codex-drive.py` 已验证：`--state` 带内存、`429` 自动换钉重试、只读沙箱【已验】\n- OpenPose+LoRA 三件套 + CPU ComfyUI 闭环已真跑：Realistic_Vision_V5.1 / control_openpose-fp16 / lcm-lora-sdv1-5，8步 1366.3 s，出图 281,703 B【已验】\n- 硬件天花板已知：本机无 CUDA、物理内存 7.4 GB、可用 0.4–0.8 GB，不能做“无限实时”。上云只能换算力，不可把三件套拆两台云【已验】\n\n**落地模板（不重做已验件）**\n\n**1. 工作流 JSON 骨架（可直接塞 ComfyUI，用 `comfy-pose-lora.py build()` 规则）**\n```\nCheckpointLoaderSimple -> [4,0/1/2]\n ├─ LoraLoader(lcm-lora-sdv1-5.safetensors, strength_model=0.8)\n │   └─ model/clip 源自 LoraLoader\n ├─ CLIPTextEncode(pos) / CLIPTextEncode(neg)\n └─ ControlNetLoader(control_openpose-fp16.safetensors)\n     └─ LoadImage(pose.png)\n         └─ ControlNetApplyAdvanced(strength=1.0, start=0.0, end=0.9, vae=[4,2])\n             └─ KSampler(seed, steps=8, cfg=2.0, sampler=lcm, scheduler=sgm_uniform, model=[13,0], positive/negative from CN)\n                 └─ VAEDecode -> SaveImage(prefix=gbt_pose_lora)\n```\n- 关键约束：ControlNetApplyAdvanced 没有 `model/clip` 输入，model/clip 只在 LoraLoader/KSampler 里传。`scheduler` 实测用 `sgm_uniform`，`end_percent` 0.9。\n- 模型名一律问服务：`GET /object_info` 现算，不写死文件名。\n\n**2. 与 GBT小土豆V8 协作的唯一门**\n- 路由：`python tools/codex-scripts/omni.py \"<人话>\"` → 返回 `five-dim.py cap <能力位> '{...}'`\n- 执行：`python tools/codex-scripts/five-dim.py cap <能力位> '{\"op\":\"...\",...}'`\n- 生产/镜像写必须声明落点 `room=\"<房间名>\"` 或 `into_global_production=true`，并经主人授权。禁止直调 `gbt_allinone` 模块函数。\n\n**3. 免费“无限”生产的可行解（匹配本机与框架）**\n- 本机只做轻量段：OpenPose 骨架生成（`openpose-skeleton.py`）+ 提示词路由 + 结果验收。扩散段若走本机，8步≈22.8 分钟/图，非无限。\n- “无限”来自两点：① 用 `genrouter.py` 跨免费推理池轮换 + `freellm-alive.py pin` 掉线自动换钉；② 把扩散段放到一台 GPU ComfyUI 后端（云或本地），前端仍走万能插 `run_task`。`gen_comfy` 只要改 `base` URL，工作流结构不变。\n- 不可行的：把 ControlNet/LoRA/底模拆到两台云做去噪，或用 Cloudflare Workers 做图像 LoRA/ControlNet（Workers 仅 LLM LoRA，无图像 ControlNet）。\n\n**4. 立即可复跑的命令**\n```\npython tools/codex-scripts/comfy-pose-lora.py --probe\npython tools/codex-scripts/comfy-pose-lora.py --pose render/comfy-pose/gbt-pose-stand-std.png --prompt \"photo of a young woman standing, full body, cinematic light\" --steps 8 --cfg 2.0 --sampler lcm\n```\n验收依据：`prompt_id` + `status_str: success` + `elapsed_s` + 输出文件 sha256 前 8 位 + 姿态叠加图是否对齐。\n\n**未验/不做**\n- `--write` 模式未验，不让 Codex 写盘；需要写盘先走主人授权。\n- 身份 LoRA 未有，本机不训；检测器仅 body，手指/面部权重未下。\n- P0 三条 git 索引问题（`SECRET_IN_INDEX` 等）仍未动，等主人点头。\n\n需要我把 `comfy-pose-lora.py` 的 `build()` 参数映射成一份可直接复制的 workflow JSON 吗？\n",
+ "成败": "✅ 拿到答复"
+}

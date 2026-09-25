@@ -19,9 +19,18 @@
     return e;
   }
 
+  /* 时间戳一律按**本机时区**上屏。原先 `String(v).replace("T"," ").slice(0,16)` 是拿
+   * features.cjs::toIso 的 UTC ISO 串直接切前 16 位 —— 那串不但早于本地时间，
+   * 还被切掉了末尾的 Z，屏上没有任何东西提示它是 UTC（实测 Shanghai 口径差 8 小时，
+   * 且跨零点的 friend_since 会整整差一天）。坏值原样回显，不许编一个时间出来。 */
   function stamp(v) {
     if (!v) return null;
-    return String(v).replace("T", " ").slice(0, 16);
+    var d = new Date(String(v));
+    if (isNaN(d.getTime())) return String(v).slice(0, 16);
+    return d.toLocaleString("zh-CN", {
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", hour12: false,
+    }).replace(/\//g, "-");
   }
 
   function tag(text) { return el("span", "ef-tag", text); }
@@ -59,7 +68,9 @@
     card.appendChild(head);
     if (row.remark) card.appendChild(el("div", "ef-content", row.remark));
     card.appendChild(el("div", "ef-meta",
-      row.friend_since ? ("成为好友 " + String(row.friend_since).slice(0, 10)) : "成为好友时间：未记"));
+      row.friend_since
+        ? ("成为好友 " + (stamp(row.friend_since) || "").slice(0, 10))
+        : "成为好友时间：未记"));
     return card;
   }
 

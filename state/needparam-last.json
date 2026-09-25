@@ -1,0 +1,135 @@
+{
+ "逐位": {
+  "browser": {
+   "判决": "🟠 环境未就绪（分支跑了 · 条件缺）",
+   "详情": {
+    "status": "needs_browser_debug",
+    "还返回了什么": [
+     "action",
+     "actions",
+     "backend",
+     "browser",
+     "browser_executable",
+     "cap",
+     "cdp_available",
+     "endpoint"
+    ]
+   },
+   "payload": {
+    "op": "native",
+    "action": "status"
+   },
+   "rc": 0,
+   "秒": 4.4,
+   "为什么这条安全": "框架注册表自己声明的只读路（caps_registry：「只读路请写 op=native + action=status」）",
+   "出网": "不出网：读本机原生浏览器窗口状态",
+   "命令": "python tools/codex-scripts/five-dim.py cap browser '{\"op\": \"native\", \"action\": \"status\"}'"
+  },
+  "osint_scan": {
+   "判决": "🔒 被门拒·缺授权",
+   "详情": {
+    "missing_scopes": [
+     "osint_private"
+    ],
+    "reason": "需要人工授权（osint_private）：OSINT 扫描自有内网/保留地址（一次性授权）"
+   },
+   "怎么解": [
+    "终端运行: python -m gbt_allinone auth grant --scope osint_private --ttl 600",
+    "或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）"
+   ],
+   "payload": {
+    "target": "127.0.0.1"
+   },
+   "rc": 1,
+   "秒": 0.3,
+   "为什么这条安全": "回环地址；api.py 用 classify_target() 判定 private ⇒ allow_private=True，**不出网**",
+   "出网": "不出网：只扫本机回环",
+   "命令": "python tools/codex-scripts/five-dim.py cap osint_scan '{\"target\": \"127.0.0.1\"}'"
+  },
+  "topic_watch": {
+   "判决": "✅ 通（给参后真跑通）",
+   "详情": {
+    "键": [
+     "engine_gaps",
+     "engine_ok",
+     "engine_present",
+     "engine_redlines_ok",
+     "intent_rows",
+     "ok",
+     "ops",
+     "processes_added",
+     "skills_on_disk",
+     "timer_carrier"
+    ]
+   },
+   "payload": {
+    "op": "status"
+   },
+   "rc": 0,
+   "秒": 1.5,
+   "为什么这条安全": "只读 op（topic_watch.run 的 op=status 分支）；**不是**默认那条要 need 的 route",
+   "出网": "不出网：读话题追踪的现状",
+   "命令": "python tools/codex-scripts/five-dim.py cap topic_watch '{\"op\": \"status\"}'"
+  },
+  "brain_execute": {
+   "判决": "✅ 通（给参后真跑通）",
+   "详情": {
+    "键": [
+     "elapsed_ms",
+     "kind",
+     "ok",
+     "result",
+     "status"
+    ]
+   },
+   "payload": {
+    "kind": "count_words",
+    "text": "a b c"
+   },
+   "rc": 0,
+   "秒": 0.2,
+   "为什么这条安全": "执行对象是 **count_words**（零作用域只读位，纯本地计数）",
+   "出网": "不出网、不改状态",
+   "命令": "python tools/codex-scripts/five-dim.py cap brain_execute '{\"kind\": \"count_words\", \"text\": \"a b c\"}'"
+  },
+  "brain_unify": {
+   "判决": "✅ 通（给参后真跑通）",
+   "详情": {
+    "键": [
+     "chain",
+     "elapsed_s",
+     "goal",
+     "kind",
+     "note",
+     "ok"
+    ]
+   },
+   "payload": {
+    "goal": "统计词数",
+    "kind": "count_words",
+    "text": "x y"
+   },
+   "rc": 0,
+   "秒": 3.0,
+   "为什么这条安全": "同上，统一入口指向零作用域只读位 count_words",
+   "出网": "不出网、不改状态",
+   "命令": "python tools/codex-scripts/five-dim.py cap brain_unify '{\"goal\": \"统计词数\", \"kind\": \"count_words\", \"text\": \"x y\"}'"
+  }
+ },
+ "合计": {
+  "🟠 环境未就绪（分支跑了 · 条件缺）": 1,
+  "🔒 被门拒·缺授权": 1,
+  "✅ 通（给参后真跑通）": 3
+ },
+ "🔴 本轮新露出来的作用域（**空参探时看不见**）": {
+  "怎么露的": "空参时这些位**先卡在参数校验**，根本走不到门 ⇒ 作用域永远不出现；给参之后门才发声",
+  "逐位": {
+   "osint_scan": [
+    "osint_private"
+   ]
+  },
+  "对账的影响": "「缺授权按作用域」那张表若只按**空参探**生成，会**漏掉这些作用域**（实测：`osint_scan` → `osint_private`）"
+ },
+ "读法": "「✅ 通」= 给参后真跑通 ·「🟠 环境未就绪」= 分支跑了、条件缺（**不是坏**）· 「🟡 仍是缺参」= 还要别的参 ·「🔒 被门拒」= 从缺参改判成缺授权",
+ "at": "2026-09-25T03:17:45"
+}

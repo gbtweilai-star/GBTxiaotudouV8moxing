@@ -1,0 +1,40 @@
+# 形态 B · gbt-c06-tool-shell（生成物，不要手改）
+name = "gbt-c06-tool-shell"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[[services]]
+binding = "PEER_01"
+service = "gbt-c01-llm-gateway"
+
+[[services]]
+binding = "PEER_02"
+service = "gbt-c02-context-compact"
+
+[[services]]
+binding = "PEER_03"
+service = "gbt-c03-uncensored-lane"
+
+[[services]]
+binding = "PEER_04"
+service = "gbt-c04-tool-web"
+
+[[services]]
+binding = "PEER_05"
+service = "gbt-c05-tool-file"
+
+[[services]]
+binding = "PEER_07"
+service = "gbt-c07-memory-vector"
+
+[[services]]
+binding = "PEER_08"
+service = "gbt-c08-memory-local"
+
+[[services]]
+binding = "PEER_09"
+service = "gbt-c09-policy-guard"
+
+[[services]]
+binding = "PEER_10"
+service = "gbt-c10-observability"

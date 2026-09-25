@@ -1,0 +1,15 @@
+A0 主线程（未进入会话）                                  is_trusted=False expect=False PASS
+A1 主线程（已进入会话）                                  is_trusted=True  expect=True  PASS
+A2 子线程（父线程已进入会话）                               is_trusted=False expect=None  FAIL
+A3 子线程（自己包 owner_session）                      is_trusted=True  expect=True  PASS
+A4 主线程（会话已退出）                                  is_trusted=False expect=False PASS
+B1 线程池 worker（父线程已进入会话）                        is_trusted=False expect=None  FAIL
+B2 线程池 worker（自己包 owner_session）               is_trusted=True  expect=True  PASS
+C1 copy_context().run 进子线程                     is_trusted=False expect=None  FAIL
+D1 主线程（未进会话，仅环境变量）                             is_trusted=True  expect=True  PASS
+D2 子线程（仅环境变量）                                  is_trusted=True  expect=True  PASS
+D3 线程池 worker（仅环境变量）                           is_trusted=True  expect=True  PASS
+E1 会话线程内再开孙线程                                  is_trusted=False expect=None  FAIL
+F1 伪 _run_turn（不在会话内）                          is_trusted=False expect=False PASS
+F2 伪 _run_turn（自己包 owner_session）              is_trusted=True  expect=True  PASS
+VERDICT: FAIL (14 items, 4 FAIL)

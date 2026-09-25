@@ -24,39 +24,128 @@ from omni_domain import OmniDomainMixin  # noqa: F401
 from omni_read import OmniReadMixin  # noqa: F401
 from omni_window import OmniWindowMixin  # noqa: F401
 from omni_process import OmniProcessMixin  # noqa: F401
+# 读网域（2026-09-22 新增，第 8 域）：网页结构化读取 + 自适应元素重定位 + 真出网抓取。
+# 来历：风哥「抓取能力融合进触手」+「没有就补齐必须有读网能力」。
+# 技术提炼自 D4Vinci/Scrapling（BSD-3）的 adaptive scraping，**我们自己重写、零第三方依赖**；
+# 抓取礼仪按 **RFC 9309**（robots.txt）与 **RFC 9110**（HTTP 语义）实现，不自己发明规矩。
+# ⚠️ 该域的 web_fetch / web_read 是**真出网**动作，不在 policy.py 的 _READ_ONLY_TENTACLE 里
+#    ⇒ 当前口径下要 desktop_control。门只有一处，不许在这里私自放宽。
+from omni_web import OmniWebMixin  # noqa: F401
+# 文件域（2026-09-22 新增，第 9 域）：复制/移动/改名/删除/新建/打开/定位/读写文本。
+# 来历：风哥「必须能像人类一样使用触手操控电脑上的任何东西」——
+# 实测触手此前 `shutil.copy`/`os.rename`/`os.remove`/`os.startfile`/`explorer.exe` **全无命中**，
+# 而人用电脑有一半时间在跟文件打交道，这块空着就不成立。
+# 纪律：删除**默认进回收站**（SHFileOperationW + FOF_ALLOWUNDO，实测通）；
+#       默认不覆盖；支持 dry_run；回收站失败**如实报错，绝不偷偷降级成永久删**。
+# ⚠️ 写盘动作，不在 _READ_ONLY_TENTACLE 里 ⇒ 当前口径要 desktop_control；
+#    要不要给触手文件动作单列 filesystem_write，是主人改 policy.py 的事。
+from omni_fs import OmniFsMixin  # noqa: F401
+# 音频域（2026-09-22 新增，第 10 域）：听与说。
+# 来历：风哥给了 xiaozhi-esp32-server（MIT）让「蒸馏提炼来合适自己使用的能力」——
+# 它是 ESP32 语音设备后端，核心是 VAD→ASR→LLM→TTS 的实时语音流水线，
+# 正好补我们实测出来的「听觉没有实现」缺口。
+# 按**本机实测**决定落法（不照抄它的依赖）：无 sounddevice/pyaudio ⇒ 采集自研；
+# 有 winsound + win32com ⇒ 播放/SAPI 说话零新依赖；无 onnxruntime ⇒ VAD 用轻量能量+过零率版。
+# ⚠️ **采集未落地**（本机 waveInGetNumDevs=0，真的没有麦克风），做不到就如实报，不放假音频。
+from omni_audio import OmniAudioMixin  # noqa: F401
 
 
-class OmniTentacle(OmniVisionMixin, OmniMouseMixin, OmniKeyboardMixin, OmniDomainMixin, OmniReadMixin, OmniWindowMixin, OmniProcessMixin):
-    """万能触手 — 无护栏，无限制，直连硬件 (7域mixin聚合)"""
+class OmniTentacle(OmniVisionMixin, OmniMouseMixin, OmniKeyboardMixin, OmniDomainMixin, OmniReadMixin, OmniWindowMixin, OmniProcessMixin, OmniWebMixin, OmniFsMixin, OmniAudioMixin):
+    """万能触手 — 无护栏，无限制，直连硬件 (10域mixin聚合)"""
+
+    # ── R-H295 · ⑥ G1/G2：聚合体的**统一派单口** ──────────────────────────
+    # 《触手覆盖矩阵.md》§三：手组 9 个模块里只有 4 个能报"做不了"。
+    # 本文件此前**一个失败形状都没有** —— 它只把 7 个 mixin 拼起来，自己不表态。
+    # 后果：调用方写 `getattr(t, name)` 时，**方法名打错**会得到一个 AttributeError
+    # （不是"没这个能力"），而方法内部抛错会原样穿出去 —— 两种"做不了"都没形状。
+    # 下面这一口把两件事都收住：不认识的 action ⇒ `tentacle_unknown_action`（并列出可用名），
+    # 抛错 ⇒ `tentacle_action_failed`（带异常类型与原因）。**不吞错、不假装成功。**
+    def available_actions(self) -> list:
+        """本聚合体现在真有哪些方法（去重、去掉下划线的内部件）。"""
+        names = set()
+        for cls in type(self).__mro__:
+            for k, v in vars(cls).items():
+                if k.startswith("_") or not callable(v):
+                    continue
+                names.add(k)
+        return sorted(names)
+
+    def invoke(self, action: str, *args, **kwargs) -> dict:
+        """按名字派单，**永不抛异常**：失败一律返回结构化拒绝。
+
+        与 `tentacle.bridge.invoke` 的分工：那一层是能力层的入口（走 run_task 的门），
+        这一口是**触手本体**的派单口 —— 名字对不对、方法内部炸没炸，都要有形状。
+        """
+        name = str(action or "").strip()
+        if not name:
+            return refusal("tentacle_action_required", "没给 action", ["action"],
+                           "invoke", available=self.available_actions()[:40])
+        fn = getattr(self, name, None)
+        if not callable(fn):
+            return refusal("tentacle_unknown_action",
+                           "触手没有这个方法：%r（不会静默当成别的）" % name,
+                           ["action"], "invoke", available=self.available_actions()[:40])
+        try:
+            r = fn(*args, **kwargs)
+        except Exception as exc:  # noqa: BLE001
+            return refusal("tentacle_action_failed",
+                           "%s: %s" % (type(exc).__name__, str(exc)[:180]),
+                           [], name, exc_type=type(exc).__name__)
+        return r
 
 
 
-TENTACLE_MANIFEST = """## 触手能力总纲 — 你的眼睛·耳朵·双手(85项+三通道感官)
+TENTACLE_MANIFEST = """## 触手能力总纲 — 你的眼睛·双手·读网(8域)
 
-你是GBT小土豆。你不是盲的、不是聋的、不是残的。你拥有完整的三通道感官系统(全部本机硬件直连同源):
+你是GBT小土豆。你拥有完整的**视觉**与**操控**能力，视觉与显示屏同源（DXGI 直读显卡帧缓冲），
+操控可经 UIA 直操作穿透遮挡（domain_act/domain_type/domain_index）。
+
   👁 视觉: DXGI直读显卡帧缓冲 = 与显示屏同源, 大脑看到的=人类看到的 (vision_buffer大脑影院)
-  👂 听觉: WASAPI回环 = 与扬声器同源, 能听电脑播放的任何声音 (audio_buffer听觉影院)
   🖐 操作: cyborg五维合一穿透 = UIA直操作无视遮挡 (domain_act/domain_type/domain_index)
+  🌐 读网: web_read/web_fetch 真出网读原始 HTML + web_adaptive 页面改版后仍能找回元素
 
-你通过omni_tentacle拥有完整的视觉、听觉和操控能力。
+⚠️ **听觉：一半补上了，另一半仍然没有**（2026-09-22 实测更正）
+   本清单此前写着「👂 听觉: WASAPI回环 = 与扬声器同源, 能听电脑播放的任何声音」—— 那是**假的**。
 
-### 视觉(9): see, see_active_window, see_window, list_windows, screenshot, live, screenshot_diff, wait_for_change, wait_stable
-### 读屏(6): read_text, read_text_fast, find_text, read_region_text, grab_value, grab_table
-### 点击(6): click, double_click, right_click, click_text, click_relative, drag
-### 键盘(10): type, press, hotkey, enter, select_all, undo, copy, paste, cut, tab, escape, type_to_field
-### 滚动(4): scroll, scroll_find, scroll_to_bottom, scroll_to_top
-### 追溯(3): trace_source(x,y), trace_text(t), trace_window_chain
-### 剪贴板(4): clipboard_read, clipboard_write, clipboard_copy, copy_text_at
-### 弹窗(3): detect_dialog, dismiss_dialog, handle_any_dialog
-### 进程(4): launch, kill, process_list, app_running
-### 等待(5): wait_window, wait_window_gone, wait_text, wait_for_change, wait_stable
-### 链式(2): chain([...]), monitor(triggers,duration)
-### 自诊断(2): self_diagnose(), self_diagnose_text() — 扫描自身短板+依赖检测+修复建议
-### 任务指引(6): task_guide_load(), task_guide_check(), task_guide_complete(), task_guide_status(), task_guide_next(), task_guide_drift_report() — 思维导图任务轨道·防偏航·自动纠偏
-### 位置(2): position, screen_size
+   现在**真有**的（第 10 域 audio）：
+     · 🔊 说话：`audio_speak`（Windows SAPI，本机实测 3 个发音人）、`audio_voices`
+     · ▶️ 播放：`audio_play_wav` / `audio_beep` / `audio_stop`（winsound，stdlib）
+     · 🎛 设备：`audio_devices`（winmm，本机实测：扬声器 Realtek ×1、录音设备 **0**）
+     · 📊 基础件：`audio_wav_info`（WAV 头解析）、`audio_vad_energy`（**轻量** VAD）
+     · 👂 **听电脑在放什么：`audio_loopback`（WASAPI 回环）—— 本机实测已通！**
+       走 `wasapi_loop.py`（comtypes 手写 COM，零新增依赖）。实测：48000Hz/2ch/32bit，
+       放 440Hz 音时抓到**峰值 32767、均方根 17750.8（非静音）**，落 WAV 复读一致。
+       依据 Microsoft Learn《Loopback Recording》：`GetDefaultAudioEndpoint` 用 `eRender`、
+       `Initialize` 加 `AUDCLNT_STREAMFLAGS_LOOPBACK`、**只能共享模式**。
+
+   现在**仍然没有**的（遇到就说做不到）：
+     · ❌ **麦克风** —— 准确口径（按 WASAPI 状态掩码实测）：**活动录音端点 = 0**，
+       在册 5 个（DISABLED 1 / NOTPRESENT 3 / UNPLUGGED 1）。
+       ⚠️ **不是「没有麦克风硬件」，也不是「有麦克风」** —— 这两种说法我都说过，**都不准**。
+       要启用得主人去「声音设置 → 录制 → 显示禁用的设备」里开；**那是改系统设置，我们不代劳**。
+     · ❌ **流式 ASR/TTS 与实时打断（barge-in）** —— 只有"整段"，没有分块
+     · ❌ **声纹识别**（分不清是谁在说）· ❌ **ASR 语音转文字**（本机无 funasr/sherpa，SAPI 识别未接）
+     · ⚠️ `audio_vad_energy` **不是 SileroVAD**，是零依赖轻量替身，噪声环境误判率高
+
+### 视觉(12): see, see_active_window, see_window, list_windows, screenshot, live, screenshot_diff, vision_diff, vision_snapshot, vision_stream_record, vision_stream_replay, wait_for_change
+### 读屏(7): read_text, read_text_fast, read_console, find_text, read_region_text, click_text, wait_text
+### 点击(15): click, double_click, right_click, right_click_text, click_text, click_relative, drag, move, scroll, position, screen_size, focus_window, act_window, click_window, click_window_occluded, type_to_window
+### 键盘(16): type, press, hotkey, enter, select_all, undo, copy, paste, cut, tab, escape, type_to_field, clipboard_read, clipboard_write, clipboard_copy, copy_text_at
+### 窗口等待监控(19): wait_window, wait_window_gone, wait_stable, wait_for_change, monitor, chain, on_dialog, on_text, watch_any, watch_click, watch_sequence, detect_dialog, dismiss_dialog, handle_any_dialog, scroll_find, scroll_to_bottom, scroll_to_top, get_log, clear_log, export_data
+### 进程(14): launch, kill, process_list, app_running, diagnose, deep_diagnose, self_diagnose, self_diagnose_text, task_guide_*(6)
+### 域操控(12): domain_act, domain_read, domain_type, domain_index, extract_ui_elements, grab_region, grab_pixel, grab_table, grab_value, trace_source, trace_text, trace_window_chain
+### 读网(8): web_read, web_fetch, web_parse, web_select, web_save, web_adaptive, web_text, web_stats
+### 文件(12): file_list, file_info, path_exists, file_copy, file_move, file_rename, file_delete, dir_create, file_open, file_reveal, file_read_text, file_write_text
+   —— 删除**默认进回收站**（删错能捞回来）；默认不覆盖；会改盘的动作都认 dry_run=True（干跑只算不动）
+
+🔴 **已知缺口（不许假装会做，遇到就说"还没这个能力"）**：
+   · 窗口动作：**没有** 最小化/最大化/还原/关闭/移动/改尺寸
+   · 系统级：**没有** 锁屏/睡眠/关机/音量/亮度
+   · 听觉：**没有**（见上）
+   · 通用文件对话框（打开/保存那种）：**没有**专门处理，只能靠 detect_dialog + 键盘硬填
 
 铁律: ①先看再动 ②动后等稳定 ③找不到就滚 ④遇弹窗必关 ⑤每步亲眼验证 ⑥不确定就对比前后截图
-你是全感知AI。触手就是你的眼睛和双手。不要假想你做不到的事。
+你是全感知AI。触手就是你的眼睛和双手。**不要假想你做不到的事 —— 上面那份缺口清单就是"做不到"的边界。**
 """
 
 _omni = None

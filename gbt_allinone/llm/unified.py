@@ -1,0 +1,77 @@
+# -*- coding: utf-8 -*-
+"""GBT小土豆V8 · 统一大模型入口（Owner 2026-09-19 拍：**全部统一大模型**）。
+
+为什么要有这一层（读数）：改造前框架内有**五条**各自直连模型通道的路径 ——
+  `api.py:240` · `autopilot.py:65` · `pipeline.py:93` · `devour.py:636` · `drama.py:170`
+同一个能力五张脸 ⇒ 换模型、调重试、加审计、查"谁在出网"都要改五处，且**必然漂移**
+（§2.2 的 40/95 覆盖率漂移就是这个形态）。
+
+本模块是**唯一实现**：provider 解析、重试、审计落点、返回形态归一，全在这一处。
+
+分工（Owner 口径）：**通道统一** + **各模块只管自己那段的细节**
+（提示词、语义校验、字段契约）。模块不许再自己 import `bridge` 直连。
+
+授权口径：`external_llm` 人工授权门装在 **cap 边界**（`api.run_task("llm_chat")`），
+不在这一层 —— 因为框架内部调用（autopilot/pipeline/devour/drama）走的是主人会话，
+与 `llm_chat` 对外入口是**同一条实现、不同入口**。要不要把门也装到内部调用上，
+属于安全策略变更，**待 Owner 拍**（2026-09-19 已如实登记为观察项）。
+"""
+from __future__ import annotations
+
+import time
+
+PATH = "llm_unified"
+
+# 统一大模型（Owner 2026-09-19 指定 · Custom Provider）：
+#   Base URL https://apihub.agnes-ai.com/v1 · 模型 agnes-2.5-flash
+# 口径出处是 `cloud_llm._KEY_CHAIN` 的第一行（**不在这里再写一份地址** ——
+# 地址只有一处真相；本处只声明"期望落到谁身上"并**如实报漂移**）。
+EXPECTED_PROVIDER = "agnes"
+EXPECTED_MODEL = "agnes-2.5-flash"
+
+
+def ask(prompt, system="", model=None, temperature=0.7, max_tokens=2000,
+        timeout=60, purpose="generic", **_ignored):
+    """统一调用口。返回与旧 `bridge.chat` 同形（ok/reply/provider/model），多一个 `path`。
+
+    审计只落**元数据**（谁调的、哪个 provider/model、多少字符、耗时、成没成），
+    **不落提示词与回复正文** —— 与"正文不入档"的既有纪律一致。
+    """
+    from . import bridge as LB
+    t0 = time.time()
+    r = LB.chat(prompt, system=system, model=model, temperature=temperature,
+                max_tokens=max_tokens, timeout=timeout)
+    if not isinstance(r, dict):
+        r = {"ok": False, "error": f"桥返回非 dict: {type(r).__name__}"}
+    # 漂移如实报：统一大模型说好是 agnes-2.5-flash，落到别人身上要看得见（不静默降级）。
+    via = str(r.get("provider") or "")
+    drift = bool(r.get("ok")) and via != EXPECTED_PROVIDER
+    try:
+        from ..store import audit
+        audit("llm_unified", {
+            "purpose": purpose or "generic",
+            "ok": bool(r.get("ok")),
+            "provider": via or None,
+            "model": r.get("model"),
+            "expected": EXPECTED_PROVIDER,
+            "drift": drift,
+            "prompt_chars": len(str(prompt or "")),
+            "reply_chars": len(str(r.get("reply") or "")),
+            "ms": int((time.time() - t0) * 1000),
+        })
+    except Exception:  # noqa: BLE001
+        pass          # 审计失败不许反向打断调用；但也不吞掉调用结果
+    return {**r, "path": PATH, "expected": EXPECTED_PROVIDER, "drift": drift}
+
+
+# 旧调用点写的是 `X.chat(...)`：保留同名别名，原地可换，不必改参数。
+chat = ask
+
+
+def status():
+    """统一口自述：谁在使用它、唯一实现落在哪。"""
+    return {"ok": True, "path": PATH,
+            "impl": "gbt_allinone/llm/unified.py::ask",
+            "chain_below": "gbt_allinone/llm/bridge.py -> llm/cloud_llm.py",
+            "note": "框架内所有模块必须经此口调用模型；模块自己 import bridge 视为漂移。",
+            "gate": "external_llm 人工授权门装在 cap 边界（api.run_task('llm_chat')）"}

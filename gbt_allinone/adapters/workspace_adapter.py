@@ -1,4 +1,4 @@
-﻿"""Workspace 量化交易平台集成适配器（安全版）。
+"""Workspace 量化交易平台集成适配器（安全版）。
 
 对接项目 C:\\Users\\ADMIN\\Desktop\\Workspace（GBT 量化交易平台）。
 只读、不读取 .env / 密钥 / 敏感配置；不集成任何危险能力。
@@ -44,7 +44,16 @@ def modules():
         return {"quant_dir": str(QUANT_DIR), "modules": []}
     mods = sorted(d.name for d in QUANT_DIR.iterdir() if d.is_dir())
     files = sorted(f.name for f in QUANT_DIR.rglob("*.py") if "__pycache__" not in f.parts)
-    return {"quant_dir": str(QUANT_DIR), "module_dirs": mods, "py_files": files[:120], "count": len(files)}
+    # 🔴 2026-09-22 第 42 轮修（错报治理 · **同一个字典里两个数不一致却不解释**）：
+    #    `py_files` 被切成前 120 个，而 `count` 是**全量** `len(files)`。
+    #    读的人看到 count=350 却只数出 120 个名字，无从判断"是数据不对、还是被截了"。
+    #    ⇒ 明说这一段是"前 N 个"，并给出截断旗（形状照 `tentacle/omni_fs.py:162` 的样板）。
+    return {"quant_dir": str(QUANT_DIR), "module_dirs": mods,
+            "py_files": files[:120], "py_files_shown": min(len(files), 120),
+            "py_files_truncated": len(files) > 120, "count": len(files),
+            "count_note": ("count=py 文件总数；py_files 只列前 120 个"
+                           + ("（**本次被截断**，还有 %d 个没列）" % (len(files) - 120)
+                              if len(files) > 120 else "（未截断）"))}
 
 
 def health():

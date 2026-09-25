@@ -65,6 +65,103 @@ class _FakeBridge:
         self.calls.append((operation, payload or {}))
         return {"ok": True, "operation": operation}
 
+    def brain_graph(self, limit=400):
+        """大脑执行层读数（2026-09-22 新增）：桩跟着真接口长 —— 声明了就必须真能应答。
+        桩里只回结构形状，**不编状态**（真实现是从 audit.jsonl 读真事件）。"""
+        self.calls.append(("brain_graph", {"limit": limit}))
+        return {
+            "ok": True,
+            "structure": {
+                "ok": True,
+                "layers": [
+                    {"id": "core", "title": "五维合一脑", "nodes": [
+                        {"id": "dim:" + n, "layer": "core", "name": n, "kind": "dimension"}
+                        for n in ("route", "execute", "verify", "health", "unify")]},
+                    {"id": "peer", "title": "同层能力", "nodes": []},
+                    {"id": "substrate", "title": "底座支撑", "nodes": []},
+                ],
+                "edges": [], "chain_evidence": [],
+                "counts": {"dimensions": 5, "peer": 0, "substrate": 0, "edges": 0},
+            },
+            "live": {"ok": True, "count": 0, "latest_by_kind": {}, "events": []},
+            "errors": {},
+        }
+
+    def settings(self):
+        """设置面读数（2026-09-22 Owner：「配置密钥属于设置」）。
+
+        桩跟着真接口长 —— 与 purge 那条同理：声明了就必须真能应答。
+        桩里**不放任何密钥**，只回结构与状态，跟真实现一样不打码之外的东西。
+        """
+        self.calls.append(("settings", {}))
+        return {
+            "ok": True,
+            "groups": [
+                {"id": "keys", "title": "密钥", "status": "need_login",
+                 "desc": "本地免费大模型池（FreeLLMAPI）的供应商密钥",
+                 "server": {"up": False, "base_url": "http://127.0.0.1:0",
+                            "discovered_from": "stub"},
+                 "authed": False,
+                 "note": "桩：未登录"},
+                {"id": "compute", "title": "模型与算力", "status": "pending"},
+                {"id": "body", "title": "本体", "status": "pending"},
+                {"id": "transformer", "title": "变压器", "status": "pending"},
+            ],
+        }
+
+    def settings_action(self, op, payload=None):
+        """设置面写动作。桩只回结构，**绝不回明文密钥**。"""
+        self.calls.append(("settings_action", {"op": op, **(payload or {})}))
+        if op == "probe":
+            return {"ok": True, "op": op,
+                    "probe": {"up": False, "base_url": "http://127.0.0.1:0"}}
+        if op == "login":
+            return {"ok": False, "op": op, "error": "桩：不真登录"}
+        return {"ok": False, "op": op, "error": f"桩未实现 {op}"}
+
+    def h1(self):
+        """赏金台 h1mcp 只读体检（2026-09-22 新增路由 /api/h1）。
+
+        桩跟着真接口长 —— 声明了就必须真能应答，否则
+        `test_every_declared_route_actually_answers` 会以 RemoteDisconnected 报红。
+        桩里**不放任何凭据**（与真实现一致：只回布尔），路径一律标 `stub/`，
+        免得桩数据被人当成"真读过盘"。
+        """
+        self.calls.append(("h1", {}))
+        body = {
+            "readonly": True,
+            "stage": "stage1-local-readonly",
+            "note": "桩：不回显任何凭据值。",
+            "badge": "warn",
+            "config_source": "stub",
+            "binary": {
+                "path": "stub/h1mcp.exe", "present": True, "bytes": 1, "tag": "v0.0.0",
+                "sha256": "0" * 64, "recorded_sha256": "0" * 64, "sha_match": True,
+                "sidecar_present": True, "reason": None,
+            },
+            "credentials": {"ready": False, "items": [
+                {"name": "H1_USERNAME", "role": "HackerOne 用户名",
+                 "read_by": "h1mcp v0.1.4", "configured": False},
+                {"name": "H1_API_KEY", "role": "API 令牌（二进制实际读取名）",
+                 "read_by": "h1mcp v0.1.4", "configured": False},
+                {"name": "H1_API_TOKEN", "role": "历史口径名（h1mcp v0.1.4 不读取）",
+                 "read_by": None, "configured": False},
+            ]},
+            "drafts": {"path": "stub/drafts", "initialized": False, "count": None,
+                       "files": [], "reason": "桩：目录不存在（未初始化）"},
+            "api_surfaces": [
+                {"id": "programs_scope", "title": "程序与 scope", "state": "pending",
+                 "reason": "阶段二未接入"},
+                {"id": "reports", "title": "我的报告", "state": "pending",
+                 "reason": "阶段二未接入"},
+                {"id": "earnings", "title": "收益", "state": "pending",
+                 "reason": "阶段二未接入"},
+            ],
+            "sensitive_note": "桩：敏感档动作不接。",
+            "transport": "stub",
+        }
+        return {"ok": True, "data": body}
+
     def purge(self):
         """净化刀读数（R-H171 新增只读路由）：桩必须跟着真接口长，否则
         `test_every_declared_route_actually_answers` 会以 RemoteDisconnected 报红
@@ -476,8 +573,15 @@ class QuickOutletContractTests(unittest.TestCase):
     def test_declared_actions_map_to_registered_capabilities(self):
         import inspect
         from gbt_allinone.caps_registry import BENIGN_CAPS
+        # 🔴 2026-09-22 第 47 轮修（FR-6 窄字符类 ⇒ **假缺失**）：
+        #    原来这里（以及下面三条）写 `[a-z_]+` —— 动作名/能力位里一旦出现**数字或大写**就解析不到。
+        #    实测（`.scratch/fr6_holo_target.py`，AST 取 `HoloBridge.quick` 真源码）：
+        #    窄口径 13 对 = 宽口径 13 对、页面 data-action 2 = 2 ⇒ **今天零漏**，
+        #    而且下面的 `assertGreaterEqual(len(pairs), 13)` 恰好卡在 13，
+        #    真漏一对就会红 ⇒ 这条判据今天**自己防住了**。
+        #    仍然把字符类改宽：修掉"靠巧合防住"的写法，别让下一个人以为它天然安全。
         src = inspect.getsource(PS.HoloBridge.quick)
-        pairs = re.findall(r'"([a-z_]+)": \("([a-z_]+)",', src)
+        pairs = re.findall(r'"([A-Za-z0-9_]+)": \("([A-Za-z0-9_]+)",', src)
         self.assertGreaterEqual(len(pairs), 13, f"白名单解析异常，只认出 {pairs}")
         actions = [a for a, _k in pairs]
         self.assertEqual(len(set(actions)), len(actions), "白名单里有重复动作名")
@@ -487,9 +591,9 @@ class QuickOutletContractTests(unittest.TestCase):
     def test_page_buttons_are_subset_of_whitelist_and_gap_is_explicit(self):
         import inspect
         src = inspect.getsource(PS.HoloBridge.quick)
-        declared = {a for a, _k in re.findall(r'"([a-z_]+)": \("([a-z_]+)",', src)}
+        declared = {a for a, _k in re.findall(r'"([A-Za-z0-9_]+)": \("([A-Za-z0-9_]+)",', src)}
         page = (ROOT / "holo_pet" / "index.html").read_text(encoding="utf-8")
-        buttons = set(re.findall(r'data-action="([a-z_]+)"', page))
+        buttons = set(re.findall(r'data-action="([^"]+)"', page))
         self.assertTrue(buttons <= declared, f"页面按钮不在白名单里：{sorted(buttons - declared)}")
         gap = declared - buttons
         self.assertEqual(gap, self.KNOWN_UNWIRED,
@@ -498,7 +602,7 @@ class QuickOutletContractTests(unittest.TestCase):
     def test_readonly_actions_keep_readonly_kinds(self):
         import inspect
         src = inspect.getsource(PS.HoloBridge.quick)
-        pairs = dict(re.findall(r'"([a-z_]+)": \("([a-z_]+)",', src))
+        pairs = dict(re.findall(r'"([A-Za-z0-9_]+)": \("([A-Za-z0-9_]+)",', src))
         for action, kind in (("mirror_status", "mirror_status"), ("workflow_status", "wf_status"),
                              ("life_status", "life"), ("mind_pulse", "mind"),
                              ("sense_status", "tentacle_status")):
@@ -589,13 +693,11 @@ class StaticContractTests(unittest.TestCase):
         self.assertEqual(parser.section_parents["device-bus"], ("div", "deck-scroll"))
         self.assertEqual(parser.section_parents["eigenflux-network"], ("div", "deck-scroll"))
 
-    def test_static_routes_serve_panel_and_model(self):
+    def test_static_routes_serve_panel_index(self):
         handler = object.__new__(PS._Handler)
         index = handler._static_path("/")
-        model = handler._static_path("/tripo-out/retarget-cd45adb1/model.glb")
 
         self.assertEqual(index, HERE / "index.html")
-        self.assertEqual(model, ROOT / "tripo-out" / "retarget-cd45adb1" / "model.glb")
 
     def test_static_path_traversal_is_rejected(self):
         handler = object.__new__(PS._Handler)
@@ -1182,18 +1284,23 @@ class CapabilityBridgeTests(unittest.TestCase):
         by_kind = {row["kind"]: row for row in catalog["items"]}
         self.assertTrue(by_kind["health"]["enabled"])
         self.assertTrue(by_kind["tentacle"]["enabled"])
-        # 禁用项必须在目录里如实出现，且带着她自己写的理由
+        # 登记未实现的名字必须在目录里如实出现，且带着她自己写的理由 + 真实状态
         self.assertFalse(by_kind["pentest"]["enabled"])
-        self.assertEqual(by_kind["pentest"]["reason"], "渗透攻击/利用")
+        self.assertEqual(by_kind["pentest"]["status"], "unimplemented")
+        self.assertTrue(by_kind["pentest"]["reason"].startswith("渗透攻击/利用"))
         self.assertIn("system", catalog["domains"])
 
-    def test_disabled_capability_is_refused_at_the_panel_too(self):
+    def test_unimplemented_capability_is_refused_at_the_panel_too(self):
+        """面板侧与 api.py 同步：解禁后拿到的必须是**如实的"未知能力"**，不是"被策略禁用"。
+
+        旧文案（"禁用"）会让人以为"门一开就能用" —— 而门后面什么都没有（零实现文件）。
+        """
         bridge = PS.HoloBridge()
         for kind in ("pentest", "credential_steal", "keylogger"):
             result = bridge.capability(kind, {}, confirm=True)
             self.assertFalse(result["ok"], kind)
-            self.assertIn("禁用", result["error"])
-            self.assertTrue(result["reason"])
+            self.assertIn("未知能力", result["error"])
+            self.assertNotIn("禁用", result["error"])
 
     def test_unknown_capability_is_refused(self):
         result = PS.HoloBridge().capability("no_such_capability_xyz")

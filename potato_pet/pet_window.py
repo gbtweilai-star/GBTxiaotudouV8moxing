@@ -6,6 +6,7 @@ initializeGL 中完成（offscreen/无 GL 上下文时 LoadModelJson 会崩溃�
 """
 from __future__ import annotations
 
+import json
 import logging
 import os
 
@@ -27,6 +28,22 @@ except Exception as _e:  # pragma: no cover - import guard
     logger.warning("live2d import failed: %s", _e)
     live2d = None
     HAS_LIVE2D = False
+
+
+def _declared_expressions(model_json: str) -> set:
+    """读 model3.json 里声明的表情名（用于提前拦下不存在的表情）。
+
+    实测各模型表情不同名：Haru=['F01'..'F08']、Mao=['exp_01'..'exp_08']、
+    nn=['normal','afraid','star','smile','flush']、llny=['F01']。
+    """
+    try:
+        with open(model_json, "r", encoding="utf-8") as f:
+            refs = (json.load(f) or {}).get("FileReferences") or {}
+    except Exception as exc:  # noqa: BLE001
+        logger.debug("read expressions from %s failed: %s", model_json, exc)
+        return set()
+    return {str(row.get("Name")) for row in (refs.get("Expressions") or [])
+            if isinstance(row, dict) and row.get("Name")}
 
 
 class _PlaceholderBody(QWidget):
@@ -158,6 +175,7 @@ class PetWindow(QWidget):
         drag_pos_changed(int x, int y) -- 拖拽过程中位置变化
         panel_toggle_requested()       -- 右键菜单请求切换对话面板
         quit_requested()               -- 右键菜单请求退出
+        model_load_failed(str reason)  -- 模型加载失败（原因透出到面板）
     """
 
     clicked = Signal(str)
@@ -165,6 +183,7 @@ class PetWindow(QWidget):
     drag_finished = Signal()          # v3: 拖拽落定（行为引擎 on_drag_end 接线）
     panel_toggle_requested = Signal()
     quit_requested = Signal()
+    model_load_failed = Signal(str)   # 加载失败原因（旧版只有一行日志）
 
     def __init__(self, model_dir: str, config: dict, parent=None):
         super().__init__(parent)
@@ -221,7 +240,9 @@ class PetWindow(QWidget):
         self.layout().addWidget(self._placeholder)
         self._placeholder.raise_()
         self.gl_widget.hide()
-        logger.info("Live2D unavailable -> placeholder mode")
+        reason = self.gl_widget.load_error or "未知原因"
+        logger.info("Live2D unavailable -> placeholder mode: %s", reason)
+        self.model_load_failed.emit(reason)
 
     # ---- 窗口标志 ----
     def _apply_flags(self):
@@ -315,6 +336,8 @@ class _Live2DCanvas(QOpenGLWidget):
         self.config = config
         self.model = None
         self.model_loaded = False
+        self.load_error = ""        # 加载失败原因（供面板如实告知用户）
+        self.expression_names: set[str] = set()   # 模型声明可用表情
         self._timer = QTimer(self)
         self._timer.timeout.connect(self._on_tick)
         self._last_mouse = None
@@ -325,6 +348,7 @@ class _Live2DCanvas(QOpenGLWidget):
     def initializeGL(self):  # noqa: N802
         if not HAS_LIVE2D:
             logger.warning("live2d unavailable, skip GL model load")
+            self.load_error = "live2d-py 运行库未安装"
             self.model_failed.emit()
             return
         try:
@@ -337,9 +361,11 @@ class _Live2DCanvas(QOpenGLWidget):
                          if f.endswith(".model3.json")]
                 if not cands:
                     logger.warning("no .model3.json in %s", self.model_dir)
+                    self.load_error = f"{os.path.basename(self.model_dir)} 目录里没有 .model3.json"
                     self.model_failed.emit()
                     return
                 model_json = os.path.join(self.model_dir, cands[0])
+            self.expression_names = _declared_expressions(model_json)
             self.model = live2d.LAppModel()
             self.model.LoadModelJson(model_json)
             self.model.Resize(self.width(), self.height())
@@ -353,6 +379,7 @@ class _Live2DCanvas(QOpenGLWidget):
             logger.exception("Live2D model load failed: %s", e)
             self.model_loaded = False
             self.model = None
+            self.load_error = f"{type(e).__name__}: {e}"[:160]
             self.model_failed.emit()
 
     def _on_tick(self):
@@ -403,6 +430,13 @@ class _Live2DCanvas(QOpenGLWidget):
 
     def set_expression(self, name: str):
         if self.model is None:
+            return False
+        # 模型声明之外的表情名必然静默失败（Cubism 找不到就什么都不做），
+        # 这里提前拦下并留下原因，避免「点了头却没有任何表情变化」。
+        if self.expression_names and name not in self.expression_names:
+            logger.warning("set_expression(%s): 不在 %s 的表情清单里 %s",
+                           name, os.path.basename(self.model_dir),
+                           sorted(self.expression_names))
             return False
         try:
             self.model.SetExpression(name)

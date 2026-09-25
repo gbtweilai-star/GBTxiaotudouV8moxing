@@ -1,0 +1,16 @@
+=== 数字人相关实物 ===
+  tripo-out                                      2 文件   54.82 MB
+  .tripo                                         1 文件    0.00 MB
+  potato_pet/resources                         114 文件   40.24 MB
+  gbt_allinone/tripo.py                      单文件    0.01 MB
+  holo_pet/node_modules/three                    0 文件    0.00 MB
+  holo_pet/xingyun_e2e.latest.js             单文件    0.78 MB
+  assets/brand                                  20 文件    3.14 MB
+  generated-images                               1 文件    0.34 MB
+  outputs/drafts                                 2 文件    3.26 MB
+
+=== potato_pet/resources 明细 ===
+  haru                       43 文件    3.45 MB
+  llny                       27 文件   32.07 MB
+  mao                        22 文件    4.12 MB
+  nn                         22 文件    0.60 MB
