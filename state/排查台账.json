@@ -1,9 +1,10 @@
 {
   "_口径": "唯一进度真源。人读的详细账在 output/blueprint-audit/生产推进-故障清单.md；本文件只放『现在做到哪 / 哪没做 / 未清故障 / 等你拍板』，供宿主插件在重启后自动注入会话头。改了本文件，下一轮会话就看得见。",
   "_排班纪律": "每轮结束前更新本文件 + 时间点；不许只写『继续排查』这种没信息量的话。",
-  "updated_at": "2026-09-25T21:20:00+08:00",
+  "updated_at": "2026-09-25T21:24:00+08:00",
   "rounds_done": 34,
   "today_done": [
+    "**顺手审了会话中途被装进来的两条第三方技能**：`chrome-extensions` 与 `modern-web-guidance`（源 `GoogleChrome/modern-web-guidance`，由技能系统自动落到 `.autohand/skills/` 与 `.codebuddy/skills/` 两个根，并写进 `skills-lock.json`）。按 skill-vetter 口径审：**高风险 0 · 无法审查 0 · 可执行命中 0**，两条都是 🟡MEDIUM —— 命中**全在文档位置**（`eval(`/`curl`/`fetch(`/`Password:` 是文档在**举例讲解**）。我按工具明确留给人的最后一步**抽查了最高信号的两条**：`Password:` 是无障碍指南里的一个 HTML 表单标签；`identity.md` 指的是扩展自己的 `references/extensions/auth-identity.md`，**不是**我们的记忆/身份件。两条技能目录里 **172 个文件全是 `.md`**（零脚本）⇒ 「可执行命中 0」这句站得住。两个根里的副本逐字节相同。⚠️ 这两条技能与 `skills-lock.json` 我都没提交（不是我装的、来源已由 lock 记录）—— 如实上报，处置归主人",
     "**D7 结掉（主人令：密钥跟双向插件一样、可以自动读取）**：把 `config/mcporter.json` 里那条**明文** ADP key 收进本仓自己的机制 —— `gbt_allinone/deepseek_key.py` 的 DPAPI 保险箱（新 profile `adp` · 独立熵值 `GBTxiaotudouV8:adp:v1` · 落盘 `store/secrets/adp_api.dpapi` 308 B），配置改成运行时自动读取：`command=python` + `args=[deepseek_key.py, inject, --profile, adp, --, cmd, /c, npx, -y, @laiye-adp/mcp]`，`env` 清空。**全程只印掩码**（明文只进内存，不进 argv/stdout/日志）；迁移脚本自带四条自证：JSON 可解析 · 明文在配置里出现 **0** 次 · 保险箱回读与原文一致 · **负控**（同一段明文在迁移前的原文里能搜到）",
     "**形状校验改成按 profile 各带一条**（原来是全库共用 `^(?:sk|ak)[-_]…`）：ADP 的 key 是纯十六进制长串、不带 sk-/ak- 前缀 ⇒ 共用一条会把合法密钥判成格式错。**既有两个 profile 的行为一字未变**（32 位十六进制进 deepseek/agnes 仍被拒，已用负控钉住）",
     "🔴 **顺手纠正我自己的一个假负控**：验 fail-closed 时我拿 `agnes` 当'没有密钥的库'，结果子进程照跑起来 —— **前提是我猜的、没验**（agnes 库其实有密钥 `sk-HX****`）。改成用工具自己的落盘路径覆盖把库指到不存在的路径，**先证前提**（`status` 报 `configured:false · source:missing`）**再判行为** ⇒ `inject` 退 **3**、明确说『拒绝在没有密钥的情况下启动子进程』、子进程一次都没跑",
@@ -356,6 +357,10 @@
     {
       "at": "2026-09-25T21:20",
       "what": "F7/D7 结掉；新开 F8（配置引用的目录未入版本库）与 D8（adp MCP 首跑要联网装包）"
+    },
+    {
+      "at": "2026-09-25T21:23",
+      "what": "技能系统中途装入 chrome-extensions / modern-web-guidance 两条第三方技能 ⇒ 已按 skill-vetter 审完（MEDIUM·文档性·可执行 0）"
     }
   ]
 }
