@@ -76,7 +76,7 @@ const DENY = [
 
 const PANELS = [
   { id: 'index', name: '可视化面板总索引', file: 'index.html', note: '一屏列全活面板与渲染留影' },
-  { id: 'caps', name: '能力球 · 能力台', file: 'capabilities.html', note: '158 项能力铺在真 3D 球面上 · 拖拽旋转 · 点节点进独立页', apiShim: true, needs: '这一页的“最近调用 / 事件流”来自本机服务（127.0.0.1:8765）。宿主内已接内嵌反代；服务没起时这些读数会显示为空（不是假数据）。' },
+  { id: 'caps', name: '能力球 · 能力台', file: 'capabilities.html', note: '能力位铺在真 3D 球面上 · 拖拽旋转 · 点节点进独立页（**条数以页面现读为准**：页面会自报 source+count，别在这行写死数字）', apiShim: true, needs: '这一页的“最近调用 / 事件流”来自本机服务（127.0.0.1:8765）。宿主内已接内嵌反代；服务没起时这些读数会显示为空（不是假数据）。' },
   { id: 'w3', name: '上帝视角 W3', file: 'holo_pet_w3/index.html', note: '六页签实时驾驶舱', needs: '上帝视角设计为独立窗口，数据走 Electron IPC 桥；在宿主内看，只能看到静态壳与前端的如实降级态。' },
   { id: 'h1', name: '赏金台 · h1mcp', file: 'holo_pet_w3/h1/index.html', note: 'HackerOne 赏金台（阶段一 · 本机只读）：二进制在位 + 侧车 sha256 比对、凭据配置状态、本地草稿收件箱', apiShim: true, needs: '凭据 H1_USERNAME / H1_API_KEY 只报「已配置 / 未配置」，不回显值；没配时如实显示未配置，不假绿。本页在宿主内走**同源 HTTP**（原 Electron IPC 路保持不动）。' },
   { id: 'brain', name: '大脑执行层 · 五维合一', file: 'brain.html', note: '五维合一脑的排布图与连接网络：结构从 brain_exec.py 的 AST 现算，实时状态从 store/audit.jsonl 的真实事件尾部取', apiShim: true, needs: '源码里查不到的边不画 —— 注册表声称的执行链有 3 条在代码里不存在，图上如实标 drawn=false；本机服务没起时如实报取不到。' },
