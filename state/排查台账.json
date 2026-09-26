@@ -1,9 +1,12 @@
 {
   "_口径": "唯一进度真源。人读的详细账在 output/blueprint-audit/生产推进-故障清单.md；本文件只放『现在做到哪 / 哪没做 / 未清故障 / 等你拍板』，供宿主插件在重启后自动注入会话头。改了本文件，下一轮会话就看得见。",
   "_排班纪律": "每轮结束前更新本文件 + 时间点；不许只写『继续排查』这种没信息量的话。",
-  "updated_at": "2026-09-25T23:49:00+08:00",
+  "updated_at": "2026-09-26T00:06:00+08:00",
   "rounds_done": 43,
   "today_done": [
+    "🔴 **把「满仓横扫为什么跑不完」量清楚了（环境事实，不是代码问题）**：复跑到 **26 分钟**未完（常态 4–5 分钟）⇒ 现读机器：**可用内存 0.08 GB / 共 7.39 GB** · **提交内存 30.8 GB vs 物理 7.5 GB**（重度换页）。⇒ 这同时解释了 (a) 上一轮那条 `FileNotFoundError [WinError 2]`（**内存压力下 spawn 子进程失败**）、(b) 26 分钟跑不完。**结论：内存被压满时满仓横扫会出假红，结果不可采信；要挑内存宽松时跑**（本仓 `test_isolation_sweep` 的注释里早就写过同型例子：「avail 1.06 GB / load 85% / 换页中」）",
+    "**顺手清掉我自己留下的孤儿进程**：`job_kill` 掉满仓横扫之后，**两个测试子进程还活着**（`run-all-tests.py` 与一个 `-m unittest test_regression_stamp`），它们在内存已经只剩 0.08GB 时还在占资源。已核对命令行后按 pid 终止，复验无残留（内存 125MB → 283MB）。⇒ 记一条操作教训：**停掉长任务后要回头查子进程残留**，别以为 kill 了作业就干净了",
+    "**顺带看到一条与本仓治理直接相关的事实**：占用最多的不是我的活儿，而是 `LobeHub 650MB` · `node 419MB` · `git ×3 约 430MB` · `chrome ×2 约 310MB` · `MsMpEng` · `Memory Compression 108MB`。⇒ 「哪台机器能跑满仓横扫」这件事**本身有前提**",
     "**新立 `tools/codex-scripts/caps-two-plane-census.py`（只读 · 什么都不改）**：把 F12 摊成**两个平面**让主人能看着数拍板 D13 —— **平面一 = `caps_registry.BENIGN_CAPS` 172 条**（面板/omni 报的就是这个数）· **平面二 = 注册表之外、在审计账里被分派过的 61 个名字**。⚠️ 改 `caps_registry.py` 是**主人专属**（红线）⇒ 本器**一个字节都不写**，只摆事实",
     "🔴 **平面二不写成一句，按三种出处分档**（这正是本仓那句「提到 ≠ 用了」的规模化版本）：**35 条代码里有字面量 · 26 条只在审计账里出现过**。三种出处**不许念成一句** ——出现在代码里 ≠ 有实现 ≠ 跑成了。每条都带出处，出处拿不到的不写进来",
     "🔴 **查出 25 条钱面**（`ledger_balance/deposit/transfer/withdraw/freeze/open_account/reconcile/verify…`、`receive_invoice/new_address/scan/balances…`、`pool_assign_address`、`wallet_*`）—— **本器一律不探活**：探一下就可能真开户/真动钱；要判它们通不通必须主人在场且明确授权。⇒ 「它们通不通」这件事**本轮没验，也不该我擅自验**",
@@ -257,7 +260,7 @@
       "id": "F13",
       "what": "`isolation_sweep.run_one` 在**机器被压着**时会返回 rc=2（内层 pytest 收集期就被打断：`FileNotFoundError [WinError 2]`）⇒ `test_isolation_sweep` 判红；**卸掉负载后连跑两次 rc=0**",
       "severity": "中",
-      "evidence": "满仓横扫（未过 2）里 `test_a_passing_file_is_reported_green` 红，rc=2；子进程 tail 逐字：`collected 0 items / 1 error` + `ERROR ..\\.. - FileNotFoundError: [WinError 2] 系统找不到指定的文件` + `Interrupted: 1 error during collection`（**一个测试都没跑**）；卸负载后同一个探针连跑两次：`rc=0 · summary={'passed':1,'failed':0}`（13.1s / 12.4s）；模块耗时随负载 127s → 290s。⇒ 是**负载决定**的红，不是扫描器分不出红绿",
+      "evidence": "满仓横扫（未过 2）里 `test_a_passing_file_is_reported_green` 红，rc=2；子进程 tail 逐字：`collected 0 items / 1 error` + `ERROR ..\\.. - FileNotFoundError: [WinError 2] 系统找不到指定的文件` + `Interrupted: 1 error during collection`（**一个测试都没跑**）；卸负载后同一个探针连跑两次：`rc=0 · summary={'passed':1,'failed':0}`（13.1s / 12.4s）；模块耗时随负载 127s → 290s。⇒ 是**负载决定**的红，不是扫描器分不出红绿 ｜🔴 **第 43 轮把机制坐实了（不是猜）**：满仓横扫复跑跑到 **26 分钟**还没完（常态 4–5 分钟）⇒ 去量机器，**可用内存 0.08 GB / 共 7.39 GB**、**提交内存 30.8 GB vs 物理 7.5 GB**（重度换页）。⇒ 在这种压力下 **spawn 子进程会失败**，`FileNotFoundError [WinError 2]` 正是这么来的；这既解释了 rc=2，也解释了 26 分钟。**结论：这台机器在内存被压满时，满仓横扫的结果不可采信（会出假红），要挑内存宽松时跑。**",
       "state": "**已诚实缓解（不是把它改成绿的）**：① 先把「这是不是我的改动」证掉（`run_one` 跑的是临时文件里的平凡 unittest，与 cross_scan 无关）；② 加 `_cannot_tell()`：**只有** `rc=2` **且** tail 里出现 `during collection`/`Interrupted` **且** 摘要为 None（= 内层根本没开口）才判「本次无法判定」并 skip；其余情况照旧算判定、该红就红（**不许把「收集不了合法文件」这种真缺陷一起放走**）；③ 加了「rc=2 就重试一次」；④ **顺手修掉一处假绿**：负控原来写 `assertNotEqual(rc, 0)`，而 rc=2 是「收集期出错」⇒ 它会在「扫描器根本没开口」时**通过**，读起来却像「它真分得出红绿」；现在钉死 `rc == 1`。现读：单跑 `OK (skipped=1)`（那条 skip 就是如实说「本次无法判定」）"
     }
   ],
@@ -607,6 +610,10 @@
     {
       "at": "2026-09-25T23:49",
       "what": "立双平面普查：平面一 172 / 平面二 61（35 代码字面量 · 26 仅审计）· 钱面 25 一律不探活；F5 的 D 维处置查清（已有唯一真源）"
+    },
+    {
+      "at": "2026-09-26T00:06",
+      "what": "量清满仓横扫跑不完的真因：可用内存 0.08GB / 提交 30.8GB vs 物理 7.5GB（重度换页）⇒ F13 机制坐实；清掉自己留下的 2 个孤儿测试进程"
     }
   ]
 }
