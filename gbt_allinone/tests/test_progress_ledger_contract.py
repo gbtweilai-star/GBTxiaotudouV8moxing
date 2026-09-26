@@ -82,7 +82,7 @@ class LedgerContractTest(unittest.TestCase):
             self.assertTrue(str(row.get("at") or "").strip(), "有记录没写时间点：%r" % row)
             self.assertTrue(str(row.get("what") or "").strip(), "有记录没写做了什么：%r" % row)
             seen.append(row["at"].replace(" ", "T"))
-        parsed = [datetime.fromisoformat(t) for t in seen]
+        parsed = [_as_aware(t) for t in seen]
         for a, b in zip(parsed, parsed[1:]):
             self.assertLessEqual(a, b, "排查记录时间倒流：%s → %s" % (a, b))
 
@@ -105,6 +105,60 @@ class InjectionIsWiredTest(unittest.TestCase):
         for field in ("not_done", "open_faults", "owner_decisions", "today_done",
                       "log", "updated_at", "rounds_done", "in_progress"):
             self.assertIn(field, src, "渲染器不再读 %s ⇒ 本用例守的字段该同步改" % field)
+
+
+def _as_aware(t: str):
+    """把台账里的时间点**统一成 aware** 再比 —— 因为历史条目里两制混着（第 48 轮 F15 的副产物）。
+
+    - 写了偏移的（`…+07:00` / `…+08:00`）⇒ 就是那个时刻；
+    - **没写偏移的**（更早的条目是裸 `2026-09-25T17:05`）⇒ 按「当时当刻的当地墙上时间」理解，
+      附上**机器当前本地时区**。这是**近似**：本机旧条目的偏移还写错过（见 F15），
+      所以本函数只用来判**顺序**，不用来判"那一刻到底是几点"。
+    """
+    d = datetime.fromisoformat(t.replace(" ", "T"))
+    return d.astimezone() if d.tzinfo is None else d
+
+
+class TimestampOffsetIsRealTest(unittest.TestCase):
+    """🔴 第 48 轮加（F15 的成因就在这里）：**时间点的偏移必须是机器真实偏移，不许是编的**。
+
+    实据（2026-09-26 第 48 轮实测）：本机时区是 **+07:00**（东南亚标准时间），
+    而我历轮把台账时间戳写成 `+08:00`，还把 harness 显示的**UTC**当成当地时间
+    ⇒ 那些条目**作为绝对时刻约差 8 小时**。
+    **为什么一直没被抓到**：上面那条判据只查「时间不倒流」——
+    **单调性对 ≠ 时刻对**：一串全部偏移写错的时间戳，顺序照样是单调的。
+
+    ⇒ 本判据只钉**最新一笔**（历史条目不追改，已在 `_口径` 里写明那次缺陷）：
+    它的偏移必须是 **机器真实本地偏移** 或 **UTC**，不许是"看起来像那么回事"的编造值。
+    """
+
+    def test_latest_log_entry_offset_is_the_machine_offset_or_utc(self) -> None:
+        import datetime as dt
+
+        local_off = dt.datetime.now().astimezone().strftime("%z")
+        at = str((_load().get("log") or [{}])[-1].get("at") or "")
+        m = re.search(r"([+-]\d{2}:?\d{2}|Z)$", at)
+        self.assertIsNotNone(m, "最新一笔 log 没写时区偏移（跨机器读就会读错）：%r" % at)
+        got = m.group(1).replace(":", "")
+        allowed = {local_off, "+0000", "-0000", "Z"}
+        self.assertIn(got, allowed,
+                      "最新一笔 log 的偏移是 %s，而机器真实偏移是 %s —— "
+                      "**编一个偏移比不写偏移更坏**（它看起来是权威的）" % (got, local_off))
+
+    def test_updated_at_offset_is_the_machine_offset_or_utc(self) -> None:
+        import datetime as dt
+
+        local_off = dt.datetime.now().astimezone().strftime("%z")
+        up = str(_load().get("updated_at") or "")
+        m = re.search(r"([+-]\d{2}:?\d{2}|Z)$", up)
+        self.assertIsNotNone(m, "`updated_at` 没写时区偏移：%r" % up)
+        self.assertIn(m.group(1).replace(":", ""), {local_off, "+0000", "-0000", "Z"},
+                      "`updated_at` 的偏移 %s 与机器真实偏移 %s 不符" % (m.group(1), local_off))
+
+    def test_ledger_documents_the_historical_offset_defect(self) -> None:
+        """历史条目不追改，但**缺陷必须写在台账里**（否则下一个人会拿旧时间戳当绝对时刻）。"""
+        kou = str(_load().get("_口径") or "")
+        self.assertIn("+07:00", kou, "台账口径里没写明历史偏移写错这件事（F15）")
 
 
 if __name__ == "__main__":
