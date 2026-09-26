@@ -78,22 +78,30 @@ class GuardOrderTest(unittest.TestCase):
         self.assertLess(i_guard, i_loop,
                         "闸在循环**之后** ⇒ 跑完才标注就晚了，红已经产生并被读成结论了")
 
-    def test_threshold_is_scope_aware(self) -> None:
-        """全量与定向**不该用同一把尺子**（第 50 轮加）。
+    def test_threshold_scales_with_file_count(self) -> None:
+        """阈值按**这次要跑几个文件**取（第 50 轮两档 → 第 51 轮按文件数缩放）。
 
-        实测动机：连续 6 轮内存都在 200–550MB，全量被闸挡着 ⇒ **想做的验证一直做不了**；
-        而"挡全量"与"挡三个文件的定向跑"是两件事。所以钉两条：
-          · `scope_threshold` 必须真被用上（否则范围感知会被悄悄去掉）；
-          · **全量那把尺子不许被降低**（`scope_threshold(x, False) == x`）。
+        实测动机：第 50 轮那两档是**拍出来的** —— 跑 3 个文件与跑 60 个文件都算“定向”、
+        都按 250 判，而它们要的内存差得远。现在 `180 + 4.3×n`、上限仍是 `min_free_mb`。
+
+        钉三条：
+          · **全量那把尺子一字未动**（`n >= total` ⇒ 就是 `min_free_mb`）—— 这是不许放水的那条；
+          · 文件越少、要求的余量越小（**单调**），且有个下限 180MB；
+          · `total` 由调用方现数传入 ⇒ 函数里**没有写死的总数**（本仓老账：写死一次过期一次）。
         """
-        src = TOOL.read_text(encoding="utf-8")
-        self.assertIn("scope_threshold(", src, "范围感知的阈值函数没被用上")
-        self.assertEqual(MOD.scope_threshold(700.0, False), 700.0,
-                         "全量档的阈值被改小了 ⇒ 那是放水（全量结论的信用全靠它）")
-        self.assertLessEqual(MOD.scope_threshold(700.0, True), 250.0,
-                             "定向档应当松于全量档（否则加了 --filter 也还是跑不动）")
-        self.assertLess(MOD.scope_threshold(700.0, True), MOD.scope_threshold(700.0, False),
-                        "定向档必须严格松于全量档")
+        full = MOD.threshold_for(124, 124, 700.0)
+        self.assertEqual(700.0, full, "全量档被改小了 ⇒ 那是放水（全量结论的信用全靠它）")
+        few = MOD.threshold_for(6, 124, 700.0)
+        many = MOD.threshold_for(60, 124, 700.0)
+        self.assertLess(few, many, "文件多的反而要求更低 ⇒ 尺度反了")
+        self.assertGreaterEqual(few, 180.0, "低于下限 180MB ⇒ 太松")
+        self.assertLessEqual(many, 700.0, "超过全量档 ⇒ 比全量还严，没道理")
+        # 单调性（逐点）
+        seq = [MOD.threshold_for(n, 124, 700.0) for n in range(1, 125)]
+        self.assertEqual(seq, sorted(seq), "阈值随文件数不是单调不减的")
+        # 现读注册表式的"不许写死"：换一个 total 也应自洽
+        self.assertEqual(700.0, MOD.threshold_for(50, 50, 700.0),
+                         "当本次就是全部文件时应按全量档（total 是现数的）")
 
     def test_refusal_exit_code_is_distinct(self) -> None:
         """拒绝开跑要用**独立退出码**（3），别跟"有测试失败"（非 0 但另有含义）混成一个。"""

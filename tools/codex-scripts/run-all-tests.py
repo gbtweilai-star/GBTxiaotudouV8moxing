@@ -130,6 +130,24 @@ def scope_threshold(min_free_mb: float, filtered: bool) -> float:
     return float(min(min_free_mb, 250.0)) if filtered else float(min_free_mb)
 
 
+def threshold_for(n_files: int, total_files: int, min_free_mb: float = 700.0) -> float:
+    """**按"这次要跑几个文件"给阈值** —— 结论有多大，就要求多少余量。
+
+    🔴 为什么从"按范围两档"再往前走一步（2026-09-26 第 51 轮）：
+      第 50 轮我做了"全量 700 / 定向 250"两档，但那条线还是**拍出来的**：
+      跑 3 个文件与跑 60 个文件都算"定向"，都按 250 判 —— 而它们要的内存差得远。
+      ⇒ 现在按**文件数**线性给：`180 + 4.3×n`，上限仍是 `min_free_mb`。
+        实测口径（本机 124 个测试文件）：
+          1 个 → 184MB · 6 个 → 206MB · 20 个 → 266MB · 60 个 → 438MB · 124 个（全量）→ **700MB**
+      **全量那把尺子一字未动**（`n_files >= total_files` 直接回 `min_free_mb`）；
+      `total_files` 由调用方**现数**传入，所以本函数里**没有任何写死的总数**。
+    ⚠️ 它管的只是"**看起来**够不够跑完"，不是保修（真正的保证是跑完后的读数自洽）。
+    """
+    if n_files >= total_files:
+        return float(min_free_mb)
+    return float(max(180.0, min(float(min_free_mb), 180.0 + 4.3 * n_files)))
+
+
 def memory_verdict(free_mb, min_free_mb):
     """纯函数：**这次普查在负载上站不站得住**。返回 (能不能跑, 一句话为什么)。
 
@@ -162,34 +180,16 @@ def main() -> int:
                     help="可用内存低于这个数就**不开跑**（默认 700MB）—— 防止把负载假红读成代码坏了")
     ap.add_argument("--force", action="store_true",
                     help="明知内存紧也照跑（结果自行按『负载污染』对待）")
+    ap.add_argument("--batch", default="",
+                    help="分批跑：`--batch 2/4` = 只跑第 2 批（共 4 批）。"
+                         "内存紧时用它把全仓拆成几段跑完 —— **每批都会印出自己的范围**，"
+                         "拼起来才是全仓结论（分段跑出来的绿**不等于**一次全量的绿）")
     ap.add_argument("--no-pytest", action="store_true",
                     help="跳过第二遍：不把 unittest 收集为 0 的文件交给 pytest 重跑")
     args = ap.parse_args()
 
-    # ── 开跑前的负载闸（有意挡在**跑之前**：跑完再标注就晚了，红已经产生）────────
-    # ⚠️ 阈值按**范围**取（见 `scope_threshold`）：全量那把尺子一字未动（默认 700MB），
-    #    带 `--filter` 的定向跑用低档（250MB），但**本次范围会印在抬头里** —— 结论只覆盖这几个文件。
-    free_mb = available_mb()
-    _thr = scope_threshold(args.min_free_mb, bool(args.filter))
-    can_run, why = memory_verdict(free_mb, _thr)
-    print("本次范围：%s（阈值 %s MB —— %s）"
-          % (("**定向**：只跑文件名含 %r 的" % args.filter) if args.filter else "**全量**",
-             _thr, "定向档" if args.filter else "全量档"))
-    print("负载读数：可用内存 %s · %s"
-          % (("%d MB" % free_mb) if free_mb is not None else "读不到", why))
-    if not can_run and not args.force:
-        print("")
-        print("🔴 **本次不开跑**（这是判据，不是建议）：%s" % why)
-        print("   三条出路：① 等内存宽松些再跑（本机内存被并发活儿压着时抖动很大）；")
-        print("             ② 只跑你真正要看的那几个文件：加 `--filter <文件名子串>`"
-              "（走定向档，且抬头会写明本次范围）；")
-        print("             ③ 明知在压着也要全量跑 ⇒ 加 `--force`，但那份结果**只能当『负载污染样本』**，")
-        print("                不许当成『代码坏了』的证据。")
-        return 3
-    if not can_run and args.force:
-        print("⚠️  --force：明知内存紧仍开跑 ⇒ **这份结果不许当权威读数**（可能含负载假红）。"
-              "且范围=%s。" % ("定向" if args.filter else "全量"))
-    print()
+    # 负载闸**不在这里** —— 它被移到「选出本次要跑哪些文件」之后（见下面 `threshold_for` 那段）：
+    # 阈值要按**文件数**取，那就得先知道文件数。第 50 轮它在这里时只能按"全量/定向"两档拍。
 
     env = dict(os.environ)
     # 本仓口径：必须隔离 store（否则测试包守卫会拒绝，或写脏生产）
@@ -207,8 +207,59 @@ def main() -> int:
     env.pop("PYTHONPATH", None)
 
     files = sorted(TESTS.glob("test_*.py"))
+    _total_files = len(files)                      # 🔴 现数（不写死总数）
     if args.filter:
         files = [f for f in files if args.filter in f.name]
+    _batch_note = ""
+    if args.batch:
+        # 分批：内存紧时把全仓拆成几段跑完。**每批印出自己的范围** —— 拼起来才是全仓结论。
+        try:
+            _i, _n = (int(x) for x in str(args.batch).split("/", 1))
+            if not (1 <= _i <= _n) or _n < 1:
+                raise ValueError
+        except Exception:  # noqa: BLE001
+            print("🔴 --batch 用法：`--batch 2/4`（1 ≤ i ≤ N）")
+            return 4
+        import math as _math
+        _size = _math.ceil(len(files) / _n)
+        _all = files
+        files = _all[(_i - 1) * _size: _i * _size]
+        _batch_note = "第 %d/%d 批（%d 个 / 全 %d 个）" % (_i, _n, len(files), _total_files)
+        if not files:
+            print("🔴 第 %d/%d 批是空的 ⇒ 批号超出范围" % (_i, _n))
+            return 4
+
+    # ── 开跑前的负载闸（有意挡在**跑之前**：跑完再标注就晚了，红已经产生）────────
+    # 阈值按**这次要跑几个文件**取（见 `threshold_for`）：全量那把尺子未动（默认 700MB），
+    # 小批量/分批走低档 —— 但**抬头必须印出本次范围**，结论只覆盖这几个文件。
+    free_mb = available_mb()
+    _thr = threshold_for(len(files), _total_files, args.min_free_mb)
+    can_run, why = memory_verdict(free_mb, _thr)
+    print("本次范围：%s / 共 %d 个测试文件（阈值 %.0f MB —— %s）"
+          % ((_batch_note or ("**定向 %d 个**：文件名含 %r 的" % (len(files), args.filter))) if (args.batch or args.filter)
+             else "**全量 %d 个**" % len(files),
+             _total_files, _thr,
+             "全量档（一字未动）" if len(files) >= _total_files else "按文件数缩放的定向档"))
+    print("负载读数：可用内存 %s · %s"
+          % (("%d MB" % free_mb) if free_mb is not None else "读不到", why))
+    if _batch_note:
+        print("⚠️ **分批跑**：这一批的绿只覆盖这一批；**拼起来才是全仓结论**，"
+              "而「分段绿」与「一次全量的绿」不是同一件事（分段之间可能有相互影响）。")
+    print("负载读数：可用内存 %s · %s"
+          % (("%d MB" % free_mb) if free_mb is not None else "读不到", why))
+    if not can_run and not args.force:
+        print("")
+        print("🔴 **本次不开跑**（这是判据，不是建议）：%s" % why)
+        print("   三条出路：① 等内存宽松些再跑（本机内存被并发活儿压着时抖动很大）；")
+        print("             ② 只跑你真正要看的那几个文件：加 `--filter <文件名子串>`"
+              "（跑得越少、要求的余量越小，抬头会写明本次范围）；")
+        print("             ③ 明知在压着也要全量跑 ⇒ 加 `--force`，但那份结果**只能当『负载污染样本』**，")
+        print("                不许当成『代码坏了』的证据。")
+        return 3
+    if not can_run and args.force:
+        print("⚠️  --force：明知内存紧仍开跑 ⇒ **这份结果不许当权威读数**（可能含负载假红）。")
+        print("   本次范围 %d/%d 个文件。" % (len(files), _total_files))
+    print()
     print("全量普查：%d 个测试文件（单文件超时 %.0fs，store=%s）"
           % (len(files), args.timeout, env["GBT_STORE_DIR"]))
     print()
