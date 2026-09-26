@@ -115,6 +115,21 @@ def available_mb():
         return None
 
 
+def scope_threshold(min_free_mb: float, filtered: bool) -> float:
+    """**按范围给阈值** —— 全量与"只看几个文件"不该用同一把尺子。
+
+    🔴 为什么加（2026-09-26 第 50 轮）：连续 6 轮内存都在 200–550MB，全量被闸挡着 ⇒
+    **想做的验证一直做不了**。但"挡全量"和"挡三个文件的定向跑"是两件事：
+      · 全量的结论是「**整个仓**都绿」—— 那个断言需要机器有余量，否则会拿负载假红当代码坏了；
+      · 定向跑（`--filter`）的结论只是「**这几个文件**绿」—— 范围小、内存需求小，
+        而且**本次范围会印在抬头里**，不会被误读成全量。
+    ⇒ 所以：全量用 `min_free_mb`（默认 700）；带 `--filter` 时用 `min(min_free_mb, 250)`。
+    **这不是放水**：全量那把尺子一字未动，且定向跑必须显式给 `--filter`（想蒙混就得主动缩小范围，
+    而缩小范围本身会让结论变小、并被打在抬头里）。`--force` 仍然可用，且仍会警告。
+    """
+    return float(min(min_free_mb, 250.0)) if filtered else float(min_free_mb)
+
+
 def memory_verdict(free_mb, min_free_mb):
     """纯函数：**这次普查在负载上站不站得住**。返回 (能不能跑, 一句话为什么)。
 
@@ -152,19 +167,28 @@ def main() -> int:
     args = ap.parse_args()
 
     # ── 开跑前的负载闸（有意挡在**跑之前**：跑完再标注就晚了，红已经产生）────────
+    # ⚠️ 阈值按**范围**取（见 `scope_threshold`）：全量那把尺子一字未动（默认 700MB），
+    #    带 `--filter` 的定向跑用低档（250MB），但**本次范围会印在抬头里** —— 结论只覆盖这几个文件。
     free_mb = available_mb()
-    can_run, why = memory_verdict(free_mb, args.min_free_mb)
-    print("负载读数：可用内存 %s · 阈值 %s MB · %s"
-          % (("%d MB" % free_mb) if free_mb is not None else "读不到", args.min_free_mb, why))
+    _thr = scope_threshold(args.min_free_mb, bool(args.filter))
+    can_run, why = memory_verdict(free_mb, _thr)
+    print("本次范围：%s（阈值 %s MB —— %s）"
+          % (("**定向**：只跑文件名含 %r 的" % args.filter) if args.filter else "**全量**",
+             _thr, "定向档" if args.filter else "全量档"))
+    print("负载读数：可用内存 %s · %s"
+          % (("%d MB" % free_mb) if free_mb is not None else "读不到", why))
     if not can_run and not args.force:
         print("")
         print("🔴 **本次不开跑**（这是判据，不是建议）：%s" % why)
-        print("   两条出路：① 等内存宽松些再跑（本机内存被并发活儿压着时抖动很大）；")
-        print("             ② 明知在压着也要跑 ⇒ 加 `--force`，但那份结果**只能当『负载污染样本』**，")
+        print("   三条出路：① 等内存宽松些再跑（本机内存被并发活儿压着时抖动很大）；")
+        print("             ② 只跑你真正要看的那几个文件：加 `--filter <文件名子串>`"
+              "（走定向档，且抬头会写明本次范围）；")
+        print("             ③ 明知在压着也要全量跑 ⇒ 加 `--force`，但那份结果**只能当『负载污染样本』**，")
         print("                不许当成『代码坏了』的证据。")
         return 3
     if not can_run and args.force:
-        print("⚠️  --force：明知内存紧仍开跑 ⇒ **这份结果不许当权威读数**（可能含负载假红）。")
+        print("⚠️  --force：明知内存紧仍开跑 ⇒ **这份结果不许当权威读数**（可能含负载假红）。"
+              "且范围=%s。" % ("定向" if args.filter else "全量"))
     print()
 
     env = dict(os.environ)

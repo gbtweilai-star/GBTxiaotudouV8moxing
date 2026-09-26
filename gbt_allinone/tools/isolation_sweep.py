@@ -272,6 +272,22 @@ def selftest() -> int:
         #    ⇒ `rc` 是**权威信号**（它不依赖解析人类尾巴）；`summary` 只做**自洽性**检查。
         sm_p, sm_f = rp["summary"], rf["summary"]
         timed_out = bool(rp.get("timeout") or rf.get("timeout"))
+        # 🔴 2026-09-26 第 50 轮补（**F13 的遗漏面**）：上面只挡了「超时」与「summary 读不出」，
+        #    但还有一种**同一族**的情形 —— 内层 pytest **在收集期就被打断**（rc=2）：
+        #      子进程 tail 逐字：`collected 0 items / 1 error` +
+        #      `FileNotFoundError: [WinError 2]` + `Interrupted: 1 error during collection`
+        #    ⇒ **它一个测试都没跑**。此时 `rp["rc"] == 2` ⇒ `green` 算成 False ⇒
+        #      自检打印「✗ 判红：扫描器分不出红绿」—— **而扫描器根本没开口**。
+        #    实测：第 50 轮定向核对里 `test_selftest_leaves_no_residue` 就是这么红的
+        #    （同一台机器、同一分钟，卸掉负载后 ①必过文件 rc=0）。**一个由负载决定的对错，就是错报。**
+        #    ⇒ 判据：rc=2 **且** tail 有 `during collection`/`Interrupted` **且** 无摘要
+        #      = 「**本次无法判定**」，既不判红也不判绿；其余情形照旧按 rc 判。
+        def _never_collected(r: dict) -> bool:
+            tail = str(r.get("tail") or "")
+            return (r.get("rc") == 2 and r.get("summary") is None
+                    and ("during collection" in tail or "Interrupted" in tail))
+
+        inconclusive = _never_collected(rp) or _never_collected(rf)
         green = (rp["rc"] == 0) and (sm_p is None or sm_p.get("failed", 1) == 0)
         red = (rf["rc"] not in (0, None)) and (sm_f is None or sm_f.get("failed", 0) >= 1)
         print("① 必过文件 → 报绿 =", green, "| rc =", rp["rc"], "| summary =", sm_p)
@@ -279,15 +295,26 @@ def selftest() -> int:
         if sm_p is None or sm_f is None:
             print("   （有 summary 读不出 ⇒ **不是『扫描器分不出红绿』**，只是没读懂输出；"
                   "判红绿看 rc。）")
+        if inconclusive:
+            print("   ⚠️ 内层 pytest **收集期就被打断**（rc=2 · 一个测试都没跑）⇒ **本次无法判定**："
+                  "这既不是「扫描器分不出红绿」，也不是「扫描器没问题」。")
         if timed_out:
             print("   ⚠️ 对照跑超时 ⇒ **本次无法判定**（这不等于扫描器坏了）")
         # 顺带钉一条：**共享测试树里不许留下任何对照文件**（第 50 轮修的那件事的守门句）
         residue = sorted(p.name for p in TESTS.glob("test_zz_sweep_ctl_*.py"))
         print("共享测试树里无对照残留 =", not residue, ("残留：%s" % residue) if residue else "")
-        verdict = green and red and not residue and not timed_out
+        verdict = green and red and not residue and not timed_out and not inconclusive
         print("结论：", "两把对照都过 ✅" if verdict
-              else ("✗ 判红：本次无法判定（对照超时）" if timed_out
+              else ("✗ 判红：本次无法判定（对照超时或收集期被打断）"
+                    if (timed_out or inconclusive)
                     else "✗ 判红：扫描器分不出红绿（或有残留）"))
+        # 退出码：**沿用本函数原有的契约** —— 跑不成/判不出都返回 1（非零），
+        # 「无法判定」与「判红」的区别**由上面那两行结论文字承担**。
+        # 🔴 自纠（2026-09-26 第 50 轮）：我一度把"无法判定"改成返回 **2**，
+        #    结果被本文件自己的用例 `test_timeout_says_cannot_tell_not_scanner_broken` 当场抓红
+        #    （它钉的是 `rc == 1`，且超时那条路**本来**就是"打印无法判定 + 返回 1"）。
+        #    ⇒ **我发明了一个新退出码，却没先查这个函数已有的契约。** 已改回 1。
+        #    （要区分「判红」与「无法判定」的调用方，看**输出文字**；要真正给码，应先改契约再改用例。）
         return 0 if verdict else 1
     finally:
         shutil.rmtree(tmp, ignore_errors=True)

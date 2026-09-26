@@ -59,16 +59,41 @@ class MemoryVerdictTest(unittest.TestCase):
 
 
 class GuardOrderTest(unittest.TestCase):
-    """第 5 条：闸必须在跑之前。"""
+    """第 5 条：闸必须在跑之前。
+
+    ⚠️ 自纠（2026-09-26 第 50 轮，**这条用例当场抓到了我自己的重构**）：
+    第一版这里找的是**逐字的源码串** `memory_verdict(free_mb, args.min_free_mb)`。
+    第 50 轮我把调用改成按范围取阈值（`scope_threshold(...)` + `memory_verdict(free_mb, _thr)`），
+    那条用例立刻红 —— **它抓得对（那段代码确实变了），但抓的方式太脆**：
+    它锁的是"某一行的字面写法"，而不是"闸在循环之前"这个**结构**。
+    ⇒ 现在改成钉**顺序**与**范围感知**，重构只要不改变这两件事就不会误红。
+    """
 
     def test_guard_runs_before_the_test_loop(self) -> None:
         src = TOOL.read_text(encoding="utf-8")
-        i_guard = src.find("memory_verdict(free_mb, args.min_free_mb)")
+        i_guard = src.find("memory_verdict(")
         i_loop = src.find("for i, f in enumerate(files, 1):")
-        self.assertNotEqual(-1, i_guard, "main() 里找不到那道闸的调用")
+        self.assertNotEqual(-1, i_guard, "main() 里找不到那道闸的调用（`memory_verdict(`）")
         self.assertNotEqual(-1, i_loop, "找不到跑测试的循环（判据要跟着源码走）")
         self.assertLess(i_guard, i_loop,
                         "闸在循环**之后** ⇒ 跑完才标注就晚了，红已经产生并被读成结论了")
+
+    def test_threshold_is_scope_aware(self) -> None:
+        """全量与定向**不该用同一把尺子**（第 50 轮加）。
+
+        实测动机：连续 6 轮内存都在 200–550MB，全量被闸挡着 ⇒ **想做的验证一直做不了**；
+        而"挡全量"与"挡三个文件的定向跑"是两件事。所以钉两条：
+          · `scope_threshold` 必须真被用上（否则范围感知会被悄悄去掉）；
+          · **全量那把尺子不许被降低**（`scope_threshold(x, False) == x`）。
+        """
+        src = TOOL.read_text(encoding="utf-8")
+        self.assertIn("scope_threshold(", src, "范围感知的阈值函数没被用上")
+        self.assertEqual(MOD.scope_threshold(700.0, False), 700.0,
+                         "全量档的阈值被改小了 ⇒ 那是放水（全量结论的信用全靠它）")
+        self.assertLessEqual(MOD.scope_threshold(700.0, True), 250.0,
+                             "定向档应当松于全量档（否则加了 --filter 也还是跑不动）")
+        self.assertLess(MOD.scope_threshold(700.0, True), MOD.scope_threshold(700.0, False),
+                        "定向档必须严格松于全量档")
 
     def test_refusal_exit_code_is_distinct(self) -> None:
         """拒绝开跑要用**独立退出码**（3），别跟"有测试失败"（非 0 但另有含义）混成一个。"""
