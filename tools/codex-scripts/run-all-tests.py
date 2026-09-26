@@ -94,14 +94,78 @@ def run_one(path: Path, timeout: float, env: dict) -> dict:
             "tail": "\n".join(out.strip().splitlines()[-4:])[:400]}
 
 
+def available_mb():
+    """本机**可用物理内存**（MB）。读不到 ⇒ 返回 None（不许瞎猜一个数）。"""
+    try:
+        import ctypes
+
+        class _MEMSTATUS(ctypes.Structure):
+            _fields_ = [("dwLength", ctypes.c_ulong), ("dwMemoryLoad", ctypes.c_ulong),
+                        ("ullTotalPhys", ctypes.c_ulonglong), ("ullAvailPhys", ctypes.c_ulonglong),
+                        ("ullTotalPageFile", ctypes.c_ulonglong), ("ullAvailPageFile", ctypes.c_ulonglong),
+                        ("ullTotalVirtual", ctypes.c_ulonglong), ("ullAvailVirtual", ctypes.c_ulonglong),
+                        ("ullAvailExtendedVirtual", ctypes.c_ulonglong)]
+
+        st = _MEMSTATUS()
+        st.dwLength = ctypes.sizeof(_MEMSTATUS)
+        if not ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(st)):
+            return None
+        return int(st.ullAvailPhys // (1024 * 1024))
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def memory_verdict(free_mb, min_free_mb):
+    """纯函数：**这次普查在负载上站不站得住**。返回 (能不能跑, 一句话为什么)。
+
+    🔴 为什么要这道闸（两次实跑换来的，不是理论风险）：
+      · 第 42 轮满仓横扫里 `test_isolation_sweep` 报 rc=2，子进程 tail 是
+        `FileNotFoundError [WinError 2]` + `Interrupted: 1 error during collection`
+        —— **内层 pytest 一个测试都没跑**；卸掉负载后同一个探针连跑两次都是绿。
+      · 第 43 轮复跑**26 分钟没回来**（常态 4–5 分钟）⇒ 去量机器：**可用 0.08 GB**、
+        提交 30.8 GB vs 物理 7.5 GB（重度换页）。
+      ⇒ **一个由负载决定的对错，就是错报。** 认不出来的"红"比没有读数更坏 ——
+        它会被人当成"代码坏了"去修，把假红制度化。
+      ⇒ 所以默认**不在内存被压满时开跑**，并给出可操作的两条出路（等一会儿 / 显式 --force）。
+
+    `free_mb=None`（平台读不到）⇒ **放行但标注**：读不到 ≠ 有问题，也 ≠ 没问题。
+    """
+    if free_mb is None:
+        return True, "读不到可用内存（非 Windows 或接口不可用）⇒ 本次不判负载，如实标注"
+    if free_mb >= min_free_mb:
+        return True, "可用 %d MB ≥ 阈值 %d MB" % (free_mb, min_free_mb)
+    return False, ("可用仅 %d MB < 阈值 %d MB ⇒ 满仓横扫在这种负载下会出**假红**"
+                   "（实测证据见本函数 docstring）" % (free_mb, min_free_mb))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--filter", default=None, help="只跑文件名含该子串的")
     ap.add_argument("--timeout", type=float, default=300.0, help="单文件超时秒数")
     ap.add_argument("--json", default=None)
+    ap.add_argument("--min-free-mb", type=float, default=700.0,
+                    help="可用内存低于这个数就**不开跑**（默认 700MB）—— 防止把负载假红读成代码坏了")
+    ap.add_argument("--force", action="store_true",
+                    help="明知内存紧也照跑（结果自行按『负载污染』对待）")
     ap.add_argument("--no-pytest", action="store_true",
                     help="跳过第二遍：不把 unittest 收集为 0 的文件交给 pytest 重跑")
     args = ap.parse_args()
+
+    # ── 开跑前的负载闸（有意挡在**跑之前**：跑完再标注就晚了，红已经产生）────────
+    free_mb = available_mb()
+    can_run, why = memory_verdict(free_mb, args.min_free_mb)
+    print("负载读数：可用内存 %s · 阈值 %s MB · %s"
+          % (("%d MB" % free_mb) if free_mb is not None else "读不到", args.min_free_mb, why))
+    if not can_run and not args.force:
+        print("")
+        print("🔴 **本次不开跑**（这是判据，不是建议）：%s" % why)
+        print("   两条出路：① 等内存宽松些再跑（本机内存被并发活儿压着时抖动很大）；")
+        print("             ② 明知在压着也要跑 ⇒ 加 `--force`，但那份结果**只能当『负载污染样本』**，")
+        print("                不许当成『代码坏了』的证据。")
+        return 3
+    if not can_run and args.force:
+        print("⚠️  --force：明知内存紧仍开跑 ⇒ **这份结果不许当权威读数**（可能含负载假红）。")
+    print()
 
     env = dict(os.environ)
     # 本仓口径：必须隔离 store（否则测试包守卫会拒绝，或写脏生产）

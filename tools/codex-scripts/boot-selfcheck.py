@@ -77,6 +77,10 @@ JUDGMENTS = [
     # 🔴 最要紧的是安全红线：`inventory.scan(fix=True)` 会**真删文件** ——
     #    用例用桩记录 kwargs，直接断言扫描器传的是 `fix=False`（「扫一下」不该改动任何东西）。
     ("视图对账且只读", "gbt_allinone.tests.test_cross_scan_v_dim"),
+    # 2026-09-25 加：**满仓横扫的负载闸**。两次实跑证明：内存被压满时满仓横扫会出**假红**
+    # （`FileNotFoundError [WinError 2]` 收集期就断 / 26 分钟跑不完），而假红会被当成"代码坏了"。
+    # 这条判据守那道闸本身：低于阈值不许开跑 · 边界含等号 · 读不到要如实标注 · 闸必须在跑之前。
+    ("横扫负载闸", "gbt_allinone.tests.test_run_all_tests_memory_guard"),
 ]
 
 DRIFT_GATE = ROOT / "plugins" / "gbt-master" / "tools" / "verify-installed-copy.mjs"
