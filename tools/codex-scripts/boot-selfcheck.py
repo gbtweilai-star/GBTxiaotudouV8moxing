@@ -81,6 +81,13 @@ JUDGMENTS = [
     # （`FileNotFoundError [WinError 2]` 收集期就断 / 26 分钟跑不完），而假红会被当成"代码坏了"。
     # 这条判据守那道闸本身：低于阈值不许开跑 · 边界含等号 · 读不到要如实标注 · 闸必须在跑之前。
     ("横扫负载闸", "gbt_allinone.tests.test_run_all_tests_memory_guard"),
+    # 2026-09-26 加（第 52 轮 · F17）：**提交前凭据自审这份工具本身**。
+    # 起因是现读出来的：那份"强制"自审只存在于 `%TEMP%`（重启即无），
+    # 而它的①号判据要读 `%TEMP%` 里一份**明文**密钥备份 ——
+    # **防明文落盘的工具自己依赖一份明文落盘**，而上面那条「密钥不许明文落盘」却是绿的
+    # （尺子只量了仓这半个屋子）。这条判据把工具钉在仓里、把①钉在保险箱上（不碰明文参照），
+    # 并守住退出码契约：0 干净 / 1 命中 / 2 **自审没跑成**（含"保险箱是空的 ⇒ 一条都没比"）。
+    ("凭据自审有牙且在仓里", "gbt_allinone.tests.test_precommit_secret_scan"),
 ]
 
 DRIFT_GATE = ROOT / "plugins" / "gbt-master" / "tools" / "verify-installed-copy.mjs"

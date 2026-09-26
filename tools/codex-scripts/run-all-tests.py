@@ -245,8 +245,6 @@ def main() -> int:
     if _batch_note:
         print("⚠️ **分批跑**：这一批的绿只覆盖这一批；**拼起来才是全仓结论**，"
               "而「分段绿」与「一次全量的绿」不是同一件事（分段之间可能有相互影响）。")
-    print("负载读数：可用内存 %s · %s"
-          % (("%d MB" % free_mb) if free_mb is not None else "读不到", why))
     if not can_run and not args.force:
         print("")
         print("🔴 **本次不开跑**（这是判据，不是建议）：%s" % why)
