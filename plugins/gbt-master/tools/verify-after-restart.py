@@ -11,9 +11,16 @@
 | ③ 品牌位真的生效 | `/gbt-master` 的 `clientDiag`：`gen == gbt-potato-master-v9` 且 `diag` 含 hero/sideMark/sideName 三个 ok（**页面自报**） | 三项 ok |
 | ④ 注入上下文是新文案 | 把**装机副本**的 host.js 装进假 ctx 跑一遍，读两段上下文：品牌行必须是三分支里的"已按本代加载"、数字人块不许出现 `undefined` | 是 |
 | ⑤ 旧 specifier 可清 | profile 依赖里 `gbt-potato-master-v6 / -v8` 是否还在（在 = 还没清，见 README §4.8；**清之前必须先重启**） | 已清 |
+| ⑨ 三块上下文进了进程 | `/gbt-master` 的 `contexts` 字段（**进程自报**我注册成功了哪几块） | 面板/数字人/台账三块都在且 ok |
+
+🔴 ⑨ 是 2026-09-26 第 53 轮补的（F18）。此前 ④⑥ 两项都从**盘上**的装机副本渲染 ——
+它们能证明"代码对"，**证明不了"进程里有没有"**。代价已经付过一次：台账块
+2026-09-25 21:03:15 加进宿主半边时**没动版本号**，进程又是 10:33:32 启动的 ⇒
+① 读「1.8.1 == 1.8.1」判 ✅，而进程里**根本没有台账块**，
+主人要的「重启之后自动读取」一直没生效，所有闸却全绿。
 
 用法：py -3.14 plugins/gbt-master/tools/verify-after-restart.py
-退出码：0 = 五项都到位；1 = 还有没到位的（逐条列出"现在是什么、该是什么、怎么做"）。
+退出码：0 = 各项都到位；1 = 还有没到位的（逐条列出"现在是什么、该是什么、怎么做"）。
 """
 from __future__ import annotations
 
@@ -181,6 +188,34 @@ else:
     add(False, "⑧ 注入面诚实性（0 假账）", "判据不在：%s" % honesty,
         "tools/codex-scripts/audit-injection-honesty.py 应当在")
 
+# ── ⑨ 三块上下文**真的进了进程**（第 53 轮 · F18）────────────────────────────
+# 🔴 为什么要单列这一项：宿主半边**只在进程启动时装载**，而 ④⑥ 两项都是拿**盘上**的
+#    装机副本渲染出来的 ⇒ 它们能证明"代码对"，**证明不了"进程里有没有"**。
+#    实测代价：台账块 2026-09-25 21:03:15 加进宿主半边，而 version 留在 1.8.1 没动，
+#    进程是 10:33:32 启动的 ⇒ ① 读「1.8.1 == 1.8.1」判 ✅，**而进程里根本没有台账块**。
+#    用 Cordis 探针现读进程内已注册上下文，只有 4 块：
+#    `sandbox:policy` / `approval:policy` / `gbt-master-panels` / `gbt-digital-human`。
+#    主人要的「重启之后自动读取」因此**一直没生效**，而所有闸全绿。
+#    ⇒ 本条直接读 `/gbt-master` 的 `contexts` 字段（进程自报"我注册成功了哪几块"）。
+EXPECT_CONTEXTS = ("gbt-master-panels", "gbt-digital-human", "gbt-progress-ledger")
+if cat is None:
+    add(False, "⑨ 三块上下文进了进程", "取不到 /gbt-master", "contexts 含 %s" % (EXPECT_CONTEXTS,))
+else:
+    live_ctx = cat.get("contexts")
+    if not isinstance(live_ctx, list):
+        add(False, "⑨ 三块上下文进了进程",
+            "payload 里没有 contexts 字段（现读 version=%s）" % cat.get("version"),
+            "宿主半边自报 contexts=[[name,order,ok,error],…] ⇒ 说明跑的还是没这个字段的旧代码，重启")
+    else:
+        got = {str(c.get("name")): bool(c.get("ok")) for c in live_ctx if isinstance(c, dict)}
+        missing = [n for n in EXPECT_CONTEXTS if n not in got]
+        failed = [n for n in EXPECT_CONTEXTS if got.get(n) is False]
+        add(not missing and not failed, "⑨ 三块上下文进了进程",
+            "进程自报 %d 块：%s · 缺=%s · 注册失败=%s"
+            % (len(got), "、".join(sorted(got)), missing or "无", failed or "无"),
+            "contexts 必须含 %s 且三块 ok 都为真（缺哪块就说明宿主代码没换到那一版）"
+            % (EXPECT_CONTEXTS,))
+
 # ── ⑤ 旧 specifier 清理（可选，重启后才允许） ───────────────────────────────
 pkg = Path.home() / ".dsh" / "profiles" / "web" / "package.json"
 stale = []
@@ -204,6 +239,7 @@ for ok, name, now, want in rows:
         print("       该是：%s" % want)
 bad = [r for r in rows if not r[0]]
 print("-" * 92)
-print("结论：%s" % ("五项都到位 ✅（宿主机换代 · 提速 · 品牌生效 · 上下文新文案 · 旧 specifier 已清）"
-                  if not bad else "还有 %d 项没到位（上面带 ⏳ 的）" % len(bad)))
+# 结论**不许写死项数**：这张单从 5 项长到 9 项，写死一次就过期一次（本仓老账）。
+print("结论：%s" % ("%d 项全部到位 ✅" % len(rows) if not bad
+                  else "共 %d 项，还有 %d 项没到位（上面带 ⏳ 的）" % (len(rows), len(bad))))
 raise SystemExit(1 if bad else 0)

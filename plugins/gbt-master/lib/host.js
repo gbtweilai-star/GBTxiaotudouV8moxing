@@ -131,6 +131,22 @@ export function apply(ctx, config) {
   const fs = ctx.fs
   const webServer = ctx.webServer
 
+  // ── 进程内"我到底注册了哪几块会话上下文"（第 53 轮 · F18）─────────────────────
+  //    为什么要有：宿主半边**只在进程启动时装载**，而注入块是每次开新会话喂给模型的第一段字。
+  //    台账块（order 499）加进来时版本号没跟着动 ⇒ 验收单 ① 读到「1.8.1 == 1.8.1」判 ✅，
+  //    而进程里压根没有那块 —— **全绿，但机制没生效**。根因是"所有闸都从盘上渲染，
+  //    没有一条问过进程"。这份名单就是那条问进程的路：`/gbt-master` 的 `contexts` 字段。
+  //    ⚠️ 只记录**叶子事实**（名字 / 序号 / 成没成 / 错误前 120 字），不存文本、不存活对象。
+  const contextRegistry = []
+  function noteContext(name, order, err) {
+    contextRegistry.push({
+      name: String(name),
+      order: order,
+      ok: err === undefined || err === null,
+      error: err ? String(err && err.message ? err.message : err).slice(0, 120) : null,
+    })
+  }
+
   async function statOf(rel) {
     try {
       const info = await fs.stat(await fs.resolve(WORKSPACE + '/' + rel))
@@ -182,7 +198,19 @@ export function apply(ctx, config) {
       //    `/gbt-master` 自报的 `version` 是"现在跑的是哪一版"的**唯一**现读信号
       //    （1.8.0 = 没有 §4.7 两处报告层修正、也没有 §4.12 的目录路由并发）。
       //    `tools/verify-after-restart.py` 的 ① 就按它判"重启到位没有"。
-      version: '1.8.1',
+      //
+      // 🔴🔴 2026-09-26 第 53 轮（F18）：**这条规矩被破过一次，代价是 10 小时的假绿。**
+      //    台账块（`gbt-progress-ledger`）是 2026-09-25 21:03:15 加进宿主半边的，
+      //    而版本号**留在 1.8.1 没动** ⇒ 验收单 ① 读「进程 1.8.1 == 源稿 1.8.1」判 ✅，
+      //    而进程是 10:33:32 启动的、**根本没有台账块** ——
+      //    用 Cordis 探针现读进程内已注册上下文，只有 4 块：
+      //    `sandbox:policy` / `approval:policy` / `gbt-master-panels` / `gbt-digital-human`，
+      //    **没有 `gbt-progress-ledger`**。主人要的「重启之后自动读取」因此一直没生效，
+      //    而所有闸全绿（它们都从**盘上**渲染，没有一条问过**进程**）。
+      //    ⇒ 版本号 1.8.1 → **1.9.0**；并且不再只靠"我记得动版本号"：
+      //      下面 `contexts` 字段把**进程内实际注册成功的上下文**自报出来，
+      //      验收单 ⑨ 直接比对，谁没进去一眼可见。
+      version: '1.9.0',
       workspace: WORKSPACE,
       base: FS_BASE,
       panels,
@@ -192,6 +220,11 @@ export function apply(ctx, config) {
       // 浏览器半边的自报（`POST /gbt-master/diag`）：品牌三格到底注册上没有、报了什么错。
       // 之所以要它：single 插槽的占用从插槽检查器看不出来（`registrant` 是通用标签）。
       clientDiag: clientDiag || null,
+      // 宿主半边的自报：**进程内**到底注册了哪几块会话上下文（第 53 轮加，见上面版本号那段）。
+      // 为什么要它：注入块是"每次开新会话时喂给模型的第一段字"，而它**只在进程启动时装载**。
+      // 此前没有任何一条闸问过进程 —— 全都从盘上渲染 ⇒ 「盘上对」被念成「生效了」。
+      // 这里报的是**注册动作真的成功的那些**（`ok:false` 会连错误一起留在名单里）。
+      contexts: contextRegistry,
     }
   }
 
@@ -656,12 +689,17 @@ export function apply(ctx, config) {
     return snapshot
   }
 
-  ctx.effect(() => ctx.systemPrompt.context({
-    name: 'gbt-master-panels',
-    order: 500,
-    text: () => snapshot || '【GBT小土豆V8 · 总面板】上下文正在读取（宿主插件 gbt-potato-master-v9）。',
-  }), 'gbt-master 面板上下文')
-
+  try {
+    ctx.effect(() => ctx.systemPrompt.context({
+      name: 'gbt-master-panels',
+      order: 500,
+      text: () => snapshot || '【GBT小土豆V8 · 总面板】上下文正在读取（宿主插件 gbt-potato-master-v9）。',
+    }), 'gbt-master 面板上下文')
+    noteContext('gbt-master-panels', 500)
+  } catch (err) {
+    // 注册失败**不吞**：如实记进名单，`/gbt-master` 的 `contexts` 与验收单 ⑨ 都会看见它。
+    noteContext('gbt-master-panels', 500, err)
+  }
   void refreshSnapshot()
   const ticker = ctx.get('timer')
   if (ticker !== undefined && typeof ticker.interval === 'function') {
@@ -713,11 +751,16 @@ export function apply(ctx, config) {
     return dhState
   }
 
-  ctx.effect(() => ctx.systemPrompt.context({
-    name: 'gbt-digital-human',
-    order: 501,
-    text: () => dhState || '【GBT小土豆V8 · 数字人工作流】状态正在读取…',
-  }), 'gbt-master 数字人工作流状态')
+  try {
+    ctx.effect(() => ctx.systemPrompt.context({
+      name: 'gbt-digital-human',
+      order: 501,
+      text: () => dhState || '【GBT小土豆V8 · 数字人工作流】状态正在读取…',
+    }), 'gbt-master 数字人工作流状态')
+    noteContext('gbt-digital-human', 501)
+  } catch (err) {
+    noteContext('gbt-digital-human', 501, err)
+  }
 
   void refreshDhState()
   if (ticker !== undefined && typeof ticker.interval === 'function') {
@@ -770,11 +813,16 @@ export function apply(ctx, config) {
     return ledgerState
   }
 
-  ctx.effect(() => ctx.systemPrompt.context({
-    name: 'gbt-progress-ledger',
-    order: 499,
-    text: () => ledgerState || '【GBT小土豆V8 · 故障排查台账】台账正在读取…',
-  }), 'gbt-master 排查台账')
+  try {
+    ctx.effect(() => ctx.systemPrompt.context({
+      name: 'gbt-progress-ledger',
+      order: 499,
+      text: () => ledgerState || '【GBT小土豆V8 · 故障排查台账】台账正在读取…',
+    }), 'gbt-master 排查台账')
+    noteContext('gbt-progress-ledger', 499)
+  } catch (err) {
+    noteContext('gbt-progress-ledger', 499, err)
+  }
 
   void refreshLedger()
   if (ticker !== undefined && typeof ticker.interval === 'function') {
