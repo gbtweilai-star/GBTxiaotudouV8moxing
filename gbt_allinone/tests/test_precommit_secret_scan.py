@@ -249,9 +249,15 @@ class JudgmentWiringTest(unittest.TestCase):
     def test_no_tool_still_points_at_the_temp_copy(self) -> None:
         """仓里不许再有别的地方把**调用**指向 TEMP 那份。
 
-        两条口径，都写明白：
+        三条口径，都写明白（这一条改过两次，两次都是**假阳性**逼出来的）：
           · **剥文档**：本工具与这条判据都必须写明来由（F17 是什么、当初错在哪），
-            所以只查"会跑的代码"。逮文档 = 逼人删掉来由才绿。
+            所以 `.py` 只查"会跑的代码"。
+          · **不查 `.md` / `.json`**：这两类在本仓是**文档与数据**。
+            F17 那条记录必须能引用旧路径才能讲清当年错在哪 ——
+            要是连引用都算"指向 TEMP"，那就只剩"删掉故障记录才绿"这一条路，
+            正是本仓打过的那种假判据（红的是记录，不是代码）。
+            🔴 但**别把牙齿也拔了**：JSON 里真能藏命令的地方是 `package.json` 的 `scripts`，
+            那条单列在 `test_package_json_scripts_do_not_invoke_the_temp_copy`。
           · **排除本文件自己**：下面那三条正则**就是**「指向 TEMP」的定义，
             它当然会匹配到自己。这是定义，不是调用。排除面必须**恰好这一个** ——
             断言写死 file 集合，防止以后有人把排除面悄悄放大。
@@ -265,7 +271,8 @@ class JudgmentWiringTest(unittest.TestCase):
         )
         offenders = []
         for p in ROOT.rglob("*"):
-            if not p.is_file() or p.suffix.lower() not in (".py", ".md", ".mjs", ".ps1", ".json"):
+            if not p.is_file() or p.suffix.lower() not in (".py", ".mjs", ".js", ".cjs",
+                                                          ".ts", ".ps1", ".sh", ".bat", ".cmd"):
                 continue
             if p.resolve() in excluded:
                 continue
@@ -281,6 +288,28 @@ class JudgmentWiringTest(unittest.TestCase):
         self.assertEqual([], sorted(offenders),
                          "这些地方还把自审指向 TEMP 副本：%s" % sorted(offenders))
         self.assertEqual(1, len(excluded), "排除面只许有这一个（定义正则的本文件）")
+
+    def test_package_json_scripts_do_not_invoke_the_temp_copy(self) -> None:
+        """JSON 里唯一能真"跑东西"的地方是 `scripts` —— 那里仍然要有牙。
+
+        这条是上面那条"不查 .json"的对价：放宽了数据文件的排查面，
+        就必须在**真能执行**的那一格里补一道。
+        """
+        offenders = []
+        for pkg in ROOT.rglob("package.json"):
+            if any(part in (".git", "node_modules", "__pycache__", "archive") for part in pkg.parts):
+                continue
+            try:
+                doc = json.loads(pkg.read_text(encoding="utf-8", errors="replace"))
+            except (OSError, ValueError):
+                continue
+            scripts = doc.get("scripts") if isinstance(doc, dict) else None
+            if not isinstance(scripts, dict):
+                continue
+            for name, cmd in scripts.items():
+                if "precommit-secret-scan" in str(cmd) and "%TEMP%" in str(cmd).upper():
+                    offenders.append("%s:scripts.%s" % (pkg.relative_to(ROOT), name))
+        self.assertEqual([], sorted(offenders), "package.json 的 scripts 指向 TEMP 副本：%s" % offenders)
 
 
 if __name__ == "__main__":
