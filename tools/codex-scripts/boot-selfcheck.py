@@ -96,6 +96,12 @@ JUDGMENTS = [
     # 这条判据守的就是那条"问进程"的路：宿主自报 `contexts` · 验收单 ⑨ 比对 ·
     # 且两边名单**同源**（加了块没人验、或验了不存在的块，都要红）。
     ("上下文真的进了进程", "gbt_allinone.tests.test_live_context_wiring"),
+    # 2026-09-26 加（第 55 轮）：**分批跑的覆盖必须现算并集**。
+    # 第 51 轮我把全仓拆四批跑，然后把四批的数字并排一放就说全仓看过了 ——
+    # 而批与批之间我还在加测试文件（124 → 125 → 126），**四批的「全 N 个」不是同一个 N**。
+    # 那一轮真实覆盖是 62/125。这条判据守：缺文件必须红 · 跨批红必须并起来 ·
+    # 说不出用例名的红也不许吞（写「未记到用例名」）· 超时不算红。
+    ("满仓覆盖按并集现算", "gbt_allinone.tests.test_sweep_union_coverage"),
 ]
 
 DRIFT_GATE = ROOT / "plugins" / "gbt-master" / "tools" / "verify-installed-copy.mjs"
