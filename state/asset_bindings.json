@@ -45160,5 +45160,12 @@
   ],
   "note": "可控制面清单",
   "bound_at": "2026-09-27T23:04:09"
+ },
+ "gbt_allinone/tests/test_lobehub_surface.py": {
+  "tentacles": [
+   "lobehub"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T23:08:54"
  }
 }

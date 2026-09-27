@@ -16163,3 +16163,5 @@
 {"at": "2026-09-27T23:05:26", "event": "scan", "bindings": 6443, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-09-27T23:05:30", "event": "autobind", "files": 1, "bound": 1, "hint": "lobehub"}
 {"at": "2026-09-27T23:08:37", "event": "scan", "bindings": 6443, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T23:08:54", "event": "bind", "asset": "gbt_allinone/tests/test_lobehub_surface.py", "tentacle": "lobehub", "note": "autobind"}
+{"at": "2026-09-27T23:08:57", "event": "autobind", "files": 2, "bound": 2, "hint": "lobehub"}
