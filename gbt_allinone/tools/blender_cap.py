@@ -99,4 +99,14 @@ def run_op(op: str = "status", **params) -> dict:
     if op == "run":
         return run(args=params.get("args"), timeout=params.get("timeout", 300),
                    **{k: v for k, v in params.items() if k != "args"})
-    return {"ok": False, "error": f"未知 op:{op}（可用：status / run）", "fail_closed": True}
+    # 可控制面（主人令 2026-09-27「每一个可控制按键都要双向绑定」）：
+    # 让 Blender 自己报出 76 命名空间 / 2409 算子 / 49 数据族，落 state/blender_surface.json；
+    # 升级后重扫对比，**消失的键=断连**（报警，不静默）。执行口 bpy 过 filesystem_write 门。
+    if op in ("surface", "keys", "bpy", "data", "verify"):
+        import importlib.util as _iu
+        _sp = _iu.spec_from_file_location("blender_surface", _ROOT_OF() / "gbt_allinone" / "tools" / "blender_surface.py")
+        _bs = _iu.module_from_spec(_sp)
+        _sp.loader.exec_module(_bs)
+        return _bs.run_op(op, **params)
+    return {"ok": False, "fail_closed": True,
+            "error": f"未知 op:{op}（可用：status / run / surface / keys / bpy / data / verify）"}

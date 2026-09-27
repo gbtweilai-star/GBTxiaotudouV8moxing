@@ -456,6 +456,11 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import meta_cognition as _mc
         p = payload or {}
         return _mc.run(p.get("op", "law"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "surface_bind":
+        # 通用可控制面绑定器：让工具自己报键 → 绑触手 → 重扫对比（消失即断连）。
+        from .tools import surface_bind as _sb
+        p = payload or {}
+        return _sb.run_op(p.get("op", "keys"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "memory_manager":
         # 记忆管理 + 万能秒搜（FTS5 全文；中文可检索）+ 同时端出匹配的能力位。
         from .tools import memory_manager as _mm

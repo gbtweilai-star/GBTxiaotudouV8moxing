@@ -16048,3 +16048,34 @@
 {"at": "2026-09-27T20:54:41", "event": "bind", "asset": "gbt_allinone/tools/sec_sweeper.py", "tentacle": "sec_sweeper", "note": "autobind"}
 {"at": "2026-09-27T20:54:44", "event": "autobind", "files": 4, "bound": 4, "hint": "asset_index"}
 {"at": "2026-09-27T21:09:01", "event": "scan", "bindings": 6409, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T21:14:16", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "status", "note": "autobind"}
+{"at": "2026-09-27T21:14:16", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "status", "note": "autobind"}
+{"at": "2026-09-27T21:14:16", "event": "bind", "asset": "gbt_allinone/tools/memory_manager.py", "tentacle": "memory_manager", "note": "autobind"}
+{"at": "2026-09-27T21:14:23", "event": "autobind", "files": 5, "bound": 5, "hint": "status"}
+{"at": "2026-09-27T21:25:17", "event": "bind", "asset": "gbt_allinone/tools/blender_surface.py", "tentacle": "domain:tools", "note": "autobind"}
+{"at": "2026-09-27T21:25:17", "event": "bind", "asset": "gbt_allinone/tests/test_blender_surface_complete.py", "tentacle": "blender", "note": "autobind"}
+{"at": "2026-09-27T21:25:20", "event": "autobind", "files": 3, "bound": 3, "hint": "blender"}
+{"at": "2026-09-27T21:25:37", "event": "bind", "asset": "state/blender_surface.json", "tentacle": "blender", "note": "Blender 可控制面清单（76 命名空间/2409 算子/49 数据族）"}
+{"at": "2026-09-27T21:25:37", "event": "bind", "asset": "gbt_allinone/tools/blender_surface.py", "tentacle": "blender", "note": "可控制面枚举/执行/判据"}
+{"at": "2026-09-27T21:25:38", "event": "scan", "bindings": 6413, "missing_asset": 0, "ghost_tentacle": 2}
+{"at": "2026-09-27T21:26:59", "event": "scan", "bindings": 6413, "missing_asset": 0, "ghost_tentacle": 2}
+{"at": "2026-09-27T21:27:39", "event": "unbind", "asset": "gbt_allinone/api.py", "tentacle": "status", "why": "修账：status 不是能力位（操作名误当触手名，2026-09-27）"}
+{"at": "2026-09-27T21:27:39", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "project_context", "note": "修账重绑"}
+{"at": "2026-09-27T21:27:39", "event": "unbind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "status", "why": "修账：status 不是能力位（操作名误当触手名，2026-09-27）"}
+{"at": "2026-09-27T21:27:39", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "project_context", "note": "修账重绑"}
+{"at": "2026-09-27T21:27:40", "event": "scan", "bindings": 6413, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T21:27:40", "event": "bind", "asset": "README.md", "tentacle": "status", "note": ""}
+{"at": "2026-09-27T21:28:27", "event": "unbind", "asset": "README.md", "tentacle": "status", "why": "反向自检造出的脏标签，退账（2026-09-27）"}
+{"at": "2026-09-27T21:28:28", "event": "scan", "bindings": 6413, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T21:29:43", "event": "bind", "asset": "state/surfaces/ffmpeg.json", "tentacle": "filmkit", "note": "可控制面清单"}
+{"at": "2026-09-27T21:29:45", "event": "bind", "asset": "state/surfaces/genoffice.json", "tentacle": "genoffice", "note": "可控制面清单"}
+{"at": "2026-09-27T21:29:46", "event": "bind", "asset": "state/surfaces/git.json", "tentacle": "project_context", "note": "可控制面清单"}
+{"at": "2026-09-27T21:29:46", "event": "bind", "asset": "state/surfaces/python.json", "tentacle": "project_context", "note": "可控制面清单"}
+{"at": "2026-09-27T21:33:06", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "surface_bind", "note": "autobind"}
+{"at": "2026-09-27T21:33:06", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "surface_bind", "note": "autobind"}
+{"at": "2026-09-27T21:33:06", "event": "bind", "asset": "gbt_allinone/tools/surface_bind.py", "tentacle": "surface_bind", "note": "autobind"}
+{"at": "2026-09-27T21:33:08", "event": "autobind", "files": 4, "bound": 4, "hint": "surface_bind"}
+{"at": "2026-09-27T21:34:14", "event": "scan", "bindings": 6418, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T21:36:06", "event": "bind", "asset": "tools/codex-scripts/boot-selfcheck.py", "tentacle": "penetrating_cross_scan", "note": "autobind"}
+{"at": "2026-09-27T21:36:06", "event": "bind", "asset": "gbt_allinone/tests/test_surface_bind.py", "tentacle": "penetrating_cross_scan", "note": "autobind"}
+{"at": "2026-09-27T21:36:09", "event": "autobind", "files": 3, "bound": 3, "hint": "penetrating_cross_scan"}

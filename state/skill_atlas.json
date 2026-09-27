@@ -2939,6 +2939,21 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python tools/memory_manager_cli.py stats"
+  },
+  {
+   "kind": "surface_bind",
+   "domain": "system",
+   "desc": "通用可控制面绑定器：让工具自己报键（ffmpeg 628 · git 177 · python 302 · genoffice 19 · freebuff 3 · blender 2409）→ 绑触手 → 重扫对比，**消失的键=断连**",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "surface_bind",
+   "requires_params": [],
+   "params_hint": "op=probe|sweep|keys|verify",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('surface_bind', {'op':'keys'}))\""
   }
  ],
  "skills": [
@@ -11261,7 +11276,7 @@
   }
  ],
  "counts": {
-  "caps": 192,
+  "caps": 193,
   "caps_enabled": 185,
   "caps_safe_no_args": 102,
   "skills": 363,

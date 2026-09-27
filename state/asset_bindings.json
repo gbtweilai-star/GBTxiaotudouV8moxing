@@ -29157,7 +29157,9 @@
    "control_loop",
    "asset_index",
    "automation_keys",
-   "transformer"
+   "transformer",
+   "project_context",
+   "surface_bind"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29172,7 +29174,9 @@
    "control_loop",
    "asset_index",
    "automation_keys",
-   "transformer"
+   "transformer",
+   "project_context",
+   "surface_bind"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29299,7 +29303,8 @@
  },
  "tools/codex-scripts/boot-selfcheck.py": {
   "tentacles": [
-   "selfscan"
+   "selfscan",
+   "penetrating_cross_scan"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:25:45"
@@ -44896,5 +44901,76 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T20:54:41"
+ },
+ "gbt_allinone/tools/memory_manager.py": {
+  "tentacles": [
+   "memory_manager"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T21:14:16"
+ },
+ "gbt_allinone/tools/blender_surface.py": {
+  "tentacles": [
+   "domain:tools",
+   "blender"
+  ],
+  "note": "可控制面枚举/执行/判据",
+  "bound_at": "2026-09-27T21:25:17"
+ },
+ "gbt_allinone/tests/test_blender_surface_complete.py": {
+  "tentacles": [
+   "blender"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T21:25:17"
+ },
+ "state/blender_surface.json": {
+  "tentacles": [
+   "blender"
+  ],
+  "note": "Blender 可控制面清单（76 命名空间/2409 算子/49 数据族）",
+  "bound_at": "2026-09-27T21:25:37"
+ },
+ "state/surfaces/ffmpeg.json": {
+  "tentacles": [
+   "filmkit"
+  ],
+  "note": "可控制面清单",
+  "bound_at": "2026-09-27T21:29:43"
+ },
+ "state/surfaces/genoffice.json": {
+  "tentacles": [
+   "genoffice"
+  ],
+  "note": "可控制面清单",
+  "bound_at": "2026-09-27T21:29:45"
+ },
+ "state/surfaces/git.json": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "可控制面清单",
+  "bound_at": "2026-09-27T21:29:46"
+ },
+ "state/surfaces/python.json": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "可控制面清单",
+  "bound_at": "2026-09-27T21:29:46"
+ },
+ "gbt_allinone/tools/surface_bind.py": {
+  "tentacles": [
+   "surface_bind"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T21:33:06"
+ },
+ "gbt_allinone/tests/test_surface_bind.py": {
+  "tentacles": [
+   "penetrating_cross_scan"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T21:36:06"
  }
 }

@@ -277,8 +277,20 @@ def _code_kind(rel: str) -> str:
     return ""
 
 
-def bind(asset: str, tentacle: str, note: str = "", quiet: bool = False) -> dict:
+def bind(asset: str, tentacle: str, note: str = "", quiet: bool = False,
+         force: bool = False) -> dict:
     a = _rel(asset)
+    # ⚠️ 闸（2026-09-27 血账）：**标签必须是有效触手名**（能力位 / `domain:<域>` / 项目等）。
+    # 来历：账上被塞过 `status`（把**操作名**当成触手名）⇒ `scan` 报「触手不在册」= 断连；
+    # 实测反向自检时又塞进一条（README.md → status）⇒ 从这里**源头拒收**，force=True 才越过。
+    try:
+        _valid = _valid_labels()
+    except Exception:                                          # noqa: BLE001
+        _valid = set()
+    if _valid and tentacle not in _valid and not force:
+        return {"ok": False, "asset": a, "tentacle": tentacle, "fail_closed": True,
+                "error": f"标签 {tentacle!r} 不在册（有效触手名 {len(_valid)} 个）—— "
+                         f"用真能力位或 domain:<域>；确要强塞请 force=True"}
     d = _load()
     row = d.setdefault(a, {"tentacles": [], "note": note, "bound_at": time.strftime("%Y-%m-%dT%H:%M:%S")})
     if tentacle not in row["tentacles"]:

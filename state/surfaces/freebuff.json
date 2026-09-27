@@ -1,0 +1,20 @@
+{
+ "at": "2026-09-27T21:31:40",
+ "tool": "freebuff",
+ "exe": "C:\\Users\\ADMIN\\AppData\\Roaming\\npm\\freebuff.CMD",
+ "version": "",
+ "why": "免费算力引擎（CLI 开关；实测 3 把：--continue/--cwd/--trust-agents）",
+ "tentacle": "freebuff",
+ "counts": {
+  "keys": 3
+ },
+ "min_keys": 3,
+ "keys": [
+  "--continue",
+  "--cwd",
+  "--trust-agents"
+ ],
+ "gone": [],
+ "added": [],
+ "_口径": "**让工具自己报**（探针见 TOOLS 登记表）；重扫对比：新键并入、**消失的键=断连**"
+}
