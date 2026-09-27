@@ -124,3 +124,31 @@ python tools/binding_hook.py verify     # 复核（漏走钩子的新增在这�
 ⇒ `autobind` 尾部顺手 `prune()`：**不在盘上的绑定自动剪掉**，理由进台账；
 单独跑 `python tools/tentacle_bind.py prune` 也行。**这不是洗白数字**：剪的是"确实不在盘上"的行，
 每次都记 `prune` 台账（asset + 原触手 + 理由），真要追还能从 git 里翻回来。
+
+
+## 九、两条踩出来的坑（判据/钩子自己先坏）
+
+1. **② 分派要认两种写法**：`api.py` 里大量能力位是**成组元组**（`if kind in ("a","b","c")`），
+   不是逐个 `kind == "x"`。我第一版只认后者 ⇒ **一口气假报 25 条"没分派"**（blood account：
+   `keylogger`/`film_intel`/`hook_enforcer` 都在元组里）。现在与 `tools/framework_state.py`
+   同一把尺：**两种写法都算**，并立了回归判据 `test_d_grouped_dispatch_counts_as_wired`。
+2. **同名不等于同一份**：给 `energy_pool` 写探针时按**文件路径**二次装载，拿到的是**第二个**模块对象，
+   它内部注册表为 None ⇒ 探针自己抛 `AttributeError`，判据当场点出"探针坏了"。
+   ⇒ 探针要**按包路径**导入（与判据同一份实例）。
+
+## 十、和另一个同时在改这个仓的 agent 共存（2026-09-28 实测）
+
+本轮跑测试时发现：**仓库里有另一个 agent 在同时改**（它新增了 `key_gateway` / `multimodal_port` /
+`genoffice_bridge` 三个能力位、`deploy/vercel-brand/` 品牌站、改了 `security/policy.py` 声明作用域）。
+由此吃过三类亏，记下来：
+
+- **共用 `state/` 会互相踩**：两个测试进程同时跑时出现过假红（`TestAllNewCapsDispatchThroughDoor`
+  单跑通过、并跑失败）。⇒ 跑全量回归时**只许一条在跑**；状态文件不是多进程安全的。
+- **顶层树会凭空多出来**：`vercel-brand-protected/`（它打包品牌站时落在仓根）让反盲区判据 63→64 报红。
+  处理：`.gitignore` 收掉 + `coverage_matrix sweep` 登记（**产出也要有人扫过**）。
+- **`git add -A` 会把别人的半成品一起提交**：我那笔收尾提交里混进了它 25 个文件（3835 行）。
+  不是丢东西，但**混账了**。⇒ 收尾提交前先 `git status` 逐条看清是谁的改动；跨 agent 共用仓时
+  **按路径挑着加**，别一把 `-A`。
+
+**别人的新能力位，我这套钩子照样管**：给它新增的三位走了一遍 `binding_hook after-add`
+（补触手页 + 绑实现文件），现在 205 个能力位**六条腿全绿**、触手库 235/235。

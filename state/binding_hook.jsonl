@@ -3,3 +3,8 @@
 {"at": "2026-09-27T23:22:04", "event": "after-add", "kind": "action_gate", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
 {"at": "2026-09-27T23:22:04", "event": "after-add", "kind": "growth_hooks", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
 {"at": "2026-09-27T23:22:05", "event": "after-add", "kind": "devour_fusion", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
+{"at": "2026-09-28T04:03:32", "event": "after-add", "kind": "key_gateway", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": false, "⑥记忆页": true}, "missing": ["⑤绑定"], "fixed": []}
+{"at": "2026-09-28T04:03:32", "event": "after-add", "kind": "multimodal_port", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": false, "⑥记忆页": true}, "missing": ["⑤绑定"], "fixed": []}
+{"at": "2026-09-28T04:03:33", "event": "after-add", "kind": "genoffice_bridge", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": []}
+{"at": "2026-09-28T04:03:49", "event": "after-add", "kind": "key_gateway", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": []}
+{"at": "2026-09-28T04:03:50", "event": "after-add", "kind": "multimodal_port", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": []}

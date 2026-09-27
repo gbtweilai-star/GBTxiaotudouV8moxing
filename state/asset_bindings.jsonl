@@ -16279,3 +16279,16 @@
 {"at": "2026-09-28T03:48:45", "event": "scan", "bindings": 6461, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-09-28T03:54:02", "event": "scan", "bindings": 6461, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-09-28T03:55:56", "event": "scan", "bindings": 6461, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T04:03:25", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "obsidian_vault", "note": "autobind"}
+{"at": "2026-09-28T04:03:25", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "obsidian_vault", "note": "autobind"}
+{"at": "2026-09-28T04:03:25", "event": "bind", "asset": "gbt_allinone/tests/test_llm_bind_wired.py", "tentacle": "obsidian_vault", "note": "autobind"}
+{"at": "2026-09-28T04:03:27", "event": "bind", "asset": "gbt_allinone/llm/genoffice_bridge.py", "tentacle": "genoffice_bridge", "note": "autobind"}
+{"at": "2026-09-28T04:03:30", "event": "autobind", "files": 5, "bound": 5, "hint": "obsidian_vault", "pruned": 0}
+{"at": "2026-09-28T04:03:49", "event": "bind", "asset": "gbt_allinone/llm/key_gateway.py", "tentacle": "key_gateway", "note": "能力位实现文件 ↔ 触手（新增即绑）"}
+{"at": "2026-09-28T04:03:49", "event": "bind", "asset": "gbt_allinone/llm/multimodal_port.py", "tentacle": "multimodal_port", "note": "能力位实现文件 ↔ 触手（新增即绑）"}
+{"at": "2026-09-28T04:04:34", "event": "scan", "bindings": 6462, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T04:05:32", "event": "bind", "asset": "tools/binding_hook.py", "tentacle": "obsidian_vault", "note": "autobind"}
+{"at": "2026-09-28T04:05:34", "event": "autobind", "files": 3, "bound": 3, "hint": "obsidian_vault", "pruned": 0}
+{"at": "2026-09-28T04:07:52", "event": "bind", "asset": "memory/2026-09-28.md", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-28T04:07:57", "event": "autobind", "files": 1, "bound": 1, "hint": "browser", "pruned": 0}
+{"at": "2026-09-28T04:08:13", "event": "autobind", "skills_synced": []}

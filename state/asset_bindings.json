@@ -29164,7 +29164,8 @@
    "one_shot",
    "comfyui",
    "claude_code",
-   "health"
+   "health",
+   "obsidian_vault"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29185,7 +29186,8 @@
    "one_shot",
    "comfyui",
    "claude_code",
-   "health"
+   "health",
+   "obsidian_vault"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -45210,7 +45212,8 @@
  "tools/binding_hook.py": {
   "tentacles": [
    "domain:system",
-   "health"
+   "health",
+   "obsidian_vault"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T23:22:28"
@@ -45277,23 +45280,40 @@
  },
  "gbt_allinone/llm/key_gateway.py": {
   "tentacles": [
-   "domain:llm"
+   "domain:llm",
+   "key_gateway"
   ],
-  "note": "autobind",
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
   "bound_at": "2026-09-28T01:23:14"
  },
  "gbt_allinone/llm/multimodal_port.py": {
   "tentacles": [
-   "domain:llm"
+   "domain:llm",
+   "multimodal_port"
   ],
-  "note": "autobind",
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
   "bound_at": "2026-09-28T02:15:13"
  },
  "gbt_allinone/llm/genoffice_bridge.py": {
   "tentacles": [
-   "domain:llm"
+   "domain:llm",
+   "genoffice_bridge"
   ],
   "note": "autobind",
   "bound_at": "2026-09-28T02:55:54"
+ },
+ "gbt_allinone/tests/test_llm_bind_wired.py": {
+  "tentacles": [
+   "obsidian_vault"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T04:03:25"
+ },
+ "memory/2026-09-28.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T04:07:52"
  }
 }

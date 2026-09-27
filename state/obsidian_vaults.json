@@ -1391,14 +1391,32 @@
    "safe": "devour_fusion",
    "readme_sha": "8573667605bea675",
    "readme_exists": true
+  },
+  "genoffice_bridge": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\genoffice_bridge",
+   "safe": "genoffice_bridge",
+   "readme_sha": "a1508d2e1f780ff6",
+   "readme_exists": true
+  },
+  "key_gateway": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\key_gateway",
+   "safe": "key_gateway",
+   "readme_sha": "fc1a248e2d8232f9",
+   "readme_exists": true
+  },
+  "multimodal_port": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\multimodal_port",
+   "safe": "multimodal_port",
+   "readme_sha": "dfb009cb6fadfe1f",
+   "readme_exists": true
   }
  },
- "updated_at": "2026-09-27T23:22:05",
+ "updated_at": "2026-09-28T04:03:30",
  "root": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults",
  "counts": {
-  "vaults": 232,
-  "tentacles": 232
+  "vaults": 235,
+  "tentacles": 235
  },
- "body_index_sha": "d846221601d092ce",
- "bound_at": "2026-09-27T23:22:05"
+ "body_index_sha": "e0e1ae61e48f0e43",
+ "bound_at": "2026-09-28T04:03:31"
 }

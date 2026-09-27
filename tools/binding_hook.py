@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import re
 import subprocess
 import sys
 import time
@@ -106,9 +107,14 @@ def legs(kind: str, tool: str = "") -> dict:
     """六条腿逐条查（只读）。"""
     caps = _caps()
     api = (ROOT / "gbt_allinone" / "api.py").read_text(encoding="utf-8")
+    # ② 分派：**两种写法都算**（与 tools/framework_state.py 同一把尺，别各算各的）
+    #    血账：我先前只认 `kind == "x"`，而 api.py 里大量能力位是**成组元组**写法
+    #    （`if kind in ("redteam_recon", "pentest", "keylogger", …)`）⇒ 一口气假报 25 条"没分派"。
+    dispatched = bool(re.search(r'kind\s*==\s*"%s"' % re.escape(kind), api)
+                      or re.search(r'kind\s+in\s+\([^)]*"%s"' % re.escape(kind), api))
     out = {
         "①登记": kind in caps,
-        "②分派": 'kind == "%s"' % kind in api,
+        "②分派": dispatched,
         "③图鉴": kind in _atlas_kinds(),
         "④触手": kind in _labels(),
         "⑤绑定": bool(_bound_to(kind)) or _manifest_bound(tool),

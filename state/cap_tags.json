@@ -1,9 +1,9 @@
 {
- "at": "2026-09-28T03:31:18",
- "count": 202,
+ "at": "2026-09-28T04:07:59",
+ "count": 205,
  "by_permission": {
   "open": 141,
-  "owner": 61
+  "owner": 64
  },
  "duplicate_tags": {},
  "tags": {
@@ -294,6 +294,33 @@
    "permission": "open",
    "scopes": [],
    "why": "policy 无作用域 + 图鉴 safe 且无需确认"
+  },
+  "key_gateway": {
+   "tag": "GBT-LLM-KEY-GATEWAY",
+   "domain": "llm",
+   "permission": "owner",
+   "scopes": [
+    "filesystem_write"
+   ],
+   "why": "policy 要求作用域：filesystem_write；图鉴标了 safe=false"
+  },
+  "multimodal_port": {
+   "tag": "GBT-LLM-MULTIMODAL-PORT",
+   "domain": "llm",
+   "permission": "owner",
+   "scopes": [
+    "external_llm"
+   ],
+   "why": "policy 要求作用域：external_llm；图鉴标了 safe=false"
+  },
+  "genoffice_bridge": {
+   "tag": "GBT-LLM-GENOFFICE-BRIDGE",
+   "domain": "llm",
+   "permission": "owner",
+   "scopes": [
+    "external_llm"
+   ],
+   "why": "policy 要求作用域：external_llm；图鉴标了 safe=false"
   },
   "brain_route": {
    "tag": "GBT-LLM-BRAIN-ROUTE",

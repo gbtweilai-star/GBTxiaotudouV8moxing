@@ -268,6 +268,15 @@ class TestBindingHook(unittest.TestCase):
             miss = [k for k, v in L.items() if k.startswith(("①", "②", "③", "④", "⑥")) and not v]
             self.assertEqual([], miss, f"{kind} 有腿没接上：{miss}")
 
+    def test_d_grouped_dispatch_counts_as_wired(self):
+        """**成组元组分派也算分派**（血账：只认 `kind == "x"` 会把 25 条报成"没分派"）。
+
+        api.py 里大量能力位是 `if kind in ("a", "b", "c")` 的写法；判据必须与
+        `tools/framework_state.py` 同一把尺 —— 两种写法都算，否则就是**假报断连**。
+        """
+        L = self.m.legs("keylogger")          # 实测在 api.py 里是成组元组里的一个
+        self.assertTrue(L["②分派"], f"成组元组分派没被认成分派：{L}")
+
     def test_b_hook_refuses_to_invent_an_unregistered_cap(self):
         r = self.m.after_add(kind="完全不存在的能力位")
         self.assertFalse(r.get("ok"), "没登记的东西竟然被钩子'办'了")
