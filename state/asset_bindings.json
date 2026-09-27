@@ -45134,7 +45134,8 @@
  },
  "gbt_allinone/tests/test_gods_eye.py": {
   "tentacles": [
-   "claude_code"
+   "claude_code",
+   "automation_keys"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T22:22:01"

@@ -694,3 +694,37 @@ g.run_task("memory_manager", {"op": "store", "text": "…"})         # 存记忆
 （`Cannot create a scheduled task inside a session that already belongs to a scheduled task`）。
 **"每半天"的安全棒要落地，二选一**：① 主人**新开一个会话**让我建；② 主人把上面 ⑥ 段（安全棒那几条命令）
 贴进现有那条 6 小时自动化的提示词里 —— 两条路任选，我这边随时可执行。
+
+---
+
+## 上帝之眼（`gods_eye` · 主人令 2026-09-27）
+
+主人原话：「上帝之眼是能看到**创作页面**这些；里面的**克劳德**给意见和建议、商量架构与方向，**决策权在你这里**；
+把 **CodeBuddy 也部署进上帝之眼**，做杂事，**主项目她没有执行权**，只服从安排、随时候命；以及**每日的
+GBT 探针汇报和每日全量扫描**指出**缺点、短板、卡点**；然后你自己跟克劳德在里面计划优化、提升整体实力。」
+
+| op | 干什么 | 实测 |
+|---|---|---|
+| `see` | 看得见**创作页面** + 服务端口（真连） | **7/7 页面**（console3d/automation/structure/godview/health-panel/task-manager/music）· 服务 FreeLLMAPI 🟢 · ComfyUI 🟢 |
+| `advisors` | 两位顾问的**权限表**（机器可读 may / may_not）+ 可用性 | Claude available=**False**（缺 CLI）· CodeBuddy available=**True** |
+| `ask` | 真咨询（过各自能力位） | Claude：如实报"未装"+ 安装命令；**CodeBuddy 碰主项目 ⇒ 拒**（`refused=True · hit=['projects/']`） |
+| `daily` | **探针汇报 + 全量扫描** ⇒ 缺点/短板/卡点（**每条带 src**） | 缺点 1（未清故障 9）· 短板 4（未实现登记/密钥槽/顾问位）· 卡点 1（ComfyUI CPU） |
+| `plan` | 提案 + **决策**（采纳/搁置，**决策权在主体**） | 6 条真提案已落账 `state/gods_eye_plan.jsonl` |
+| `panel` | 上帝之眼页面（我们视觉语言 · 快照内联） | `holo_pet/assets/godview/index.html` |
+
+**两位顾问的权限（写死，不是口头约定）**
+- **Claude**：可=出意见/建议/评审/商量架构方向；**不可=决策、直接改主项目**；决策权在主体。
+- **CodeBuddy**：可=杂事（路径排查/日志整理/取数）；**不可=对主项目有执行权、决策、改主项目文件** ⇒
+  给它派活时只要点了主项目路径（`projects/` `gbt_allinone/` `skills/` `tools/` `state/`）**一律拒**。
+
+**"每日"怎么保证**：宿主的自动化功能**不接受从计划任务会话里再建任务**（实测原文
+`Cannot create a scheduled task inside a session that already belongs to a scheduled task`）
+⇒ "每日"不靠宿主，靠**开机判据**兜：`test_gods_eye` 的 **F 条**每次开工自检日报新鲜度（≤26h），
+过期即红并直说"该跑日报了"。**要真自动跑**，二选一：① 主人新开会话让我建一个每日自动化；
+② 把下面这段贴进现有 6 小时环的提示词：
+
+```
+⑦ 上帝之眼日报：python -c "import gbt_allinone as g; print(g.run_task('gods_eye', {'op':'daily'}))"
+   再 python -c "import gbt_allinone as g; print(g.run_task('gods_eye', {'op':'panel'}))"
+   有新的缺点/短板/卡点 ⇒ gods_eye plan op=add 记提案；决策用 plan op=decide decision=采纳|搁置
+```

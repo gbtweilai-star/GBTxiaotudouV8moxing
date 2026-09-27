@@ -10,12 +10,15 @@
   B. **顾问权限是机器可读的**：两位顾问都在册，且各自带 `may` / `may_not`；
   C. **CodeBuddy 越权必拒**：给它一个点了主项目路径的任务 ⇒ 必须 `refused=True`；
   D. **每日汇报三张清单**：缺点/短板/卡点都在，且**每条带 `src`**（来源）；
-  E. **计划面留痕**：提案与决策都能写进 `state/gods_eye_plan.jsonl`（决策权在主体）。
+  E. **计划面留痕**：提案与决策都能写进 `state/gods_eye_plan.jsonl`（决策权在主体）；
+  F. **日报新鲜**（≤26h，把"每日"做成开机判据，见类注释）；
+  G. **判据能红**（防假绿）：喂一条 30 小时前的快照必须判过期。
 """
 from __future__ import annotations
 
 import importlib.util
 import json
+import time
 import unittest
 from pathlib import Path
 
@@ -23,6 +26,12 @@ ROOT = Path(__file__).resolve().parents[2]
 TOOL = ROOT / "gbt_allinone" / "tools" / "gods_eye.py"
 PLAN = ROOT / "state" / "gods_eye_plan.jsonl"
 PANEL = ROOT / "holo_pet" / "assets" / "godview" / "index.html"
+DAILY_MAX_HOURS = 26
+
+
+def _daily_age_hours(snap: Path) -> float:
+    """日报龄（小时）。F 与 G 共用这一把尺：同函数、同上限，改一个数字两边一起动。"""
+    return (time.time() - snap.stat().st_mtime) / 3600.0
 
 
 def _load():
@@ -80,6 +89,44 @@ class TestGodsEye(unittest.TestCase):
         self.assertTrue(PLAN.is_file(), "计划台账不存在")
         self.assertIn("决策权在主体", self.m.plan("list").get("decider", ""))
         self.assertTrue(PANEL.is_file(), "上帝之眼页面不存在 ⇒ 跑 panel")
+
+
+class TestDailyIsFresh(unittest.TestCase):
+    """F. **日报必须新鲜**（主人令：「**每日**的 GBT 探针汇报和每日全量扫描」）。
+
+    为什么做成判据：宿主的自动化功能**不接受从计划任务会话里再建任务**（实测原文：
+    `Cannot create a scheduled task inside a session that already belongs to a scheduled task`），
+    所以"每日"这条**不靠宿主**、靠**开机判据**兜：每次开工都自检日报新鲜度 ——
+    过期就红，并直说"该跑日报了"。这样"每日"是**被验证的节律**，不是一句承诺。
+    """
+
+    def test_f_daily_snapshot_is_fresh(self):
+        snap = ROOT / "state" / "gods_eye.json"
+        self.assertTrue(snap.is_file(),
+                        "没有日报快照 ⇒ 跑 run_task('gods_eye', {'op': 'daily'})")
+        age_h = _daily_age_hours(snap)
+        self.assertLess(age_h, DAILY_MAX_HOURS,
+                        "日报已过期 %.1f 小时（上限 %dh）⇒ 跑 run_task('gods_eye', "
+                        "{'op': 'daily'}) 并刷新 panel" % (age_h, DAILY_MAX_HOURS))
+
+    def test_g_stale_snapshot_would_turn_red(self):
+        """G. **判据本身要能红**（防假绿）：同一把尺、同一个上限，喂一条 30 小时前的快照必须判过期。
+
+        没有这条，F 条只证明"现在绿"，不证明"过期会红" —— 尺子是不是真能量，得拿一个
+        确定过期的样本量一次。
+        """
+        import os
+        import shutil
+        import tempfile
+        import time
+        with tempfile.TemporaryDirectory() as td:
+            fake = Path(td) / "gods_eye.json"
+            shutil.copyfile(ROOT / "state" / "gods_eye.json", fake)
+            old = time.time() - 30 * 3600          # 30 小时前
+            os.utime(fake, (old, old))
+            age_h = _daily_age_hours(fake)
+            self.assertGreaterEqual(age_h, DAILY_MAX_HOURS,
+                                    "30h 前的快照竟判为新鲜 ⇒ 上限形同虚设")
 
 
 if __name__ == "__main__":
