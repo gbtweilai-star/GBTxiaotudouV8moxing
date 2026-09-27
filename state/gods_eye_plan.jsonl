@@ -1,11 +1,5 @@
 {"at": "2026-09-27T22:21:07", "event": "proposal", "item": "把生图那一步改走本机 ComfyUI（无外部限制）", "src": "claude 建议 / gods_eye.daily 短板", "by": "claude-or-self"}
 {"at": "2026-09-27T22:21:07", "event": "decision", "item": "把生图那一步改走本机 ComfyUI（无外部限制）", "decision": "采纳", "decider": "主体（GBT小土豆V8 · 我）—— 采纳或搁置由我定"}
-{"at": "2026-09-27T22:22:07", "event": "proposal", "item": "判据自检用提案", "src": "test_gods_eye", "by": "claude-or-self"}
-{"at": "2026-09-27T22:22:07", "event": "decision", "item": "判据自检用提案", "decision": "采纳", "decider": "主体（GBT小土豆V8 · 我）—— 采纳或搁置由我定"}
-{"at": "2026-09-27T22:22:30", "event": "proposal", "item": "判据自检用提案", "src": "test_gods_eye", "by": "claude-or-self"}
-{"at": "2026-09-27T22:22:30", "event": "decision", "item": "判据自检用提案", "decision": "采纳", "decider": "主体（GBT小土豆V8 · 我）—— 采纳或搁置由我定"}
-{"at": "2026-09-27T22:23:03", "event": "proposal", "item": "判据自检用提案", "src": "test_gods_eye", "by": "claude-or-self"}
-{"at": "2026-09-27T22:23:03", "event": "decision", "item": "判据自检用提案", "decision": "采纳", "decider": "主体（GBT小土豆V8 · 我）—— **决策权在主体**：采纳或搁置由我定"}
 {"at": "2026-09-27T22:23:34", "event": "proposal", "item": "把全链的『生图』一步从 pollinations 改走本机 ComfyUI（966 节点全控）", "src": "gods_eye.daily 短板/卡点 + comfyui.status（cpu）", "by": "claude-or-self"}
 {"at": "2026-09-27T22:23:34", "event": "decision", "item": "把全链的『生图』一步从 pollinations 改走本机 ComfyUI（966 节点全控）", "decision": "采纳", "decider": "主体（GBT小土豆V8 · 我）—— **决策权在主体**：采纳或搁置由我定"}
 {"at": "2026-09-27T22:23:34", "event": "proposal", "item": "给 claude 槽补 CLI（npm i -g @anthropic-ai/claude-code）—— 顾问位才能真给意见", "src": "gods_eye.advisors：claude available=False", "by": "claude-or-self"}
@@ -18,9 +12,7 @@
 {"at": "2026-09-27T22:23:34", "event": "decision", "item": "ComfyUI 跑在 CPU：默认预设降到 720p/少步数，把『慢』变成『可预期的慢』", "decision": "采纳", "decider": "主体（GBT小土豆V8 · 我）—— **决策权在主体**：采纳或搁置由我定"}
 {"at": "2026-09-27T22:23:34", "event": "proposal", "item": "上帝之眼每日汇报挂进 6 小时自检环（本会话不能建计划任务，等主人新开会话或贴提示词）", "src": "宿主限制：Cannot create a scheduled task inside a scheduled task", "by": "claude-or-self"}
 {"at": "2026-09-27T22:23:34", "event": "decision", "item": "上帝之眼每日汇报挂进 6 小时自检环（本会话不能建计划任务，等主人新开会话或贴提示词）", "decision": "搁置", "decider": "主体（GBT小土豆V8 · 我）—— **决策权在主体**：采纳或搁置由我定"}
-{"at": "2026-09-27T22:27:45", "event": "proposal", "item": "判据自检用提案", "src": "test_gods_eye", "by": "claude-or-self"}
-{"at": "2026-09-27T22:27:45", "event": "decision", "item": "判据自检用提案", "decision": "采纳", "decider": "主体（GBT小土豆V8 · 我）—— **决策权在主体**：采纳或搁置由我定"}
-{"at": "2026-09-27T22:30:25", "event": "proposal", "item": "判据自检用提案", "src": "test_gods_eye", "by": "claude-or-self"}
-{"at": "2026-09-27T22:30:25", "event": "decision", "item": "判据自检用提案", "decision": "采纳", "decider": "主体（GBT小土豆V8 · 我）—— **决策权在主体**：采纳或搁置由我定"}
-{"at": "2026-09-27T22:30:43", "event": "proposal", "item": "判据自检用提案", "src": "test_gods_eye", "by": "claude-or-self"}
-{"at": "2026-09-27T22:30:43", "event": "decision", "item": "判据自检用提案", "decision": "采纳", "decider": "主体（GBT小土豆V8 · 我）—— **决策权在主体**：采纳或搁置由我定"}
+{"at": "2026-09-27T22:37:33", "event": "ask", "advisor": "claude", "chars": 19, "ok": false}
+{"at": "2026-09-27T22:38:15", "event": "ask", "advisor": "claude", "chars": 13, "ok": false}
+{"at": "2026-09-27T22:42:37", "event": "ask", "advisor": "claude", "chars": 13, "ok": false}
+{"at": "2026-09-27T22:43:28", "event": "ask", "advisor": "claude", "chars": 13, "ok": false}

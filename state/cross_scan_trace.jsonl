@@ -640,3 +640,14 @@
 {"at": "2026-09-27T20:50:59", "source_kind": "cross_scan", "event": "security_pass", "units": 42, "flagged": 1, "needs_human": 0}
 {"at": "2026-09-27T20:50:59", "source_kind": "cross_scan", "event": "scan", "target": "tree:potato_pet", "units": 93, "coverage": 1.0, "missing": 0, "mode": "scan"}
 {"at": "2026-09-27T20:50:59", "source_kind": "cross_scan", "event": "security_pass", "units": 93, "flagged": 0, "needs_human": 0}
+{"at": "2026-09-27T22:40:52", "source_kind": "cross_scan", "event": "scan", "target": "tree:gbt_allinone", "units": 879, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T22:40:54", "source_kind": "cross_scan", "event": "security_pass", "units": 879, "flagged": 20, "needs_human": 0}
+{"at": "2026-09-27T22:40:55", "source_kind": "cross_scan", "event": "scan", "target": "tree:tools", "units": 581, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T22:40:57", "source_kind": "cross_scan", "event": "security_pass", "units": 581, "flagged": 30, "needs_human": 0}
+{"at": "2026-09-27T22:40:57", "source_kind": "cross_scan", "event": "scan", "target": "tree:skills", "units": 360, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T22:40:58", "source_kind": "cross_scan", "event": "security_pass", "units": 360, "flagged": 1, "needs_human": 0}
+{"at": "2026-09-27T22:40:58", "source_kind": "cross_scan", "event": "scan", "target": "tree:state", "units": 0, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T22:40:59", "source_kind": "cross_scan", "event": "scan", "target": "tree:projects", "units": 414, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T22:40:59", "source_kind": "cross_scan", "event": "security_pass", "units": 414, "flagged": 0, "needs_human": 0}
+{"at": "2026-09-27T22:40:59", "source_kind": "cross_scan", "event": "scan", "target": "tree:holo_pet", "units": 80, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T22:41:00", "source_kind": "cross_scan", "event": "security_pass", "units": 80, "flagged": 1, "needs_human": 0}
