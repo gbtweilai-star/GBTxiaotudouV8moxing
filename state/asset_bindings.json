@@ -30807,5 +30807,40 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T15:38:33"
+ },
+ "skills/gbt-selfgrowth/SKILL.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T16:44:33"
+ },
+ "tools/fleet_terminal.py": {
+  "tentacles": [
+   "selfscan"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T16:44:33"
+ },
+ "tools/framework_state.py": {
+  "tentacles": [
+   "selfscan"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T16:44:33"
+ },
+ "tools/selfgrowth.py": {
+  "tentacles": [
+   "selfscan"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T16:44:33"
+ },
+ "gbt_allinone/tests/test_cap_bind_bidirectional.py": {
+  "tentacles": [
+   "selfscan"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T16:44:33"
  }
 }

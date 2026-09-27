@@ -13697,3 +13697,10 @@
 {"at": "2026-09-27T16:17:59", "event": "bind", "asset": "tools/coverage_matrix.py", "tentacle": "penetrating_cross_scan", "note": "autobind"}
 {"at": "2026-09-27T16:17:59", "event": "bind", "asset": "tools/tentacle_fleet.py", "tentacle": "penetrating_cross_scan", "note": "autobind"}
 {"at": "2026-09-27T16:18:00", "event": "autobind", "files": 3, "bound": 3, "hint": "penetrating_cross_scan"}
+{"at": "2026-09-27T16:43:51", "event": "scan", "bindings": 4398, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T16:44:33", "event": "bind", "asset": "skills/gbt-selfgrowth/SKILL.md", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-27T16:44:33", "event": "bind", "asset": "tools/fleet_terminal.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T16:44:33", "event": "bind", "asset": "tools/framework_state.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T16:44:33", "event": "bind", "asset": "tools/selfgrowth.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T16:44:33", "event": "bind", "asset": "gbt_allinone/tests/test_cap_bind_bidirectional.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T16:44:33", "event": "autobind", "files": 9, "bound": 9, "hint": "selfscan"}
