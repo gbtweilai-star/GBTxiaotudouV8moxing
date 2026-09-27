@@ -461,6 +461,26 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import gods_eye as _ge
         p = payload or {}
         return _ge.run_op(p.get("op", "see"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "obsidian_vault":
+        from .tools import obsidian_vault as _obs
+        p = payload or {}
+        return _obs.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "cap_tags":
+        from .tools import cap_tags as _cap
+        p = payload or {}
+        return _cap.run_op(p.get("op", "tags"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "action_gate":
+        from .tools import action_gate as _act
+        p = payload or {}
+        return _act.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "growth_hooks":
+        from .tools import growth_hooks as _gro
+        p = payload or {}
+        return _gro.run_op(p.get("op", "shortboard"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "devour_fusion":
+        from .tools import devour_fusion as _dev
+        p = payload or {}
+        return _dev.run_op(p.get("op", "list"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "lobehub":
         # LobeHub 桌面端全控：七大面 76 把可控制键；启动/关闭过 process_execute 门，
         # 设置写走白名单 + filesystem_write 门；凭据只回形状（按键名掩码）。

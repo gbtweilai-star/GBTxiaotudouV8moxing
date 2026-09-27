@@ -864,6 +864,36 @@ BENIGN_CAPS = {
         "handler": 'gods_eye',
         "safe": True,
     },
+    "obsidian_vault": {
+        "domain": 'mind',
+        "desc": 'Obsidian 永久记忆层（主人令 2026-09-27「让触手的吞天拥有永久记忆 Obsidian，所有触手每一根都绑定独立的 Obsidian，再把所有的 Obsidian 和本体的自研 Obsidian 双向绑定到一起互通共享」）：**227 根触手各一本独立库**（`vaults/<触手>/`：README MOC + 记忆.md + `.obsidian/app.json`，Obsidian 直接能开）· **本体的自研库**=brain_vault 认的那本（Documents\\Codex\\ObsidianVault）· 双向 = 触手页链回 [[GBT本体记忆]] + 本体 [[触手总索引]] 链到每一本（两条都查）。**只追加、无删除路径**；不写主人自己的库（只指向）。写主人 Documents 目录时走 filesystem_write 门（`root=documents`）。op=status/provision/remember/sync_page/bind/recall/verify/where',
+        "handler": 'obsidian_vault',
+        "safe": True,
+    },
+    "cap_tags": {
+        "domain": 'system',
+        "desc": 'GBT 技能标签 + 主人调用许可（主人令「将所有的原生能力注册出专属的 GBT 技能标签，只有我允许了才能调用我的能力」）：每个能力位一个稳定标签 `GBT-<域>-<能力位>`，**从注册表现算**；权限类**由框架自己的判据推**（`policy.evaluate` 逐 op 问作用域 + 图鉴 safe/needs_confirmation），**读不出来一律按 owner**（默认严）。`owner` 类=只有主人发许可才能调；许可在 `gbt_allinone/store/owner_permits.jsonl`，**本能力没有任何写它的路径**，终端 `permit` 命令要求 TTY + 手打 YES ⇒ **AI 发不出许可**。op=tags/check/permits/how/audit/verify/where/permit',
+        "handler": 'cap_tags',
+        "safe": True,
+    },
+    "action_gate": {
+        "domain": 'system',
+        "desc": '先看→动脑→执行 前置闸（主人令「做事拥有先看在动脑执行，拒绝所有的无脑操作以及盲猜」）：**没证据不许动手**（evidence 必须真在盘上）· **证据要新**（默认 ≤600s，旧读数不许当现状）· **必须写预期**（hypothesis ≥8 字，否则算盲猜）· **写/执行要票**（scope 或 owner 类许可）。过了发 gate_id，做完 `close` 回填结果+**亲眼看到的**（saw 不许空）。台账 state/action_gate.jsonl。op=observe/preflight/close/status/verify/where',
+        "handler": 'action_gate',
+        "safe": True,
+    },
+    "growth_hooks": {
+        "domain": 'system',
+        "desc": '短板钩子 + 自主进化钩子（主人令「设计好短板钩子和自主进化钩子实现自我进化」）：短板**从已有读数算**（六面 + 未清故障 + 未实现 + 触手库覆盖 + 许可缺口），**每条带 src**；进化只**自动做不带门的**（读类/生成索引/补记忆），带门的列成待主人清单。两条纪律写死：**不自批授权**；**撞 state/holdout.json 封存验收集的步骤一律拦下**（判据不许既当训练又当验收）。op=shortboard/evolve/history/verify/where',
+        "handler": 'growth_hooks',
+        "safe": True,
+    },
+    "devour_fusion": {
+        "domain": 'devour',
+        "desc": '吞天 × 原生能力 融合台账（主人令「把蒸馏提炼出契合自己的原生能力和吞天融合到一起…以及记入能力」）：吞进来的东西**三件齐才算融合** —— ①原生位三处齐（注册/分派/图鉴）②有效触手标签 ③触手库永久记忆页；`status=已融合` 而三件不齐**当场拒**（假账拦下）。`fuse` 补第三件（调 obsidian_vault.remember）；`audit` 逐条列缺件与补法。图片里那三个开源件先记 **`待吞`**（要装上才能吞，装不上就写不上）。op=intake/list/audit/fuse/verify/where',
+        "handler": 'devour_fusion',
+        "safe": True,
+    },
     "lobehub": {
         "domain": 'creation',
         "desc": ('LobeHub 桌面端（Electron 2.2.18）全控 —— 主人令 2026-09-27「把 LobeHub.lnk 做成'
