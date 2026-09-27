@@ -456,6 +456,17 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import meta_cognition as _mc
         p = payload or {}
         return _mc.run(p.get("op", "law"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "memory_manager":
+        # 记忆管理 + 万能秒搜（FTS5 全文；中文可检索）+ 同时端出匹配的能力位。
+        from .tools import memory_manager as _mm
+        p = payload or {}
+        return _mm.run_op(p.get("op", "stats"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "sec_sweeper":
+        # 安全棒：每半天全量穿透式交叉扫描 + 健康账/面板 + 专用口 + 上下文复用（不重扫）
+        # 外加：框架**垃圾清理**与**加速**（主人 2026-09-27 追加）。
+        from .tools import sec_sweeper as _ss
+        p = payload or {}
+        return _ss.run_op(p.get("op", "health"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "task_manager":
         # 任务管理器：读真进程（psutil）；stop 过门；page 生成静态页。
         from .tools import task_manager as _tm

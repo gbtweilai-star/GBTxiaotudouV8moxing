@@ -852,6 +852,28 @@ BENIGN_CAPS = {
         "handler": 'coverage_auditor',
         "safe": True,
     },
+    "memory_manager": {
+        "domain": 'mind',
+        "desc": '记忆管理 + 万能精准秒搜（主人令 2026-09-27）：SQLite **FTS5 全文索引**（实测中文可检索）·'
+                '六类源（记忆/文档/技能/状态/**能力位**/代理）⇒ find 秒级返回「路径+类型+高亮片段」，'
+                '并**同时端出匹配的能力位**（"想到匹配面出现的能力"）；index 增量（mtime+sha 未变即跳过；'
+                '**不许整表清空** —— 实测因此丢过索引）；store 存记忆过 filesystem_write 门。'
+                'SQL 纪律：全部内联字面量 + `?` 占位符，不用变量拼 SQL（安全钩子实测拦过两次）。'
+                'op=index/find/store/stats',
+        "handler": 'memory_manager',
+        "safe": True,
+    },
+    "sec_sweeper": {
+        "domain": 'security',
+        "desc": '安全棒（主人令 2026-09-27）：一根专职安全触手，**每半天**把尺子挨个过唯一门跑一遍 —— '
+                '全量穿透式交叉扫描（钩子/步骤锁/交叉验证/遗漏补扫）+ 安全模式分诊（eval/exec/shell/凭据/'
+                '反序列化…）+ 覆盖无死角 + 双向绑定 + 技能源↔装；结果收成**健康账**，异常即**报警**；'
+                '**独立健康面板**（快照内联·异常红色置顶）；**专用口**=keys（只引用+掩码）/energy（能源池+免费池真连）/start；'
+                '**同步记忆上下文**=每棵树记指纹（文件数/最新mtime/总字节），指纹未变则复用上次结果（标 reused），'
+                '**不重扫**。op=start/sweep/keys/energy/panel/health',
+        "handler": 'sec_sweeper',
+        "safe": True,
+    },
     "task_manager": {
         "domain": 'system',
         "desc": '任务管理器（主人令 2026-09-27）：一屏看全「任务 / 归属 / 内存占用 / CPU / 端口 / 进程ID」；'
@@ -865,12 +887,12 @@ BENIGN_CAPS = {
     },
     "transformer": {
         "domain": 'llm',
-        "desc": '变压器（按 09-22 原设计接上 · 主人令 2026-09-27「排查为什么老能源供给不足」）：'
-                '诊断结论=**它从来没接线**（设计稿写明"网关前置两级变压器"、09-26 登记 pending 未接）⇒ '
-                '输入侧压缩（去重/重复JSON折叠/裁陈旧上下文）+ 输出侧快速（cache 命中=省整次模型调用）；'
-                '**可旁路 fail-open**（字面量包含关系不成立或没省下来 ⇒ 回原样，绝不压坏）；'
-                '**必给前后两个数**（压缩率 + 省字符）并记 state/transformer_ledger.jsonl。'
-                'op=compress/cache_get/cache_put/stats/selftest',
+        "desc": '变压器（**核心已按成熟成品吃透后重做** 2026-09-27）：LLMLingua 的「显式预算 + 段落保护」'
+                '（`compress=False` 思想 ⇒ **指令/结构段一字不动**，只压参考叙述，支持 rate/target_chars）+ '
+                'GPTCache 的「近似命中」本地近似（simhash 汉明距离；**假命中禁令**：近似默认只报告不返答案，'
+                '要答案须 allow_approx）+ autosize（上下文快满自动压 + **原文先落 spill 资料不丢**）；'
+                '**可旁路 fail-open**（关键信息丢或没省下来 ⇒ 回原样）；**必给前后两个数**并记台账。'
+                'op=compress/cache_get/cache_put/autosize/stats/selftest',
         "handler": 'transformer',
         "safe": True,
     },

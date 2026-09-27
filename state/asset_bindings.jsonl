@@ -16036,3 +16036,15 @@
 {"at": "2026-09-27T20:37:10", "event": "bind", "asset": "memory/2026-09-27-助理安装与密钥口.md", "tentacle": "project_context", "note": "autobind"}
 {"at": "2026-09-27T20:37:13", "event": "autobind", "files": 3, "bound": 3, "hint": "energy_pool"}
 {"at": "2026-09-27T20:42:00", "event": "scan", "bindings": 6404, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T20:46:11", "event": "bind", "asset": "holo_pet/assets/task-manager/index.html", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-27T20:46:11", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "transformer", "note": "autobind"}
+{"at": "2026-09-27T20:46:11", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "transformer", "note": "autobind"}
+{"at": "2026-09-27T20:46:11", "event": "bind", "asset": "gbt_allinone/tools/task_manager.py", "tentacle": "task_manager", "note": "autobind"}
+{"at": "2026-09-27T20:46:11", "event": "bind", "asset": "gbt_allinone/tools/transformer_cap.py", "tentacle": "transformer", "note": "autobind"}
+{"at": "2026-09-27T20:46:16", "event": "autobind", "files": 6, "bound": 6, "hint": "transformer"}
+{"at": "2026-09-27T20:50:30", "event": "bind", "asset": "gbt_allinone/tools/sec_sweeper.py", "tentacle": "domain:tools", "note": "autobind"}
+{"at": "2026-09-27T20:50:38", "event": "autobind", "files": 1, "bound": 1, "hint": "energy_pool"}
+{"at": "2026-09-27T20:54:41", "event": "bind", "asset": "holo_pet/assets/health-panel/index.html", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-27T20:54:41", "event": "bind", "asset": "gbt_allinone/tools/sec_sweeper.py", "tentacle": "sec_sweeper", "note": "autobind"}
+{"at": "2026-09-27T20:54:44", "event": "autobind", "files": 4, "bound": 4, "hint": "asset_index"}
+{"at": "2026-09-27T21:09:01", "event": "scan", "bindings": 6409, "missing_asset": 0, "ghost_tentacle": 0}

@@ -1,0 +1,5 @@
+{"at": "2026-09-27T20:50:42", "event": "sweep", "scanned": 4, "reused": 0, "alerts": 0}
+{"at": "2026-09-27T20:50:42", "event": "sweep", "scanned": 0, "reused": 4, "alerts": 0}
+{"at": "2026-09-27T20:51:00", "event": "sweep", "scanned": 9, "reused": 4, "alerts": 0}
+{"at": "2026-09-27T20:51:00", "event": "start", "ok": true, "alerts": 0}
+{"at": "2026-09-27T20:54:59", "event": "accelerate", "before_query_ms": 2717.3, "after_query_ms": 28.0, "after_dead_bindings_retired": 0}

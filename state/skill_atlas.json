@@ -2909,6 +2909,36 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('task_manager', {'op':'stats' if 'task_manager'=='transformer' else 'list'}))\""
+  },
+  {
+   "kind": "sec_sweeper",
+   "domain": "security",
+   "desc": "安全棒：每半天全量穿透式交叉扫描 + 健康面板（异常报警）+ 专用密钥/能源/启动口 + 上下文指纹复用（不重扫）",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "sec_sweeper",
+   "requires_params": [],
+   "params_hint": "op=start|sweep|keys|energy|panel|health",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('sec_sweeper', {'op':'health'}))\""
+  },
+  {
+   "kind": "memory_manager",
+   "domain": "mind",
+   "desc": "记忆管理 + 万能秒搜：FTS5 全文（中文可搜）+ 六类源（含能力位）；find 同时端出匹配能力位；增量索引不丢账（血账：整表清空丢过 344 条）",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "memory_manager",
+   "requires_params": [],
+   "params_hint": "op=index|find|store|stats",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/memory_manager_cli.py stats"
   }
  ],
  "skills": [
@@ -11231,7 +11261,7 @@
   }
  ],
  "counts": {
-  "caps": 190,
+  "caps": 192,
   "caps_enabled": 185,
   "caps_safe_no_args": 102,
   "skills": 363,

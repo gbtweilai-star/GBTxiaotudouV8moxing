@@ -1,0 +1,213 @@
+{
+ "trees": {
+  "gbt_allinone": {
+   "fp": {
+    "exists": true,
+    "files": 9543,
+    "bytes": 1528518301,
+    "newest_mtime": 1790517046.1
+   },
+   "units": 870,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 20,
+   "ok": true,
+   "at": "2026-09-27T20:50:54",
+   "reused": false
+  },
+  "tools": {
+   "fp": {
+    "exists": true,
+    "files": 627,
+    "bytes": 6492778,
+    "newest_mtime": 1790515644.3
+   },
+   "units": 581,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 30,
+   "ok": true,
+   "at": "2026-09-27T20:50:56",
+   "reused": false
+  },
+  "skills": {
+   "fp": {
+    "exists": true,
+    "files": 360,
+    "bytes": 4638149,
+    "newest_mtime": 1790516601.7
+   },
+   "units": 360,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 1,
+   "ok": true,
+   "at": "2026-09-27T20:50:42",
+   "reused": true
+  },
+  "docs": {
+   "fp": {
+    "exists": true,
+    "files": 29,
+    "bytes": 377856,
+    "newest_mtime": 1790496586.5
+   },
+   "units": 29,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 0,
+   "ok": true,
+   "at": "2026-09-27T20:50:41",
+   "reused": true
+  },
+  "state": {
+   "fp": {
+    "exists": true,
+    "files": 206,
+    "bytes": 11678296,
+    "newest_mtime": 1790517056.8
+   },
+   "units": 0,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 0,
+   "ok": true,
+   "at": "2026-09-27T20:50:56",
+   "reused": false
+  },
+  "memory": {
+   "fp": {
+    "exists": true,
+    "files": 58,
+    "bytes": 3965398,
+    "newest_mtime": 1790515707.5
+   },
+   "units": 58,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 0,
+   "ok": true,
+   "at": "2026-09-27T20:50:41",
+   "reused": true
+  },
+  "deploy": {
+   "fp": {
+    "exists": true,
+    "files": 153,
+    "bytes": 5258302,
+    "newest_mtime": 1790374492.0
+   },
+   "units": 151,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 3,
+   "ok": true,
+   "at": "2026-09-27T20:50:57",
+   "reused": false
+  },
+  "projects": {
+   "fp": {
+    "exists": true,
+    "files": 412,
+    "bytes": 973416859,
+    "newest_mtime": 1790484669.4
+   },
+   "units": 404,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 0,
+   "ok": true,
+   "at": "2026-09-27T20:50:57",
+   "reused": false
+  },
+  "holo_pet": {
+   "fp": {
+    "exists": true,
+    "files": 80,
+    "bytes": 19273624,
+    "newest_mtime": 1790516552.6
+   },
+   "units": 79,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 1,
+   "ok": true,
+   "at": "2026-09-27T20:50:58",
+   "reused": false
+  },
+  "holo_pet_w3": {
+   "fp": {
+    "exists": true,
+    "files": 252,
+    "bytes": 6175573,
+    "newest_mtime": 1790368099.0
+   },
+   "units": 252,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 3,
+   "ok": true,
+   "at": "2026-09-27T20:50:58",
+   "reused": false
+  },
+  "plugins": {
+   "fp": {
+    "exists": true,
+    "files": 42,
+    "bytes": 370782,
+    "newest_mtime": 1790386817.6
+   },
+   "units": 42,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 1,
+   "ok": true,
+   "at": "2026-09-27T20:50:59",
+   "reused": false
+  },
+  "config": {
+   "fp": {
+    "exists": true,
+    "files": 5,
+    "bytes": 9453,
+    "newest_mtime": 1790437661.3
+   },
+   "units": 0,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 0,
+   "ok": true,
+   "at": "2026-09-27T20:50:41",
+   "reused": true
+  },
+  "potato_pet": {
+   "fp": {
+    "exists": true,
+    "files": 93,
+    "bytes": 4534028,
+    "newest_mtime": 1790198389.4
+   },
+   "units": 93,
+   "coverage": 1.0,
+   "missing": 0,
+   "sec_needs_human": 0,
+   "sec_flagged": 0,
+   "ok": true,
+   "at": "2026-09-27T20:50:59",
+   "reused": false
+  }
+ },
+ "last_run": "2026-09-27T20:51:00"
+}

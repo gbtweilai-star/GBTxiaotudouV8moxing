@@ -29156,7 +29156,8 @@
    "look_grade",
    "control_loop",
    "asset_index",
-   "automation_keys"
+   "automation_keys",
+   "transformer"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29170,7 +29171,8 @@
    "look_grade",
    "control_loop",
    "asset_index",
-   "automation_keys"
+   "automation_keys",
+   "transformer"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -44858,5 +44860,41 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T20:37:10"
+ },
+ "holo_pet/assets/task-manager/index.html": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T20:46:11"
+ },
+ "gbt_allinone/tools/task_manager.py": {
+  "tentacles": [
+   "task_manager"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T20:46:11"
+ },
+ "gbt_allinone/tools/transformer_cap.py": {
+  "tentacles": [
+   "transformer"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T20:46:11"
+ },
+ "gbt_allinone/tools/sec_sweeper.py": {
+  "tentacles": [
+   "domain:tools",
+   "sec_sweeper"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T20:50:30"
+ },
+ "holo_pet/assets/health-panel/index.html": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T20:54:41"
  }
 }
