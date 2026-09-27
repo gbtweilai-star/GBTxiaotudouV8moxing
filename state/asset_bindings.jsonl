@@ -13640,3 +13640,35 @@
 {"at": "2026-09-27T12:18:49", "event": "scan", "bindings": 4406, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-09-27T12:18:51", "event": "gaps", "missing": 0, "no_kind": 9655, "scanned": 13072}
 {"at": "2026-09-27T12:18:55", "event": "scan", "bindings": 4406, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T12:44:01", "event": "scan", "bindings": 4406, "missing_asset": 19, "ghost_tentacle": 0}
+{"at": "2026-09-27T12:44:29", "event": "bind", "asset": "projects/movie/成片/她从代码里醒来-E1E3-多镜.mp4.fingerprint.json", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T12:44:29", "event": "bind", "asset": "tools/beatgrid.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T12:44:29", "event": "bind", "asset": "tools/dagrun.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T12:44:29", "event": "bind", "asset": "tools/filmgrade.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T12:44:29", "event": "bind", "asset": "tools/skills_sync.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T12:44:29", "event": "bind", "asset": "tools/specguard.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T12:44:29", "event": "bind", "asset": "gbt_allinone/tests/test_skills_install_sync.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T12:44:29", "event": "autobind", "files": 97, "bound": 97, "hint": "selfscan"}
+{"at": "2026-09-27T12:47:43", "event": "scan", "bindings": 4409, "missing_asset": 19, "ghost_tentacle": 0}
+{"at": "2026-09-27T12:48:30", "event": "scan", "bindings": 4409, "missing_asset": 19, "ghost_tentacle": 0}
+{"at": "2026-09-27T12:48:30", "event": "unbind", "asset": "projects/projects/movie/生成/序章/concat.txt", "tentacle": "filmkit", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:30", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S01.jpg", "tentacle": "filmkit", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:30", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S01_audio.m4a", "tentacle": "voice", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:30", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S02.jpg", "tentacle": "filmkit", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:30", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S02_audio.m4a", "tentacle": "voice", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:31", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S03.jpg", "tentacle": "filmkit", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:31", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S03_audio.m4a", "tentacle": "voice", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:31", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S05.jpg", "tentacle": "filmkit", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:31", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S05_audio.m4a", "tentacle": "voice", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:31", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S06.jpg", "tentacle": "filmkit", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:31", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S06_audio.m4a", "tentacle": "voice", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:31", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S10.jpg", "tentacle": "filmkit", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:31", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S10_audio.m4a", "tentacle": "voice", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:32", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S11.jpg", "tentacle": "filmkit", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:32", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S11_audio.m4a", "tentacle": "voice", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:32", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S13.jpg", "tentacle": "filmkit", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:32", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S13_audio.m4a", "tentacle": "voice", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:32", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S14.jpg", "tentacle": "filmkit", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:32", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S14_audio.m4a", "tentacle": "voice", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
+{"at": "2026-09-27T12:48:32", "event": "scan", "bindings": 4390, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T12:49:06", "event": "scan", "bindings": 4390, "missing_asset": 0, "ghost_tentacle": 0}

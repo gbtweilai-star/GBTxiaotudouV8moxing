@@ -19284,139 +19284,6 @@
   "note": "sweep",
   "bound_at": "2026-09-27T00:29:25"
  },
- "projects/projects/movie/生成/序章/concat.txt": {
-  "tentacles": [
-   "filmkit"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S01.jpg": {
-  "tentacles": [
-   "filmkit"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S01_audio.m4a": {
-  "tentacles": [
-   "voice"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S02.jpg": {
-  "tentacles": [
-   "filmkit"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S02_audio.m4a": {
-  "tentacles": [
-   "voice"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S03.jpg": {
-  "tentacles": [
-   "filmkit"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S03_audio.m4a": {
-  "tentacles": [
-   "voice"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S05.jpg": {
-  "tentacles": [
-   "filmkit"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S05_audio.m4a": {
-  "tentacles": [
-   "voice"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S06.jpg": {
-  "tentacles": [
-   "filmkit"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S06_audio.m4a": {
-  "tentacles": [
-   "voice"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S10.jpg": {
-  "tentacles": [
-   "filmkit"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S10_audio.m4a": {
-  "tentacles": [
-   "voice"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S11.jpg": {
-  "tentacles": [
-   "filmkit"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S11_audio.m4a": {
-  "tentacles": [
-   "voice"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S13.jpg": {
-  "tentacles": [
-   "filmkit"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:25"
- },
- "projects/projects/movie/生成/序章/S13_audio.m4a": {
-  "tentacles": [
-   "voice"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:26"
- },
- "projects/projects/movie/生成/序章/S14.jpg": {
-  "tentacles": [
-   "filmkit"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:26"
- },
- "projects/projects/movie/生成/序章/S14_audio.m4a": {
-  "tentacles": [
-   "voice"
-  ],
-  "note": "sweep",
-  "bound_at": "2026-09-27T00:29:26"
- },
  "projects/README.md": {
   "tentacles": [
    "project_context"
@@ -30574,7 +30441,8 @@
   "tentacles": [
    "actioncam",
    "filmkit",
-   "look_grade"
+   "look_grade",
+   "selfscan"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T09:35:03"
@@ -30617,9 +30485,10 @@
  "tools/specguard.py": {
   "tentacles": [
    "actioncam",
-   "filmkit"
+   "filmkit",
+   "selfscan"
   ],
-  "note": "规格守卫/指纹（共用件·影视线）",
+  "note": "autobind",
   "bound_at": "2026-09-27T10:26:12"
  },
  "docs/单句成片-多智能体架构-我们的落位与差距.md": {
@@ -30639,9 +30508,10 @@
  "tools/dagrun.py": {
   "tentacles": [
    "actioncam",
-   "filmkit"
+   "filmkit",
+   "selfscan"
   ],
-  "note": "DAG 编排引擎（P3 步骤下沉·影视线）",
+  "note": "autobind",
   "bound_at": "2026-09-27T10:38:20"
  },
  "docs/WorkBuddy三套工作流手册-吸收与补充清单.md": {
@@ -30689,9 +30559,10 @@
  "tools/beatgrid.py": {
   "tentacles": [
    "actioncam",
-   "filmkit"
+   "filmkit",
+   "selfscan"
   ],
-  "note": "时间基层（影视线备用）",
+  "note": "autobind",
   "bound_at": "2026-09-27T11:51:55"
  },
  "projects/movie/产线/manifest-actioncam-demo.json.bak-beatgrid-20260927-115031": {
@@ -30854,5 +30725,26 @@
   ],
   "note": "sweep",
   "bound_at": "2026-09-27T12:04:32"
+ },
+ "projects/movie/成片/她从代码里醒来-E1E3-多镜.mp4.fingerprint.json": {
+  "tentacles": [
+   "selfscan"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T12:44:29"
+ },
+ "tools/skills_sync.py": {
+  "tentacles": [
+   "selfscan"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T12:44:29"
+ },
+ "gbt_allinone/tests/test_skills_install_sync.py": {
+  "tentacles": [
+   "selfscan"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T12:44:29"
  }
 }

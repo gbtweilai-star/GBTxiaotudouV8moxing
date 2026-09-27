@@ -1,0 +1,643 @@
+{
+  "version": 1,
+  "generated": "2026-09-27T12:39:27",
+  "source": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills",
+  "home_hub": "C:\\Users\\ADMIN\\.agents\\skills",
+  "ws_hub": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills",
+  "count": 79,
+  "in_sync": 79,
+  "skills": {
+    "autoclaw-mcp-tools": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "bf021b994e23bd23",
+      "hub_hash": "bf021b994e23bd23",
+      "files": 1,
+      "in_sync": true
+    },
+    "digihuman-pipeline": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "ec3bf919239a9548",
+      "hub_hash": "ec3bf919239a9548",
+      "files": 5,
+      "in_sync": true
+    },
+    "gbt-aesthetic": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "e9b66f4abe26fe66",
+      "hub_hash": "e9b66f4abe26fe66",
+      "files": 5,
+      "in_sync": true
+    },
+    "gbt-ai-101": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "c7accaa5df181a30",
+      "hub_hash": "c7accaa5df181a30",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-ai-anything": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "1363fca171e051d6",
+      "hub_hash": "1363fca171e051d6",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-ai-edu": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "395c1236d6e5e284",
+      "hub_hash": "395c1236d6e5e284",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-alchemy": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "8fb705d6dbfde655",
+      "hub_hash": "8fb705d6dbfde655",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-arkcli": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "37978e1a340f3839",
+      "hub_hash": "37978e1a340f3839",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-autoclaw": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "7b28e9302d57a070",
+      "hub_hash": "7b28e9302d57a070",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-autoglm": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "827966712d5bdcb3",
+      "hub_hash": "827966712d5bdcb3",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-automation": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "e1e0bd061ce2199a",
+      "hub_hash": "e1e0bd061ce2199a",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-brain": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "c638d86312bbda47",
+      "hub_hash": "c638d86312bbda47",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-brain-vault": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "a873fde7e3dcb223",
+      "hub_hash": "a873fde7e3dcb223",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-chengfeng": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "95f1223faf802607",
+      "hub_hash": "95f1223faf802607",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-cloudflare": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "e2ffd9638237a9a3",
+      "hub_hash": "e2ffd9638237a9a3",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-code-taste": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "57cd3621d3b587a3",
+      "hub_hash": "57cd3621d3b587a3",
+      "files": 2,
+      "in_sync": true
+    },
+    "gbt-collab": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "5192b7c72b69dbd7",
+      "hub_hash": "5192b7c72b69dbd7",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-comms": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "e92f80e9e3b6a5e7",
+      "hub_hash": "e92f80e9e3b6a5e7",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-creation": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "e9aa5f97c2fede78",
+      "hub_hash": "e9aa5f97c2fede78",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-dangerous": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "c252081a2ace24c3",
+      "hub_hash": "c252081a2ace24c3",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-data": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "b450c834dd7ebc52",
+      "hub_hash": "b450c834dd7ebc52",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-design": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "5dafab8fcbe4df6e",
+      "hub_hash": "5dafab8fcbe4df6e",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-design-mastery": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "68f92d7660e866a7",
+      "hub_hash": "68f92d7660e866a7",
+      "files": 8,
+      "in_sync": true
+    },
+    "gbt-desktop": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "eaaf8f719202bafd",
+      "hub_hash": "eaaf8f719202bafd",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-device": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "4e1c29944b2ca305",
+      "hub_hash": "4e1c29944b2ca305",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-devour": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "e7d3dac0b9dec54f",
+      "hub_hash": "e7d3dac0b9dec54f",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-dl-101": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "a8410d5eeef1b4b0",
+      "hub_hash": "a8410d5eeef1b4b0",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-ef": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "e192311ec978a150",
+      "hub_hash": "e192311ec978a150",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-engine": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "30bc768d0f307f02",
+      "hub_hash": "30bc768d0f307f02",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-fal": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "6d5e8ae6e4f508c3",
+      "hub_hash": "6d5e8ae6e4f508c3",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-figma": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "950cc2eadd37b06c",
+      "hub_hash": "950cc2eadd37b06c",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-finance": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "a09ee4e5287825f6",
+      "hub_hash": "a09ee4e5287825f6",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-framework": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "1c5360024d79771a",
+      "hub_hash": "1c5360024d79771a",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-frontend": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "bdd04803593f9367",
+      "hub_hash": "bdd04803593f9367",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-glmv": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "8ec768f220c16e28",
+      "hub_hash": "8ec768f220c16e28",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-gsap": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "a5b34f2b7b38118e",
+      "hub_hash": "a5b34f2b7b38118e",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-hyperframes": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "ddc8e12e6d2ba7e8",
+      "hub_hash": "ddc8e12e6d2ba7e8",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-infra": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "7b2454473d06fd20",
+      "hub_hash": "7b2454473d06fd20",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-integration": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "079fad0e343cb4ab",
+      "hub_hash": "079fad0e343cb4ab",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-lark": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "9c1e77fa7d3a66fa",
+      "hub_hash": "9c1e77fa7d3a66fa",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-life": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "56f9d022d03db160",
+      "hub_hash": "56f9d022d03db160",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-llm": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "1bd8e3ae3461bf43",
+      "hub_hash": "1bd8e3ae3461bf43",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-longrun": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "c84f47c4fe797ca6",
+      "hub_hash": "c84f47c4fe797ca6",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-mind": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "ce34032e0269d7c4",
+      "hub_hash": "ce34032e0269d7c4",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-omni": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "a100659d175b480f",
+      "hub_hash": "a100659d175b480f",
+      "files": 2,
+      "in_sync": true
+    },
+    "gbt-pipeline": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "0fb68dc0f1b2cea8",
+      "hub_hash": "0fb68dc0f1b2cea8",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-potato": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "a187047954d41c21",
+      "hub_hash": "a187047954d41c21",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-pptx": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "09d5f90fa0a035d8",
+      "hub_hash": "09d5f90fa0a035d8",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-project": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "e4a85865412e13cf",
+      "hub_hash": "e4a85865412e13cf",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-provenance-discipline": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "98dace6076869536",
+      "hub_hash": "98dace6076869536",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-quickscan": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "da498bd4e26e19d4",
+      "hub_hash": "da498bd4e26e19d4",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-recon": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "cedc798ad632c010",
+      "hub_hash": "cedc798ad632c010",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-remotion": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "4a7b6697f0b21530",
+      "hub_hash": "4a7b6697f0b21530",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-sandbox": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "e721147c6ef8e679",
+      "hub_hash": "e721147c6ef8e679",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-security": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "437c7b2a75ffd5ad",
+      "hub_hash": "437c7b2a75ffd5ad",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-social": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "1f8bea952b0fbeb9",
+      "hub_hash": "1f8bea952b0fbeb9",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-system": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "bad5b70dfebbdf60",
+      "hub_hash": "bad5b70dfebbdf60",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-tentacle": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "54046dd3a87d3c00",
+      "hub_hash": "54046dd3a87d3c00",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-tools": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "86b373b8d4a69f6b",
+      "hub_hash": "86b373b8d4a69f6b",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-vendor-intake": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "1416db2a872f6da4",
+      "hub_hash": "1416db2a872f6da4",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-venice": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "f1a8bb7102bb836e",
+      "hub_hash": "f1a8bb7102bb836e",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-video": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "7821e68b5cbaa1c7",
+      "hub_hash": "7821e68b5cbaa1c7",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-video-tools": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "c49f875e2ca4f4a4",
+      "hub_hash": "c49f875e2ca4f4a4",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-vision": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "cc34aea3706d9558",
+      "hub_hash": "cc34aea3706d9558",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-voice": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "9c4d6a19aa22b547",
+      "hub_hash": "9c4d6a19aa22b547",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-web": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "e63064216aed8f98",
+      "hub_hash": "e63064216aed8f98",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-youtube": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "0b36c0ea9028d22f",
+      "hub_hash": "0b36c0ea9028d22f",
+      "files": 1,
+      "in_sync": true
+    },
+    "remotion-best-practices": {
+      "hub": "workspace",
+      "installed": true,
+      "src_hash": "9f9783c2576c9915",
+      "hub_hash": "9f9783c2576c9915",
+      "files": 137,
+      "in_sync": true
+    },
+    "remotion-captions": {
+      "hub": "workspace",
+      "installed": true,
+      "src_hash": "e96008e580d60862",
+      "hub_hash": "e96008e580d60862",
+      "files": 6,
+      "in_sync": true
+    },
+    "remotion-create": {
+      "hub": "workspace",
+      "installed": true,
+      "src_hash": "087f1a1c14541810",
+      "hub_hash": "087f1a1c14541810",
+      "files": 5,
+      "in_sync": true
+    },
+    "remotion-docs": {
+      "hub": "workspace",
+      "installed": true,
+      "src_hash": "9ad39de1fb27e34e",
+      "hub_hash": "9ad39de1fb27e34e",
+      "files": 3,
+      "in_sync": true
+    },
+    "remotion-interactivity": {
+      "hub": "workspace",
+      "installed": true,
+      "src_hash": "5e6763ca2e864126",
+      "hub_hash": "5e6763ca2e864126",
+      "files": 3,
+      "in_sync": true
+    },
+    "remotion-maps": {
+      "hub": "workspace",
+      "installed": true,
+      "src_hash": "8ffba96663ee45a5",
+      "hub_hash": "8ffba96663ee45a5",
+      "files": 32,
+      "in_sync": true
+    },
+    "remotion-markup": {
+      "hub": "workspace",
+      "installed": true,
+      "src_hash": "5d640a2f9278b642",
+      "hub_hash": "5d640a2f9278b642",
+      "files": 63,
+      "in_sync": true
+    },
+    "remotion-multimedia": {
+      "hub": "workspace",
+      "installed": true,
+      "src_hash": "2e3ae5141b484b2f",
+      "hub_hash": "2e3ae5141b484b2f",
+      "files": 6,
+      "in_sync": true
+    },
+    "remotion-render": {
+      "hub": "workspace",
+      "installed": true,
+      "src_hash": "864eb3242281463c",
+      "hub_hash": "864eb3242281463c",
+      "files": 4,
+      "in_sync": true
+    },
+    "remotion-saas": {
+      "hub": "workspace",
+      "installed": true,
+      "src_hash": "dc4004a2d000e207",
+      "hub_hash": "dc4004a2d000e207",
+      "files": 6,
+      "in_sync": true
+    },
+    "remotion-studio": {
+      "hub": "workspace",
+      "installed": true,
+      "src_hash": "e56b9cab17a4ab27",
+      "hub_hash": "e56b9cab17a4ab27",
+      "files": 3,
+      "in_sync": true
+    },
+    "remotion-upgrade": {
+      "hub": "workspace",
+      "installed": true,
+      "src_hash": "60d8c03f611b9e5c",
+      "hub_hash": "60d8c03f611b9e5c",
+      "files": 3,
+      "in_sync": true
+    }
+  }
+}

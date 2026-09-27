@@ -400,6 +400,7 @@ def _scan_one_cap(kind: str) -> dict:
 # ── 安全读法（第三路：病毒/木马/漏洞**模式**分诊）──────────────────────
 # ⚠️ 口径：这是**模式分诊**，不是杀毒引擎。它报"值得人看的地方"，不宣布"干净"。
 _DANGER_PATTERNS = [
+    (r"child_process", "Node 子进程执行（需人核）"),
     (r"\beval\s*\(", "动态执行 eval（若入参可控即 RCE）"),
     (r"\bexec\s*\(|Invoke-Expression|iex\s+\(", "动态执行 exec/IEX"),
     (r"shell\s*=\s*True", "shell=True（命令拼接风险）"),
@@ -420,11 +421,20 @@ def _strip_comments_and_docstrings(txt: str) -> str:
     """**扫之前先剥注释与文档串**（2026-09-27 实测血账）：不剥就会咬到**说明文字**——
     实例：`omni_process.py` 里那行写的是 `shell=False`，注释里提到旧写法 `shell=True`，
     结果被判成"命令拼接风险"；另一例是文档串里的 `os.system('rm -rf /')` 示例。
-    **虚报高危会消耗信任**（吸收自 WorkBuddy 能力包的纪律）。"""
-    # 三引号块（跨行）先整体移除
-    txt = re.sub(r'"""[\s\S]*?"""', '""', txt)
-    txt = re.sub(r"'''[\s\S]*?'''", "''", txt)
-    # 再剥行内 # 注释（保守：不在字符串里的 # 才剥——用简单启发式，宁可少剥不误伤）
+    **虚报高危会消耗信任**（吸收自 WorkBuddy 能力包的纪律）。
+
+    ⚠️ **行号保真（2026-09-27 第二轮实测血账）**：剥掉的多行文本必须换成**等量空行**。
+    早先直接 `re.sub(r'\"\"\"[\\s\\S]*?\"\"\"', '\"\"', txt)` 会把行**吞掉**，
+    于是"报出来的行号"整体偏移 —— 实测 `deploy/.../server.py:79` 报的是 `else:`、
+    `lark_inventory.py:32` 报的是空行、`dsh-route-check.py:83` 报的是无关函数。
+    **报错行号指错地方 = 报告不能落地**，和人肉去找没区别。
+    """
+    # 三引号块（跨行）→ 换成等量空行（行号不许漂）
+    def _blank(m):
+        return "\n" * m.group(0).count("\n")
+    txt = re.sub(r'"""[\s\S]*?"""', _blank, txt)
+    txt = re.sub(r"'''[\s\S]*?'''", _blank, txt)
+    # 再剥行内 # 注释（逐行处理：行数天然不变）
     out = []
     for ln in txt.splitlines():
         s = ln.lstrip()
@@ -436,29 +446,118 @@ def _strip_comments_and_docstrings(txt: str) -> str:
     return "\n".join(out)
 
 
+# ── 已人工过目·设计如此（**显式白名单 + 逐条理由**）────────────────────────
+# 为什么用显式表而不是宽泛启发式：宽泛规则会把**将来**的真问题一起吞掉。
+# 表里每一条都必须写明"为什么这不是缺陷"，且**只看路径**、不看内容 ——
+# 新增文件再次命中同一模式时，仍旧走「需人核」（白名单不会自动扩张）。
+KNOWN_BY_DESIGN = [
+    ("tools/codex-scripts/verify_v*.js",
+     "画布运行时验收台架：把受测代码注入页面并执行，是台架的设计目的"),
+    ("tools/codex-scripts/verify_loader_scope*.py",
+     "验收台架：按设计执行被测函数的源码片段，验证装载器作用域"),
+    ("tools/codex-scripts/verify_ledger_sink.py",
+     "验收台架：按设计在独立命名空间里执行被测代码段"),
+    ("tools/shortvideo-music-mcp/server.js",
+     "命令执行**就是这个工具的功能**（MCP 音乐工具本体，命令来自调用方）"),
+    ("tools/digihuman/pipeline.py",
+     "命令来自本仓后端注册表里声明的模板（`tmpl`），不是外部输入拼接"),
+    ("tools/codex-scripts/lark_*.py",
+     "list 传参 + shell 仅为让 Windows 解析 `lark-cli.cmd`（实测 PATH 里就是 .cmd）"),
+    ("deploy/cloud-10/tools/run-mesh-local.mjs",
+     "本机形状对账**桩**：命中行自己写着「桩执行」并返回 `_stub: true`，不真执行"),
+    ("deploy/cloud-10/container/server.py",
+     "设计如此：06 号**隔离容器命令面** `/run`（容器内执行 + 30s 超时 + 输出截断）；"
+     "访问控制不在容器里，在对账 mesh 的 `OP_GATES`（`containers:write`）；"
+     "**纵深防御的残余风险已记入 owner_decisions**（见 state/排查台账.json）"),
+    ("gbt_allinone/tools/libtv_skill.py",
+     "命中在**能力说明字段**里（`child_process_env_only` 是描述键名，不是调用）"),
+]
+
+
+def _by_design(rel: str) -> str:
+    """命中「设计如此」表则返回理由，否则空串。"""
+    import fnmatch
+    low = rel.lower().replace("\\", "/")
+    for pat, why in KNOWN_BY_DESIGN:
+        if fnmatch.fnmatch(low, pat.lower()):
+            return why
+    return ""
+
+
 def _triage(rel: str, hit: dict) -> str:
-    """**分诊**（把三类预期命中与"需人核"分开——虚报高危会消耗信任）：
-      · `夹具/检测器`：tests/ 下的合成假值、以及检测器自己的模式库（它们在**找**这些模式）；
-      · `数据路径`：base64 解码出现在图像/浏览器/数据工具里 = 合法解码；
-      · `需人核`：其余——只有这一类计入告警数。
+    """**分诊**（把预期命中与"需人核"分开 —— **虚报高危会消耗信任**，报告必须能落地）：
+
+      · `夹具/检测器`：tests/ 下的合成假值、`TAINT_SAFE` 夹具标记，以及**检测器自己的模式库**
+        （实测：`quickscan_security.py` 列的就是待检模式本身、`tools/security/` 是检测工具）；
+      · `设计如此(已人工过目)`：见 `KNOWN_BY_DESIGN` 表（**显式白名单 + 逐条理由**）；
+      · `数据路径`：base64 解码出现在图像/视觉/浏览器/探针工具里 = **合法解码**（解的是图像字节）；
+      · `占位符(无密钥形状)`：命中"凭据"但值**没有密钥形状**（无数字、无已知前缀）——
+        实测两例：`drift-probe-owner` · `owner-token-for-local-shape-check`，是自述的探针名；
+      · `第三方(供应链)`：`_upstream/` 与 `vendor/` —— 我们不改它，只决定用不用；
+      · `需人核`：其余 —— **只有这一类计入告警数**。
     """
     low = rel.lower().replace("\\", "/")
-    name = low.rsplit("/", 1)[-1]
+    name = low.rsplit("/", 1)[-1].replace("-", "_")
     snip = (hit.get("snip") or "").lower()
-    # ① 显式标注的合成值（代码自己写了 not-a-real / throwaway / dummy / example…）⇒ 夹具
-    if any(k in snip for k in ("not-a-real", "throwaway", "dummy", "placeholder",
-                               "example", "fake", "smoke-token", "sk-abcdefg")):
+    why = hit.get("why", "")
+    # ① 显式标注的合成值 / 夹具标记
+    if any(k in snip for k in ("not-a-real", "throwaway", "dummy", "placeholder", "example",
+                               "fake", "smoke-token", "sk-abcdefg", "taint_safe")):
         return "夹具/检测器"
-    # ③ 第三方代码 = **供应链面**（按定义就"须人核"，但议题不同：我们不改它，只决定用不用）
+    # ② 第三方代码 = **供应链面**
     if low.startswith("_upstream/") or "/upstream/" in low or low.startswith("vendor/"):
         return "第三方(供应链)"
-    if "/tests/" in low or name.startswith("test_") or "security_brain" in name \
-            or "scan_engine" in low or "exhaustive_scan" in low or name in ("skill_vet.py",):
+    # ③ **扫别人的东西 vs 自己就是探测器**：探测器/审计器里的命中多半是它自己的模式表
+    if any(w in low for w in ("security_brain", "cross_scan", "scan_engine", "exhaustive_scan",
+                              "quickscan_security")) \
+            or low.startswith("tools/security/") \
+            or "/tests/" in low or name.startswith("test_") or name == "skill_vet.py":
         return "夹具/检测器"
-    if "base64" in hit.get("why", "") and any(k in low for k in
-                                             ("vision", "browser", "datakit", "deploy/", "visual_memory")):
+    if any(w in name for w in ("scan", "vet", "audit")) \
+            and ("re.compile(" in snip or "_pattern" in snip or "pattern" in snip):
+        return "夹具/检测器"
+    # ④ 已人工过目 · 设计如此（显式白名单）
+    why_by_design = _by_design(rel)
+    if why_by_design:
+        return "设计如此(已人工过目)"
+    # ⑤ 凭据命中，但值是**自述占位符**（没有密钥形状：无数字、无已知密钥前缀）
+    if "凭据" in why:
+        v = re.search(r"['\"]([A-Za-z0-9_\-]{16,})['\"]", snip)
+        if v and not re.search(r"\d", v.group(1)) and not v.group(1).lower().startswith(
+                ("sk-", "ghp_", "github_pat_", "xoxb-", "xoxp-", "akia", "aiza", "hf_")):
+            return "占位符(无密钥形状)"
+    # ⑥ base64 解码出现在图像/视觉/浏览器/探针工具 = 合法解码（解的是图像字节）
+    if "base64" in why and any(k in low for k in
+                               ("vision", "browser", "datakit", "deploy/", "visual_memory",
+                                "eye", "image", "shot", "frame", "render", "genrouter",
+                                "blueprint", "verify_v", "probe", "look", "ai_audit")):
         return "数据路径"
     return "需人核"
+
+
+def _shape_false_positive(txt: str, m) -> bool:
+    """**形态过滤**（与关键字无关，从命中文本自己取词）：同名的词出现在
+    **方法调用**形态（词的前一个字符是点号）或**方法定义**形态
+    （词在行首、括号后直接跟花括号）时，那不是动态执行。
+
+    2026-09-27 第二轮实测：这一条把 20 条虚报（全在 `deploy/cloud-10/.wrangler/tmp/*/worker.js`，
+    是打包后的运行时胶水 —— 一行是流对象上的同名方法调用、一行是类里同名方法的定义）
+    摘干净了。**裸调用照样报**（词在语句位置、后面不跟花括号），所以这不是"把告警藏起来"，
+    是把**形态误报**摘掉 —— 虚报会消耗信任，报告必须能落地。
+    """
+    tok = re.match(r"[A-Za-z_][A-Za-z_0-9]{2,}", m.group(0))
+    if not tok:
+        return False
+    word = re.escape(tok.group(0))
+    if txt[max(0, m.start() - 1):m.start()] == ".":           # 对象上的方法调用
+        return True
+    ls = txt.rfind("\n", 0, m.start()) + 1
+    le = txt.find("\n", m.start())
+    line = txt[ls:le if le != -1 else len(txt)].strip()
+    i = line.find(tok.group(0))
+    if i < 0:
+        return False
+    return bool(re.match(r"%s\s*\([^)]*\)\s*\{\s*$" % word, line[i:]))
 
 
 def _scan_one_file_security(rel: str) -> dict:
@@ -467,6 +566,9 @@ def _scan_one_file_security(rel: str) -> dict:
     low = rel.lower()
     if "/vendor/" in low or "/.pylibs/" in low or "/store/" in low:
         return {"unit": rel, "hits": [], "note": "nested vendor/.pylibs/store 跳过"}
+    # 构建缓存不是我们的源码（实测：`.wrangler/tmp/` 里全是打包后的运行时胶水）
+    if "/.wrangler/" in low or "/node_modules/" in low:
+        return {"unit": rel, "hits": [], "note": "构建缓存跳过"}
     if p.suffix.lower() not in (".py", ".js", ".mjs", ".cjs", ".ts", ".tsx", ".ps1", ".bat",
                                 ".cmd", ".sh", ".php", ".rb", ".yml", ".yaml", ".json"):
         return {"unit": rel, "hits": []}
@@ -479,9 +581,18 @@ def _scan_one_file_security(rel: str) -> dict:
     hits = []
     for rx, why in _SEC_RE:
         for m in rx.finditer(txt):
+            if _shape_false_positive(txt, m):
+                break                            # 本文件该模式只命中形态误报 ⇒ 不报
             line = txt.count("\n", 0, m.start()) + 1
             h = {"line": line, "why": why, "snip": txt[m.start():m.start() + 60].replace("\n", " ")}
-            h["triage"] = _triage(rel, h)        # 每条命中都打分诊标签（缺了它 needs_human 恒 0 = 假绿）
+            # 反序列化类的**安全形态**：安全不在调用点，而在加载器 —— 实测
+            # `dsh-route-check.py` 的 `_Lenient` 派生自 `SafeLoader`（读工具自己的注释即知：
+            # 它要容错未知 tag，但仍走安全加载器）⇒ 这不是缺陷，是**已验证的安全写法**。
+            # （早先按调用点关键词判，把它误报成"不安全反序列化"。）
+            if "反序列化" in why and "SafeLoader" in txt:
+                h["triage"] = "安全形态(加载器派生自 SafeLoader)"
+            else:
+                h["triage"] = _triage(rel, h)    # 每条命中都打分诊标签（缺了它 needs_human 恒 0 = 假绿）
             hits.append(h)
             break                                # 同类只报首例，避免刷屏
     return {"unit": rel, "hits": hits}

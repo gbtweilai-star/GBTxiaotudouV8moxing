@@ -1,0 +1,643 @@
+{
+ "at": "2026-09-27T13:03:44",
+ "quick": false,
+ "耗时s": 59.1,
+ "顶层树": 63,
+ "已扫": 52,
+ "排除": 11,
+ "扫的树": [
+  {
+   "tree": ".agents",
+   "units": 519,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 519,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".aider-desk",
+   "units": 174,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 174,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".augment",
+   "units": 174,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 174,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".autoclaw",
+   "units": 0,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 0,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".autohand",
+   "units": 174,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 174,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".claude",
+   "units": 516,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 516,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".cluster",
+   "units": 145,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 145,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".codebuddy",
+   "units": 174,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 174,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".digihuman",
+   "units": 3,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 3,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".dsh",
+   "units": 72,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 72,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".etiology",
+   "units": 1,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 1,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".freebuff",
+   "units": 1,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 1,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".gbt",
+   "units": 0,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 0,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".openclaw",
+   "units": 3,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 3,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".openclaw-attachments",
+   "units": 8,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 8,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".opencode",
+   "units": 1,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 1,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".tripo",
+   "units": 1,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 1,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".v2c",
+   "units": 1,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 1,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".video",
+   "units": 1,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 1,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".video_agent",
+   "units": 1,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 1,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".windsurf",
+   "units": 71,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 71,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".wrangler",
+   "units": 10,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 10,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "_upstream",
+   "units": 9986,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 9986,
+   "arbitrated": 0,
+   "sec_flagged": 321,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "agent-gvmz-gbtv8",
+   "units": 32,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 32,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "assets",
+   "units": 25,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 25,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "auth-service",
+   "units": 12,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 12,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "brain",
+   "units": 2,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 2,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "caps",
+   "units": 3,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 3,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "config",
+   "units": 0,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 0,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "data",
+   "units": 174,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 174,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "delivery",
+   "units": 90,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 90,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "deploy",
+   "units": 151,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 151,
+   "arbitrated": 0,
+   "sec_flagged": 3,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "design-assets-index",
+   "units": 3,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 3,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "docs",
+   "units": 28,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 28,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "gbt_allinone",
+   "units": 864,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 864,
+   "arbitrated": 0,
+   "sec_flagged": 20,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "generated-images",
+   "units": 2,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 2,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "holo_pet",
+   "units": 214,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 214,
+   "arbitrated": 0,
+   "sec_flagged": 1,
+   "sec_needs_human": 1
+  },
+  {
+   "tree": "holo_pet_w3",
+   "units": 252,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 252,
+   "arbitrated": 0,
+   "sec_flagged": 3,
+   "sec_needs_human": 2
+  },
+  {
+   "tree": "infinite-canvas-output",
+   "units": 2,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 2,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "memory",
+   "units": 56,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 56,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "output",
+   "units": 130,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 130,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "outputs",
+   "units": 25,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 25,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "plugins",
+   "units": 42,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 42,
+   "arbitrated": 0,
+   "sec_flagged": 1,
+   "sec_needs_human": 1
+  },
+  {
+   "tree": "potato_pet",
+   "units": 93,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 93,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "prisma",
+   "units": 1,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 1,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "projects",
+   "units": 404,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 404,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "render",
+   "units": 359,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 359,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "skills",
+   "units": 355,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 355,
+   "arbitrated": 0,
+   "sec_flagged": 1,
+   "sec_needs_human": 1
+  },
+  {
+   "tree": "state",
+   "units": 0,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 0,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "store",
+   "units": 0,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 0,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "tools",
+   "units": 571,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 571,
+   "arbitrated": 0,
+   "sec_flagged": 30,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "video-out",
+   "units": 2,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 2,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  }
+ ],
+ "排除表": [
+  {
+   "tree": ".backups",
+   "reason": "备份区（skills-hub 等覆盖前留档），按定义与源重复",
+   "ok": true
+  },
+  {
+   "tree": ".git",
+   "reason": "版本库本体（不是被扫描对象，是被审计的账）",
+   "ok": true
+  },
+  {
+   "tree": ".mimosa",
+   "reason": "安全扫描插件作业目录（106,602 件 / 1.3GB），非本框架源码",
+   "ok": true
+  },
+  {
+   "tree": ".scratch",
+   "reason": "作业临时区（历次作业临时脚本/中间产物），可由作业重跑",
+   "ok": true
+  },
+  {
+   "tree": ".trash",
+   "reason": "暂存区（本仓 trash>rm 的落点），真身已判定为重复/废弃",
+   "ok": true
+  },
+  {
+   "tree": "__pycache__",
+   "reason": "字节码缓存，可重建",
+   "ok": true
+  },
+  {
+   "tree": "archive",
+   "reason": "历史归档（按 LAYOUT 只增不删，内容已封存）",
+   "ok": true
+  },
+  {
+   "tree": "dist",
+   "reason": "构建产物（可重建）",
+   "ok": true
+  },
+  {
+   "tree": "my-project",
+   "reason": "技能试跑脚手架（zenstack+VSCode 模板，11,450 件含 node_modules）",
+   "ok": true
+  },
+  {
+   "tree": "vendor",
+   "reason": "第三方内嵌运行时（302MB，requirements 可重建）",
+   "ok": true
+  },
+  {
+   "tree": "审美相关skill",
+   "reason": "第三方设计技能包（自带 LICENSE/NOTICE，按 /_upstream/ 政策不入史）",
+   "ok": true
+  }
+ ],
+ "盲区": [],
+ "无理由排除": [],
+ "面B_C": {
+  "caps": {
+   "ok": true,
+   "units": 185,
+   "coverage": 1.0,
+   "missing": 0
+  },
+  "bindings": {
+   "ok": true,
+   "units": 4390,
+   "coverage": 1.0,
+   "missing": 0
+  },
+  "registry": {
+   "ok": true,
+   "units": 1,
+   "coverage": 1.0,
+   "missing": 0
+  }
+ },
+ "面E视觉": {
+  "surface": "E 视觉",
+  "ok": true,
+  "caps": {
+   "screen_sniff": {
+    "in_registry": true,
+    "dispatched": true,
+    "domain": "security"
+   },
+   "vision": {
+    "in_registry": true,
+    "dispatched": true,
+    "domain": "vision"
+   },
+   "zimage_rewash": {
+    "in_registry": true,
+    "dispatched": true,
+    "domain": "creation"
+   },
+   "_count": 3
+  },
+  "eye_frames": {
+   "exist": true,
+   "tracked": 0,
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet_w3\\eye\\frames"
+  },
+  "gitignore_lock": true,
+  "visual_memory_tracked": 0,
+  "findings": [],
+  "_口径": "①帧追踪数=0 ②锁在 .gitignore ③能力位已分派 —— 三条全 True 才算视觉面无死角"
+ },
+ "全绿": true,
+ "_口径": "没被扫到的面必须显式列出并给理由；隐式跳过=盲区。文件面覆盖必须 1.0；B/C 面断连必须 0；E 面三闸必须全 True。",
+ "单元总数": 15928
+}
