@@ -8,3 +8,4 @@
 {"at": "2026-09-27T16:33:55", "event": "check", "target": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\sg-demo\\skills\\_candidates\\demo", "ok": true, "bad": 0}
 {"at": "2026-09-27T16:33:55", "event": "check", "target": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\sg-demo\\skills\\_candidates\\demo", "ok": true, "bad": 0}
 {"at": "2026-09-27T16:33:55", "event": "promote", "from": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\sg-demo\\skills\\_candidates\\demo", "to": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\sg-demo\\skills\\demo-promoted", "backup": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.backups\\selfgrowth\\20260927-163355\\demo-promoted"}
+{"at": "2026-09-27T16:59:23", "event": "check", "target": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\sg-demo\\skills\\_candidates\\demo", "ok": true, "bad": 0}

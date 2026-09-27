@@ -147,6 +147,21 @@ def check(target: Path, allow_production: bool = False) -> dict:
             bad.append("[隔离] 候选直接落在生产 `skills/` 根 ⇒ 红。先放 `skills/_candidates/`，过门控再人工实施")
         elif under_prod_skills and allow_production:
             notes.append("⚠️ --allow-production：允许直落生产根（主人口子，已写台账）")
+    # 判据 5：三段隔离（Train/Validation/Test）—— 封存集必须存在且非空
+    # 来历（演示稿 11 页）：「训练任务负责提出假设，验证任务负责反驳假设，**最终测试只对通过门控的版本开放**。
+    # 三者混用，Agent 就可能记住答案，而不是学会方法。」
+    # 我们自查：本仓判据曾**既当训练反馈又当验收** = 三段混用 ⇒ 故立 state/holdout.json。
+    try:
+        hold = json.loads((ROOT / "state" / "holdout.json").read_text(encoding="utf-8"))
+        n = len(hold.get("holdout") or [])
+        if n < 1:
+            bad.append("[三段隔离] state/holdout.json 里没有任何封存项 ⇒ 训练/验证/测试没有分开")
+        else:
+            notes.append(f"三段隔离：封存 {n} 项（只在晋升/发布时跑）")
+    except FileNotFoundError:
+        bad.append("[三段隔离] 缺 state/holdout.json（封存集）⇒ 判据既当训练反馈又当验收，会「记住答案」")
+    except (json.JSONDecodeError, OSError) as e:
+        bad.append(f"[三段隔离] 封存集读不出来：{type(e).__name__}: {e}")
     if root is None and cand is None:
         bad.append("目标既不是知识库根（没有 raw/），也不是候选技能目录（没有 SKILL.md）⇒ 判不了")
     out = {"ok": not bad, "target": str(target), "bad": bad, "notes": notes,
