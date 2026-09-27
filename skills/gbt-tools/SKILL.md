@@ -606,3 +606,43 @@ python -m gbt_allinone auth grant --scope <scope> --ttl 600
    → **顶层必须仍是 `status "ok"` 且退出码 0，而 `result.ok` 必须 `false`、`result.denied` 必须 `true`**
    —— 这发就是 §6 红线②的**活体验收**，跑通说明你读到了该读的那一层；
 5. 声明"某位能用"之前，先问自己：**这条是实测读数，还是我读错了地方？** 拿不准就写"未验"。
+
+---
+
+## 工具区 · LobeHub 桌面端（能力位 `lobehub` · 触手 `lobehub` · 主人令 2026-09-27）
+
+主人原话：「把 `C:\Users\ADMIN\Desktop\LobeHub.lnk` 做成**可执行的插件**安装到**工具区**，
+这个玩意功能是真的多，**都要跟触手双向绑定**，只要是**可控制的都要绑上**。」
+
+**真身（实测）**：快捷方式 → `%LOCALAPPDATA%\Programs\LobeHub\LobeHub.exe`（Electron **2.2.18**）·
+数据 `%APPDATA%\lobehub\`（设置 23 键 · `local-database.sqlite3` 13MB · leveldb · main.log 1.2 万行）·
+运行时 `lobehub-storage\heteroAgent\{runs,bindings,inflight}` + `~/.lobehub/traces` ·
+本地文件桥 `127.0.0.1:33250` · 云面 gateway。
+
+**七面 76 把可控制键**（每把都在 `state/surfaces/lobehub.json`，**消失即断连**）：
+
+| 面 | 键数 | 怎么控 |
+|---|---|---|
+| 设置面 | 23 | `settings`（读只回形状；写=白名单 + `filesystem_write` 门 + 先备份） |
+| **可控制按键** | 4 | `shortcuts`（快速撰写 `Alt+Shift+Space` · 开设置 `Ctrl+,` …） |
+| 接口操作面 | 27 | `ops`（桌面端**真调**的接口：`message:list` `task:*` `agent:*` `userMemory:*` …） |
+| 助理面 | 9 | `agents`（界面上的 agent id） |
+| 进程/启动面 | — | `status` / `launch` / `close`（**过 `process_execute` 门**） |
+| 运行时面 | — | `runtime`（runs/traces/inflight/日志尾） |
+| 网络面 | — | `bridge`（只连 127.0.0.1，端口取自应用自己的日志） |
+
+**三条硬口径**（照 ComfyUI 那套，不另立门）：
+1. **凭据只回形状，按键名掩码** —— 血账：掩码按**值**判过一次，`encryptedTokens` 的 DPAPI 密文
+   被原样打出来；判据 `test_lobehub_surface` **D** 现在拿真实密文比对，出现就红。
+2. **在跑的库只读副本**（拷到临时目录再读），绝不 `mode=rw` 打开在跑的 13MB 库。
+3. **出网钉死**：模块里只有一个出口且主机写死 127.0.0.1；非法端口/相对路径一律拒（判据 G）。
+
+**如实报的限制（不是坏，是别指望它）**：
+- **非 ASCII 路径走不了这条桥**：我们的仓库路径带中文，原始请求在应用侧 `URIError: URI malformed`，
+  百分号编码后也拿不到（`log_evidence` 里记着应用自己日志的行数）；
+- **服务商 38 家 / 图像模型（GPT Image 2.5 · Nano Banana · Seedream 5 Pro · Qwen Image 3 …）
+  在云账号里**，本地改不了 ⇒ 标"不可本地控"，不假装能控；
+- 桥**无鉴权**（本机环回）：越界文件被拒（`/C:/Windows/win.ini` → 404），但它是开着的面。
+
+**血账（顺手修掉的老账）**：`surface_bind` 的**委托分支**（comfyui/blender/lobehub）**提前 return**，
+清单写了却**从没绑上触手** —— "接上了没绑上"。现在三个分支都显式 `_bind_manifest(...)` 并按工具署名。

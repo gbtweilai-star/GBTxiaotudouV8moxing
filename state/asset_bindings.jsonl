@@ -16156,3 +16156,10 @@
 {"at": "2026-09-27T22:42:09", "event": "bind", "asset": "gbt_allinone/tests/test_automation_keys.py", "tentacle": "claude_code", "note": "autobind"}
 {"at": "2026-09-27T22:42:14", "event": "autobind", "files": 2, "bound": 2, "hint": "claude_code"}
 {"at": "2026-09-27T22:43:28", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code"}
+{"at": "2026-09-27T23:03:14", "event": "bind", "asset": "gbt_allinone/tools/lobehub.py", "tentacle": "lobehub", "note": "autobind"}
+{"at": "2026-09-27T23:03:19", "event": "autobind", "files": 5, "bound": 5, "hint": "surface_bind"}
+{"at": "2026-09-27T23:04:09", "event": "bind", "asset": "state/surfaces/lobehub.json", "tentacle": "lobehub", "note": "可控制面清单"}
+{"at": "2026-09-27T23:04:13", "event": "autobind", "files": 1, "bound": 1, "hint": "surface_bind"}
+{"at": "2026-09-27T23:05:26", "event": "scan", "bindings": 6443, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T23:05:30", "event": "autobind", "files": 1, "bound": 1, "hint": "lobehub"}
+{"at": "2026-09-27T23:08:37", "event": "scan", "bindings": 6443, "missing_asset": 0, "ghost_tentacle": 0}

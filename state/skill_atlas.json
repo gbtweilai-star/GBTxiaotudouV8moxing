@@ -1,6 +1,6 @@
 {
  "built_by": "tools/codex-scripts/omni.py build",
- "built_at": "2026-09-27T09:46:36",
+ "built_at": "2026-09-27T23:05:06",
  "note": "框架职业技能图鉴。口径：`omnipulg` = 走万能插（run_task 唯一门）的能力位；`agent-skill` = 由 agent 按技能名加载执行的技能；`design-asset` = 审美素材（料，不是可调用能力）。本图鉴是**现扫**产物，不是手抄清单。",
  "caps_error": "",
  "caps": [
@@ -2094,6 +2094,156 @@
    "invoke": "python tools/codex-scripts/five-dim.py cap coverage_auditor"
   },
   {
+   "kind": "gods_eye",
+   "domain": "system",
+   "desc": "上帝之眼（主人令 2026-09-27）：**看得见创作页面**（7 个面板 + 服务端口真连）+ **两位顾问（权限机器可读）**——Claude 只出意见建议（架构/方向/评审，**无决策权**）· CodeBuddy 只做杂事（**对主项目没有执行权**，点主项目路径一律拒，只服从与待命）· **决策权在主体**（我）；**每日汇报** = GBT 探针汇报 + 全量扫描 ⇒ **缺点/短板/卡点**（每条带来源 src，不许编）；`plan` 把\"提升整体实力\"落成提案与决策（留痕 state/gods_eye_plan.jsonl）；`panel` 出上帝之眼页面。op=see/ad",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "gods_eye",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap gods_eye"
+  },
+  {
+   "kind": "lobehub",
+   "domain": "creation",
+   "desc": "LobeHub 桌面端（Electron 2.2.18）全控 —— 主人令 2026-09-27「把 LobeHub.lnk 做成**可执行的插件**装到工具区，功能是真的多，**只要是可控制的都要绑上**」：**七大面 76 把可控制键**（设置 23 + **可控制按键 4** + 桌面端真调的接口操作 27 + 助理 9 + 目录 9 …），每把都在 state/surfaces/lobehub.json，**消失即断连**。硬口径：凭据只回形状、**按键名掩码**（密文永不回值）· 在跑的库只读**副本** · 本地文件桥只连 127.0.0.1 且端口取自应用自己的日志（**非 AS",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "lobehub",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap lobehub"
+  },
+  {
+   "kind": "comfyui",
+   "domain": "creation",
+   "desc": "ComfyUI（秋叶整合版）全控（主人令 2026-09-27「这个必须也是一个不漏的双向绑定，才能实现无限制审查生产」）：**966 个节点**（每把一把键）+ 11 个 API 端点 + 14 个启动开关 + 模型清单（checkpoints/loras/controlnet）；**节点消失=断连**（要解释或补）。出网硬钉（SSRF 防线）：只许本机 http + 主机白名单(127.0.0.1/localhost/::1) + 端口 8188 + 路径前缀白名单 + **拒重定向**；读类直连、提交/释放过 filesystem_write 门。op=status/nodes/mode",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "comfyui",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap comfyui"
+  },
+  {
+   "kind": "one_shot",
+   "domain": "creation",
+   "desc": "一句话 → 全链计划（主人令 2026-09-27「想什么就能生产什么画面」）：把一句话翻成产线输入 ——节奏词→BPM（紧凑120/常规100/舒缓80）· 时长词→分钟 · **帧率由 BPM 反推**（每拍帧数必须整数）·题材词→调色（走 filmgrade.INTENT_MAP）· 段落模板（8 拍：运动/机位/景别/能量轮转）·交付目标（level/GOP/SSIM 判据）· 并**明确列出缺什么**（写盘要过 filesystem_write 门）。**只读**：plan 不写任何文件。op=plan/show",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "one_shot",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap one_shot"
+  },
+  {
+   "kind": "surface_bind",
+   "domain": "system",
+   "desc": "通用「可控制面」绑定器（主人令 2026-09-27：「其他工具全部都要可控按键一个不漏的绑定好」）：**让每个工具自己报出可控制键**（ffmpeg -filters/-encoders/-formats… · git help -a · genoffice --help · freebuff --help · python 每个标准库模块一把键 · blender 走 bpy 枚举）→ 落清单 state/surfaces/<工具>.json → 绑到该工具的触手；**重扫对比：新键并入、消失的键=断连**。安全写法：探针**生成脚本 + 字面量 cmd 执行**（不把 exe 变量当程序",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "surface_bind",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap surface_bind"
+  },
+  {
+   "kind": "memory_manager",
+   "domain": "mind",
+   "desc": "记忆管理 + 万能精准秒搜（主人令 2026-09-27）：SQLite **FTS5 全文索引**（实测中文可检索）·六类源（记忆/文档/技能/状态/**能力位**/代理）⇒ find 秒级返回「路径+类型+高亮片段」，并**同时端出匹配的能力位**（\"想到匹配面出现的能力\"）；index 增量（mtime+sha 未变即跳过；**不许整表清空** —— 实测因此丢过索引）；store 存记忆过 filesystem_write 门。SQL 纪律：全部内联字面量 + `?` 占位符，不用变量拼 SQL（安全钩子实测拦过两次）。op=index/find/store/stats",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "memory_manager",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap memory_manager"
+  },
+  {
+   "kind": "sec_sweeper",
+   "domain": "security",
+   "desc": "安全棒（主人令 2026-09-27）：一根专职安全触手，**每半天**把尺子挨个过唯一门跑一遍 —— 全量穿透式交叉扫描（钩子/步骤锁/交叉验证/遗漏补扫）+ 安全模式分诊（eval/exec/shell/凭据/反序列化…）+ 覆盖无死角 + 双向绑定 + 技能源↔装；结果收成**健康账**，异常即**报警**；**独立健康面板**（快照内联·异常红色置顶）；**专用口**=keys（只引用+掩码）/energy（能源池+免费池真连）/start；**同步记忆上下文**=每棵树记指纹（文件数/最新mtime/总字节），指纹未变则复用上次结果（标 reused），**不重扫**。op=star",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "sec_sweeper",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap sec_sweeper"
+  },
+  {
+   "kind": "task_manager",
+   "domain": "system",
+   "desc": "任务管理器（主人令 2026-09-27）：一屏看全「任务 / 归属 / 内存占用 / CPU / 端口 / 进程ID」；psutil 读**真进程**（CPU 需两次采样：process_iter 的 info 是首次缓存，第二遍必须直接再调）；归属按**进程名优先**认（血账：只看命令行会把 chrome 误认成框架服务）；**网络列是\"占着的端口\"不是流量**（本机取不到 per-process 流量，不编）；stop 过 process_execute 门；page 生成我们视觉语言的静态页（SVG 图标·无 emoji·深色+青橙）。op=list/stop/page",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "task_manager",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap task_manager"
+  },
+  {
+   "kind": "transformer",
+   "domain": "llm",
+   "desc": "变压器（**核心已按成熟成品吃透后重做** 2026-09-27）：LLMLingua 的「显式预算 + 段落保护」（`compress=False` 思想 ⇒ **指令/结构段一字不动**，只压参考叙述，支持 rate/target_chars）+ GPTCache 的「近似命中」本地近似（simhash 汉明距离；**假命中禁令**：近似默认只报告不返答案，要答案须 allow_approx）+ autosize（上下文快满自动压 + **原文先落 spill 资料不丢**）；**可旁路 fail-open**（关键信息丢或没省下来 ⇒ 回原样）；**必给前后两个数**并记台账。op=co",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "transformer",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap transformer"
+  },
+  {
+   "kind": "automation_keys",
+   "domain": "llm",
+   "desc": "自动化配置密钥口（APP 设置调它）：六个槽位（codex/claude/deepseek/browser/free_pool/sec_llm）每槽只存**引用**（env:<环境变量名> / vault:<DPAPI profile> / local），**不存值**；输出只有掩码（前 4 字符 + ****）；set/unset 过 filesystem_write 门；test 做只读闭环自检（free_pool 只打本地 /v1，不花积分、不出公网）；where 给设置页看接线契约。真密钥一律走 model_key_pool 的 DPAPI 路径（六条红线在那边）。op=status/",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "automation_keys",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap automation_keys"
+  },
+  {
    "kind": "model_key_pool",
    "domain": "llm",
    "desc": "模型密钥池（只读骨架）：按 owner_ai_id 分池、触手只借不拥有、DPAPI 只存路径、超限只上报",
@@ -2186,13 +2336,13 @@
   {
    "kind": "genoffice",
    "domain": "creation",
-   "desc": "办公文档（GenOffice 蒸馏版）：本地引擎全接（info/pdf/guide/convert/create/slides/sheet/docs/merge/render）· 免费AI 保留（search/image/media，耗 provider 积分）· **控制端类默认不接、主人点名放行并留痕** · 主控 run_task",
+   "desc": "办公文档（GenOffice **蒸馏版** · 本地 CLI 0.10+）：info/pdf/guide/capabilities + convert/create/merge/slides/sheet/docs/render **全部接通**（文档处理全本地、零云依赖）；search/image/media 保留（走主人自配 provider ⇒ **耗积分**，不许念成\"全免费\"）；**控制端类命令（open/selection/mcp/install-cli/skill）默认不接 —— 主人点名放行并留痕**（state/genoffice_control.jsonl）；读类直连、写类",
    "enabled": true,
    "reason": "",
    "safe": false,
    "handler": "genoffice",
    "requires_params": [],
-   "params_hint": "op=status|ops|<命令名>|run",
+   "params_hint": "",
    "needs_confirmation": false,
    "unimplemented": false,
    "channel": "omnipulg",
@@ -2362,6 +2512,36 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python tools/codex-scripts/five-dim.py cap tentacle_bind"
+  },
+  {
+   "kind": "asset_index",
+   "domain": "system",
+   "desc": "资产索引：**整棵树都连上 + 连上即可秒查**（主人令 2026-09-27）。build 把全树扫进 state/asset_index.db（键=跟随软链的物理真身，与绑定系统同口径，软链别名去重）；wire 给每个资产补触手标签（启发式优先，认不出用回退标签 project_context —— 诚实标注归属，不假装认出了专门触手）；find 查索引**不扫盘**（实测 17-22ms）。op=build/wire/find/stats",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "asset_index",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap asset_index"
+  },
+  {
+   "kind": "control_loop",
+   "domain": "desktop",
+   "desc": "快慢双脑控制回路（蒸馏自 Jev/TypeSafe System One + browser-use/jev-ultrafast）：动作是**枚举**（CLICK/TYPE_TEXT/SELECT/SCROLL_*/WAIT/DONE/BLOCKED，枚举外不存在）· 一次观测出「操作+目标」两个头 · 只为 TYPE_TEXT 调生成模型 · **执行前两查（新鲜+遮挡）+ DONE 必须独立验证** · 低置信度才升级慢脑（无慢脑如实 BLOCKED）· 预算闸（单次时延+每分钟次数）· 每次决策写 state/control_loop.jsonl 审计链。**它只决策不动手**：动作仍走",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "control_loop",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap control_loop"
   },
   {
    "kind": "local_brain",
@@ -2834,171 +3014,6 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python tools/codex-scripts/five-dim.py cap onboarding_gate"
-  },
-  {
-   "kind": "control_loop",
-   "domain": "desktop",
-   "desc": "快慢双脑控制回路（Jev/TypeSafe System One 蒸馏）：枚举动作 · 两头一次往返 · 只 TYPE_TEXT 调生成模型 · 两查+DONE 独立验证 · 低置信才升级慢脑 · 预算闸 · 审计链；只决策不动手",
-   "enabled": true,
-   "reason": "",
-   "safe": true,
-   "handler": "control_loop",
-   "requires_params": [],
-   "params_hint": "op=selftest|decide|observe|act|demo",
-   "needs_confirmation": false,
-   "unimplemented": false,
-   "channel": "omnipulg",
-   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('control_loop', {'op':'selftest'}))\""
-  },
-  {
-   "kind": "asset_index",
-   "domain": "system",
-   "desc": "资产索引：整树资产连接率 100% + 秒查（查 SQLite 索引不扫盘，17-22ms）",
-   "enabled": true,
-   "reason": "",
-   "safe": true,
-   "handler": "asset_index",
-   "requires_params": [],
-   "params_hint": "op=build|wire|find|stats",
-   "needs_confirmation": false,
-   "unimplemented": false,
-   "channel": "omnipulg",
-   "invoke": "python tools/asset_index.py stats"
-  },
-  {
-   "kind": "automation_keys",
-   "domain": "llm",
-   "desc": "自动化配置密钥口：六槽位只存引用（env/vault/local）· 只回掩码 · 改配置过 filesystem_write 门 · test 只读闭环自检（free_pool 只打本地 /v1）· 真密钥走 model_key_pool 的 DPAPI",
-   "enabled": true,
-   "reason": "",
-   "safe": true,
-   "handler": "automation_keys",
-   "requires_params": [],
-   "params_hint": "op=status|set|unset|test|where",
-   "needs_confirmation": false,
-   "unimplemented": false,
-   "channel": "omnipulg",
-   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('automation_keys', {'op':'status'}))\""
-  },
-  {
-   "kind": "transformer",
-   "domain": "llm",
-   "desc": "变压器（09-22 原设计接上）：输入侧压缩（去重/JSON折叠/裁陈旧）+ 输出侧缓存（命中=省整次调用）；可旁路 fail-open；必给前后两个数",
-   "enabled": true,
-   "reason": "",
-   "safe": true,
-   "handler": "transformer",
-   "requires_params": [],
-   "params_hint": "op=compress|cache_get|cache_put|stats|selftest",
-   "needs_confirmation": false,
-   "unimplemented": false,
-   "channel": "omnipulg",
-   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('transformer', {'op':'stats' if 'transformer'=='transformer' else 'list'}))\""
-  },
-  {
-   "kind": "task_manager",
-   "domain": "system",
-   "desc": "任务管理器：真进程一屏（任务/归属/内存/CPU/端口/pid）；名优先认归属；端口列≠流量；stop 过门；page 出静态页",
-   "enabled": true,
-   "reason": "",
-   "safe": true,
-   "handler": "task_manager",
-   "requires_params": [],
-   "params_hint": "op=list|stop|page",
-   "needs_confirmation": false,
-   "unimplemented": false,
-   "channel": "omnipulg",
-   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('task_manager', {'op':'stats' if 'task_manager'=='transformer' else 'list'}))\""
-  },
-  {
-   "kind": "sec_sweeper",
-   "domain": "security",
-   "desc": "安全棒：每半天全量穿透式交叉扫描 + 健康面板（异常报警）+ 专用密钥/能源/启动口 + 上下文指纹复用（不重扫）",
-   "enabled": true,
-   "reason": "",
-   "safe": true,
-   "handler": "sec_sweeper",
-   "requires_params": [],
-   "params_hint": "op=start|sweep|keys|energy|panel|health",
-   "needs_confirmation": false,
-   "unimplemented": false,
-   "channel": "omnipulg",
-   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('sec_sweeper', {'op':'health'}))\""
-  },
-  {
-   "kind": "memory_manager",
-   "domain": "mind",
-   "desc": "记忆管理 + 万能秒搜：FTS5 全文（中文可搜）+ 六类源（含能力位）；find 同时端出匹配能力位；增量索引不丢账（血账：整表清空丢过 344 条）",
-   "enabled": true,
-   "reason": "",
-   "safe": true,
-   "handler": "memory_manager",
-   "requires_params": [],
-   "params_hint": "op=index|find|store|stats",
-   "needs_confirmation": false,
-   "unimplemented": false,
-   "channel": "omnipulg",
-   "invoke": "python tools/memory_manager_cli.py stats"
-  },
-  {
-   "kind": "surface_bind",
-   "domain": "system",
-   "desc": "通用可控制面绑定器：让工具自己报键（ffmpeg 628 · git 177 · python 302 · genoffice 19 · freebuff 3 · blender 2409）→ 绑触手 → 重扫对比，**消失的键=断连**",
-   "enabled": true,
-   "reason": "",
-   "safe": true,
-   "handler": "surface_bind",
-   "requires_params": [],
-   "params_hint": "op=probe|sweep|keys|verify",
-   "needs_confirmation": false,
-   "unimplemented": false,
-   "channel": "omnipulg",
-   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('surface_bind', {'op':'keys'}))\""
-  },
-  {
-   "kind": "one_shot",
-   "domain": "creation",
-   "desc": "一句话→全链计划（只读）：节奏词→BPM · 时长词→分钟 · 帧率由 BPM 反推 · 题材词→调色 · 8 拍段落模板 · 交付判据 · 明列缺什么（写授权）",
-   "enabled": true,
-   "reason": "",
-   "safe": true,
-   "handler": "one_shot",
-   "requires_params": [],
-   "params_hint": "op=plan|show",
-   "needs_confirmation": false,
-   "unimplemented": false,
-   "channel": "omnipulg",
-   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('one_shot', {'op':'show'}))\""
-  },
-  {
-   "kind": "comfyui",
-   "domain": "creation",
-   "desc": "ComfyUI 全控：966 节点 + 11 端点 + 14 开关 + 模型清单；节点消失=断连；出网硬钉（本机 http + 主机白名单 + 8188 + 路径前缀 + 拒重定向）",
-   "enabled": true,
-   "reason": "",
-   "safe": true,
-   "handler": "comfyui",
-   "requires_params": [],
-   "params_hint": "op=status|nodes|models|submit|queue|history|free|interrupt|surface|verify",
-   "needs_confirmation": false,
-   "unimplemented": false,
-   "channel": "omnipulg",
-   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('comfyui', {'op':'status'}))\""
-  },
-  {
-   "kind": "gods_eye",
-   "domain": "system",
-   "desc": "上帝之眼：看创作页面 + 两顾问（Claude 建议无决策权 / CodeBuddy 杂事无主项目执行权）+ 每日探针与全量扫描（缺点/短板/卡点，带来源）+ 计划与决策留痕",
-   "enabled": true,
-   "reason": "",
-   "safe": true,
-   "handler": "gods_eye",
-   "requires_params": [],
-   "params_hint": "op=see|advisors|ask|daily|plan|panel",
-   "needs_confirmation": false,
-   "unimplemented": false,
-   "channel": "omnipulg",
-   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('gods_eye', {'op':'daily'}))\""
   }
  ],
  "skills": [
@@ -4046,17 +4061,18 @@
    "triggers": [],
    "version": "",
    "channel": "agent-skill",
-   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
-   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\autoclaw-mcp-tools",
-   "why": "本仓 AGENTS.md 指定的托管目录",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\autoclaw-mcp-tools",
+   "why": "本会话（DSH）实际读取的技能目录",
    "has_references": false,
    "has_scripts": false,
    "has_assets": false,
    "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
     "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "autoclaw-pdf-ocr",
@@ -4889,17 +4905,18 @@
    "triggers": [],
    "version": "",
    "channel": "agent-skill",
-   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
-   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\digihuman-pipeline",
-   "why": "本仓 AGENTS.md 指定的托管目录",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\digihuman-pipeline",
+   "why": "本会话（DSH）实际读取的技能目录",
    "has_references": true,
    "has_scripts": true,
    "has_assets": false,
    "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
     "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "digits-fintech-swiss-template",
@@ -6118,17 +6135,18 @@
    ],
    "version": "1.0.0",
    "channel": "agent-skill",
-   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
-   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-ai-101",
-   "why": "本仓 AGENTS.md 指定的托管目录",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-ai-101",
+   "why": "本会话（DSH）实际读取的技能目录",
    "has_references": false,
    "has_scripts": false,
    "has_assets": false,
    "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
     "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-ai-anything",
@@ -6150,17 +6168,18 @@
    ],
    "version": "1.0.0",
    "channel": "agent-skill",
-   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
-   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-ai-anything",
-   "why": "本仓 AGENTS.md 指定的托管目录",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-ai-anything",
+   "why": "本会话（DSH）实际读取的技能目录",
    "has_references": false,
    "has_scripts": false,
    "has_assets": false,
    "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
     "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-ai-edu",
@@ -6182,17 +6201,18 @@
    ],
    "version": "1.0.0",
    "channel": "agent-skill",
-   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
-   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-ai-edu",
-   "why": "本仓 AGENTS.md 指定的托管目录",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-ai-edu",
+   "why": "本会话（DSH）实际读取的技能目录",
    "has_references": false,
    "has_scripts": false,
    "has_assets": false,
    "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
     "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-alchemy",
@@ -6586,6 +6606,25 @@
    "root_count": 3
   },
   {
+   "name": "gbt-control-loop",
+   "displayName": "",
+   "desc": "快慢双脑控制回路（蒸馏自 Jev / TypeSafe「System One」+ browser-use/jev-ultrafast）：类型化枚举动作 · 两头一次往返 · 只为输入文本才叫生成模型 · 执行前两查 + DONE 独立验证 + 预算闸 + 审计链。用来突破\"电脑操控每步都走大模型\"的瓶颈。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-control-loop",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
+  },
+  {
    "name": "gbt-creation",
    "displayName": "GBT 创作能力（深蒸版 · 9 个能力位逐个覆盖）",
    "desc": "GBT小土豆V8 的创作出口**用法规程**。它把 `creation` 域 8 个能力位（create / drama / music_publishing / brand_outro / emotion_projection / scene_anchor / code_art / render_evolution）与 `image_video` 域 1 个（a1art_skill）**逐个**讲清：用途、只读还是要授权、真命令、失败典型样子，并附一份**实测过的诚实账**（哪些真跑过、哪些未验、卡在哪）。它只管『这 9 个能力位怎么调、门在哪、读数怎么读』；**审美判断与三轴选型归 `gbt-aesthetic`**，两份不互相冒充。当用户要写创作出口/登记产物、把剧本转分镜/拆分镜、做品牌片尾、做情感投射或场景锚定、走代码艺术或渲染进化内核、查 AI 音乐发布平台、要调 a1.art",
@@ -6765,17 +6804,18 @@
    ],
    "version": "1.0.0",
    "channel": "agent-skill",
-   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
-   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-desktop",
-   "why": "本仓 AGENTS.md 指定的托管目录",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-desktop",
+   "why": "本会话（DSH）实际读取的技能目录",
    "has_references": false,
    "has_scripts": false,
    "has_assets": false,
    "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
     "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-device",
@@ -6863,17 +6903,18 @@
    ],
    "version": "1.0.0",
    "channel": "agent-skill",
-   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
-   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-dl-101",
-   "why": "本仓 AGENTS.md 指定的托管目录",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-dl-101",
+   "why": "本会话（DSH）实际读取的技能目录",
    "has_references": false,
    "has_scripts": false,
    "has_assets": false,
    "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
     "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-ef",
@@ -7101,6 +7142,25 @@
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
    "root_count": 3
+  },
+  {
+   "name": "gbt-genoffice",
+   "displayName": "",
+   "desc": "GenOffice 蒸馏版能力面（主人令 2026-09-27）：本地文档引擎全接（info/convert/create/slides/sheet/docs/merge/pdf/render/guide）· 免费AI 保留（search/image/media，耗 provider 积分）· **五个控制端显式移除**（open/selection/mcp/install-cli/skill）· 主控是万能插 run_task。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-genoffice",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
   },
   {
    "name": "gbt-glmv",
@@ -7765,6 +7825,25 @@
    "root_count": 3
   },
   {
+   "name": "gbt-selfgrowth",
+   "displayName": "",
+   "desc": "自生长知识库 4.0（Codex + Google WikiSkill）蒸馏进本仓：Raw/Trace/Pattern/Skill 四段生命周期 + 三条复利循环 + 四判据 + 适用边界。回答\"做事的经验如何不在轨迹里消失\"，并与本仓既有的台账/坑册/判据/镜像门控一一对位。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-selfgrowth",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
+  },
+  {
    "name": "gbt-social",
    "displayName": "GBT · social 职业域用法规程（1 个能力位：auto_publish）",
    "desc": "GBT小土豆V8 的 `social` 职业域（社交推广 / 发布作品 / 收益平台）用法规程。这个域**只有 1 个能力位**：`auto_publish`。本文件把它写全：用途、五原语 PLAN·COMPOSE·PUBLISH·TRACK·SETTLE 逐个标「可不可逆 / 涉不涉钱 / 要不要过门」、六条红线、逐 op 静态查出来的作用域（**整位零作用域，连 PUBLISH 也是零** —— 门不在 policy，在模块自己的 gate_publish）、真命令、16 个 op 逐个点名、外部面（平台名单主人未给 ⇒ 一个平台名都不编；密钥 DPAPI；留痕 source_kind=publish）、失败典型样子、与 `gbt-lark` / `account_registry` / `coze_mail` 的边界；并记下实测读数（gate_publish 默认拒「发布」；gate",
@@ -7831,6 +7910,25 @@
    "root_count": 3
   },
   {
+   "name": "gbt-talktrack",
+   "displayName": "",
+   "desc": "对外沟通话术（诚实版）—— 报价、交付说明、延期、被问\"能不能\"、拒绝越权要求时的说法模板；三条铁律：不夸大未验、交付必带证据、边界先声明。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-talktrack",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
+  },
+  {
    "name": "gbt-tentacle",
    "displayName": "GBT 手 · 眼 · 网 · 耳（触手实操规程）",
    "desc": "GBT小土豆V8 的「手眼网耳」实操规程 —— 这套东西让框架能像人一样看屏幕、点界面、读网、出声与听声。规定三条主通道的机制与调用方式、六条铁律（先看再动/动后等稳定/找不到就滚/遇弹窗必关/每步亲眼验证/不确定就对比前后截图）、以及一份**实测过的诚实账**（哪些真能用、哪些用不了，包括麦克风 0 活动端点这种不许说反的事实）。当用户要「帮我点一下/看一下屏幕/操作这个界面/读这个网页/播放声音/听电脑在放什么」，或触手动作找不到元素、被弹窗挡住、怀疑界面没动时使用。",
@@ -7862,6 +7960,25 @@
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
    "root_count": 3
+  },
+  {
+   "name": "gbt-terminology",
+   "displayName": "",
+   "desc": "GBT小土豆V8 术语口径词典 —— 本仓每一个\"黑话\"的准确含义、反例、以及它在哪一行代码里被强制。用于说话/写文档/派活时不跑偏，也用于对齐新会话。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-terminology",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
   },
   {
    "name": "gbt-tools",
@@ -7914,17 +8031,18 @@
    ],
    "version": "1.0.0",
    "channel": "agent-skill",
-   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
-   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-vendor-intake",
-   "why": "本仓 AGENTS.md 指定的托管目录",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-vendor-intake",
+   "why": "本会话（DSH）实际读取的技能目录",
    "has_references": false,
    "has_scripts": false,
    "has_assets": false,
    "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
     "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-venice",
@@ -11321,14 +11439,14 @@
   }
  ],
  "counts": {
-  "caps": 196,
-  "caps_enabled": 185,
-  "caps_safe_no_args": 102,
-  "skills": 363,
-  "skills_raw_before_dedupe": 691,
-  "skills_multi_root": 167,
+  "caps": 197,
+  "caps_enabled": 197,
+  "caps_safe_no_args": 114,
+  "skills": 368,
+  "skills_raw_before_dedupe": 709,
+  "skills_multi_root": 172,
   "skills_by_channel": {
-   "agent-skill": 270,
+   "agent-skill": 275,
    "design-asset": 93
   },
   "design_assets_bulk_total": 235,

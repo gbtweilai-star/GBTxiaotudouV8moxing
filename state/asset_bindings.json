@@ -45146,5 +45146,19 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T22:42:09"
+ },
+ "gbt_allinone/tools/lobehub.py": {
+  "tentacles": [
+   "lobehub"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T23:03:14"
+ },
+ "state/surfaces/lobehub.json": {
+  "tentacles": [
+   "lobehub"
+  ],
+  "note": "可控制面清单",
+  "bound_at": "2026-09-27T23:04:09"
  }
 }

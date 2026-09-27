@@ -461,6 +461,12 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import gods_eye as _ge
         p = payload or {}
         return _ge.run_op(p.get("op", "see"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "lobehub":
+        # LobeHub 桌面端全控：七大面 76 把可控制键；启动/关闭过 process_execute 门，
+        # 设置写走白名单 + filesystem_write 门；凭据只回形状（按键名掩码）。
+        from .tools import lobehub as _lh
+        p = payload or {}
+        return _lh.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "comfyui":
         # ComfyUI 全控：966 节点 + API 端点 + 模型清单；出网硬钉（只许本机 8188）。
         from .tools import comfyui_surface as _cs

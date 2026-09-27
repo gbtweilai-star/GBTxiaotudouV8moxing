@@ -864,6 +864,19 @@ BENIGN_CAPS = {
         "handler": 'gods_eye',
         "safe": True,
     },
+    "lobehub": {
+        "domain": 'creation',
+        "desc": ('LobeHub 桌面端（Electron 2.2.18）全控 —— 主人令 2026-09-27「把 LobeHub.lnk 做成'
+                 '**可执行的插件**装到工具区，功能是真的多，**只要是可控制的都要绑上**」：'
+                 '**七大面 76 把可控制键**（设置 23 + **可控制按键 4** + 桌面端真调的接口操作 27 + '
+                 '助理 9 + 目录 9 …），每把都在 state/surfaces/lobehub.json，**消失即断连**。'
+                 '硬口径：凭据只回形状、**按键名掩码**（密文永不回值）· 在跑的库只读**副本** · '
+                 '本地文件桥只连 127.0.0.1 且端口取自应用自己的日志（**非 ASCII 路径实测撑不住**，如实标）。'
+                 'launch/close 过 process_execute 门；settings 写=白名单 + filesystem_write 门 + 先备份。'
+                 'op=status/surface/settings/shortcuts/ops/agents/runtime/bridge/launch/close/verify/where'),
+        "handler": 'lobehub',
+        "safe": True,
+    },
     "comfyui": {
         "domain": 'creation',
         "desc": ('ComfyUI（秋叶整合版）全控（主人令 2026-09-27「这个必须也是一个不漏的双向绑定，'

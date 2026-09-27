@@ -1,0 +1,223 @@
+{
+ "at": "2026-09-27T23:08:35",
+ "app": {
+  "exe": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\LobeHub\\LobeHub.exe",
+  "exe_source": "lnk:LobeHub.lnk",
+  "version": "2.2.18",
+  "running": true,
+  "pids": [
+   5616,
+   9044,
+   20240,
+   20292
+  ]
+ },
+ "keys": [
+  "appTrayVisible",
+  "dataSyncConfig",
+  "desktopOnboardingCompleted",
+  "encryptedTokens",
+  "gatewayDeviceId",
+  "gatewayEnabled",
+  "gatewayUrl",
+  "gatewayWorkspaceEnrollments",
+  "heteroSessionDirPrefs",
+  "heteroTracingEnabled",
+  "imessageBridgeConfigs",
+  "lastWorkspaceSlugByAccount",
+  "lobeDesktopAppliedStoreMigrations",
+  "localFileWorkspaceRoots",
+  "locale",
+  "networkProxy",
+  "pendingRestoreRoute",
+  "shortcuts",
+  "storagePath",
+  "themeMode",
+  "updateChannel",
+  "windowSize_app",
+  "windowsShellMode",
+  "openSettings",
+  "quickChat",
+  "quickComposer",
+  "showApp",
+  "agent:available",
+  "agent:config",
+  "agent:documentsList",
+  "agent:list",
+  "agent:serverDefaultHeterogeneousCapability",
+  "brief:list",
+  "brief:news",
+  "builtinAgent:init",
+  "document:editor",
+  "message:list",
+  "notebook:documents",
+  "page:list",
+  "project/list",
+  "task:detail",
+  "task:groupList",
+  "task:homeGoals",
+  "task:list",
+  "task:scheduledList",
+  "task:sidebarGroups",
+  "tool:mcpPluginList",
+  "topic:agentView",
+  "topic:detail",
+  "topic:list",
+  "userMemory:activities",
+  "userMemory:contexts",
+  "userMemory:identityList",
+  "userMemory:preferences",
+  "agt_AXgk64sd2htc",
+  "agt_JA75K0AxLhph",
+  "agt_JQCkA44eFh32",
+  "agt_MZTWJGqEarmP",
+  "agt_i0Pz9Sc82Pf9",
+  "agt_keUIxKO1T4LT",
+  "agt_q2u8huWQDky0",
+  "agt_thMFtohkwLFe",
+  "agt_u13QdbNpbhi5",
+  "exe",
+  "version",
+  "pids",
+  "bridge",
+  "bindings",
+  "db",
+  "inflight",
+  "leveldb",
+  "logs",
+  "runs",
+  "settings",
+  "traces",
+  "userdata"
+ ],
+ "settings_keys": [
+  "appTrayVisible",
+  "dataSyncConfig",
+  "desktopOnboardingCompleted",
+  "encryptedTokens",
+  "gatewayDeviceId",
+  "gatewayEnabled",
+  "gatewayUrl",
+  "gatewayWorkspaceEnrollments",
+  "heteroSessionDirPrefs",
+  "heteroTracingEnabled",
+  "imessageBridgeConfigs",
+  "lastWorkspaceSlugByAccount",
+  "lobeDesktopAppliedStoreMigrations",
+  "localFileWorkspaceRoots",
+  "locale",
+  "networkProxy",
+  "pendingRestoreRoute",
+  "shortcuts",
+  "storagePath",
+  "themeMode",
+  "updateChannel",
+  "windowSize_app",
+  "windowsShellMode"
+ ],
+ "shortcut_keys": [
+  "openSettings",
+  "quickChat",
+  "quickComposer",
+  "showApp"
+ ],
+ "api_ops": [
+  "agent:available",
+  "agent:config",
+  "agent:documentsList",
+  "agent:list",
+  "agent:serverDefaultHeterogeneousCapability",
+  "brief:list",
+  "brief:news",
+  "builtinAgent:init",
+  "document:editor",
+  "message:list",
+  "notebook:documents",
+  "page:list",
+  "project/list",
+  "task:detail",
+  "task:groupList",
+  "task:homeGoals",
+  "task:list",
+  "task:scheduledList",
+  "task:sidebarGroups",
+  "tool:mcpPluginList",
+  "topic:agentView",
+  "topic:detail",
+  "topic:list",
+  "userMemory:activities",
+  "userMemory:contexts",
+  "userMemory:identityList",
+  "userMemory:preferences"
+ ],
+ "agents": [
+  "agt_AXgk64sd2htc",
+  "agt_JA75K0AxLhph",
+  "agt_JQCkA44eFh32",
+  "agt_MZTWJGqEarmP",
+  "agt_i0Pz9Sc82Pf9",
+  "agt_keUIxKO1T4LT",
+  "agt_q2u8huWQDky0",
+  "agt_thMFtohkwLFe",
+  "agt_u13QdbNpbhi5"
+ ],
+ "dirs": {
+  "userdata": {
+   "path": "C:\\Users\\ADMIN\\AppData\\Roaming\\lobehub",
+   "exists": true
+  },
+  "settings": {
+   "path": "C:\\Users\\ADMIN\\AppData\\Roaming\\lobehub\\lobehub-settings.json",
+   "exists": true
+  },
+  "db": {
+   "path": "C:\\Users\\ADMIN\\AppData\\Roaming\\lobehub\\lobehub-storage\\local-database.sqlite3",
+   "exists": true
+  },
+  "leveldb": {
+   "path": "C:\\Users\\ADMIN\\AppData\\Roaming\\lobehub\\Local Storage\\leveldb",
+   "exists": true
+  },
+  "logs": {
+   "path": "C:\\Users\\ADMIN\\AppData\\Roaming\\lobehub\\logs\\main.log",
+   "exists": true
+  },
+  "runs": {
+   "path": "C:\\Users\\ADMIN\\AppData\\Roaming\\lobehub\\lobehub-storage\\heteroAgent\\runs",
+   "exists": true
+  },
+  "bindings": {
+   "path": "C:\\Users\\ADMIN\\AppData\\Roaming\\lobehub\\lobehub-storage\\heteroAgent\\bindings",
+   "exists": true
+  },
+  "inflight": {
+   "path": "C:\\Users\\ADMIN\\AppData\\Roaming\\lobehub\\lobehub-storage\\heteroAgent\\inflight-runs.json",
+   "exists": true
+  },
+  "traces": {
+   "path": "C:\\Users\\ADMIN\\.lobehub\\traces",
+   "exists": true
+  }
+ },
+ "bridge": {
+  "port": 33250,
+  "up": true
+ },
+ "cloud": {
+  "gateway_enabled": true,
+  "gateway_url": "https://device-gateway.lobehub.com",
+  "device_id_present": true,
+  "note": "服务商/模型清单在**云账号**里 —— 本地改不了，如实标不可本地控"
+ },
+ "counts": {
+  "keys": 76,
+  "settings": 23,
+  "shortcuts": 4,
+  "api_ops": 27,
+  "agents": 9,
+  "dirs": 9
+ },
+ "gone": [],
+ "added": [],
+ "_口径": "让 LobeHub 自己报：设置文件键 + 本地库副本里的接口操作名/助理 + 日志里的端口 + 真查进程；**消失键 = 断连**，要解释或补"
+}

@@ -69,6 +69,12 @@ TOOLS = {
         "min_keys": 900,          # 实测 966 个节点，留余量
         "why": "本地生图/生视频引擎（966 节点全控）—— 无限制审查生产的底气",
     },
+    "lobehub": {
+        "tentacle": "lobehub",
+        "probe": None,            # 专门枚举：走 lobehub（设置键 + 快捷键 + 接口操作 + 助理）
+        "min_keys": 40,           # 实测 76 把可控制键，留余量
+        "why": "LobeHub 桌面端（生图/助理/任务面）—— 76 把可控制键，消失即断连",
+    },
     "blender": {
         "tentacle": "blender",
         "probe": None,            # 专门枚举（bpy.ops 2409 个）
@@ -123,12 +129,14 @@ def _probe_via_script(tool: str, exe: str, args: list, env_extra: dict | None = 
         return -1, f"{type(e).__name__}: {e}"
 
 
-def _bind_manifest(path: Path, tentacle: str) -> bool:
+# ⚠️ 血账（2026-09-27）：**委托分支（comfyui/blender/lobehub）曾经提前 return**，
+#    清单写了却**从没绑上触手** —— "接上了没绑上"。委托的每条分支都要显式调它。
+def _bind_manifest(path: Path, tentacle: str, note: str = "可控制面清单") -> bool:
     try:
         sp = importlib.util.spec_from_file_location("tb_sb", _ROOT / "tools" / "tentacle_bind.py")
         tb = importlib.util.module_from_spec(sp)
         sp.loader.exec_module(tb)
-        return bool(tb.bind(str(path), tentacle, note="可控制面清单", quiet=True).get("ok"))
+        return bool(tb.bind(str(path), tentacle, note=note, quiet=True).get("ok"))
     except Exception:                                          # noqa: BLE001
         return False
 
@@ -151,9 +159,27 @@ def probe(tool: str = "", rescan: bool = True, **_kw) -> dict:
             return {"ok": False, "op": "probe", "tool": tool,
                     "installed": True, "why": str(r.get("error"))[:160]}
         n = (r.get("counts") or {}).get("nodes", 0)
+        _bound = _bind_manifest(_ROOT / "state" / "comfyui_surface.json", spec["tentacle"],
+                       note="可控制面清单（ComfyUI 桌面引擎）")
         return {"ok": True, "op": "probe", "tool": tool, "delegated": "comfyui_surface",
                 "keys": n, "min_keys": spec["min_keys"], "sufficient": n >= spec["min_keys"],
-                "gone": r.get("gone_total"), "added": r.get("added_total")}
+                "gone": r.get("gone_total"), "added": r.get("added_total"), "bound": _bound}
+    if tool == "lobehub":
+        # LobeHub 桌面端：设置键 + 快捷键 + 接口操作 + 助理 ⇒ 76 把可控制键（消失即断连）
+        lhp = importlib.util.spec_from_file_location(
+            "lh_probe", _ROOT / "gbt_allinone" / "tools" / "lobehub.py")
+        lh = importlib.util.module_from_spec(lhp)
+        lhp.loader.exec_module(lh)
+        r = lh.surface(rescan=rescan)
+        if not r.get("ok"):
+            return {"ok": False, "op": "probe", "tool": tool, "installed": bool(lh._exe()[0]),
+                    "why": str(r.get("error"))[:160]}
+        n = (r.get("counts") or {}).get("keys", 0)
+        _bound = _bind_manifest(_ROOT / "state" / "surfaces" / "lobehub.json", spec["tentacle"],
+                       note="可控制面清单（LobeHub 桌面端）")
+        return {"ok": True, "op": "probe", "tool": tool, "delegated": "lobehub",
+                "keys": n, "min_keys": spec["min_keys"], "sufficient": n >= spec["min_keys"],
+                "gone": r.get("gone_total"), "added": r.get("added_total"), "bound": _bound}
     if tool == "blender":
         bsp = importlib.util.spec_from_file_location(
             "bs_probe", _ROOT / "gbt_allinone" / "tools" / "blender_surface.py")
@@ -163,11 +189,13 @@ def probe(tool: str = "", rescan: bool = True, **_kw) -> dict:
         if not r.get("ok"):
             return {"ok": False, "op": "probe", "tool": tool, "installed": bool(bs._cli()[0]),
                     "error": str(r)[:200]}
+        _bound = _bind_manifest(_ROOT / "state" / "blender_surface.json", spec["tentacle"],
+                       note="可控制面清单（Blender 三维引擎）")
         return {"ok": True, "op": "probe", "tool": tool, "delegated": "blender_surface",
                 "keys": (r.get("counts") or {}).get("operators"),
                 "min_keys": spec["min_keys"],
                 "sufficient": (r.get("counts") or {}).get("operators", 0) >= spec["min_keys"],
-                "gone": r.get("gone_total"), "added": r.get("added_total")}
+                "gone": r.get("gone_total"), "added": r.get("added_total"), "bound": _bound}
     if not exe:
         return {"ok": False, "op": "probe", "tool": tool, "installed": False,
                 "why": f"本机没有 `{tool}`（装了再探，不装不硬编）"}
@@ -305,6 +333,7 @@ def verify(**_kw) -> dict:
         # 专门枚举的工具：清单不在 surfaces/ 目录（血账：verify 早先因此误报"没有清单"）
         _special = {"blender": _ROOT / "state" / "blender_surface.json",
                     "comfyui": _ROOT / "state" / "comfyui_surface.json"}
+        # lobehub 的清单在 surfaces/ 目录里（lobehub.json），键名字段也是 keys ⇒ 走默认路径
         p = _special.get(t) or (_DIR / f"{t}.json")
         if not p.is_file():
             problems.append(f"{t}: 没有清单（装了没探 / 没装）")
