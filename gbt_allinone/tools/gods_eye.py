@@ -96,6 +96,7 @@ ROLES = {
         "how": "快慢双脑（蒸馏自 Jev/TypeSafe System One）：快脑出候选+置信度；"
                "置信度不够才升慢脑；慢脑没有或回话解析不出候选 ⇒ **挂起**，绝不硬猜",
         "protocol": "tools/control_loop.py（同一套 Jev 协议：枚举动作 · 两查 · DONE 要独立验证）",
+        "probe": None,          # 本地协议：在位与否看模块文件（下面 _role_probe 里查）
         "slow_brain": ["llm_chat（DeepSeek/Kimi/OpenAI 密钥链）", "local_brain（本地模型）"],
     },
     "claude": {
@@ -103,6 +104,7 @@ ROLES = {
         "may": ["出意见", "出建议", "评审与挑刺", "商量架构与方向"],
         "may_not": ["决策（拍板是 Jev 的活）", "直接改主项目"],
         "capability": "claude_code",
+        "probe": {"kind": "claude_code", "op": "status"},   # 只读（真查 PATH），不消耗
         "must_install": "npm i -g @anthropic-ai/claude-code",
     },
     "codex": {
@@ -110,6 +112,9 @@ ROLES = {
         "may": ["写码", "改码", "重构", "评审代码", "跑测试"],
         "may_not": ["决策（拍板是 Jev 的活）", "跳过判据直接改生产"],
         "capability": "codex_chat",
+        # ⚠️ 探针用 codex_status（**只读**）：拿 codex_chat 的 status 会被门拒（它要 process_execute），
+        #   那会探出"没有读数"，而不是"不可用" —— 两件事必须分清。
+        "probe": {"kind": "codex_status", "op": "status"},
         "how": "codex_chat（同步对话）/ codex_turn_send（回合并流式回传）· 并发上限 1，需 process_execute+external_llm",
     },
     "deepseek": {
@@ -117,6 +122,8 @@ ROLES = {
         "may": ["执行动作", "跑链", "调能力位落地", "批量作业"],
         "may_not": ["决策（拍板是 Jev 的活）", "自作主张改方向"],
         "capability": "llm_chat",
+        # DeepSeek 的可用性 = **密钥槽在不在位**（只读）：问 automation_keys 的 deepseek 槽。
+        "probe": {"kind": "automation_keys", "op": "status"},
         "how": "llm_chat 的 DeepSeek 密钥链（automation_keys 的 deepseek 槽）+ 大脑执行层 brain_execute",
     },
 }
@@ -385,20 +392,57 @@ def _shortboard_top() -> list:
     return []
 
 
+def _role_probe(name: str, spec: dict) -> tuple:
+    """某个岗现在到底能不能用 —— **只读探针 + 读不到按不可用（fail-closed）**。
+
+    ⚠️ 血账：第一版写成 `bool(d.get("available", d.get("found", True)))` —— **默认真**。
+    而 `codex_chat` / `llm_chat` 的 `status` 会被门拒（它们要 process_execute / external_llm），
+    返回里**根本没有 available/found 键** ⇒ 探出"没有读数"，却被默认成了"可用"。
+    这正是本仓反复吃的"读不到当成没问题"。⇒ 现在：**读不到一律 False**，并如实写"探针没给读数"。
+    """
+    if name == "jev":
+        # Jev 是本地协议：看协议模块在不在；慢脑能不能问是**另一件事**，一并报出来
+        proto = _ROOT / "tools" / "control_loop.py"
+        slow = _gate("llm_chat", {"op": "status"})
+        slow_ok = bool((slow.get("payload") or {}).get("ok"))
+        return bool(proto.is_file()), {
+            "快脑协议": str(proto.relative_to(_ROOT)) if proto.is_file() else "缺失",
+            "慢脑可问": slow_ok,
+            "慢脑读数": "llm_chat.status 有 ok 读数" if slow_ok else "llm_chat.status 没给读数（多半被门拒）",
+        }
+    pr = spec.get("probe") or {}
+    if not pr:
+        return False, {"探针": "没配探针 ⇒ 按不可用（fail-closed）"}
+    d = _gate(pr["kind"], {"op": pr["op"]}).get("payload") or {}
+    if name == "deepseek":
+        slots = d.get("slots") or []
+        hit = [s for s in slots if s.get("slot") == "deepseek"]
+        present = bool(hit and hit[0].get("present"))
+        return present, {"密钥槽 deepseek": "在位" if present else "不在位",
+                         "来源": "automation_keys.status（只读）"}
+    if name == "codex":
+        # Codex 的只读读数给的是 codex_path + connected ⇒ 可用性看**装没装**，
+        # "连没连上"单独一栏报（装了就可用，没连上只是当前没有会话）
+        p_ = str(d.get("codex_path") or "")
+        return bool(d.get("ok") and p_), {"探针": "codex_status.status（只读）",
+                                          "已装": p_ or "未装", "已连接": bool(d.get("connected"))}
+    if not d:
+        return False, {"探针": f"{pr['kind']}.{pr['op']} 没给读数（多半被门拒）⇒ 按不可用"}
+    avail = bool(d.get("available", d.get("found")))    # **默认 None ⇒ False**
+    return avail, {"探针": f"{pr['kind']}.{pr['op']}",
+                   "install_hint": str(d.get("install_hint") or "")[:80]}
+
+
 def roles(**_kw) -> dict:
     """四岗分工（机器可读）：Jev 决策 / 克劳德意见建议 / Codex 编程 / DeepSeek 执行层。"""
     out = {}
     for name, spec in ROLES.items():
-        avail, why = True, ""
-        cap = spec.get("capability")
-        if cap:
-            d = _gate(cap, {"op": "status"}).get("payload") or {}
-            avail = bool(d.get("available", d.get("found", True)))
-            why = str(d.get("install_hint") or "")
-        out[name] = {**spec, "available": avail, "evidence": why or "见 how"}
+        avail, ev = _role_probe(name, spec)
+        out[name] = {**spec, "available": bool(avail), "evidence": ev}
     return {"ok": True, "op": "roles", "roles": out, "decider": DECIDER,
             "threshold": DECIDE_THRESHOLD, "budget_per_min": DECIDE_MAX_PER_MIN,
-            "_口径": "分工是**机器可读的表**：谁的 may / may_not 都在上面，判据逐条查"}
+            "_口径": "分工是**机器可读的表**：谁的 may / may_not 都在上面，判据逐条查；"
+                     "可用性=**只读探针真读**，读不到一律按不可用（fail-closed，不拿'应该能用'顶替）"}
 
 
 def _probe_report() -> dict:

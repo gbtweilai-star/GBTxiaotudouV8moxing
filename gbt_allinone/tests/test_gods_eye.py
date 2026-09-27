@@ -140,6 +140,23 @@ class TestJevDecides(unittest.TestCase):
             self.assertIn("决策", json.dumps(r["roles"][other]["may_not"], ensure_ascii=False),
                           f"{other} 的 may_not 必须写明不许决策（拍板是 Jev 的活）")
 
+    def test_h_availability_is_fail_closed(self):
+        """**可用性不许 fail-open**：探针读不到读数 ⇒ 必须报"不可用"，不许默认成能用。
+
+        血账：第一版写成 `bool(d.get("available", d.get("found", True)))`（默认真），
+        而 `codex_chat`/`llm_chat` 的 status 会被门拒、返回里没有那两个键 ⇒
+        "探针没给读数"被当成了"可用"。这正是本仓反复吃的"读不到当成没问题"。
+        """
+        old = self.m._gate
+        self.m._gate = lambda *a, **k: {"ok": True, "gate_ok": True, "payload": {}}
+        try:
+            r = self.m.roles()
+            for name in ("claude", "codex", "deepseek"):
+                self.assertFalse(r["roles"][name]["available"],
+                                 f"{name} 在探针无读数时被默认成可用了 ⇒ fail-open 又回来了")
+        finally:
+            self.m._gate = old
+
     def test_b_no_evidence_no_verdict(self):
         r = self.m.decide(question="先干哪个？", options="A方案,B方案")
         self.assertFalse(r.get("ok"), "没有证据竟然拍了板")

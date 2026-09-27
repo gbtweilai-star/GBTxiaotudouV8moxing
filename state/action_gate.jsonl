@@ -109,3 +109,12 @@
 {"at": "2026-09-28T04:44:13", "event": "close", "gate_id": "9792c6fb3a17", "result": "读完了", "saw": "看到文件里写着'现写'"}
 {"at": "2026-09-28T04:44:13", "event": "preflight", "gate_id": "9fe254b934b7", "action": "按刚看过的旧文件动手", "ok": true, "rules": []}
 {"at": "2026-09-28T04:44:13", "event": "preflight", "gate_id": "", "action": "按刚看过的旧文件动手", "ok": false, "rules": ["拿旧读数当现状"]}
+{"at": "2026-09-28T04:56:05", "event": "preflight", "gate_id": "", "action": "删掉某文件", "ok": false, "rules": ["无脑操作", "盲猜"]}
+{"at": "2026-09-28T04:56:05", "event": "preflight", "gate_id": "", "action": "改配置", "ok": false, "rules": ["拿旧读数当现状", "盲猜"]}
+{"at": "2026-09-28T04:56:05", "event": "preflight", "gate_id": "", "action": "跑链", "ok": false, "rules": ["证据不在盘上"]}
+{"at": "2026-09-28T04:56:05", "event": "preflight", "gate_id": "", "action": "按旧读数动手", "ok": false, "rules": ["拿旧读数当现状", "盲猜"]}
+{"at": "2026-09-28T04:56:05", "event": "preflight", "gate_id": "4c0d9dd37d43", "action": "有意用旧读数", "ok": true, "rules": []}
+{"at": "2026-09-28T04:56:05", "event": "preflight", "gate_id": "d5143411ccbc", "action": "读一遍台账", "ok": true, "rules": []}
+{"at": "2026-09-28T04:56:05", "event": "close", "gate_id": "d5143411ccbc", "result": "读完了", "saw": "看到文件里写着'现写'"}
+{"at": "2026-09-28T04:56:05", "event": "preflight", "gate_id": "791ad876085b", "action": "按刚看过的旧文件动手", "ok": true, "rules": []}
+{"at": "2026-09-28T04:56:05", "event": "preflight", "gate_id": "", "action": "按刚看过的旧文件动手", "ok": false, "rules": ["拿旧读数当现状"]}

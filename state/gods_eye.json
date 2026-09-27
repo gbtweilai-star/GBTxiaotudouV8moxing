@@ -1,17 +1,17 @@
 {
  "ok": true,
  "op": "daily",
- "at": "2026-09-28T04:44:11",
+ "at": "2026-09-28T04:56:03",
  "探针汇报": {
   "available": true,
   "deliverables": [
    "AI三大方向创意前置层蒸馏提案_2026-09-28.html",
-   "小土豆记忆大脑结构规划_2026-09-28.html",
-   "小土豆记忆大脑结构规划方案_2026-09-28.html"
+   "小土豆记忆大脑结构规划_2026-09-28.html"
   ],
   "evidence": [
    "media_run_runnable_steps_2026-09-28.txt",
-   "小土豆大脑截图转录_2026-09-28.txt"
+   "小土豆大脑截图转录_2026-09-28.txt",
+   "扫通执行"
   ],
   "ledger_tail": "\n1. **1–4 号外部抓取原件均未落盘** —— 抓取发生在立规前，只把结论写进了报告，**原始快照已不可复现**。\n   → 后续严格执行：抓到即存 `04-调研/<日期>/`，再写结论。\n2. **口径不一致风险** —— 3 号（总星）与 1 号（stars today）口径不同，曾导致误读风险。台账已并列标注，勿混用。"
  },
@@ -129,6 +129,7 @@
    ],
    "how": "快慢双脑（蒸馏自 Jev/TypeSafe System One）：快脑出候选+置信度；置信度不够才升慢脑；慢脑没有或回话解析不出候选 ⇒ **挂起**，绝不硬猜",
    "protocol": "tools/control_loop.py（同一套 Jev 协议：枚举动作 · 两查 · DONE 要独立验证）",
+   "probe": null,
    "slow_brain": [
     "llm_chat（DeepSeek/Kimi/OpenAI 密钥链）",
     "local_brain（本地模型）"
@@ -147,6 +148,10 @@
     "直接改主项目"
    ],
    "capability": "claude_code",
+   "probe": {
+    "kind": "claude_code",
+    "op": "status"
+   },
    "must_install": "npm i -g @anthropic-ai/claude-code"
   },
   "codex": {
@@ -163,6 +168,10 @@
     "跳过判据直接改生产"
    ],
    "capability": "codex_chat",
+   "probe": {
+    "kind": "codex_status",
+    "op": "status"
+   },
    "how": "codex_chat（同步对话）/ codex_turn_send（回合并流式回传）· 并发上限 1，需 process_execute+external_llm"
   },
   "deepseek": {
@@ -178,27 +187,31 @@
     "自作主张改方向"
    ],
    "capability": "llm_chat",
+   "probe": {
+    "kind": "automation_keys",
+    "op": "status"
+   },
    "how": "llm_chat 的 DeepSeek 密钥链（automation_keys 的 deepseek 槽）+ 大脑执行层 brain_execute"
   }
  },
  "决策人": "**Jev（推理模型）拍板** —— 意见与建议来自克劳德（可商量）；Codex 专注编程；DeepSeek Harness 专注执行层；主体（GBT小土豆V8）负责编排、留痕与兜底。Jev 挂起时**决策也挂起**（不许谁替它拍）",
  "最近决策": [
   {
-   "at": "2026-09-28T04:41:30",
+   "at": "2026-09-28T04:53:37",
    "choice": "修未清故障",
    "path": "fast",
    "decider": "Jev（推理模型）",
    "question": "先干哪个？"
   },
   {
-   "at": "2026-09-28T04:41:30",
+   "at": "2026-09-28T04:53:37",
    "choice": null,
    "path": "blocked",
    "decider": "Jev（推理模型）",
    "question": "选哪种蓝？"
   },
   {
-   "at": "2026-09-28T04:41:30",
+   "at": "2026-09-28T04:53:37",
    "choice": "修未清故障",
    "path": "fast",
    "decider": "Jev（推理模型）",
