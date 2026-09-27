@@ -1,0 +1,204 @@
+{
+ "at": "2026-09-28T05:57:48",
+ "target": "gbt_allinone,tools",
+ "files": 924,
+ "lines": 258808,
+ "findings": [
+  {
+   "id": "F-CRED-001-57fe4f-70",
+   "rule": "CRED-001",
+   "severity": "high",
+   "stage": "凭证面",
+   "what": "可疑密钥字面量（sk-/ghp_/AKIA/长 base64 赋给含 key/token/secret 的名字）",
+   "file": "gbt_allinone/tests/test_auto_publish.py",
+   "line": 70,
+   "snippet": "bad = ap.run(\"gate_key\", payload={\"cookie\": \"sk-abcd1234efgh5678ijkl\"})",
+   "evidence": {
+    "file_sha256": "ab586f5b01dff491139270f76db388b97c0750094261242afc49ce4350c198ca",
+    "line_text": "bad = ap.run(\"gate_key\", payload={\"cookie\": \"sk-abcd1234efgh5678ijkl\"})",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import re,pathlib;print(re.findall(r'(sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{12,})', pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_auto_publish.py').read_text(encoding='utf-8',errors='replace'))[:3])\"",
+   "verified_by": "",
+   "at": "2026-09-28T05:57:48"
+  },
+  {
+   "id": "F-CRED-001-8785bf-45",
+   "rule": "CRED-001",
+   "severity": "high",
+   "stage": "凭证面",
+   "what": "可疑密钥字面量（sk-/ghp_/AKIA/长 base64 赋给含 key/token/secret 的名字）",
+   "file": "gbt_allinone/tests/test_cloud_pc.py",
+   "line": 45,
+   "snippet": "bad = cp.run(\"gate_key\", payload={\"Authorization\": \"Bearer sk-abcd1234efgh5678ijkl\"})",
+   "evidence": {
+    "file_sha256": "708cebe22286bfecb8d7ad53601e079753579e7e982cf05d0c97ec6d5a1086c1",
+    "line_text": "bad = cp.run(\"gate_key\", payload={\"Authorization\": \"Bearer sk-abcd1234efgh5678ijkl\"})",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import re,pathlib;print(re.findall(r'(sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{12,})', pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_cloud_pc.py').read_text(encoding='utf-8',errors='replace'))[:3])\"",
+   "verified_by": "",
+   "at": "2026-09-28T05:57:48"
+  },
+  {
+   "id": "F-JDG-001-7bc7b0-6",
+   "rule": "JDG-001",
+   "severity": "medium",
+   "stage": "判据面",
+   "what": "恒真/恒假判据（看着在判其实不会红）",
+   "file": "gbt_allinone/tests/test_dead_judgments.py",
+   "line": 6,
+   "snippet": "查下去发现 `verify_v11..v21` 里共 **11 条**判据末尾写着 **`or True`** ——",
+   "evidence": {
+    "file_sha256": "ce2607360e0727feadf0953f596c53def7617a83792a59d2898c4132f8464c0b",
+    "line_text": "查下去发现 `verify_v11..v21` 里共 **11 条**判据末尾写着 **`or True`** ——",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_dead_judgments.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
+   "verified_by": "",
+   "at": "2026-09-28T05:57:48"
+  },
+  {
+   "id": "F-JDG-001-7bc7b0-91",
+   "rule": "JDG-001",
+   "severity": "medium",
+   "stage": "判据面",
+   "what": "恒真/恒假判据（看着在判其实不会红）",
+   "file": "gbt_allinone/tests/test_dead_judgments.py",
+   "line": 91,
+   "snippet": "hits = self._scan('chk(\"x\", (\"undefined\" not in t) or True, \"note\")\\n')",
+   "evidence": {
+    "file_sha256": "ce2607360e0727feadf0953f596c53def7617a83792a59d2898c4132f8464c0b",
+    "line_text": "hits = self._scan('chk(\"x\", (\"undefined\" not in t) or True, \"note\")\\n')",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_dead_judgments.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
+   "verified_by": "",
+   "at": "2026-09-28T05:57:48"
+  },
+  {
+   "id": "F-JDG-001-41ffc1-171",
+   "rule": "JDG-001",
+   "severity": "medium",
+   "stage": "判据面",
+   "what": "恒真/恒假判据（看着在判其实不会红）",
+   "file": "tools/codex-scripts/criterion_bench.py",
+   "line": 171,
+   "snippet": "out.append((n.lineno, \"`or True` —— 短路后判据恒真\"))",
+   "evidence": {
+    "file_sha256": "98e0d38de0a319ee7c5d981f3548fa390e23d5095e9d75bbd173b134b09cbf38",
+    "line_text": "out.append((n.lineno, \"`or True` —— 短路后判据恒真\"))",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\criterion_bench.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
+   "verified_by": "",
+   "at": "2026-09-28T05:57:48"
+  },
+  {
+   "id": "F-JDG-001-8cef41-7",
+   "rule": "JDG-001",
+   "severity": "medium",
+   "stage": "判据面",
+   "what": "恒真/恒假判据（看着在判其实不会红）",
+   "file": "tools/codex-scripts/fix-dead-undefined-check.py",
+   "line": 7,
+   "snippet": "chk(\"原型无 undefined 字面量\", \"undefined\" not in re.sub(…, p.split(\"const V21 = \")[1].split(\"\\n  }\")[0]) or True, …)",
+   "evidence": {
+    "file_sha256": "97eb02b0af717d8588d6111148cd59097581b7cd7f047cbb2d50635177257acc",
+    "line_text": "chk(\"原型无 undefined 字面量\", \"undefined\" not in re.sub(…, p.split(\"const V21 = \")[1].split(\"\\n  }\")[0]) or True, …)",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\fix-dead-undefined-check.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
+   "verified_by": "",
+   "at": "2026-09-28T05:57:48"
+  },
+  {
+   "id": "F-JDG-001-8cef41-14",
+   "rule": "JDG-001",
+   "severity": "medium",
+   "stage": "判据面",
+   "what": "恒真/恒假判据（看着在判其实不会红）",
+   "file": "tools/codex-scripts/fix-dead-undefined-check.py",
+   "line": 14,
+   "snippet": "1. 删掉 `or True`；",
+   "evidence": {
+    "file_sha256": "97eb02b0af717d8588d6111148cd59097581b7cd7f047cbb2d50635177257acc",
+    "line_text": "1. 删掉 `or True`；",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\fix-dead-undefined-check.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
+   "verified_by": "",
+   "at": "2026-09-28T05:57:48"
+  },
+  {
+   "id": "F-JDG-001-aec86d-85",
+   "rule": "JDG-001",
+   "severity": "medium",
+   "stage": "判据面",
+   "what": "恒真/恒假判据（看着在判其实不会红）",
+   "file": "tools/codex-scripts/sync-panel-snapshot.py",
+   "line": 85,
+   "snippet": "而 `verify_v22.py` **没报**（它那条\"无 undefined 字面量\"检查里写着 `or True`，等于空转）。",
+   "evidence": {
+    "file_sha256": "f55c42e757e847ed9de0dd5d9e74aa5460cbccfbad60903387735d09ff33c6c2",
+    "line_text": "而 `verify_v22.py` **没报**（它那条\"无 undefined 字面量\"检查里写着 `or True`，等于空转）。",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\sync-panel-snapshot.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
+   "verified_by": "",
+   "at": "2026-09-28T05:57:48"
+  },
+  {
+   "id": "F-JDG-001-c70bb1-41",
+   "rule": "JDG-001",
+   "severity": "medium",
+   "stage": "判据面",
+   "what": "恒真/恒假判据（看着在判其实不会红）",
+   "file": "tools/shortvideo-music-mcp/sample_v2.py",
+   "line": 41,
+   "snippet": "errors=\"replace\", timeout=300, shell=(sys.platform == \"win32\" and False))",
+   "evidence": {
+    "file_sha256": "56499ac0957d5f0eeec391cef64bde22e37762ef31292ad0739f04bc4dc6c454",
+    "line_text": "errors=\"replace\", timeout=300, shell=(sys.platform == \"win32\" and False))",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\shortvideo-music-mcp\\sample_v2.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
+   "verified_by": "",
+   "at": "2026-09-28T05:57:48"
+  }
+ ],
+ "triaged": [
+  [
+   "已分诊",
+   "CRED-001",
+   "占位符/示例形状（无真实凭据形状）"
+  ],
+  [
+   "已分诊",
+   "JDG-001",
+   "已登记豁免（审计器自身的规则表与复现模板（要找的字面量必然在此出现））"
+  ],
+  [
+   "已分诊",
+   "JDG-001",
+   "**纯注释/文档行里的提及**（不可执行）⇒ 需人核，不算 finding"
+  ],
+  [
+   "已分诊",
+   "JDG-001",
+   "占位符/示例形状（无真实凭据形状）"
+  ],
+  [
+   "已分诊",
+   "JDG-001",
+   "已登记豁免（判据扫描器本体：里面必然出现恒真模式的**模式串**）"
+  ],
+  [
+   "已分诊",
+   "JDG-001",
+   "已登记豁免（假端点的故意死分支（避免真发 404））"
+  ]
+ ],
+ "needs_human": [],
+ "_口径": "命中先分诊；**分不清的进 needs_human，不硬报**；全量面天然含框架自家的清理路径，日常该用的是 diff_audit（改动面）或 rules= 定向。"
+}

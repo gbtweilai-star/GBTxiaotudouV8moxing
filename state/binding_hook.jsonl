@@ -8,3 +8,11 @@
 {"at": "2026-09-28T04:03:33", "event": "after-add", "kind": "genoffice_bridge", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": []}
 {"at": "2026-09-28T04:03:49", "event": "after-add", "kind": "key_gateway", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": []}
 {"at": "2026-09-28T04:03:50", "event": "after-add", "kind": "multimodal_port", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": []}
+{"at": "2026-09-28T06:01:13", "event": "after-add", "kind": "memory_bank", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": false, "⑥记忆页": true}, "missing": ["⑤绑定"], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
+{"at": "2026-09-28T06:01:13", "event": "after-add", "kind": "agent_console", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": false, "⑥记忆页": true}, "missing": ["⑤绑定"], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
+{"at": "2026-09-28T06:01:13", "event": "after-add", "kind": "code_audit", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": false, "⑥记忆页": true}, "missing": ["⑤绑定"], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
+{"at": "2026-09-28T06:01:14", "event": "after-add", "kind": "agent_rig", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": false, "⑥记忆页": true}, "missing": ["⑤绑定"], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
+{"at": "2026-09-28T06:01:30", "event": "after-add", "kind": "memory_bank", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": []}
+{"at": "2026-09-28T06:01:31", "event": "after-add", "kind": "agent_console", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": []}
+{"at": "2026-09-28T06:01:31", "event": "after-add", "kind": "code_audit", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": []}
+{"at": "2026-09-28T06:01:31", "event": "after-add", "kind": "agent_rig", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": []}

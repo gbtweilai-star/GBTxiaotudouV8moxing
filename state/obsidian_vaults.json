@@ -1409,14 +1409,38 @@
    "safe": "multimodal_port",
    "readme_sha": "dfb009cb6fadfe1f",
    "readme_exists": true
+  },
+  "memory_bank": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\memory_bank",
+   "safe": "memory_bank",
+   "readme_sha": "89b8648caa389e21",
+   "readme_exists": true
+  },
+  "agent_console": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\agent_console",
+   "safe": "agent_console",
+   "readme_sha": "2f66f5baa91e9dd1",
+   "readme_exists": true
+  },
+  "code_audit": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\code_audit",
+   "safe": "code_audit",
+   "readme_sha": "6eae1e81fc863afa",
+   "readme_exists": true
+  },
+  "agent_rig": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\agent_rig",
+   "safe": "agent_rig",
+   "readme_sha": "4097ba7e01119e49",
+   "readme_exists": true
   }
  },
- "updated_at": "2026-09-28T04:03:30",
+ "updated_at": "2026-09-28T06:01:13",
  "root": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults",
  "counts": {
-  "vaults": 235,
-  "tentacles": 235
+  "vaults": 239,
+  "tentacles": 239
  },
- "body_index_sha": "e0e1ae61e48f0e43",
- "bound_at": "2026-09-28T04:03:31"
+ "body_index_sha": "b098f4fc505073ef",
+ "bound_at": "2026-09-28T06:01:14"
 }

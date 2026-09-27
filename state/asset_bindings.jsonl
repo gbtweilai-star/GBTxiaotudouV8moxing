@@ -16306,3 +16306,35 @@
 {"at": "2026-09-28T04:53:36", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code", "pruned": 0}
 {"at": "2026-09-28T04:56:14", "event": "scan", "bindings": 6463, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-09-28T04:56:18", "event": "autobind", "files": 1, "bound": 1, "hint": "gods_eye", "pruned": 0}
+{"at": "2026-09-28T04:59:02", "event": "scan", "bindings": 6463, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T04:59:04", "event": "gaps", "missing": 1, "no_kind": 8588, "scanned": 12987}
+{"at": "2026-09-28T04:59:18", "event": "bind", "asset": "_upstream/LTX-2/packages/ltx-core/src/ltx_core/model/transformer/transformer.py", "tentacle": "transformer", "note": "sweep"}
+{"at": "2026-09-28T04:59:18", "event": "sweep", "dir": "_upstream/LTX-2", "added": 1, "skipped": 80}
+{"at": "2026-09-28T04:59:20", "event": "gaps", "missing": 0, "no_kind": 8588, "scanned": 12987}
+{"at": "2026-09-28T04:59:20", "event": "scan", "bindings": 6464, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T05:01:39", "event": "scan", "bindings": 6464, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T05:02:11", "event": "autobind", "files": 1, "bound": 1, "hint": "sec_scan", "pruned": 0}
+{"at": "2026-09-28T05:03:22", "event": "scan", "bindings": 6464, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T05:09:13", "event": "scan", "bindings": 6464, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T05:53:50", "event": "bind", "asset": "gbt_allinone/tools/memory_bank.py", "tentacle": "domain:tools", "note": "autobind"}
+{"at": "2026-09-28T05:53:54", "event": "autobind", "files": 1, "bound": 1, "hint": "coverage_auditor", "pruned": 0}
+{"at": "2026-09-28T05:54:09", "event": "autobind", "files": 1, "bound": 1, "hint": "hook_registry", "pruned": 0}
+{"at": "2026-09-28T05:55:23", "event": "bind", "asset": "gbt_allinone/tools/agent_console.py", "tentacle": "domain:tools", "note": "autobind"}
+{"at": "2026-09-28T05:55:26", "event": "autobind", "files": 1, "bound": 1, "hint": "hook_registry", "pruned": 0}
+{"at": "2026-09-28T05:55:32", "event": "bind", "asset": "gbt_allinone/tools/code_audit.py", "tentacle": "domain:tools", "note": "autobind"}
+{"at": "2026-09-28T05:55:33", "event": "autobind", "files": 1, "bound": 1, "hint": "coverage_auditor", "pruned": 0}
+{"at": "2026-09-28T05:59:49", "event": "autobind", "files": 1, "bound": 1, "hint": "vision", "pruned": 0}
+{"at": "2026-09-28T06:00:30", "event": "bind", "asset": "gbt_allinone/tools/agent_rig.py", "tentacle": "domain:tools", "note": "autobind"}
+{"at": "2026-09-28T06:00:32", "event": "autobind", "files": 1, "bound": 1, "hint": "codex_status", "pruned": 0}
+{"at": "2026-09-28T06:01:30", "event": "bind", "asset": "gbt_allinone/tools/memory_bank.py", "tentacle": "memory_bank", "note": "能力位实现文件 ↔ 触手（新增即绑）"}
+{"at": "2026-09-28T06:01:30", "event": "bind", "asset": "gbt_allinone/tools/agent_console.py", "tentacle": "agent_console", "note": "能力位实现文件 ↔ 触手（新增即绑）"}
+{"at": "2026-09-28T06:01:30", "event": "bind", "asset": "gbt_allinone/tools/code_audit.py", "tentacle": "code_audit", "note": "能力位实现文件 ↔ 触手（新增即绑）"}
+{"at": "2026-09-28T06:01:30", "event": "bind", "asset": "gbt_allinone/tools/agent_rig.py", "tentacle": "agent_rig", "note": "能力位实现文件 ↔ 触手（新增即绑）"}
+{"at": "2026-09-28T06:02:15", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "memory_bank", "note": "autobind"}
+{"at": "2026-09-28T06:02:16", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "memory_bank", "note": "autobind"}
+{"at": "2026-09-28T06:02:16", "event": "bind", "asset": "gbt_allinone/tests/test_distilled_ops.py", "tentacle": "memory_bank", "note": "autobind"}
+{"at": "2026-09-28T06:02:20", "event": "autobind", "files": 4, "bound": 4, "hint": "memory_bank", "pruned": 0}
+{"at": "2026-09-28T06:02:36", "event": "autobind", "files": 1, "bound": 1, "hint": "memory_bank", "pruned": 0}
+{"at": "2026-09-28T06:03:08", "event": "bind", "asset": "skills/gbt-distilled-ops/SKILL.md", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-28T06:03:10", "event": "autobind", "files": 1, "bound": 1, "hint": "memory_bank", "pruned": 0}
+{"at": "2026-09-28T06:03:10", "event": "scan", "bindings": 6470, "missing_asset": 0, "ghost_tentacle": 0}

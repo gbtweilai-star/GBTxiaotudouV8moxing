@@ -936,6 +936,30 @@ BENIGN_CAPS = {
         "handler": 'devour_fusion',
         "safe": True,
     },
+    "memory_bank": {
+        "domain": 'mind',
+        "desc": '记忆银行：**来源追踪 + 别名 + 零停机迁移**（蒸馏自 GitHub 周榜 #01 hindsight，只取架构）：`stamp` 给每条记忆打来源印章（ref/sha256/origin/session/why/evidence）；`trace` 同时报**印章在不在**与**内容有没有被改过**（当前 sha vs 印章 sha）；`alias`/`resolve` 记忆库别名（多级链 + **环检测**）；`migrate`/`migrate_apply` 搬家**先双写→逐文件校 sha→原子切别名→失败回滚**，旧目标只读保留（无删除路径）。op=stamp/trace/alias/resolve/aliases/migrate/migrate_apply/verify/where',
+        "handler": 'memory_bank',
+        "safe": True,
+    },
+    "agent_console": {
+        "domain": 'system',
+        "desc": '代理驾驶舱：**任务监督循环 + 连接请求审批桥**（蒸馏自 GitHub 周榜 #05 paperclip，只取架构）：`add` 登记被监督任务（判活看**读数有没有如期更新**，不是 exit code）· `tick` 定时检查出 ok/stale/failed 并列出该做什么（**不擅自执行**）· `retry`/`wake` 要 process_execute 门 · `request`/`pending`/`approve` 连接请求审批桥：**approve 要求 TTY + 手打 YES ⇒ AI 批不了**。op=add/tick/board/retry/wake/request/pending/approve/verify/where',
+        "handler": 'agent_console',
+        "safe": True,
+    },
+    "code_audit": {
+        "domain": 'security',
+        "desc": '代码安全审计：**多阶段 + 机器可读 findings + 独立验证 + 可复现**（蒸馏自 GitHub 周榜 #03 security-audit-skill，只取架构）：五条规则（凭证面/注入面/破坏面/判据面）· findings 契约含 severity/证据/复现命令 · **两路读法都命中才算确认**（否则 unverified）· 命中先分诊（豁免/占位/夹具/注释提及/检测器写法 一律不报）· `diff_audit` 只审改动行（PR/提交定向审查）。op=scan/diff_audit/findings/verify_finding/repro/report/verify/where',
+        "handler": 'code_audit',
+        "safe": True,
+    },
+    "agent_rig": {
+        "domain": 'system',
+        "desc": '编码智能体编队：**把本机已装的 CLI agent 编成并行流水线**（蒸馏自 GitHub 周榜 #02 orca，只取架构）：`agents` 只读盘点可编排的 agent（fail-closed）· `plan` 把一批任务分成 N 份（每份 worktree + 端口段 + 隔离 HOME + 独立日志，口径抄 tentacle_fleet）**只出计划** · `dispatch` 要 process_execute 门、任务只进文件不进命令行 · `collect` 从各份 worktree 收改动。op=agents/plan/dispatch/status/collect/verify/where',
+        "handler": 'agent_rig',
+        "safe": True,
+    },
     "lobehub": {
         "domain": 'creation',
         "desc": ('LobeHub 桌面端（Electron 2.2.18）全控 —— 主人令 2026-09-27「把 LobeHub.lnk 做成'

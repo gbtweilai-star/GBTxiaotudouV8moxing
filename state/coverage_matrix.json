@@ -1,9 +1,9 @@
 {
- "at": "2026-09-28T03:53:31",
+ "at": "2026-09-28T06:06:34",
  "quick": false,
- "耗时s": 54.4,
- "顶层树": 64,
- "已扫": 54,
+ "耗时s": 50.7,
+ "顶层树": 65,
+ "已扫": 55,
  "排除": 10,
  "扫的树": [
   {
@@ -198,10 +198,10 @@
   },
   {
    "tree": ".video_agent",
-   "units": 1,
+   "units": 2,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 1,
+   "agree": 2,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -348,13 +348,13 @@
   },
   {
    "tree": "gbt_allinone",
-   "units": 891,
+   "units": 897,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 891,
+   "agree": 897,
    "arbitrated": 0,
-   "sec_flagged": 21,
-   "sec_needs_human": 0
+   "sec_flagged": 22,
+   "sec_needs_human": 1
   },
   {
    "tree": "generated-images",
@@ -398,10 +398,20 @@
   },
   {
    "tree": "memory",
-   "units": 58,
+   "units": 59,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 58,
+   "agree": 59,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "out",
+   "units": 22,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 22,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -478,10 +488,10 @@
   },
   {
    "tree": "skills",
-   "units": 361,
+   "units": 362,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 361,
+   "agree": 362,
    "arbitrated": 0,
    "sec_flagged": 1,
    "sec_needs_human": 0
@@ -518,10 +528,10 @@
   },
   {
    "tree": "vaults",
-   "units": 696,
+   "units": 717,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 696,
+   "agree": 717,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -604,13 +614,13 @@
  "面B_C": {
   "caps": {
    "ok": true,
-   "units": 202,
+   "units": 209,
    "coverage": 1.0,
    "missing": 0
   },
   "bindings": {
    "ok": true,
-   "units": 6461,
+   "units": 6470,
    "coverage": 1.0,
    "missing": 0
   },
@@ -677,5 +687,5 @@
  },
  "全绿": true,
  "_口径": "没被扫到的面必须显式列出并给理由；隐式跳过=盲区。文件面覆盖必须 1.0；B/C 面断连必须 0；E 面三闸必须全 True。",
- "单元总数": 16570
+ "单元总数": 16622
 }

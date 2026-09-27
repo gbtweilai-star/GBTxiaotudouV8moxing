@@ -1,8 +1,8 @@
 {
- "at": "2026-09-28T04:56:14",
- "count": 205,
+ "at": "2026-09-28T06:03:23",
+ "count": 209,
  "by_permission": {
-  "open": 141,
+  "open": 145,
   "owner": 64
  },
  "duplicate_tags": {},
@@ -1102,6 +1102,34 @@
   "devour_fusion": {
    "tag": "GBT-DEVOUR-DEVOUR-FUSION",
    "domain": "devour",
+   "permission": "open",
+   "scopes": [],
+   "why": "policy 无作用域 + 图鉴 safe 且无需确认"
+  },
+  "memory_bank": {
+   "tag": "GBT-MIND-MEMORY-BANK",
+   "domain": "mind",
+   "permission": "open",
+   "scopes": [],
+   "why": "policy 无作用域 + 图鉴 safe 且无需确认"
+  },
+  "agent_console": {
+   "tag": "GBT-SYSTEM-AGENT-CONSOLE",
+   "domain": "system",
+   "permission": "open",
+   "scopes": [],
+   "why": "policy 无作用域 + 图鉴 safe 且无需确认"
+  },
+  "code_audit": {
+   "tag": "GBT-SECURITY-CODE-AUDIT",
+   "domain": "security",
+   "permission": "open",
+   "scopes": [],
+   "why": "policy 无作用域 + 图鉴 safe 且无需确认"
+  },
+  "agent_rig": {
+   "tag": "GBT-SYSTEM-AGENT-RIG",
+   "domain": "system",
    "permission": "open",
    "scopes": [],
    "why": "policy 无作用域 + 图鉴 safe 且无需确认"

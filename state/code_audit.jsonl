@@ -1,0 +1,9 @@
+{"at": "2026-09-28T05:55:44", "event": "scan", "files": 117, "lines": 43386, "findings": 20, "by_severity": {"high": 9, "medium": 11, "low": 0}}
+{"at": "2026-09-28T05:55:44", "event": "verify_finding", "id": "F-INJ-002-cbb7c3-80", "ok": true, "why": "行锚定 + 内容 sha + 字面搜索**三查都过**"}
+{"at": "2026-09-28T05:55:44", "event": "diff_audit", "base": "HEAD~3", "added_lines": 618, "hits": 0}
+{"at": "2026-09-28T05:56:02", "event": "scan", "files": 117, "lines": 43391, "findings": 15, "by_severity": {"high": 7, "medium": 8, "low": 0}}
+{"at": "2026-09-28T05:56:20", "event": "scan", "files": 117, "lines": 43399, "findings": 10, "by_severity": {"high": 6, "medium": 4, "low": 0}}
+{"at": "2026-09-28T05:56:58", "event": "scan", "files": 924, "lines": 258783, "findings": 96, "by_severity": {"high": 78, "medium": 18, "low": 0}}
+{"at": "2026-09-28T05:57:19", "event": "scan", "files": 924, "lines": 258794, "findings": 95, "by_severity": {"high": 77, "medium": 18, "low": 0}}
+{"at": "2026-09-28T05:57:47", "event": "scan", "files": 924, "rules": ["CRED-001", "INJ-001", "INJ-002", "DES-001", "JDG-001"], "lines": 258808, "findings": 83, "by_severity": {"high": 65, "medium": 18, "low": 0}}
+{"at": "2026-09-28T05:57:48", "event": "scan", "files": 924, "rules": ["CRED-001", "JDG-001"], "lines": 258808, "findings": 9, "by_severity": {"high": 2, "medium": 7, "low": 0}}

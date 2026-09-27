@@ -1,0 +1,16 @@
+{"at": "2026-09-28T05:53:58", "event": "stamp", "ref": "state/shortboard.json", "exists": true, "sha256": "b676b8a85909072817e8bc58a9ac91f94a781d2f5a711f39205688e8cae8dce1", "origin": "我推的", "session": "s", "why": "短板读数，日报要用", "evidence": ["state/shortboard.json"], "evidence_missing": []}
+{"at": "2026-09-28T05:53:58", "event": "alias", "name": "vault:本体", "target": "vaults/lobehub"}
+{"at": "2026-09-28T05:53:58", "event": "alias", "name": "mem:x", "target": "mem:y"}
+{"at": "2026-09-28T05:53:58", "event": "alias", "name": "mem:y", "target": "mem:x"}
+{"at": "2026-09-28T06:02:15", "event": "stamp", "ref": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\tmpnvffkle3\\一条记忆.md", "exists": true, "sha256": "902e455fe1092d39e6efd2a072972257af4f5a2c7d6cbe9afc6f0162c12f1886", "origin": "我推的", "session": "", "why": "判据样本", "evidence": [], "evidence_missing": []}
+{"at": "2026-09-28T06:02:15", "event": "alias", "name": "mem:x", "target": "mem:y"}
+{"at": "2026-09-28T06:02:15", "event": "alias", "name": "mem:y", "target": "mem:x"}
+{"at": "2026-09-28T06:02:15", "event": "migrate_done", "old": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\tmp1n9kg7id\\old", "new": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\tmp1n9kg7id\\new", "alias": "mem:样本", "files": 2}
+{"at": "2026-09-28T06:02:35", "event": "stamp", "ref": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\tmp3yyyjojt\\一条记忆.md", "exists": true, "sha256": "902e455fe1092d39e6efd2a072972257af4f5a2c7d6cbe9afc6f0162c12f1886", "origin": "我推的", "session": "", "why": "判据样本", "evidence": [], "evidence_missing": []}
+{"at": "2026-09-28T06:02:35", "event": "alias", "name": "mem:x", "target": "mem:y"}
+{"at": "2026-09-28T06:02:35", "event": "alias", "name": "mem:y", "target": "mem:x"}
+{"at": "2026-09-28T06:02:35", "event": "migrate_rollback", "old": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\tmpr2nt4vj0\\old", "new": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\tmpr2nt4vj0\\new", "mismatch": ["sub\\b.txt"]}
+{"at": "2026-09-28T06:03:08", "event": "stamp", "ref": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\tmpbwsjnrn1\\一条记忆.md", "exists": true, "sha256": "902e455fe1092d39e6efd2a072972257af4f5a2c7d6cbe9afc6f0162c12f1886", "origin": "我推的", "session": "", "why": "判据样本", "evidence": [], "evidence_missing": []}
+{"at": "2026-09-28T06:03:08", "event": "alias", "name": "mem:x", "target": "mem:y"}
+{"at": "2026-09-28T06:03:08", "event": "alias", "name": "mem:y", "target": "mem:x"}
+{"at": "2026-09-28T06:03:08", "event": "migrate_rollback", "old": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\tmpf1r6qgla\\old", "new": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\tmpf1r6qgla\\new", "mismatch": ["sub\\b.txt"]}

@@ -506,6 +506,22 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import devour_fusion as _dev
         p = payload or {}
         return _dev.run_op(p.get("op", "list"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "memory_bank":
+        from .tools import memory_bank as _mem
+        p = payload or {}
+        return _mem.run_op(p.get("op", "aliases"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "agent_console":
+        from .tools import agent_console as _age
+        p = payload or {}
+        return _age.run_op(p.get("op", "board"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "code_audit":
+        from .tools import code_audit as _cod
+        p = payload or {}
+        return _cod.run_op(p.get("op", "report"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "agent_rig":
+        from .tools import agent_rig as _age
+        p = payload or {}
+        return _age.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "lobehub":
         # LobeHub 桌面端全控：七大面 76 把可控制键；启动/关闭过 process_execute 门，
         # 设置写走白名单 + filesystem_write 门；凭据只回形状（按键名掩码）。

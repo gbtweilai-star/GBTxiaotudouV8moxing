@@ -29165,7 +29165,8 @@
    "comfyui",
    "claude_code",
    "health",
-   "obsidian_vault"
+   "obsidian_vault",
+   "memory_bank"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29187,7 +29188,8 @@
    "comfyui",
    "claude_code",
    "health",
-   "obsidian_vault"
+   "obsidian_vault",
+   "memory_bank"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -45315,5 +45317,58 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-28T04:07:52"
+ },
+ "_upstream/LTX-2/packages/ltx-core/src/ltx_core/model/transformer/transformer.py": {
+  "tentacles": [
+   "transformer"
+  ],
+  "note": "sweep",
+  "bound_at": "2026-09-28T04:59:18"
+ },
+ "gbt_allinone/tools/memory_bank.py": {
+  "tentacles": [
+   "domain:tools",
+   "memory_bank"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-28T05:53:50"
+ },
+ "gbt_allinone/tools/agent_console.py": {
+  "tentacles": [
+   "domain:tools",
+   "agent_console"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-28T05:55:23"
+ },
+ "gbt_allinone/tools/code_audit.py": {
+  "tentacles": [
+   "domain:tools",
+   "code_audit"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-28T05:55:32"
+ },
+ "gbt_allinone/tools/agent_rig.py": {
+  "tentacles": [
+   "domain:tools",
+   "agent_rig"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-28T06:00:30"
+ },
+ "gbt_allinone/tests/test_distilled_ops.py": {
+  "tentacles": [
+   "memory_bank"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T06:02:16"
+ },
+ "skills/gbt-distilled-ops/SKILL.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T06:03:08"
  }
 }
