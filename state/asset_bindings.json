@@ -45139,5 +45139,12 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T22:22:01"
+ },
+ "gbt_allinone/tests/test_automation_keys.py": {
+  "tentacles": [
+   "claude_code"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T22:42:09"
  }
 }

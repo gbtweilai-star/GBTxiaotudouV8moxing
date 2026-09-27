@@ -178,9 +178,15 @@ def test(slot: str = "", **_kw) -> dict:
                 fla = _iu.module_from_spec(sp)
                 sp.loader.exec_module(fla)
                 base, src = fla.discover_base_url()
-                pr = fla.probe() if base else {"ok": False, "why": "没发现本地 FreeLLMAPI"}
-                out.append({"slot": s, "ok": bool(pr.get("ok")), "base": base, "source": src,
-                            "why": str(pr)[:160]})
+                pr = fla.probe() if base else {"up": False, "why": "没发现本地 FreeLLMAPI"}
+                # ⚠️ 血账（2026-09-27 实测）：`freellmapi.probe()` 回的是 **`up`**，而这里原来
+                # 只读 `ok` ⇒ 端口明明在听也一律判「不可达」。这条**假红**一路传到 health.json，
+                # 再由上帝之眼日报报成短板。键名不同 ≠ 服务不在 —— 两个键都认；
+                # `why` 也带上**完整读数**（原来 str() 截 160 字，读不出真假）。
+                is_up = bool(pr.get("ok") if "ok" in pr else pr.get("up"))
+                out.append({"slot": s, "ok": is_up, "base": base, "source": src, "probe": pr,
+                            "why": ("探活成功（/api/ping 是无鉴权口）" if is_up
+                                    else f"探活失败：{pr.get('error') or pr.get('why') or pr}")})
             except Exception as exc:                           # noqa: BLE001
                 out.append({"slot": s, "ok": False, "why": f"{type(exc).__name__}: {str(exc)[:120]}"})
         elif s == "browser":

@@ -728,3 +728,17 @@ GBT 探针汇报和每日全量扫描**指出**缺点、短板、卡点**；然�
    再 python -c "import gbt_allinone as g; print(g.run_task('gods_eye', {'op':'panel'}))"
    有新的缺点/短板/卡点 ⇒ gods_eye plan op=add 记提案；决策用 plan op=decide decision=采纳|搁置
 ```
+
+### 上帝之眼 · 交付后当天抓出的三条「接上了用不了」（都已修 + 都有判据盯）
+
+| 病 | 真身 | 判据 |
+|---|---|---|
+| **问顾问永远问不到** | `cli_agents.run` 认 `prompt`/`q`，而 `gods_eye.ask` 只传了 `text=` ⇒ 授权给了也只会回「缺少 prompt」 | `test_gods_eye` **H**（`_ask_payload` 必须带 `prompt`） |
+| **「要授权」这条卡点从没出现过** | `_scan_findings` 按文件路径装 `auth_gate.py`，它的第一行 `from . import _paths` 直接 ImportError，又被 `except: pass` 吞了 ⇒ 静默降级 | `test_gods_eye` **J/K**（读数必须读得到、结论必须由读数推出） |
+| **免费算力池假红** | `freellmapi.probe()` 回 `up`，密钥口只读 `ok` ⇒ 端口在听也判「不可达」，一路传到 `health.json` 再由日报报成短板 | `test_automation_keys` **A**（结论必须与自带的原始读数一致） |
+
+**教训一句话**：跨模块传参/取数时，**键名不一致 ≠ 服务不在**；`except: pass` 包住读数是
+把"没读数"变成"没这回事"。凡是被上层当结论用的读数，都要有一条"结论 vs 原始读数"的自洽判据。
+
+**被门拒 ≠ 顾问答了**：`ask` 被拒时**不许**把拒绝理由塞进 `answer`，要单独给 `denied` +
+`how_to`（授权只能主人在终端发）。

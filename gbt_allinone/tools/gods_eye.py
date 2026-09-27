@@ -133,7 +133,21 @@ def advisors(**_kw) -> dict:
             "_口径": "**权限是机器可读的表**（may / may_not）；可用性过各自能力位实测，不猜"}
 
 
-def ask(advisor: str = "", text: str = "", **_kw) -> dict:
+def _ask_payload(text: str, timeout: int = 0) -> dict:
+    """给到底层 CLI 智能体（`cli_agents.run`）的载荷。
+
+    ⚠️ **血账（2026-09-27 实测）**：`cli_agents.run` 认的是 **`prompt` / `q`** 两个键，
+    而这里早先只传了 `text=` —— 结果是**即使拿到了授权也只会回「缺少 prompt」**：
+    表面接通、实际永远得不到意见（就是"接上了用不了"那一类）。所以 `text` 与 `prompt`
+    **一起传**，谁认哪个都能通；这个函数单独存在，就是为了让判据能直接盯住这个键。
+    """
+    p = {"op": "ask", "text": text, "prompt": text}
+    if timeout:
+        p["timeout"] = int(timeout)
+    return p
+
+
+def ask(advisor: str = "", text: str = "", timeout: int = 0, **_kw) -> dict:
     """真咨询：过顾问自己的能力位。**CodeBuddy 走权限校验**（主项目路径一律拒）。"""
     a = (advisor or "").lower()
     if a not in ADVISORS:
@@ -153,9 +167,17 @@ def ask(advisor: str = "", text: str = "", **_kw) -> dict:
             return {"ok": False, "advisor": a, "available": False,
                     "why": "Claude Code CLI 未安装 ⇒ 咨询不了（如实报，不假装）",
                     "how_to": ADVISORS[a]["must_install"]}
-    d = _gate(ADVISORS[a]["capability"], {"op": "ask", "text": text})
+    d = _gate(ADVISORS[a]["capability"], _ask_payload(text, timeout))
+    pay = d.get("payload")
     _log({"event": "ask", "advisor": a, "chars": len(text), "ok": d.get("gate_ok")})
-    return {"ok": d.get("gate_ok"), "op": "ask", "advisor": a, "answer": str(d.get("payload"))[:800],
+    # **被门拒 ≠ 顾问答了**：拒了就不许把拒绝理由塞进 `answer` 冒充"意见"。
+    if isinstance(pay, dict) and pay.get("denied"):
+        return {"ok": False, "op": "ask", "advisor": a, "denied": True,
+                "why": pay.get("reason") or "该顾问需要人工授权",
+                "scopes": pay.get("scopes") or [], "missing": pay.get("missing") or [],
+                "how_to": pay.get("how_to_grant") or [],
+                "note": "授权只能**主人在终端**发放；AI 无权自批（我不会去自批）"}
+    return {"ok": d.get("gate_ok"), "op": "ask", "advisor": a, "answer": str(pay)[:800],
             "note": "顾问只出意见/杂事；**决策权在主体**"}
 
 
@@ -174,6 +196,25 @@ def _probe_report() -> dict:
     if lg.is_file():
         out["ledger_tail"] = "\n".join(lg.read_text(encoding="utf-8", errors="replace").splitlines()[-4:])
     return out
+
+
+def _auth_status() -> dict:
+    """授权门读数（**只读**，不消耗任何一张票）。
+
+    走**包路径**导入（`from gbt_allinone import auth_gate`）—— 直接按文件路径装
+    `auth_gate.py` 会因为它的 `from . import _paths` 相对导入而失败；早先这里就是那样
+    失败又被吞掉的（这条卡点因此从没出现过）。包路径不通就退回把仓库根塞进 sys.path 再试。
+    失败返回 `{}`，由调用方**当卡点报出来**（不静默）。
+    """
+    for attempt in (0, 1):
+        try:
+            if attempt:
+                sys.path.insert(0, str(_ROOT))
+            from gbt_allinone import auth_gate as ag      # noqa: PLC0415
+            return ag.status() or {}
+        except Exception:                                 # noqa: BLE001
+            continue
+    return {}
 
 
 def _scan_findings() -> dict:
@@ -214,16 +255,27 @@ def _scan_findings() -> dict:
         shorts.append({"item": "免费算力池不可达（FreeLLMAPI 未启动）", "src": "state/health.json"})
 
     # 卡点（阻塞类：要授权 / 缺环境 / 慢）
-    from importlib.util import spec_from_file_location, module_from_spec
-    if True:
-        try:
-            sp = spec_from_file_location("ag_ge", _ROOT / "gbt_allinone" / "auth_gate.py")
-            ag = module_from_spec(sp)
-            sp.loader.exec_module(ag)  # type: ignore
-            blockers.append({"item": "写盘/执行类动作默认无授权（需主人按需发放）",
-                             "src": "gbt_allinone/store/auth_grants.jsonl", "how": "auth grant --scope <s> --ttl <s>"})
-        except Exception:                                      # noqa: BLE001
-            pass
+    # 授权面读数（只读 `auth_gate.status()`，**不消耗**任何授权）。
+    # ⚠️ 血账（2026-09-27 实测）：这里原来用 spec_from_file_location 直接装 auth_gate.py，
+    # 而它第一行就是 `from . import _paths`（相对导入）⇒ 报 ImportError，又被 `except: pass`
+    # 吞掉 ⇒ 这条卡点**从来没出现过**（"接上了没生效"的又一例）。现在：走包路径导入，
+    # 且读不到读数时**把它本身当卡点报出来**，不许静默。
+    auth_st = _auth_status()
+    adv_now = adv or {}
+    if not auth_st:
+        blockers.append({"item": "授权面读数读不到（auth_gate.status 取不到）⇒ 无法判断现在能干什么",
+                         "src": "gbt_allinone/auth_gate.py", "how": "修 _auth_status 的导入路径"})
+    else:
+        sc = auth_st.get("scopes") or {}
+        need = [s for s in ("process_execute", "external_llm")
+                if not (sc.get(s) or {}).get("grants_available")]
+        if need and (adv_now.get("claude") or {}).get("available"):
+            blockers.append({"item": f"顾问（claude）**要授权才能问**：{need} 现在 0 张 ⇒ 意见取不到",
+                             "src": "auth_gate.status（只读）",
+                             "how": f"python -m gbt_allinone auth grant --scope {need[0]} --ttl 600"})
+        elif not need:
+            blockers.append({"item": "授权在窗口内（process_execute / external_llm 有票）⇒ 顾问可问、可跑",
+                             "src": "auth_gate.status（只读）", "how": "TTL 到点自动失效，用完不必手动撤"})
     st = _gate("comfyui", {"op": "status"}).get("payload") or {}
     if st.get("type") == "cpu":
         blockers.append({"item": f"ComfyUI 跑在 CPU（{st.get('version')}）⇒ 出片慢（不是不能出）",

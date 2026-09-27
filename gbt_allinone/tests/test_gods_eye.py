@@ -82,12 +82,26 @@ class TestGodsEye(unittest.TestCase):
         self.assertIn("探针汇报", d, "缺探针汇报")
 
     def test_e_plan_has_trail(self):
-        """E. 计划面留痕：提案与决策都能落进台账。"""
-        self.m.plan("add", item="判据自检用提案", src="test_gods_eye")
-        r = self.m.plan("decide", item="判据自检用提案", decision="采纳")
-        self.assertTrue(r.get("ok"), f"决策没记上：{r}")
+        """E. 计划面留痕：提案与决策都能落进台账。
+
+        ⚠️ 判据**不许往真账本里写**：早先这条把 6 组「判据自检用提案」写进了
+        `state/gods_eye_plan.jsonl`（每跑一次多两行），真账本被自检污染 ⇒ 现在换成**临时账本**，
+        真实提案与决策只由人和 `plan op=add|decide` 产生。
+        """
+        import tempfile
+        real = self.m._PLAN
+        with tempfile.TemporaryDirectory() as td:
+            self.m._PLAN = Path(td) / "plan.jsonl"
+            try:
+                self.m.plan("add", item="判据自检用提案", src="test_gods_eye")
+                r = self.m.plan("decide", item="判据自检用提案", decision="采纳")
+                self.assertTrue(r.get("ok"), f"决策没记上：{r}")
+                rows = self.m.plan("list")
+                self.assertGreaterEqual(rows.get("count", 0), 2, "临时账本里没留下提案+决策")
+                self.assertIn("决策权在主体", rows.get("decider", ""))
+            finally:
+                self.m._PLAN = real
         self.assertTrue(PLAN.is_file(), "计划台账不存在")
-        self.assertIn("决策权在主体", self.m.plan("list").get("decider", ""))
         self.assertTrue(PANEL.is_file(), "上帝之眼页面不存在 ⇒ 跑 panel")
 
 
@@ -127,6 +141,71 @@ class TestDailyIsFresh(unittest.TestCase):
             age_h = _daily_age_hours(fake)
             self.assertGreaterEqual(age_h, DAILY_MAX_HOURS,
                                     "30h 前的快照竟判为新鲜 ⇒ 上限形同虚设")
+
+
+class TestAskWiring(unittest.TestCase):
+    """H. **问顾问的载荷要真的能被底下认出来**（防"接上了用不了"）。
+
+    实测血账：`cli_agents.run` 认 `prompt` / `q`，而 `gods_eye.ask` 早先只传 `text=` ——
+    授权给了也只会回「缺少 prompt」。这条判据盯的就是那个键：`_ask_payload` 里没有
+    `prompt`（或与 `text` 不等），直接红。
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.m = _load()
+
+    def test_h_payload_carries_prompt_key(self):
+        p = self.m._ask_payload("来点意见", 90)
+        self.assertEqual(p.get("prompt"), "来点意见", "底下认的是 prompt/q ⇒ 必须带 prompt")
+        self.assertEqual(p.get("text"), "来点意见", "text 留着给权限校验看原话")
+        self.assertEqual(p.get("timeout"), 90, "timeout 要透传（不给就默认）")
+        self.assertEqual(p.get("op"), "ask")
+
+    def test_i_claude_slot_is_wired_not_faked(self):
+        """I. claude 槽要么真给意见，要么如实说"缺授权/缺 CLI" —— **不许假装答了**。
+
+        可用性是从 PATH 真探出来的；被门拒时不许把拒绝理由塞进 `answer` 冒充顾问意见。
+        """
+        r = self.m.ask(advisor="claude", text="一句话：下一步最该修什么？")
+        if r.get("denied"):
+            self.assertNotIn("answer", r, "被拒 ≠ 顾问答了：不许有 answer")
+            self.assertTrue(r.get("how_to") or r.get("why"), "被拒要说清怎么才能通")
+        else:
+            self.assertTrue(r.get("available") is False or r.get("answer"),
+                            f"既没答也没说缺什么：{r}")
+
+
+class TestAuthReadingsAreLive(unittest.TestCase):
+    """J. **授权面读数必须真读得到**（防"接上了没生效"）。
+
+    实测血账：`_scan_findings` 原来按**文件路径**装 `auth_gate.py`，而它的第一行是
+    `from . import _paths`（相对导入）⇒ ImportError，又被 `except: pass` 吞掉
+    ⇒ 「要授权才能干活」这条卡点**从来没在日报里出现过**。
+    这条判据盯住读数本身：读不到就直接红，不许静默降级。
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.m = _load()
+
+    def test_j_auth_status_reads(self):
+        st = self.m._auth_status()
+        self.assertTrue(st, "授权面读数读不到 ⇒ 日报会漏掉『要授权』这条卡点（别用 except: pass 糊它）")
+        sc = st.get("scopes") or {}
+        self.assertIn("process_execute", sc, "读数里没有 process_execute ⇒ 拿到的不是授权门状态")
+
+    def test_k_blocker_is_derived_from_the_reading(self):
+        """K. 卡点由**读数**推出来，不是写死的一句话（授权窗口一变，结论要跟着变）。"""
+        st = self.m._auth_status()
+        sc = st.get("scopes") or {}
+        have = [(sc.get(s) or {}).get("grants_available") for s in ("process_execute", "external_llm")]
+        f = self.m._scan_findings()
+        text = json.dumps(f, ensure_ascii=False)
+        if all((n or 0) > 0 for n in have):
+            self.assertIn("授权在窗口内", text, "有票时该报『窗口内』")
+        else:
+            self.assertIn("要授权才能问", text, "没票时该报『要授权』")
 
 
 if __name__ == "__main__":

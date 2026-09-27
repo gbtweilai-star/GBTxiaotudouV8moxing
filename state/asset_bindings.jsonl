@@ -16148,3 +16148,11 @@
 {"at": "2026-09-27T22:30:24", "event": "autobind", "files": 2, "bound": 2, "hint": "claude_code"}
 {"at": "2026-09-27T22:30:28", "event": "autobind", "files": 1, "bound": 1, "hint": "gods_eye"}
 {"at": "2026-09-27T22:30:45", "event": "scan", "bindings": 6440, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T22:35:20", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code"}
+{"at": "2026-09-27T22:38:14", "event": "autobind", "files": 2, "bound": 2, "hint": "claude_code"}
+{"at": "2026-09-27T22:39:15", "event": "autobind", "files": 1, "bound": 1, "hint": "automation_keys"}
+{"at": "2026-09-27T22:39:30", "event": "autobind", "files": 1, "bound": 1, "hint": "energy_pool"}
+{"at": "2026-09-27T22:40:43", "event": "autobind", "files": 1, "bound": 1, "hint": "automation_keys"}
+{"at": "2026-09-27T22:42:09", "event": "bind", "asset": "gbt_allinone/tests/test_automation_keys.py", "tentacle": "claude_code", "note": "autobind"}
+{"at": "2026-09-27T22:42:14", "event": "autobind", "files": 2, "bound": 2, "hint": "claude_code"}
+{"at": "2026-09-27T22:43:28", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code"}

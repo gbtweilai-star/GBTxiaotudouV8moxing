@@ -1,7 +1,7 @@
 {
  "ok": true,
  "op": "daily",
- "at": "2026-09-27T22:31:49",
+ "at": "2026-09-27T22:43:28",
  "探针汇报": {
   "available": true,
   "deliverables": [
@@ -35,17 +35,14 @@
    {
     "item": "密钥槽未就位 3 个（['claude', 'free_pool', 'sec_llm']）",
     "src": "automation_keys.status"
-   },
-   {
-    "item": "顾问位不可用：['claude']",
-    "src": "gods_eye.advisors"
-   },
-   {
-    "item": "免费算力池不可达（FreeLLMAPI 未启动）",
-    "src": "state/health.json"
    }
   ],
   "卡点": [
+   {
+    "item": "顾问（claude）**要授权才能问**：['process_execute', 'external_llm'] 现在 0 张 ⇒ 意见取不到",
+    "src": "auth_gate.status（只读）",
+    "how": "python -m gbt_allinone auth grant --scope process_execute --ttl 600"
+   },
    {
     "item": "ComfyUI 跑在 CPU（0.37.0）⇒ 出片慢（不是不能出）",
     "src": "gods_eye.daily/comfyui.status"
@@ -54,8 +51,8 @@
  },
  "计数": {
   "缺点": 1,
-  "短板": 4,
-  "卡点": 1,
+  "短板": 2,
+  "卡点": 2,
   "探针可用": true
  },
  "_口径": "每一条都带 `src`（哪个读数文件/哪个能力位）—— **不许编**；探针汇报读的是探针工作区的真文件",
@@ -74,8 +71,8 @@
    ],
    "capability": "claude_code",
    "must_install": "npm i -g @anthropic-ai/claude-code",
-   "available": false,
-   "evidence": "npm i -g @anthropic-ai/claude-code"
+   "available": true,
+   "evidence": "C:\\Users\\ADMIN\\AppData\\Roaming\\npm\\claude.CMD"
   },
   "codebuddy": {
    "role": "杂事（服从安排 · 随时候命）",
