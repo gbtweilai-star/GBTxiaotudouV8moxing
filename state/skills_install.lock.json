@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "generated": "2026-09-27T16:22:09",
+  "generated": "2026-09-27T16:34:11",
   "source": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills",
   "home_hub": "C:\\Users\\ADMIN\\.agents\\skills",
   "ws_hub": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills",
-  "count": 79,
-  "in_sync": 79,
+  "count": 80,
+  "in_sync": 80,
   "skills": {
     "autoclaw-mcp-tools": {
       "hub": "home",
@@ -444,6 +444,14 @@
       "installed": true,
       "src_hash": "437c7b2a75ffd5ad",
       "hub_hash": "437c7b2a75ffd5ad",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-selfgrowth": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "331d3e2f6730eb55",
+      "hub_hash": "331d3e2f6730eb55",
       "files": 1,
       "in_sync": true
     },
