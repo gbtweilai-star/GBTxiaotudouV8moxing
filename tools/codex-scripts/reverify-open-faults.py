@@ -557,10 +557,67 @@ def probe_f19() -> tuple:
     }
 
 
+# ── F20：能源 status 与盘上事实不符（缺 key 却报"接线态"）──────────────────
+def probe_f20() -> tuple:
+    """可机检：逐个能源比 `status` 与它那把钥匙**在不在盘上**。
+
+    不变量：`status == "可用"` ⟺ `key_ref` 指向的文件真在盘上；不在盘上就该是 `缺key`。
+    谁都不在盘上却报"可用/接线态"，就是这条故障的实证。
+    """
+    # ⚠️ 必须**按包路径**导入（与判据同一份模块实例）：按文件路径再装一次会得到**第二个**
+    #    模块对象，它内部依赖的注册表在二次装载下为 None ⇒ 探针自己抛
+    #    `AttributeError: 'NoneType' object has no attribute '__dict__'`（实测踩过）。
+    sys.path.insert(0, str(ROOT))
+    from gbt_allinone.tools import energy_pool as ep
+    r = ep.run("sources")
+    bad = []
+    for s in (r.get("sources") or []):
+        key_ref = s.get("key_ref")
+        rel = str(key_ref or "")
+        prefix = str(getattr(ep, "SECRETS_DIR", "")).rstrip("/") + "/"
+        if rel.startswith(prefix):
+            rel = rel[len(prefix):]
+        on_disk = bool(rel) and (ep._secrets_dir() / rel).is_file()
+        expect = "可用" if on_disk else "缺key"
+        if s.get("status") != expect:
+            bad.append({"source": s.get("source_id"), "status": s.get("status"),
+                        "key_ref": key_ref, "在盘": on_disk, "应为": expect})
+    return ("仍成立" if bad else "已不成立"), {
+        "能源数": r.get("count"), "不一致的": bad[:5],
+        "口径": "status==可用 ⟺ key_ref 在盘；不在盘却报可用/接线态 = 故障仍在",
+    }
+
+
+# ── F21：技能缺口生成器与验收器各算各的域集合 ──────────────────────────────
+def probe_f21() -> tuple:
+    """可机检：**生成器**报出来的域 vs **注册表**里的域。
+
+    验收器是按注册表/引擎表逐域跑的（它报出的 FAIL 域里出现过 tools/tentacle/image_video），
+    所以"注册表有、生成器没有"的域就是两边分叉的实证。本探针不跑验收器（那要 600s），
+    只判分叉**在不在**：账要的是"前提还成立吗"，不是"两边跑一遍"。
+    """
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "gen_probe", ROOT / "tools" / "codex-scripts" / "gen-skill-gap-patch.py")
+    gen = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(gen)
+    mine = set(gen.collect().get("gap_domains") or [])   # 生成器是独立脚本，按路径装是对的
+    sys.path.insert(0, str(ROOT))
+    from gbt_allinone.caps_registry import BENIGN_CAPS
+    reg = {str((v or {}).get("domain") or "") for v in BENIGN_CAPS.values()} - {""}
+    only_reg = sorted(reg - mine)
+    return ("仍成立" if only_reg else "已不成立"), {
+        "生成器的域": sorted(mine), "注册表的域": sorted(reg),
+        "只在注册表里的（= 验收器会跑、生成器不产）": only_reg,
+        "口径": "差集非空即两边分叉；差集为空说明已对齐",
+    }
+
+
 PROBES = {"F2": probe_f2, "F3": probe_f3, "F4": probe_f4, "F5": probe_f5,
           "F8": probe_f8, "F9": probe_f9, "F10": probe_f10, "F11": probe_f11,
           "F12": probe_f12, "F13": probe_f13, "F14": probe_f14, "F15": probe_f15,
-          "F16": probe_f16, "F17": probe_f17, "F18": probe_f18, "F19": probe_f19}
+          "F16": probe_f16, "F17": probe_f17, "F18": probe_f18, "F19": probe_f19,
+          "F20": probe_f20, "F21": probe_f21}
 # ⚠️ 探针留在这里**不止为在册的那些条**：故障结掉之后探针仍可手工单跑
 #    （`python -c "import ...; print(probe_f13())"`），用于"它有没有复发"。
 #    本器只对**台账里在册**的 id 出结论 —— 结掉的条目不再被咨询。

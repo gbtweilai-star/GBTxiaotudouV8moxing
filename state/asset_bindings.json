@@ -40944,9 +40944,10 @@
  },
  "tools/codex-scripts/reverify-open-faults.py": {
   "tentacles": [
-   "project_context"
+   "project_context",
+   "claude_code"
   ],
-  "note": "asset_index.wire",
+  "note": "autobind",
   "bound_at": "2026-09-27T18:09:34"
  },
  "tools/codex-scripts/rig-gate-check.py": {
@@ -45273,18 +45274,25 @@
   "note": "autobind",
   "bound_at": "2026-09-27T23:59:24"
  },
- "gbt_allinone/tools/automation_keys.py.bak.20260928-010825": {
-  "tentacles": [
-   "domain:tools"
-  ],
-  "note": "autobind",
-  "bound_at": "2026-09-28T01:08:27"
- },
  "gbt_allinone/llm/key_gateway.py": {
   "tentacles": [
    "domain:llm"
   ],
   "note": "autobind",
   "bound_at": "2026-09-28T01:23:14"
+ },
+ "gbt_allinone/llm/multimodal_port.py": {
+  "tentacles": [
+   "domain:llm"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T02:15:13"
+ },
+ "gbt_allinone/llm/genoffice_bridge.py": {
+  "tentacles": [
+   "domain:llm"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T02:55:54"
  }
 }

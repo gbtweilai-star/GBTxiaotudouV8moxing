@@ -16245,3 +16245,26 @@
 {"at": "2026-09-28T01:56:31", "event": "scan", "bindings": 6460, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-09-28T01:57:22", "event": "autobind", "files": 1, "bound": 1, "hint": "selfscan", "pruned": 0}
 {"at": "2026-09-28T01:58:50", "event": "scan", "bindings": 6460, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T02:12:46", "event": "scan", "bindings": 6460, "missing_asset": 1, "ghost_tentacle": 0}
+{"at": "2026-09-28T02:15:11", "event": "scan", "bindings": 6460, "missing_asset": 1, "ghost_tentacle": 0}
+{"at": "2026-09-28T02:15:13", "event": "bind", "asset": "gbt_allinone/llm/multimodal_port.py", "tentacle": "domain:llm", "note": "autobind"}
+{"at": "2026-09-28T02:15:14", "event": "prune", "asset": "gbt_allinone/tools/automation_keys.py.bak.20260928-010825", "tentacles": ["domain:tools"], "why": "不在盘上（转瞬即逝的中间产物）"}
+{"at": "2026-09-28T02:15:14", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code", "pruned": 1}
+{"at": "2026-09-28T02:16:10", "event": "autobind", "files": 1, "bound": 1, "hint": "selfscan", "pruned": 0}
+{"at": "2026-09-28T02:33:51", "event": "scan", "bindings": 6460, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T02:35:32", "event": "scan", "bindings": 6460, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T02:55:54", "event": "bind", "asset": "gbt_allinone/llm/genoffice_bridge.py", "tentacle": "domain:llm", "note": "autobind"}
+{"at": "2026-09-28T02:56:00", "event": "autobind", "files": 1, "bound": 1, "hint": "voice", "pruned": 0}
+{"at": "2026-09-28T02:56:03", "event": "scan", "bindings": 6461, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T03:01:55", "event": "scan", "bindings": 6461, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T03:01:56", "event": "bind", "asset": "tools/codex-scripts/reverify-open-faults.py", "tentacle": "claude_code", "note": "autobind"}
+{"at": "2026-09-28T03:01:59", "event": "autobind", "files": 2, "bound": 2, "hint": "claude_code", "pruned": 0}
+{"at": "2026-09-28T03:03:38", "event": "scan", "bindings": 6461, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T03:03:41", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code", "pruned": 0}
+{"at": "2026-09-28T03:03:43", "event": "autobind", "files": 1, "bound": 1, "hint": "growth_hooks", "pruned": 0}
+{"at": "2026-09-28T03:04:16", "event": "autobind", "files": 1, "bound": 1, "hint": "selfscan", "pruned": 0}
+{"at": "2026-09-28T03:08:50", "event": "scan", "bindings": 6461, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T03:08:53", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code", "pruned": 0}
+{"at": "2026-09-28T03:09:42", "event": "autobind", "files": 1, "bound": 1, "hint": "file_hygiene", "pruned": 0}
+{"at": "2026-09-28T03:11:07", "event": "scan", "bindings": 6461, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T03:11:08", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code", "pruned": 0}

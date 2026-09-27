@@ -50,3 +50,24 @@
 {"at": "2026-09-28T01:56:41", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
 {"at": "2026-09-28T01:58:57", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
 {"at": "2026-09-28T01:59:04", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T02:12:54", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T02:12:56", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T02:15:14", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T02:15:17", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T02:33:53", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T02:33:54", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T02:35:34", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T02:35:35", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T02:46:20", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T02:46:22", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T02:48:47", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T02:48:47", "event": "evolve", "shortboard": "61 个能力位属 owner 类（要主人逐项许可才可调）", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T02:48:47", "event": "evolve", "shortboard": "未清故障 11 条：['F3', 'F5', 'F9', 'F10', 'F11']", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T03:02:01", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T03:02:03", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T03:03:41", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T03:03:42", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T03:08:54", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T03:08:56", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T03:11:09", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T03:11:10", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
