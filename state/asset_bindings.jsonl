@@ -13672,3 +13672,20 @@
 {"at": "2026-09-27T12:48:32", "event": "unbind", "asset": "projects/projects/movie/生成/序章/S14_audio.m4a", "tentacle": "voice", "why": "嵌套重复已归档 .trash/2026-09-27-散落整合/projects-嵌套重复-19件"}
 {"at": "2026-09-27T12:48:32", "event": "scan", "bindings": 4390, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-09-27T12:49:06", "event": "scan", "bindings": 4390, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T13:11:37", "event": "scan", "bindings": 4390, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T13:12:20", "event": "bind", "asset": "docs/新人类操作系统-控AI干活的四段法与能源账.md", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-27T13:12:20", "event": "bind", "asset": "tools/coverage_matrix.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T13:12:20", "event": "bind", "asset": "tools/full_tree_scan.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T13:12:20", "event": "bind", "asset": "memory/2026-09-27.md", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-27T13:12:20", "event": "bind", "asset": "gbt_allinone/tests/test_coverage_readings_fresh.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-09-27T13:12:20", "event": "autobind", "files": 7, "bound": 7, "hint": "selfscan"}
+{"at": "2026-09-27T14:05:26", "event": "bind", "asset": "tools/full_tree_scan.py", "tentacle": "media_run", "note": "autobind"}
+{"at": "2026-09-27T14:05:26", "event": "bind", "asset": "tools/full_tree_scan.py", "tentacle": "mirror_status", "note": "autobind"}
+{"at": "2026-09-27T14:05:26", "event": "bind", "asset": "tools/full_tree_scan.py", "tentacle": "platform_profile", "note": "autobind"}
+{"at": "2026-09-27T14:05:28", "event": "autobind", "files": 1, "bound": 1, "hint": "mirror_status"}
+{"at": "2026-09-27T14:05:28", "event": "autobind", "files": 1, "bound": 1, "hint": "media_run"}
+{"at": "2026-09-27T14:05:28", "event": "autobind", "files": 1, "bound": 1, "hint": "platform_profile"}
+{"at": "2026-09-27T14:05:28", "event": "autobind", "files": 1, "bound": 1, "hint": "selfscan"}
+{"at": "2026-09-27T14:15:00", "event": "scan", "bindings": 4395, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T14:16:34", "event": "scan", "bindings": 4395, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T14:36:37", "event": "autobind", "files": 1, "bound": 1, "hint": "hook_enforcer"}

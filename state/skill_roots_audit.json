@@ -1,5 +1,5 @@
 {
- "at": "2026-09-24T07:36:22",
+ "at": "2026-09-27T14:33:50",
  "roots": {
   "ws-source": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills",
   "openclaw-managed": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
@@ -20,7 +20,7 @@
    "ws-source": {
     "sha": "F87C0ECEC86DB79DA959E2488F169E60328ADD7CA80B83FBEB34BD83558B2DA8",
     "bytes": 956,
-    "mtime": "09-23 21:49",
+    "mtime": "09-25 10:37",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\autoclaw-mcp-tools"
    },
    "openclaw-managed": {
@@ -28,6 +28,12 @@
     "bytes": 956,
     "mtime": "09-22 18:38",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\autoclaw-mcp-tools"
+   },
+   "user-agents": {
+    "sha": "F87C0ECEC86DB79DA959E2488F169E60328ADD7CA80B83FBEB34BD83558B2DA8",
+    "bytes": 956,
+    "mtime": "09-25 10:37",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\autoclaw-mcp-tools"
    }
   },
   "digihuman-pipeline": {
@@ -42,6 +48,12 @@
     "bytes": 11087,
     "mtime": "09-22 22:03",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\digihuman-pipeline"
+   },
+   "user-agents": {
+    "sha": "DF56080E8C3261030DDB5DC176584CB8CFF98031E728A237364E3B29F8EAD811",
+    "bytes": 11087,
+    "mtime": "09-22 22:03",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\digihuman-pipeline"
    }
   },
   "gbt-aesthetic": {
@@ -68,6 +80,66 @@
     "bytes": 34239,
     "mtime": "09-23 08:40",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-aesthetic"
+   }
+  },
+  "gbt-ai-101": {
+   "ws-source": {
+    "sha": "780C79461E2AF498DF831DE7DCD287C3782E60E2030705E43614B22305126DA0",
+    "bytes": 13294,
+    "mtime": "09-26 23:48",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-ai-101"
+   },
+   "openclaw-managed": {
+    "sha": "780C79461E2AF498DF831DE7DCD287C3782E60E2030705E43614B22305126DA0",
+    "bytes": 13294,
+    "mtime": "09-27 00:03",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-ai-101"
+   },
+   "user-agents": {
+    "sha": "780C79461E2AF498DF831DE7DCD287C3782E60E2030705E43614B22305126DA0",
+    "bytes": 13294,
+    "mtime": "09-26 23:48",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-ai-101"
+   }
+  },
+  "gbt-ai-anything": {
+   "ws-source": {
+    "sha": "73A0D79D95FEA17C4520C1450B80D1EA1E4EF2A4D0DAF1C183A0B4562CFDE0D4",
+    "bytes": 9918,
+    "mtime": "09-27 00:51",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-ai-anything"
+   },
+   "openclaw-managed": {
+    "sha": "73A0D79D95FEA17C4520C1450B80D1EA1E4EF2A4D0DAF1C183A0B4562CFDE0D4",
+    "bytes": 9918,
+    "mtime": "09-27 00:52",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-ai-anything"
+   },
+   "user-agents": {
+    "sha": "73A0D79D95FEA17C4520C1450B80D1EA1E4EF2A4D0DAF1C183A0B4562CFDE0D4",
+    "bytes": 9918,
+    "mtime": "09-27 00:51",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-ai-anything"
+   }
+  },
+  "gbt-ai-edu": {
+   "ws-source": {
+    "sha": "8AB887A9EF0CFA229C82934EEC580003C114A6FCA093359154362342D7D3974A",
+    "bytes": 9544,
+    "mtime": "09-27 00:52",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-ai-edu"
+   },
+   "openclaw-managed": {
+    "sha": "8AB887A9EF0CFA229C82934EEC580003C114A6FCA093359154362342D7D3974A",
+    "bytes": 9544,
+    "mtime": "09-27 00:52",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-ai-edu"
+   },
+   "user-agents": {
+    "sha": "8AB887A9EF0CFA229C82934EEC580003C114A6FCA093359154362342D7D3974A",
+    "bytes": 9544,
+    "mtime": "09-27 00:52",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-ai-edu"
    }
   },
   "gbt-alchemy": {
@@ -176,15 +248,15 @@
   },
   "gbt-automation": {
    "ws-source": {
-    "sha": "EE3C282BF66D9EE38142875850B272FCBE30B49FF2BE6AAC813DC75AFA0767FE",
-    "bytes": 29723,
-    "mtime": "09-22 22:28",
+    "sha": "C8BEE3FF68380C2C8E470641E57B9D49F0DB7C7EA236F686647F33B17CEA208B",
+    "bytes": 34205,
+    "mtime": "09-27 00:08",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-automation"
    },
    "openclaw-managed": {
-    "sha": "EE3C282BF66D9EE38142875850B272FCBE30B49FF2BE6AAC813DC75AFA0767FE",
-    "bytes": 29723,
-    "mtime": "09-22 22:28",
+    "sha": "C8BEE3FF68380C2C8E470641E57B9D49F0DB7C7EA236F686647F33B17CEA208B",
+    "bytes": 34205,
+    "mtime": "09-27 00:15",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-automation"
    },
    "dsh-project": {
@@ -194,9 +266,9 @@
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-automation"
    },
    "user-agents": {
-    "sha": "EE3C282BF66D9EE38142875850B272FCBE30B49FF2BE6AAC813DC75AFA0767FE",
-    "bytes": 29723,
-    "mtime": "09-22 22:28",
+    "sha": "C8BEE3FF68380C2C8E470641E57B9D49F0DB7C7EA236F686647F33B17CEA208B",
+    "bytes": 34205,
+    "mtime": "09-27 00:08",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-automation"
    }
   },
@@ -384,15 +456,15 @@
   },
   "gbt-creation": {
    "ws-source": {
-    "sha": "6C120A1F78FBAF604C809440A4EEC6738E1F458CE9331CA96D48442C59140290",
-    "bytes": 35094,
-    "mtime": "09-22 22:03",
+    "sha": "2B30611F90F682D3BAE5D7EF4061F6A2D712C2DFF7BE5FE5C2C26DA6EF8A6C6A",
+    "bytes": 47416,
+    "mtime": "09-27 09:16",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-creation"
    },
    "openclaw-managed": {
-    "sha": "6C120A1F78FBAF604C809440A4EEC6738E1F458CE9331CA96D48442C59140290",
-    "bytes": 35094,
-    "mtime": "09-22 22:03",
+    "sha": "2B30611F90F682D3BAE5D7EF4061F6A2D712C2DFF7BE5FE5C2C26DA6EF8A6C6A",
+    "bytes": 47416,
+    "mtime": "09-27 09:17",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-creation"
    },
    "dsh-project": {
@@ -402,9 +474,9 @@
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-creation"
    },
    "user-agents": {
-    "sha": "6C120A1F78FBAF604C809440A4EEC6738E1F458CE9331CA96D48442C59140290",
-    "bytes": 35094,
-    "mtime": "09-22 22:03",
+    "sha": "2B30611F90F682D3BAE5D7EF4061F6A2D712C2DFF7BE5FE5C2C26DA6EF8A6C6A",
+    "bytes": 47416,
+    "mtime": "09-27 09:16",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-creation"
    }
   },
@@ -436,15 +508,15 @@
   },
   "gbt-data": {
    "ws-source": {
-    "sha": "FB4C2E0851F100D79F2B9DA4CECE4C16004F666CF33968A86DFD380A11403976",
-    "bytes": 22443,
-    "mtime": "09-22 22:04",
+    "sha": "E4AC8EB68C3331BEAEAA18D4BEE6055A7E16A8459E1A2AD9071E425975180AD6",
+    "bytes": 24517,
+    "mtime": "09-27 00:02",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-data"
    },
    "openclaw-managed": {
-    "sha": "FB4C2E0851F100D79F2B9DA4CECE4C16004F666CF33968A86DFD380A11403976",
-    "bytes": 22443,
-    "mtime": "09-22 22:04",
+    "sha": "E4AC8EB68C3331BEAEAA18D4BEE6055A7E16A8459E1A2AD9071E425975180AD6",
+    "bytes": 24517,
+    "mtime": "09-27 00:15",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-data"
    },
    "dsh-project": {
@@ -454,9 +526,9 @@
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-data"
    },
    "user-agents": {
-    "sha": "FB4C2E0851F100D79F2B9DA4CECE4C16004F666CF33968A86DFD380A11403976",
-    "bytes": 22443,
-    "mtime": "09-22 22:04",
+    "sha": "E4AC8EB68C3331BEAEAA18D4BEE6055A7E16A8459E1A2AD9071E425975180AD6",
+    "bytes": 24517,
+    "mtime": "09-27 00:02",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-data"
    }
   },
@@ -512,6 +584,26 @@
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-design-mastery"
    }
   },
+  "gbt-desktop": {
+   "ws-source": {
+    "sha": "E2C946950BF72FA3D7F28E7F77E52B912EEB0ED839ACC53A2EB1667FB94B3378",
+    "bytes": 13392,
+    "mtime": "09-26 23:24",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-desktop"
+   },
+   "openclaw-managed": {
+    "sha": "E2C946950BF72FA3D7F28E7F77E52B912EEB0ED839ACC53A2EB1667FB94B3378",
+    "bytes": 13392,
+    "mtime": "09-26 23:25",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-desktop"
+   },
+   "user-agents": {
+    "sha": "E2C946950BF72FA3D7F28E7F77E52B912EEB0ED839ACC53A2EB1667FB94B3378",
+    "bytes": 13392,
+    "mtime": "09-26 23:24",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-desktop"
+   }
+  },
   "gbt-device": {
    "ws-source": {
     "sha": "99B9B8541763BE663EFDE9E85F49815883F0AED47F0EAACE2AEBF520397605F7",
@@ -562,6 +654,26 @@
     "bytes": 29301,
     "mtime": "09-24 07:36",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-devour"
+   }
+  },
+  "gbt-dl-101": {
+   "ws-source": {
+    "sha": "A8590C730354F1E0EFE7A8B40148CB834FF0C9A018F7B0E83B18C3AEA84F38C7",
+    "bytes": 14800,
+    "mtime": "09-26 23:48",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-dl-101"
+   },
+   "openclaw-managed": {
+    "sha": "A8590C730354F1E0EFE7A8B40148CB834FF0C9A018F7B0E83B18C3AEA84F38C7",
+    "bytes": 14800,
+    "mtime": "09-27 00:03",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-dl-101"
+   },
+   "user-agents": {
+    "sha": "A8590C730354F1E0EFE7A8B40148CB834FF0C9A018F7B0E83B18C3AEA84F38C7",
+    "bytes": 14800,
+    "mtime": "09-26 23:48",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-dl-101"
    }
   },
   "gbt-ef": {
@@ -690,7 +802,7 @@
    "user-agents": {
     "sha": "0F0F23CBBE3D90CA14A9F0F0DFC3FC6C87EE9031FDCB8865BD02452DC9F5D7FE",
     "bytes": 29573,
-    "mtime": "09-24 06:57",
+    "mtime": "09-22 22:05",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-finance"
    }
   },
@@ -930,15 +1042,15 @@
   },
   "gbt-llm": {
    "ws-source": {
-    "sha": "9E1B90C2CBDE6FF1EC6CDE2DE8764234F61085128C6AE3830C6A0141D61B0314",
-    "bytes": 27807,
-    "mtime": "09-22 22:12",
+    "sha": "EE394B000BEC1A5C4B64925F0F49D0E8ADF65F28480315ECE47595B6DB6B35F7",
+    "bytes": 31478,
+    "mtime": "09-27 00:03",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-llm"
    },
    "openclaw-managed": {
-    "sha": "9E1B90C2CBDE6FF1EC6CDE2DE8764234F61085128C6AE3830C6A0141D61B0314",
-    "bytes": 27807,
-    "mtime": "09-22 22:12",
+    "sha": "EE394B000BEC1A5C4B64925F0F49D0E8ADF65F28480315ECE47595B6DB6B35F7",
+    "bytes": 31478,
+    "mtime": "09-27 00:15",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-llm"
    },
    "dsh-project": {
@@ -948,9 +1060,9 @@
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-llm"
    },
    "user-agents": {
-    "sha": "9E1B90C2CBDE6FF1EC6CDE2DE8764234F61085128C6AE3830C6A0141D61B0314",
-    "bytes": 27807,
-    "mtime": "09-22 22:12",
+    "sha": "EE394B000BEC1A5C4B64925F0F49D0E8ADF65F28480315ECE47595B6DB6B35F7",
+    "bytes": 31478,
+    "mtime": "09-27 00:03",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-llm"
    }
   },
@@ -1184,21 +1296,21 @@
    "user-agents": {
     "sha": "F707AF2787AABEA19EDEE82A8D6679C71A28EDE3C84B5AE945DD8DF115745F21",
     "bytes": 27590,
-    "mtime": "09-24 06:57",
+    "mtime": "09-23 03:16",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-quickscan"
    }
   },
   "gbt-recon": {
    "ws-source": {
-    "sha": "D6CA72CA4A2EDB6F5BAF0B4F36BA2AAD7A14F3A50F093CA59EBCF6C3925BFB97",
-    "bytes": 36649,
-    "mtime": "09-22 22:16",
+    "sha": "8A1C773A0EE092AA80D745A0D39DE2065CF37FDEB83D1A8B58C1A72364FE9059",
+    "bytes": 38816,
+    "mtime": "09-27 00:14",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-recon"
    },
    "openclaw-managed": {
-    "sha": "D6CA72CA4A2EDB6F5BAF0B4F36BA2AAD7A14F3A50F093CA59EBCF6C3925BFB97",
-    "bytes": 36649,
-    "mtime": "09-22 22:16",
+    "sha": "8A1C773A0EE092AA80D745A0D39DE2065CF37FDEB83D1A8B58C1A72364FE9059",
+    "bytes": 38816,
+    "mtime": "09-27 00:15",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-recon"
    },
    "dsh-project": {
@@ -1208,9 +1320,9 @@
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-recon"
    },
    "user-agents": {
-    "sha": "D6CA72CA4A2EDB6F5BAF0B4F36BA2AAD7A14F3A50F093CA59EBCF6C3925BFB97",
-    "bytes": 36649,
-    "mtime": "09-22 22:16",
+    "sha": "8A1C773A0EE092AA80D745A0D39DE2065CF37FDEB83D1A8B58C1A72364FE9059",
+    "bytes": 38816,
+    "mtime": "09-27 00:14",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-recon"
    }
   },
@@ -1268,15 +1380,15 @@
   },
   "gbt-security": {
    "ws-source": {
-    "sha": "D25EECE415A4CD70F7D47B9EC0B78B71EA28C490F99FE2D8D2C33393FB2A4440",
-    "bytes": 31000,
-    "mtime": "09-23 04:20",
+    "sha": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260",
+    "bytes": 43500,
+    "mtime": "09-27 09:12",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-security"
    },
    "openclaw-managed": {
-    "sha": "D25EECE415A4CD70F7D47B9EC0B78B71EA28C490F99FE2D8D2C33393FB2A4440",
-    "bytes": 31000,
-    "mtime": "09-23 04:20",
+    "sha": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260",
+    "bytes": 43500,
+    "mtime": "09-27 09:13",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-security"
    },
    "dsh-project": {
@@ -1286,9 +1398,9 @@
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-security"
    },
    "user-agents": {
-    "sha": "D25EECE415A4CD70F7D47B9EC0B78B71EA28C490F99FE2D8D2C33393FB2A4440",
-    "bytes": 31000,
-    "mtime": "09-23 04:20",
+    "sha": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260",
+    "bytes": 43500,
+    "mtime": "09-27 09:12",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-security"
    }
   },
@@ -1320,15 +1432,15 @@
   },
   "gbt-system": {
    "ws-source": {
-    "sha": "B97CA3D52EBB0971FD4D79CE0BAF4A2CA42E8F7EEE67BB694AA02FF4C02D9BED",
-    "bytes": 37820,
-    "mtime": "09-22 22:13",
+    "sha": "77D54C964DA54D29FE5962623F9D921BE66E212147F60EF337B5B3EEFA83031F",
+    "bytes": 43721,
+    "mtime": "09-27 07:05",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-system"
    },
    "openclaw-managed": {
-    "sha": "B97CA3D52EBB0971FD4D79CE0BAF4A2CA42E8F7EEE67BB694AA02FF4C02D9BED",
-    "bytes": 37820,
-    "mtime": "09-22 22:13",
+    "sha": "77D54C964DA54D29FE5962623F9D921BE66E212147F60EF337B5B3EEFA83031F",
+    "bytes": 43721,
+    "mtime": "09-27 07:05",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-system"
    },
    "dsh-project": {
@@ -1338,9 +1450,9 @@
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-system"
    },
    "user-agents": {
-    "sha": "B97CA3D52EBB0971FD4D79CE0BAF4A2CA42E8F7EEE67BB694AA02FF4C02D9BED",
-    "bytes": 37820,
-    "mtime": "09-22 22:13",
+    "sha": "77D54C964DA54D29FE5962623F9D921BE66E212147F60EF337B5B3EEFA83031F",
+    "bytes": 43721,
+    "mtime": "09-27 07:05",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-system"
    }
   },
@@ -1396,6 +1508,26 @@
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-tools"
    }
   },
+  "gbt-vendor-intake": {
+   "ws-source": {
+    "sha": "B70119DF56B74E008E88C2924B5204AA8FBA6AD596C76C7D0BD458288FDA1017",
+    "bytes": 11468,
+    "mtime": "09-27 07:51",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-vendor-intake"
+   },
+   "openclaw-managed": {
+    "sha": "B70119DF56B74E008E88C2924B5204AA8FBA6AD596C76C7D0BD458288FDA1017",
+    "bytes": 11468,
+    "mtime": "09-27 07:51",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-vendor-intake"
+   },
+   "user-agents": {
+    "sha": "B70119DF56B74E008E88C2924B5204AA8FBA6AD596C76C7D0BD458288FDA1017",
+    "bytes": 11468,
+    "mtime": "09-27 07:51",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-vendor-intake"
+   }
+  },
   "gbt-venice": {
    "ws-source": {
     "sha": "A36EB3F06D31889524EC84B1BC8C644F1D28304C7361D725EC5AE7099C5E55A3",
@@ -1424,15 +1556,15 @@
   },
   "gbt-video": {
    "ws-source": {
-    "sha": "1E6B4836D0ABCFBA78DD10528CA730E7E486A681C754D7728216490CA735743A",
-    "bytes": 45153,
-    "mtime": "09-24 07:28",
+    "sha": "FC21F12D71FEE68D6FD3FA398586A8448E839E44BCE001888CC0AD7AF2D91653",
+    "bytes": 57571,
+    "mtime": "09-27 09:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-video"
    },
    "openclaw-managed": {
-    "sha": "1E6B4836D0ABCFBA78DD10528CA730E7E486A681C754D7728216490CA735743A",
-    "bytes": 45153,
-    "mtime": "09-24 07:36",
+    "sha": "FC21F12D71FEE68D6FD3FA398586A8448E839E44BCE001888CC0AD7AF2D91653",
+    "bytes": 57571,
+    "mtime": "09-27 09:46",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-video"
    },
    "dsh-project": {
@@ -1442,9 +1574,9 @@
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-video"
    },
    "user-agents": {
-    "sha": "1E6B4836D0ABCFBA78DD10528CA730E7E486A681C754D7728216490CA735743A",
-    "bytes": 45153,
-    "mtime": "09-24 07:36",
+    "sha": "FC21F12D71FEE68D6FD3FA398586A8448E839E44BCE001888CC0AD7AF2D91653",
+    "bytes": 57571,
+    "mtime": "09-27 09:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-video"
    }
   },
@@ -1864,6 +1996,14 @@
     "bytes": 5332,
     "mtime": "09-10 01:32",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\agentic-coding"
+   }
+  },
+  "ai-money-maker": {
+   "openclaw-managed": {
+    "sha": "CC3B04B579C3DFC70C8CA4258AECFB0565168F39073A746202C11065F1D91B6A",
+    "bytes": 1764,
+    "mtime": "09-26 22:33",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\ai-money-maker"
    }
   },
   "arkcli-agent": {
@@ -2812,6 +2952,20 @@
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gemini"
    }
   },
+  "genoffice": {
+   "openclaw-managed": {
+    "sha": "F8AAAE07C76ADB6CF5F13329F6985B5A0D37AD0B0CC3C41D07FFF9212C6BC0CE",
+    "bytes": 72162,
+    "mtime": "09-26 13:44",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\genoffice"
+   },
+   "user-claude": {
+    "sha": "F8AAAE07C76ADB6CF5F13329F6985B5A0D37AD0B0CC3C41D07FFF9212C6BC0CE",
+    "bytes": 72162,
+    "mtime": "09-26 14:03",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\genoffice"
+   }
+  },
   "gildata-finance-data": {
    "openclaw-managed": {
     "sha": "E9CCC7D411E01553F75989B6266C2D94EF92C1155F4CD261D0C937E9FE97B212",
@@ -3188,12 +3342,202 @@
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\youtube-watcher"
    }
   },
+  "better-auth-best-practices": {
+   "proj-agents": {
+    "sha": "E2CE334C4C3275DEA7E91B2AF1325679E3ABE09000452A54D7D62F2C27C19C89",
+    "bytes": 8423,
+    "mtime": "09-25 11:41",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\better-auth-best-practices"
+   },
+   "proj-claude": {
+    "sha": "E2CE334C4C3275DEA7E91B2AF1325679E3ABE09000452A54D7D62F2C27C19C89",
+    "bytes": 8423,
+    "mtime": "09-25 11:41",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\better-auth-best-practices"
+   }
+  },
+  "chrome-extensions": {
+   "proj-agents": {
+    "sha": "7E8119D67F74E5964FD89C9C95DAB84B390131F7CE98017575BCA9CFB7A2E5A0",
+    "bytes": 26986,
+    "mtime": "09-26 04:07",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\chrome-extensions"
+   },
+   "proj-claude": {
+    "sha": "7E8119D67F74E5964FD89C9C95DAB84B390131F7CE98017575BCA9CFB7A2E5A0",
+    "bytes": 26986,
+    "mtime": "09-26 04:07",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\chrome-extensions"
+   }
+  },
+  "create-auth": {
+   "proj-agents": {
+    "sha": "B3D9D92D667C13D7FFBF2212D60499DE9440F842F5862FFB1205F7F014104424",
+    "bytes": 14758,
+    "mtime": "09-25 11:41",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\create-auth"
+   },
+   "proj-claude": {
+    "sha": "B3D9D92D667C13D7FFBF2212D60499DE9440F842F5862FFB1205F7F014104424",
+    "bytes": 14758,
+    "mtime": "09-25 11:41",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\create-auth"
+   }
+  },
   "fc-nginx-website": {
    "proj-agents": {
     "sha": "41755AA2663F5627751251890F00881F0A7BCA0942693465CF387D243FDB934E",
     "bytes": 7340,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\fc-nginx-website"
+   }
+  },
+  "modern-web-guidance": {
+   "proj-agents": {
+    "sha": "5B7A6BEF98345E4AFF5DCC5D4F322166BBECA3718E837098BC8D8DAA136740B3",
+    "bytes": 6870,
+    "mtime": "09-26 04:07",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\modern-web-guidance"
+   },
+   "proj-claude": {
+    "sha": "5B7A6BEF98345E4AFF5DCC5D4F322166BBECA3718E837098BC8D8DAA136740B3",
+    "bytes": 6870,
+    "mtime": "09-26 04:07",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\modern-web-guidance"
+   }
+  },
+  "playwriter": {
+   "proj-agents": {
+    "sha": "264DABEAAE53560C8FFB759C80A0F64ADD58BE7DDFBAE2DFCAB7AD5F5479DE1D",
+    "bytes": 1835,
+    "mtime": "09-25 10:18",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\playwriter"
+   }
+  },
+  "prisma-cli": {
+   "proj-agents": {
+    "sha": "20B5FE8117BDE094E24C8117E442F84FBC186B52B5535FC1E1E3C1F0AE094A9B",
+    "bytes": 7669,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\prisma-cli"
+   },
+   "proj-claude": {
+    "sha": "20B5FE8117BDE094E24C8117E442F84FBC186B52B5535FC1E1E3C1F0AE094A9B",
+    "bytes": 7669,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\prisma-cli"
+   }
+  },
+  "prisma-client-api": {
+   "proj-agents": {
+    "sha": "0FA1FEAD6F9C8D8E1F19B4884E3FB62FD614F2F26C0D3AAE9B37A4E8579F4CDE",
+    "bytes": 6562,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\prisma-client-api"
+   },
+   "proj-claude": {
+    "sha": "0FA1FEAD6F9C8D8E1F19B4884E3FB62FD614F2F26C0D3AAE9B37A4E8579F4CDE",
+    "bytes": 6562,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\prisma-client-api"
+   }
+  },
+  "prisma-compute": {
+   "proj-agents": {
+    "sha": "7C4DB69EFEE1A18E7120745D20627EE789C962299447DDD91FDB807D71CFD73F",
+    "bytes": 15768,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\prisma-compute"
+   },
+   "proj-claude": {
+    "sha": "7C4DB69EFEE1A18E7120745D20627EE789C962299447DDD91FDB807D71CFD73F",
+    "bytes": 15768,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\prisma-compute"
+   }
+  },
+  "prisma-database-setup": {
+   "proj-agents": {
+    "sha": "B0E9EE3E9DA18C272A2A8E5C34630309548A49ABD06875A84E574AE441826724",
+    "bytes": 6026,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\prisma-database-setup"
+   },
+   "proj-claude": {
+    "sha": "B0E9EE3E9DA18C272A2A8E5C34630309548A49ABD06875A84E574AE441826724",
+    "bytes": 6026,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\prisma-database-setup"
+   }
+  },
+  "prisma-driver-adapter-implementation": {
+   "proj-agents": {
+    "sha": "52A6B230F27AF582D4BF8EBD220CB5F17EF50FD083312851068A6F088C8C8A5C",
+    "bytes": 11669,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\prisma-driver-adapter-implementation"
+   },
+   "proj-claude": {
+    "sha": "52A6B230F27AF582D4BF8EBD220CB5F17EF50FD083312851068A6F088C8C8A5C",
+    "bytes": 11669,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\prisma-driver-adapter-implementation"
+   }
+  },
+  "prisma-mongodb-upgrade": {
+   "proj-agents": {
+    "sha": "99933CA306B554F27432A35DC5E27EE81322BB148BBC90127C3A54E7F84E6C24",
+    "bytes": 5478,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\prisma-mongodb-upgrade"
+   },
+   "proj-claude": {
+    "sha": "99933CA306B554F27432A35DC5E27EE81322BB148BBC90127C3A54E7F84E6C24",
+    "bytes": 5478,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\prisma-mongodb-upgrade"
+   }
+  },
+  "prisma-postgres": {
+   "proj-agents": {
+    "sha": "ABC10EB58F0DE0F20861C349007C7E9F5F2346AD03FAB84DA12D9D95F13C4DC1",
+    "bytes": 4858,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\prisma-postgres"
+   },
+   "proj-claude": {
+    "sha": "ABC10EB58F0DE0F20861C349007C7E9F5F2346AD03FAB84DA12D9D95F13C4DC1",
+    "bytes": 4858,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\prisma-postgres"
+   }
+  },
+  "prisma-postgres-setup": {
+   "proj-agents": {
+    "sha": "EA4F662FD76526FA3C07C5FC141DEE76A79AC72038C0A069D3EA88CAAC4B4FD8",
+    "bytes": 11087,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\prisma-postgres-setup"
+   },
+   "proj-claude": {
+    "sha": "EA4F662FD76526FA3C07C5FC141DEE76A79AC72038C0A069D3EA88CAAC4B4FD8",
+    "bytes": 11087,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\prisma-postgres-setup"
+   }
+  },
+  "prisma-upgrade-v7": {
+   "proj-agents": {
+    "sha": "D353CB03FAF74750A89F225B58EAC0F70CEA238621641973C5F4A3CE9ACEDC43",
+    "bytes": 8337,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\prisma-upgrade-v7"
+   },
+   "proj-claude": {
+    "sha": "D353CB03FAF74750A89F225B58EAC0F70CEA238621641973C5F4A3CE9ACEDC43",
+    "bytes": 8337,
+    "mtime": "09-25 14:06",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\prisma-upgrade-v7"
    }
   },
   "agentic-gateway": {
@@ -3264,6 +3608,286 @@
     "bytes": 12471,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\allium"
+   }
+  },
+  "dingtalk-aisearch": {
+   "user-agents": {
+    "sha": "3579619F9AD2E8B32EAADD130B7CDC443CF3D4445CE6D3BDDD64160834E0FA2A",
+    "bytes": 8997,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-aisearch"
+   },
+   "user-claude": {
+    "sha": "3579619F9AD2E8B32EAADD130B7CDC443CF3D4445CE6D3BDDD64160834E0FA2A",
+    "bytes": 8997,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-aisearch"
+   },
+   "user-openclaw": {
+    "sha": "3579619F9AD2E8B32EAADD130B7CDC443CF3D4445CE6D3BDDD64160834E0FA2A",
+    "bytes": 8997,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-aisearch"
+   }
+  },
+  "dingtalk-aitable": {
+   "user-agents": {
+    "sha": "9C0D486A86F13FBAF9BEA9685D142C06184474C0C08F497B4439A9FD0479B741",
+    "bytes": 26704,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-aitable"
+   },
+   "user-claude": {
+    "sha": "9C0D486A86F13FBAF9BEA9685D142C06184474C0C08F497B4439A9FD0479B741",
+    "bytes": 26704,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-aitable"
+   },
+   "user-openclaw": {
+    "sha": "9C0D486A86F13FBAF9BEA9685D142C06184474C0C08F497B4439A9FD0479B741",
+    "bytes": 26704,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-aitable"
+   }
+  },
+  "dingtalk-calendar": {
+   "user-agents": {
+    "sha": "F42F6FE6433656A1AE3DD5FF3F040BFC44E2D6B1BD0CE760AEB2D151B900DD1C",
+    "bytes": 13263,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-calendar"
+   },
+   "user-claude": {
+    "sha": "F42F6FE6433656A1AE3DD5FF3F040BFC44E2D6B1BD0CE760AEB2D151B900DD1C",
+    "bytes": 13263,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-calendar"
+   },
+   "user-openclaw": {
+    "sha": "F42F6FE6433656A1AE3DD5FF3F040BFC44E2D6B1BD0CE760AEB2D151B900DD1C",
+    "bytes": 13263,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-calendar"
+   }
+  },
+  "dingtalk-chat": {
+   "user-agents": {
+    "sha": "8911F4C15E697515B53370CEA3022A41DBB4E3473B6F3146CC11E6DE481D71D5",
+    "bytes": 9490,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-chat"
+   },
+   "user-claude": {
+    "sha": "8911F4C15E697515B53370CEA3022A41DBB4E3473B6F3146CC11E6DE481D71D5",
+    "bytes": 9490,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-chat"
+   },
+   "user-openclaw": {
+    "sha": "8911F4C15E697515B53370CEA3022A41DBB4E3473B6F3146CC11E6DE481D71D5",
+    "bytes": 9490,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-chat"
+   }
+  },
+  "dingtalk-contact": {
+   "user-agents": {
+    "sha": "15FA86C738339F7557D054748FFE43073136F045AC610842BAB941A94014D48F",
+    "bytes": 9386,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-contact"
+   },
+   "user-claude": {
+    "sha": "15FA86C738339F7557D054748FFE43073136F045AC610842BAB941A94014D48F",
+    "bytes": 9386,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-contact"
+   },
+   "user-openclaw": {
+    "sha": "15FA86C738339F7557D054748FFE43073136F045AC610842BAB941A94014D48F",
+    "bytes": 9386,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-contact"
+   }
+  },
+  "dingtalk-doc": {
+   "user-agents": {
+    "sha": "07C4C918FA40242C4F96AADFCAED71073252F94A36F16804DE3D254C6F50AF9A",
+    "bytes": 11975,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-doc"
+   },
+   "user-claude": {
+    "sha": "07C4C918FA40242C4F96AADFCAED71073252F94A36F16804DE3D254C6F50AF9A",
+    "bytes": 11975,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-doc"
+   },
+   "user-openclaw": {
+    "sha": "07C4C918FA40242C4F96AADFCAED71073252F94A36F16804DE3D254C6F50AF9A",
+    "bytes": 11975,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-doc"
+   }
+  },
+  "dingtalk-drive": {
+   "user-agents": {
+    "sha": "9E4F870389C9093A1C931B2AA6D2EF790B0B937150269A46A8284EFF6FE11396",
+    "bytes": 15362,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-drive"
+   },
+   "user-claude": {
+    "sha": "9E4F870389C9093A1C931B2AA6D2EF790B0B937150269A46A8284EFF6FE11396",
+    "bytes": 15362,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-drive"
+   },
+   "user-openclaw": {
+    "sha": "9E4F870389C9093A1C931B2AA6D2EF790B0B937150269A46A8284EFF6FE11396",
+    "bytes": 15362,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-drive"
+   }
+  },
+  "dingtalk-event": {
+   "user-agents": {
+    "sha": "7D524470F73EF1FBDF12539DE0B34569203DC3CE55B55B5F50B4E80AC2F0A086",
+    "bytes": 9995,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-event"
+   },
+   "user-claude": {
+    "sha": "7D524470F73EF1FBDF12539DE0B34569203DC3CE55B55B5F50B4E80AC2F0A086",
+    "bytes": 9995,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-event"
+   },
+   "user-openclaw": {
+    "sha": "7D524470F73EF1FBDF12539DE0B34569203DC3CE55B55B5F50B4E80AC2F0A086",
+    "bytes": 9995,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-event"
+   }
+  },
+  "dingtalk-mail": {
+   "user-agents": {
+    "sha": "664F31A00F46245C270049129DA4D25475CCC561B04D9897E7CD634B2C4A6F18",
+    "bytes": 9341,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-mail"
+   },
+   "user-claude": {
+    "sha": "664F31A00F46245C270049129DA4D25475CCC561B04D9897E7CD634B2C4A6F18",
+    "bytes": 9341,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-mail"
+   },
+   "user-openclaw": {
+    "sha": "664F31A00F46245C270049129DA4D25475CCC561B04D9897E7CD634B2C4A6F18",
+    "bytes": 9341,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-mail"
+   }
+  },
+  "dingtalk-minutes": {
+   "user-agents": {
+    "sha": "153CF6E6BCAF3C8AF045E001B10457B02D69F7BFD13A3DA782189A6E5D952C87",
+    "bytes": 16499,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-minutes"
+   },
+   "user-claude": {
+    "sha": "153CF6E6BCAF3C8AF045E001B10457B02D69F7BFD13A3DA782189A6E5D952C87",
+    "bytes": 16499,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-minutes"
+   },
+   "user-openclaw": {
+    "sha": "153CF6E6BCAF3C8AF045E001B10457B02D69F7BFD13A3DA782189A6E5D952C87",
+    "bytes": 16499,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-minutes"
+   }
+  },
+  "dingtalk-misc": {
+   "user-agents": {
+    "sha": "975C8D63F5AD6F171AA2760C76CEFEE57C8E9006772A9863B9939CEC7798A5F2",
+    "bytes": 15175,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-misc"
+   },
+   "user-claude": {
+    "sha": "975C8D63F5AD6F171AA2760C76CEFEE57C8E9006772A9863B9939CEC7798A5F2",
+    "bytes": 15175,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-misc"
+   },
+   "user-openclaw": {
+    "sha": "975C8D63F5AD6F171AA2760C76CEFEE57C8E9006772A9863B9939CEC7798A5F2",
+    "bytes": 15175,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-misc"
+   }
+  },
+  "dingtalk-shared": {
+   "user-agents": {
+    "sha": "7C3F6231072CD0E038B69A94B94957E99A1B1B82B961882413E08A1CF56336FB",
+    "bytes": 6914,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-shared"
+   },
+   "user-claude": {
+    "sha": "7C3F6231072CD0E038B69A94B94957E99A1B1B82B961882413E08A1CF56336FB",
+    "bytes": 6914,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-shared"
+   },
+   "user-openclaw": {
+    "sha": "7C3F6231072CD0E038B69A94B94957E99A1B1B82B961882413E08A1CF56336FB",
+    "bytes": 6914,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-shared"
+   }
+  },
+  "dingtalk-todo": {
+   "user-agents": {
+    "sha": "F3A83A0C821CDEA73D3FE242E90BA13735B88ABE05570B7554B0BDCDAC602126",
+    "bytes": 11661,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-todo"
+   },
+   "user-claude": {
+    "sha": "F3A83A0C821CDEA73D3FE242E90BA13735B88ABE05570B7554B0BDCDAC602126",
+    "bytes": 11661,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-todo"
+   },
+   "user-openclaw": {
+    "sha": "F3A83A0C821CDEA73D3FE242E90BA13735B88ABE05570B7554B0BDCDAC602126",
+    "bytes": 11661,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-todo"
+   }
+  },
+  "dingtalk-wiki": {
+   "user-agents": {
+    "sha": "ADF71EE015D465518666E95ABECC9B84DA74B148A7330EDA9738B1AF847164BF",
+    "bytes": 13473,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-wiki"
+   },
+   "user-claude": {
+    "sha": "ADF71EE015D465518666E95ABECC9B84DA74B148A7330EDA9738B1AF847164BF",
+    "bytes": 13473,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-wiki"
+   },
+   "user-openclaw": {
+    "sha": "ADF71EE015D465518666E95ABECC9B84DA74B148A7330EDA9738B1AF847164BF",
+    "bytes": 13473,
+    "mtime": "01-01 00:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-wiki"
    }
   },
   "ef-broadcast": {
@@ -4169,25 +4793,152 @@
    }
   }
  },
- "gbt_drift": [],
+ "gbt_drift": [
+  {
+   "name": "gbt-automation",
+   "stale_roots": [
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "C8BEE3FF68380C2C8E470641E57B9D49F0DB7C7EA236F686647F33B17CEA208B",
+    "openclaw-managed": "C8BEE3FF68380C2C8E470641E57B9D49F0DB7C7EA236F686647F33B17CEA208B",
+    "dsh-project": "EE3C282BF66D9EE38142875850B272FCBE30B49FF2BE6AAC813DC75AFA0767FE",
+    "user-agents": "C8BEE3FF68380C2C8E470641E57B9D49F0DB7C7EA236F686647F33B17CEA208B"
+   }
+  },
+  {
+   "name": "gbt-creation",
+   "stale_roots": [
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "2B30611F90F682D3BAE5D7EF4061F6A2D712C2DFF7BE5FE5C2C26DA6EF8A6C6A",
+    "openclaw-managed": "2B30611F90F682D3BAE5D7EF4061F6A2D712C2DFF7BE5FE5C2C26DA6EF8A6C6A",
+    "dsh-project": "6C120A1F78FBAF604C809440A4EEC6738E1F458CE9331CA96D48442C59140290",
+    "user-agents": "2B30611F90F682D3BAE5D7EF4061F6A2D712C2DFF7BE5FE5C2C26DA6EF8A6C6A"
+   }
+  },
+  {
+   "name": "gbt-data",
+   "stale_roots": [
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "E4AC8EB68C3331BEAEAA18D4BEE6055A7E16A8459E1A2AD9071E425975180AD6",
+    "openclaw-managed": "E4AC8EB68C3331BEAEAA18D4BEE6055A7E16A8459E1A2AD9071E425975180AD6",
+    "dsh-project": "FB4C2E0851F100D79F2B9DA4CECE4C16004F666CF33968A86DFD380A11403976",
+    "user-agents": "E4AC8EB68C3331BEAEAA18D4BEE6055A7E16A8459E1A2AD9071E425975180AD6"
+   }
+  },
+  {
+   "name": "gbt-llm",
+   "stale_roots": [
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "EE394B000BEC1A5C4B64925F0F49D0E8ADF65F28480315ECE47595B6DB6B35F7",
+    "openclaw-managed": "EE394B000BEC1A5C4B64925F0F49D0E8ADF65F28480315ECE47595B6DB6B35F7",
+    "dsh-project": "9E1B90C2CBDE6FF1EC6CDE2DE8764234F61085128C6AE3830C6A0141D61B0314",
+    "user-agents": "EE394B000BEC1A5C4B64925F0F49D0E8ADF65F28480315ECE47595B6DB6B35F7"
+   }
+  },
+  {
+   "name": "gbt-recon",
+   "stale_roots": [
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "8A1C773A0EE092AA80D745A0D39DE2065CF37FDEB83D1A8B58C1A72364FE9059",
+    "openclaw-managed": "8A1C773A0EE092AA80D745A0D39DE2065CF37FDEB83D1A8B58C1A72364FE9059",
+    "dsh-project": "D6CA72CA4A2EDB6F5BAF0B4F36BA2AAD7A14F3A50F093CA59EBCF6C3925BFB97",
+    "user-agents": "8A1C773A0EE092AA80D745A0D39DE2065CF37FDEB83D1A8B58C1A72364FE9059"
+   }
+  },
+  {
+   "name": "gbt-security",
+   "stale_roots": [
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260",
+    "openclaw-managed": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260",
+    "dsh-project": "D25EECE415A4CD70F7D47B9EC0B78B71EA28C490F99FE2D8D2C33393FB2A4440",
+    "user-agents": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260"
+   }
+  },
+  {
+   "name": "gbt-system",
+   "stale_roots": [
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "77D54C964DA54D29FE5962623F9D921BE66E212147F60EF337B5B3EEFA83031F",
+    "openclaw-managed": "77D54C964DA54D29FE5962623F9D921BE66E212147F60EF337B5B3EEFA83031F",
+    "dsh-project": "B97CA3D52EBB0971FD4D79CE0BAF4A2CA42E8F7EEE67BB694AA02FF4C02D9BED",
+    "user-agents": "77D54C964DA54D29FE5962623F9D921BE66E212147F60EF337B5B3EEFA83031F"
+   }
+  },
+  {
+   "name": "gbt-video",
+   "stale_roots": [
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "FC21F12D71FEE68D6FD3FA398586A8448E839E44BCE001888CC0AD7AF2D91653",
+    "openclaw-managed": "FC21F12D71FEE68D6FD3FA398586A8448E839E44BCE001888CC0AD7AF2D91653",
+    "dsh-project": "1E6B4836D0ABCFBA78DD10528CA730E7E486A681C754D7728216490CA735743A",
+    "user-agents": "FC21F12D71FEE68D6FD3FA398586A8448E839E44BCE001888CC0AD7AF2D91653"
+   }
+  }
+ ],
  "refreshed": [],
  "orphans_managed_only": [],
  "unregistered": [
   "gbt-aesthetic",
+  "gbt-ai-101",
+  "gbt-ai-anything",
+  "gbt-ai-edu",
   "gbt-brain-vault",
   "gbt-code-taste",
   "gbt-design-mastery",
+  "gbt-desktop",
+  "gbt-dl-101",
   "gbt-omni",
   "gbt-potato",
   "gbt-provenance-discipline",
-  "gbt-quickscan"
+  "gbt-quickscan",
+  "gbt-vendor-intake"
  ],
  "third_party_divergent": [],
  "ours_single_copy": [],
  "ours_uninstalled": [],
  "atlas": {
-  "built_at": "2026-09-24T07:34:38",
-  "skills": 341
+  "built_at": "2026-09-27T09:46:36",
+  "skills": 363
  },
  "atlas_missing": [],
  "atlas_ghosts": []

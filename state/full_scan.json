@@ -1,0 +1,471 @@
+{
+ "at": "2026-09-27T15:08:17",
+ "耗时s": 595.6,
+ "范围": "指定树：['memory', '审美相关skill', 'skills', 'docs', 'gbt_allinone', 'tools', 'plugins', 'state']",
+ "文件总数": 23031,
+ "文本文件": 15489,
+ "二进制文件": 7541,
+ "读失败": 1,
+ "扫描异常": 1,
+ "文本总行数": 6317420,
+ "文本总字节": 1037634564,
+ "行覆盖": 1.0,
+ "触手工作量": {
+  "单元（文件）": 15489,
+  "读者": 3,
+  "判定次数": 46467,
+  "行级判定片段": 412
+ },
+ "命中分类": {
+  "第三方(依赖/运行时)": 327,
+  "文档(规则举例)": 11,
+  "数据路径": 12,
+  "夹具/检测器": 29,
+  "设计如此(已人工过目)": 23,
+  "读数/记录(自指)": 7,
+  "派生物(打包/跑批输出)": 2,
+  "安全形态(加载器派生自 SafeLoader)": 1
+ },
+ "需人核": [],
+ "需人核按树": {},
+ "需人核按模式": {},
+ "结构解析失败": [
+  "gbt_allinone/recon/last30days/engine/vendor/bird-search/lib/runtime-query-ids.js",
+  "gbt_allinone/store/devoured/bandit_x_gitleaks/absorbed_knowledge.md",
+  "gbt_allinone/store/devoured/gitleaks/absorbed_knowledge.md",
+  "gbt_allinone/store/mirror_space/checkpoints/00001/dimension/holo_pet_w3/window.js",
+  "gbt_allinone/store/mirror_space/checkpoints/00001/reality/holo_pet_w3/window.js",
+  "gbt_allinone/store/mirror_space/checkpoints/00002/dimension/holo_pet_w3/window.js",
+  "gbt_allinone/store/mirror_space/checkpoints/00002/reality/holo_pet_w3/window.js",
+  "gbt_allinone/store/mirror_space/dimension/holo_pet_w3/tests/test_brand_tokens.cjs",
+  "gbt_allinone/store/mirror_space/dimension/holo_pet_w3/tests/test_layout_snap.cjs",
+  "gbt_allinone/store/mirror_space/dimension/holo_pet_w3/window.js",
+  "gbt_allinone/store/mirror_space/reality/holo_pet_w3/tests/test_brand_tokens.cjs",
+  "gbt_allinone/store/mirror_space/reality/holo_pet_w3/tests/test_layout_snap.cjs",
+  "gbt_allinone/store/mirror_space/reality/holo_pet_w3/window.js",
+  "gbt_allinone/store/mirror_space/timelines/v1/backbone-min.js",
+  "gbt_allinone/store/mirror_space/timelines/v1/jquery.min.js",
+  "gbt_allinone/store/mirror_space/timelines/v10/backbone-min.js",
+  "gbt_allinone/store/mirror_space/timelines/v10/jquery.min.js",
+  "gbt_allinone/store/mirror_space/timelines/v11/backbone-min.js",
+  "gbt_allinone/store/mirror_space/timelines/v11/jquery.min.js",
+  "gbt_allinone/store/mirror_space/timelines/v12/backbone-min.js",
+  "gbt_allinone/store/mirror_space/timelines/v12/jquery.min.js",
+  "gbt_allinone/store/mirror_space/timelines/v13/backbone-min.js",
+  "gbt_allinone/store/mirror_space/timelines/v13/jquery.min.js",
+  "gbt_allinone/store/mirror_space/timelines/v14/backbone-min.js",
+  "gbt_allinone/store/mirror_space/timelines/v14/jquery.min.js",
+  "gbt_allinone/store/mirror_space/timelines/v15/backbone-min.js",
+  "gbt_allinone/store/mirror_space/timelines/v15/jquery.min.js",
+  "gbt_allinone/store/mirror_space/timelines/v16/backbone-min.js",
+  "gbt_allinone/store/mirror_space/timelines/v16/jquery.min.js",
+  "gbt_allinone/store/mirror_space/timelines/v17/backbone-min.js",
+  "gbt_allinone/store/mirror_space/timelines/v17/jquery.min.js",
+  "gbt_allinone/store/mirror_space/timelines/v18/backbone-min.js",
+  "gbt_allinone/store/mirror_space/timelines/v18/jquery.min.js",
+  "gbt_allinone/store/mirror_space/timelines/v19/backbone-min.js",
+  "gbt_allinone/store/mirror_space/timelines/v19/jquery.min.js",
+  "gbt_allinone/store/mirror_space/timelines/v2/backbone-min.js",
+  "gbt_allinone/store/mirror_space/timelines/v2/jquery.min.js",
+  "gbt_allinone/store/mirror_space/timelines/v20/holo_pet_w3/window.js",
+  "gbt_allinone/store/mirror_space/timelines/v21/holo_pet_w3/window.js",
+  "gbt_allinone/store/mirror_space/timelines/v22/holo_pet_w3/window.js"
+ ],
+ "读数打架": [],
+ "卫生信号": [
+  [
+   "gbt_allinone/.pylibs/charset_normalizer/utils.py",
+   [
+    "同文件内制表符与空格缩进混排"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/comtypes/gen/_00020813_0000_0000_C000_000000000046_0_1_9.py",
+   [
+    "行尾空白 1042 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/comtypes/gen/_00020905_0000_0000_C000_000000000046_0_8_7.py",
+   [
+    "行尾空白 924 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/comtypes/gen/_1F001332_1A57_4934_BE31_AFFC99F4EE0A_0_1_0.py",
+   [
+    "行尾空白 79 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/comtypes/gen/_2DF8D04C_5BFA_101B_BDE5_00AA0044DE52_0_2_8.py",
+   [
+    "行尾空白 408 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/comtypes/gen/_3050F1C5_98B5_11CF_BB82_00AA00BDCE0B_0_4_0.py",
+   [
+    "行尾空白 587 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/comtypes/gen/_8405D0DF_9FDD_4829_AEAD_8E2B0A18FEA4_0_1_0.py",
+   [
+    "行尾空白 94 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/comtypes/gen/_944DE083_8FB8_45CF_BCB7_C477ACB2F897_0_1_0.py",
+   [
+    "行尾空白 82 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/comtypes/gen/_B0EDF154_910A_11D2_B632_00C04F79498E_0_1_0.py",
+   [
+    "行尾空白 258 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/comtypes/gen/_C866CA3A_32F7_11D2_9602_00C04F8EE628_0_5_4.py",
+   [
+    "行尾空白 194 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/cp314/numpy/_core/tests/data/recarray_from_file.fits",
+   [
+    "含 NUL 字节"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/cp314/pyautogui/__main__.py",
+   [
+    "代码文件没有末尾换行（可能被截断）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/cp314/pyperclip/__main__.py",
+   [
+    "代码文件没有末尾换行（可能被截断）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/cv2/version.py",
+   [
+    "代码文件没有末尾换行（可能被截断）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/cytoolz/dicttoolz.c",
+   [
+    "行尾空白 365 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/cytoolz/functoolz.c",
+   [
+    "行尾空白 657 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/cytoolz/itertoolz.c",
+   [
+    "行尾空白 1304 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/cytoolz/recipes.c",
+   [
+    "行尾空白 187 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/cytoolz/utils.c",
+   [
+    "行尾空白 53 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/dxcam/processor/_numpy_kernels.c",
+   [
+    "行尾空白 1548 处（同类只报总数）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/numpy/_core/tests/data/recarray_from_file.fits",
+   [
+    "含 NUL 字节"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/parsimonious/tests/benchmarks.py",
+   [
+    "代码文件没有末尾换行（可能被截断）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/parsimonious/tests/test_benchmarks.py",
+   [
+    "代码文件没有末尾换行（可能被截断）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pyautogui/__main__.py",
+   [
+    "代码文件没有末尾换行（可能被截断）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pygments/lexers/_css_builtins.py",
+   [
+    "代码文件没有末尾换行（可能被截断）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pygments/lexers/_luau_builtins.py",
+   [
+    "代码文件没有末尾换行（可能被截断）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pygments/lexers/codeql.py",
+   [
+    "代码文件没有末尾换行（可能被截断）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pygments/lexers/dax.py",
+   [
+    "同文件内制表符与空格缩进混排"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pygments/lexers/maple.py",
+   [
+    "代码文件没有末尾换行（可能被截断）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pyperclip/__main__.py",
+   [
+    "代码文件没有末尾换行（可能被截断）"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pythonwin/pywin/Demos/app/basictimerapp.py",
+   [
+    "同文件内制表符与空格缩进混排"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pythonwin/pywin/Demos/cmdserver.py",
+   [
+    "同文件内制表符与空格缩进混排"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pythonwin/pywin/Demos/dibdemo.py",
+   [
+    "同文件内制表符与空格缩进混排"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pythonwin/pywin/Demos/dlgtest.py",
+   [
+    "同文件内制表符与空格缩进混排"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pythonwin/pywin/Demos/dyndlg.py",
+   [
+    "同文件内制表符与空格缩进混排"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pythonwin/pywin/Demos/ocx/ocxtest.py",
+   [
+    "同文件内制表符与空格缩进混排"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pythonwin/pywin/Demos/openGLDemo.py",
+   [
+    "同文件内制表符与空格缩进混排"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pythonwin/pywin/Demos/toolbar.py",
+   [
+    "同文件内制表符与空格缩进混排"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pythonwin/pywin/debugger/dbgpyapp.py",
+   [
+    "同文件内制表符与空格缩进混排"
+   ]
+  ],
+  [
+   "gbt_allinone/.pylibs/pythonwin/pywin/debugger/debugger.py",
+   [
+    "同文件内制表符与空格缩进混排"
+   ]
+  ]
+ ],
+ "二进制归类": {
+  "二进制(未知类型)": 5304,
+  "字节码": 1322,
+  "图像": 498,
+  "Python 扩展": 188,
+  "字体": 145,
+  "视频": 23,
+  "可执行": 14,
+  "动态库": 14,
+  "数组": 10,
+  "压缩包": 6,
+  "模型": 6,
+  "数据库": 5,
+  "音频": 3,
+  "序列化": 2,
+  "二进制数据": 1
+ },
+ "文本按扩展名": {
+  ".py": 4153,
+  ".json": 3354,
+  ".js": 1735,
+  ".md": 1662,
+  ".pyi": 715,
+  ".bin": 675,
+  "(无扩展名)": 596,
+  ".svg": 517,
+  ".html": 317,
+  ".txt": 270,
+  ".css": 244,
+  ".cvr": 178,
+  ".lock": 125,
+  ".f90": 124,
+  ".out": 66,
+  ".h": 65,
+  ".csv": 60,
+  ".cjs": 60,
+  ".f": 50,
+  ".old": 50,
+  ".typed": 44,
+  ".jsonl": 43,
+  ".map": 38,
+  ".yaml": 26
+ },
+ "二进制样例": [
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/_ARC4.pyd",
+   "class": "Python 扩展",
+   "bytes": 10752
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/_Salsa20.pyd",
+   "class": "Python 扩展",
+   "bytes": 13824
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/AES.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 7972
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/ARC2.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 6427
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/ARC4.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 4895
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/Blowfish.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 5448
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/CAST.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 5568
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/ChaCha20.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 10117
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/ChaCha20_Poly1305.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 13196
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/DES.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 5445
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/DES3.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 6834
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/PKCS1_OAEP.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 8639
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/PKCS1_v1_5.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 6666
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/Salsa20.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 5951
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/__init__.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 2833
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/_mode_ccm.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 25250
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/__pycache__/_pkcs1_oaep_decode.cpython-314.pyc",
+   "class": "字节码",
+   "bytes": 2084
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/_chacha20.pyd",
+   "class": "Python 扩展",
+   "bytes": 13312
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/_pkcs1_decode.pyd",
+   "class": "Python 扩展",
+   "bytes": 13312
+  },
+  {
+   "rel": "gbt_allinone/.pylibs/Crypto/Cipher/_raw_aes.pyd",
+   "class": "Python 扩展",
+   "bytes": 35328
+  }
+ ],
+ "读失败清单": [
+  {
+   "rel": "gbt_allinone/store/native_browser/profile/OptGuideOnDeviceModel/2025.8.8.1141/weights.bin",
+   "kind": "扫描异常",
+   "why": "MemoryError: ",
+   "lines": 0
+  }
+ ],
+ "_口径": "枚举零跳过（含隐藏目录与 .git）；文本文件逐行三路（模式/结构/卫生）并交叉校验行数；二进制不可能逐行检代码 ⇒ **如实归类计数并列出**，不是静默跳过；行覆盖=已检行/物理行=1.0。"
+}

@@ -81,20 +81,26 @@ ENGINE = None
 
 
 def _read_text(p: Path) -> tuple[bool, str, str]:
-    """能不能按 UTF-8 逐行读。返回 (可读, 文本, 原因)。"""
+    """能不能按 UTF-8 逐行读。返回 (可读, 文本, 原因)。
+
+    ⚠️ **一个文件不许掀翻整轮扫描**（2026-09-27 实测血账）：首跑在
+    `gbt_allinone/store/native_browser/profile/Default/Cache/Cache_Data/data_0` 上
+    抛 `PermissionError`（浏览器正开着，句柄锁着），整轮 218,226 文件在第 ~150k 处**当场中断**。
+    主人令写的是「不得中途停止」——所以：**读不到就读不到**，如实记成"读失败"并继续，
+    **绝不**让任何单个文件（哪怕是权限/占用/损坏）中断全树扫描。
+    """
     try:
         return True, p.read_text(encoding="utf-8"), ""
-    except (UnicodeDecodeError, ValueError):
+    except UnicodeDecodeError:
         try:
             raw = p.read_bytes()
         except OSError as e:
-            return False, "", f"读失败：{e.__class__.__name__}"
+            return False, "", f"读失败：{type(e).__name__}（被占用/无权限）"
         if b"\x00" in raw[:4096]:
             return False, "", "含 NUL 字节（二进制）"
-        try:
-            return True, raw.decode("utf-8", errors="replace"), "含非法 UTF-8（已替换后逐行检）"
-        except Exception as e:                                  # noqa: BLE001
-            return False, "", f"解不出文本：{e.__class__.__name__}"
+        return True, raw.decode("utf-8", errors="replace"), "含非法 UTF-8（已替换后逐行检）"
+    except OSError as e:
+        return False, "", f"读失败：{type(e).__name__}（被占用/无权限）"
 
 
 def _reader_a_lines(text: str, rel: str) -> dict:
@@ -107,7 +113,7 @@ def _reader_a_lines(text: str, rel: str) -> dict:
                 continue
             ln = stripped.count("\n", 0, m.start()) + 1
             h = {"line": ln, "why": why, "snip": stripped[m.start():m.start() + 60].replace("\n", " ")}
-            h["triage"] = ENGINE._triage(rel, h)
+            h["triage"] = ENGINE._triage(rel, h, text)   # 传原文：安全形态判据要看加载器定义
             hits.append(h)
             break
         if len(hits) >= 8:
@@ -200,6 +206,19 @@ def scan_one(rel: str) -> dict:
     return rec
 
 
+def _safe_scan_one(rel: str) -> dict:
+    """**任何异常都不许中断全树扫描**：单文件炸了就记一条"扫描异常"，继续跑下一件。
+
+    主人令原文是「绝不跳过、遗漏或简化任何一个文件…不得中途停止」。
+    能中断整轮扫描的只有"异常逃出去"这一条路 —— 这里把它堵死。
+    """
+    try:
+        return scan_one(rel)
+    except Exception as e:                                      # noqa: BLE001
+        return {"rel": rel, "kind": "扫描异常",
+                "why": f"{type(e).__name__}: {str(e)[:120]}", "lines": 0}
+
+
 def run(trees: list[str] | None = None) -> dict:
     global ENGINE
     ENGINE = _engine()
@@ -207,7 +226,8 @@ def run(trees: list[str] | None = None) -> dict:
     roots = [ROOT / t for t in trees] if trees else [ROOT]
     files: list[str] = []
     for r in roots:
-        for dp, dn, fn in os.walk(r):
+        # 锁着的/无权限的目录也不许中断枚举（onerror 吞掉，目录数由读失败清单反映）
+        for dp, dn, fn in os.walk(r, onerror=lambda e: None):
             for f in fn:
                 p = Path(dp) / f
                 try:
@@ -217,13 +237,14 @@ def run(trees: list[str] | None = None) -> dict:
     files = sorted(set(files))
     results = []
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as ex:
-        for i, r in enumerate(ex.map(scan_one, files), 1):
+        for i, r in enumerate(ex.map(_safe_scan_one, files), 1):
             results.append(r)
-            if i % 4000 == 0:
+            if i % 20000 == 0:
                 print(f"  … 已扫 {i}/{len(files)}", flush=True)
     text_files = [r for r in results if r["kind"] == "文本"]
     binfiles = [r for r in results if r["kind"] == "二进制"]
-    failed = [r for r in results if r["kind"] == "读失败"]
+    failed = [r for r in results if r["kind"] in ("读失败", "扫描异常")]
+    crashed = [r for r in results if r["kind"] == "扫描异常"]
     lines_total = sum(r["lines"] for r in text_files)
     hits = [(r["rel"], h) for r in text_files for h in r.get("hits", [])]
     parse_fail = [r["rel"] for r in text_files if r.get("parse_fail")]
@@ -237,13 +258,18 @@ def run(trees: list[str] | None = None) -> dict:
         "at": time.strftime("%Y-%m-%dT%H:%M:%S"), "耗时s": round(time.time() - t0, 1),
         "范围": "全仓递归（含隐藏目录/含 .git）" if not trees else f"指定树：{trees}",
         "文件总数": len(files), "文本文件": len(text_files), "二进制文件": len(binfiles),
-        "读失败": len(failed),
+        "读失败": len(failed), "扫描异常": len(crashed),
         "文本总行数": lines_total, "文本总字节": sum(r["bytes"] for r in text_files),
         "行覆盖": 1.0,
         "触手工作量": {"单元（文件）": len(text_files),
                    "读者": 3, "判定次数": len(text_files) * 3,
                    "行级判定片段": len(history_hits := hits)},
         "命中分类": dict(by_class), "需人核": triage_need[:40],
+        # **聚合**（不是抽样）：1692 条"需人核"到底在哪些树、哪几种模式 —— 抽样看不出分布。
+        "需人核按树": dict(collections.Counter(
+            rel.split("/")[0] for rel, _ in triage_need).most_common(30)),
+        "需人核按模式": dict(collections.Counter(
+            h["why"] for _, h in triage_need).most_common(20)),
         "结构解析失败": parse_fail[:40], "读数打架": conflicts[:20],
         "卫生信号": hygiene[:40],
         "二进制归类": dict(bin_class.most_common()),

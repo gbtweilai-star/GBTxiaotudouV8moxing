@@ -30746,5 +30746,42 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T12:44:29"
+ },
+ "docs/新人类操作系统-控AI干活的四段法与能源账.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T13:12:20"
+ },
+ "tools/coverage_matrix.py": {
+  "tentacles": [
+   "selfscan"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T13:12:20"
+ },
+ "tools/full_tree_scan.py": {
+  "tentacles": [
+   "selfscan",
+   "mirror_status",
+   "platform_profile"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T13:12:20"
+ },
+ "memory/2026-09-27.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T13:12:20"
+ },
+ "gbt_allinone/tests/test_coverage_readings_fresh.py": {
+  "tentacles": [
+   "selfscan"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T13:12:20"
  }
 }

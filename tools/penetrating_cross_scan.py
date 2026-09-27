@@ -471,6 +471,14 @@ KNOWN_BY_DESIGN = [
      "**纵深防御的残余风险已记入 owner_decisions**（见 state/排查台账.json）"),
     ("gbt_allinone/tools/libtv_skill.py",
      "命中在**能力说明字段**里（`child_process_env_only` 是描述键名，不是调用）"),
+    ("holo_pet_w3/shell/main.cjs",
+     "命中是 `require(\"child_process\")` **导入行**（桌面壳要拉起本应用，导入≠执行）"),
+    ("holo_pet_w3/shell/intercom-kill-test.cjs",
+     "命中是 `child_process` **导入行**（对讲机链路自测台架）"),
+    ("plugins/gbt-master/tools/verify-all.mjs",
+     "命中是 `import ... from 'node:child_process'` **导入行**（三门验收器按设计拉起子进程）"),
+    ("skills/digihuman-pipeline/scripts/run-pipeline.ps1",
+     "本仓流水线运行器：`Invoke-Expression` 执行的是**脚本自己拼的 stage 命令**（非外部输入）"),
 ]
 
 
@@ -484,22 +492,54 @@ def _by_design(rel: str) -> str:
     return ""
 
 
-def _triage(rel: str, hit: dict) -> str:
-    """**分诊**（把预期命中与"需人核"分开 —— **虚报高危会消耗信任**，报告必须能落地）：
+def _triage(rel: str, hit: dict, text: str = "") -> str:
+    """**分诊**（把预期命中与"需人核"分开 —— **虚报高危会消耗信任**，报告必须能落地）。
 
-      · `夹具/检测器`：tests/ 下的合成假值、`TAINT_SAFE` 夹具标记，以及**检测器自己的模式库**
-        （实测：`quickscan_security.py` 列的就是待检模式本身、`tools/security/` 是检测工具）；
-      · `设计如此(已人工过目)`：见 `KNOWN_BY_DESIGN` 表（**显式白名单 + 逐条理由**）；
-      · `数据路径`：base64 解码出现在图像/视觉/浏览器/探针工具里 = **合法解码**（解的是图像字节）；
-      · `占位符(无密钥形状)`：命中"凭据"但值**没有密钥形状**（无数字、无已知前缀）——
-        实测两例：`drift-probe-owner` · `owner-token-for-local-shape-check`，是自述的探针名；
-      · `第三方(供应链)`：`_upstream/` 与 `vendor/` —— 我们不改它，只决定用不用；
+    **顺序很重要：先认"面"，再看"模式"。** 同一个模式出现在依赖树里 / 文档里 / 读数里，
+    性质完全不同 —— 实测（2026-09-27 全树逐行）：1692 条"需人核"里绝大多数落在这几类面上，
+    查完只剩个位数。**面上的先归类，剩下的才是"我们的代码里的真问题"。**
+
+      · `第三方(供应链/依赖/运行时)`：`_upstream/` `vendor/` `node_modules/` `.pylibs/`
+        `gbt_allinone/store/`（浏览器 profile 与扩展 JS）· 别的 agent 工具的技能镜像目录；
+      · `派生物(打包/跑批输出)`：`.map` `.min.js` `.latest.js` `.bundle.js` `.out` 等；
+      · `读数/记录(自指)`：`state/`、`output/skill-vet/` —— 读数里出现模式字样是因为它在**记**模式；
+      · `文档(规则举例)`：`.md`/`.txt`/`docs/` 里的**动态执行/子进程**字样是规则与举例
+        —— **但凭据/私钥类在文档里照样报**（明文凭据入档是真事故，这条不豁免）；
+      · `夹具/检测器`：tests/ 的合成假值、`TAINT_SAFE` 夹具、检测器自己的模式表；
+      · `设计如此(已人工过目)`：见 `KNOWN_BY_DESIGN`（显式白名单 + 逐条理由）；
+      · `数据路径`：base64 解码出现在图像/视觉/浏览器/探针工具里 = 合法解码；
+      · `安全形态(加载器派生自 SafeLoader)`：反序列化类里，安全在加载器而不在调用点；
+      · `占位符(无密钥形状)`：命中"凭据"但值没有密钥形状（无数字、无已知前缀）；
       · `需人核`：其余 —— **只有这一类计入告警数**。
     """
     low = rel.lower().replace("\\", "/")
     name = low.rsplit("/", 1)[-1].replace("-", "_")
     snip = (hit.get("snip") or "").lower()
     why = hit.get("why", "")
+    # ⓪ **先认面**：依赖/运行时/镜像 → 派生物 → 读数 → 文档
+    if ("/node_modules/" in low or "/.pylibs/" in low or "site-packages" in low
+            or low.startswith("gbt_allinone/store/") or low.startswith(".mimosa/")
+            or "/hook-state/" in low or low.startswith(".scratch/")
+            or low.startswith("审美相关skill/")          # 第三方设计技能包（自带 LICENSE/NOTICE）
+            or any(k in low for k in ("data/skills/", ".agents/skills/", ".claude/skills/",
+                                      ".aider-desk/", ".augment/", ".autohand/",
+                                      ".codebuddy/", ".windsurf/", ".dsh/skills/"))):
+        return "第三方(依赖/运行时)"
+    if low.endswith((".map", ".min.js", ".latest.js", ".bundle.js", ".iife.js",
+                     ".out", ".out.txt", ".frozen.out")):
+        return "派生物(打包/跑批输出)"
+    if low.startswith("state/") or low.startswith("output/skill-vet/"):
+        return "读数/记录(自指)"
+    if low.endswith((".md", ".txt")) or "/docs/" in low:
+        # 文档/笔记里的**动态执行·子进程·base64 解码**字样是"规则、举例、血账引用"，
+        # 不是实现（实测：我自己的 memory 笔记引用 `base64.b64decode` 被报成需人核）。
+        # ⚠️ 只豁免这几类"引号里的写法"；**凭据/私钥/双扩展名在文档里照样报** ——
+        # 明文凭据进了文档就是真事故，这条不能豁免（本仓有过 config 明文 key 的先例）。
+        if why in ("动态执行 eval（若入参可控即 RCE）", "动态执行 exec/IEX",
+                   "Node 子进程执行（需人核）", "系统命令执行（需人核）",
+                   "shell=True（命令拼接风险）", "下载即执行（管道到 shell）",
+                   "base64 解码（常与混淆同现）"):
+            return "文档(规则举例)"
     # ① 显式标注的合成值 / 夹具标记
     if any(k in snip for k in ("not-a-real", "throwaway", "dummy", "placeholder", "example",
                                "fake", "smoke-token", "sk-abcdefg", "taint_safe")):
@@ -520,6 +560,12 @@ def _triage(rel: str, hit: dict) -> str:
     why_by_design = _by_design(rel)
     if why_by_design:
         return "设计如此(已人工过目)"
+    # ④b 反序列化类的**安全形态**：安全在**加载器**，不在调用点 —— 实测
+    # `dsh-route-check.py` 的 `_Lenient` 派生自 `SafeLoader`（读代码取证）。
+    # ⚠️ 这条**必须在这里**（单一来源）：早先只写在引擎的文件扫描函数里，
+    # 于是全树逐行那条路又把同一个文件报成"需人核" —— 同一判据两条路 = 分叉。
+    if "反序列化" in why and "SafeLoader" in (text or ""):
+        return "安全形态(加载器派生自 SafeLoader)"
     # ⑤ 凭据命中，但值是**自述占位符**（没有密钥形状：无数字、无已知密钥前缀）
     if "凭据" in why:
         v = re.search(r"['\"]([A-Za-z0-9_\-]{16,})['\"]", snip)
@@ -585,14 +631,7 @@ def _scan_one_file_security(rel: str) -> dict:
                 break                            # 本文件该模式只命中形态误报 ⇒ 不报
             line = txt.count("\n", 0, m.start()) + 1
             h = {"line": line, "why": why, "snip": txt[m.start():m.start() + 60].replace("\n", " ")}
-            # 反序列化类的**安全形态**：安全不在调用点，而在加载器 —— 实测
-            # `dsh-route-check.py` 的 `_Lenient` 派生自 `SafeLoader`（读工具自己的注释即知：
-            # 它要容错未知 tag，但仍走安全加载器）⇒ 这不是缺陷，是**已验证的安全写法**。
-            # （早先按调用点关键词判，把它误报成"不安全反序列化"。）
-            if "反序列化" in why and "SafeLoader" in txt:
-                h["triage"] = "安全形态(加载器派生自 SafeLoader)"
-            else:
-                h["triage"] = _triage(rel, h)    # 每条命中都打分诊标签（缺了它 needs_human 恒 0 = 假绿）
+            h["triage"] = _triage(rel, h, txt)   # 分诊（缺了它 needs_human 恒 0 = 假绿）
             hits.append(h)
             break                                # 同类只报首例，避免刷屏
     return {"unit": rel, "hits": hits}
