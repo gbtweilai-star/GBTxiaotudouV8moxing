@@ -41,16 +41,17 @@ py -3.14 tools/codex-scripts/five-dim.py cap browser ['<JSON载荷>'] [--full]
 
 ---
 
-## 0. 一位一域（先确认名字，别照抄别人的表）
+## 0. 两位一域（先确认名字，别照抄别人的表）
 
-现扫 `state/skill_atlas.json`（`domain == "automation"`）**只有一条**：
+现扫 `state/skill_atlas.json`（`domain == "automation"`）有**两条**：
 
 | 域 | 能力位（kind） | handler | type 观感 | 注册表 desc 关键句 |
 |---|---|---|---|---|
 | `automation` | **`browser`** | `browser` | 良性子集 | "浏览器自动化入口（良性子集）。op=open/search/fetch/automate 走 browser_cap 三级后端；op=native（别名 deep/controller/cdp）走原生浏览器窗口 native_browser.py（Chrome DevTools Protocol，自带最小 RFC6455 客户端、零第三方依赖）…" |
+| `automation` | **`n8n_wf`**（2026-09-26 补录，见 §13） | `n8n_wf` | 自托管工作流 | "我们自己的自托管 n8n：status/list/export/import/active/hook 六 op；写 op 过 `filesystem_write` 门" |
 
-> **件名是 `gbt-automation`（域级），`browser` 是能力位（kind）**。两者别混：
-> `verify-distill.py` 判的是"这个域的能力位有没有被点到"，点的是 **`browser`** 这个名字。
+> **件名是 `gbt-automation`（域级），`browser` / `n8n_wf` 是能力位（kind）**。两者别混：
+> `verify-distill.py` 判的是"这个域的能力位有没有被点到"，两个名字都要点到。
 > ⚠️ 写规程时的坑：`native_browser` 里的 `browser` **前面带下划线**，在"单词边界"判据下**不算命中**，
 > 必须让 `browser` 单独出现（本文件里到处都是）。
 
@@ -75,8 +76,73 @@ py -3.14 tools/codex-scripts/five-dim.py cap browser ['<JSON载荷>'] [--full]
 | 起浏览器 / 开标签 / 导航 / 点 / 打字 / 执行脚本 / 截图 / 置顶窗口 | `{"op":"native","action":"launch"/"ensure"/"create_tab"/…}` | 🔒 **`browser_control`**（截图另加 `filesystem_write`） |
 | 访问本机 / 内网 / 保留地址 / 非标准端口 | 任何 op 带内网 `url`/`target`/`base_url`/`repo` | 🔒 追加 **`network_private`** |
 
-**不在这 1 个位里的事**：看屏幕 / 点桌面 / 滚页面 / 听声音 → `gbt-tentacle`（`tentacle` 域）；
-飞书页面 → `gbt-integration`（`feishu_embed`，它的接入点恰好就是本域的 `browser_cap.open_url`）。
+**不在这 2 个位里的事**：看屏幕 / 点桌面 / 滚页面 / 听声音 → `gbt-tentacle`（`tentacle` 域）；
+飞书页面 → `gbt-integration`（`feishu_embed`，它的接入点恰好就是本域的 `browser_cap.open_url`）；
+n8n 的**工作流内容编排** → 在 n8n 画布上做，本域只做"读/导/启停/触发"（§13）。
+
+---
+
+## 13. 第二位：`n8n_wf` —— 自托管 n8n 工作流（2026-09-26 补录）
+
+**一句话**：把我们自己的 n8n（2.30.7 自托管，数据在 `~/.n8n`）**接进框架**——
+读工作流、导工作流、启停工作流、触发 webhook；**不替你在画布上编排**。
+
+### 13.1 六个 op
+
+| op | 干什么 | 门（实测） |
+|---|---|---|
+| `status`（默认） | 探 `http://127.0.0.1:5678` 的 `/healthz` → 回落 `/`；通了再跑 `list:workflow` | **零作用域** |
+| `list` | 真跑 `n8n list:workflow`（120s 超时） | 零作用域 |
+| `export` | `n8n export:workflow --all --output=…` | 🔒 **`filesystem_write`** |
+| `import` | `n8n import:workflow --input=…`（需 `file=`） | 🔒 **`filesystem_write`** |
+| `active` | `n8n update:workflow --id=… --active=true/false`（需 `id=`） | 🔒 **`filesystem_write`** |
+| `hook` | POST 到 `http://127.0.0.1:5678/webhook/gbt`（需该 webhook 工作流已激活） | 🔒 **`filesystem_write`** |
+
+未列出的 op = **fail-closed**（返回 `fail_closed: true` 并列出可用 op）。
+
+### 13.2 实测读数（2026-09-26）
+
+```
+status → ok true · url "http://127.0.0.1:5678" · http 200
+         workflows "GbtCapBridge0001|GBT 能力桥 · run_task（万能插）"
+         note "我们自己的自托管 n8n（数据在 ~/.n8n）；管理脚本 tools/n8n-ctl.bat"
+```
+
+**读法两条**：
+1. `http 200` 是**本机自托管**的读数 —— 出网边界在这条路上是**内部面**，
+   探针用 `net_guard.validate_url(url, allow_private=True)` + **curl 子进程**
+   （不是 `scrapling`：实测 Fetcher 对本地 HTTP 会超时）；
+2. `workflows` 字段里那行 `Error tracking disabled because this release is older than 6 weeks.`
+   **是 n8n CLI 自己的告警**，混在 stdout 里被一起带回来了 —— **不是我们的错**，别当成故障念。
+
+### 13.3 门为什么挂在 `filesystem_write`
+
+`n8n_wf_cap._gate()` 的实测行为：**受信主人会话直通；非受信会话走
+`auth_gate.check_and_consume("filesystem_write", …)`**，缺授权就返回
+`{"denied": true, "gate": "filesystem_write", "how_to_grant": …}`。
+理由是它真会**落盘/改状态**（导出写文件、导入改工作流库、启停改激活态、hook 会打网络）。
+⇒ **`status`/`list` 是只读免卡；另外四个 op 一律当"要授权"对待**。
+
+### 13.4 桥的两头（现状如实）
+
+| 件 | 状态 |
+|---|---|
+| `config/n8n-gbt-bridge.json`（id `GbtCapBridge0001`） | **已导入**（`status` 的 workflows 读数里能看到它）：Execute Workflow 触发器 → HTTP 调 `127.0.0.1:31717/run_task` → 178 能力位 |
+| `config/n8n-gbt-entry.json`（id `GbtWebhook000001`，`POST /webhook/gbt`） | **未激活** —— 激活要跑 `active` op（过 `filesystem_write` 门） |
+| 能力网关 `127.0.0.1:31717` | 需 `GBT_GATEWAY_TOKEN`；POST `/run_task` 带 `X-GBT-Token`；跑的是**非受信会话**（门照样拦） |
+
+### 13.5 未验（如实记）
+
+- `export` / `import` / `active` / `hook` 四个写 op **本轮未真跑**（要授权 + 会改状态）；
+- **n8n 侧的"真跑一条工作流"**未验：桥是导进去了，但"从 n8n 里点一次、能力真被调起来"
+  这条端到端路**没在本轮实测**（要 n8n 面板建管理员账号 + 激活入口）；
+- `hook` 的可用性依赖 `GbtWebhook000001` 激活 —— **没激活时它必失败**，别念成"能力坏了"。
+
+### 13.6 两条运维教训（血账）
+
+1. **n8n 后台启动禁止用管道截断**：`n8n start 2>&1 | head -20` 会把输出通道掐死、
+   进程哑火 —— 一律重定向到日志文件（`tools/n8n-ctl.bat` 就是按这个写的）；
+2. **Git Bash 里 taskkill 要 `//F //PID`**（`/F` 会被当路径转换）。
 
 ---
 
@@ -397,8 +463,10 @@ exit **1**。**注意形状**：这是 **`denied` 分支**，**没有 `gbt_resul
 | 本规程（源） | `<仓>/skills/gbt-automation/SKILL.md` |
 | 本规程（装机·托管目录） | `C:\Users\ADMIN\.openclaw-autoclaw\skills\gbt-automation\SKILL.md` |
 | ⛔ **不许装到** | `~/.agents/skills/`（本仓 AGENTS.md 明令禁止） |
-| 能力位名单（1 个：`browser`） | `<仓>/state/skill_atlas.json`（`domain == "automation"`）· 现扫可重建：`python tools/codex-scripts/omni.py build` |
-| 授权判据（**单一真相**） | `<仓>/gbt_allinone/security/policy.py` 的 `evaluate()` → `elif kind == "browser":`（第 177-211 行） |
+| 能力位名单（**2 个**：`browser` · `n8n_wf`） | `<仓>/state/skill_atlas.json`（`domain == "automation"`）· 现扫可重建：`python tools/codex-scripts/omni.py build` |
+| 授权判据（**单一真相**） | `<仓>/gbt_allinone/security/policy.py` 的 `evaluate()` → `elif kind == "browser":`（第 177-211 行）；`n8n_wf` **无 policy 条目** ⇒ 门挂在处理器层 `n8n_wf_cap._gate()`（`filesystem_write`） |
+| n8n_wf 本体 | `<仓>/gbt_allinone/tools/n8n_wf_cap.py`（`status:88` · `run:107` · `_gate:60` · `_safe_request` 走 net_guard + curl 子进程） |
+| n8n 管理脚本 | `<仓>/tools/n8n-ctl.bat`（start/stop/status/log；**禁管道截断**，见 §13.6） |
 | 只读 action 白名单 | `policy._READ_ONLY_NATIVE_BROWSER_ACTIONS`（52-55 行）与 `native_browser._READ_ONLY_ACTIONS`（67-70 行）**必须逐字一致** |
 | op 分发 | `<仓>/gbt_allinone/api.py:947-959`（`kind == "browser"` 那一支） |
 | 标准库三档后端 | `<仓>/gbt_allinone/browser_cap.py` |

@@ -1,0 +1,362 @@
+来源: https://zh.wikipedia.org/wiki/虚幻引擎5
+抓取: 2026-09-26 · scrapling
+
+虚幻引擎5 - 维基百科，自由的百科全书 
+
+ 跳转到内容 
+
+ 主菜单 
+
+ 主菜单 
+ 移至侧栏 
+ 隐藏 
+
+ 导航
+
+ 首页 分类索引 特色内容 新闻动态 随机条目 联络我们 关于维基百科 
+
+ 贡献
+
+ 帮助 维基社群 编辑入门 互助客栈 IRC即时聊天 最近更改 特殊页面 
+
+ 搜索 
+
+ 搜索 
+
+ 外观 
+
+ 资助维基百科 
+
+ 创建账号 
+
+ 登录 
+
+ 个人工具 
+
+ 资助维基百科 
+
+ 创建账号 
+
+ 登录 
+
+ 目录 
+ 移至侧栏 
+ 隐藏 
+
+ 序言 
+
+ 1 
+ 参见 
+
+ 2 
+ 参考文献 
+
+ 开关目录 
+
+ 虚幻引擎5 
+
+ 13种语言 
+
+ العربية Čeština Deutsch English Español فارسی Français Bahasa Indonesia Italiano 한국어 Русский Türkçe Українська 
+
+ 编辑链接 
+
+ 条目 
+
+ 讨论 
+
+ 不转换 
+
+ 不转换 简体 繁體 大陆简体 香港繁體 澳門繁體 大马简体 新加坡简体 臺灣正體 
+
+ 阅读 
+
+ 编辑 
+
+ 查看历史 
+
+ 工具 
+
+ 工具 
+ 移至侧栏 
+ 隐藏 
+
+ 操作
+
+ 阅读 
+
+ 编辑 
+
+ 查看历史 
+
+ 常规
+
+ 链入页面 相关更改 上传文件 固定链接 页面信息 引用此页 获取短链接 
+
+ 打印/导出
+
+ 下载为PDF 打印页面 
+
+ 在其他项目中
+
+ 维基共享资源 维基数据项目 
+
+ 外观 
+ 移至侧栏 
+ 隐藏 
+
+ 维基百科，自由的百科全书 
+
+ 虚幻引擎5 原作者 蒂姆·斯維尼 開發者 Epic Games 首次发布 5.0（2022年4月5日 ，&#x200b;4年前 &#x200b;（ 2022-04-05 ） ） &#91; 1 &#93; 当前版本 5.7（2025年11月12日 ，&#x200b;10個月前 &#x200b;（ 2025-11-12 ） ） 编程语言 C++ &#91; 2 &#93; 操作系统 Windows 、 Linux 、 macOS 前任 虚幻引擎4 繼任 虚幻引擎6 许可协议 商业用途采用 版税 模式的 看源 商业软件 &#91; 3 &#93; 网站 unrealengine .com 
+ 虚幻引擎5 （英語： Unreal Engine 5 ，简称 UE5 ）是 Epic Games 开发的 虚幻引擎 最新版本，2020年5月公布，2022年4月正式发布。虚幻引擎5包含多项升级和新功能，包括可自动调整 网格 细节层次 的“Nanite”系统，以及利用软件和硬件加速 光线追踪 的动态 全局光照 和 反射 系统“Lumen”。
+
+ 参见 [ 编辑 ] 
+ Category:虚幻引擎5游戏 
+ 参考文献 [ 编辑 ] 
+
+ ^ Sinclair, Brendan. Epic launches Unreal Engine 5 . GamesIndustry.biz （ 英语 ： GamesIndustry.biz ） . 2022-04-06 &#91; 2022-04-05 &#93; . （原始内容 存档 于2022-04-07） （美国英语） . &#160; 
+
+ ^ Unreal Engine on GitHub . （ 原始内容 存档于2024-12-14）. &#160; 
+
+ ^ Unreal Engine End User License Agreement . Unreal Engine. &#91; 2018-08-26 &#93; . （原始内容 存档 于2018-08-26） （美国英语） . &#160; 
+
+ 查 论 编 Epic Games 游戏 光速兔崽子系列 
+ 光速兔崽子 
+ 魔域幻境系列 
+ 魔域幻境 
+ 浴血戰場 (1999) 
+ 血戰場2003 
+ 浴血戰場2004 
+ 浴血戰場3 
+ 戰爭機器系列 
+ 戰爭機器 
+ 戰爭機器2 
+ 戰爭機器3 
+ 戰爭機器：審判 
+ 无尽之剑系列 
+ 无尽之剑 
+ 堡垒之夜 
+ 堡垒之夜：拯救世界 
+ 堡垒之夜 大逃杀 
+ 其他游戏 
+ 奇迹时代 
+ 狂彈風暴 
+ 子公司 现 
+ Chair Entertainment 
+ Harmonix （ 英语 ： Harmonix ） 
+ Psyonix 
+ 前 
+ Impossible Studios 
+ Titan Studios 
+ People Can Fly 
+ Bandcamp 
+ ArtSatation 
+ Sketchfab 
+ 技术 
+ 虚幻引擎 
+ 1 
+ 2 
+ 3 
+ 4 
+ 5 
+ UEFN （ 英语 ： Unreal Editor for Fortnite ） 
+ Verse （ 英语 ： Verse (programming language) ） 
+ Epic Citadel （ 英语 ： Epic Citadel ） 
+ Epic游戏商城 
+ Houseparty （ 英语 ： Houseparty (app) ） 
+ Sketchfab 
+ Bink Video （ 英语 ： Bink Video ） 
+ 相关 
+ 虚幻引擎游戏列表 
+ Epic Games訴蘋果公司案 
+
+ 查 论 编 游戏引擎 （ 列表 ） 
+ 原始碼移植 （ 英语 ： Source port ） 
+ 第一人稱射擊遊戲引擎 
+ 列表 （ 英语 ： List of first-person shooter engines ） 
+ 遊戲引擎重製 （ 英语 ： Game engine recreation ） 
+ 列表 （ 英语 ： List of game engine recreations ） 
+ 遊戲創作系統 （ 英语 ： Game creation system ） 
+ 遊戲整合開發環境 （ 英语 ： Game integrated development environment ） 
+ 视觉小说引擎列表 
+ id Tech 
+ 專有 軟體 1980年代 
+ Filmation （ 英语 ： Filmation (game engine) ） 
+ Freescape （ 英语 ： Freescape ） 
+ Gold Box （ 英语 ： Gold Box ） 
+ SCUMM 
+ 1990年代 
+ 3D GameStudio （ 英语 ： 3D GameStudio ） 
+ Clickteam 
+ Dark Engine （ 英语 ： Dark Engine ） 
+ GameMaker 
+ Genie Engine （ 英语 ： Genie Engine ） 
+ GoldSrc 
+ Jedi （ 英语 ： Jedi (game engine) ） 
+ LithTech （ 英语 ： LithTech ） 
+ M.U.G.E.N 
+ Pie in the Sky （ 英语 ： Pie in the Sky (game engine) ） 
+ Reality Lab （ 英语 ： Reality Lab ） 
+ RenderWare 
+ RPG製作大師 
+ Sim RPG Maker （ 英语 ： Sim RPG Maker ） 
+ 虚幻引擎 
+ Virtual Theatre （ 英语 ： Virtual Theatre ） 
+ Voxel Space （ 英语 ： Voxel Space ） 
+ Zero （ 英语 ： Zero (game engine) ） 
+ Zillions of Games 
+ 2000年代 
+ Anvil 
+ C4 Engine （ 英语 ： C4 Engine ） 
+ Chrome Engine 
+ CryENGINE 
+ 水晶工具 
+ Diesel （ 英语 ： Diesel (game engine) ） 
+ Ego （ 英语 ： Ego (game engine) ） 
+ Essence Engine （ 英语 ： Essence Engine ） 
+ Euphoria （ 英语 ： Euphoria (software) ） 
+ Flare3D （ 英语 ： Flare3D ） 
+ 寒霜引擎 
+ Gamebryo 
+ GameSalad （ 英语 ： GameSalad ） 
+ HeroEngine （ 英语 ： HeroEngine ） 
+ IW （ 英语 ： IW (game engine) ） 
+ Leadwerks （ 英语 ： Leadwerks ） 
+ Marmalade SDK （ 英语 ： Marmalade (software) ） 
+ MT Framework 
+ PhyreEngine （ 英语 ： PhyreEngine ） 
+ Q （ 英语 ： Q (game engine) ） 
+ RAGE 
+ Retro Engine （ 英语 ： Retro Engine ） 
+ SAGE 
+ Shark 3D （ 英语 ： Shark 3D ） 
+ Silent Storm engine （ 英语 ： Silent Storm engine ） 
+ 起源引擎 
+ Titan （ 英语 ： Titan (game engine) ） 
+ Unigine （ 英语 ： Unigine ） 
+ Unity 
+ 虚幻引擎3 
+ Vicious Engine （ 英语 ： Vicious Engine ） 
+ Vision 
+ Visual3D Game Engine （ 英语 ： Visual3D Game Engine ） 
+ 2010年代 
+ 4A Engine （ 英语 ： 4A Engine ） 
+ Amazon Lumberyard 
+ Bitsquid （ 英语 ： Bitsquid ） 
+ Buildbox 
+ Construct 
+ Creation引擎 
+ Decima 
+ Defold 
+ Felgo （ 英语 ： Felgo ） 
+ Fox Engine （ 英语 ： Fox Engine ） 
+ id Tech 5 
+ id Tech 6 （ 英语 ： id Tech 6 ） 
+ Ignite （ 英语 ： Ignite (game engine) ） 
+ Kynapse （ 英语 ： Kynapse ） 
+ 夜光引擎 
+ NeoX 
+ Nvidia GameWorks （ 英语 ： Nvidia GameWorks ） 
+ Panta Rhei （ 英语 ： Panta Rhei (game engine) ） 
+ Pixel Game Maker MV （ 英语 ： Pixel Game Maker MV ） 
+ REDengine 
+ RE引擎 
+ Snowdrop引擎 
+ Stencyl （ 英语 ： Stencyl ） 
+ Source 2 
+ UbiArt框架 
+ 虚幻引擎4 
+ 2020年代 
+ id Tech 7 （ 英语 ： id Tech 7 ） 
+ 虚幻引擎5 
+ 自由 及 開源 軟體 1970年代 
+ Z-machine （ 英语 ： Z-machine ） 
+ 1990年代 
+ Adventure Game Studio （ 英语 ： Adventure Game Studio ） 
+ Build （ 英语 ： Build (game engine) ） 
+ Crystal Space 
+ 毁灭战士引擎 
+ Game-Maker （ 英语 ： Game-Maker ） 
+ OHRRPGCE （ 英语 ： OHRRPGCE ） 
+ 雷神之锤引擎 
+ id Tech 2 
+ Stratagus （ 英语 ： Stratagus ） 
+ NScripter 
+ 2000年代 
+ Away3D （ 英语 ： Away3D ） 
+ Blender Game Engine 
+ Bork3D Game Engine （ 英语 ： Bork3D Game Engine ） 
+ Cocos2d 
+ Dim3 （ 英语 ： Dim3 ） 
+ Game Editor （ 英语 ： Game Editor ） 
+ GDevelop （ 英语 ： GDevelop ） 
+ id Tech 3 
+ id Tech 4 
+ Irrlicht Engine （ 英语 ： Irrlicht Engine ） 
+ jMonkeyEngine （ 英语 ： jMonkeyEngine ） 
+ Lightweight Java Game Library （ 英语 ： Lightweight Java Game Library ） 
+ Löve （ 英语 ： Löve (game engine) ） 
+ OGRE 
+ Open Wonderland （ 英语 ： Open Wonderland ） 
+ Panda3D （ 英语 ： Panda3D ） 
+ Papervision3D （ 英语 ： Papervision3D ） 
+ Plasma （ 英语 ： Plasma (game engine) ） 
+ Platinum Arts Sandbox （ 英语 ： Platinum Arts Sandbox ） 
+ Pygame 
+ Ren'Py 
+ Scratch 
+ Solar2D （ 英语 ： Solar2D ） 
+ Spring引擎 
+ Thousand Parsec 
+ Torque （ 英语 ： Torque (game engine) ） 
+ Vassal Engine （ 英语 ： Vassal Engine ） 
+ Wintermute Engine （ 英语 ： Wintermute Engine ） 
+ 2010年代 
+ Delta3D （ 英语 ： Delta3D ） 
+ Godot 
+ GPUOpen 
+ Horde3D （ 英语 ： Horde3D ） 
+ 吉里吉里 
+ libGDX （ 英语 ： libGDX ） 
+ Moai （ 英语 ： Moai (software) ） 
+ OpenFL （ 英语 ： OpenFL ） 
+ ORX （ 英语 ： ORX ） 
+ PlayCanvas （ 英语 ： PlayCanvas ） 
+ Raylib （ 英语 ： Raylib ） 
+ Snap! 
+ Stencyl （ 英语 ： Stencyl ） 
+ Stride （ 英语 ： Stride (game engine) ） 
+ Phaser 
+ Egret 
+ 2020年代 
+ Open 3D Engine 
+
+ 取自“ https://zh.wikipedia.org/w/index.php?title=虚幻引擎5&amp;oldid=91469456 ” 
+ 分类 ：​ 2022年軟體 虚幻引擎 隐藏分类：​ CS1美国英语来源 (en-us) 含有英語的條目 
+
+ 本页面最后修订于2026年2月10日 (星期二) 07:09。 
+ 本站的全部文字在 知识共享 署名-相同方式共享 4.0协议 之条款下提供，附加条款亦可能应用。（请参阅 使用条款 ） 
+Wikipedia&#174;和维基百科标志是 维基媒体基金会 的注册商标；维基&#8482;是维基媒体基金会的商标。 
+维基媒体基金会是按美国国內稅收法501(c)(3)登记的 非营利慈善机构 。 
+
+ 隐私政策 
+ 关于维基百科 
+ 免责声明 
+ 法律与安全事项联系方式 
+ 行为准则 
+ 开发者 
+ 统计 
+ Cookie声明 
+ 移动版视图 
+
+ 搜索 
+
+ 搜索 
+
+ 开关目录 
+
+ 虚幻引擎5 
+
+ 13种语言 
+
+ 添加话题

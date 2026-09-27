@@ -1,0 +1,637 @@
+来源: https://en.wikipedia.org/wiki/Virtual_production
+抓取: 2026-09-26 · scrapling
+
+On-set virtual production - Wikipedia 
+
+ Jump to content 
+
+ Main menu 
+
+ Main menu 
+ move to sidebar 
+ hide 
+
+ Navigation
+
+ Main page Contents Current events Random article About Wikipedia Contact us 
+
+ Contribute
+
+ Help Learn to edit Community portal Recent changes Upload file Special pages 
+
+ Search 
+
+ Search 
+
+ Appearance 
+
+ Donate 
+
+ Create account 
+
+ Log in 
+
+ Personal tools 
+
+ Donate 
+
+ Create account 
+
+ Log in 
+
+ Contents 
+ move to sidebar 
+ hide 
+
+ (Top) 
+
+ 1 
+ History 
+
+ 2 
+ Terminology 
+
+ 3 
+ Technology 
+
+ 4 
+ Examples 
+
+ 5 
+ Productions using the technologies 
+
+ Toggle Productions using the technologies subsection 
+
+ 5.1 
+ Television series 
+
+ 5.2 
+ Feature films 
+
+ 5.3 
+ Short films 
+
+ 6 
+ See also 
+
+ 7 
+ Notes 
+
+ 8 
+ References 
+
+ Toggle the table of contents 
+
+ On-set virtual production 
+
+ 3 languages 
+
+ فارسی Bahasa Indonesia 日本語 
+
+ Edit links 
+
+ Article 
+
+ Talk 
+
+ English 
+
+ Read 
+
+ Edit 
+
+ View history 
+
+ Tools 
+
+ Tools 
+ move to sidebar 
+ hide 
+
+ Actions
+
+ Read 
+
+ Edit 
+
+ View history 
+
+ General
+
+ What links here Related changes Upload file Permanent link Page information Cite this page Get shortened URL Switch to legacy parser 
+
+ Print/export
+
+ Download as PDF Printable version 
+
+ In other projects
+
+ Wikidata item 
+
+ Appearance 
+ move to sidebar 
+ hide 
+
+ From Wikipedia, the free encyclopedia 
+ (Redirected from Virtual production ) 
+
+ Technology for television and film production 
+ "Virtual studio" redirects here. For the audio interface standard, see Virtual Studio Technology . For the former film company, see Virtual Studios . 
+ This article is missing information about chroma key virtual production. Please expand the article to include this information. Further details may exist on the talk page . ( September 2023 ) 
+
+ On-set virtual production ( OSVP ) [ a ] is an entertainment technology for television and film production in which LED panels are used as a backdrop for a set, on which video or computer-generated imagery can be displayed in real-time. The use of OSVP became widespread after its use in the first season of The Mandalorian (2019), which used Unreal Engine , developed by Epic Games . The technology replaces green screen compositing by displaying pre-recorded background plates on the LED wall, which allows actors to see the environment and provides interactive lighting. 
+
+ History [ edit ] 
+ Australian film director Clayton Jacobson first had the idea of improving the green screen that was then in use when filming a TV ad for detergent in 2003. Watching his son playing videogames and seeing the 3D technology used in them gave him the idea. Eventually, in 2016, Jacobson and his son made one of the prototypes for a virtual production stage in their shed, using a set of LED screens. However, he could not get anyone to take an interest in developing the technology further, so gave up on it. In 2017, PRG presidents Brian Edwards partnered with cinematographer Markus Förderer and producers Giuseppe Mercadante and Jean de Meuron to showcase OverDrive, their On-set virtual production LED wall panel technology on the set of Megan (2018 film) . The technology replaced green screen compositing by displaying pre-recorded background plates on the LED wall. This allowed actors to see the environment in which the scene was taking place, improving immersion and reducing the need to imagine backgrounds that would otherwise be added in post-production. The LED panels also provided interactive lighting, casting colors, reflections, and atmospheric effects directly onto the actors, costumes, props, and physical sets. This helped prevent common green-screen issues, such as green spill reflecting onto skin or reflective surfaces, while giving cinematographers a more accurate view of the final image during filming [ 1 ] . Other filmmakers had also caught on to the idea though, and in 2018 an Australian cinematographer , Greig Fraser , used the technology to film the Star Wars franchise spin-off series, The Mandalorian (released 2019). Instead of using the green screen during the filming stage, the team combined post-production with the production stage of the series. They installed huge LED walls linked to powerful computers that ran Unreal Engine gaming software (used for Fortnite , among others). They called this soundstage "the volume", a term already used to refer to a stage where visual effects techniques take place. [ 2 ] 
+
+ Since its inventive use in The Mandalorian , which used ILM 's StageCraft , the technology has become increasingly popular. Miles Perkins, industry manager of film and TV for Epic Games and maker of the Unreal Engine , estimated that there were around 300 stages by October 2022, increased from only three in 2019. [ 3 ] Most of these were built during or after the COVID-19 pandemic , when lockdowns meant that production studios had to find ways to produce films without traveling to other locations. [ 2 ] 
+
+ In March 2023, the world's largest virtual production stage was opened at the Docklands Studios Melbourne , in the city of Melbourne , Australia. [ 2 ] 
+
+ Terminology [ edit ] 
+ On-set virtual production (OSVP) is also known as virtual production (VP), immersive virtual production (IVP), In-Camera Visual Effects (ICVFX), [ 4 ] or The Volume. [ 5 ] 
+
+ Technology [ edit ] 
+ With careful adjustment and calibration, an OSVP set can be made to closely approximate the appearance of a real set or outdoor location. [ 6 ] OSVP can be viewed as an application of extended reality . OSVP contrasts with virtual studio technology, in which a green screen backdrop surrounds the set, and the virtual surroundings are composited into the green screen plate downstream from the camera, in that in OSVP the virtual world surrounding the set is visible to the camera, actors, and crew, and objects on set are illuminated by light from the LED screen, creating realistic interactive lighting effects, and that the virtual background and foreground are captured directly in camera, complete with natural subtle cues like lens distortion , depth of field effects, bokeh and lens flare . This makes it a far more natural experience that more closely approximates location shooting , making the film-making process faster and more intuitive than can be achieved on a virtual set. [ citation needed ] 
+
+ To render parallax depth cues correctly from the viewpoint of a moving camera, the system requires the use of match moving of the background imagery based on data from low-latency real-time motion capture technology to track the camera, such systems as Stype and Mosys which track camera position within the volume and equate this position within the Unreal scene - so that any movement is reflected within the scene as well . [ citation needed ] 
+
+ Industry organizations including SMPTE , the Academy of Motion Picture Arts and Sciences , and the American Society of Cinematographers have started initiatives to support the development of OSVP. [ 6 ] [ 7 ] [ 8 ] [ 9 ] 
+
+ Examples [ edit ] 
+ Stages that use OSVP include the various StageCraft stages, Pixomondo 's Toronto-based LED stage, which has a long-term lease from CBS , ZeroSpace's Volume in New York City, [ 10 ] or Lux Machina various stages. [ 3 ] In Japan, the LED wall and virtual production were used by Toei Company for its Super Sentai shows Avataro Sentai Donbrothers [ 11 ] and Ohsama Sentai King-Ohger , with the latter also being produced in collaboration with Sony PCL Inc. [ 12 ] Toronto's Dark Slope Studios is the home of Virtual Production shots for Heated Rivalry , Gen V and BET . [ 13 ] Italy's Cinecittà Studios in Rome features a LED wall that is 167 feet in circumference and 26 feet tall. Roland Emmerich 's TV series Those About to Die was shot at this location. [ 5 ] [ 14 ] 
+
+ Productions using the technologies [ edit ] 
+
+ Television series [ edit ] 
+ The Mandalorian (2019–present) [ 15 ] 
+ The Book of Boba Fett (2021) [ 16 ] 
+ Star Trek: Discovery (2021–2024) [ 17 ] 
+ Avataro Sentai Donbrothers (2022–2023) [ 11 ] 
+ Star Trek: Strange New Worlds (2022–present) 
+ How I Met Your Father (2022–2023) [ 18 ] 
+ Our Flag Means Death (2022–present) [ 19 ] 
+ Obi-Wan Kenobi (2022) [ 20 ] 
+ The Old Man (2022) [ 21 ] 
+ Westworld (2022) [ 22 ] 
+ Andor (2022–2025) [ 23 ] 
+ The Lord of the Rings: The Rings of Power (2022–present) [ 24 ] 
+ House of the Dragon (2022–present) [ 25 ] 
+ 1899 (2022) [ 26 ] 
+ The Santa Clauses (2022–2023) [ 27 ] 
+ Ohsama Sentai King-Ohger (2023–2024) [ 12 ] 
+ Silo (2023) [ 28 ] 
+ The Muppets Mayhem (2023) [ 29 ] 
+ Ahsoka (2023–present) [ 17 ] 
+ One Piece (2023–present) [ 30 ] 
+ YuYu Hakusho (2023) [ 31 ] 
+ Percy Jackson and the Olympians (2023–present) [ 32 ] 
+ Masters of the Air (2024) [ 33 ] 
+ Fallout (2024–present) [ 34 ] 
+ Doctor Who series 14 (2024) [ 35 ] 
+ The Acolyte (2024) [ 36 ] 
+ Those About to Die (2024) [ 37 ] 
+ Time Bandits (2024) [ 29 ] 
+ Star Wars: Skeleton Crew (2024–2025) [ 38 ] 
+ The Eternaut (2025) [ 39 ] 
+ Murderbot (2025) [ 40 ] 
+ Wednesday (2025–present) [ 41 ] 
+ Gen V (2025) [ 42 ] 
+ It: Welcome to Derry (2025–present) [ 43 ] 
+ Heated Rivalry (2025-present) [ 44 ] 
+ Hate the Player: The Ben Johnson Story (2026) [ 45 ] 
+
+ Feature films [ edit ] 
+ Avatar (2009) [ 46 ] 
+ Oblivion (2013) [ 47 ] 
+ Interstellar (2014) [ 48 ] 
+ The Jungle Book (2016) [ 49 ] 
+ Rogue One: A Star Wars Story (2016) [ 21 ] 
+ Ghost in the Shell (2017) [ 50 ] 
+ Solo: A Star Wars Story (2018) [ 21 ] 
+ First Man (2018) [ 51 ] 
+ Alita: Battle Angel (2019) [ 52 ] 
+ The Lion King (2019) [ 53 ] 
+ The Irishman (2019) [ 54 ] 
+ Star Wars: The Rise of Skywalker (2019) [ 55 ] 
+ The One and Only Ivan (2020) [ 56 ] 
+ The Midnight Sky (2020) [ 57 ] 
+ In vacanza su Marte (2020) [ 58 ] 
+ Venom: Let There Be Carnage (2021) [ 59 ] 
+ Red Notice (2021) [ 60 ] 
+ Don't Look Up (2021) [ 61 ] 
+ Death on the Nile (2022) [ 59 ] 
+ The Batman (2022) [ 62 ] 
+ Top Gun: Maverick (2022) [ 63 ] 
+ Thor: Love and Thunder (2022) [ 64 ] 
+ The Gray Man (2022) [ 61 ] 
+ Bullet Train (2022) [ 17 ] 
+ Pinocchio (2022) [ 59 ] 
+ Divinity (2022) [ 65 ] 
+ Black Adam (2022) [ 66 ] 
+ Devotion (2022) [ 67 ] 
+ The Fabelmans (2022) [ 68 ] 
+ Avatar: The Way of Water (2022) [ 69 ] 
+ Ant-Man and the Wasp: Quantumania (2023) [ 70 ] 
+ Shazam! Fury of the Gods (2023) [ 17 ] 
+ The Pope's Exorcist (2023) [ 71 ] 
+ The Flash (2023) [ 72 ] 
+ Barbie (2023) [ 73 ] 
+ Gran Turismo (2023) [ 74 ] 
+ The Creator (2023) [ 75 ] 
+ Retribution (2023) [ 76 ] 
+ The Killer (2023) [ 77 ] 
+ The Marvels (2023) [ 78 ] 
+ Candy Cane Lane (2023) [ 79 ] 
+ Poor Things (2023) [ 80 ] 
+ Society of the Snow (2023) [ 81 ] 
+ Aquaman and the Lost Kingdom (2023) [ 82 ] 
+ No Way Up (2024) [ 59 ] 
+ Dune: Part Two (2024) [ 83 ] 
+ Godzilla x Kong: The New Empire (2024) [ 84 ] 
+ Daddio (2024) [ 85 ] 
+ Transformers One (2024) [ 86 ] 
+ Megalopolis (2024) [ 87 ] 
+ Joker: Folie à Deux (2024) [ 88 ] 
+ Venom: The Last Dance (2024) [ 89 ] 
+ Here (2024) [ 90 ] 
+ Paddington in Peru (2024) [ 91 ] 
+ Red One (2024) [ 92 ] 
+ Wicked: Part One (2024) [ 91 ] 
+ Mufasa: The Lion King (2024) [ 93 ] [ 94 ] 
+ Snow White (2025) [ 95 ] 
+ A Minecraft Movie (2025) [ 96 ] 
+ Final Destination Bloodlines (2025) [ 97 ] 
+ How to Train Your Dragon (2025) [ 91 ] 
+ Superman (2025) [ 98 ] 
+ Happy Gilmore 2 (2025) [ 99 ] 
+ A Big Bold Beautiful Journey (2025) [ 100 ] 
+ The Lost Bus (2025) [ 101 ] 
+ Tron: Ares (2025) [ 102 ] 
+ Avatar: Fire and Ash (2025) [ 103 ] 
+ Mercy (2026) [ 104 ] 
+ Project Hail Mary (2026) [ 105 ] 
+ Campbeltown '69 (TBD) [ 106 ] 
+ Play Dead (TBD) [ 107 ] 
+
+ Short films [ edit ] 
+ Megan (2018) [ 108 ] 
+ The Vandal (2021) [ 109 ] 
+ The Shepherd (2023) [ 74 ] 
+
+ See also [ edit ] 
+
+ Film portal 
+ Cinematic virtual reality 
+ Entertainment technology 
+ Extended reality 
+ Holodeck 
+ Virtual camera system 
+ Virtual cinematography 
+
+ Notes [ edit ] 
+
+ ↑ Also known as virtual production ( VP ), immersive virtual production ( IVP ), virtual production technology ( VPT ), or In-Camera Visual Effects ( ICVFX ), and often called The Volume . 
+
+ References [ edit ] 
+
+ ↑ "PRG OverDrive helps film MEGAN to achieve visual goals" . YouTube . 16 November 2017. Archived from the original on 23 November 2020. 
+ 1 2 3 Purtill, James (22 March 2023). "Virtual production studios are replacing green screens as world's largest opens in Melbourne" . ABC News . ABC Science. Australian Broadcasting Corporation . Retrieved 24 March 2023 . 
+ 1 2 Giardina, Carolyn (19 October 2022). "Too Much Volume? The Tech Behind 'Mandalorian' and 'House of the Dragon' Faces Growing Pains" . The Hollywood Reporter . Retrieved 4 February 2023 . 
+ ↑ "In-Camera Visual Effects (ICVFX)" . www.nepgroup.com . Retrieved 4 February 2023 . 
+ 1 2 Nemiroff, Perri; Jones, Tamera (19 July 2024). " 'Game of Thrones' Inspired Roland Emmerich to Take on 'Those About to Die' " . Collider . Retrieved 18 August 2026 . {{ cite web }} : CS1 maint: multiple names: authors list ( link ) 
+ 1 2 "2021: The On-Set Virtual Production Initiative" . www.smpte.org . Retrieved 22 February 2022 . 
+ ↑ "Partnering to Develop Advisory Group of the On-Set Virtual Production (OSVP) Initiative" . systemscontractor . 18 January 2022 . Retrieved 22 February 2022 . 
+ ↑ "SMPTE Hollywood To Explore Lighting and Color Science For Virtual Production" . SHOOTonline . 14 October 2021 . Retrieved 22 February 2022 . 
+ ↑ "AMPAS Science &amp; Technology Council Presents Virtual Production Primer - The American Society of Cinematographers" . theasc.com . Retrieved 22 February 2022 . 
+ ↑ Abram, Cleo . "We Tested Sci-Fi Movie Tech (MKBHD)" . Retrieved 12 March 2023 – via YouTube. 
+ 1 2 VFXアナトミー インカメラVFXによる特撮をTVシリーズで実現！　『暴太郎戦隊ドンブラザーズ』 
+ 1 2 新番組「王様戦隊キングオージャー」の背景CGがハイクオリティーと話題に　グリーンバックを使わない最新撮影技術とは？ 
+ ↑ Casemore, Jamie. "Dark Slope unveils expanded 75,000-square-foot campus" . Retrieved 10 January 2026 . 
+ ↑ "Peacock 'Those About to Die' " . Dimension Studio . Retrieved 18 August 2026 . 
+ ↑ Gartenberg, Chaim (20 February 2020). "How The Mandalorian teamed up with Fortnite creator Epic Games to create its digital sets" . The Verge . Archived from the original on 20 February 2020 . Retrieved 20 February 2020 . 
+ ↑ Lane, Carly (9 June 2021). "Exclusive: Here's When 'The Mandalorian' Season 3 Is Filming; New Details on 'Book of Boba Fett' Connection" . Collider . Archived from the original on 9 June 2021 . Retrieved 9 June 2021 . 
+ 1 2 3 4 Giardina, Carolyn (19 October 2022). "Too Much Volume? The Tech Behind 'Mandalorian' and 'House of the Dragon' Faces Growing Pains" . The Hollywood Reporter . Retrieved 4 February 2023 . 
+ ↑ "ILM STAGECRAFT HONORED WITH ENGINEERING, SCIENCE &amp; TECHNOLOGY EMMY® AWARD" . Industrial Light &amp; Magic . 29 July 2022 . Retrieved 29 July 2022 . 
+ ↑ Peterson, Karen M. (29 April 2022). "How 'Our Flag Means Death' Designers Mixed History With Broad Theatricality" . Variety . Retrieved 16 July 2022 . 
+ ↑ Bui, Hoai-Tran (17 June 2020). "The Obi-Wan Kenobi Disney+ Series Will Use the Same Technology as 'The Mandalorian' " . /Film . Archived from the original on 18 June 2020 . Retrieved 18 June 2020 . 
+ 1 2 3 "StageCraft | Industrial Light &amp; Magic" . www.ilm.com . Retrieved 4 February 2023 . 
+ ↑ Hogg, Trevor. "Virtual Production Now and Going Forward" . The Magazine of the Visual Effects Society . Retrieved 14 October 2025 . 
+ ↑ Dominguez, Noah (14 November 2022). "Andor Actually Used StageCraft Technology Despite Early Reports" . ComicBook.com . Retrieved 25 November 2022 . 
+ ↑ Vegvari, Steve (26 June 2024). "Being Transported by Amazon Studios Virtual Productions at Stage 15" . iPhone in Canada . Retrieved 7 November 2024 . 
+ ↑ "HOUSE OF THE DRAGON MAY LOOK TOTALLY DIFFERENT IN SEASON 2 FOR ONE CONTROVERSIAL REASON" . Inverse . 19 October 2022 . Retrieved 25 October 2022 . 
+ ↑ "Inside Dark Bay, the spinning LED volume at the heart of Netflix's upcoming '1899' " . TechCrunch . 10 February 2022 . Retrieved 20 November 2022 . 
+ ↑ Brooks, Dan. "How ILM Brought Its Own Christmas Magic to The Santa Clauses" . Industrial Light &amp; Magic . Retrieved 24 September 2025 . 
+ ↑ "Silo" . Lux Machina . Retrieved 27 June 2023 . 
+ 1 2 "DNEG 360 Shows" . DNEG . Retrieved 7 November 2024 . 
+ ↑ Failes, Ian (31 May 2024). "See Eyeline Studios' volumetric capture rig in action for 'One Piece' " . Befores and Afters . Retrieved 4 September 2024 . 
+ ↑ Failes, Ian (25 March 2024). "How Eyeline Studios' new volumetric capture tech was used on 'Yu Yu Hakusho' " . Retrieved 4 September 2024 . 
+ ↑ Giardina, Carolyn (28 June 2022). " 'Percy Jackson and the Olympians' Takes ILM Virtual Production Route (Exclusive)" . The Hollywood Reporter . Archived from the original on 28 June 2022 . Retrieved 28 June 2022 . 
+ ↑ "MoTA = @cary_fukunaga" . www.instagram.com . Retrieved 4 February 2023 . 
+ ↑ "Magnopus brings Amazon's Fallout series to life with virtual production powered by Unreal Engine" . Epic Games . 13 May 2024 . Retrieved 30 June 2024 . 
+ ↑ Tantimedh, Adi (14 May 2024). " 'Doctor Who: "BOOM" Sees Steven Moffat Regenerate into Freelancer' " . Bleeding Cool . Retrieved 27 June 2024 . 
+ ↑ Fisher, Jacob (24 June 2021). " 'The Acolyte' Aiming To Begin Filming In February In London" . DiscussingFilm . Archived from the original on 30 June 2021 . Retrieved 30 June 2021 . 
+ ↑ Hogg, Trevor. "Virtual Production Now and Going Forward" . VFX Voice . Retrieved 14 October 2025 . 
+ ↑ McPherson, Chris (5 May 2024). " 'Star Wars: Skeleton Crew' Uses Stop-Motion by Phil Tippett and Old School Matte Paintings [ Exclusive ] " . Collider . Archived from the original on 6 May 2024 . Retrieved 27 June 2024 . 
+ ↑ Basso, Por Iván (3 May 2025). "La magia del virtual production en El Eternauta: "Desde Argentina se pueden hacer cosas muy grandes desde la tecnología" " . infobae (in European Spanish) . Retrieved 5 May 2025 . 
+ ↑ Jones, Tamera; Weintraub, Steven (10 June 2025). " "I Haven't Done It Since 'True Blood'": Alexander Skarsgård Broke His Own Rules for Apple TV+'s Critically Acclaimed 'Murderbot' " . Collider . Retrieved 6 August 2025 . 
+ ↑ Failes, Ian. "VFX Breakdowns A sneak peek at how Christopher Lloyd's Professor Orloff scenes were filmed for 'Wednesday' " . Befores &amp; Afters . Retrieved 27 August 2025 . 
+ ↑ Casemore, Jamie. "Dark Slope unveils expanded 75,000-square-foot campus" . Retrieved 10 January 2026 . 
+ ↑ Shield, Brian. "Last Summer I spent time in Toronto on the new HBO series IT: Welcome to Derry as the Virtual Production Producer for some car process work. I can't wait to see how this turned out. I couldn't have done it without the amazing crew we had. Steve D. it was such a pleasure working with you and the whole VFX team on this. Looks killer!" . LinkedIn . Retrieved 20 July 2025 . 
+ ↑ Casemore, Jamie. "Dark Slope unveils expanded 75,000-square-foot campus" . Retrieved 10 January 2026 . 
+ ↑ Casemore, Jamie. "Dark Slope unveils expanded 75,000-square-foot campus" . Retrieved 10 January 2026 . 
+ ↑ "Autodesk, Lightstorm Entertainment and Weta Digital Drive Virtual Production Forward" . Autodesk, Inc . Retrieved 7 April 2025 . 
+ ↑ "Oblivion" . Lux Machina . Retrieved 4 February 2023 . 
+ ↑ Desowitz, Bill (14 November 2014). "How the 'Interstellar' VFX Team Built Wormholes, Black Holes and Alien Planets" . Indiewire . Retrieved 17 July 2025 . 
+ ↑ Bardini, Julio (14 August 2022). "Industrial Light &amp; Magic's Digital StageCraft Technology: What We Know About the Volume" . Collider . Retrieved 4 February 2023 . 
+ ↑ "Lux Machina Consulting on Instagram: "We had a great time working with Director of Photography Jess Hall on Ghost in the Shell to provide LED green screen replacement for some of the driving scenes in the movie. Contact us for help with any film or television projects! We specialize in capturing realistic environments in the camera as part of the visual effects workflow! Pictured: Pilou Asbaek and Scarlett Johansson in Ghost in the Shell from Paramount Pictures and Dreamworks Pictures." " . Instagram . Retrieved 4 February 2023 . 
+ ↑ Desowitz, Bill (15 October 2018). "Beyond Christopher Nolan: 'First Man' Redefines In-Camera VFX" . IndieWire . Archived from the original on 3 November 2018 . Retrieved 2 November 2018 . 
+ ↑ Desowitz, Bill (12 February 2019). " 'Alita: Battle Angel': Here's How Robert Rodriguez Tried to Channel VFX Master James Cameron" . Indiewire . Retrieved 7 April 2025 . 
+ ↑ "How Cutting-Edge ILM Technology Brought 'The Mandalorian' to Life" . No Film School . 5 February 2020 . Retrieved 26 June 2021 . 
+ ↑ "The Irishman" . Lux Machina . Retrieved 4 February 2023 . 
+ ↑ "Lux Machina Consulting on Instagram: "Congrats to @starwarsriseofskywalker and @theirishmanfilm for the many Oscar nominations this week, including for Visual Effects! We are so grateful to have been a part of both productions. Looking forward to the big night, Feb 5 live at 8e | 5p! . . . . . . #virtualproduction #incameravfx #vfx #film #technology #videoproduction #led #projection #videoscreens #luxmc #luxmachina #consultants #engineers #programmers" " . Instagram . Retrieved 4 February 2023 . 
+ ↑ "The One and Only Ivan" . Technicolor Group . Retrieved 4 September 2024 . 
+ ↑ Mike Seymour (21 January 2021). "The Midnight Sky's Virtual Production using StageCraft" . Fxguide . Retrieved 26 June 2021 . 
+ ↑ Filippo Magnifico (23 December 2020). "In Vacanza su Marte: il film con Boldi e De Sica realizzato con una tecnologia simile a quella di The Mandalorian" . Blog Screenweek . Archived from the original on 4 February 2023 . Retrieved 30 May 2022 . 
+ 1 2 3 4 "DNEG 360 Shows" . DNEG . Retrieved 7 December 2024 . 
+ ↑ "The Next Generation of Extended Reality Sounds Stages" . Lux Machina . Retrieved 4 February 2023 . 
+ 1 2 "Projects - Eyeline Studios" . Eyeline Studios . Retrieved 4 September 2024 . 
+ ↑ Giardina, Carolyn (19 October 2020). " 'The Batman' Using 'Mandalorian' Virtual Production Techniques" . The Hollywood Reporter . Archived from the original on 19 October 2020 . Retrieved 19 October 2020 . 
+ ↑ "Lux Machina Consulting on Instagram: "Congratulations to @topgunmovie "Maverick" on its six @theacademy nominations, including Best Visual Effects and Best Picture! It was an honor for @luxmc_ to be part of such an iconic project by providing in-camera virtual backgrounds and working closely with "Maverick's" overall VFX supervisor Ryan Tudhope and Director of Photography @claudiomirandadop We are thrilled at how much the fans, the critics, and now the Academy of Motion Picture Arts and Sciences have responded to the film. The Oscars will be handed out Sunday, March 12, 2023. Get your popcorn ready! (@luxmc_ is part of @nep_group) #vfx #visualeffects #luxmc #awards #oscars #nominations #academy #topgun #NEP #NEPVS #topgunmaverick #sequel #ICFVX #film #photography #directorofphotography" " . Instagram . Retrieved 4 February 2023 . 
+ ↑ Carolyn Giardina (10 September 2020). "Industrial Light &amp; Magic Expands Virtual Production Services, Supports 'Thor 4' " . The Hollywood Reporter . Retrieved 26 June 2021 . 
+ ↑ "Lux Machina Consulting on Instagram: "Wishing Eddie Alcazar the best of luck as he heads to #Sundance to premier his newest film "Divinity." A portion of the film was shot using the #LuxMC LED volume, and Junaid Baig, VP of Research &amp; Development for #NEPVS, used AI to provide slow motion footage of already animated stop motion sequences on the film." " . Instagram . Retrieved 4 February 2023 . 
+ ↑ Villaverde, Noah (8 June 2022). " 'Black Adam' Director Talks Using Lucasfilm's Volume &amp; Other New Tech" . Heroic Hollywood . Retrieved 19 July 2022 . 
+ ↑ "Devotion" . DNEG . Retrieved 27 June 2024 . 
+ ↑ Kadner, Noah (24 April 2023). "Virtual Production—When The Fabelmans Met The Mandalorian" . Frame.io Insider . Retrieved 26 April 2023 . 
+ ↑ "Virtual Production In Action" . Virtual Production Malta . Retrieved 7 April 2025 . 
+ ↑ Erao, Math (17 May 2021). "Ant-Man and the Wasp: Quantumania Director Shares Photo From The Mandalorian's Virtual Set" . Comic Book Resources . Archived from the original on 17 May 2021 . Retrieved 17 May 2021 . 
+ ↑ "The Pope's Exorcist" . Sensel Studio . Retrieved 3 March 2026 . 
+ ↑ Failes, Ian (29 August 2023). "How those twinning/doubling shots in 'The Flash' were done" . Befores and Afters . Retrieved 4 September 2024 . 
+ ↑ "Barbie" . Lux Machina . Retrieved 27 June 2024 . 
+ 1 2 "Our Work" . DNEG . Retrieved 17 July 2025 . 
+ ↑ "Inside ILM: The Making of The Creator" . 18 February 2024 – via YouTube . 
+ ↑ "Retribution" . Sensel Studio . Retrieved 3 March 2026 . 
+ ↑ Kadner, Noah. "Steven Shulgach on LinkedIn: Adapting to new virtual production tech while implement traditional…" . Linkedlin . Retrieved 30 June 2024 . 
+ ↑ Failes, Ian (10 January 2024). "How ILM's StageCraft was used on 'The Marvels' " . befores &amp; afters . Archived from the original on 10 January 2024 . Retrieved 27 June 2024 . 
+ ↑ "Amazon Studios Debuts AWS-Powered Virtual Production Mega Stage" . Amazon MGM Studios . Retrieved 4 September 2024 . 
+ ↑ Kadner, Noah. "LED Wall Evokes Early-Cinema Effects for Poor Things" . American Cinematographer . Retrieved 30 June 2024 . 
+ ↑ "Behind the VFX of J.A. Bayona's Society of the Snow | Netflix" . 11 December 2023 . Retrieved 30 June 2024 – via YouTube . 
+ ↑ "Aquaman and the Lost Kingdom: Volumetric Capture Technology by Eyeline Studios" . Art of VFX. 2 April 2024 . Retrieved 4 September 2024 . 
+ ↑ Szalai, Georg (30 April 2024). " 'Dune' VFX House DNEG Teams With Dimension on LED Volume Stages in London, Rome" . The Hollywood Reporter . Retrieved 4 September 2024 . 
+ ↑ " 'Godzilla vs. Kong' Sequel reportedly used 'The Mandalorian' LED video wall tech" . Medium. 31 July 2023 . Retrieved 5 June 2025 . 
+ ↑ "Christy Hall Shot Daddio Entirely Inside a Taxi Cab" . 12 September 2023. 
+ ↑ "Transforming the Origins of Optimus Prime: Christopher Batty on His Role in Transformers One" . ProductionHUB . Retrieved 27 August 2025 . 
+ ↑ Couch, Kim Masters, Scott Feinberg, Aaron; Masters, Kim; Feinberg, Scott; Couch, Aaron (9 January 2023). "Francis Ford Coppola's 'Megalopolis' in Peril Amid Ballooning Budget, Crew Exodus (Exclusive)" . The Hollywood Reporter . Retrieved 4 February 2023 . {{ cite web }} : CS1 maint: multiple names: authors list ( link ) 
+ ↑ "Joker: Folie à Deux" . Industrial Light and Magic . Retrieved 7 November 2024 . 
+ ↑ "Venom: The Last Dance" . Industrial Light &amp; Magic . Retrieved 7 December 2024 . 
+ ↑ Wells, Chris. "How virtual production transformed the latest Robert Zemeckis film 'Here' " . Red Shark News . Retrieved 17 July 2025 . 
+ 1 2 3 McGowan, Chris. "Welcoming the Cultural Shift to Virtual Production" . VFX Voice . Retrieved 14 October 2025 . 
+ ↑ "On-Set Visual Effects Services" . The Eisley Company . Retrieved 17 July 2025 . 
+ ↑ Sharf, Zack (5 December 2024). "Barry Jenkins Says All-Virtual Filmmaking 'Is Not My Thing' After Directing 'Mufasa'; Disney Sent Him a Note Worrying That One Long Take Was Too 'Slow' " . Variety . Retrieved 7 December 2024 . 
+ ↑ Zoller Seitz, Matt (5 December 2024). "Moonlight in the Lion's Den: Why Barry Jenkins gave up his improvisational shooting style to spend four years making 'Mufasa' on a soundstage" . Vulture . Retrieved 7 December 2024 . 
+ ↑ Chapman, Rob. "MPC, Snow White, Virtual Art Department FX Artist / TD" . ArtStation . Retrieved 5 June 2025 . 
+ ↑ Priestley, Jenny (9 May 2025). "Providing the virtual production building blocks for A Minecraft Movie" . TVB Europe . Retrieved 20 July 2025 . 
+ ↑ Hooper, Simon (21 May 2025). "How they made the skyview restaurant disaster in Final Destination Bloodlines" . Any Good Films? . Retrieved 5 June 2025 . 
+ ↑ "James Gunn Unveils Behind-the-Scenes Glimpses of 'Superman,' Soaring with Virtual Production at Trilith Studios" . PeachPopFive . Retrieved 27 August 2025 . 
+ ↑ "Eyeline Studios and Scanline VFX recently hosted a screening in Los Angeles to celebrate their work on Happy Gilmore 2. After the screening, Eyeline's Virtual Production Supervisor Tarik Thompson shared how volumetric capture technology and virtual production stages were used to help create the world of Happy Gilmore. He also highlighted the collaboration between Eyeline and Scanline, led by VFX Supervisor Dann Tarmy, to deliver a film that balances nostalgia for longtime fans with fresh energy for a new generation. Congrats to all our artists and technicians who worked on this film. From tournament mayhem to flying golf balls and Happy flashbacks, the teams at Eyeline and Scanline brought their A-game to every frame. #eyelinestudios #scanlinevfx #happygilmore #golf #sports #tournament #adamsandler #netflix #streaming #visualeffedts #virtualproduction #screening (photos by Alex Chun)" . LinkedIn . Retrieved 27 August 2025 . 
+ ↑ Taylor, Drew (18 October 2025). "How Anime Influenced Kogonada's 'A Big Bold Beautiful Journey' " . TheWrap . Retrieved 3 March 2026 . 
+ ↑ Failes, Ian (19 November 2025). "How the bus scenes in 'The Lost Bus' were filmed" . befores &amp; afters . Retrieved 3 March 2026 . 
+ ↑ Failes, Ian (4 December 2025). "The 'TRON: Ares' issue is here!" . befores &amp; afters . Retrieved 3 March 2026 . {{ cite web }} : CS1 maint: url-status ( link ) 
+ ↑ Bittorf, David. "The Making of Avatar 3" . ArtStation . Retrieved 3 March 2026 . 
+ ↑ "Tour Amazon MGM Studios' virtual soundstage that's revolutionizing movies and TV shows through the power of AWS" . Amazon. 20 June 2024 . Retrieved 4 September 2024 . 
+ ↑ "Virtual Productions" . Sensel Studio . Retrieved 3 March 2026 . 
+ ↑ "Campbeltown '69" . Dimension Studio . Retrieved 7 November 2024 . 
+ ↑ "WWII thriller filming on Melbourne's cutting-edge virtual production stage" . FilmInk . Retrieved 6 September 2025 . 
+ ↑ PRG North America (15 November 2017). PRG OverDrive helps film MEGAN to achieve visual goals . Retrieved 17 June 2026 – via YouTube. 
+ ↑ "Lux Machina Consulting on Instagram: "What does it take to make an award winning film? We're glad you asked! Watch the new behind the scenes video and find out how the creative artists were able to seamlessly blend live action video with stop-motion for @eddiealcazar 's #VimeoBestOfTheYear award-winning short film "The Vandal." In "The Making of The Vandal," you'll see how we used our #LUXMC LED stage and interactive lighting sources for the miniature photography. Watch "The Making of The Vandal" via the link in our bio." " . Instagram . Retrieved 4 February 2023 . 
+
+ v t e Extended reality (XR) 
+ From least to most virtual: Augmented reality (AR) 
+ Mixed reality (MR) 
+ Virtual reality (VR) 
+ Virtuality 
+ Concepts Main 
+ Cinematic virtual reality 
+ Computer-mediated reality 
+ Immersion 
+ Metaverse 
+ Avatar 
+ Projection augmented model 
+ " Room-scale " 
+ Six degrees of freedom (6DoF) 
+ Spatial computing 
+ Telepresence 
+ Virtual reality applications 
+ Virtual reality sickness 
+ Virtual world 
+ Other 
+ Camera filter 
+ Quantified self 
+ Screen-door effect 
+ Simulation hypothesis 
+ Transhumanism 
+ Vergence-accommodation conflict 
+ VTuber 
+ Technologies Display 
+ EyeTap 
+ Head-mounted display 
+ optical 
+ Head-up display 
+ Pancake lens 
+ Smartglasses 
+ Virtual reality headset 
+ list 
+ Virtual retinal display 
+ 3D interaction 
+ Brain–computer interface 
+ Eye tracking 
+ Facial motion capture 
+ Finger/hand tracking 
+ Pose tracking 
+ Simultaneous localization and mapping 
+ Software 
+ Asynchronous reprojection 
+ Foveated rendering 
+ Image-based modeling and rendering 
+ Spatial audio 
+ Photography 
+ 360-degree video 
+ Free viewpoint television 
+ Omnidirectional camera 
+ VR photography 
+ Other 
+ Haptic suit 
+ Omnidirectional treadmill 
+ Wearable computer 
+ Peripherals 
+ Cyberith Virtualizer 
+ Leap Motion 
+ Oculus Touch 
+ PlayStation Move 
+ Razer Hydra 
+ Virtuix Omni 
+ Wired glove 
+ Wizdish ROVR 
+ Companies 
+ Apple Inc. 
+ Brilliant Labs 
+ ByteDance 
+ Collabora 
+ Google 
+ Hikky 
+ HTC 
+ Khronos Group 
+ Liquid Image 
+ Magic Leap 
+ Meta Platforms 
+ Reality Labs 
+ Microsoft 
+ Niantic, Inc. 
+ Niantic Spatial 
+ Pimax 
+ Rokoko 
+ Samsung Electronics 
+ Valve Corporation 
+ Varjo 
+ Vuzix 
+ Devices Current 
+ Apple Vision Pro 
+ Bigscreen Beyond 
+ Golden-i headsets 
+ HTC Vive 
+ Magic Leap 
+ Meta Quest 3 
+ 3S 
+ Open Source Virtual Reality 
+ PICO 4 Ultra 
+ Pimax 
+ PlayStation VR2 
+ Samsung Galaxy XR 
+ Vuzix 
+ Steam Frame 
+ Former 
+ AntVR 
+ castAR 
+ EyePhone 
+ Google Cardboard 
+ Google Daydream 
+ Google Glass 
+ Meta Quest Pro 
+ Microsoft HoloLens 
+ 2 
+ Oculus Go 
+ Oculus Quest 
+ Oculus/Meta Quest 2 
+ Oculus Rift 
+ CV1 
+ S 
+ PICO 4 
+ PlayStation VR 
+ Samsung Gear VR 
+ Sensorama 
+ SixthSense 
+ The Sword of Damocles 
+ VFX1 Headgear 
+ Virtual Boy 
+ Virtual fixture 
+ Virtuality 
+ VR-1 
+ Valve Index 
+ Unreleased 
+ Project Iris 
+ Sega VR 
+ Software General 
+ Interactive art 
+ Virtual graffiti 
+ Metaverse 
+ Pervasive game 
+ Software related to augmented reality 
+ Virtual reality game 
+ Operating systems and desktop environments 
+ Android XR 
+ Meta Horizon OS 
+ version history 
+ visionOS 
+ Windows Mixed Reality 
+ SteamOS 
+ Development tools and game engines 
+ A-Frame 
+ ARCore 
+ ARKit 
+ ARToolKit 
+ Godot Engine 
+ Jetpack Compose XR 
+ Meta Spatial SDK 
+ OpenVR 
+ OpenXR 
+ RealityKit 
+ S&amp;box 
+ Source 2 
+ TabletopKit 
+ Unity 
+ Universal Scene Description 
+ Unreal Engine 
+ WebXR 
+ Games 
+ List of HTC Vive games 
+ List of Meta Quest games 
+ List of Oculus Rift games 
+ List of PlayStation VR games 
+ VR2 
+ Communities and social networks 
+ AltspaceVR 
+ FaceTime for visionOS 
+ Horizon Worlds 
+ NeosVR 
+ Rec Room 
+ Resonite 
+ Sansar 
+ Sensorium 
+ Sinespace 
+ VRChat 
+ VTime XR 
+
+ Portals
+ Technology 
+ Category 
+ Augmented reality 
+ Mixed reality 
+ Virtual reality 
+ Metaverse 
+ Spatial computing 
+ Commons 
+ Augmented reality 
+ Mixed reality 
+ Virtual reality 
+ Metaverse 
+
+ Retrieved from " https://en.wikipedia.org/w/index.php?title=On-set_virtual_production&amp;oldid=1376466609 " 
+ Categories : Cinematic techniques Visual effects Mixed reality On-set virtual production Hidden categories: Articles with short description Short description matches Wikidata Articles to be expanded from September 2023 Use dmy dates from March 2023 All articles with unsourced statements Articles with unsourced statements from March 2023 CS1 maint: multiple names: authors list CS1 European Spanish-language sources (es-es) CS1 maint: url-status 
+
+ This page was last edited on 24 September 2026, at 08:27 &#160;(UTC) . 
+ Page was rendered with Parsoid . 
+ Text is available under the Creative Commons Attribution-ShareAlike 4.0 License ;
+additional terms may apply. By using this site, you agree to the Terms of Use and Privacy Policy . Wikipedia® is a registered trademark of the Wikimedia Foundation, Inc. , a non-profit organization. 
+
+ Privacy policy 
+ About Wikipedia 
+ Disclaimers 
+ Contact Wikipedia 
+ Legal &amp; safety contacts 
+ Code of Conduct 
+ Developers 
+ Statistics 
+ Cookie statement 
+ Mobile view 
+
+ Search 
+
+ Search 
+
+ Toggle the table of contents 
+
+ On-set virtual production 
+
+ 3 languages 
+
+ Add topic

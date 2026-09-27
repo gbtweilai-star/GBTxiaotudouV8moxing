@@ -28,6 +28,15 @@ _KEY_CHAIN = [
                  "https://api.anthropic.com", "claude-sonnet-4-20250514"),
     ("gemini",   ["GEMINI_API_KEY"],
                  "https://generativelanguage.googleapis.com/v1beta", "gemini-2.0-flash"),
+    # ── 土豆大模型（本机原生端点 · 2026-09-26 主人令「直接接上」）────────────────
+    # 排在链尾作**本地兜底**（云端全缺 key 时才自动落到它），也可用环境变量**显式选用**：
+    #   setx GBT_POTATO_API_KEY local   → 进入链条；setx GBT_LLM_PROVIDER potato → 强制走土豆
+    # 🔴 现状如实：8111 端点当前是**假端点**（同批实测回显自证「(假端点回显)」，不能思考）；
+    #    换真 vLLM 只改 GBT_POTATO_BASE_URL 一行。首位仍是 agnes（Owner 2026-09-19 指定契约，
+    #    test_framework 钉着）——**不抢主模型位，不越权**。
+    ("potato",   ["GBT_POTATO_API_KEY"],
+                 os.environ.get("GBT_POTATO_BASE_URL", "http://127.0.0.1:8111/v1"),
+                 os.environ.get("GBT_POTATO_MODEL", "gbt-potato-v8")),
 ]
 PROVIDER = ""
 API_KEY  = ""

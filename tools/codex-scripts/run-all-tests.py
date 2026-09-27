@@ -210,6 +210,11 @@ def main() -> int:
     _total_files = len(files)                      # 🔴 现数（不写死总数）
     if args.filter:
         files = [f for f in files if args.filter in f.name]
+        if not files:
+            # 🔴 2026-09-26 自纠：--filter 拼错时原版会空跑 0 个文件然后退出 0（"全绿"）——
+            #    isolation_sweep 对同款「空绿」已立过判据：一次**没扫**不许当干净。
+            print("🔴 --filter %r 没有匹配到任何测试文件 —— 本次一个都没扫，不许当全绿" % args.filter)
+            return 2
     _batch_note = ""
     if args.batch:
         # 分批：内存紧时把全仓拆成几段跑完。**每批印出自己的范围** —— 拼起来才是全仓结论。
@@ -305,7 +310,13 @@ def main() -> int:
                 bad = bad + [{"file": r["file"], "result": "PYTEST_FAIL", "ran": None,
                               "secs": 0, "fails": [], "tail": tail} for r in zero]
         except Exception as exc:  # noqa: BLE001
+            # 🔴 2026-09-26 自纠：pytest 二遍跑不动（超时/异常）时原版只印一行就当没事 ——
+            #    这批文件停在 NO_TESTS，而 bad 的收集条件不含 NO_TESTS ⇒
+            #    "pytest 文件一个没验证成"却计"未过 0 个"退出 0（报成功但没干）。
+            #    现在如实记成 PYTEST_ERROR 进 bad：它不是"测试红"，是"没跑成"，fail-closed。
             print("  pytest 跑不动：%s: %s" % (type(exc).__name__, exc))
+            bad = bad + [{"file": r["file"], "result": "PYTEST_ERROR", "ran": None,
+                          "secs": 0, "fails": [], "tail": str(exc)[:200]} for r in zero]
 
     print()
     print("=" * 78)
@@ -336,7 +347,10 @@ def main() -> int:
                                    encoding="utf-8")
         print()
         print("明细已写", args.json)
-    return 0
+    # 🔴 2026-09-26 自纠：原来无条件 return 0 —— 调用方/CI 无法用退出码区分"全绿"与"未过 8 个"。
+    #    现在口径：0=全绿 · 1=有未过 · 2=定向空扫 · 3=负载闸拒绝 · 4=--batch 用法错。
+    #    PYTEST_ERROR/PYTEST_FAIL 都在 bad 里 ⇒ 一并算"未过"，不许静默归零。
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":

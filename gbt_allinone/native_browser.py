@@ -245,27 +245,29 @@ class _CdpWebSocket:
             "Sec-WebSocket-Version: 13\r\n"
             "\r\n"
         ).encode("ascii")
-        sock.sendall(request)
-        header = bytearray()
-        while b"\r\n\r\n" not in header:
-            chunk = sock.recv(4096)
-            if not chunk:
-                sock.close()
-                raise _CdpUnavailable("CDP WebSocket 握手断开")
-            header.extend(chunk)
-        raw_header, _, rest = bytes(header).partition(b"\r\n\r\n")
-        first = raw_header.split(b"\r\n", 1)[0].decode("latin-1", "replace")
-        if " 101 " not in first:
+        try:
+            sock.sendall(request)
+            header = bytearray()
+            while b"\r\n\r\n" not in header:
+                chunk = sock.recv(4096)
+                if not chunk:
+                    raise _CdpUnavailable("CDP WebSocket 握手断开")
+                header.extend(chunk)
+            raw_header, _, rest = bytes(header).partition(b"\r\n\r\n")
+            first = raw_header.split(b"\r\n", 1)[0].decode("latin-1", "replace")
+            if " 101 " not in first:
+                raise _CdpUnavailable(f"CDP WebSocket 握手失败: {first[:120]}")
+            expected = base64.b64encode(hashlib.sha1(
+                (key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").encode("ascii")
+            ).digest()).decode("ascii").lower()
+            match = re.search(r"(?im)^Sec-WebSocket-Accept:\s*(\S+)", raw_header.decode(
+                "latin-1", "replace"))
+            if match and match.group(1).strip().lower() != expected:
+                raise _CdpUnavailable("CDP WebSocket 握手校验失败")
+        except Exception:
+            # 🔴 2026-09-26 修：握手中途任何异常原来都漏关 socket（sendall/recv 抛 OSError 时无人收尸）
             sock.close()
-            raise _CdpUnavailable(f"CDP WebSocket 握手失败: {first[:120]}")
-        expected = base64.b64encode(hashlib.sha1(
-            (key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").encode("ascii")
-        ).digest()).decode("ascii").lower()
-        match = re.search(r"(?im)^Sec-WebSocket-Accept:\s*(\S+)", raw_header.decode(
-            "latin-1", "replace"))
-        if match and match.group(1).strip().lower() != expected:
-            sock.close()
-            raise _CdpUnavailable("CDP WebSocket 握手校验失败")
+            raise
         self._sock = sock
         self._buffer.extend(rest)
         self._closed = False

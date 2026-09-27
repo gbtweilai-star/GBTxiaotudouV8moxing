@@ -108,7 +108,11 @@ def _run_audit(probe=False):
     # wf_define+wf_run：验证运行记录真落盘
     gbt.run_task('wf_define', {'name': 'truth-wf', 'nodes': [{'id': 'a', 'kind': 'health', 'params': {}}]})
     gbt.run_task('wf_run', {'name': 'truth-wf'})
-    runs_exist = Path('gbt_allinone/store/wf_runs').exists() and any(Path('gbt_allinone/store/wf_runs').glob('truth-wf*'))
+    # 🔴 2026-09-26 修：原来用相对 CWD 的 Path('gbt_allinone/store/wf_runs') 判"真落盘"——
+    #    从其它目录跑恒判 FAKE（假红）。走 _paths.STORE_DIR 单一来源。
+    from . import _paths
+    _wf_runs = Path(_paths.STORE_DIR) / "wf_runs"
+    runs_exist = _wf_runs.exists() and any(_wf_runs.glob('truth-wf*'))
     results['REAL' if runs_exist else 'FAKE'].append(f'engine(落盘={runs_exist})')
 
     # sched_define：验证调度条目真写入

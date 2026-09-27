@@ -32,6 +32,14 @@ import subprocess
 import sys
 import time
 
+# 🔴 2026-09-26 补：Windows 管道/重定向下 stdout 回落 GBK，emoji 一打印就崩；与 self_model.py 同一款补丁
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 WS = pathlib.Path(__file__).resolve().parents[2]
 LEDGER = WS / ".security/ledger.jsonl"
 MPCMDRUN = pathlib.Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "Windows Defender" / "MpCmdRun.exe"

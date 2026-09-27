@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GBT小土豆V8 · 上帝视角</title>
+<!-- 上帝视角 · 全框架实时指挥台 · 数据源：panel /api/state · /api/events · /api/capabilities（同源 Bearer）-->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#060312;color:#e9e4f5;font-family:"Microsoft YaHei",sans-serif;overflow:hidden}
+.hud{display:flex;justify-content:space-between;padding:10px 18px;font:600 11px Consolas,monospace;letter-spacing:2px}
+.live{color:#a855f7;animation:blink 1.6s infinite}@keyframes blink{50%{opacity:.25}}
+.grid{display:grid;grid-template-columns:300px 1fr 320px;grid-template-rows:64px 1fr;gap:8px;height:calc(100% - 40px);padding:0 12px}
+.cell{background:#120726d9;border:1px solid #7c3aed44;border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.cell h3{font:700 10.5px Consolas;letter-spacing:1.5px;color:#22d3ee;padding:8px 10px;border-bottom:1px solid #7c3aed33}
+.cell .body{flex:1;overflow:auto;padding:6px 10px;font-size:11px;line-height:1.85}
+.vitals{grid-column:1/4;display:flex;align-items:center;gap:22px;padding:0 16px;font:600 12px Consolas}
+.vitals b{color:#34d399;font-size:15px}.vitals .warn{color:#f59e0b}.vitals .bad{color:#ec4899}
+.kv{display:flex;justify-content:space-between;border-bottom:1px solid #ffffff0a;padding:3px 0}
+.kv span:last-child{color:#22d3ee;font-variant-numeric:tabular-nums}
+.ev{border-bottom:1px solid #ffffff0a;padding:3px 0;font:10.5px Consolas;color:#b9aadf;animation:fin .3s}
+.ev b{color:#ec4899}@keyframes fin{from{opacity:0;transform:translateY(-3px)}}
+.cap{cursor:pointer;padding:2px 0}.cap:hover b{color:#22d3ee}
+.cap b{font-weight:600}.cap s{text-decoration:none;color:#5f5680;font-size:10px}
+.loopbox{border:1px solid #7c3aed44;border-radius:8px;padding:7px 9px;margin-bottom:7px}
+.loopbox b{font-size:11.5px;color:#d9c9ff}.loopbox p{font-size:10px;color:#8d80b5;line-height:1.7}
+.st{display:inline-block;padding:1px 7px;border-radius:99px;font-size:9px;margin-top:3px}
+.st.ok{background:#34d39922;color:#34d399}.st.pend{background:#f59e0b22;color:#f59e0b}
+#tokbar{position:fixed;inset:0;background:#060312f2;z-index:99;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+#tokbar input{width:420px;padding:10px 14px;background:#170a30;border:1px solid #7c3aed66;color:#e9e4f5;border-radius:8px;font:13px Consolas}
+#tokbar button{padding:9px 26px;background:linear-gradient(90deg,#7c3aed,#a855f7);border:0;color:#fff;border-radius:8px;cursor:pointer;font-size:13px}
+#tokbar p{color:#8d80b5;font-size:11.5px;max-width:520px;text-align:center;line-height:1.8}
+</style></head>
+<body>
+<div id="tokbar">
+  <b style="color:#e9e4f5;font-size:15px">上帝视角 · 令牌验证</b>
+  <input id="tok" placeholder="粘贴 GBT_WALLET_API_TOKEN 的值（宿主环境变量）">
+  <button onclick="saveTok()">验证并进入</button>
+  <p>令牌只存本浏览器 localStorage，不落盘不上传。面板接口（/api/state 等）以 Bearer 方式调用；令牌来自桌面应用宿主环境变量（PowerShell: $env:GBT_WALLET_API_TOKEN 可查）。</p>
+</div>
+<div class="hud"><span>◈ GOD VIEW · GBT小土豆V8 全框架指挥台</span><span id="clock"><span class="live">◉ LIVE</span></span></div>
+<div class="grid">
+  <div class="cell vitals" id="vit"><span>框架状态载入中…</span></div>
+  <div class="cell"><h3>◉ 能力总目录（点击查看）</h3><div class="body" id="caps">…</div></div>
+  <div class="cell" style="grid-row:1/3;grid-column:3"><h3>◉ 三闭环产线</h3><div class="body" id="loops"></div>
+    <h3 style="border-top:1px solid #7c3aed33">◉ 最近提交</h3><div class="body" id="commits"></div></div>
+  <div class="cell"><h3>◉ 能力目录明细</h3><div class="body" id="capdet">← 点击左侧能力</div></div>
+  <div class="cell"><h3>◉ 实时事件流（万能插脉冲）</h3><div class="body" id="events">…</div></div>
+</div>
+<script>
+const API = location.origin;
+let TOK = localStorage.getItem('gbt_godview_tok') || '';
+if (TOK) { document.getElementById('tok').value = TOK; document.getElementById('tokbar').style.display = 'none'; boot(); }
+else { document.getElementById('tokbar').style.display = 'flex'; document.querySelector('.grid').style.visibility = 'hidden'; }
+function saveTok(){ TOK = document.getElementById('tok').value.trim(); if(!TOK) return;
+  localStorage.setItem('gbt_godview_tok', TOK); document.getElementById('tokbar').style.display='none';
+  document.querySelector('.grid').style.visibility='visible'; location.reload(); }
+async function api(ep){ const r = await fetch(API+ep, {headers:{'Authorization':'Bearer '+TOK}});
+  if (r.status === 401) throw new Error('unauthorized'); return r.json(); }
+function esc(s){ return String(s).replace(/</g,'&lt;'); }
+async function boot(){
+  try {
+    const [st, caps] = await Promise.all([api('/api/state'), api('/api/capabilities')]);
+    // 能力目录
+    const list = Array.isArray(caps) ? caps : (caps.caps || caps.capabilities || caps.items || []);
+    const capEl = document.getElementById('caps');
+    capEl.innerHTML = '';
+    (Array.isArray(list) ? list : []).forEach(c => {
+      const name = typeof c === 'string' ? c : (c.name || c.kind || c.id || '?');
+      const d = document.createElement('div'); d.className = 'cap';
+      d.innerHTML = '<b>'+esc(name)+'</b>';
+      d.onclick = () => { const det = document.getElementById('capdet');
+        det.innerHTML = '<b>'+esc(name)+'</b><br><span class="kv"><span>完整读数</span></span><pre style="white-space:pre-wrap;color:#b9aadf;font-size:10px">'+esc(JSON.stringify(c,null,1)).slice(0,600)+'</pre>'; };
+      capEl.appendChild(d);
+    });
+    document.getElementById('caps').insertAdjacentHTML('beforeend','<div class="kv"><span>合计</span><span>'+(Array.isArray(list)?list.length:'?')+' 项</span></div>');
+    // 状态板
+    const v = document.getElementById('vit');
+    const keys = Object.keys(st||{});
+    v.innerHTML = keys.slice(0,8).map(k => '<span>'+esc(k)+': <b class="'+(String(st[k]).match(/true|ok/i)?'':'warn')+'">'+esc(String(st[k]).slice(0,24))+'</b></span>').join('') || '<span>状态读数空</span>';
+  } catch(e) {
+    document.getElementById('vit').innerHTML = '<span class="bad">面板接口不可达或令牌失效：'+esc(String(e).slice(0,80))+'</span>';
+  }
+  // 事件流轮询
+  pollEvents(); pollLoops();
+}
+let evSeen = new Set();
+async function pollEvents(){
+  try { const r = await fetch(API+'/api/events', {headers:{'Authorization':'Bearer '+TOK}});
+    const j = await r.json();
+    const arr = Array.isArray(j) ? j : (j.events || j.items || j.list || []);
+    const el = document.getElementById('events'); el.innerHTML = '';
+    arr.slice(-14).reverse().forEach(x => {
+      const line = typeof x === 'string' ? x : JSON.stringify(x);
+      if (evSeen.has(line)) return; evSeen.add(line);
+      const d = document.createElement('div'); d.className = 'ev';
+      d.innerHTML = esc(line).slice(0,160); el.appendChild(d);
+    });
+  } catch(e) { document.getElementById('events').innerHTML = '<div class="ev">事件流不可达：'+esc(String(e).slice(0,60))+'</div>'; }
+}
+function pollLoops(){}
+setInterval(pollEvents, 5000);
+setInterval(() => { document.getElementById('clock').innerHTML = '<span class="live">◉ LIVE</span> ' + new Date().toLocaleTimeString('zh-CN',{hour12:false}); }, 1000);
+</script>
+</body></html>

@@ -40,7 +40,7 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['{"op":"..."}']
 
 ---
 
-## 0. 这个域：21 个位，一张表
+## 0. 这个域：22 个位，一张表
 
 | 能力位 | 它回答什么问题 | 空参要不要授权 | 真实返回的关键字段（本机实测） |
 |---|---|---|---|
@@ -65,10 +65,12 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['{"op":"..."}']
 | `energy_pool` | 有几路模型能源、key 在不在 | 不要 | `count` / `energies` / `dpapi_on_disk` / `dpapi_missing` / `tier_known` / `side_rules` |
 | `context_vault` | 上下文归档库的预算与引擎 | 不要 | `proposition` / `positioning` / `ratio` / `cap_bytes` / `engine` / `db_default` |
 | `ledger_note` | 待落刀登记台账（三原语 + 七道闸） | 不要（`op=append` 是唯一写原语，本规程**没跑**） | `readonly` / `target` / `gates`（7 道）/ `rows` / `last_label` / `honest_boundary` |
+| `tentacle_bind`（2026-09-26 补录，见 §2.8） | **资产↔触手穿透式绑定**：谁连着谁、断没断、穿透率多少、有没有漏绑 | 不要（**读面四 op**：scan/coverage/gaps/ledger；写面命令只在 CLI） | `bindings` / `missing_asset` / `ghost_tentacle`；`coverage` 另给 `live/bound/pct/no_kind/skipped/unbound`；`gaps` 给漏绑清单 |
 
-**21 位逐位静态求值（本机实测，`policy.evaluate(kind, {})`）**：`risk` 全 `low`、`scopes` 全 `[]`。
-也就是说 —— **空参调用下这 21 位一位都不需要授权**。但"空参不要授权"**不等于**"这一位永远不写盘"：
-有 3 位的写盘是**藏在参数里**的（§3 逐条列），另有 1 位（`cross_scan`）会**顺手轻调用别的一百多个位**（§2.2）。
+**22 位逐位静态求值（本机实测，`policy.evaluate(kind, {})`）**：`risk` 全 `low`、`scopes` 全 `[]`。
+也就是说 —— **空参调用下这 22 位一位都不需要授权**。但"空参不要授权"**不等于**"这一位永远不写盘"：
+有 3 位的写盘是**藏在参数里**的（§3 逐条列），另有 1 位（`cross_scan`）会**顺手轻调用别的一百多个位**（§2.2），
+`tentacle_bind` 的写面（bind/unbind/auto/sweep）**只在 CLI 暴露**、api 路由只给读面（§2.8）。
 
 ---
 
@@ -327,6 +329,67 @@ py -3.14 tools/codex-scripts/five-dim.py cap hook_registry '{"op":"redlines"}'
 **读法**：`cap_bytes 67108864` = 64 MiB，**是按可用内存算出来的预算**，不是常量；
 内存不足时它**降级并如实报**（照它自己的口径）。**别把它读成"第四处存储"**。
 
+### 2.8 `tentacle_bind` —— 资产↔触手穿透式绑定（2026-09-26 补录）
+
+**一句话**：**每一个产出物都连着一根触手**——绑定账在盘上、追加式台账只增不删、
+"故障"只剩一种形态：**某根触手断连**。
+
+```powershell
+py -3.14 tools/codex-scripts/five-dim.py cap tentacle_bind
+# ⇒ ok true · bindings 4302 · missing_asset [] · ghost_tentacle []
+py -3.14 tools/codex-scripts/five-dim.py cap tentacle_bind '{"op":"coverage","dir":"skills"}'
+py -3.14 tools/codex-scripts/five-dim.py cap tentacle_bind '{"op":"gaps"}'
+py -3.14 tools/codex-scripts/five-dim.py cap tentacle_bind '{"op":"ledger"}'
+```
+
+**读面四 op（api 路由只暴露这四个）**：
+
+| op | 返回 | 实测值（2026-09-26） |
+|---|---|---|
+| `scan`（默认） | `bindings` / `missing_asset` / `ghost_tentacle` | **4302 绑定 · 0 缺失 · 0 不在册** ⇒ 断连 0 |
+| `coverage`（要 `dir`） | `live` / `bound` / `pct` / `no_kind` / `skipped` / `unbound` | `pct` 老口径（全活文件）、`ok` 门槛仍 `>= 95.0`；`no_kind` 与 `skipped` 分开报（**不挪门线**） |
+| `gaps` | `missing` / `no_kind` / `scanned` / `sample` | **漏绑巡检**：有标签可挂却没绑 = 真缺口；实测 0 |
+| `ledger` | `path` / `lines` | 追加式台账 `state/asset_bindings.jsonl` 行数 |
+
+**写面命令（CLI 专属，api 路由不给）**：`bind` / `unbind` / `auto <目录> <标签>` /
+`sweep <目录>`（按启发式补绑）/ `autobind`（产出即绑，手动触发版）。
+**api 路由只给读面**是有意的：写面会改账，账是"证据面"，**证据面的写动作必须走人手里的 CLI**。
+
+**设计事实（源码现读 · 2026-09-26 大修后）**：
+
+- **标签有两层**：① **能力位 `kind`**（178 个，注册表为准）② **`domain:<域>`**（30 个职业域）——
+  第二层是为"代码也要有归属"加的：`gbt_allinone/security/policy.py` → `domain:security`。
+  `scan` 的"不在册"判据按**两层标签**验（`_valid_labels()`），乱挂标签照样抓得出来；
+- **三级判定顺序**：后缀/路径启发式 → **实现文件归位**（`文件名 == 某 kind`，如
+  `tools/filmkit.py` → `filmkit`、`genoffice_cap.py` → `genoffice`，**只认精确同名**）→
+  **域归属**（`gbt_allinone/<域>/…` → `domain:<域>`，目录名与注册表域同名才成立）；
+- **产出即绑接在总闸上**（`api.py::run_task` 非 probe 分支 → `_autobind_hook`）：
+  任何一次能力调用返回后，把**这次调用期间新出现/新改动的资产**自动绑标签。
+  三条保险：只看资产根（不遍历 `_upstream`）· 模块内 **3 秒节流** · **异常全吞**（绝不许弄坏一次真调用）。
+  水位线 `state/.bind_watermark`：**首次只立基线不绑**（"新于 0"= 全部历史文件，那是存量，
+  存量归 `sweep`；产出即绑只管此后新增）；
+- **性能（实测三次迭代，同一个钩子从 14.3 秒降到 0.28 秒）**：
+  ① `Path.rglob`+`Path.stat` → **`os.scandir`**（Windows 上 `entry.stat()` 免额外系统调用）；
+  ② `_rel()` 里的 `Path.resolve()` → **`_rel_fast` 切前缀**（cProfile 实证：31693 次
+  `nt._getfinalpathname` 烧掉 11.3 秒）；
+  ③ `suggest()` 的后缀**每文件只算一次** + 域集合缓存（否则 12817 文件 × 40 条启发式
+  构造 50 万个 Path 对象）。
+  **联接点（junction）例外**：`skills/remotion-*` 这类要按**解析后的真实路径**记账
+  （不解析会与 `.agents/skills/...` 老账重影 —— 实测 161 条 fake gap），只解析联接点本身；
+- **跳过面（三层，全部实测踩过才定）**：① 任意位置：`.git`/`__pycache__`/`.scratch`/`node_modules`/`.vscode`/`.mimosa`；
+  ② **仓根锚定**：`store`/`state`/`config`/`vendor`/`.pylibs`/`snapshots`/`.backups`
+  （踩坑：用全局子串会误伤第三方仓内部的 `src/config/*.rs` 源码目录）；
+  ③ **`gbt_allinone/store/` 用白名单** `STORE_KEEP`（`devoured`/`life_vault`/`visual_memory`/`vision`/`life`
+  进账，其余含 **store 根文件**默认跳过——踩坑：黑名单只列子树 ⇒ `store/audit.jsonl` 漏网被绑给了 `echo`）；
+  ④ **运行足迹**：`_*.py`/`_*.txt`/`*.tmp`/`*.deleted`（与 `inventory` 的 transient 判据逐字对齐）；
+- **映射的 kind/域必须真在注册表里**——曾经映射过不存在的名字（`image_gen`/`state`/`notes`）
+  导致 91 条"触手不在册"，被 `scan` 抓出来后修正（这就是"断连只剩一种形态"的用法）。
+
+**🔴 本规程修过它的一个真缺陷（2026-09-26）**：`scan()` / `coverage()` 原来把**人读行直接打 stdout**，
+而 api 路由调的就是这两个函数 ⇒ **JSON 契约被污染**（`five-dim.py cap tentacle_bind` 的输出无法被
+`json.load` 解析）。修法：两函数加 `verbose` 参数，**CLI 传 True、api 走默认 False** ——
+保留人读、保证机读。**同类位都要按这条检查**（凡"有人读行 + 被 api 调用"的模块都有这个坑）。
+
 ---
 
 ## 3. 授权门：哪一位在什么条件下要什么作用域
@@ -474,7 +537,9 @@ py -3.14 tools/codex-scripts/five-dim.py cap hook_registry '{"op":"redlines"}'
 | 本规程（源） | `<仓>/skills/gbt-system/SKILL.md` —— 随仓版本管理，是真身 |
 | 本规程（装机） | `~/.openclaw-autoclaw/skills/gbt-system/SKILL.md`（本仓 AGENTS.md 指定的托管目录） |
 | 图鉴登记 | `tools/codex-scripts/omni.py` 的 `DISTILLED_DOMAINS` 里 `"system": "gbt-system"` |
-| 能力位名单（唯一真相） | `state/skill_atlas.json` 里 `domain == "system"` 的 21 条 |
+| 能力位名单（唯一真相） | `state/skill_atlas.json` 里 `domain == "system"` 的 **22 条**（原 21 + `tentacle_bind`） |
+| 绑定系统本体 | `<仓>/tools/tentacle_bind.py`（`scan:160` / `coverage:184` / `main:208`；账 `state/asset_bindings.json` + 台账 `state/asset_bindings.jsonl`） |
+| 绑定系统的分派 | `<仓>/gbt_allinone/api.py` 的 `if kind == "tentacle_bind":`（**只给读面三 op**） |
 | 授权策略（只读核对） | `gbt_allinone/security/policy.py` |
 | 万能插本体 | `tools/codex-scripts/five-dim.py`（走的仍是 `run_task` 唯一门） |
 
@@ -488,7 +553,7 @@ py -3.14 tools/codex-scripts/omni.py gaps
 
 `verify-distill.py` 会替人判四件可判定的事：两份产物**逐字节相同**、
 frontmatter 有 `name`/`description`、规程里点名的**每个能力位在图鉴里真存在**、
-以及**这个域 21 位一个都没漏点**。
+以及**这个域 22 位一个都没漏点**。
 
 ---
 

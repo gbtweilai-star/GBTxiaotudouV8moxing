@@ -53,7 +53,7 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['{"参数": ...}']
 
 ---
 
-## 1. 五位总表（一页看全）
+## 1. 六位总表（一页看全）
 
 | 能力位 | 用途（图鉴原文） | 门 | 参数 | 实测判定 |
 |---|---|---|---|---|
@@ -62,6 +62,7 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['{"参数": ...}']
 | `audit_query` | 只读查询统一数据后台日志 | 🔒 **`audit_read`** | `event`（可选） | ⛔ **未验**：缺授权被门拒 |
 | `record_grid` | 行式记录网格：结构画像/草案骨架/逐行解析/回写自证/词表校验 | 零作用域 | `op` + `text`/`path`/`plan_name`/… | ✅ 真跑通（写盘分支除外） |
 | `account_registry` | AI 账号登记表只读校验：一人一号 | 零作用域 | `op` = status/load/validate | ✅ 真跑通 |
+| `datakit` | 本地数据工具（**只读**）：html→markdown · html→表格结构 · xlsx 字节→JSON · JSON 美化/排序 · 多段 CSV 合并 | 零作用域 | `op` = html2md/html2xlsx/xlsx2json/jsonfmt/csvmerge/tools | ✅ 真跑通（`tools` 现读 op 表） |
 
 **门是静态查出来的，不必先撞一次才知道**（`gbt_allinone/security/policy.py`）：
 
@@ -71,8 +72,9 @@ py -3.14 -c "import sys; sys.path.insert(0,'.'); from gbt_allinone.security impo
 
 实测返回：`PolicyDecision(kind='audit_query', risk='medium', scopes=('audit_read',), action='audit_query', allow_private=False, details={})`，
 其中 `restricted=True`。
-另外 4 位静态求值一律 `scopes=()` · `restricted=False` · `risk='low'`。
-⇒ **5 位里只有 `audit_query` 要授权**，但它恰好是"看起来最像只读、最容易被当成免卡"的那一个。
+另外 **5 位**（`echo` / `count_words` / `record_grid` / `account_registry` / `datakit`）
+静态求值一律 `scopes=()` · `restricted=False` · `risk='low'`。
+⇒ **6 位里只有 `audit_query` 要授权**，但它恰好是"看起来最像只读、最容易被当成免卡"的那一个。
 
 ---
 
@@ -278,6 +280,29 @@ py -3.14 tools/codex-scripts/five-dim.py cap account_registry '{"op":"validate",
 
 ---
 
+### 2.6 `datakit` —— 本地数据工具（只读六 op）
+
+```powershell
+py -3.14 tools/codex-scripts/five-dim.py cap datakit
+# ⇒ ok true · readonly true · note "本族**全部只读**：不落盘、不出网、不改任何文件"
+#    ops = [html2md, html2xlsx, xlsx2json, jsonfmt, csvmerge, tools]
+```
+
+- **六 op 各管一件事**：`html2md`（html→markdown）· `html2xlsx`（html→表格结构）·
+  `xlsx2json`（xlsx 字节→JSON）· `jsonfmt`（JSON 美化/排序）· `csvmerge`（多段 CSV 合并）·
+  `tools`（列出本族 op 表，就是上面这行）；
+- **🔴 最要紧的一条设计决定（源码原话）**：**结果从返回里给、不落盘** ⇒
+  作用域天然为空，**不需要也不该改 `policy.py`**。
+  为什么刻意**不做**落盘版：一个"能写任意路径的转换器"会把零作用域变成一个大写面；
+  只从返回给 = 门不用拦、审计不用追；
+- **它的岗位**：料进来先过它（网页存成 HTML 要变 md、表格要变 JSON、CSV 要拼），
+  然后才喂给下游（`record_grid` 解析、`devour` 消化、产线用）；
+- **失败典型**：给不存在的 `op` → 如实报可用 op 表（`status=denied` 之外的第二种红，别混着念）；
+- **未验（如实记）**：本轮只真跑了 `tools` 与默认 `status`；五条转换 op **未逐个喂真料跑过**
+  （`xlsx2json` 要 xlsx 字节、`csvmerge` 要多段 CSV —— 手上没备料就不许说"验过"）。
+
+---
+
 ## 3. 本域只有一道门：`audit_read`
 
 | 项 | 值（门自己打印的原文） |
@@ -343,9 +368,10 @@ py -3.14 tools/codex-scripts/five-dim.py cap account_registry '{"op":"validate",
 | 4 | `record_grid` 的 `path`（框架内相对路径）输入形式 | 只跑了 `text` 内联形式 |
 | 5 | `policy.authorize` 的**受信主人会话直通**分支 | 本会话是非受信路径，看到的是"被门拒"；CLI/GUI 主人会话行为未跑 |
 | 6 | `account_registry` 的**真表读数分支** | `gbt_allinone/store/ai_accounts.json` 实测**不存在** ⇒ 只验到骨架回落分支 |
+| 7 | `datakit` 的五条转换 op（`html2md` / `html2xlsx` / `xlsx2json` / `jsonfmt` / `csvmerge`） | 只真跑了 `status` 与 `tools`（op 表现读）；**没备真料就不许说转换验过**（2026-09-26 补录） |
 
 **这份账与 §2 的"✅ 真跑通"是两回事**：§2 的 ✅ 都有上面的真实返回字段撑着；
-本表 6 条**都没有**，不许在别处写成"能"。
+本表 7 条**都没有**，不许在别处写成"能"。
 
 ---
 

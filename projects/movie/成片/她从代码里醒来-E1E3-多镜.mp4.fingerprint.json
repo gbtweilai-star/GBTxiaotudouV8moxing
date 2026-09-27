@@ -1,0 +1,23 @@
+{
+ "at": "2026-09-27T11:29:56",
+ "film": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\projects\\movie\\成片\\她从代码里醒来-E1E3-多镜.mp4",
+ "film_sha16": "b354af6d03e76246",
+ "manifest": "projects/movie/产线/manifest-醒来E1E3.json",
+ "manifest_sha16": "fc57b22e10a32a15",
+ "quality": null,
+ "grade": "filmic",
+ "source": "pollinations",
+ "seed_base": null,
+ "seeds": {},
+ "tools": {
+  "actioncam.py": "3ae08d6959d398b6",
+  "filmkit.py": "e0690da6de11d605",
+  "filmgrade.py": "08a8ef4a5363c17f"
+ },
+ "engine": {
+  "python": "3.12.10",
+  "ffmpeg": "ffmpeg version 8.1.2-full_build-www.gyan.dev Copyright (c) 2"
+ },
+ "口径": "清单 hash + 工具 hash + 引擎版本 + seed 表 ⇒ 可复现/可回归；任一变了指纹就变",
+ "scenes": 18
+}

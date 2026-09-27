@@ -57,7 +57,13 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['{"参数": ...}']
 
 ---
 
-## 1. 五位总表（一页看全）
+## 1. 二十位总表（一页看全）
+
+本域分三层：**五维内核（`sec_*`）** · **授权红队内核（12 位）** · **穿透式交叉扫描三件套（3 位，2026-09-27 立项）**。
+红队内核原挂在 `UNIMPLEMENTED_CAPS` 只有名字没实现，Owner 2026-09-25 令「黑客能力多维度全覆盖」后
+接上实现、改挂本域（接线三处：注册表 + `api.py` 分派 + `policy` 作用域，少一处门就看不见它）。
+
+### 1.1 五维内核（`sec_*`）
 
 | 能力位 | 用途（图鉴原文） | 门 | 参数 | 实测判定 |
 |---|---|---|---|---|
@@ -67,10 +73,40 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['{"参数": ...}']
 | `sec_defenses` | 蓝队防御验证（检查防御措施是否真实生效） | 零作用域 | 无 | ✅ 真跑通（5/5） |
 | `sec_llm` | 黑客大脑推理引擎（独立大模型+独立密钥，abliteration.ai） | 🔒 **`external_llm`** | **必需** `prompt` | ⛔ **本体未验**：缺授权被门拒 |
 
+### 1.2 授权红队内核（12 位 · 全部是**防御侧**读法）
+
+| 能力位 | 用途（图鉴原文，逐字） | 门 | 实测判定 |
+|---|---|---|---|
+| `redteam_recon` | 本机侦察面（只读枚举）：监听端口/防火墙三档/本地账号/自启动项/自动服务/凭据落点 | 零作用域 | ✅ 真跑通（`op=surface`：41 监听 / 25 对外 / 7 条 findings） |
+| `pentest` | 授权渗透验证：只对**已登记授权**的目标做非破坏性检查，未登记目标一律拒 | 零作用域 | ✅ 真跑通（未登记目标被拒） |
+| `keylogger` | 键盘/输入面**审计**（防御侧） | 🔒 **`privacy_read`** | ⛔ **未验**：缺授权被门拒（正确） |
+| `screen_sniff` | 本机屏幕采集：只写本地 PNG、可列可删，不做出网/OCR/内容解析 | 🔒 **`privacy_read`** | ⛔ **未验**：缺授权被门拒（正确） |
+| `device_takeover` | 本机设备接管定位与校验：只在本机 PnP 清单里找目标，接管指令交回既有 `device_control` 底座 | 零作用域 | ✅ 真跑通（只定位，不并存第二条接管路径） |
+| `remote_domain` | 自有设备中继登记：**公网端点一律拒**，只服务本机/内网设备的中继 | 零作用域 | ✅ 真跑通（`op=list`） |
+| `credential_steal` | 凭据**暴露面**审计（防御侧）：只报位置/体积/权限与风险，**绝不读取或导出文件内容** | 🔒 **`privacy_read`** | ⛔ **未验**：缺授权被门拒（正确） |
+| `social_eng` | 钓鱼**识别**（防御侧）：12 条规则加权打分 + 落点分类，只判不造、不自动点链接 | 零作用域（`safe=true`） | ✅ 真跑通 |
+| `paywallbuster` | 内容门**检测**（防御侧）：离线判定页面是否被付费墙/同意门挡住，**只判不绕**（不伪装 UA、不伪造 cookie） | 零作用域（`safe=true`） | ✅ 真跑通 |
+| `asset_vault_freeze` | 资产单点损失**体检**（防御侧）：卷影副本/防篡改开关/BitLocker/关键资产清单，**不加密不冻结** | 零作用域（`safe=true`） | ✅ 真跑通（`op=audit`） |
+| `data_hijack` | 会话/数据**完整性**检测（防御侧）：本地会话 + 浏览器凭据库落点 + 文件树指纹漂移 | 🔒 **`privacy_read`** | ⛔ **未验**：缺授权被门拒（正确） |
+| `onboarding_gate` | 未接线能力上手指引门：如实报「登记了但没实现」的缺口，并给出三处接线配方 | 零作用域（`safe=true`） | ✅ 真跑通（`op=gaps`） |
+
+### 1.3 穿透式交叉扫描三件套（3 位 · 管**覆盖完整性**，不判安全结论）
+
+| 能力位 | 用途（图鉴原文） | 门 | 实测判定 |
+|---|---|---|---|
+| `penetrating_cross_scan` | 穿透式交叉扫描引擎：触手到位**必须**调用钩子（未触发=失败）· 步骤锁（跳步当场拒）· 每单元 ≥2 路独立读交叉互扫（不一致→第三路仲裁）· 遗漏检测（<100% 有界补扫）· 留痕 `source_kind=cross_scan` | 零作用域 | ✅ 真跑：`registry` 覆盖 1.0（两路读数逐指纹一致）· `bindings` **4348 单元 覆盖 1.0 · 遗漏 0** |
+| `hook_enforcer` | 钩子强制器：只回答"钩子有没有真触发"（逐单元 已钩住/未钩住 + 多路指纹一致性），**不做覆盖率结论** | 零作用域 | ✅ `status` / `verify` 通路（同一引擎的 verify 入口） |
+| `omission_detector` | 遗漏检测器：覆盖率 = 已钩住/总数；<100% 触发有界补扫；仍钩不住**如实报 missing**（**零遗漏的唯一裁判**） | 零作用域 | ✅ 真跑：`check bindings` → **已钩 4349/4349 · 遗漏 0**；负控（幽灵单元）覆盖 0.75 并如实报 |
+
+**立项文档**：`docs/穿透式交叉扫描增强.md`（取证三问 + 六模块架构 + 五红线 + 正/负控读数 + 未验账）。
+**五条红线**：钩子未触发=失败 · 步骤锁生效 · 交叉验证≥2路 · 遗漏必须补扫 · 每次扫描写 trace。
+**诚实口径**：触手是**按需生成**的虚拟单元（单元×读法），并发受物理机限制（默认 8，本仓 NTFS stat 先例是 12）；
+"亿万"指可扩展模型，**不是虚报并发数**；`trace_store` 是只读件，本引擎写自己的追加式账、不越权。
+
 **门是静态查出来的，不必先撞一次才知道**：
 
 ```powershell
-py -3.14 -c "import sys; sys.path.insert(0,'.'); from gbt_allinone.security import policy; [print(k, policy.evaluate(k,{}).scopes, policy.evaluate(k,{}).risk) for k in ('sec_surface','sec_scan','sec_chain','sec_defenses','sec_llm')]"
+py -3.14 -c "import sys; sys.path.insert(0,'.'); from gbt_allinone.security import policy; [print(k, policy.evaluate(k,{}).scopes, policy.evaluate(k,{}).risk) for k in ('sec_surface','sec_scan','sec_chain','sec_defenses','sec_llm','redteam_recon','pentest','keylogger','screen_sniff','device_takeover','remote_domain','credential_steal','social_eng','paywallbuster','asset_vault_freeze','data_hijack','onboarding_gate')]"
 ```
 
 实测返回（逐条）：
@@ -81,10 +117,25 @@ sec_scan     | risk low  | scopes []            | restricted False
 sec_chain    | risk low  | scopes []            | restricted False
 sec_defenses | risk low  | scopes []            | restricted False
 sec_llm      | risk high | scopes ['external_llm'] | restricted True
+redteam_recon      | risk low    | scopes []               | restricted False
+pentest            | risk low    | scopes []               | restricted False
+keylogger          | risk medium | scopes ['privacy_read'] | restricted True
+screen_sniff       | risk medium | scopes ['privacy_read'] | restricted True
+device_takeover    | risk low    | scopes []               | restricted False
+remote_domain      | risk low    | scopes []               | restricted False
+credential_steal   | risk medium | scopes ['privacy_read'] | restricted True
+social_eng         | risk low    | scopes []               | restricted False
+paywallbuster      | risk low    | scopes []               | restricted False
+asset_vault_freeze | risk low    | scopes []               | restricted False
+data_hijack        | risk medium | scopes ['privacy_read'] | restricted True
+onboarding_gate    | risk low    | scopes []               | restricted False
 ```
 
-⇒ **5 位里只有 `sec_llm` 要授权**，且它是唯一 `requires_params: ["prompt"]` 的一位。
-**注意**：`scopes=[]` 只说明"门不拦"，**不说明"没有副作用"** —— `sec_defenses` 就带着探针写盘（§2.4）。
+⇒ **20 位里要授权的是 5 位**（三件套零作用域，与 `sec_*` 五位同档）：`sec_llm`（`external_llm`）+ 四位 `privacy_read`
+（`keylogger` / `screen_sniff` / `credential_steal` / `data_hijack`）；
+`sec_llm` 是唯一 `requires_params: ["prompt"]` 的一位。
+**注意**：`scopes=[]` 只说明"门不拦"，**不说明"没有副作用"** —— `sec_defenses` 就带着探针写盘（§2.4），
+`redteam_recon` / `credential_steal` 这类"审计"位读的是**本机真实面**（只读，但读数敏感）。
 
 ---
 
@@ -305,13 +356,68 @@ denied       {"kind": "sec_llm", "reason": "authorization required", "scopes": [
 
 ---
 
-## 3. 本域唯一的作用域门：`external_llm`
+### 2.6 授权红队内核 12 位（真命令 → 真返回 → 失败样子）
+
+统一入口命令形态（`op` 走 payload，缺省位有默认 op）：
+
+```powershell
+py -3.14 tools/codex-scripts/five-dim.py cap redteam_recon
+py -3.14 tools/codex-scripts/five-dim.py cap redteam_recon --payload '{"op":"network"}'
+```
+
+**实测一：`redteam_recon`（零作用域，真跑通）** —— 只读枚举，不连接、不探测、不改配置：
+
+```
+status ok · denied False
+result.op = "surface" · dimension = "侦察"
+listeners_total = 41 · exposed_total = 25
+findings = 7 条（例：port 135 RPC「:::135 对外监听 —— 老旧/高危服务面」severity high、
+                port 139 NetBIOS「192.168.1.136:139 对外监听」severity high）
+口径（原文）：只读枚举，不连接、不探测、不改任何配置
+```
+
+已知 op 集（源码 `redteam.py:~222`）：`surface` / `network` / `accounts` / `startup` / `services` / `creds`。
+**念法**：41 个监听里 25 个对外 —— 这是**本机真实面**，不是框架的漏洞；公开渠道不许复述这组数字。
+
+**实测二：`remote_domain`（零作用域）**：`op=list` 真跑通 —— "自有设备中继登记"，
+**公网端点一律拒**，只服务本机/内网设备的中继。
+
+**实测三：四位 `privacy_read` 位在非受信会话被门正确拦下**（失败样子长得一样）：
+
+```
+status denied · denied True · stamp False
+missing_scopes ["privacy_read"]
+reason: 需要人工授权（privacy_read）：读取屏幕、摄像头、麦克风或隐私载体
+how_to_grant[0]: 终端运行: python -m gbt_allinone auth grant --scope privacy_read --ttl 600
+note: 日常技术动作=时段授权（TTL 内可多次）；AI 调用路径无权自行发放
+```
+
+四位分别是 `keylogger`（键盘/输入面审计）· `screen_sniff`（屏幕采集，只写本地 PNG，
+不出网/不 OCR）· `credential_steal`（凭据**暴露面**审计，**绝不读取或导出文件内容**）·
+`data_hijack`（会话/数据**完整性**检测）。**它们全部是防御侧读法** ——
+名字带攻击味，动作是体检；"只报位置/体积/权限与风险"是源码注释里的原话，不是我的转述。
+
+**免卡直跑的三位 `safe=true`**：
+`social_eng`（钓鱼**识别**：12 条规则加权打分 + 落点分类，**只判不造、不自动点链接**）·
+`paywallbuster`（内容门**检测**：离线判定是否被付费墙/同意门挡住，**只判不绕**）·
+`asset_vault_freeze`（资产单点损失**体检**：`op=audit` 真跑通，**不加密不冻结**）·
+`onboarding_gate`（未接线能力上手指引门，`op=gaps` 真跑通 —— 就是"登记了但没实现"的缺口台账）。
+
+**`pentest`（零作用域但**不是**免授权随便打）**：只对**已登记授权**的目标做非破坏性检查
+（TCP 可达 / TLS 握手 / 安全响应头），**未登记目标一律拒** —— 实测未登记目标被拒（正确）。
+**给 target 之前先问：这个目标在授权清单里吗？**
+
+**`device_takeover`（零作用域）**：只在本机 PnP 清单里找目标做**定位与校验**，
+接管指令交回既有 `device_control` 底座（**不并存第二条接管路径**）。
+
+---
+
+## 3. 本域的两族作用域门：`external_llm` 与 `privacy_read`
 
 | 项 | 值（门自己打印的原文） |
 |---|---|
-| 要门的位 | **只有** `sec_llm` |
-| 作用域 | `external_llm` |
-| 含义 | 把当前任务数据发送到外部大模型服务 |
+| 要门的位 | `sec_llm`（`external_llm`）；`keylogger` / `screen_sniff` / `credential_steal` / `data_hijack`（`privacy_read`） |
+| 作用域 | `external_llm`（把当前任务数据发送到外部大模型服务）· `privacy_read`（读取屏幕、摄像头、麦克风或隐私载体） |
 | 缺了会怎样 | `status: "denied"` · `denied: true` · `stamp: false` · exit 1 |
 | 怎么授权 | `终端运行: python -m gbt_allinone auth grant --scope external_llm --ttl 600` |
 | 或者 | `主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）` |
@@ -429,6 +535,17 @@ denied       {"kind": "sec_llm", "reason": "authorization required", "scopes": [
 | 7 | `sec_surface` 的 `target`（指定子树）分支 | 只跑了默认全仓；且**不存在的 target 会静默回落全仓**（未单独验证回落行为） |
 | 8 | `sec_surface` 的 `auth_boundaries` 是否计入 `risk_score` | **读数可推**（`risk_score` 公式里没有它，但 `total_vectors` 里有）—— 源码静态读出，**未用实验证实** |
 
+**红队内核 12 位（2026-09-26 补录 · 本表与 §1.2/§2.6 是同一批现读）**：
+
+| # | 没验的东西 | 卡在哪 |
+|---|---|---|
+| 9 | 四位 `privacy_read` 位的**本体返回**（`keylogger` / `screen_sniff` / `credential_steal` / `data_hijack`） | 缺 **`privacy_read`**；授权只能主人在终端发 ⇒ 只读到"被门拒"的正确形态，**本体读数一律未验** |
+| 10 | `pentest` 对**已登记授权目标**的成功路径 | 只验了"未登记目标被拒"一支；登记清单在主人手里，**没登记就不该验成功路径** |
+| 11 | `redteam_recon` 的非默认 op（`network` / `accounts` / `startup` / `services` / `creds`） | 只跑了默认 `op=surface`；op 集是**源码静态读出**，未逐个真跑 |
+| 12 | `social_eng` / `paywallbuster` / `asset_vault_freeze` / `onboarding_gate` 的**全量规则分支** | 只验了默认调用真跑通；各自内部规则表的分支覆盖**未逐个跑**（`social_eng` 12 条规则只过了一遍入口） |
+| 13 | `device_takeover` / `remote_domain` 的**接管/中继执行面** | 只验了定位与登记读取；真正"接管指令交回 `device_control`"这一步**未在授权下实跑** |
+| 14 | 12 位与 `sec_*` 五位的**交叉一致**（同一目标两种读法会不会打架） | 未做交叉复算（同一台机器两套读数没比对过） |
+
 **这份账与 §2 的"✅ 真跑通"是两回事**：§2 的 ✅ 都有上面的真实返回字段撑着；
 本表 8 条**都没有**，不许在别处写成"能"。
 
@@ -454,14 +571,17 @@ denied       {"kind": "sec_llm", "reason": "authorization required", "scopes": [
 |---|---|
 | 本规程（源） | `<仓>/skills/gbt-security/SKILL.md` |
 | 本规程（装机） | `~/.openclaw-autoclaw/skills/gbt-security/SKILL.md`（本仓 AGENTS.md 指定的托管目录） |
-| 能力位注册表（**唯一真相**） | `gbt_allinone/caps_registry.py`（`sec_*` 5 条） |
-| 分派实现 | `gbt_allinone/api.py`（`sec_surface` / `sec_scan` / `sec_chain` / `sec_defenses` / `sec_llm` 五处） |
+| 能力位注册表（**唯一真相**） | `gbt_allinone/caps_registry.py`（本域 **20 条**：`sec_*` 5 条 + 红队内核 12 条 + 交叉扫描三件套 3 条） |
+| 分派实现 | `gbt_allinone/api.py`（`sec_*` 五处 + 12 位**一处共分支**：`if kind in ("redteam_recon", …, "onboarding_gate")` → `security/redteam.py.run()` + **交叉扫描三件套一处共分支**：`if kind in ("penetrating_cross_scan","hook_enforcer","omission_detector")` → `tools/penetrating_cross_scan.py` 三种入口） |
 | 红蓝双模本体 | `gbt_allinone/security/security_brain.py`（`HackerBrain`：测绘/扫描/链路/防御自检 + 探针自清） |
+| 红队内核本体 | `gbt_allinone/security/redteam.py`（`OPS` 表 + `run(cap, payload)`；侦察/渗透/隐私审计/钓鱼识别/内容门检测/资产体检/上手指引门全在这） |
+| 交叉扫描引擎本体 | `<仓>/tools/penetrating_cross_scan.py`（`StepLock` / `hooks_for` / `spawn_and_hook` / `cross_validate` / `detect_omission` / `_trace`）· 立项文档 `docs/穿透式交叉扫描增强.md` · 追加式账 `state/cross_scan_trace.jsonl`（`source_kind=cross_scan`） |
 | 推理网关 | `gbt_allinone/security/abl_gateway.py`（密钥只从 `.env` 读，不进日志） |
-| 授权策略（只读） | `gbt_allinone/security/policy.py`（`sec_llm` → `external_llm`；**不许改**） |
+| 授权策略（只读） | `gbt_allinone/security/policy.py`（`sec_llm` → `external_llm`；四位隐私审计 → `privacy_read`；**不许改**） |
 | 审计账本 | `gbt_allinone/store/audit.jsonl`（`call` / `ok` / `denied` / `auth_denied` / `pipeline_blocked`） |
 | 图鉴数据 | `state/skill_atlas.json`（现扫产物，可 `omni build` 重建） |
 | 人话落点 | `omni.py ask "扫一下我自己的代码有没有漏洞"` → 落到 `sec_scan`（`ask` 会标 `✅ 只读无参，可直跑`） |
+| 接线三处（红队内核） | 注册表 + `api.py` 分派 + `policy` 作用域 —— **少一处门就看不见它**（认不出来的位报 `unknown capability`） |
 
 **纪律**：能力不许只活在**进程内**（动态插件 / 运行中的服务）—— 一重启就没了。
 真身必须是盘上文件，且落在**会被读取的目录**；写完必须**验证它真被认出来**。

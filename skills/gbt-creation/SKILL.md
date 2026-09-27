@@ -53,13 +53,18 @@ py -3.14 tools/codex-scripts/omni.py list --domain image_video
 
 ---
 
-## 0. 先分清：本规程管 9 个位，不管审美
+## 0. 先分清：本规程管 14 个位，不管审美
 
 | 你想要的 | 走哪份 |
 |---|---|
 | 「这个界面好看吗 / 怎么打磨 / AI 味重不重 / 改版」 | **`gbt-aesthetic`**（三档转盘 + 三轴选型 + `audit_aesthetic.py`） |
-| 「这 9 个能力位怎么调、要不要授权、跑出来长什么样」 | **本规程** |
+| 「这 14 个能力位怎么调、要不要授权、跑出来长什么样」 | **本规程** |
 | 「人话怎么落到能力位」 | `gbt-omni`（`omni.py ask` / `run`） |
+
+**14 位 = 原 9 位**（`create` / `drama` / `music_publishing` / `brand_outro` / `emotion_projection` /
+`scene_anchor` / `code_art` / `render_evolution` / `a1art_skill`）
+**+ 2026-09-26 补录的产线三件**（`genoffice` §3.10 · `blender` §3.11 · `filmkit` §3.12）
+**+ 2026-09-27 补录的外部插件接线**（`gs_h3` §3.13）**与洗图流水线**（`zimage_rewash` §3.14）。
 
 **交叉点只有一处**：`brand_outro` 的片尾、`code_art` 的作品、`a1art_skill` 出的图
 **做得"对不对"用本规程判，做得"好不好看"回 `gbt-aesthetic` 判**。
@@ -540,6 +545,174 @@ result.error_class:"user_error"                     [[exit=1]]
 
 ---
 
+### 3.10 `genoffice` —— 办公文档线（local-first · 2026-09-26 补录）
+
+**一句话**：本地文档处理（PPT/docx/xlsx），**文档处理全本地**；
+只有 `search`/`image`/`media` 三条命令经 Genspark 云端（**会耗积分**）。
+
+```powershell
+py -3.14 tools/codex-scripts/five-dim.py cap genoffice          # → status（下面就是真读数）
+```
+
+实测状态（2026-09-26）：
+
+```
+ok true · version "genoffice 0.10.0"
+cli  "C:\Users\ADMIN\AppData\Local\Programs\GenOffice\resources\cli\genoffice.cmd"
+billing {local_ops:"免费", search_image_media:"Genspark 积分"}
+capabilities: search / image_search / image_generation / media_analysis / app
+              —— 五项全 available:true（前四项 via genspark）
+settings_path "…\AppData\Roaming\GenOffice\ai-settings.json"
+口径 "读类直连 · 写类过 filesystem_write 门 · 文档处理全本地 ·
+      AI 引擎走主人已配的 Genspark 登录态（claude-opus-4-7 · 免 key · 留在免费）"
+```
+
+- **门**：`status` 与读类命令（白名单直连）**免门**；一切**写类**（生成/保存文档）
+  过 **`filesystem_write`**（闸挂处理器层 `genoffice_cap._gate()`，不碰 `policy.py`）；
+- **免费口径（主人钉）**：AI 引擎 = Genspark 账号登录态（免 key）⇒ **不动那份 `ai-settings.json`**，
+  本地文档处理零消耗；**用之前先念一遍 `billing` 字段**（search/image/media 才耗积分）；
+- **未验**：写类命令本轮未真跑；`search`/`image` 的出网与积分消耗**未实测**（要花主人的积分，
+  不擅自烧）。
+
+### 3.11 `blender` —— 三维电影引擎（本机 4.2.16 LTS）
+
+**一句话**：《末班义庄》AAA 画面线的三维引擎——3D 场景 / Cycles 电影级渲染 / 摄影机动画 / VSE。
+
+```powershell
+py -3.14 tools/codex-scripts/five-dim.py cap blender
+```
+
+实测状态：
+
+```
+ok true · version "Blender 4.2.16 LTS" · headless true
+cli "C:\Program Files\Blender Foundation\Blender 4.2\blender.EXE"
+engines ["CYCLES（电影级光追·CPU/GPU）","EEVEE_NEXT（实时·需显示环境）","VSE（视频剪辑）"]
+billing {local_render:"免费（Cycles/Eevee 本地）"}
+口径 "status 免门；一切 run（渲染/脚本/导出）过 filesystem_write 门"
+```
+
+- **门**：`status`（`--version`）免门；**一切 run 过 `filesystem_write`** ——
+  理由写在本体注释里：**Blender 能写任意文件、跑任意 Python**，闸必须挂处理器层；
+  实测**非可信会话的渲染请求被门正确拦下**；
+- **本规程真跑过**：headless `-b --python-expr` 通（本机实测）；
+- **未验**：真出画面（Cycles 渲染）**未在本轮跑**（会吃满 CPU/GPU 且落盘）。
+
+### 3.12 `filmkit` —— 柔性影片产线（清单制 · 任意段加减）
+
+**一句话**：短片/短剧/AI 电影线的**装配层** —— 一切以 `manifest.json` 为唯一真相，
+场（音频 + 3 镜 prompt）与镜（图 + 运镜）**可单独重生成、跳过、插入、摘除**，重装配随时可跑。
+
+```powershell
+py -3.14 tools/codex-scripts/five-dim.py cap filmkit                                        # status
+py -3.14 tools/codex-scripts/five-dim.py cap filmkit '{"op":"plan","manifest":"projects/movie/产线/manifest-醒来E1E3.json"}'
+```
+
+实测状态（2026-09-26）：
+
+```
+status → ok true
+read_ops  ["status","plan"] · write_ops ["gen","seg","build","add","rm"]
+manifests ["projects/movie/产线/manifest-醒来E1E3.json"]
+
+plan   → ok true · title "她从代码里醒来 E1-E3（多镜版）"
+         scenes_total 18 · ready_scenes 18 ·（每场：shots/images/segs/audio/ready 逐项）
+```
+
+- **门**：`status`/`plan` 只读免门；`gen`/`seg`/`build`/`add`/`rm` 过 `filesystem_write`
+  （会生图（出网）、起 ffmpeg、落盘）—— 实测写 op 被门拦下；
+- 🔴 **读数坑（本域实测复现）**：写 op 被拒时，**顶层署名 `denied` 是 `False`**
+  （`policy` 对 `filmkit` 无条目 = 零作用域），**真拒绝在 `result` 里**
+  （`result.denied: true` · `result.gate: "filesystem_write"`）——
+  与 §1 的"两种 `denied`"同源：**一处在信封、一处在处理器**，别混着念；
+- **产出的自动绑定**：`gen` → 图绑 `filmkit` 触手；`seg`/`build` → 段/成片绑 `filmkit`
+  （`filmkit._autobind`，走 `tentacle_bind` 台账）；
+- **接线账（2026-09-26 修）**：此前 `filmkit` **只在注册表登记、`_run_benign` 无分派分支**，
+  调用得到 `not_wired`（"名字有了、门没接"）—— 已补 `gbt_allinone/tools/filmkit_cap.py`
+  + `api.py` 分派分支。**这是"登记 ≠ 接线"的活标本**：框架自带的 `onboarding_gate`
+  就是为这种缺口设的（`gbt-security` §1.2）；
+- **未验**：`add`/`rm` 的产线增删**本轮未真跑**（会改清单 + 可能重渲染）。
+
+---
+
+### 3.13 `gs_h3` —— 外部工作流插件三节点接线（GS-prompt-extend · 2026-09-27 补录）
+
+**一句话**：把外部 ComfyUI 插件的**三个节点一个不差**接成我们的触手——
+**不装 ComfyUI、不下 9B 模型**，规则照用、扩写用我们自己的模型链。
+
+```powershell
+py -3.14 tools/codex-scripts/five-dim.py cap gs_h3                        # status（接线体检）
+py -3.14 tools/codex-scripts/five-dim.py cap gs_h3 '{"op":"nodes"}'        # 三节点接线表 + 就绪探针
+py -3.14 tools/codex-scripts/five-dim.py cap gs_h3 '{"op":"rules","mode":"I2VA"}'
+py -3.14 tools/codex-scripts/five-dim.py cap gs_h3 '{"op":"compose","mode":"T2VA","draft":"雨夜霓虹街道","seconds":6}'
+```
+
+**三节点 ↔ 三个 op（一个不差）**：
+
+| 插件节点 | 我们的 op | 实测就绪态（2026-09-27） |
+|---|---|---|
+| 高尚 GS 模型加载器（`GS_LLM_Loader`） | `loader` | ⛔ **缺依赖**：`llama-cpp-python` 未装 + 模型目录空（**如实报缺，不是坏了**） |
+| 高尚 GS 提示词工作台（`GS_H3_Workbench`） | `workbench`（别名 `expand`） | ✅ 规则/组装**零依赖可跑**；扩写走链（`backend=chain`）或本地（`local`，未验） |
+| 高尚 GS 模型卸载器（`GS_LLM_Unload`） | `unload` | ✅ 可跑（没装依赖时是安全空操作） |
+
+**实测读数（本轮真跑）**：
+
+```
+status  → plugin_loaded true · version "V3.4" · nodes_registered 3 · llama_cpp false
+          ready_for {rules/compose: true, expand_local: false, expand_chain: true}
+          plugin_stdout "[GS-prompt-extend] 已注册 3 个节点（V3.4）"（被捕获，不污染 JSON）
+nodes   → 3 行（插件 NODE_CLASS_MAPPINGS 就这三条，没有第四个）
+rules   → mode I2VA · rule 1322 字 · fields [summary, retention_hint, detailed_description, overall_soundscape]
+compose → 真出 system（"你是一位资深的 MiniMax H3 视频提示词工程师…"）+ user 两段
+expand  → **被 external_llm 门拦下**（正确）；loader → **被 filesystem_write 门拦下**（正确）
+模式表  → 5 种：full_ref 6 字段 · T2VA/I2VA/FL2VA/L2VA 各 4 段（原文逐条可读）
+```
+
+**🔴 三条设计（这就是"偏门"的底气）**：
+
+1. **规则零依赖**：`gs_h3_rules.py` 只 import `os/re` ⇒ `rules` / `compose` **不装任何东西就能跑**；
+2. **40 行垫片替掉 ComfyUI**：插件对 ComfyUI 的依赖只有 8 处
+   （`folder_paths.models_dir` / `folder_names_and_paths` / `supported_pt_extensions` /
+   `get_filename_list` + `mm.soft_empty_cache` / `processing_interrupted` /
+   `InterruptProcessingException` / `unload_all_models`）⇒ 垫片就位后插件**脱离 ComfyUI 独立加载**
+   （`plugin_loaded: true` 就是证据）；**不改第三方源码**；
+3. **扩写不逼人下模型**：`workbench` 的 `backend=chain` 走**我们的模型链**（`llm.unified.ask`）——
+   本地 GGUF 有就用本地的，没有就用我们的能源池。
+
+**接线凭据（触手咬合）**：插件 7 件文件全部绑到 `gs_h3` 触手
+（`gs_engine.py` / `gs_nodes.py` / `gs_h3_rules.py` / `__init__.py` / `web/gs_workbench.js` / `README.md` / `.gitignore`），
+新增文件按启发式 `/gs-prompt-extend/` → `gs_h3` **自动咬合**（新加进来即连）。
+
+**未验（如实记）**：① 本地 GGUF 路（`loader` + `backend=local`）——本机没装 llama-cpp、没下模型，
+代码按插件源码接线但**未在真依赖下跑过**；② `expand` 的**真出词**——缺 `external_llm` 授权（被门拦），
+交付物质量未验；③ 插件前端 `web/gs_workbench.js` 的 `@` 引用交互**属 ComfyUI 画布内行为**，本接线不含。
+
+---
+
+### 3.14 `zimage_rewash` —— 洗图流水线（看图→反推→重绘→放大 · 2026-09-27 补录）
+
+**一句话**：把"看到好图却不知道怎么复现"变成流水线——**反推提示词 → 按降噪强度重绘 → 高清放大**。
+**诚实前置（三环现读，不编）**：
+
+| 环 | 状态 | 说明（现读） |
+|---|---|---|
+| **放大** `upscale` | ✅ **今天就能跑** | ffmpeg `lanczos` + `unsharp`，零依赖；实测 1024→2048（真 2x，1.3MB） |
+| **反推** `reverse` | ⛔ **未接线** | 本仓**没有图像理解能力位**：`vision` 域那位是**屏幕**视觉（`privacy_read` 门）不吃文件；云链 `ask()` 是**纯文本**通道（无 image content part）。⇒ 接线条件：给 `cloud_llm` 加 image part（Agnes 2.5 flash 若认 `image_url` 即通）或装本地 VLM。**临时替代**：模型本体 / `autoglm-image-recognition` 技能代劳（**不是能力位**，别当能力位念） |
+| **重绘** `rewash` | ⛔ **未接线** | 本机**未装 ComfyUI**；pollinations img2img 要**公网可达的图 URL**（本地盘图它拉不到）⇒ 未验 |
+
+**降噪强度口径表（`op=denoise_table` 取，写死的四档）**：
+
+| 档 | 效果 | 适用 |
+|---|---|---|
+| 0.15–0.25 | 抛光：几乎不动，只调色彩/光影/质感 | 精修、轻微美化 |
+| 0.30–0.45 | 受控重绘：保结构与构图，细节重塑 | 人像精修、风格轻迁移 |
+| 0.50–0.65 | 大胆重绘：保"感觉"与布局 | 创意重塑、换风格 |
+| 0.70–0.85 | 新想法：原图只当灵感 | 全新创作 |
+
+**门**：`status`/`denoise_table` 免门；`upscale` 写盘 ⇒ 过 `filesystem_write`（实测非可信会话被拦，正确）。
+
+---
+
 ## 4. 诚实账（**这一段是拿一次假账换来的，不许改回旧说法**）
 
 **这份规程本身就是为了修一次假账而立的**：`creation` / `image_video` 两个域原先都写着
@@ -623,8 +796,10 @@ $env:PYTHONIOENCODING='utf-8'; [Console]::OutputEncoding=[Text.Encoding]::UTF8
 |---|---|---|
 | 本规程（源） | `<仓>/skills/gbt-creation/SKILL.md` | 随仓版本管理，是真身 |
 | 本规程（装机） | `~/.openclaw-autoclaw/skills/gbt-creation/SKILL.md` | **本仓 AGENTS.md 指定的托管目录**；两份必须**逐字节相同** |
-| 能力位真相 | `<仓>/state/skill_atlas.json`（`omni.py build` 现扫） | 9 个位的名字/desc/safe/invoke 以它为准 |
-| 门真相 | `<仓>/gbt_allinone/security/policy.py` | 作用域按 op 收口，**不许改它给自己放行** |
+| 能力位真相 | `<仓>/state/skill_atlas.json`（`omni.py build` 现扫） | **12 个位**（原 9 + `genoffice`/`blender`/`filmkit`）的名字/desc/safe/invoke 以它为准 |
+| 门真相 | `<仓>/gbt_allinone/security/policy.py` | 作用域按 op 收口，**不许改它给自己放行**；产线三件的写面闸在**处理器层**（`genoffice_cap._gate` / `blender_cap` / `filmkit_cap._gate` → `auth_gate.filesystem_write`） |
+| 产线三件本体 | `<仓>/gbt_allinone/tools/genoffice_cap.py` · `blender_cap.py` · `filmkit_cap.py`（后者 2026-09-26 新建，配套分派：`api.py` 的 `if kind == "filmkit":`） | 登记 ≠ 接线：三处（注册表 + 分派 + 门）少一处就是 `not_wired` |
+| 外部插件接线本体 | `<仓>/gbt_allinone/tools/gs_h3_cap.py`（垫片 `_shim()` + 按包加载 `_plugin()`；`api.py` 的 `if kind == "gs_h3":`）· 第三方仓落点 `_upstream/gs-prompt-extend/`（`GBT_GS_PLUGIN_DIR` 可换位置） | 第三方源码**不改**；它的 8 处 ComfyUI 依赖由垫片代偿 |
 | 唯一门 | `<仓>/tools/codex-scripts/five-dim.py` → `gbt_allinone.run_task` | `cap` 一律走 `run_task`，没有第二条路 |
 | 深蒸登记 | `<仓>/tools/codex-scripts/omni.py` 的 `DISTILLED_DOMAINS` | `creation` / `image_video` → `gbt-creation` |
 | 验收器 | `<仓>/tools/codex-scripts/verify-distill.py` | 两份同哈希 / frontmatter / 抓编造 / 抓遗漏 |

@@ -44,7 +44,7 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['<JSON载荷>']
 
 ---
 
-## 0. 这 18 个位分四簇（先认簇，再看位）
+## 0. 这 20 个位分五簇（先认簇，再看位）
 
 | 簇 | 位（kind） | 共 | 共同特征 |
 |---|---|---|---|
@@ -52,8 +52,9 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['<JSON载荷>']
 | **B · 大脑执行层五维** | `brain_route` · `brain_execute` · `brain_verify` · `brain_health` · `brain_unify` | 5 | **零作用域**（但要参数的要参数）；指路/执行/验证/自检/合一 |
 | **C · 自主环** | `autopilot` · `think_loop` · `llm_chat` | 3 | **要 `external_llm`**，且 `autopilot`/`llm_chat`/`think_loop` 都在**侧效应名单**（需人确认） |
 | **D · 本地只读挂件** | `llm_status` · `prompt_bridge` · `model_key_pool` | 3 | 纯本地、零作用域、只读骨架 |
+| **E · 外部 CLI 智能体** | `claude_code` · `codebuddy` | 2 | **零作用域**（2026-09-26 现读）——但这层**有真副作用**：`op=exec` 会起真进程、把 prompt 送出去；"门不拦"≠"没后果"（见 §3·E 与 §4 注） |
 
-**判据**：想让**本机 Codex 干活** → A；想让**框架自己决定调哪个能力** → B；想**出网问别的模型 / 自我循环** → C（先过门）；只想**看一眼状态 / 压提示词** → D。
+**判据**：想让**本机 Codex 干活** → A；想让**框架自己决定调哪个能力** → B；想**出网问别的模型 / 自我循环** → C（先过门）；只想**看一眼状态 / 压提示词** → D；想让**另一个装在本机的编码智能体干活** → E。
 
 ---
 
@@ -79,8 +80,10 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['<JSON载荷>']
 | 看 LLM 网关"形状" | `llm_status` | 只读，零作用域（**别拿它当"已配好"**） |
 | 大白话 → 四段结构化提示词 | `prompt_bridge` | 只读，零作用域（`compile`/`passthrough`/`status`） |
 | 看模型密钥池（按 AI 身份分池） | `model_key_pool` | 只读骨架，零作用域 |
+| 看装没装别的编码 CLI（Claude Code / CodeBuddy） | `claude_code` / `codebuddy`（`op=status`） | 只读，零作用域 |
+| 让装好的编码 CLI 真干一段（`op=exec`） | `claude_code` / `codebuddy` | **零作用域但按"要人点头"对待**（起真进程 + 内容送出机器，§3·E） |
 
-**不在这 18 个里的事**：屏幕/点击/读网页 → `gbt-tentacle`（`tentacle` 域）；Ark 云端生图/生视频/账单 → `gbt-arkcli`；审美/出图 → `gbt-aesthetic`。
+**不在这 20 个里的事**：屏幕/点击/读网页 → `gbt-tentacle`（`tentacle` 域）；Ark 云端生图/生视频/账单 → `gbt-arkcli`；审美/出图 → `gbt-aesthetic`。
 **本域不替它们干活**，也别把 `llm` 当"所有模型相关的事"的垃圾桶。
 
 ---
@@ -165,6 +168,35 @@ py -3.14 tools/codex-scripts/five-dim.py cap model_key_pool
 | `prompt_bridge` | 大白话 → 四段结构化提示词 | 无（仅 `compile`/`passthrough`/`status`） | AUTO | `{"op":"status"}` → `segments ["【角色设定】","【任务目标】","【技术要求】","【输出约束】"]` · **`external_model false`** · `deps "stdlib-only"` · `note "第一刀纯本地；未接外部模型（不引入 external_llm）"`；`{"op":"compile","text":"把这份规程写成 skill"}` → `ok true` · 四段成品正文 · `keywords ["skill","把这份规","程写成"]` · `missing []` · `elapsed_ms 1.08` | **空调用不是 passthrough，是空输入**：`{"ok": false, "reason_code": "empty_input", "prompt": null, "elapsed_ms": 0.0}`（顶层 `status` 仍是 ok，因为门过了）。🔒 **未列出的 op 是 fail-closed**：挂 `external_llm + data_export`（policy 明文），将来接外部模型时必须显式加门 |
 | `model_key_pool` | 模型密钥池（按 AI 身份分池） | 无 | AUTO | `ok true` · **`readonly true`** · `keys_total 0` · `leases_active 0` · `active_by_owner {}` · `by_owner {}` · `known_profiles ["agnes","deepseek"]` · `note "按 AI 身份分池；一触手一号 = 批量注册 = 违规"` | 读数口径：`keys_total 0` = **池里没登记密钥**，**不等于"环境变量没配"**（那是两回事，见 §5）。别把它读成"密钥丢了" |
 
+### E · 外部 CLI 智能体（`claude_code` · `codebuddy`）
+
+| 位 | 用途 | 门 | 实测关键字段（2026-09-26 现读） |
+|---|---|---|---|
+| `claude_code` | Claude Code CLI：Anthropic 官方编码智能体 | 零作用域 | `op=status` → `available: False` · `found: []` · **`searched ["claude","claude.cmd","claude.ps1"]`**（真查 PATH，不是猜的） |
+| `codebuddy` | CodeBuddy CLI：AI 编码助手 | 零作用域 | `op=status` → **`available: True`** · `found: [C:\Users\ADMIN\AppData\Local\codebuddy\bin\codebuddy.EXE, …]` · `searched ["codebuddy","codebuddy.exe","codebuddy.cmd"]` |
+
+**三个 op（本体 `gbt_allinone/cli_agents.py` 的 `run()`）**：
+
+| op | 干什么 | 真读数形态 |
+|---|---|---|
+| `status`（默认） | 只探 PATH（`shutil.which`）+ 报 searched 列表 | `available` / `found` / `searched`；口径原文："真查 PATH，不是读配置猜的" |
+| `version` | 真跑 `--version` 一次 | `version` 字段 |
+| `exec`（同义 `run`/`chat`/`ask`） | **真调**：`argv = [exe] + [prompt_flag] + [prompt]`，`capture_output`、默认 300s 超时、无窗口 | `exit` / `ms` / `stdout[-8000:]` / `stderr[-2000:]` —— **原样带回，不吞错** |
+
+**🔴 两条必须记住的读数纪律**：
+
+1. **没装 ≠ 坏了 ≠ 被门拒**。`claude_code` 实读 `available: False` 时，返回是
+   `status: "needs_dependency"` + `missing`（"找过：claude、claude.cmd、claude.ps1"）+
+   `install_hint`；本体注释原话：*"**不是「坏了」，也不是「被门拒」** —— 是本机没装这个 CLI"*。
+   **念法**："本机没装"，不是"能力不可用"。
+2. **`op=exe` 是真旁路，必须知道它存在**：payload 可给 `exe` 字段指定**绝对路径**，
+   直接绕过 PATH 探测（源码 `exe = p.get("exe") or probe["found"][0]["path"]`）。
+   这设计的用途是"装了但不在 PATH"；**代价是：谁给路径谁就决定了跑哪个二进制** ——
+   所以 `exec` 之前**必须自己确认 `exe` 指向的是那个真 CLI**（§8 红线）。
+
+**未验（如实记）**：`op=version` 与 `op=exec` **本轮都没真跑**（`exec` 会起真进程 + 把内容送出机器，
+那是"要人点头"的动作）；`codebuddy` 只验到 `status`/`available`。
+
 ---
 
 ## 4. 要过哪道门：**静态查，不靠跑它才知道**
@@ -179,10 +211,16 @@ list(d.scopes)                          # → 这个位要过哪几个作用域
 
 | 作用域 | 覆盖哪些位 | 说明原文 |
 |---|---|---|
-| （**零作用域**） | `codex_status` · `codex_tools` · `brain_route` · `brain_execute` · `brain_verify` · `brain_health` · `brain_unify` · `llm_status` · `prompt_bridge` · `model_key_pool` | 10 个位不要授权 |
+| （**零作用域**） | `codex_status` · `codex_tools` · `brain_route` · `brain_execute` · `brain_verify` · `brain_health` · `brain_unify` · `llm_status` · `prompt_bridge` · `model_key_pool` · `claude_code` · `codebuddy` | **12 个位不要授权** |
 | `process_execute` | `codex_thread_new` · `codex_turn_send` · `codex_interrupt` · `codex_chat` | "启动进程、执行命令或连接 MCP/终端服务器" |
 | `external_llm` | `codex_turn_send` · `codex_chat` · `codex_models` · `autopilot` · `llm_chat` · `think_loop` | "把当前任务数据发送到外部大模型服务" |
 | `external_llm`+`data_export` | `prompt_bridge` 的**未列出 op**（fail-closed） | 只为将来接外部模型预留；三个正式 op 不要门 |
+
+> 🔴 **E 簇的诚实注**（2026-09-26 现读）：`claude_code` / `codebuddy` 静态求值
+> `scopes=()` · `risk='low'` · `restricted=False` —— **但 `op=exec` 显然会起进程、把 prompt 送出机器**。
+> 这是"**当前实测状态，不是设计如此**"：门没拦它，**不代表它没后果**。
+> 给它们加作用域（`process_execute` / `external_llm`）是主人的决定，**我不改 `policy.py`**；
+> 在此之前，`exec` 一律**当"要人点头的动作"对待**（见 §3·E 的未验账与 §8 红线）。
 
 **授权只能主人在终端发**：
 
@@ -293,8 +331,9 @@ python -m gbt_allinone auth grant --scope external_llm  --ttl 600
 | 本规程（源） | `<仓>/skills/gbt-llm/SKILL.md` |
 | 本规程（装机·托管目录） | `~/.openclaw-autoclaw/skills/gbt-llm/SKILL.md` |
 | ⛔ **不许装到** | `~/.agents/skills/`（本仓 AGENTS.md 明令禁止） |
-| 能力位名单（18 个） | `<仓>/state/skill_atlas.json`（`domain == "llm"`）· 现扫可重建：`python tools/codex-scripts/omni.py build` |
+| 能力位名单（**20 个** = A 七 + B 五 + C 三 + D 三 + E 二） | `<仓>/state/skill_atlas.json`（`domain == "llm"`）· 现扫可重建：`python tools/codex-scripts/omni.py build` |
 | 授权判据（**单一真相**） | `<仓>/gbt_allinone/security/policy.py` 的 `evaluate()` |
+| E 簇本体 | `<仓>/gbt_allinone/cli_agents.py`（`run():82` · `claude_code():144` · `codebuddy():148` · `_probe()` 走 `shutil.which`） |
 | 门与拒绝信封 | `<仓>/gbt_allinone/run_task`（唯一门）· `tools/codex-scripts/five-dim.py:101-131`（扁平信封的读法） |
 | 自动执行判据 | `<仓>/tools/codex-scripts/omni.py` 的 `required_scopes()` / `auto_run_verdict()` |
 | 语义主路由 | `<仓>/gbt_allinone/semantic_route.py` 的 `available()` · `<仓>/gbt_allinone/llm/cloud_llm.py` 的 `_KEY_CHAIN` |

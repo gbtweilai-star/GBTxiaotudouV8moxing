@@ -1,0 +1,74 @@
+{
+ "title": "动作镜头控制系统 · 演示拍（雨夜窄巷追击）",
+ "quality": "fhd",
+ "work_dir": "projects/movie/生成/actioncam-demo",
+ "out_dir": "projects/movie/成片",
+ "output": "actioncam-demo-拍子表-1080p.mp4",
+ "beats": [
+  {
+   "id": "B1",
+   "move": "pov_bob",
+   "angle": "eye",
+   "dur": 1.4,
+   "prompt": "GoPro action camera POV, first person view of own gloved hands while sprinting through a neon-lit wet alley at night, hands pumping at bottom edge of frame, ground rushing toward viewer, motion blur on alley walls",
+   "seed": 501812
+  },
+  {
+   "id": "B2",
+   "move": "whip_lr",
+   "angle": "eye",
+   "dur": 0.5,
+   "prompt": "rain-soaked neon alley at night, two hooded pursuers silhouetted at the alley mouth, harsh backlight, rain streaks",
+   "seed": 20268846
+  },
+  {
+   "id": "B3",
+   "move": "crash_zoom",
+   "angle": "low",
+   "dur": 0.7,
+   "prompt": "low angle close-up of a hooded pursuer stepping forward in heavy rain, neon rim light on jaw, aggressive forward lean",
+   "seed": 20276765
+  },
+  {
+   "id": "B4",
+   "move": "dolly_in",
+   "angle": "eye",
+   "dur": 1.0,
+   "prompt": "silver-haired young woman in dark jacket glancing back over her shoulder in neon rain, determined eyes, wet hair strands",
+   "seed": 20284684
+  },
+  {
+   "id": "B5",
+   "move": "shake",
+   "angle": "eye",
+   "dur": 0.6,
+   "prompt": "close quarters struggle in torrential rain, two figures colliding, water splash frozen mid-air, gritty energy",
+   "seed": 20292603
+  },
+  {
+   "id": "B6",
+   "move": "impact_hold",
+   "angle": "low",
+   "dur": 0.8,
+   "prompt": "extreme close-up of a fist punching directly toward the camera in heavy rain, knuckles in sharp focus, water spray exploding off the knuckles, dramatic freeze frame impact energy",
+   "seed": 300716
+  },
+  {
+   "id": "B7",
+   "move": "arc_lr",
+   "angle": "high",
+   "dur": 1.0,
+   "prompt": "high angle overhead view of two figures facing off in a narrow neon alley in downpour, long shadows, cinematic staging",
+   "seed": 20308441
+  },
+  {
+   "id": "B8",
+   "move": "push_out",
+   "angle": "dutch",
+   "dur": 0.9,
+   "prompt": "wide shot of a lone silver-haired figure walking away down a rain-flooded neon alley, tilted dutch angle tension, reflections stretching",
+   "seed": 20316360
+  }
+ ],
+ "seed_base": 20260927
+}

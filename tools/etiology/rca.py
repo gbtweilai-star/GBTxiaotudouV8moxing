@@ -30,6 +30,14 @@ import subprocess
 import sys
 import time
 
+# 🔴 2026-09-26 补：Windows 管道/重定向下 stdout 回落 GBK，emoji 一打印就崩；与 self_model.py 同一款补丁
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 WS = pathlib.Path(__file__).resolve().parents[2]
 LEDGER = WS / ".etiology/ledger.jsonl"
 
@@ -222,7 +230,8 @@ def cmd_faultloc(cov_file):
                 b[ln] += 1
             else:
                 a[ln] += 1
-    scores = {ln: a[ln] / ((tf * (a[ln] + b[ln])) ** 0.5) if (a[ln] + b[ln]) else 0 for ln in set(a) | set(b)}
+    # 🔴 2026-09-26 自纠：守卫必须含 tf —— 全部用例通过（tf=0）时分母为 0.0，原版会 ZeroDivisionError
+    scores = {ln: a[ln] / ((tf * (a[ln] + b[ln])) ** 0.5) if (tf and (a[ln] + b[ln])) else 0 for ln in set(a) | set(b)}
     top = sorted(scores.items(), key=lambda kv: -kv[1])[:8]
     ok = bool(top) and top[0][1] > 0
     print(f"  faultloc：{len(tests)} 个用例（失败 {tf}/通过 {tp}）· Ochiai 前 8 行：")

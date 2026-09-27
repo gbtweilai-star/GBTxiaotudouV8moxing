@@ -173,8 +173,6 @@ def redact(text: str, broad: bool = False) -> dict:
                              "起点": m.start(), "长度": len(m.group(0))})
     if not hits:
         return {"ok": True, "hits": [], "redacted": t}
-    # 先按整行处理代码命中，再对其余命中做就地替换（从后往前，避免位移错乱）
-    lines = t.splitlines()
     code_spans = set()
     for kind, pats in FILTER_RULES:
         if kind != "代码片段":
@@ -184,13 +182,25 @@ def redact(text: str, broad: bool = False) -> dict:
                 start = t.rfind("\n", 0, m.start()) + 1
                 end = t.find("\n", m.end())
                 code_spans.add((start, end if end != -1 else len(t)))
+    # 🔴 2026-09-26 自纠：原来「先整行删代码，再按 t 上的旧坐标替换其余命中」——
+    #    整行删除让 out 变短后，旧坐标全部失配，替换落在错误位置 ⇒ 密钥前缀漏过遮蔽
+    #    （隔离复现：`import os\nsk-abcdef123456 is my key` 漏出 `sk-abcdef…`）。
+    #    现在两类删除先并成**互不重叠的区间**（坐标同源于 t），再从后往前一次切完：
+    #    重叠区间并入时取"整删"语义（宁多删不错放）。
+    spans = [(s, e, True) for s, e in code_spans]
+    spans += [(h["起点"], h["起点"] + h["长度"], False)
+              for h in hits if h["种类"] != "代码片段"]
+    spans.sort(key=lambda x: x[0])
+    merged = []
+    for s, e, is_line in spans:
+        if merged and s < merged[-1][1]:
+            ps, pe, pl = merged[-1]
+            merged[-1] = (ps, max(pe, e), pl or is_line)   # 重叠并入；代码行语义优先（整删）
+        else:
+            merged.append((s, e, is_line))
     out = t
-    for start, end in sorted(code_spans, reverse=True):
-        out = out[:start] + out[end:]
-    for h in sorted(hits, key=lambda x: -x["起点"]):
-        if h["种类"] == "代码片段":
-            continue
-        out = out[:h["起点"]] + "…" + out[h["起点"] + h["长度"]:]
+    for s, e, is_line in sorted(merged, key=lambda x: -x[0]):
+        out = out[:s] + ("" if is_line else "…") + out[e:]
     return {"ok": False, "hits": hits, "redacted": out,
             "口径": "只删敏感片段；**她的情绪与语气一个字不改**"}
 
@@ -554,6 +564,13 @@ def cmd_selftest(a) -> int:
             ok_all = False
             det.append("**hits 回显了原文(泄密)**")
     ck("过滤·五类敏感面逐类命中（路径/代码/密钥/文件名/架构术语）", ok_all, " · ".join(det))
+
+    # 🔴 2026-09-26 回归：代码行与密钥**共存**时坐标不得失配（旧版先删整行再按旧坐标替换，
+    #    密钥前缀会漏过遮蔽 —— 隔离复现过 `sk-abcdef…` 泄出）。
+    r_mix = redact("import os\n我的令牌是 sk-abcdef123456 别外传")
+    ck("过滤·代码行+密钥共存 ⇒ 密钥仍被吃干净",
+       "sk-abcdef" not in r_mix["redacted"] and "别外传" in r_mix["redacted"],
+       r_mix["redacted"].replace("\n", " ｜ "))
 
     r_keep = redact("我有点难过。我在 C:\\Users\\ADMIN\\Desktop 里翻了很久，还是没找到那张照片。")
     ck("过滤·只删敏感片段，**情绪与语气不动**",

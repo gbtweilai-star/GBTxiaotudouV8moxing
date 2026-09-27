@@ -25,11 +25,16 @@
 from __future__ import annotations
 
 import argparse
+import datetime as _dt
 import json
 import os
+import re
 import socket
 import subprocess
 import sys
+import tempfile
+import time
+import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -305,9 +310,260 @@ def probe_f12() -> tuple:
     }
 
 
+def _strip_py_docstrings(text: str) -> str:
+    """剥掉模块 docstring 与 `#` 注释，只留**会跑的代码**。
+
+    为什么要剥：故障记录与工具的说明**必须**引用那些旧数字/旧路径才讲得清来由，
+    而"引用"不该被当成"又写死了一遍"。第 54 轮我在另一条判据上正栽过这个跟头
+    （台账里的 F17 记录被误判成"还指向 TEMP"）—— 结论：**逮文档 = 逼人删掉来由才绿**。
+    """
+    t = re.sub(r'"""(?:.|\n)*?"""', "", text)
+    t = re.sub(r"'''(?:.|\n)*?'''", "", t)
+    return "\n".join(l for l in t.splitlines() if not l.lstrip().startswith("#"))
+
+
+# ── F13：isolation_sweep 被压着时 rc=2 ⇒ 判红 ─────────────────────────────
+def probe_f13() -> tuple:
+    """这条的前提**机器判不了**（要真把机器压满再跑一次），所以只验**缓解还在不在**：
+    缓解在 ⇒ 负载下那次 rc=2 会被如实说成「本次无法判定」而不再算红；
+    缓解不在 ⇒ 退回到"假红 + 假绿"两个方向的错。**本探针不制造负载。**
+    """
+    lib = ROOT / "gbt_allinone" / "tools" / "isolation_sweep.py"
+    tst = ROOT / "gbt_allinone" / "tests" / "test_isolation_sweep.py"
+    if not lib.is_file() or not tst.is_file():
+        return "需人读", {"说明": "isolation_sweep.py 或它的判据不在盘上",
+                          "_读不到_主数据": True}
+    lt = lib.read_text(encoding="utf-8", errors="replace")
+    tt = tst.read_text(encoding="utf-8", errors="replace")
+    lib_mit = ("_cannot_tell" in lt) and ("本次无法判定" in lt)
+    tst_mit = ("_cannot_tell" in tt) and ("本次无法判定" in tt)
+    # 🔴 这一格我第一版又栽了（**第四次**同一类错）：我凭记忆写成 `assertEqual(1, rc)` 去找，
+    #    而盘上写的是 `self.assertEqual(1, r["rc"], …)` ⇒ 探针报 False，
+    #    读起来像"负控没钉死"，其实**钉死了**。教训与第 54 轮那三次一模一样：
+    #    **工具说它在，就去读那一行，别猜它的写法。**
+    #    ⚠️ 第二版我还在正则尾巴上写了 `\b` —— `]` 与 `,` 都不是词字符 ⇒ **那里没有词边界**，
+    #       于是照样匹配不上。尾巴必须写成显式的分隔符 `[,)]`，不许用 `\b` 蒙。
+    neg_pinned = bool(re.search(r'assertEqual\(\s*1\s*,\s*(?:r\["rc"\]|rc)\s*[,)]', tt))
+    neg_old = len(re.findall(r"assertNotEqual\(\s*r\[\"rc\"\]\s*,\s*0", tt))
+    return ("已不成立" if (lib_mit and tst_mit and neg_pinned) else "仍成立"), {
+        "库里的缓解（_cannot_tell + 本次无法判定）": lib_mit,
+        "判据里的缓解": tst_mit,
+        "负控钉死 rc == 1（不再用 assertNotEqual(rc,0)）": neg_pinned,
+        "还没改回去的老写法 assertNotEqual(rc,0)": "%d 处（别的用例可能合法在用，本探针不据此判）" % neg_old,
+        "边界": "只读源码；**不制造负载** ⇒ 永远不能据此说『负载下不会 rc=2』。"
+                "绿不绿由 `test_isolation_sweep` 那条判据回答",
+    }
+
+
+# ── F14：待授权清单一页半手抄 / 生成器写死总数 ─────────────────────────────
+def probe_f14() -> tuple:
+    gen = ROOT / "tools" / "codex-scripts" / "gen-authz-page.py"
+    page = ROOT / "docs" / "待授权清单一页.md"
+    pdata = ROOT / "state" / "caps-probe-accum.json"
+    if not gen.is_file():
+        return "需人读", {"说明": "生成器不在仓里（它该在 tools/codex-scripts/）",
+                          "_读不到_主数据": True}
+    code = _strip_py_docstrings(gen.read_text(encoding="utf-8", errors="replace"))
+    hard = sorted(set(re.findall(r"\b(?:138|157|183)\b", code)))
+    live = None
+    try:
+        sys.path.insert(0, str(ROOT))
+        from gbt_allinone import caps_registry as CR   # noqa: PLC0415
+        live = len(CR.all_caps())
+    except Exception:  # noqa: BLE001
+        live = None
+    ptxt = page.read_text(encoding="utf-8", errors="replace") if page.is_file() else ""
+    live_in_page = bool(live) and ("现读 %d 条" % live) in ptxt
+    age_h = None
+    if pdata.is_file():
+        age_h = (time.time() - pdata.stat().st_mtime) / 3600.0
+    residue = []
+    if hard:
+        residue.append("生成器**会跑的代码**里还有写死总数 %s" % hard)
+    if not live_in_page:
+        residue.append("页头没写注册表现读条数，或与现读 %s 不符" % live)
+    if age_h is None:
+        residue.append("逐位真探数据不在盘上")
+    elif age_h > 12:
+        residue.append("逐位真探数据已 %.1f 小时（阈值 12）⇒ ①『重跑真探』仍未做" % age_h)
+    return ("仍成立" if residue else "已不成立"), {
+        "生成器位置": "tools/codex-scripts/gen-authz-page.py（③ 已做）",
+        "会跑的代码里写死的总数": hard or "无（② 已做）",
+        "页头注册体现读条数对得上": live_in_page,
+        "逐位真探数据年龄（小时）": None if age_h is None else round(age_h, 1),
+        "仍未做的": residue or "无",
+    }
+
+
+# ── F15：台账时间戳偏移写错 ───────────────────────────────────────────────
+def probe_f15() -> tuple:
+    try:
+        led = json.loads(LEDGER.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        return "需人读", {"说明": "台账读不动：%s" % type(exc).__name__, "_读不到_主数据": True}
+    logs = led.get("log") or []
+    newest = str(logs[-1].get("at") if logs else "")
+    off = newest[-6:]
+    machine_off = _dt.datetime.now().astimezone().strftime("%z")
+    machine_off = machine_off[:3] + ":" + machine_off[3:] if len(machine_off) == 5 else machine_off
+    off_ok = off in (machine_off, "+00:00") or newest.endswith("Z")
+    kou = str(led.get("_口径") or "")
+    doc_ok = ("+08:00" in kou) and ("+07:00" in kou)
+    tst = ROOT / "gbt_allinone" / "tests" / "test_progress_ledger_contract.py"
+    inv_ok = tst.is_file() and ("TimestampOffsetIsRealTest" in
+                                tst.read_text(encoding="utf-8", errors="replace"))
+    residue = []
+    if not off_ok:
+        residue.append("最新一笔 log 的偏移是 %s，机器真实偏移是 %s" % (off, machine_off))
+    if not doc_ok:
+        residue.append("台账 `_口径` 没写明历史上偏移写错这件事")
+    if not inv_ok:
+        residue.append("契约里没有偏移不变量（TimestampOffsetIsRealTest）")
+    return ("仍成立" if residue else "已不成立"), {
+        "最新一笔 log 的偏移": off, "机器真实偏移": machine_off,
+        "口径里写明了历史缺陷": doc_ok, "契约里有偏移不变量": inv_ok,
+        "历史条目不追改（有意）": True,
+        "仍未做的": residue or "无 ⇒ 这条可以结掉（历史不追改是有意的，不是欠账）",
+    }
+
+
+# ── F16：描述面写死能力条数 ───────────────────────────────────────────────
+def probe_f16() -> tuple:
+    surfaces = {"plugins/gbt-master/lib/host.js": "host.js 面板注",
+                "plugins/gbt-master/README.md": "插件 README 面板表",
+                "index.html": "根 index.html 能力球描述"}
+    dirty, missing = [], []
+    for rel, label in surfaces.items():
+        p = ROOT / rel
+        if not p.is_file():
+            missing.append(rel)
+            continue
+        if "158 项能力" in p.read_text(encoding="utf-8", errors="replace"):
+            dirty.append(label)
+    readme = ROOT / "plugins" / "gbt-master" / "README.md"
+    relabelled = readme.is_file() and ("快照 · 2026-09-22" in
+                                       readme.read_text(encoding="utf-8", errors="replace"))
+    caps = ROOT / "capabilities.html"
+    selflabels = caps.is_file() and ("CAPS_SOURCE='snapshot'" in
+                                     caps.read_text(encoding="utf-8", errors="replace"))
+    residue = []
+    if dirty:
+        residue.append("还在写死 158 项能力：%s" % dirty)
+    if not relabelled:
+        residue.append("README 那张表没改成『快照』")
+    if not selflabels:
+        residue.append("capabilities.html 没自报 source=snapshot（等于还在冒充现读）")
+    if missing:
+        residue.append("描述面文件不在：%s" % missing)
+    return ("仍成立" if residue else "已不成立"), {
+        "还在写死 158 的面": dirty or "无",
+        "README 表已改名『快照』": relabelled,
+        "capabilities.html 自报 source=snapshot": selflabels,
+        "旧快照本身（183 条）": "仍在，但它自称快照 ⇒ 不再冒充现读；重生成属另一件活",
+        "仍未做的": residue or "无",
+    }
+
+
+# ── F17：强制自审工具只在 %TEMP% 且依赖明文参照 ───────────────────────────
+def probe_f17() -> tuple:
+    tool = ROOT / "tools" / "codex-scripts" / "precommit-secret-scan.py"
+    if not tool.is_file():
+        return "需人读", {"说明": "自审工具不在仓里", "_读不到_主数据": True}
+    code = _strip_py_docstrings(tool.read_text(encoding="utf-8", errors="replace"))
+    uses_vault = "load_from_vault" in code
+    no_plain_ref = "before-dpapi.bak" not in code
+    selftest_rc = None
+    try:
+        p = subprocess.run([sys.executable, str(tool), "--selftest"], cwd=str(ROOT),
+                           capture_output=True, text=True, encoding="utf-8",
+                           errors="replace", timeout=120)
+        selftest_rc = p.returncode
+    except Exception:  # noqa: BLE001
+        selftest_rc = None
+    bak = Path(tempfile.gettempdir()) / "mcporter.json.before-dpapi.bak"
+    residue = []
+    if not uses_vault:
+        residue.append("① 逐字比对没走 DPAPI 保险箱")
+    if not no_plain_ref:
+        residue.append("代码里还引用那份明文参照文件")
+    if selftest_rc != 0:
+        residue.append("离线自证没跑成（退出码 %s）" % selftest_rc)
+    return ("仍成立" if residue else "已不成立"), {
+        "工具在仓里": True,
+        "① 走保险箱（load_from_vault）": uses_vault,
+        "代码不依赖明文参照文件": no_plain_ref,
+        "离线自证退出码": selftest_rc,
+        "⚠️ %TEMP% 那份明文备份还在": bak.is_file(),
+        "边界": "那条明文备份的去留**另案**（台账 D14），本条只管工具",
+        "仍未做的": residue or "无",
+    }
+
+
+# ── F18：台账注入块从未进进程 ─────────────────────────────────────────────
+def probe_f18() -> tuple:
+    """**这条探针会在主人重启后自己报『已不成立』** —— 不用谁记得回来关它。
+
+    读的是**活的那份** `/gbt-master` payload 的 `contexts` 字段（宿主自报注册成功哪几块）。
+    回环 HTTP，与 F4 的回环 TCP 同一条口径：不算出网。
+    """
+    try:
+        with urllib.request.urlopen("http://127.0.0.1:3080/gbt-master", timeout=20) as r:
+            cat = json.loads(r.read().decode("utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        return "需人读", {"说明": "取不到 /gbt-master：%s: %s" % (type(exc).__name__, str(exc)[:80]),
+                          "_读不到_主数据": True}
+    want = ("gbt-master-panels", "gbt-digital-human", "gbt-progress-ledger")
+    ctxs = cat.get("contexts")
+    if not isinstance(ctxs, list):
+        return "仍成立", {
+            "进程自报 version": cat.get("version"),
+            "payload 里有没有 contexts": "没有 ⇒ 跑的还是没这个字段的旧代码",
+            "结论": "台账块仍在进程之外 ⇒ **重启之前不许说『自动读取已生效』**",
+        }
+    got = {str(c.get("name")): bool(c.get("ok")) for c in ctxs if isinstance(c, dict)}
+    missing = [n for n in want if n not in got]
+    failed = [n for n in want if got.get(n) is False]
+    return ("仍成立" if (missing or failed) else "已不成立"), {
+        "进程自报 version": cat.get("version"),
+        "进程内已注册块": sorted(got),
+        "三块里缺的": missing or "无",
+        "注册失败的": failed or "无",
+    }
+
+
+# ── F19：横扫里那条复现不出来的假红 ───────────────────────────────────────
+def probe_f19() -> tuple:
+    """**机器判不了**，但能把"落盘日志里这个文件红过几次"现数一遍 ——
+    复现一次就自动把它从"未复现"变成"有据可查"。**未复现 ≠ 不存在。**
+    """
+    logs = sorted((ROOT / "output" / "blueprint-audit").glob("2026-09-26-满仓横扫-第*.log"))
+    red = green = 0
+    hits = []
+    for f in logs:
+        for line in f.read_text(encoding="utf-8", errors="replace").splitlines():
+            if "test_regression_stamp" not in line:
+                continue
+            if ("❌" in line) or ("FAILED" in line):
+                red += 1
+                hits.append("%s: %s" % (f.name, line.strip()[:110]))
+            else:
+                green += 1
+    return "需人读", {
+        "落盘日志份数": len(logs),
+        "该文件红过的行": red, "绿过的行": green,
+        "红的那几行": hits[:4] or "无",
+        "为什么判不了": "本探针**不制造负载** ⇒ 复现不了就永远拿不到用例名；"
+                        "**未复现 ≠ 不存在**（负载相关的假红会一直污染横扫的可信度）",
+    }
+
+
 PROBES = {"F2": probe_f2, "F3": probe_f3, "F4": probe_f4, "F5": probe_f5,
           "F8": probe_f8, "F9": probe_f9, "F10": probe_f10, "F11": probe_f11,
-          "F12": probe_f12}
+          "F12": probe_f12, "F13": probe_f13, "F14": probe_f14, "F15": probe_f15,
+          "F16": probe_f16, "F17": probe_f17, "F18": probe_f18, "F19": probe_f19}
+# ⚠️ 探针留在这里**不止为在册的那些条**：故障结掉之后探针仍可手工单跑
+#    （`python -c "import ...; print(probe_f13())"`），用于"它有没有复发"。
+#    本器只对**台账里在册**的 id 出结论 —— 结掉的条目不再被咨询。
 
 
 def main(argv=None) -> int:
@@ -317,7 +573,13 @@ def main(argv=None) -> int:
     if not LEDGER.is_file():
         print("台账不在：%s" % LEDGER)
         return 2
-    led = json.loads(LEDGER.read_text(encoding="utf-8"))
+    try:
+        led = json.loads(LEDGER.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        # 🔴 2026-09-26 自纠：台账"存在但读不动"（损坏/编码错）原来会裸 traceback 退出 1 ——
+        #    而本器契约里 2 = 台账读不动、1 = 有前提已不成立，两个信号被混掉。
+        print("台账读不动（%s: %s）：%s" % (type(exc).__name__, str(exc)[:120], LEDGER))
+        return 2
     faults = led.get("open_faults") or []
 
     rows = []

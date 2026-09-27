@@ -92,7 +92,19 @@ def main(argv=None) -> int:
         spec = dk._PROFILES[name]
         env_name = spec["env"]
         # 只看保险箱（忽略环境变量）—— 这条判的是"两份存量对不对得上"
-        vault_key, _src = dk.load_from_vault(name)
+        try:
+            vault_key, _src = dk.load_from_vault(name)
+        except Exception as exc:  # noqa: BLE001
+            # 🔴 2026-09-26 自纠：单个 profile 的库读不动（DPAPI 损坏等）原来会让整器
+            #    traceback 退出 1 —— 而 1 的语义是"有分叉要人判"，错误信号被污染。
+            #    现在该行如实记"读不动"，其余 profile 照常对账；"读不动"与"分叉"同算不绿。
+            _reg = (reg.get(env_name) or "").strip()
+            rows.append({"profile": name, "env": env_name, "verdict": "读不动", "same": None,
+                         "vault": "", "vault_fp": None,
+                         "registry": dk.mask(_reg) if _reg else "",
+                         "registry_fp": _fingerprint(_reg),
+                         "note": "%s: %s" % (type(exc).__name__, str(exc)[:80])})
+            continue
         reg_val = (reg.get(env_name) or "").strip()
         verdict = classify(vault_key, reg_val)
         same = (vault_key == reg_val) if (vault_key and reg_val) else None
@@ -104,7 +116,11 @@ def main(argv=None) -> int:
             "registry_fp": _fingerprint(reg_val),
         })
 
-    split = [r for r in rows if r["verdict"] == "分叉"]
+    # 🔴 2026-09-26：**读不动 ≠ 干净** —— 库解不开的 profile 也算"不绿"，否则保险箱
+    #    坏了反而对出全绿的假读数（与 precommit-secret-scan 的反空洞同一条纪律）。
+    split = [r for r in rows if r["verdict"] in ("分叉", "读不动")]
+    diverged = [r for r in rows if r["verdict"] == "分叉"]
+    unreadable = [r for r in rows if r["verdict"] == "读不动"]
     if a.json:
         print(json.dumps({"ok": not split, "rows": rows,
                           "note": "只印掩码与指纹（长度+sha256 前 12 位）；明文只在内存里比"},
@@ -112,7 +128,8 @@ def main(argv=None) -> int:
     else:
         print("═══ 密钥一致性对账（保险箱 ↔ User 作用域注册表）═══")
         for r in rows:
-            tag = {"一致": "✅ 一致", "分叉": "🔴 分叉", "只在保险箱": "🟦 只在保险箱",
+            tag = {"一致": "✅ 一致", "分叉": "🔴 分叉", "读不动": "🟣 读不动（库解不开）",
+                   "只在保险箱": "🟦 只在保险箱",
                    "只在注册表": "🟨 只在注册表（待迁）", "两处都没有": "⚪ 两处都没有"}[r["verdict"]]
             fp = ""
             if r["verdict"] == "分叉":
@@ -120,14 +137,19 @@ def main(argv=None) -> int:
             print("  %-14s %-18s 库=%s 注册表=%s%s"
                   % (tag, r["env"], r["vault"] or "-", r["registry"] or "-", fp))
         print("")
-        print("合计 %d 个 profile：一致 %d · **分叉 %d** · 只在保险箱 %d · 只在注册表 %d · 都没有 %d"
-              % (len(rows), sum(1 for r in rows if r["verdict"] == "一致"), len(split),
+        print("合计 %d 个 profile：一致 %d · **分叉 %d** · 读不动 %d · 只在保险箱 %d · 只在注册表 %d · 都没有 %d"
+              % (len(rows),
+                 sum(1 for r in rows if r["verdict"] == "一致"),
+                 len(diverged), len(unreadable),
                  sum(1 for r in rows if r["verdict"] == "只在保险箱"),
                  sum(1 for r in rows if r["verdict"] == "只在注册表"),
                  sum(1 for r in rows if r["verdict"] == "两处都没有")))
-        if split:
+        if diverged:
             print("🔴 分叉的：%s ⇒ **要人判哪份是新的**（两份都能用最麻烦：时通时 401）"
-                  % "、".join(r["profile"] for r in split))
+                  % "、".join(r["profile"] for r in diverged))
+        if unreadable:
+            print("🟣 读不动的：%s ⇒ 保险箱解不开（DPAPI 损坏/换了 Windows 用户？）—— **不当干净**，要人看"
+                  % "、".join(r["profile"] for r in unreadable))
         print("边界：本器只对账**存量**，不判密钥是否有效（那要真打一次接口）；只读，不改任何一处。")
     return 1 if split else 0
 

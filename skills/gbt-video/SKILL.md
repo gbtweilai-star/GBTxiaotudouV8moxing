@@ -48,7 +48,9 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['<JSON载荷>']
 
 ---
 
-## 0. 一句话总表（4 个位）
+## 0. 一句话总表（12 个位 = 骨架族 4 + 产线族 8）
+
+### 0.1 骨架族（4 位 · 只读契约面，外部端未接）
 
 | 能力位 | 用途（一句话） | 门（静态查） | `omni` 会自动跑吗 | 本规程真跑过 |
 |---|---|---|---|---|
@@ -56,6 +58,24 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['<JSON载荷>']
 | `libtv_skill` | LibTV（liblib.tv）**技能入口骨架**：会话/切项目/批量下载的契约与红线 | **无作用域** | 🔒 **不自动跑**（唯一理由见 §3.2） | `status` · `install` · `session_contract` |
 | `libtv_workflow` | LibTV **节点式工作流骨架**：五动作 / 五节点 / 参数契约 / 两条避坑 | **无作用域** | ✅ AUTO | `status` · `params` · `gate_group` · `gate_schema` |
 | `h3_video_gen` | H3mini 视频生成**骨架**：四原语 + 三条带牙用例 + 五条红线 | **无作用域** | ✅ AUTO | `status` · `skills` · `test_cases` · `hardware` · `gate_hw` · `gate_prompt` · `gate_localize` |
+
+### 0.2 产线族（6 位 · **本机真件**，零出网，写面自收窄）
+
+这六位是后来接上的**后期与交付层**（三方向自动化工作流的执行零件），
+与骨架族相反：**它们是真干活的本机工程件**（ffmpeg 子进程 + 真落盘 + 产出回读），
+不是契约骨架。全族的共同纪律：**零出网**（只用本机 ffmpeg）·
+写面自收窄到 `projects/` · `outputs/` · `.scratch/`（`policy` 对这些 kind 无条目 ⇒ 门内零作用域，故**自己钉死写面**，见 `edit_core.py` 的 `write_guard`）· `safe=false`（会落盘，不许被当只读自动跑）。
+
+| 能力位 | 用途（一句话） | 读 op | 写 op | 本规程真跑过 |
+|---|---|---|---|---|
+| `edit_pipeline` | **剪辑引擎**（蒸馏剪映时间线语义：轨道→片段→目标/源时间区间→变速/音量/转场/文本）→ 真渲染 1080x1920 mp4（libass 烧字幕）或导出剪映草稿 | `status` `schema` `validate` `check` `probe` | `render` `draft` | ✅ `status`（`ffmpeg: true` · `jianying_installed: false` · 渲染路已实测跑通、剪映草稿未验） |
+| `audio_extract` | 从视频里取声音（8 种格式，可切段/调音量/响度归一）· **产出即验证**（落盘后 ffprobe 回读，真读数随结果返回） | `status` `formats` `probe` `tracks` | `extract` | ✅ `status` / `formats`（op 集现读） |
+| `audio_mix` | 混音与母带：`mix` 多轨合成（逐路音量、显式 `normalize=0`）· `master` 响度归一（**两遍法 loudnorm**，第一遍四个测量值随结果返回） | `status` `loudness_targets` `qc`（7 项音频 QC） | `mix` `master` | ✅ `status` / `loudness_targets`（响度标准表 streaming −14 / podcast −16 / broadcast −23 / cinema −27 LUFS） |
+| `media_license` | **素材许可账**（家规第 2 条的数据源）：`register` 逐件登记（**现算 sha256** + 出处 + 授权 + 时间）· `unregister` 撤销（**必须写 why**，留档在 `removed`）· 只读核对（账↔盘：陈旧 / sha 对不上） | `status` `check` `list` | `register` `unregister` | ✅ `status`（op 集现读） |
+| `media_run` | 三方向工作流**执行器**：一次调用把一条链从头走到尾，每步落真件 + 同批登记许可；**没有实现器的步如实标 `not_implemented`** | `status` `plan` `template` | `run` | ✅ `status` / `plan`（链取自 `media_pipeline.KINDS`：short_video = script→storyboard→assets→edit→export · film = concept→script→shots→sound→edit→export · music = lyrics→arrangement→audio→master→export） |
+| `media_publish` | **发布准备与授权门**：`platforms` 读平台口径（音乐复用 `music_publishing` 的 13 平台，**不另造**；短视频 7 / 电影 6 为内置候选表，**全部标「未核实」**）· `prepare` 备发布包（产物 sha256 + 许可摘录 + 元数据模板 + 目标平台 + 闸清单）—— **做到"发布前所有能自动化的"为止** | `status` `platforms` | `prepare` `submit` | ✅ `status` / `platforms`（op 集现读） |
+| `look_grade` | **外观库触手（词即指令）**：7 种味道（filmic/做旧/潮湿阴冷/热血橙青/褪色胶片/黑白纪实/赛博霓虹）+ 人话取味 + 单帧试看 + QC 审计 | `list` `pick` `qc` | `preview` | ✅ 实测：`list` 7 味 · `pick("热血一点")`→热血橙青 · 七味样带 `output/looks-七味样带.jpg`（肉眼可辨）· 详见 §0.3 |
+| `actioncam` | **动作镜头控制系统**（拍子表制）：10 种动作运镜语法（POV 主观/甩镜×2/急推/推进/拉出/环绕/手持抖/打击帧停格）× 4 机位角度（仰/俯/平/荷兰角）× 画质档（hd/fhd/cinema）——逐拍渲染 + 总装调色 | `plan` `status` `qc` | `gen` `seg` `build` `add` `rm` | ✅ `plan`（8 拍全就绪 6.9s · 成片 3.3MB 实测）· 写面被 `filesystem_write` 门正确拦下；**细则见 §0.3** |
 
 四位的图鉴读数**完全一致**：`enabled=true` · `safe=true` · `disabled=false` ·
 `needs_confirmation=false` · `requires_params=[]` · `params_hint=""` · `channel="omnipulg"`。
@@ -71,9 +91,9 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['<JSON载荷>']
 | `ok` / `denied` / `rule` / `why` | 带牙判据的**判**（不是执行） |
 | `source` / `evidence` / `evidenced` | 这些契约**从哪来、有没有独立取证** |
 
-### 🔴 先记住这一句：**本域现在一条生成端都没接**
+### 🔴 先记住这一句：**外部生成端一条都没接；本机能真干的只有后期与交付**
 
-四位真跑出来的自报读数（§3 逐个有原文）：
+**骨架族（4 位）**四位真跑出来的自报读数（§3 逐个有原文）：
 
 - `media_pipeline` → `external_generators_connected: false`；
   模块 docstring 原话：*「这是编排和审查层，**不是假装拥有某个外部生成服务**」*；
@@ -81,8 +101,61 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['<JSON载荷>']
 - `libtv_workflow` → `source: "主人提供 · 盘上无命中 · 未独立取证（出网受限 + 画布需登录）"`；
 - `h3_video_gen` → `mode: "api"` · `requires_external_key: true` · 官方技能包 `evidenced: false`。
 
-⇒ **说"我出了一条视频"是假话**；本域现在能说的最硬一句是：
-**"我把出片该走的编排、契约、红线、判据读全了，等的钥匙和技能包还没到。"**
+**产线族（6 位）**的读法**完全不同**——它们不需要任何外部钥匙：
+`edit_pipeline` 的 `status` 自报 **`ffmpeg: true`**，且渲染那一路**已实测跑通**（真出 1080x1920 mp4 + ffprobe 回读）；
+`audio_extract` / `audio_mix` 是同一台本机 ffmpeg 的取声/混音/母带；
+`media_license` 是许可账（sha256 现算）；`media_run` 是执行器；`media_publish` 只备包不发布。
+
+⇒ **说"我用外部生成端出了一条视频"是假话**（那是骨架族，钥匙和技能包没到）；
+**说"我把片子在本机剪出来、配好音、过了响度、算好了许可、备好了发布包"是真的**（那是产线族）。
+本域能说的最硬一句是：
+**"外部生成端等的钥匙还没到；但拿到素材之后，从剪辑到发布准备这条本机产线是通的。"**
+
+### 0.3 `actioncam` · 动作镜头控制系统细则（2026-09-27 补录）
+
+**一句话**：动作戏的镜头语法层——**拍子表（beat sheet）为唯一真相**，每一拍 =
+`move`（10 种动作运镜）× `angle`（仰/俯/平/荷兰角）× `dur`（时机）× `prompt`（英文动作构图）× `seed`（锁定）。
+
+**实测读数（2026-09-27 演示拍）**：8 拍（POV→甩镜→仰拍急推→回头推进→抖动爆点→打击帧白闪→俯拍环绕→斜角收势）
+6.88s · 成片 3.3MB（`projects/movie/成片/actioncam-demo-拍子表.mp4`）· 八格验收 8/8 咬本
+（B1 用 GoPro 话术才出真第一人称 · B6 打击帧重出后拳头冲镜）。
+
+**三条实测 ffmpeg 铁律（本域新增）**：① `rotate` **不认 `on`**（zoompan 的变量）——只认
+`t`（秒）/`n`（帧号）；② `rotate` 填充色**不许 `c=none`**（yuv 管线 Invalid argument，整段 0 帧）；
+③ 表达式零逗号纪律在动作运镜里更严（sin/线性斜率可用，min/if/pow 一律不用）。
+
+**门**：`plan`/`status`/`qc` 免门；`gen`/`seg`/`build`/`add`/`rm` 过 `filesystem_write`
+（生图出网 + ffmpeg + 落盘）—— 实测写面被门拦下。产出即绑 `actioncam` 触手。
+
+**画质与修饰（2026-09-27 按三板块总监令块二 + 修饰工坊五科目对齐 · 主人判"图质差"后整改）**：
+
+| 科目/标准 | 整改前 | 整改后（实测） |
+|---|---|---|
+| **高清以上**（总监令） | 720p25，源图 1024×576 直接拉大 = 软 | **1080p25**（fhd 档默认）· 源图 **3x 超采样**（lanczos + `cas=0.4`）再渲 → 真细节 |
+| **调色分级**（科目二 · AAA 手册 ACES 配方） | 单层 `eq(sat1.06,contrast1.05)` | **电影调色链**：`curves=medium_contrast` → `colorbalance`（冷阴影 +0.09 / 暖中间调 +0.03）→ `eq(sat1.08,gamma0.97)` → `cas=0.35` → **辉光**（split+gblur σ10+blend screen 0.10）→ 暗角 → 颗粒 `noise=alls=t+u` |
+| **做旧工艺**（科目一） | 细弱颗粒 | 颗粒 `t+u`（时空双域）· 八拍**色调统一**（同一调色链过全片） |
+| **音效设计**（科目三：无声片段禁入正片） | **整片无声** | **合成音效床**：粉噪雨底 + 55Hz 低频垫 + 甩镜 whoosh（每处甩镜/急推）+ 打击帧 58Hz thump，`loudnorm I=-14 / TP=-1.5`（与响度标准表同口径） |
+| **生产审计**（工作流第 1 步） | 人眼看 | **`op=qc` 机械化**：`blackdetect` + `freezedetect` + `signalstats` → 黑帧/卡帧/亮度区间；**黑帧 0 且卡帧 0 才算通过**，台账 `state/actioncam_qc.jsonl` |
+| **留样制度** | 八格图 | **留样三帧 + 新旧对比留样**（`output/actioncam-留样三帧-1080p.jpg` · `output/actioncam-修饰对比留样-旧vs新.jpg`） |
+
+**实测（1080p 版）**：8 拍 6.88s · **12.3MB · 含音轨** · QC **通过**（黑帧 0 · 卡帧 0 · 亮度 29.9–182.6）。
+**仍未达标（如实记）**：**真光学景深**没有（靠源图模型 + 辉光近似）；单帧仍可能有 AI 肢体畸变（如 B5 缠斗帧），
+**"无畸变"这条要靠逐帧排查 + 重出**，不是调色能修的；字幕科目在 demo 里 N/A（无对白）。
+
+### 0.4 外观库与"如臂使唤"（Owner 2026-09-27 令：想让她是什么样，她就变成什么样）
+
+**共用件** `<仓>/tools/filmgrade.py`（**一处定义，actioncam 与 filmkit 同款引用**）：
+
+| op | 干什么 | 实测 |
+|---|---|---|
+| `list` | 列 7 味 | filmic / 做旧 / 潮湿阴冷 / 热血橙青 / 褪色胶片 / 黑白纪实 / 赛博霓虹（+ none） |
+| `pick {intent}` | **人话取味**（词即指令） | `热血一点`→热血橙青 · `像老照片`→褪色胶片 · `义庄那种`→做旧 · `赛博一点`→赛博霓虹 · 认不出→**如实标回落 filmic** |
+| `preview {src, look}` | **单帧试看**（定了再上全片，不盲拍） | 七味样带 `output/looks-七味样带.jpg`（同一帧 × 7 味，肉眼可辨） |
+| `qc {film}` | 生产审计（黑帧/卡帧/亮度） | 台账 `state/film_qc.jsonl` |
+
+**切换方式**：清单里写 `"grade": "<外观名 或 人话>"`（不写 = filmic）。
+短剧线已按主人令升 **filmic**（做旧味随时可切回，写一个词就行）；
+**美学纪律**：任何一次换味都**显式写在清单里**，不许被代码静默顶掉（这条是 2026-09-27 差点犯的错）。
 
 ---
 
@@ -99,7 +172,13 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['<JSON载荷>']
 | "H3mini 有哪几种入口（文生/图生/首尾帧/参考）" | `h3_video_gen`（`op=primitives`） | 只读，零作用域 |
 | "H3mini 的提示词该怎么写" | `h3_video_gen`（`op=gate_prompt`） | 只读，零作用域 |
 | "H3mini 本地能不能跑" | `h3_video_gen`（`op=hardware` / `op=gate_hw`） | 只读，零作用域（**门槛读数当下是空的**） |
-| **"帮我出条视频/出张图"** | ⚠ **本域没有能真出片的位**（见 §0 那一句） | —— |
+| "把素材剪成片 / 烧字幕 / 按时间线渲染" | `edit_pipeline`（`op=validate` → `op=render`；`op=schema` 看时间线格式） | 写面自收窄（`projects/` · `outputs/` · `.scratch/`）；`safe=false` |
+| "把视频里的声音取出来 / 看看有几条音轨" | `audio_extract`（`op=probe` / `op=tracks` 只读；`op=extract` 写） | 只读两 op 免卡；写 op 落自收窄写面 |
+| "多轨混音 / 响度归一到达标" | `audio_mix`（`op=qc` 只读体检；`op=mix` / `op=master` 写） | `loudness_targets` 查标准表（−14/−16/−23/−27 LUFS） |
+| "这件素材有没有许可 / 登记一下 / 撤销" | `media_license`（`op=status` / `list` / `check` 只读；`register` / `unregister` 写） | `unregister` **必须写 why**（留档在 `removed`） |
+| "一条链从头跑到尾（策划→成片→登记）" | `media_run`（`op=plan` 只读看链；`op=run` 执行） | 每步落真件 + 同批登记许可；缺实现器的步如实标 `not_implemented` |
+| "要发哪些平台 / 发布包准备好" | `media_publish`（`op=platforms` 读平台口径；`op=prepare` 备包） | 只到"发布前所有能自动化的"为止；**发布动作要主人** |
+| **"帮我出条视频/出张图"** | ⚠ **外部生成端没接**：出**新素材**只能走 `gbt-arkcli`（云端）或 `gbt-creation`（生图）；本域出的是**剪辑/音频/交付**（见 §0 那一句） | —— |
 
 ### 🔴 与 `gbt-arkcli` 的分工（**一句话，两边都不许冒充**）
 
@@ -153,7 +232,13 @@ py -3.14 tools/codex-scripts/five-dim.py cap h3_video_gen '{"op":"gate_localize"
 
 ---
 
-## 3. 四个位逐个点（实测读数 + 失败典型）
+## 3. 骨架族四个位逐个点（实测读数 + 失败典型）
+
+> 产线族 6 位（`edit_pipeline` / `audio_extract` / `audio_mix` / `media_license` /
+> `media_run` / `media_publish`）的 op 集与真跑读数见 **§0.2 总表**与它们各自的模块
+> （`tools/edit_core.py` · `tools/audio_extract.py` · `tools/audio_mix.py` ·
+> `tools/media_license.py` · `tools/media_run.py` · `tools/media_publish.py`）；
+> 本节只逐个点骨架族——那四位的"坑"最多（骨架形状 + 契约红线）。
 
 > 下表 `门` 列 = `policy.evaluate()` 静态查出来的作用域（§4）；`omni` 列 = `omni.py auto_run_verdict()` 会不会自动替你跑。
 
@@ -576,7 +661,11 @@ if denied:
 将来接上 LibTV CLI / H3 API（要出网、要花钱、要 `process_execute`/`data_export`/`filesystem_write`）时，
 **必须先给它们加作用域分支，再谈能跑** |
 | **Ark 云端那条** | **本域不验**（分工见 §6，走 `gbt-arkcli`） |
-| **四位之外这个域还有没有隐藏能力** | **未验（口径性未验）**。按图鉴口径只有 4 个；**图鉴是现扫产物**（`python tools/codex-scripts/omni.py build`），重建后需重查 |
+| **四位之外这个域还有没有隐藏能力** | **已重数（2026-09-26）**：本域现有 **10 位**（骨架族 4 + 产线族 6，§0.1/§0.2）。图鉴是现扫产物（`python tools/codex-scripts/omni.py build`），重建后需重查 |
+| **产线族 7 位的真跑读数只到只读 op** | `edit_pipeline` 的 `render` / `draft`、`audio_extract` 的 `extract`、`audio_mix` 的 `mix` / `master`、`media_license` 的 `register` / `unregister`、`media_run` 的 `run`、`media_publish` 的 `prepare` / `submit` —— **写 op 本轮未逐个真跑**（会落盘/起子进程）；`edit_pipeline` 的 `status` 自报"渲染那一路已实测跑通"是**它自己的账**（本规程转述，未在本轮复核） |
+| **`edit_pipeline` 的剪映草稿出口** | **未验**（模块自报 `jianying_installed: false`，本机没装剪映） |
+| **`media_publish` 的平台表** | 短视频 7 / 电影 6 是**内置候选表，模块自己全标「未核实」**；音乐 13 平台复用 `music_publishing` 的——**三个方向的平台口径都未经本轮独立取证** |
+| **`media_run` 的 `film` / `music` 两条链** | **未验**：链结构现读自 `media_pipeline.KINDS`；缺实现器的步会标 `not_implemented`，但**本轮没真跑完任何一条完整链** |
 
 ---
 
@@ -636,10 +725,11 @@ E 这个域的**每个**能力位都被点到（抓遗漏）。
 | 本规程（源） | `<仓>/skills/gbt-video/SKILL.md` |
 | 本规程（装机·托管目录） | `~/.openclaw-autoclaw/skills/gbt-video/SKILL.md` |
 | ⛔ **不许装到** | `~/.agents/skills/`（本仓 AGENTS.md 明令禁止） |
-| 能力位名单（4 个） | `<仓>/state/skill_atlas.json`（`domain == "video"`）· 现扫可重建：`python tools/codex-scripts/omni.py build` |
-| 能力位注册 | `gbt_allinone/caps_registry.py`（`media_pipeline:441` · `libtv_skill:850` · `libtv_workflow:892` · `h3_video_gen:904`） |
+| 能力位名单（**11 个** = 骨架族 4 + 产线族 7） | `<仓>/state/skill_atlas.json`（`domain == "video"`）· 现扫可重建：`python tools/codex-scripts/omni.py build` |
+| 能力位注册 | `gbt_allinone/caps_registry.py`（`media_pipeline:441` · `libtv_skill:850` · `libtv_workflow:892` · `h3_video_gen:904` · 产线族 6 位同表） |
 | 真身实现 | `gbt_allinone/tools/media_pipeline.py`（`run:228`）· `libtv_skill.py`（`run:739`）· `libtv_workflow.py`（`run:139`）· `h3_video_gen.py`（`run:1128`） |
-| 分发路由 | `gbt_allinone/api.py`（`libtv_skill:424` · `libtv_workflow:459` · `h3_video_gen:469` · `media_pipeline:730`） |
+| 产线族真身 | `gbt_allinone/tools/edit_core.py`（`run:727`，`READ_OPS`/`WRITE_OPS`/`write_guard:711`）· `audio_extract.py`（读 4 写 1）· `audio_mix.py`（读 3 写 2）· `media_license.py`（读 3 写 2）· `media_run.py`（读 3 写 1）· `media_publish.py`（读 2 写 2）· `<仓>/tools/actioncam.py`（动作镜头控制系统本体） |
+| 分发路由 | `gbt_allinone/api.py`（`libtv_skill:424` · `libtv_workflow:459` · `h3_video_gen:469` · `media_pipeline:730` · `edit_pipeline:918`） |
 | 授权判据（**单一真相**） | `gbt_allinone/security/policy.py` 的 `evaluate()`（**本域四位无分支 ⇒ 走默认放行**，见 §4） |
 | 门与信封 | `gbt_allinone/api.py` 的 `run_task:1026`（三层信封）· `tools/codex-scripts/five-dim.py:122-163`（`cap` 的读法与退出码） |
 | 自动执行判据 | `tools/codex-scripts/omni.py` 的 `required_scopes():143` / `auto_run_verdict():182` / `DANGEROUS_NAME_RE:137` |

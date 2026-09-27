@@ -24,6 +24,14 @@ import time
 import urllib.error
 import urllib.request
 
+# 🔴 2026-09-26 补：Windows 管道/重定向下 stdout 回落 GBK，emoji 一打印就崩；与 self_model.py 同一款补丁
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 SETTINGS = pathlib.Path(os.path.expanduser("~")) / ".dsh" / "settings.yaml"
 TIMEOUT = 40
 

@@ -1,0 +1,44 @@
+{
+  "id": "GbtWebhook000001",
+  "name": "GBT 触发入口（Webhook）",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gbt",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "b1b2c3d4-0001-4000-8000-gbtwh0000001",
+      "name": "Webhook（POST /webhook/gbt）",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-120, 0],
+      "webhookId": "gbt-entry"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, entry: 'GBT触发入口', received: $json.body || $json, at: new Date().toISOString(), note: '本入口已在册——后续可在此工作流里挂任意节点链（含 GBT 能力桥）' } }}",
+        "options": {}
+      },
+      "id": "b1b2c3d4-0002-4000-8000-gbtwh0000002",
+      "name": "Respond（回执）",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [160, 0]
+    }
+  ],
+  "connections": {
+    "Webhook（POST /webhook/gbt）": {
+      "main": [[{"node": "Respond（回执）", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {"executionOrder": "v1"},
+  "meta": {
+    "gbt": {
+      "说明": "框架 → n8n 的反向通道：任何东西 POST http://127.0.0.1:5678/webhook/gbt 即触发本工作流。当前只回执；要挂真链，在 n8n 面板里把它接到「GBT 能力桥」（Execute Workflow 节点）或任意节点即可。",
+      "激活": "n8n update:workflow --id=GbtWebhook000001 --active=true （然后重启 n8n 或等热加载）"
+    }
+  }
+}

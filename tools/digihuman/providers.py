@@ -30,7 +30,7 @@ CAPS = {
     "skin.auto": "自动蒙皮权重",
     "rig.auto": "自动绑骨（人形）",
     "anim.make": "关键帧动画（循环）",
-    "anim.retarget": "动画重定向 / 导出标准动画格式（VRM Animation 1.0 · .vrma）",
+    # 🔴 2026-09-26 自纠："anim.retarget" 键原来写了两次，dict 字面量会静默用后者 —— 删掉重复行
     "anim.retarget": "动捕/动画库重定向",
     "expr.make": "表情/BlendShape",
     "pack.vrm": "封装标准格式（VRM 1.0 / GLB）",

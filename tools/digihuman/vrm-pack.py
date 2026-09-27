@@ -19,6 +19,14 @@ import pathlib
 import struct
 import sys
 
+# 🔴 2026-09-26 补：Windows 管道/重定向下 stdout 回落 GBK，emoji 一打印就崩；与 self_model.py 同一款补丁
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 WS = pathlib.Path(__file__).resolve().parents[2]
 RIG = WS / "holo_pet/assets/digital-human/raw/rig"
 SRC = RIG / "model-expressions.glb"      # ← 已含 morph targets + expressions（S7 产出）

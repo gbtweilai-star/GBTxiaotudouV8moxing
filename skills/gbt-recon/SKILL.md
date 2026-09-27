@@ -62,16 +62,19 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['<JSON载荷>'] [--ful
 
 ---
 
-## 0. 这 7 位分三簇（先认簇，再看位）
+## 0. 这 8 位分三簇（先认簇，再看位）
 
 | 簇 | 位（kind） | 共 | 共同特征 |
 |---|---|---|---|
-| **A · 主动采集（唯一真出网的那个）** | `osint_scan` | 1 | **真去连别人的机器**（socket / 端口 / whois / 子域爆破 / 社交探测 / ipinfo）；公网目标形式上零作用域，内网目标挂 `osint_private` |
+| **A · 主动采集（真出网的两个）** | `osint_scan` · `scrapling`（2026-09-26 补录，见 §3·A） | 2 | **真去连别人的机器**：`osint_scan` = DNS/端口/指纹**侦察**；`scrapling` = **公网网页取文**（每个 URL 先过 `net_guard` 边界，**内网一律拒**） |
 | **B · 盘上观测（只读，零作用域）** | `topic_watch` · `trend_watch` | 2 | 纯读盘 + 读配置；**零新增进程**；`trend_watch` 有一个**写盘 op**（`observe`）且**不过门** |
 | **C · 只读骨架（不联网·不抓数·不写盘）** | `music_intel` · `video_intel` · `film_intel` · `verification_watch` | 4 | **结构在、情报不在**；六格全「待核实」/ 台账全空；**不许把结构读成情报** |
 
 **判据**：要**动外部目标** → A（先看清纪律，本规程**不替你跑**）；
 要**盯话题 / 记偏好** → B；要**先画禁区、再谈流量** → C。
+
+**A 簇两位的分工（一句话）**：`osint_scan` 是**侦察**（问"这域名底下有什么"）；
+`scrapling` 是**取文**（问"这个网页正文是什么"）——**取文那个更温和**：不爆破、不探测，只 GET。
 
 ---
 
@@ -81,6 +84,8 @@ py -3.14 tools/codex-scripts/five-dim.py cap <能力位> ['<JSON载荷>'] [--ful
 |---|---|---|
 | 扫一个**公开域名**的 DNS/WHOIS/子域/端口/指纹 | `osint_scan` | ⚠ 公网目标**零作用域**，但它是**主动扫描** ⇒ 见 §5，**本规程不替你跑** |
 | 扫**本机 / 内网 / 保留地址** | `osint_scan` | 🔒 **`osint_private`**（一次性消耗，`allow_private` 不再是绕过开关） |
+| 把一个**公网网页**抓下来取正文/选择器 | `scrapling`（`op=fetch`，要 `url`） | 零作用域（**内网在边界层就拒**，比门更早）；响应体限量 2MB |
+| 看抓取能力在**当前解释器**里装没装 | `scrapling`（`op=status`） | 只读，零作用域（**两解释器两读数，见 §3·A**） |
 | "帮我盯着 AI 行业动态 / 有变化告诉我" | `topic_watch` | 只读，零作用域（**但要给 `need`**） |
 | 看话题追踪的定时腿挂没挂上 | `topic_watch`（`op=timer`） | 只读，零作用域 |
 | 看追踪引擎同化落点与三条红线 | `topic_watch`（`op=engine`） | 只读，零作用域（⚠ 见 §3 的包装器崩溃坑） |
@@ -153,6 +158,21 @@ py -3.14 tools/codex-scripts/five-dim.py cap verification_watch '{"op":"group","
 | 位 | 用途 | 门 | omni | 出网 | 失败典型样子 |
 |---|---|---|---|---|---|
 | `osint_scan` | OSINT 扫描：DNS / WHOIS / 子域名 / 端口 / 指纹 / 邮箱 / IP归属 / 社交。**这是本域唯一真去连别人机器的位** | 公网目标**无**；本机/内网/保留地址 → **`osint_private`** | **NO**（"需要参数 target" + "在侧效应名单里，要人确认"） | ✅ **是**（主动连接） | 🔴 **本规程未验**（按纪律不执行）。源码可见的失败面：无 `target` ⇒ `ValueError("缺少 target：请提供要扫描的域名或 IP")`（`api.py:118`）→ `user_error`；内网目标 ⇒ 门 `denied`，缺 `osint_private`（`tests/test_framework.py:291-296` 明证 `denied: true` 且 error 含"人工授权"） |
+| `scrapling` | **公网网页取文**（下拉渲染 + 选择器提取）：`status` 探依赖，`fetch` 抓一个 URL 并给标题/选择器结果 | **零作用域**（内网目标在**边界层**就被拒，不是门：`net_guard.validate_url(url, allow_private=False)`） | **NO**（要 `url` 参数） | ✅ **是**（只 GET 公网） | 缺库 ⇒ `installed:false` + `ModuleNotFoundError` + `hint "pip install scrapling patchright"`（**不是坏了，是本解释器没装**）；内网/保留地址 ⇒ 边界拒绝；响应体 >2MB ⇒ **截断并声明** |
+
+**`scrapling` 的实测账（2026-09-26）**：
+
+```
+py -3.14 … cap scrapling  →  installed false · "No module named 'scrapling'"
+python 3.12.10 -c "import scrapling"  →  0.4.15（装了）
+```
+
+⇒ **同一个能力位，两个解释器两种读数**：3.12 装了能抓、3.14 没装。
+**念法**："**这个解释器里没装**"，不是"能力不可用"。待办两条：
+① `py -3.14` 侧同装（`pip install scrapling patchright`）；
+② **浏览器级隐身抓取**要另跑 `patchright install chromium`（未装 ⇒ 那一路未验）。
+本规程真跑过的是**另一套解释器下的** `fetch`：`example.com` 200 / 标题 / `h1::text` 选择器均通，
+内网 `127.0.0.1` 被边界拒（这是"边界真拦"的正例）。
 
 ### B · 盘上观测（只读，零作用域）
 
@@ -402,7 +422,8 @@ python -m gbt_allinone auth grant --scope osint_private --ttl 600 --purpose "扫
 | 本规程（源） | `<仓>/skills/gbt-recon/SKILL.md` |
 | 本规程（装机·托管目录） | `~/.openclaw-autoclaw/skills/gbt-recon/SKILL.md` |
 | ⛔ **不许装到** | `~/.agents/skills/`（本仓 AGENTS.md 明令禁止） |
-| 能力位名单（**7 个**） | `<仓>/state/skill_atlas.json`（`domain == "recon"`：`osint_scan` · `topic_watch` · `trend_watch` · `music_intel` · `video_intel` · `film_intel` · `verification_watch`）· 现扫可重建：`python tools/codex-scripts/omni.py build` |
+| 能力位名单（**8 个**） | `<仓>/state/skill_atlas.json`（`domain == "recon"`：`osint_scan` · `scrapling` · `topic_watch` · `trend_watch` · `music_intel` · `video_intel` · `film_intel` · `verification_watch`）· 现扫可重建：`python tools/codex-scripts/omni.py build` |
+| 网页抓取本体 | `<仓>/gbt_allinone/tools/scrapling_cap.py`（`run:123`；`status`/`fetch` 两 op；公网边界 `net_guard.validate_url(allow_private=False)`；`_MAX_BYTES = 2_000_000`） |
 | 授权判据（**单一真相**） | `<仓>/gbt_allinone/security/policy.py` 的 `evaluate()`（`osint_scan` 分支在 212-215 行） |
 | 门与拒绝信封 | `<仓>/gbt_allinone/run_task`（唯一门）· `tools/codex-scripts/five-dim.py:122-163`（扁平信封与收窄的读法） |
 | 授权门与作用域注册表 | `<仓>/gbt_allinone/auth_gate.py`（`SCOPES` 含 `osint_private`，30 行；`DEFAULT_TTL_S = 600`） |

@@ -14,6 +14,14 @@ import pathlib
 import struct
 import sys
 
+# 🔴 2026-09-26 补：Windows 管道/重定向下 stdout 回落 GBK，emoji 一打印就崩；与 self_model.py 同一款补丁
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 WS = pathlib.Path(__file__).resolve().parents[2]
 
 
@@ -180,6 +188,11 @@ def gate_status(p: pathlib.Path):
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     arg = pathlib.Path(sys.argv[2]) if len(sys.argv) > 2 else None
+    if cmd in ("textures", "anim", "status") and arg is None:
+        # 🔴 2026-09-26 自纠：漏传 glb 参数时原来拿 None 进 gate_*，在 p.exists() 上炸 AttributeError
+        print("缺参数：%s 需要 <glb 路径>" % cmd)
+        print(__doc__)
+        raise SystemExit(2)
     if cmd == "textures":
         ok, note = gate_textures(arg)
     elif cmd == "anim":

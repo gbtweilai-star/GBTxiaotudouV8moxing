@@ -1,0 +1,22 @@
+{"at": "2026-09-27T09:07:26", "source_kind": "cross_scan", "event": "scan", "target": "registry", "units": 1, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T09:10:17", "source_kind": "cross_scan", "event": "scan", "target": "bindings", "units": 4348, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T09:10:51", "source_kind": "cross_scan", "event": "scan", "target": "registry", "units": 1, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T09:10:52", "source_kind": "cross_scan", "event": "check", "target": "bindings", "units": 4349, "missing": 0}
+{"at": "2026-09-27T12:14:10", "source_kind": "cross_scan", "event": "caps_hooks", "caps": 185, "unhooked": 0}
+{"at": "2026-09-27T12:14:55", "source_kind": "cross_scan", "event": "scan", "target": "tree:gbt_allinone", "units": 863, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T12:14:57", "source_kind": "cross_scan", "event": "security_pass", "units": 863, "flagged": 22}
+{"at": "2026-09-27T12:15:16", "source_kind": "cross_scan", "event": "scan", "target": "tree:gbt_allinone", "units": 863, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T12:15:18", "source_kind": "cross_scan", "event": "security_pass", "units": 863, "flagged": 22}
+{"at": "2026-09-27T12:16:18", "source_kind": "cross_scan", "event": "scan", "target": "tree:gbt_allinone", "units": 863, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T12:16:20", "source_kind": "cross_scan", "event": "security_pass", "units": 863, "flagged": 18}
+{"at": "2026-09-27T12:16:55", "source_kind": "cross_scan", "event": "scan", "target": "tree:gbt_allinone", "units": 863, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T12:16:56", "source_kind": "cross_scan", "event": "security_pass", "units": 863, "flagged": 18, "needs_human": 0}
+{"at": "2026-09-27T12:17:51", "source_kind": "cross_scan", "event": "scan", "target": "tree:gbt_allinone", "units": 863, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T12:17:53", "source_kind": "cross_scan", "event": "security_pass", "units": 863, "flagged": 18, "needs_human": 2}
+{"at": "2026-09-27T12:18:23", "source_kind": "cross_scan", "event": "scan", "target": "tree:gbt_allinone", "units": 863, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T12:18:25", "source_kind": "cross_scan", "event": "security_pass", "units": 863, "flagged": 18, "needs_human": 1}
+{"at": "2026-09-27T12:18:26", "source_kind": "cross_scan", "event": "scan", "target": "caps", "units": 185, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T12:20:59", "source_kind": "cross_scan", "event": "scan", "target": "tree:tools", "units": 569, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T12:21:00", "source_kind": "cross_scan", "event": "security_pass", "units": 569, "flagged": 30, "needs_human": 48}
+{"at": "2026-09-27T12:21:00", "source_kind": "cross_scan", "event": "scan", "target": "tree:projects", "units": 423, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-09-27T12:21:00", "source_kind": "cross_scan", "event": "security_pass", "units": 423, "flagged": 0, "needs_human": 0}

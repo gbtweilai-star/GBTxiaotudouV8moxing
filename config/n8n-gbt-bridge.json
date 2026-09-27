@@ -1,0 +1,57 @@
+{
+  "id": "GbtCapBridge0001",
+  "name": "GBT 能力桥 · run_task（万能插）",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {"name": "kind", "type": "string"},
+            {"name": "payload", "type": "object"}
+          ]
+        }
+      },
+      "id": "a1b2c3d4-0001-4000-8000-gbtcap000001",
+      "name": "输入：kind + payload",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [-80, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:31717/run_task",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {"name": "X-GBT-Token", "value": "={{ $env.GBT_GATEWAY_TOKEN }}"},
+            {"name": "Content-Type", "value": "application/json"}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ kind: $json.kind, payload: $json.payload || {} }) }}",
+        "options": {"timeout": 120000, "response": {"response": {"neverError": true}}}
+      },
+      "id": "a1b2c3d4-0002-4000-8000-gbtcap000002",
+      "name": "调 GBT 能力网关",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [180, 0]
+    }
+  ],
+  "connections": {
+    "输入：kind + payload": {
+      "main": [[{"node": "调 GBT 能力网关", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {"executionOrder": "v1"},
+  "meta": {
+    "gbt": {
+      "说明": "把 GBT小土豆V8 的 175 项能力接进 n8n：任意工作流用 Execute Workflow 节点调本桥，传 {kind, payload}，即可调用 scrapling/genoffice/blender/voice/energy_pool 等全部能力。",
+      "前置": "① 网关在线（python gbt_allinone/tools/capability_gateway.py serve）；② n8n 环境变量 GBT_GATEWAY_TOKEN 与网关一致（n8n 启动前 setx GBT_GATEWAY_TOKEN <值>）。",
+      "示例": {"kind": "scrapling", "payload": {"op": "fetch", "url": "https://example.com"}},
+      "能力清单": "curl http://127.0.0.1:31717/health 或读 gbt_allinone/caps_registry.py（175 位）"
+    }
+  }
+}

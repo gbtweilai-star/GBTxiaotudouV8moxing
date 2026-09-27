@@ -3,6 +3,33 @@
   "note": "素材许可账 —— 逐件登记（文件 + sha256 + 出处 + 授权）",
   "entries": [
     {
+      "file": ".scratch/_免费样片_v2/_bgm.wav",
+      "sha256": "57ed8aa2d988b88fbb7c61d9eac8537fe619789123e7962a40d5b8c68ab6ee89",
+      "bytes": 2469678,
+      "source": "本仓 ffmpeg/SAPI 自产：《免费样片》v2 BGM 步",
+      "license": "自有（本机自产，CC0等效）",
+      "note": "short-video | sha16=57ed8aa2d988b88f",
+      "at": "2026-09-26T05:00:37"
+    },
+    {
+      "file": ".scratch/_免费样片_v2/_shot1.mp4",
+      "sha256": "f520d555f70f18f3e9988a50bf1429a58460a8339cca9c2e3c1e1d95dda7a55d",
+      "bytes": 2767204,
+      "source": "本仓 ffmpeg/SAPI 自产：《免费样片》v2 素材 步",
+      "license": "自有（本机自产，CC0等效）",
+      "note": "short-video | sha16=f520d555f70f18f3",
+      "at": "2026-09-26T05:00:37"
+    },
+    {
+      "file": ".scratch/_免费样片_v2/_voiceover48.wav",
+      "sha256": "9776dd53f3b53c26c5edd1ce52cf42bd165628504462cb0645360c2b8bd5779e",
+      "bytes": 3067202,
+      "source": "本仓 ffmpeg/SAPI 自产：《免费样片》v2 配音 步",
+      "license": "自有（本机自产，CC0等效）",
+      "note": "short-video | sha16=9776dd53f3b53c26",
+      "at": "2026-09-26T05:00:37"
+    },
+    {
       "file": "projects/film/03-shoot/20260923-film-pipeline-selftest-rehearsal.mp4",
       "sha256": "66ae7284d8a935e9cf2f092273e29a94ee4580fda127551cfb5d9ec1b1569113",
       "bytes": 2401091,
@@ -84,13 +111,40 @@
       "at": "2026-09-23T15:37:33"
     },
     {
+      "file": "projects/short-video/03-raw/20260926-short-video-免费样片-rehearsal.mp4",
+      "sha256": "9f6be0f6045991b00fb8224a6722898991144d54992b33657c8c34e84cbd7fe1",
+      "bytes": 2526467,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（short_video 步 assets）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · 短视频/assets（**彩排，非作品**）",
+      "at": "2026-09-26T04:46:20"
+    },
+    {
       "file": "projects/short-video/04-cut/20260923-short-video-pipeline-selftest-rehearsal.mp4",
       "sha256": "3e64e71ed2fc78336bf58e383ce68be6da4e23677845a3af2c749c58a2444032",
       "bytes": 2526508,
-      "source": "本仓 ffmpeg 自产：三方向工作流自检（short_video 步 edit）",
-      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
-      "note": "三方向工作流自检件 · 短视频/edit（**彩排，非作品**）",
-      "at": "2026-09-23T15:37:34"
+      "source": "本仓 media_run 自检自产（2026-09-23 链执行器自检）",
+      "license": "自有（本机自产，CC0等效）",
+      "note": "short-video edit 彩排件（补登记）",
+      "at": "2026-09-26T05:02:48"
+    },
+    {
+      "file": "projects/short-video/04-cut/20260926-short-video-免费样片-rehearsal.mp4",
+      "sha256": "32a558b574cda1cecfde099595fe4592987a16938ab8f68f7bc3d9f078d58a35",
+      "bytes": 4603033,
+      "source": "本仓 ffmpeg/SAPI 自产：《免费样片》v2 edit 步",
+      "license": "自有（本机自产，CC0等效）",
+      "note": "short-video | sha16=32a558b574cda1ce",
+      "at": "2026-09-26T05:00:37"
+    },
+    {
+      "file": "projects/short-video/04-cut/彩排样板/20260923-short-video-彩排样板-rehearsal.mp4",
+      "sha256": "e7d230facbd513781dbc9e7684fb7ae24c07b1b0b119df6360d631f30eb0c827",
+      "bytes": 7032615,
+      "source": "本仓 media_run 自检自产（2026-09-23 彩排样板链执行器产物）",
+      "license": "自有（本机自产，CC0等效）",
+      "note": "short-video edit 彩排件（补登记）",
+      "at": "2026-09-26T05:03:20"
     },
     {
       "file": "projects/short-video/05-publish/20260923-short-video-pipeline-selftest-rehearsal.mp4",
@@ -100,9 +154,27 @@
       "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
       "note": "三方向工作流自检件 · 短视频/export（**彩排，非作品**）",
       "at": "2026-09-23T15:37:34"
+    },
+    {
+      "file": "projects/short-video/05-publish/20260926-short-video-免费样片-05export.mp4",
+      "sha256": "32a558b574cda1cecfde099595fe4592987a16938ab8f68f7bc3d9f078d58a35",
+      "bytes": 4603033,
+      "source": "本仓 ffmpeg/edit_core 自产：《免费样片》成片导出（14s, 1080x1920, h264+aac）",
+      "license": "自有（本机自产，CC0等效）",
+      "note": "short-video export 成品件",
+      "at": "2026-09-26T05:01:39"
+    },
+    {
+      "file": "projects/short-video/05-publish/20260926-short-video-免费样片-rehearsal.mp4",
+      "sha256": "32a558b574cda1cecfde099595fe4592987a16938ab8f68f7bc3d9f078d58a35",
+      "bytes": 4603033,
+      "source": "本仓 ffmpeg/SAPI 自产：《免费样片》v2 export 步",
+      "license": "自有（本机自产，CC0等效）",
+      "note": "short-video | sha16=32a558b574cda1ce",
+      "at": "2026-09-26T05:00:37"
     }
   ],
-  "updated": "2026-09-23T19:45:16",
+  "updated": "2026-09-26T05:03:20",
   "removed": [
     {
       "file": "README.md",

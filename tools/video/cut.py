@@ -21,6 +21,14 @@ import re
 import subprocess
 import sys
 
+# 🔴 2026-09-26 补：Windows 管道/重定向下 stdout 回落 GBK，emoji 一打印就崩；与 self_model.py 同一款补丁
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 WS = pathlib.Path(__file__).resolve().parents[2]
 
 
@@ -113,8 +121,14 @@ if __name__ == "__main__":
         raise SystemExit(0)
     if a[0] in ("silence", "edl"):
         src = pathlib.Path(a[1])
-        thresh = a[a.index("--thresh") + 1] if "--thresh" in a else "-35dB"
-        min_len = float(a[a.index("--min") + 1]) if "--min" in a else 0.30
+        def _opt(flag, default):
+            # 🔴 2026-09-26 自纠：flag 恰为末参时 a[i+1] 会 IndexError
+            if flag not in a:
+                return default
+            i = a.index(flag)
+            return a[i + 1] if i + 1 < len(a) else default
+        thresh = _opt("--thresh", "-35dB")
+        min_len = float(_opt("--min", 0.30))
         if a[0] == "edl":
             spans, _ = detect_silence(src, thresh, min_len)
             print(f"EDL：拟删静音 {len(spans)} 段 · 共 {sum(e - s for s, e in spans):.2f}s")

@@ -69,7 +69,15 @@ def _is_environment(name: str) -> bool:
 
 def _classify(p: Path) -> str:
     name = p.name
-    rel = p.relative_to(_HOME).as_posix()
+    try:
+        rel = p.relative_to(_HOME).as_posix()
+    except ValueError:
+        # 🔴 2026-09-26 修（真故障，被 `test_signature_no_env_overreach` 抓出来）：
+        # 分类器必须是**全函数** —— 家外路径（典型：`GBT_STORE_DIR` 被指到临时测试库，
+        # 扫描器把临时 store 的页面带进来）以前会当场抛 `ValueError`，
+        # 把"分类"变成"崩溃"。现在：家外凡在 store 里的归 `data`，其余归 `foreign`。
+        parts = {s.lower() for s in p.parts}
+        return "data" if "store" in parts else "foreign"
     # 框架本体
     if rel.startswith("gbt_allinone/"):
         # 框架内再分数据

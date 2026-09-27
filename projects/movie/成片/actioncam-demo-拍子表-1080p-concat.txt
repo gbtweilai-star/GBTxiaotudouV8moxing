@@ -1,0 +1,8 @@
+file 'C:\Users\ADMIN\Desktop\GBT小土豆V8\projects\movie\生成\actioncam-demo\segs\B1.mp4'
+file 'C:\Users\ADMIN\Desktop\GBT小土豆V8\projects\movie\生成\actioncam-demo\segs\B2.mp4'
+file 'C:\Users\ADMIN\Desktop\GBT小土豆V8\projects\movie\生成\actioncam-demo\segs\B3.mp4'
+file 'C:\Users\ADMIN\Desktop\GBT小土豆V8\projects\movie\生成\actioncam-demo\segs\B4.mp4'
+file 'C:\Users\ADMIN\Desktop\GBT小土豆V8\projects\movie\生成\actioncam-demo\segs\B5.mp4'
+file 'C:\Users\ADMIN\Desktop\GBT小土豆V8\projects\movie\生成\actioncam-demo\segs\B6.mp4'
+file 'C:\Users\ADMIN\Desktop\GBT小土豆V8\projects\movie\生成\actioncam-demo\segs\B7.mp4'
+file 'C:\Users\ADMIN\Desktop\GBT小土豆V8\projects\movie\生成\actioncam-demo\segs\B8.mp4'

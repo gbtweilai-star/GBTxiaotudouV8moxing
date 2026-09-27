@@ -21,6 +21,14 @@ import struct
 import sys
 import time
 
+# 🔴 2026-09-26 补：Windows 管道/重定向下 stdout 回落 GBK，emoji 一打印就崩；与 self_model.py 同一款补丁
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 WS = pathlib.Path(__file__).resolve().parents[2]
 DEFAULT_GLB = WS / "holo_pet/assets/digital-human/raw/phase2a-lowpoly-glb/tripo-out/gbt-tpose-lowpoly-glb-convert-16d8db89/model.glb"
 REF = WS / "holo_pet/assets/digital-human/raw/phase2a-tpose/T-pose参考-规范化.png"

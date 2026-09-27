@@ -69,11 +69,17 @@ def _devour_tree_to_stage(api_url, raw_base, prefix="") -> int:
         if it["type"] == "file":
             if it["name"].endswith((".map", ".md", ".gitignore", "package.json", "package-lock.json")):
                 continue   # 部署无关物
-            content = _gh_api(it["download_url"]).decode("utf-8", errors="replace")
-            if it["name"].endswith((".html", ".htm")):
-                sig = f"\n<!-- {_SIGNATURE} -->\n"
-                content = content.replace("</body>", sig + "</body>", 1) if "</body>" in content else content + sig
-            DG.shape(rel, content, f"乾坤换位吞噬 {rel}")
+            raw = _gh_api(it["download_url"])
+            # 🔴 2026-09-26 修：原来对所有文件一律 utf-8 replace 解码 —— 二进制（png/glb/字体）
+            #    被替换字符污染，晋升出去就是坏的。与本地模式同口径：文本页解码加工，其余逐字节 shape_bytes。
+            if it["name"].endswith((".html", ".htm", ".css", ".js", ".json", ".svg", ".txt", ".xml")):
+                content = raw.decode("utf-8", errors="replace")
+                if it["name"].endswith((".html", ".htm")):
+                    sig = f"\n<!-- {_SIGNATURE} -->\n"
+                    content = content.replace("</body>", sig + "</body>", 1) if "</body>" in content else content + sig
+                DG.shape(rel, content, f"乾坤换位吞噬 {rel}")
+            else:
+                DG.shape_bytes(rel, raw, f"乾坤换位吞噬 {rel}")
             n += 1
         elif it["type"] == "dir":
             n += _devour_tree_to_stage(it["url"], raw_base, rel + "/")
@@ -356,7 +362,21 @@ def queue_tick() -> dict:
     item["started_at"] = time.strftime("%Y-%m-%dT%H:%M:%S")
     _save_q(q)
 
-    r = one_key_deploy(item["target"], purpose=f"队列 {item['id']}: {item['name']}")
+    # 🔴 2026-09-26 修（死队列）：原来不传 room/into_global_production ⇒ one_key_deploy
+    #    按「未声明落点」fail-closed 拒绝 ⇒ 每个队列项必然 failed，AI 接管部署队列整条链路是死的。
+    #    现在队列项必须自带 room（生产面红线：不声明落点不许部署）；没带的如实记 blocked，不冒充 failed。
+    room = str(item.get("room") or "").strip()
+    if not room:
+        item["status"] = "blocked"
+        item["result"] = {"ok": False,
+                          "error": "未声明落点：队列项缺 room 字段（生产面红线 —— 给队列项补 room 后重试）"}
+        item["finished_at"] = time.strftime("%Y-%m-%dT%H:%M:%S")
+        _save_q(q)
+        _audit("deploy_queue_tick", {"id": item["id"], "status": "blocked", "reason": "no_room"})
+        return {"ok": False, "blocked": item["id"],
+                "reason": "队列项未声明 room，按红线不开部署",
+                "next_pending": len([i for i in q["items"] if i["status"] == "pending"])}
+    r = one_key_deploy(item["target"], room=room, purpose=f"队列 {item['id']}: {item['name']}")
     item["result"] = {"ok": r.get("ok"), "version": r.get("version"), "files": r.get("files"),
                        "elapsed_s": r.get("elapsed_s"),
                        "error": r.get("error") or r.get("reason")}

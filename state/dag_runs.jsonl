@@ -1,0 +1,8 @@
+{"at": "2026-09-27T10:31:31", "dag": "a47caca50bbb3e76", "source_kind": "dagrun", "done": 0, "failed": ["seg-B1", "seg-B2", "seg-B3", "seg-B4", "seg-B5", "seg-B6", "seg-B7", "seg-B8"]}
+{"at": "2026-09-27T10:32:53", "dag": "a9c52d82decaa791", "source_kind": "dagrun", "done": 9, "failed": []}
+{"at": "2026-09-27T10:33:14", "dag": "a9c52d82decaa791", "source_kind": "dagrun", "done": 9, "failed": []}
+{"at": "2026-09-27T10:48:14", "dag": "89c028029d638762", "source_kind": "dagrun", "done": 0, "failed": ["seg-X01", "seg-X02", "seg-X03", "seg-X04", "seg-X05", "seg-X06", "seg-X07", "seg-X08", "seg-X09", "seg-X10", "seg-X11", "seg-X12", "seg-X13", "seg-X14", "seg-X15", "seg-X16", "seg-X17", "seg-X18"]}
+{"at": "2026-09-27T10:50:03", "dag": "4d9679ac807f2f19", "source_kind": "dagrun", "done": 19, "failed": []}
+{"at": "2026-09-27T10:50:18", "dag": "4d9679ac807f2f19", "source_kind": "dagrun", "done": 19, "failed": []}
+{"at": "2026-09-27T10:58:14", "dag": "4d9679ac807f2f19", "source_kind": "dagrun", "done": 19, "failed": []}
+{"at": "2026-09-27T11:51:09", "dag": "a9c52d82decaa791", "source_kind": "dagrun", "done": 9, "failed": []}

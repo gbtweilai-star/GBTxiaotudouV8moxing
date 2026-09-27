@@ -1,0 +1,33 @@
+{
+ "at": "2026-09-27T11:51:09",
+ "film": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\projects\\movie\\成片\\actioncam-demo-拍子表-1080p.mp4",
+ "film_sha16": "b6b93e493d95bdff",
+ "manifest": "C:/Users/ADMIN/Desktop/GBT小土豆V8/projects/movie/产线/manifest-actioncam-demo.json",
+ "manifest_sha16": "45c4bbe2d135ea22",
+ "quality": "fhd",
+ "grade": "filmic",
+ "source": "pollinations",
+ "seed_base": 20260927,
+ "seeds": {
+  "B1": 501812,
+  "B2": 20268846,
+  "B3": 20276765,
+  "B4": 20284684,
+  "B5": 20292603,
+  "B6": 300716,
+  "B7": 20308441,
+  "B8": 20316360
+ },
+ "tools": {
+  "actioncam.py": "d23a67d8653b700b",
+  "filmkit.py": "e0690da6de11d605",
+  "filmgrade.py": "992d2da9e1b90a4b"
+ },
+ "engine": {
+  "python": "3.12.10",
+  "ffmpeg": "ffmpeg version 8.1.2-full_build-www.gyan.dev Copyright (c) 2"
+ },
+ "口径": "清单 hash + 工具 hash + 引擎版本 + seed 表 ⇒ 可复现/可回归；任一变了指纹就变",
+ "beats": 8,
+ "audio": true
+}

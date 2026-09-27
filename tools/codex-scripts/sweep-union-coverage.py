@@ -10,7 +10,9 @@ import json
 import re
 from pathlib import Path
 
-ROOT = Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+# 🔴 2026-09-26 自纠：原来写死本机绝对路径 C:\Users\ADMIN\Desktop\GBT小土豆V8 ——
+#    换机/换目录就静默指向别处（或 FileNotFoundError），违背"现数、不写死"的立尺初衷。
+ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "output" / "blueprint-audit"
 
 

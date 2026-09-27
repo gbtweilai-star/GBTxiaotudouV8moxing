@@ -22,6 +22,14 @@ import subprocess
 import sys
 import time
 
+# 🔴 2026-09-26 补：Windows 管道/重定向下 stdout 回落 GBK，emoji 一打印就崩；与 self_model.py 同一款补丁
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import providers as P                                                    # noqa: E402
 
@@ -237,7 +245,9 @@ def main():
         st = next((s for s in STAGES if s["id"].lower() == a[1].lower()), None)
         if not st:
             print(f"没有这个阶段: {a[1]}"); return
-        prefer = a[a.index("--provider") + 1] if "--provider" in a else None
+        # 🔴 2026-09-26 自纠：--provider 恰为末参时 a[i+1] 会 IndexError
+        _pi = a.index("--provider") if "--provider" in a else -1
+        prefer = a[_pi + 1] if _pi != -1 and _pi + 1 < len(a) else None
         dry = "--dry" in a
         if not st["cap"]:
             print(f"[{st['id']}] {st['name']}：人工/本仓固定环节\n  {st['note']}\n  回退: {st['fallback']}")

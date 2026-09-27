@@ -150,6 +150,17 @@ def list_energies() -> List[dict]:
             # ⚠️ 盘上没有免费/付费字段 ⇒ **如实标 unknown**，不编
             "tier": "unknown",
         })
+    out.append({
+        # ── 本地原生端点（土豆大模型 · 双向互绑 2026-09-26 主人令）──
+        # 无密钥本地能源：on_disk 对它无意义 ⇒ 如实 False，不冒充「凭据在盘」。
+        "name": "qwen-local",
+        "key_ref": "",
+        "env": "GBT_LLM_API_KEY",
+        "on_disk": False,
+        "tier": "unknown",
+        "endpoint": "http://127.0.0.1:8111/v1",
+        "status": "接线态",
+    })
     return sorted(out, key=lambda x: x["name"])
 
 
@@ -285,6 +296,18 @@ def build_sources() -> List[EnergySource]:
             capability=("text",),          # 盘上没有能力位字段 ⇒ 只标已知的文本
             status="可用" if has_key else "缺key",
         ))
+    # ── 本地原生端点（土豆大模型 · 双向互绑 2026-09-26 主人令）────────────────
+    # 无密钥本地端点：endpoint 指向本机 dsh-llm-qwen-local 假端点（preflight 已验收
+    # 「可以接真端点」，真 vLLM 换 baseURL 一行即成）。key_ref 留空 —— 本地算力不走
+    # DPAPI，「只收 DPAPI 引用」的登记闸只拦带明文钥匙的，不拦无钥匙的本地能源。
+    out.append(EnergySource(
+        source_id="qwen-local",
+        grade="未知", kind="未知",          # 盘上没有档位字段 ⇒ 如实「未知」，不编
+        endpoint="http://127.0.0.1:8111/v1",
+        key_ref="",
+        capability=("text",),               # multimodal 待真端点起来再实测升级，不预支
+        status="接线态",                    # 假端点已验形、服务未常驻 —— 如实，不称「可用」
+    ))
     return sorted(out, key=lambda s: s.source_id)
 
 

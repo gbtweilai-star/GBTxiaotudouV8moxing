@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -49,6 +50,10 @@ JUDGMENTS = [
     ("台账字段契约", "gbt_allinone.tests.test_progress_ledger_contract"),
     ("注入面诚实性", "gbt_allinone.tests.test_injection_honesty"),
     ("没有恒真判据", "gbt_allinone.tests.test_dead_judgments"),
+    # 2026-09-27 加（主人令「启动的时候触手就是你的手」）：接线三判据 ——
+    # ①登记↔分派 ②触手账断连=0 ③外部工作流插件三节点一个不差。
+    # 起因：filmkit 曾"登记了没接线"，靠人扫出来；这条判据把它钉死成启动红。
+    ("接线全连通", "gbt_allinone.tests.test_wiring_all_tentacles"),
     # 2026-09-25 加：云端那 4 批改动（令牌闸 / 作用面读数 / 拍平块数组 / 错误分档）
     # 因为**没部署**，云端一次都没跑过。本机离线验它，0.3 秒，不出一字节网。
     ("云端点闸行为", "gbt_allinone.tests.test_endpoint_gate"),
@@ -112,6 +117,10 @@ def _env(store: str) -> dict:
     e = dict(os.environ)
     e["GBT_STORE_DIR"] = store
     e["PYTHONIOENCODING"] = "utf-8"
+    # 🔴 2026-09-26 自纠：环境里残留的 PYTHONPATH 会把注入面测成假红
+    #    （run-all-tests.py 里的一手实录）。这里跑的是同一批 unittest 模块，
+    #    却没做同样的环境清洁 —— 现在补上，同一条判据同一条规矩。
+    e.pop("PYTHONPATH", None)
     return e
 
 
@@ -127,7 +136,10 @@ def _run(cmd: list, env: dict, timeout: int = 600) -> tuple:
 
 
 def selfcheck(quick: bool = False) -> dict:
-    store = str(Path(tempfile.gettempdir()) / "gbt_boot_selfcheck_store")
+    # 🔴 2026-09-26 自纠：原来用固定共享路径 %TEMP%/gbt_boot_selfcheck_store ——
+    #    两次自检并发会共享同一 store（读数互相污染），且跨次运行累积不清理，
+    #    "隔离 store"只隔离了生产，没隔离上一次自己。现在每检一次一间新屋。
+    store = tempfile.mkdtemp(prefix="gbt_boot_selfcheck_store_")
     env = _env(store)
     steps = []
 
@@ -166,8 +178,11 @@ def selfcheck(quick: bool = False) -> dict:
         now = (_concl[0][:120] if _concl else out.strip()[-160:])
         if pending:
             now += " · 待到位=%s" % "、".join(pending)
+        # 🔴 2026-09-26 自纠：原来这里 `rc == 0 or ok` —— 验收单崩溃/超时（rc=124/125）时
+        #    输出里没有 ⏳ 行 ⇒ pending=[] ⇒ ok=True ⇒ (False or True) 被报成 ✅，
+        #    违反本文件自己的口径"任何一段跑不动都算红"。改为 **and**：跑不成就是红。
         steps.append({"step": "闸/重启验收单", "cmd": "python plugins/gbt-master/tools/verify-after-restart.py",
-                      "ok": (rc == 0 or ok), "rc": rc, "now": now})
+                      "ok": (rc == 0 and ok), "rc": rc, "now": now})
     else:
         steps.append({"step": "闸/重启验收单", "cmd": str(SHEET), "ok": False, "rc": 127,
                       "now": "验收单不在盘上 —— 不许当跳过"})

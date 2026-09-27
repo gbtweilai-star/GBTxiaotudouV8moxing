@@ -111,7 +111,7 @@ print("=" * 92)
 _syn = [{"id": "VULN-0001", "title": "敏感信息泄露", "severity": "high", "cwe": "CWE-532",
          "location": "x.py:1", "match": "token = 'abc'", "fix": "", "cvss": 7.5},
         {"id": "VULN-0002", "title": "命令注入", "severity": "critical", "cwe": "CWE-78",
-         "location": "x.py:2", "match": "os.system(c)", "fix": "", "cvss": 9.8}]
+         "location": "x.py:2", "match": "os.system(c)", "fix": "", "cvss": 9.8}]  # TAINT_SAFE: test fixture mock data
 chain = hb.build_exploit_chain(_syn)
 chk("喂入真料能构建链", chain.get("total_chains", 0) > 0,
     "chains=%s risk=%s" % (chain.get("total_chains"), chain.get("risk")))

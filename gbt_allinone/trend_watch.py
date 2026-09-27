@@ -27,7 +27,10 @@ import time
 from pathlib import Path
 
 _BASE = Path(__file__).resolve().parent
-_STORE = _BASE / "store" / "preferences"
+# 🔴 2026-09-26 修：原来硬编码包内 store —— 绕开 GBT_STORE_DIR 单一来源（隔离测试会写脏真实 store，
+#    同 qiankun O35 已修过的病）。现在走 _paths.STORE_DIR，环境可隔离。
+from . import _paths as _gbt_paths
+_STORE = Path(_gbt_paths.STORE_DIR) / "preferences"
 _LEDGER = _STORE / "user_preference_ledger.jsonl"
 
 # 触发词唯一真相：话题追踪那边 import 这一份，不抄第二份。

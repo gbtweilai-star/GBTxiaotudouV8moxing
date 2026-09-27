@@ -85,13 +85,25 @@ def run_one(path: Path, timeout_s: int = 300) -> dict:
             stderr=subprocess.STDOUT, timeout=timeout_s)
         out = p.stdout.decode("utf-8", "replace")
         s = _summary(out)
+        if p.returncode == 0:
+            # 🔴 2026-09-26 自纠：原来 iso 目录从不清理 —— 一次满仓横扫在 %TEMP% 留下
+            #    126 个带 store/两个 db 的 gbt_iso_sweep_* 目录。现在**绿的当场清**；
+            #    红的/超时的保留并在行里带路径（归因证据不许当场销毁）。
+            shutil.rmtree(iso, ignore_errors=True)
         return {"file": path.name, "rc": p.returncode,
                 "ms": round((time.perf_counter() - t0) * 1000),
-                "summary": s, "tail": out[-600:], "timeout": False}
+                "summary": s, "tail": out[-600:], "timeout": False, "iso": iso}
     except subprocess.TimeoutExpired:
         return {"file": path.name, "rc": None,
                 "ms": round((time.perf_counter() - t0) * 1000),
-                "summary": None, "tail": "timeout>%ss" % timeout_s, "timeout": True}
+                "summary": None, "tail": "timeout>%ss" % timeout_s, "timeout": True,
+                "iso": iso}
+    except Exception as exc:                                      # noqa: BLE001
+        # 起不来（环境炸/pytest 缺失等）也如实成一排，别让整场横扫中途崩掉
+        return {"file": path.name, "rc": None,
+                "ms": round((time.perf_counter() - t0) * 1000),
+                "summary": None, "tail": "%s: %s" % (type(exc).__name__, str(exc)[:160]),
+                "timeout": False, "iso": iso}
 
 
 def _fingerprint(with_rows: bool = False, subdir: str = "") -> dict:

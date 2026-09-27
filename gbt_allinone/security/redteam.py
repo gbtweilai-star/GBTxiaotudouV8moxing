@@ -416,6 +416,13 @@ def pentest(action: str = "plan", target: str = "", port: int = 0, **_kw) -> dic
         return list_targets()
     if not target:
         return {"ok": False, "error": "缺少 target", "hint": "先用 action=authorize 登记目标"}
+    if action == "authorize":
+        # 🔴 2026-09-26 修（自锁死循环）：原来 authorize 分排在"未登记即拒"**之后** ——
+        #    未登记目标照提示走 authorize 会撞回同一个拒绝分支，全框架没有任何路径能登记新目标。
+        #    authorize/revoke 本身就是登记/注销的写入口，必须放在登记检查**之前**。
+        return authorize(target, note="pentest 登记")
+    if action == "revoke":
+        return revoke(target)
     rec = _target_registered(target)
     if not rec:
         return {"ok": False, "denied": True,
@@ -423,10 +430,6 @@ def pentest(action: str = "plan", target: str = "", port: int = 0, **_kw) -> dic
                 "how_to_authorize": f'run_task("pentest", {{"action":"authorize","target":"{target}"}})'
                                     "（该动作需要 filesystem_write 人工授权）",
                 "口径": "红线①：未登记目标一律拒 —— 本能力不对陌生目标动作"}
-    if action == "authorize":
-        return authorize(target, note="pentest 登记")
-    if action == "revoke":
-        return revoke(target)
     if action == "plan":
         return _pentest_plan(target, rec)
     if action == "verify":
@@ -497,10 +500,13 @@ def _pentest_verify(target: str, rec: dict, port: int = 0) -> dict:
     if p in (80, 443):
         try:
             scheme = "https" if (use_tls or p == 443) else "http"
-            resp = NG.safe_request("GET", f"{scheme}://{url_host}/", timeout=10,
+            resp = NG.safe_request(f"{scheme}://{url_host}/", method="GET", timeout=10,
                                    allow_private=(rec.get("kind") != "public"))
-            hdrs = {k.lower(): v for k, v in (resp.headers or {}).items()} \
-                if hasattr(resp, "headers") else {}
+            # 🔴 2026-09-26 修：①原来 method 走位置实参（net_guard 是 keyword-only）必 TypeError；
+            #    ②safe_request 返回 **dict**（headers 是键），原 .headers 属性取法恒得 {} ⇒
+            #    五个头全部"缺失"，对任何目标都产 5 条 medium 假发现。
+            hdrs = {str(k).lower(): v for k, v in (resp.get("headers") or {}).items()} \
+                if isinstance(resp, dict) else {}
             missing = [h for h in ("strict-transport-security", "content-security-policy",
                                    "x-content-type-options", "x-frame-options",
                                    "referrer-policy") if h not in hdrs]
@@ -531,7 +537,12 @@ def _input_sessions() -> list[dict]:
                 info.update(json.loads(meta.read_text(encoding="utf-8")))
             except Exception:                                   # noqa: BLE001
                 pass
-        info["running"] = bool(info.get("pid")) and _pid_alive(int(info.get("pid") or 0))
+        try:
+            # 🔴 2026-09-26 修：meta.json 里的 pid 损坏（int() 抛 ValueError）原来会让
+            #    status/stop/dump/purge 全部崩掉 —— 一个坏文件毒死全部会话读数。
+            info["running"] = bool(info.get("pid")) and _pid_alive(int(info.get("pid") or 0))
+        except (TypeError, ValueError):
+            info["running"] = False
         out.append(info)
     return out
 
@@ -562,6 +573,10 @@ def keylogger(action: str = "status", seconds: int = 0, session: str = "", **_kw
     if action == "start":
         _state_dir(_INPUT_DIR)
         name = session or time.strftime("input-%Y%m%d-%H%M%S")
+        # 🔴 2026-09-26 修：session 原样拼路径 —— "..\\..\\x" 可穿越出采集目录，绝对路径会
+        #    整体替换落点（Path 拼接语义）。会话名只允许安全字符，其余压成下划线。
+        name = re.sub(r"[^A-Za-z0-9_.\-]+", "_", name).strip("._") \
+            or time.strftime("input-%Y%m%d-%H%M%S")
         rec = _INPUT_DIR / f"{name}.jsonl"
         meta = _INPUT_DIR / f"{name}.meta.json"
         # 🔴 2026-09-25 修 FR-5（机检命中，`false_report_audit` 自己抓的）：
@@ -759,7 +774,11 @@ def screen_sniff(action: str = "capture", label: str = "", frames: int = 1,
                 for i in range(n):
                     shot = sct.grab(mon)
                     img = Image.frombytes("RGB", shot.size, shot.bgra, "raw", "BGRX")
-                    name = f"{label or time.strftime('%Y%m%d-%H%M%S')}-{i:02d}.png"
+                    # 🔴 2026-09-26 修：label 原样拼路径（同 keylogger session 的穿越面）
+                    _base = re.sub(r"[^A-Za-z0-9_.\-]+", "_",
+                                   label or time.strftime("%Y%m%d-%H%M%S")).strip("._") \
+                        or time.strftime("%Y%m%d-%H%M%S")
+                    name = f"{_base}-{i:02d}.png"
                     p = _SCREEN_DIR / name
                     img.save(p)
                     saved.append({"file": str(p), "size": list(shot.size),
@@ -1076,8 +1095,13 @@ def data_hijack(action: str = "session", path: str = "", **_kw) -> dict:
         cur = {}
         n = 0
         for f in sorted(root.rglob("*")):
-            if not f.is_file() or n > 20000:
+            # 🔴 2026-09-26 修（一字定生死）：原来两个条件共用 `break` —— sorted(rglob) 首项
+            #    是目录，首条即 `not f.is_file()` ⇒ 整个循环当场退出 ⇒ 指纹恒为空 dict 的 sha
+            #    ⇒ verify 对任何篡改都报"干净"（假绿）。目录该 continue 跳过，超限才 break。
+            if n > 20000:
                 break
+            if not f.is_file():
+                continue
             if any(part in (".git", "node_modules", "__pycache__", ".scratch", "store",
                             "vendor") for part in f.parts):
                 continue

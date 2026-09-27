@@ -567,6 +567,96 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import auto_switch as _as
         p = payload or {}
         return _as.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "scrapling":
+        # 网页抓取（公网限定）：每个 URL 过 net_guard 边界；缺库如实报缺（2026-09-26 主人令接入）
+        from .tools import scrapling_cap as _sl
+        p = payload or {}
+        return _sl.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "genoffice":
+        # 办公文档（local-first）：读类直连、写类过 filesystem_write 门（处理器层挂闸）
+        from .tools import genoffice_cap as _go
+        p = payload or {}
+        return _go.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "blender":
+        # 三维电影引擎（local-first）：status 免门，run（渲染/脚本）过 filesystem_write 门
+        from .tools import blender_cap as _bl
+        p = payload or {}
+        return _bl.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "gs_h3":
+        # GS-prompt-extend 三节点接线：读面免门；expand 过 external_llm；loader/unload 过 filesystem_write
+        # （主人令「把工作流里的智能体全部一个不差的跟触手连接」· 2026-09-27）
+        from .tools import gs_h3_cap as _gs
+        p = payload or {}
+        return _gs.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "n8n_wf":
+        # 我们自己的 n8n：status/list 直连；export/import/active/hook 过门
+        from .tools import n8n_wf_cap as _n8
+        p = payload or {}
+        return _n8.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "tentacle_bind":
+        # 资产↔触手穿透式绑定（只读 scan/coverage 直连；bind/unbind 等过门由 CLI 执行）
+        import importlib.util as _iu
+        from pathlib import Path as _P
+        _spec = _iu.spec_from_file_location("tentacle_bind", _P(__file__).resolve().parents[1] / "tools" / "tentacle_bind.py")
+        _tb = _iu.module_from_spec(_spec)
+        _spec.loader.exec_module(_tb)
+        p = payload or {}
+        op = p.get("op", "scan")
+        if op == "scan":
+            return _tb.scan()
+        if op == "coverage" and p.get("dir"):
+            return _tb.coverage(str(p["dir"]))
+        if op == "ledger":
+            return {"ok": True, "path": str(_tb.LEDGER),
+                    "lines": (len(_tb.LEDGER.read_text(encoding="utf-8").splitlines())
+                              if _tb.LEDGER.is_file() else 0)}
+        if op == "gaps":
+            return _tb.gaps(sample=int(p.get("sample") or 20))
+        return {"ok": False, "error": f"未知/受限 op:{op}（读面：scan/coverage/ledger/gaps）", "fail_closed": True}
+    if kind == "filmkit":
+        # 柔性影片产线（清单制）：status/plan 只读直连；gen/seg/build/add/rm 过 filesystem_write 门
+        # （2026-09-26 补接线：此前只在 caps_registry 登记、_run_benign 无分支 ⇒ 调用得到 not_wired）
+        from .tools import filmkit_cap as _fk
+        p = payload or {}
+        return _fk.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "actioncam":
+        # 动作镜头控制系统（拍子表制）：plan/status 只读直连；gen/seg/build/add/rm 过 filesystem_write 门
+        from .tools import actioncam_cap as _ac
+        p = payload or {}
+        return _ac.run(p.get("op", "plan"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "look_grade":
+        # 外观库触手（词即指令）：list/pick/qc 免门；preview 写盘过 filesystem_write
+        from .tools import look_grade_cap as _lg
+        p = payload or {}
+        return _lg.run(p.get("op", "list"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "zimage_rewash":
+        # 洗图流水线（Owner 2026-09-27 立项）：读面免门；upscale 过 filesystem_write；reverse/rewash 如实报缺
+        from .tools import zimage_rewash_cap as _zr
+        p = payload or {}
+        return _zr.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind in ("penetrating_cross_scan", "hook_enforcer", "omission_detector"):
+        # 穿透式交叉扫描三件套（Owner 2026-09-27 立项）：钩子强制/步骤锁/交叉互扫/遗漏检测/留痕
+        # 三个 kind 共用同一引擎，用不同入口分权：scan=全管线 · verify=只验钩子 · check=只算覆盖
+        import importlib.util as _iu
+        from pathlib import Path as _P
+        _spec = _iu.spec_from_file_location(
+            "pcs", _P(__file__).resolve().parents[1] / "tools" / "penetrating_cross_scan.py")
+        _pcs = _iu.module_from_spec(_spec)
+        _spec.loader.exec_module(_pcs)
+        p = payload or {}
+        op = (p.get("op") or "status").lower()
+        if op == "status":
+            return _pcs.status()
+        if op == "report":
+            return _pcs.report(int(p.get("tail") or 5))
+        target = str(p.get("target") or "bindings")
+        want = {"penetrating_cross_scan": ("scan", "run"),
+                "hook_enforcer": ("verify", "scan"),
+                "omission_detector": ("check", "scan")}[kind]
+        if op in want:
+            return _pcs.run_pipeline(target, mode="check" if kind == "omission_detector" else "scan")
+        return {"ok": False, "error": f"未知 op:{op}（status/report/{'/'.join(want)}）",
+                "fail_closed": True}
     if kind == "context_vault":
         # 只读骨架：**不写盘、不建真索引、不出网**（只索引与引用，不复制正文）
         from .tools import context_vault as _cv
@@ -1350,7 +1440,33 @@ def run_task(kind, payload=None, stamp=True, safe=False, probe=False):
                    "error_class": "runtime_fault"}
     else:
         raw = _run_task_core(kind, payload, stamp=stamp, probe=probe)
+    # 产出即绑（2026-09-26 · 主人问「穿透都连好了嘛」抓出的配置缺口）：
+    # 此前自动绑定只挂在 filmkit 一处 ⇒ "产出即绑"只在电影产线成立，别的触手产出
+    # 要靠人工 sweep 才进账。这里提升成**总闸级**：任何一次非 probe 调用返回后，
+    # 把这次调用期间**新出现/新改动**的资产自动绑标签（先按属性自判，判不出才用 kind 兜底）。
+    # 三条保险：只看资产根（不做全仓遍历）· 模块内 3 秒节流 · **异常全吞**（绝不许弄坏一次真调用）。
+    if not probe:
+        try:
+            _autobind_hook(kind)
+        except Exception:  # noqa: BLE001
+            pass
     return _verify_result(kind, payload, _normalize_envelope(kind, raw), probe=probe)
+
+
+_AUTOBIND_MOD = [None]
+
+
+def _autobind_hook(kind: str) -> None:
+    """惰性加载 `tools/tentacle_bind.py`（仓根 tools，不在包内）并跑节流版 autobind。"""
+    if _AUTOBIND_MOD[0] is None:
+        import importlib.util as _iu
+        from pathlib import Path as _P
+        spec = _iu.spec_from_file_location(
+            "tentacle_bind", _P(__file__).resolve().parents[1] / "tools" / "tentacle_bind.py")
+        mod = _iu.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _AUTOBIND_MOD[0] = mod
+    _AUTOBIND_MOD[0].autobind(kind_hint=str(kind or ""))
 
 
 # ═══════════ 机检门：让**她自己**执行时也自检（Owner 2026-09-22「乙」）═══════════

@@ -1,10 +1,12 @@
 """GBT 量化技术能力（读取 Workspace 项目真实代码，返回真实技术分析）。
 
 只读：解析量化引擎/回测 API 的类、信号、参数模型。不读取 .env/密钥，不触发任何交易。"""
+import os
 import re
 from pathlib import Path
 
-WS = Path(r"C:\Users\ADMIN\Desktop\Workspace")
+# 🔴 2026-09-26 修：原来写死本机绝对路径 —— 换机/换用户即静默降级 no_engine_found；现在可用环境变量改
+WS = Path(os.environ.get("GBT_QUANT_WS") or r"C:\Users\ADMIN\Desktop\Workspace")
 ENGINE_FILES = [
     WS / "01_量化收割引擎" / "cis_scalper" / "cis_quant_engine.py",
     WS / "01_量化收割引擎" / "cis_harvesting" / "cis_harvesting_system_v2.py",

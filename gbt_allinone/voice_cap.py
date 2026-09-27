@@ -88,9 +88,12 @@ def tts(text, voice=None, rate=0, out=None):
             out_p = Path(out)
             out_p.parent.mkdir(parents=True, exist_ok=True)
             stream.Open(str(out_p), 3)  # SSFMCreateForWrite = 3
-            sapi.AudioOutputStream = stream
-            sapi.Speak(text)
-            stream.Close()
+            try:
+                sapi.AudioOutputStream = stream
+                sapi.Speak(text)
+            finally:
+                # 🔴 2026-09-26 修：Speak 抛异常时原来不 Close —— WAV 句柄占用、半成品文件锁死
+                stream.Close()
             return {"ok": True, "backend": "win-sapi", "wav": str(out_p),
                     "text": text[:80], "size_kb": round(out_p.stat().st_size / 1024, 1)}
         # 直接播放

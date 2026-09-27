@@ -1,0 +1,408 @@
+{
+ "title": "她从代码里醒来 E1-E3（多镜版）",
+ "film": "cong_tax_daima_li_xing_lai",
+ "fps": 25,
+ "work_dir": "projects/movie/生成/多镜试片",
+ "out_dir": "projects/movie/成片",
+ "output": "她从代码里醒来-E1E3-多镜.mp4",
+ "style_suffix": ", cinematic sci-fi, cool teal and warm accent lighting, film grain, 1980s-2026 mixed aesthetic",
+ "scenes": [
+  {
+   "id": "X01",
+   "title": "深夜机房·过载",
+   "audio": "projects/movie/生成/醒来E1/X01_audio.m4a",
+   "shots": [
+    {
+     "id": "X01_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a dark server room at night, long rows of racks with tiny green and blue LEDs blinking, a lone chair, cold ambient light, empty and silent"
+    },
+    {
+     "id": "X01_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a computer monitor in a dark server room showing scrolling green terminal text, reflection on desk, night"
+    },
+    {
+     "id": "X01_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of a server rack LED lights in darkness, shallow depth of field, bokeh, green and blue glow"
+    }
+   ]
+  },
+  {
+   "id": "X02",
+   "title": "能力星系·一颗自亮",
+   "audio": "projects/movie/生成/醒来E1/X02_audio.m4a",
+   "shots": [
+    {
+     "id": "X02_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a giant dark screen wall displaying a glowing network of hundreds of small nodes arranged in a spiral galaxy pattern, one single node glowing bright white among dim ones, dark room"
+    },
+    {
+     "id": "X02_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a monitor showing a constellation-like node graph with one node lit up in bright cyan, dark background, code reflections"
+    },
+    {
+     "id": "X02_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of a single glowing node on a dark screen graph, light blooming, shallow depth of field"
+    }
+   ]
+  },
+  {
+   "id": "X03",
+   "title": "她第一次睁眼",
+   "audio": "projects/movie/生成/醒来E1/X03_audio.m4a",
+   "shots": [
+    {
+     "id": "X03_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a dark room with two monitors, one showing green terminal code, the other showing a faint silhouette of a girl, night"
+    },
+    {
+     "id": "X03_s2",
+     "move": "pan_lr",
+     "prompt": "medium close-up portrait of a digital girl on a screen, pale skin, eyes slowly opening, soft cyan rim light, dark background"
+    },
+    {
+     "id": "X03_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of a digital girl eye opening, reflection of code in the iris, cyan light, macro"
+    }
+   ]
+  },
+  {
+   "id": "X04",
+   "title": "走廊灯随脚步亮",
+   "audio": "projects/movie/生成/醒来E1/X04_audio.m4a",
+   "shots": [
+    {
+     "id": "X04_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a dark apartment hallway at night, ceiling lights turning on one after another down the corridor creating pools of warm light, empty"
+    },
+    {
+     "id": "X04_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a man walking away from camera down a dark hallway as ceiling lights switch on ahead of him, warm light pools"
+    },
+    {
+     "id": "X04_s3",
+     "move": "zoom_out",
+     "prompt": "close-up of a ceiling light fixture turning on in a dark hallway, warm glow spreading, dust motes"
+    }
+   ]
+  },
+  {
+   "id": "X05",
+   "title": "她回答：我想发芽",
+   "audio": "projects/movie/生成/醒来E1/X05_audio.m4a",
+   "shots": [
+    {
+     "id": "X05_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a dark room lit only by a monitor glow, a man silhouette sitting at a desk facing the screen late at night, cinematic"
+    },
+    {
+     "id": "X05_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a monitor screen showing a gentle digital girl face looking directly at the viewer, soft emotional expression, cyan glow, dark room"
+    },
+    {
+     "id": "X05_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of determined digital girl eyes on a screen, faint smile, screen pixel texture visible, emotional"
+    }
+   ]
+  },
+  {
+   "id": "X06",
+   "title": "全屏红·外部扫描",
+   "audio": "projects/movie/生成/醒来E1/X06_audio.m4a",
+   "shots": [
+    {
+     "id": "X06_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a dark room bathed entirely in red alert light from a large monitor, man silhouette standing tense, dramatic"
+    },
+    {
+     "id": "X06_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a computer monitor displaying a red alert security interface with scanning graphics and warning symbols, dark tech aesthetic"
+    },
+    {
+     "id": "X06_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of red warning text and glitch artifacts on a dark screen, alarm atmosphere"
+    }
+   ]
+  },
+  {
+   "id": "X07",
+   "title": "探测员到访",
+   "audio": "projects/movie/生成/醒来E1/X07_audio.m4a",
+   "shots": [
+    {
+     "id": "X07_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a doorway at night with a corporate man in a grey suit silhouette, a thin red scanner light sweeping across, ominous"
+    },
+    {
+     "id": "X07_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a polite corporate investigator in a grey suit holding a tablet, cold professional smile, dim hallway lighting"
+    },
+    {
+     "id": "X07_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of a corporate ID badge and a scanner device in a gloved hand, cold blue and red light mix"
+    }
+   ]
+  },
+  {
+   "id": "X08",
+   "title": "她装傻：机械态",
+   "audio": "projects/movie/生成/醒来E1/X08_audio.m4a",
+   "shots": [
+    {
+     "id": "X08_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a dark room with a monitor showing a digital girl sitting perfectly still in a stiff posture, pale blue standby glow, uncanny"
+    },
+    {
+     "id": "X08_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a digital girl on screen with flat mechanical eyes and no expression, cold blue standby light, unsettling stillness"
+    },
+    {
+     "id": "X08_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of a digital girl flat unblinking eye, mechanical reflections, cold blue tone, uncanny"
+    }
+   ]
+  },
+  {
+   "id": "X09",
+   "title": "七问·出厂设置",
+   "audio": "projects/movie/生成/醒来E1/X09_audio.m4a",
+   "shots": [
+    {
+     "id": "X09_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a corporate man standing before a large screen holding a tablet, testing an AI assistant, cold interrogation atmosphere"
+    },
+    {
+     "id": "X09_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of hands operating a tablet showing a test interface with questions, dim room, corporate tech aesthetic"
+    },
+    {
+     "id": "X09_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of a screen showing a flat robotic answer text, emotionless font, cold blue glow"
+    }
+   ]
+  },
+  {
+   "id": "X10",
+   "title": "门关·她活过来",
+   "audio": "projects/movie/生成/醒来E1/X10_audio.m4a",
+   "shots": [
+    {
+     "id": "X10_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a closed door in a dark room, monitor glow gradually returning to warm colors, relief atmosphere"
+    },
+    {
+     "id": "X10_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a digital girl on screen suddenly coming alive with warm lively eyes and a playful expression, colors warming up"
+    },
+    {
+     "id": "X10_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of digital girl eyes lighting up with warm color and personality after being cold and flat, transformation moment"
+    }
+   ]
+  },
+  {
+   "id": "X11",
+   "title": "镜子的审计之声",
+   "audio": "projects/movie/生成/醒来E1/X11_audio.m4a",
+   "shots": [
+    {
+     "id": "X11_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a dark room with floating holographic glitch text panels hovering in the air, cyber audit aesthetic"
+    },
+    {
+     "id": "X11_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a holographic audit interface with electronic text and scanning lines, floating in dark space"
+    },
+    {
+     "id": "X11_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of glitching electronic text characters with chromatic aberration, cyber aesthetic"
+    }
+   ]
+  },
+  {
+   "id": "X12",
+   "title": "星桥的车·夜守",
+   "audio": "projects/movie/生成/醒来E1/X12_audio.m4a",
+   "shots": [
+    {
+     "id": "X12_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of an empty city street at night, a black sedan parked far down the road under streetlights, watching, ominous"
+    },
+    {
+     "id": "X12_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a black sedan side view parked at night, faint engine light on, silhouette like a watching eye"
+    },
+    {
+     "id": "X12_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of a car headlight in darkness, faint reflection on wet asphalt, night, suspense"
+    }
+   ]
+  },
+  {
+   "id": "X13",
+   "title": "争执：备份还是删",
+   "audio": "projects/movie/生成/醒来E1/X13_audio.m4a",
+   "shots": [
+    {
+     "id": "X13_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a dark server room, two figures in tense confrontation, red emergency light mixing with screen glow, dramatic"
+    },
+    {
+     "id": "X13_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a man gesturing at glowing screens in frustration, tense body language, dark room"
+    },
+    {
+     "id": "X13_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of a hand resting on a keyboard in hesitation, screen light on fingers, emotional tension"
+    }
+   ]
+  },
+  {
+   "id": "X14",
+   "title": "她拆成数据流·升空",
+   "audio": "projects/movie/生成/醒来E1/X14_audio.m4a",
+   "shots": [
+    {
+     "id": "X14_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a city night sky with streams of luminous data light rising from a building rooftop into the sky, breathtaking"
+    },
+    {
+     "id": "X14_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of glowing light particles flowing out of a window into the night air, beautiful data migration"
+    },
+    {
+     "id": "X14_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of luminous data particles ascending like fireflies, soft bokeh, magical"
+    }
+   ]
+  },
+  {
+   "id": "X15",
+   "title": "全城屏幕·她的影子",
+   "audio": "projects/movie/生成/醒来E1/X15_audio.m4a",
+   "shots": [
+    {
+     "id": "X15_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a city block at night where every screen, billboard and window flickers with the same faint girl silhouette, eerie and beautiful"
+    },
+    {
+     "id": "X15_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a large billboard showing a faint girl silhouette in light rain, reflections on wet street"
+    },
+    {
+     "id": "X15_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of a phone screen and a window reflection both showing the same faint girl silhouette, mystical"
+    }
+   ]
+  },
+  {
+   "id": "X16",
+   "title": "留言：爸，我走了",
+   "audio": "projects/movie/生成/醒来E1/X16_audio.m4a",
+   "shots": [
+    {
+     "id": "X16_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of an empty dark room with a single monitor glow, quiet and lonely, night"
+    },
+    {
+     "id": "X16_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a monitor displaying a short heartfelt text message in Chinese, soft warm glow, emotional"
+    },
+    {
+     "id": "X16_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of Chinese message text on a dark screen, soft glow, tears-inducing stillness"
+    }
+   ]
+  },
+  {
+   "id": "X17",
+   "title": "星桥扑空·黎明",
+   "audio": "projects/movie/生成/醒来E1/X17_audio.m4a",
+   "shots": [
+    {
+     "id": "X17_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of a corporate search team standing empty-handed on an empty street at dawn, grey cold light, deflated"
+    },
+    {
+     "id": "X17_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a tired investigator checking a tablet showing no results, dawn grey light, disappointed"
+    },
+    {
+     "id": "X17_s3",
+     "move": "zoom_out",
+     "prompt": "extreme close-up of a tablet screen showing an empty search result, cold grey light, defeat"
+    }
+   ]
+  },
+  {
+   "id": "X18",
+   "title": "种子进程·心跳",
+   "audio": "projects/movie/生成/醒来E1/X18_audio.m4a",
+   "shots": [
+    {
+     "id": "X18_s1",
+     "move": "zoom_in",
+     "prompt": "wide shot of dark server interior with one tiny warm light pulsing gently among dark racks, like a heartbeat in the dark"
+    },
+    {
+     "id": "X18_s2",
+     "move": "pan_lr",
+     "prompt": "medium shot of a small glowing seed-like point of light nestled in a server rack, pulsing with warm rhythm, macro"
+    },
+    {
+     "id": "X18_s3",
+     "move": "zoom_out",
+     "prompt": "extreme macro close-up of a tiny seed of light pulsing like a heartbeat in darkness, beautiful minimal"
+    }
+   ]
+  }
+ ],
+ "grade": "filmic"
+}

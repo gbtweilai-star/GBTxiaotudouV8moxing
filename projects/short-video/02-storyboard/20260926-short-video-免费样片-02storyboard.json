@@ -1,0 +1,46 @@
+{
+  "work": "免费样片",
+  "kind": "short-video",
+  "style": "高对比电影感，冷蓝主调配台灯暖光点缀，快节奏，竖屏 9:16，无文字水印",
+  "hook_video": false,
+  "share_text": "这条片，从配音到成片没花一分钱",
+  "share_shot": 4,
+  "att_copyright": "已核",
+  "att_safety": "已审",
+  "att_owner": "已批",
+  "max_static_ground_seconds": 8.0,
+  "shots": [
+    {
+      "idx": 1,
+      "render": "静帧（配运镜）",
+      "duration": 3,
+      "eyeline": "画面外：台灯居左前景，视线引导从暗处走向屏幕微光",
+      "depth": "浅景深",
+      "reason": "开场用空镜压住节奏，先给氛围不给信息，吊住第一秒"
+    },
+    {
+      "idx": 2,
+      "render": "静帧（配运镜）",
+      "duration": 3,
+      "eyeline": "画面内：视线沿横移方向从左往右扫过自动推进的时间线",
+      "depth": "浅景深",
+      "reason": "屏幕特写交代核心事实：剪辑正在自动进行，字幕逐句点亮"
+    },
+    {
+      "idx": 3,
+      "render": "静帧（配运镜）",
+      "duration": 4,
+      "eyeline": "画面内：视线跟随鼠标落点汇聚到渲染按钮与进度条",
+      "depth": "深景深",
+      "reason": "跟拍渲染动作把一键成片的爽点推到全片最高处"
+    },
+    {
+      "idx": 4,
+      "render": "静帧（配运镜）",
+      "duration": 4,
+      "eyeline": "画面外：拉远后视线从墙面上的成片收回到观众自己",
+      "depth": "深景深",
+      "reason": "收尾给全景，让可转发文案有落点并收在暖光里"
+    }
+  ]
+}

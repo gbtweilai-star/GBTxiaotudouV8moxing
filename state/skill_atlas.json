@@ -1,6 +1,6 @@
 {
  "built_by": "tools/codex-scripts/omni.py build",
- "built_at": "2026-09-26T00:05:11",
+ "built_at": "2026-09-27T09:46:36",
  "note": "框架职业技能图鉴。口径：`omnipulg` = 走万能插（run_task 唯一门）的能力位；`agent-skill` = 由 agent 按技能名加载执行的技能；`design-asset` = 审美素材（料，不是可调用能力）。本图鉴是**现扫**产物，不是手抄清单。",
  "caps_error": "",
  "caps": [
@@ -2169,6 +2169,201 @@
    "invoke": "python tools/codex-scripts/five-dim.py cap energy_pool"
   },
   {
+   "kind": "scrapling",
+   "domain": "recon",
+   "desc": "网页抓取（Scrapling 0.4）：自适应选择器+反爬对抗；只抓公网（每个 URL 过 net_guard 边界，内网一律拒）；缺库如实报缺不冒充；响应体限量 2MB；浏览器级隐身抓取需另装内核，缺哪个说哪个",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "scrapling",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap scrapling"
+  },
+  {
+   "kind": "genoffice",
+   "domain": "creation",
+   "desc": "办公文档（GenOffice CLI 0.10+·local-first）：pptx/xlsx/docx/pdf/md/html/csv 创建·转换·读取·结构化编辑，幻灯片渲染审计；文档处理全本地，仅 search/image/media 走主人自配 provider；读类直连，写类过 filesystem_write 门（处理器层挂闸，不碰 policy）",
+   "enabled": true,
+   "reason": "",
+   "safe": false,
+   "handler": "genoffice",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap genoffice"
+  },
+  {
+   "kind": "blender",
+   "domain": "creation",
+   "desc": "三维电影引擎（Blender 4.2.16 LTS·本机）：Cycles 电影级光追/EEVEE 实时/几何节点/VSE 剪辑/bpy 全脚本自动化；3D 场景（义庄/血月/墨线阵）、摄影机动画、GPU 渲染；status 免门，一切 run（渲染/脚本/导出）过 filesystem_write 门（处理器层挂闸）",
+   "enabled": true,
+   "reason": "",
+   "safe": false,
+   "handler": "blender",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap blender"
+  },
+  {
+   "kind": "gs_h3",
+   "domain": "creation",
+   "desc": "GS-prompt-extend 提示词工作台接线（三节点一个不差）：模型加载器/提示词工作台/模型卸载器 → op=loader/workbench/unload；H3 规则与组装零依赖可跑（rules/compose），扩写走我们的模型链（external_llm）不必下 GGUF；ComfyUI 依赖用 40 行垫片替代（不装 ComfyUI 也能驱动，不改第三方源码）",
+   "enabled": true,
+   "reason": "",
+   "safe": false,
+   "handler": "gs_h3",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap gs_h3"
+  },
+  {
+   "kind": "actioncam",
+   "domain": "video",
+   "desc": "动作镜头控制系统（拍子表制）：10 种动作运镜语法（POV 主观/甩镜/急推/手持抖/推拉/环绕/打击帧停格）× 4 种机位角度（仰/俯/平/荷兰角）× 画质档（hd/fhd/cinema）；拍子表 manifest 为唯一真相，逐拍渲染 + 总装调色；零逗号表达式纪律 + 种子锁定；plan/seg/build/add/rm/qc",
+   "enabled": true,
+   "reason": "",
+   "safe": false,
+   "handler": "actioncam",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap actioncam"
+  },
+  {
+   "kind": "look_grade",
+   "domain": "video",
+   "desc": "外观库触手（词即指令）：一处定义 7 种味道（filmic/做旧/潮湿阴冷/热血橙青/褪色胶片/黑白纪实/赛博霓虹）+ 人话取味（pick：说「潮湿阴冷」「热血一点」「像老照片」即取到对应味，认不出如实标回落）+ 单帧试看（preview 定了再上全片）+ 生产审计（qc 黑帧/卡帧/亮度）；actioncam 与 filmkit 同款引用",
+   "enabled": true,
+   "reason": "",
+   "safe": false,
+   "handler": "look_grade",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap look_grade"
+  },
+  {
+   "kind": "penetrating_cross_scan",
+   "domain": "security",
+   "desc": "穿透式交叉扫描引擎（增强版）：触手到位**必须**调用钩子（未触发=失败）· 步骤锁（跳步当场拒）· 每单元 ≥2 路独立读交叉互扫（不一致→第三路仲裁）· 遗漏检测（覆盖率<100% 有界补扫）· 全程留痕 source_kind=cross_scan；三种目标 bindings/registry/tree:<目录>",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "penetrating_cross_scan",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap penetrating_cross_scan"
+  },
+  {
+   "kind": "hook_enforcer",
+   "domain": "security",
+   "desc": "钩子强制器：对指定目标跑同一套交叉钩子，逐单元回报「已钩住/未钩住」与多路读法的指纹一致性——只回答『钩子有没有真触发』，不做覆盖率结论（那是 omission_detector 的活）",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "hook_enforcer",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap hook_enforcer"
+  },
+  {
+   "kind": "omission_detector",
+   "domain": "security",
+   "desc": "遗漏检测器：覆盖率 = 已钩住/总数；<100% 触发有界补扫；仍钩不住**如实报 missing**（不许折叠成绿）——零遗漏的唯一裁判",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "omission_detector",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap omission_detector"
+  },
+  {
+   "kind": "zimage_rewash",
+   "domain": "creation",
+   "desc": "洗图流水线（看图→反推提示词→重绘→放大）：**放大环已可用**（ffmpeg lanczos+unsharp，零依赖）；反推环**未接线**（无图像理解能力位：vision 是屏幕视觉、云链 ask() 是纯文本）；重绘环**未接线**（未装 ComfyUI；pollinations img2img 需公网可达图 URL）；含降噪强度口径表 0.15→0.85 四档",
+   "enabled": true,
+   "reason": "",
+   "safe": false,
+   "handler": "zimage_rewash",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap zimage_rewash"
+  },
+  {
+   "kind": "n8n_wf",
+   "domain": "automation",
+   "desc": "n8n 工作流控制（我们自己的自托管 n8n 2.30·数据在 ~/.n8n）：status/list 只读直连；export/import/active/hook 过 filesystem_write 门；hook 可 POST /webhook/gbt 触发 n8n 工作流——「N8N 有的我们都有」的双向桥（n8n→能力网关 已导桥接工作流，框架→n8n 由本能力位负责）",
+   "enabled": true,
+   "reason": "",
+   "safe": false,
+   "handler": "n8n_wf",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap n8n_wf"
+  },
+  {
+   "kind": "filmkit",
+   "domain": "creation",
+   "desc": "柔性影片产线（清单制·任意场/镜增删重制·主人令 2026-09-26）：manifest.json 为唯一真相（场=音频+3镜prompt，镜=图+运镜）；list/gen/seg/build/add/rm 六命令；产出自动绑触手（asset_bindings 台账）；跳过/指定场装配支持做预告与片段",
+   "enabled": true,
+   "reason": "",
+   "safe": false,
+   "handler": "filmkit",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap filmkit"
+  },
+  {
+   "kind": "tentacle_bind",
+   "domain": "system",
+   "desc": "资产↔触手穿透式绑定（主人令 2026-09-26）：每个资产绑定到产生/维护它的触手；bind/unbind/auto/sweep 增删绑定，scan 全量体检（红点只剩「触手断连」一种：资产缺失或触手不在注册表），coverage 报穿透率，一切动作追加写 state/asset_bindings.jsonl 台账（只增不删）",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "tentacle_bind",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap tentacle_bind"
+  },
+  {
    "kind": "local_brain",
    "domain": "mind",
    "desc": "本地原生脑（只读骨架·内调）：本地模型=脑皮层（可换）·主机=纪律层（不可换）；五层链路（模型只做意图解析与结果解释）；五条红线（不许直接执行命令/不可逆必卡/缺参不许猜/每次留痕/身份不许改写）",
@@ -2907,6 +3102,24 @@
    "has_assets": false,
    "roots": [
     "C:\\Users\\ADMIN\\.claude\\skills"
+   ],
+   "root_count": 1
+  },
+  {
+   "name": "ai-money-maker",
+   "displayName": "",
+   "desc": "AI 副业变现手册（XiaomingX/ai-money-maker-handbook 蒸馏）——赚钱思路、变现模式、AI 自媒体打法、资源清单。用于《末班义庄》/《她从代码里醒来》产线的变现决策参考。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\ai-money-maker",
+   "why": "本仓 AGENTS.md 指定的托管目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills"
    ],
    "root_count": 1
   },
@@ -4548,6 +4761,286 @@
    "root_count": 1
   },
   {
+   "name": "dingtalk-aisearch",
+   "displayName": "",
+   "desc": "AI搜问：人员语义搜索、跨源内容定位与行为回溯。Use when 按姓名/工号/部门/职责/上下级找人，或在目标对象未知时按主题、语义、来源或行为发现相关内容。搜索结果用于候选定位；命中后需要读取、修改或验证原对象时切换到对象所属产品。完整手机号精确反查走 dingtalk-contact。命令前缀：dws aisearch。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-aisearch",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-aitable",
+   "displayName": "",
+   "desc": "钉钉 AI 表格（多维表）。Use when 用户说 AI表格/多维表/数据表/base/table/应用模式/App 页面/Widget/建表/查记录/写数据/字段/记录增删改查/记录评论/评论回复/SQL/PostgreSQL/SELECT/JOIN/跨表关联查询/筛选/排序/公式/模板搜索/批量导入CSV或JSON/导出/仪表盘/图表/上传附件到表格/按字段类型建表/数据源/创建数据源/更新数据源配置/触发数据源同步/按任务 ID 查询同步状态/获取数据源配置/列出数据源可用来源/获取数据源可同步字段/审批数据同步。不做电子表格单元格读写或单元格批注（走 dingtalk-misc）、文档编辑（走 dingtalk-doc）；听记待办入表先用 dingtalk-minutes 提取，再由本 skill 写入。命令前缀：dws aitable。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-aitable",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": true,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-calendar",
+   "displayName": "",
+   "desc": "钉钉日历与会议室。Use when 用户说 约会议/查日程/订会议室/查闲忙/加参会人/改期/取消会议/今天的日程/本周日程/共同空闲。不做视频会议发起/邀请入会/会中控制（走 dingtalk-misc）、AI 听记（走 dingtalk-minutes）、待办任务（走 dingtalk-todo）。命令前缀：dws calendar。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-calendar",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": true,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-chat",
+   "displayName": "",
+   "desc": "钉钉群聊与消息。Use when 收发/搜索消息、建群、群治理、Bot/Webhook、文件，或仅限 IM 的消息谓词筛选。跨源主题/行为轨迹走 dingtalk-aisearch；DING/班级群走 dingtalk-misc；邮件走 dingtalk-mail。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-chat",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-contact",
+   "displayName": "",
+   "desc": "钉钉通讯录精确查询。Use when 已有 userId 后查详情、部门、职位或邮箱，按完整手机号反查用户，或查询自己、部门成员及角色。姓名模糊搜索、工号、职责、上下级走 dingtalk-aisearch，拿到 userId 后用本 skill 补详情。命令前缀：dws contact。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-contact",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": true,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-doc",
+   "displayName": "",
+   "desc": "钉钉在线文字文档（adoc）内容：查找、创建、读取编辑、块、评论、媒体/附件、白板卡片容器、导入导出、版本、模板、权限、分享及 Markdown/JSONML。不做白板图形/原生 .md/电子表格（dingtalk-misc）、文档空间与钉盘存储（dingtalk-drive）、知识库组织（dingtalk-wiki）、AI 表格（dingtalk-aitable）。命令前缀：dws doc。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-doc",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-drive",
+   "displayName": "",
+   "desc": "钉钉文件管理（存储层，覆盖钉盘与文档空间）。Use when 用户说 钉盘/文档空间/我的文档中的普通文件或文件夹、查找/上传/下载/复制/移动/重命名/删除/回收站/权限/评论/元信息，或本地与钉盘文件夹比较、拉取、推送、双向同步；也承接在线文档节点的存储管理。文档正文编辑与导出走 dingtalk-doc；明确的知识库空间及空间内节点组织走 dingtalk-wiki。命令前缀：dws drive。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-drive",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-event",
+   "displayName": "",
+   "desc": "钉钉个人 IM、OA 审批、VoIP 通话邀请、待办与互动卡片回调事件长连接监听。Use when 用户说监听消息/@我/某人/某群/全部消息、已读/撤回/reaction、群成员加入/群成员退出/群状态变化，监听审批任务创建/完成/转交、审批实例发起/抄送/终止/完成、VoIP 通话邀请、待办创建/更新/删除，或互动卡片回调。命令前缀：dws event。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-event",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-mail",
+   "displayName": "",
+   "desc": "钉钉邮箱读写、搜索、回复与转发。Use when 用户说发邮件/查邮件/回邮件/转发邮件/未读邮件/邮件搜索/邮箱附件。一句话发邮件时先用 dingtalk-contact 解析并确认收件人，再由本 skill 发送；不做钉钉消息（走 dingtalk-chat）、紧急通知（走 dingtalk-misc）。命令前缀：dws mail。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-mail",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": true,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-minutes",
+   "displayName": "",
+   "desc": "钉钉 AI 听记。Use when 查询或修改听记摘要、完整逐字稿、关键词、标签、行动项、录音、上传、思维导图、发言人洞察、ASR 热词/识别词配置或分享权限。写文档走 dingtalk-doc；建待办走 dingtalk-todo；日程走 dingtalk-calendar。命令前缀：dws minutes。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-minutes",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": true,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-misc",
+   "displayName": "",
+   "desc": "长尾产品集合技能，覆盖低频钉钉产品：OA审批查询与处理/法务智能合同/考勤/直播/DING紧急消息/开放平台应用与MCP开发/Agoal目标管理/日志日报周报/电子表格/开放平台文档搜索与OpenAPI逃生舱/独立及文档内嵌白板/钉钉招聘/DWS技能市场安装/组织大脑Hrbrain/原生Markdown/原生HTML/PAT行为授权/多组织profile。Use when 用户提到上述任一产品，尤其是 Agoal/目标管理/战略解码/经营合约及字段配置/计分卡/OKR/目标规则与周期/个人目标/目标模板/周月报规则提交统计/按时/迟交/未提交/跟催，或查询/创建合同台账、批量导入合同、按听记起草合同、发起合同审查、归档合同、管理合同项目/相对方/账款，或查待审批/同意拒绝转交撤销审批/打卡/排班/日报周报内容填报/独立白板带内容创建/白板节点读写/单元格读写/招聘职位/JD/创建职位/搜索",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-misc",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": true,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-shared",
+   "displayName": "",
+   "desc": "钉钉(DingTalk) MultiSkill 的轻量共享入口。Use when 用户泛称 DWS/钉钉操作但未明确产品、请求跨产品编排、需要 URL 类型预检或产品边界消歧。清晰的单产品操作优先使用对应 dingtalk-* 子 skill；本 skill 只提供全局执行契约和按需 reference 导航，不承载产品命令全集。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-shared",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-todo",
+   "displayName": "",
+   "desc": "钉钉待办 / TODO。Use when 用户说 创建待办/TODO/任务提醒/指派任务/标记完成/查待办/紧急待办/循环待办/批量建待办/逾期待办。不做日报周报（走 dingtalk-misc）、审批（走 dingtalk-misc）、日程（走 dingtalk-calendar）。命令前缀：dws todo。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-todo",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": true,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
+   "name": "dingtalk-wiki",
+   "displayName": "",
+   "desc": "钉钉知识库与空间管理。Use when 用户明确说 知识库/wiki/创建、查找或列出知识库/命名的团队知识空间/个人知识库/知识库成员/库内节点创建、列表、搜索、复制、移动、删除或知识库动态。仅说“文档空间/我的文档”不触发：普通存储管理与全局文件搜索走 dingtalk-drive；节点正文读写走 dingtalk-doc。命令前缀：dws wiki。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\dingtalk-wiki",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": true,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw\\skills"
+   ],
+   "root_count": 3
+  },
+  {
    "name": "doc",
    "displayName": "",
    "desc": "Read, create, and edit .docx documents with formatting and layout fidelity via OpenAI's document skill.",
@@ -5441,6 +5934,102 @@
    "root_count": 3
   },
   {
+   "name": "gbt-ai-101",
+   "displayName": "AI 入门 · 指挥官认知底座（第一层·上）",
+   "desc": "GBT小土豆V8 的 AI 认知底座，蒸馏自 AI 入门公开课（AI for Everyone 四周课纲 + Elements of AI 的「赋能而非威胁」立场），以指挥官视角重写——不讲怎么造 AI，只讲怎么指挥 AI。四问读数判「这是不是 AI 活」、四个词拆穿术语糊涂账、能力边界表判能派/不能派、派单流程把书里的项目工作流改造成常驻触手、买造派三选一定路线、社会面红线兜底。当用户说「AI 入门 / 什么是 AI / 该不该上 AI / AI 能干嘛 / 术语 / 机器学习是什么 / 数据科学 / 训练和推理 / AI 战略 / AI 项目 / 入门学习 / 学习 AI」时使用。边界：深度学习架构选型走 gbt-dl-101；框架本体操作走 gbt-framework；本件管的是「指挥官脑子里的那张地图」。",
+   "triggers": [
+    "AI 入门",
+    "什么是 AI",
+    "该不该上 AI",
+    "AI 能干嘛",
+    "AI 术语",
+    "机器学习是什么",
+    "深度学习是什么",
+    "数据科学",
+    "训练和推理",
+    "AI 战略",
+    "AI 项目",
+    "学 AI"
+   ],
+   "version": "1.0.0",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-ai-101",
+   "why": "本仓 AGENTS.md 指定的托管目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
+  },
+  {
+   "name": "gbt-ai-anything",
+   "displayName": "如何 AI 化（几乎）任何事物 · 指挥官作业手册（第二层·上）",
+   "desc": "GBT小土豆V8 的「AI 化任何流程」作业手册，蒸馏自《How to AI Almost Anything》(MIT MAS.S60) 这一主题位，以指挥官视角写成可执行五步法：拆流程（每步记输入/输出/判据）→ 选模式（辅助式/流水线式/闭环式，默认从最稳的上）→ 连触手（一步一位，对照本仓能力位）→ 设门（不可回滚/涉隐私/花钱的步必须过人闸）→ 固化（自动绑触手 + 台账 + 幂等重跑）。附反例清单（哪些流程不该 AI 化）与成品判据。当用户说「AI 化 / 怎么用 AI 改造 / 这条流程能不能上 AI / 自动化改造 / 降本增效 / 提效 / 把这事交给 AI / AI 化任何事物 / MAS.S60」时使用。边界：判断\"该不该上 AI\"的四问走 gbt-ai-101；架构选型走 gbt-dl-101；本件管的是「一条流程怎么一步步 AI 化」。",
+   "triggers": [
+    "AI 化",
+    "AI化",
+    "怎么用 AI 改造",
+    "流程能不能上 AI",
+    "自动化改造",
+    "降本增效",
+    "提效",
+    "交给 AI",
+    "AI 化任何事物",
+    "如何 AI 化",
+    "MAS.S60",
+    "How to AI Almost Anything"
+   ],
+   "version": "1.0.0",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-ai-anything",
+   "why": "本仓 AGENTS.md 指定的托管目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
+  },
+  {
+   "name": "gbt-ai-edu",
+   "displayName": "AI 在教育中的应用 · 指挥官手册（第二层·下）",
+   "desc": "GBT小土豆V8 的「生成式 AI 进教育场景」作业手册，蒸馏自《Generative AI in K-12 Education》(MIT 6.S062) 这一主题位，以指挥官视角写成可执行规程：先分清「教 AI」与「用 AI 教」两条完全不同的路；课程设计六段骨架（目标→概念→例子→动手→伦理→评估）；教师优先的采纳法（先给教师省时间，专业发展先于课堂部署）；未成年人隐私与评估诚信红线；再把备课/讲解/题库/多语言落到本仓能力位（genoffice/filmkit/voice/data）。当用户说「AI 教育 / K-12 / 中小学 / 生成式 AI 进课堂 / 教学提效 / 备课 / 出题 / 讲义 / AI 素养课 / Day of AI / 6.S062 / 教师培训 / 课程设计」时使用。边界：通用 AI 化方法走 gbt-ai-anything；认知底座走 gbt-ai-10",
+   "triggers": [
+    "AI 教育",
+    "K-12",
+    "中小学",
+    "生成式 AI 进课堂",
+    "教学提效",
+    "备课",
+    "出题",
+    "讲义",
+    "AI 素养课",
+    "Day of AI",
+    "6.S062",
+    "教师培训"
+   ],
+   "version": "1.0.0",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-ai-edu",
+   "why": "本仓 AGENTS.md 指定的托管目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
+  },
+  {
    "name": "gbt-alchemy",
    "displayName": "GBT · Alchemy 技能簇用法规程（alchemy-* · 3 条）",
    "desc": "GBT小土豆V8 使用 Alchemy 技能簇的用法规程。把 3 条 alchemy-* 技能（写进应用的 API 集成 · CLI 实时链上活 · 托管 MCP 服务）逐条点名并按「交付物是不是要发出去的代码」「CLI 装没装」分簇，规定两道闸（闸一身份与凭据闸，OAuth 会话或 ALCHEMY_API_KEY 只报已配/未配或前 4 位掩码；闸二上链与改远端与花钱闸，凡上链写、改远端云资源、x402 付 USDC、写 webhook、改 app 允许清单的动作一律先问主人），并点破「命令名看起来是读不等于只读」「零作用域不等于只读」这两个坑，以及本机现状（alchemy 0.24.0 已装但 auth status 报 authenticated false、doctor ok false、全部 ALCHEMY 环境变量未配、MCP 未接上）。当用户要查链上余额与交易、查 NFT 与",
@@ -5997,6 +6586,33 @@
    "root_count": 3
   },
   {
+   "name": "gbt-desktop",
+   "displayName": "GBT · desktop 职业域用法规程（1 个能力位：ul_tars_desktop）",
+   "desc": "GBT小土豆V8 的 `desktop` 职业域（桌面 GUI 智能体 UI-TARS Desktop · 三原语 PROBE·VERSION·EXEC）用法规程。这个域**只有 1 个能力位**：`ul_tars_desktop`。本文件把它写全：用途、三个 op 逐个标「要不要过门 / 会起进程吗」、逐 op 静态查+实测的作用域（**读 op 零作用域；exec/run/chat/ask 实挂 process_execute + external_llm**——与隔壁 cloud_pc「连花钱动作都零作用域」形成活对照）、真命令、真探结果（本机**未装**：找过 tars/ul-tars/ui-tars/UITARS 四个名）、`op=exe` 绝对路径旁路、失败典型样子（needs_dependency 不是坏了也不是被拒）、与 claude_code/codebuddy（同模块·",
+   "triggers": [
+    "UI-TARS",
+    "ui-tars",
+    "桌面智能体",
+    "GUI 智能体",
+    "ul_tars_desktop",
+    "desktop",
+    "needs_dependency"
+   ],
+   "version": "1.0.0",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-desktop",
+   "why": "本仓 AGENTS.md 指定的托管目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
+  },
+  {
    "name": "gbt-device",
    "displayName": "GBT 设备域（蓝牙 · AI 蓝牙操控）用法规程",
    "desc": "GBT小土豆V8 的「设备职业域」用法规程 —— 把图鉴里 domain=device 的 2 个能力位（bluetooth / bt_control）蒸馏成能照着跑的一页：每位写清用途、只读还是要授权、真命令模板、要什么参数、失败典型样子、依赖什么（适配器/驱动/权限），并附一份**实测过的诚实账**与**本机蓝牙实测状态**（有没有适配器、能否枚举、扫描结果是什么 —— 只写实测，不许把\"能调\"写成\"能用\"）。当用户要「扫蓝牙 / 连蓝牙设备 / 用蓝牙控空调灯音箱 / 经典蓝牙配对状态」，或设备域能力位被门拦住、扫描没结果、搞不清哪一步要 device_control 授权时使用。",
@@ -6061,6 +6677,38 @@
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
    "root_count": 3
+  },
+  {
+   "name": "gbt-dl-101",
+   "displayName": "深度学习训练营 · 指挥官手册（6.S191 蒸馏 · 第一层·下）",
+   "desc": "GBT小土豆V8 的深度学习选型与指挥手册，蒸馏自 MIT 6.S191《Introduction to Deep Learning》的九讲讲义结构与三个实验的方法论，以指挥官视角重写——书教工程师「怎么建网络」，本件教指挥官「什么活派哪族架构、哪条手艺线练哪种本事」。九讲地图摊成九把选型叉（序列/视觉/生成/强化/并行训练各归其位），三 lab 摊成三条手艺线（音乐生成/人脸检测/微调 LLM），并行训练一节接本仓的负载闸与内存压强派单制。当用户说「深度学习 / 神经网络 / 架构选型 / 序列建模 / Transformer / CNN / 计算机视觉 / 生成模型 / diffusion / GAN / 强化学习 / 微调 / fine-tune / 大模型 / 并行训练 / 6.S191 / 训练营」时使用。边界：AI 认知与派单判断走 gbt-ai-101；框架本体操作走 gbt",
+   "triggers": [
+    "深度学习",
+    "神经网络",
+    "架构选型",
+    "序列建模",
+    "Transformer",
+    "RNN",
+    "CNN",
+    "计算机视觉",
+    "生成模型",
+    "diffusion",
+    "GAN",
+    "VAE"
+   ],
+   "version": "1.0.0",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-dl-101",
+   "why": "本仓 AGENTS.md 指定的托管目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
   },
   {
    "name": "gbt-ef",
@@ -7084,6 +7732,36 @@
    "root_count": 3
   },
   {
+   "name": "gbt-vendor-intake",
+   "displayName": "外部件接入规程 · 从克隆到咬手（任何环境任何场景）",
+   "desc": "GBT小土豆V8 接任何外部件（第三方仓库 / 插件 / 工作流 / 能力包）的固定七步法：克隆落位 → 只读体检（供应链）→ 垫片代偿环境依赖 → 包成能力位 → 接分派路由 → 咬合触手 → 挂机检判据。含三种\"不配环境\"的偏门（纯逻辑直取 / 垫片替宿主 / 手用我们自己的模型）与四类实测踩坑（相对导入、stdout 污染 JSON、登记≠接线、黑名单漏网）。当用户说「接入这个仓库 / 把这个插件接上 / 外部件接入 / 兼容这个工具 / 让它变成我们的能力 / 陌生环境跑起来 / vendor / intake / 接入规程」时使用。边界：AI 化通用五步法走 gbt-ai-anything；本件只管「外部件怎么变成我们的触手」这一条流水线。",
+   "triggers": [
+    "接入这个仓库",
+    "把这个插件接上",
+    "外部件接入",
+    "兼容这个工具",
+    "变成我们的能力",
+    "陌生环境跑起来",
+    "vendor",
+    "intake",
+    "接入规程",
+    "外部工作流接入"
+   ],
+   "version": "1.0.0",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-vendor-intake",
+   "why": "本仓 AGENTS.md 指定的托管目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
+  },
+  {
    "name": "gbt-venice",
    "displayName": "GBT · Venice.ai 技能簇用法规程（venice-* · 5 条）",
    "desc": "GBT小土豆V8 使用 Venice.ai 技能簇的用法规程。把 5 条 venice-* 技能（出图端点与风格 · 改图/超分/去背景 · 视频生成与转写 · 文本转语音 · 音乐生成）逐条点名并按意图分簇，规定两道闸（闸一凭据闸 VENICE_API_KEY 只报已配/未配或前 4 位掩码；闸二计费确认闸，凡出网、花钱、产交付物、把本地素材传出去的调用一律先问主人，视频与音乐类要先把秒数或时长摊开）、以及本机现状（这 5 条是 design-asset 通道的「目录桩」，每条目录只有 SKILL.md，上游包未装、VENICE_API_KEY 未配、无 venice CLI 与 python 包、omni.py ask 不路由到它们，所以现在跑不起来）。当用户要用 Venice.ai 生图、改图、超分、去背景、生视频、做转写、配音、生成音乐，或问 venice-* 技能怎么用、为什么调",
@@ -7327,6 +8005,25 @@
     "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills"
    ],
    "root_count": 1
+  },
+  {
+   "name": "genoffice",
+   "displayName": "",
+   "desc": "Create, convert, read and edit Office documents locally with GenOffice's command line. Build a new presentation (pptx) from a brief through a checked outline, per-page spec and render pipeline, a new spreadsheet (xlsx) from CSV or JSON data with formulas, a new Word document (docx) from Markdown or HTML, or a PDF; convert between pdf, docx, xlsx, pptx, md, html and csv; read the structure and text",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.claude\\skills",
+   "path": "C:\\Users\\ADMIN\\.claude\\skills\\genoffice",
+   "why": "Claude Code 侧",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.claude\\skills",
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills"
+   ],
+   "root_count": 2
   },
   {
    "name": "gif-sticker-maker",
@@ -10459,14 +11156,14 @@
   }
  ],
  "counts": {
-  "caps": 172,
-  "caps_enabled": 172,
-  "caps_safe_no_args": 97,
-  "skills": 341,
-  "skills_raw_before_dedupe": 634,
-  "skills_multi_root": 146,
+  "caps": 185,
+  "caps_enabled": 185,
+  "caps_safe_no_args": 102,
+  "skills": 363,
+  "skills_raw_before_dedupe": 691,
+  "skills_multi_root": 167,
   "skills_by_channel": {
-   "agent-skill": 248,
+   "agent-skill": 270,
    "design-asset": 93
   },
   "design_assets_bulk_total": 235,

@@ -33,6 +33,14 @@ import time
 from dataclasses import asdict, dataclass, field
 from enum import Enum
 
+# 🔴 2026-09-26 补：Windows 管道/重定向下 stdout 回落 GBK，emoji 一打印就崩；与 self_model.py 同一款补丁
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 WS = pathlib.Path(__file__).resolve().parents[1]
 DH = WS / "holo_pet/assets/digital-human"
 WORLDS = WS / "output/worlds"
@@ -314,10 +322,16 @@ def main():
         k = Kernel()
         prim = a[1].upper()
         def opt(flag, default=None):
-            return a[a.index(flag) + 1] if flag in a else default
+            # 🔴 2026-09-26 自纠：flag 恰为最后一个参数时 a[i+1] 会 IndexError；缺值回落 default
+            if flag not in a:
+                return default
+            i = a.index(flag)
+            return a[i + 1] if i + 1 < len(a) else default
         img, name = opt("--image"), opt("--name")
         if prim == "READ":
-            print(json.dumps(k.read(img or ""), ensure_ascii=False, indent=1)); return 0
+            # 🔴 2026-09-26 自纠：READ 失败也 return 0 违反文件头退出码契约（与 BUILD/WALK/PIN 同口径）
+            r = k.read(img or "")
+            print(json.dumps(r, ensure_ascii=False, indent=1)); return 0 if r["ok"] else 1
         if prim == "BUILD":
             r = k.build(WorldSpec(name=name or "world", reference_image=img or "",
                                   spec_text=opt("--spec", ""), biome=opt("--biome", ""),
@@ -330,8 +344,9 @@ def main():
             r = k.pin(name or "", opt("--note", "")); print(json.dumps(r, ensure_ascii=False, indent=1))
             return 0 if r["ok"] else 1
         if prim == "EVOLVE":
-            print(json.dumps(k.evolve(name or "", note=opt("--note", "")), ensure_ascii=False, indent=1))
-            return 0
+            # 🔴 2026-09-26 自纠：EVOLVE 失败也 return 0 违反文件头退出码契约（与 BUILD/WALK/PIN 同口径）
+            r = k.evolve(name or "", note=opt("--note", ""))
+            print(json.dumps(r, ensure_ascii=False, indent=1)); return 0 if r["ok"] else 1
         print(f"未知原语 {prim}"); return 2
     if cmd == "feedback":
         k = Kernel()

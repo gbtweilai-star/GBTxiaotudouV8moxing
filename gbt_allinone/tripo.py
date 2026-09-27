@@ -207,7 +207,7 @@ def rig_check(task_id):
             return {"ok": True, "rig_type": out.get("rig_type"),
                     "eligible": out.get("riggable", False)}
         else:
-            return {"ok": False, "error": f"rig-check 失败: {json.dumps(st, ensure_ascii=False)[:300]}"}
+            return {"ok": False, "error": f"rig-check 失败: {str(st)[:300]}"}
     return {"ok": r.get("code") == 0, "rig_type": d.get("rig_type"),
             "eligible": d.get("eligible", False)}
 

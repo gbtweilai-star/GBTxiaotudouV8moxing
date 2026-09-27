@@ -87,7 +87,9 @@ def _scan_pages():
             pass
         pages.append(p)
     # 3) 生产管线里的文本/网页产物（每一页）
-    prod = _BASE / "store" / "pipeline" / "production"
+    # 🔴 2026-09-26 修：原来硬编码包内 store/pipeline —— 隔离 store 下会扫到真实生产树。
+    from . import _paths
+    prod = Path(_paths.STORE_DIR) / "pipeline" / "production"
     if prod.exists():
         for p in prod.rglob("*"):
             if p.is_file() and p.suffix.lower() in _TEXT_SUFFIX and p.suffix.lower() != ".jsonl":
