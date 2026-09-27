@@ -39,6 +39,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -158,6 +159,68 @@ def decide(obs: dict, slow_planner=None, threshold: float = DEFAULT_THRESHOLD,
     return out
 
 
+# ── 接真能力：过唯一门取观测 / 落动作（2026-09-27 加）──────────────────
+def _gate(kind: str, payload: dict) -> dict:
+    """**过唯一门**调一个能力位（观察面与动作面都走这里，**不许直连模块**）。"""
+    sys.path.insert(0, str(ROOT))
+    import gbt_allinone as g
+    r = g.run_task(kind, payload)
+    d = r.get("result") if isinstance(r, dict) else None
+    return {"ok": bool(isinstance(r, dict) and r.get("ok", True)),
+            "status": (r.get("status") if isinstance(r, dict) else None),
+            "error": (r.get("error") if isinstance(r, dict) else None),
+            "raw": d, "gate": "run_task"}
+
+
+_ELEM_RX = re.compile(r"([\w\u4e00-\u9fa5][\w\u4e00-\u9fa5 ._/\-]{1,40}?)\s*(?:@|at|位于|坐标)\s*\(?\s*(\d{1,5})\s*[,，]\s*(\d{1,5})")
+
+
+def adapt_to_nodes(via: str, raw) -> tuple[list, str]:
+    """把能力位吐出来的东西规范成**带索引元素表**（Jev 那种形状：index/name/role/pos）。
+
+    **诚实口径**：认不出来就返回空表并说明原因 —— **不许硬编元素**（编出来的点点错人）。
+    """
+    txt = raw if isinstance(raw, str) else json.dumps(raw, ensure_ascii=False)
+    nodes, seen = [], set()
+    for i, m in enumerate(_ELEM_RX.finditer(txt), start=1):
+        name, x, y = m.group(1).strip(), int(m.group(2)), int(m.group(3))
+        if name in seen:
+            continue
+        seen.add(name)
+        low = name.lower()
+        role = ("textbox" if any(k in low for k in ("input", "search", "textbox", "输入", "搜索"))
+                else "button" if any(k in low for k in ("btn", "button", "按钮", "link", "链"))
+                else "node")
+        nodes.append({"index": i, "name": name, "role": role, "pos": [x, y],
+                      "occluded": False, "source": via})
+    why = (f"从 {via} 的读数里认出 {len(nodes)} 个可落点元素"
+           if nodes else f"{via} 的读数里**没认出**可落点元素（没有「名字 at (x,y)」形状）⇒ 空表")
+    return nodes, why
+
+
+def observe_real(via: str, payload: dict, goal: str = "", text_hint: str = "") -> dict:
+    """**真观测**：过门调观察面，产出可直接喂快脑的观测（带真实新鲜度时间戳）。"""
+    t0 = time.time()
+    r = _gate(via, payload)
+    nodes, why = adapt_to_nodes(via, r.get("raw"))
+    return {"goal": goal, "text": text_hint, "nodes": nodes,
+            "age_ms": int((time.time() - t0) * 1000), "via": via,
+            "gate_ok": r["ok"], "gate_status": r["status"], "gate_error": r.get("error"),
+            "adapt": why, "raw_head": (str(r.get("raw"))[:280] if r.get("raw") is not None else "")}
+
+
+def act_real(via: str, decision: dict, execute: bool = False) -> dict:
+    """**真动作**：默认只算不动；要执行必须显式 `--execute`，且**动作仍走门** ——
+    门拒了就如实报「缺什么作用域、谁有权给」，**不绕门**。"""
+    payload = {"op": decision.get("op"), "target": decision.get("target_index"),
+               "text": decision.get("text_hint") or ""}
+    if not execute:
+        return {"executed": False, "why": "dry（未加 --execute）", "would_call": via, "payload": payload}
+    r = _gate(via, payload)
+    return {"executed": True, "via": via, "payload": payload,
+            "gate_ok": r["ok"], "gate_status": r["status"], "result": str(r.get("raw"))[:400]}
+
+
 # ── 脚本化场景（不碰真实桌面）─────────────────────────────────────────
 SCENES = {
     "正常：搜索框输入": {"goal": "在搜索框输入关键词", "age_ms": 120,
@@ -222,6 +285,14 @@ def main(argv=None) -> int:
     sub.add_parser("selftest")
     sub.add_parser("demo")
     s = sub.add_parser("decide"); s.add_argument("--obs", required=True)
+    s = sub.add_parser("observe")
+    s.add_argument("--via", default="vision")
+    s.add_argument("--payload-json", default="{}")
+    s.add_argument("--goal", default="")
+    s = sub.add_parser("act")
+    s.add_argument("--via", default="desktop_control")
+    s.add_argument("--decision-json", default="{}")
+    s.add_argument("--execute", action="store_true", help="不加就是干跑")
     a = ap.parse_args(argv)
     if a.cmd == "selftest":
         return 0 if selftest() == 0 else 1
@@ -231,6 +302,14 @@ def main(argv=None) -> int:
             print(f"{name:<26} op={r['decision'].get('op'):<10} "
                   f"{r.get('guard') or r['decision'].get('why')}")
         return 0
+    if a.cmd == "observe":
+        obs = observe_real(a.via, json.loads(a.payload_json), goal=a.goal)
+        print(json.dumps(obs, ensure_ascii=False, indent=1))
+        return 0 if obs["gate_ok"] else 1
+    if a.cmd == "act":
+        out = act_real(a.via, json.loads(a.decision_json), execute=a.execute)
+        print(json.dumps(out, ensure_ascii=False, indent=1))
+        return 0 if (out.get("executed") is False or out.get("gate_ok")) else 1
     obs = json.loads(Path(a.obs).read_text(encoding="utf-8"))
     print(json.dumps(decide(obs), ensure_ascii=False, indent=1))
     return 0

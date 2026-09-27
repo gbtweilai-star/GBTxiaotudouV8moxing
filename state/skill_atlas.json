@@ -2834,6 +2834,21 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python tools/codex-scripts/five-dim.py cap onboarding_gate"
+  },
+  {
+   "kind": "control_loop",
+   "domain": "desktop",
+   "desc": "快慢双脑控制回路（Jev/TypeSafe System One 蒸馏）：枚举动作 · 两头一次往返 · 只 TYPE_TEXT 调生成模型 · 两查+DONE 独立验证 · 低置信才升级慢脑 · 预算闸 · 审计链；只决策不动手",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "control_loop",
+   "requires_params": [],
+   "params_hint": "op=selftest|decide|observe|act|demo",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('control_loop', {'op':'selftest'}))\""
   }
  ],
  "skills": [
@@ -11156,7 +11171,7 @@
   }
  ],
  "counts": {
-  "caps": 185,
+  "caps": 186,
   "caps_enabled": 185,
   "caps_safe_no_args": 102,
   "skills": 363,

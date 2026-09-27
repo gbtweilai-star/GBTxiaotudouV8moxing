@@ -960,6 +960,17 @@ BENIGN_CAPS = {
         "handler": 'tentacle_bind',
         "safe": True,
     },
+    "control_loop": {
+        "domain": 'desktop',
+        "desc": '快慢双脑控制回路（蒸馏自 Jev/TypeSafe System One + browser-use/jev-ultrafast）：动作是**枚举**'
+                '（CLICK/TYPE_TEXT/SELECT/SCROLL_*/WAIT/DONE/BLOCKED，枚举外不存在）· 一次观测出「操作+目标」两个头 · '
+                '只为 TYPE_TEXT 调生成模型 · **执行前两查（新鲜+遮挡）+ DONE 必须独立验证** · '
+                '低置信度才升级慢脑（无慢脑如实 BLOCKED）· 预算闸（单次时延+每分钟次数）· '
+                '每次决策写 state/control_loop.jsonl 审计链。**它只决策不动手**：动作仍走 desktop_control 等门。'
+                'op=decide/observe/act/demo/selftest',
+        "handler": 'control_loop',
+        "safe": True,
+    },
     "local_brain": {
         "domain": 'mind',
         "desc": '本地原生脑（只读骨架·内调）：本地模型=脑皮层（可换）·主机=纪律层（不可换）；五层链路（模型只做意图解析与结果解释）；五条红线（不许直接执行命令/不可逆必卡/缺参不许猜/每次留痕/身份不许改写）',

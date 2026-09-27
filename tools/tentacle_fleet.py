@@ -105,23 +105,40 @@ def port_bound(port: int) -> bool:
 
 
 def free_engine_ready() -> tuple[bool, str]:
-    """免费引擎预检 —— **文件系统实测，不起进程**：
-      · PATH 里有没有 `freebuff`；
-      · 它的配置目录能不能**真写进去**（实测卡点就在这里：EPERM 写不进 ⇒ 它下不了二进制 ⇒ 起不来）。
+    """免费引擎预检 —— **必须在"每根触手自己的 HOME"下探活**（2026-09-27 实测纠错）。
+
+    血账：早先的预检读的是**共享** `C:\\Users\\ADMIN\\.config\\manicode`，那里写不进去（EPERM）
+    ⇒ 结论「freebuff 起不来」。但那是**看错了环境**：舰队给每根触手独立 HOME，
+    而 freebuff 只会往 `$HOME/.config/manicode` 里装 —— **换成隔离 HOME 一装就成**：
+    实测下载 45.8MB 二进制 + `--help` 退出码 0（2026-09-27）。
+    ⇒ **预检要与工人实际拿到的环境一致**，否则"能力不可用"是自己造的假结论。
     """
     exe = shutil.which(FREE_ENGINE)
     if not exe:
         return False, "PATH 里没有 `freebuff`"
-    cfg = Path(os.path.expanduser("~")) / ".config" / "manicode"
-    probe = cfg / ".writable-probe"
+    probe_home = FLEET / "_preflight" / "home"
     try:
-        cfg.mkdir(parents=True, exist_ok=True)
-        probe.write_text("probe", encoding="utf-8")
-        probe.unlink(missing_ok=True)
+        (probe_home / ".config").mkdir(parents=True, exist_ok=True)
     except OSError as e:
-        return False, (f"装了但**配置目录写不进去**（实测 {type(e).__name__}: {e.strerror or e}）⇒ "
-                       f"它下不了自己的二进制 ⇒ 起不来。配置目录：{cfg}")
-    return True, "预检通过（在 PATH 且配置目录可写）"
+        return False, f"探活目录建不起来：{type(e).__name__}: {e}"
+    env = {**os.environ, "HOME": str(probe_home), "USERPROFILE": str(probe_home),
+           "XDG_CONFIG_HOME": str(probe_home / ".config")}
+    try:
+        p = subprocess.run([exe, "--help"], capture_output=True, encoding="mbcs",
+                           errors="replace", timeout=300, env=env)
+    except subprocess.TimeoutExpired:
+        return False, "`freebuff --help` 超时（>300s，可能在下载二进制）"
+    except OSError as e:
+        return False, f"`freebuff --help` 起不来：{type(e).__name__}"
+    blob = ((p.stdout or "") + (p.stderr or "")).strip()
+    installed = (probe_home / ".config" / "manicode" / "freebuff.exe").is_file()
+    if p.returncode == 0 and "Usage" in blob:
+        tail = "（二进制已落进隔离 HOME，可干活；真要跑任务还需 `freebuff login` 一次 —— 那一步归主人）"
+        return True, f"预检通过：隔离 HOME 下 --help 正常{tail if installed else ''}"
+    first = blob.splitlines()[0][:150] if blob else "无输出"
+    if "EPERM" in blob:
+        return False, f"隔离 HOME 下仍写不进去：{first}"
+    return False, f"预检退出码 {p.returncode}：{first}"
 
 
 def plan(n: int, task: str, engine: str = "auto", max_workers: int = MAX_WORKERS) -> dict:

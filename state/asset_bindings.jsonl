@@ -13704,3 +13704,12 @@
 {"at": "2026-09-27T16:44:33", "event": "bind", "asset": "tools/selfgrowth.py", "tentacle": "selfscan", "note": "autobind"}
 {"at": "2026-09-27T16:44:33", "event": "bind", "asset": "gbt_allinone/tests/test_cap_bind_bidirectional.py", "tentacle": "selfscan", "note": "autobind"}
 {"at": "2026-09-27T16:44:33", "event": "autobind", "files": 9, "bound": 9, "hint": "selfscan"}
+{"at": "2026-09-27T17:08:10", "event": "bind", "asset": "skills/gbt-control-loop/SKILL.md", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-27T17:08:10", "event": "bind", "asset": "tools/control_loop.py", "tentacle": "vision", "note": "autobind"}
+{"at": "2026-09-27T17:08:10", "event": "bind", "asset": "tools/selfgrowth.py", "tentacle": "vision", "note": "autobind"}
+{"at": "2026-09-27T17:08:10", "event": "bind", "asset": "tools/tentacle_fleet.py", "tentacle": "vision", "note": "autobind"}
+{"at": "2026-09-27T17:08:16", "event": "autobind", "files": 6, "bound": 6, "hint": "vision"}
+{"at": "2026-09-27T17:13:04", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "control_loop", "note": "autobind"}
+{"at": "2026-09-27T17:13:04", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "control_loop", "note": "autobind"}
+{"at": "2026-09-27T17:13:07", "event": "autobind", "files": 2, "bound": 2, "hint": "control_loop"}
+{"at": "2026-09-27T17:13:30", "event": "scan", "bindings": 4405, "missing_asset": 0, "ghost_tentacle": 0}

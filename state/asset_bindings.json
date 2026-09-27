@@ -29986,7 +29986,8 @@
    "actioncam",
    "penetrating_cross_scan",
    "zimage_rewash",
-   "look_grade"
+   "look_grade",
+   "control_loop"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29997,7 +29998,8 @@
    "actioncam",
    "penetrating_cross_scan",
    "zimage_rewash",
-   "look_grade"
+   "look_grade",
+   "control_loop"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -30803,7 +30805,8 @@
  "tools/tentacle_fleet.py": {
   "tentacles": [
    "caps_called_audit",
-   "penetrating_cross_scan"
+   "penetrating_cross_scan",
+   "vision"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T15:38:33"
@@ -30831,7 +30834,8 @@
  },
  "tools/selfgrowth.py": {
   "tentacles": [
-   "selfscan"
+   "selfscan",
+   "vision"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T16:44:33"
@@ -30842,5 +30846,19 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T16:44:33"
+ },
+ "skills/gbt-control-loop/SKILL.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T17:08:10"
+ },
+ "tools/control_loop.py": {
+  "tentacles": [
+   "vision"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T17:08:10"
  }
 }

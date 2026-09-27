@@ -657,6 +657,44 @@ def _run_benign(kind, payload, policy_decision=None):
             return _pcs.run_pipeline(target, mode="check" if kind == "omission_detector" else "scan")
         return {"ok": False, "error": f"未知 op:{op}（status/report/{'/'.join(want)}）",
                 "fail_closed": True}
+    if kind == "control_loop":
+        # 快慢双脑控制回路（蒸馏自 Jev/TypeSafe System One）：**只决策不动手**，动作仍走 desktop_control 等门。
+        # ⚠️ `selftest`/`demo` 会打印人读行 —— run_task 的返回是 **JSON 契约**，人读行混进 stdout 会把严格消费者
+        #    打挂（2026-09-26 实测教训：`five-dim.py cap tentacle_bind` 的输出无法被 json.load 解析）。
+        #    ⇒ 这里把它们的输出**收进缓冲区**再作为字段返回。
+        import contextlib
+        import importlib.util as _iu2
+        import io
+        from pathlib import Path as _P2
+        _spec2 = _iu2.spec_from_file_location(
+            "ctl_loop", _P2(__file__).resolve().parents[1] / "tools" / "control_loop.py")
+        _ctl = _iu2.module_from_spec(_spec2)
+        _spec2.loader.exec_module(_ctl)
+        p = payload or {}
+        op = (p.get("op") or "selftest").lower()
+        if op == "selftest":
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                bad = _ctl.selftest()
+            return {"ok": bad == 0, "failures": bad, "report": buf.getvalue()[-1500:],
+                    "note": "6 路反向自检：枚举外动作/过期观测/遮挡/DONE 无证据/预算闸/慢脑升级"}
+        if op == "decide":
+            return _ctl.decide(p.get("obs") or {})
+        if op == "observe":
+            return _ctl.observe_real(p.get("via") or "vision", p.get("payload") or {},
+                                     goal=p.get("goal") or "")
+        if op == "act":
+            return _ctl.act_real(p.get("via") or "desktop_control", p.get("decision") or {},
+                                 execute=bool(p.get("execute")))
+        if op == "demo":
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                for _name, _obs in _ctl.SCENES.items():
+                    _r = _ctl.decide(_obs)
+                    print(f"{_name:<26} op={_r['decision'].get('op')}")
+            return {"ok": True, "report": buf.getvalue()}
+        return {"ok": False, "error": f"未知 op:{op}（decide/observe/act/demo/selftest）",
+                "fail_closed": True}
     if kind == "context_vault":
         # 只读骨架：**不写盘、不建真索引、不出网**（只索引与引用，不复制正文）
         from .tools import context_vault as _cv
