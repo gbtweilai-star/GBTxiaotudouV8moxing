@@ -29163,7 +29163,8 @@
    "surface_bind",
    "one_shot",
    "comfyui",
-   "claude_code"
+   "claude_code",
+   "health"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29183,7 +29184,8 @@
    "surface_bind",
    "one_shot",
    "comfyui",
-   "claude_code"
+   "claude_code",
+   "health"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -45167,5 +45169,122 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T23:08:54"
+ },
+ "gbt_allinone/tools/obsidian_vault.py": {
+  "tentacles": [
+   "obsidian_vault"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-27T23:22:03"
+ },
+ "gbt_allinone/tools/cap_tags.py": {
+  "tentacles": [
+   "cap_tags"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-27T23:22:03"
+ },
+ "gbt_allinone/tools/action_gate.py": {
+  "tentacles": [
+   "action_gate"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-27T23:22:03"
+ },
+ "gbt_allinone/tools/growth_hooks.py": {
+  "tentacles": [
+   "growth_hooks"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-27T23:22:03"
+ },
+ "gbt_allinone/tools/devour_fusion.py": {
+  "tentacles": [
+   "devour_fusion"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-27T23:22:03"
+ },
+ "tools/binding_hook.py": {
+  "tentacles": [
+   "domain:system",
+   "health"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T23:22:28"
+ },
+ "vaults": {
+  "tentacles": [
+   "obsidian_vault"
+  ],
+  "note": "新增产物 ↔ 触手",
+  "bound_at": "2026-09-27T23:22:28"
+ },
+ "state/cap_tags.json": {
+  "tentacles": [
+   "cap_tags"
+  ],
+  "note": "新增产物 ↔ 触手",
+  "bound_at": "2026-09-27T23:22:28"
+ },
+ "state/action_gate.jsonl": {
+  "tentacles": [
+   "action_gate"
+  ],
+  "note": "新增产物 ↔ 触手",
+  "bound_at": "2026-09-27T23:22:28"
+ },
+ "state/shortboard.json": {
+  "tentacles": [
+   "growth_hooks"
+  ],
+  "note": "新增产物 ↔ 触手",
+  "bound_at": "2026-09-27T23:22:28"
+ },
+ "state/devour_fusion.json": {
+  "tentacles": [
+   "devour_fusion"
+  ],
+  "note": "新增产物 ↔ 触手",
+  "bound_at": "2026-09-27T23:22:28"
+ },
+ "state/obsidian_vaults.json": {
+  "tentacles": [
+   "obsidian_vault"
+  ],
+  "note": "新增产物 ↔ 触手",
+  "bound_at": "2026-09-27T23:22:28"
+ },
+ "gbt_allinone/tests/test_native_growth_stack.py": {
+  "tentacles": [
+   "inventory",
+   "file_hygiene",
+   "sec_surface",
+   "obsidian_vault",
+   "audio_mix"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T23:23:24"
+ },
+ "skills/gbt-native-growth/SKILL.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T23:59:24"
+ },
+ "gbt_allinone/tools/automation_keys.py.bak.20260928-010825": {
+  "tentacles": [
+   "domain:tools"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T01:08:27"
+ },
+ "gbt_allinone/llm/key_gateway.py": {
+  "tentacles": [
+   "domain:llm"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T01:23:14"
  }
 }

@@ -1,0 +1,52 @@
+{"at": "2026-09-27T23:23:46", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-27T23:23:46", "event": "evolve", "shortboard": "61 个能力位属 owner 类（要主人逐项许可才可调）", "dry_run": true, "auto": 2, "need_owner": 0, "ran": []}
+{"at": "2026-09-27T23:23:46", "event": "evolve", "shortboard": "未清故障 9 条：['F3', 'F5', 'F9', 'F10', 'F11']", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-27T23:24:49", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-27T23:24:49", "event": "evolve", "shortboard": "61 个能力位属 owner 类（要主人逐项许可才可调）", "dry_run": true, "auto": 2, "need_owner": 0, "ran": []}
+{"at": "2026-09-27T23:24:49", "event": "evolve", "shortboard": "未清故障 9 条：['F3', 'F5', 'F9', 'F10', 'F11']", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-27T23:25:32", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-27T23:26:10", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-27T23:26:10", "event": "evolve", "shortboard": "61 个能力位属 owner 类（要主人逐项许可才可调）", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-27T23:26:10", "event": "evolve", "shortboard": "未清故障 9 条：['F3', 'F5', 'F9', 'F10', 'F11']", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-27T23:26:53", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-27T23:26:53", "event": "evolve", "shortboard": "61 个能力位属 owner 类（要主人逐项许可才可调）", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-27T23:26:53", "event": "evolve", "shortboard": "未清故障 9 条：['F3', 'F5', 'F9', 'F10', 'F11']", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-27T23:40:23", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T00:04:04", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T00:04:04", "event": "evolve", "shortboard": "61 个能力位属 owner 类（要主人逐项许可才可调）", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T00:04:04", "event": "evolve", "shortboard": "未清故障 9 条：['F3', 'F5', 'F9', 'F10', 'F11']", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T00:11:40", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T00:11:40", "event": "evolve", "shortboard": "61 个能力位属 owner 类（要主人逐项许可才可调）", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T00:11:40", "event": "evolve", "shortboard": "未清故障 9 条：['F3', 'F5', 'F9', 'F10', 'F11']", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T00:14:37", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T00:14:37", "event": "evolve", "shortboard": "61 个能力位属 owner 类（要主人逐项许可才可调）", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T00:14:37", "event": "evolve", "shortboard": "未清故障 9 条：['F3', 'F5', 'F9', 'F10', 'F11']", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T00:14:50", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T00:14:51", "event": "evolve", "shortboard": "未清故障 9 条：['F3', 'F5', 'F9', 'F10', 'F11']", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T00:48:32", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:07:53", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:14:22", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:14:22", "event": "evolve", "shortboard": "61 个能力位属 owner 类（要主人逐项许可才可调）", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T01:14:22", "event": "evolve", "shortboard": "未清故障 9 条：['F3', 'F5', 'F9', 'F10', 'F11']", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T01:25:07", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:30:53", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:30:53", "event": "evolve", "shortboard": "未清故障 9 条：['F3', 'F5', 'F9', 'F10', 'F11']", "dry_run": false, "auto": 1, "need_owner": 1, "ran": ["读现状：state/排查台账.json"]}
+{"at": "2026-09-28T01:31:35", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:31:37", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:33:47", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:33:48", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:39:20", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:39:22", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:41:20", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:41:21", "event": "shortboard", "count": 4, "top": ["故障", "绑定", "未实现", "许可"]}
+{"at": "2026-09-28T01:45:43", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T01:45:45", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T01:47:36", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T01:47:37", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T01:54:22", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T01:54:22", "event": "evolve", "shortboard": "61 个能力位属 owner 类（要主人逐项许可才可调）", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T01:54:22", "event": "evolve", "shortboard": "未清故障 11 条：['F3', 'F5', 'F9', 'F10', 'F11']", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T01:56:40", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T01:56:41", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T01:58:57", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T01:59:04", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}

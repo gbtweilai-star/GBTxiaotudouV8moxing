@@ -613,6 +613,24 @@ def _extract_domain(text: str) -> str:
 # ═══════════════════════════════════════════════════════════
 #  执行入口 — 路由目标: run(action, params)
 # ═══════════════════════════════════════════════════════════
+class _HttpError(RuntimeError):
+    """带状态码的出站错误。
+
+    ⚠️ 消息格式**一字不改**（`HTTP %s: %s`）—— `tests/test_ai_audit.py` 用
+    `assertRaises(RuntimeError)` + 审计行 `status=429` 钉着它。
+    新增的只是 `.status` 属性：统一密钥网关靠它做**错误分类**（换不换道）。
+    """
+
+    def __init__(self, status, msg):
+        super().__init__(msg)
+        self.status = int(status or 0)
+
+
+# 推理模型的「推理吃光预算」标记（agents / NVIDIA 都会踩，见 _call_once）。
+# 调用方据此**自适上调 max_tokens 后重试同一家** —— 同一家重试 ≠ 换道。
+REASONING_STARVED = "content 为空但 reasoning_content 非空 —— max_tokens 被推理吃光"
+_REASONING_ESCALATE_CAP = 8192
+
 def _safe_json(url, body, headers, timeout, *, audit_provider=None,
                audit_model=None, audit_session_id=None, method="POST"):
     """统一出站口：net_guard 守门 + 应用层 AI 审计（只记元数据，不记内容）。
@@ -641,84 +659,180 @@ def _safe_json(url, body, headers, timeout, *, audit_provider=None,
     data = response.get("json")
     if status >= 400 or not isinstance(data, dict):
         _audit.finish(ctx, status=status, ok=False, response_text=response.get("text"))
-        raise RuntimeError("HTTP %s: %s" % (status, str(response.get("text") or "")[:300]))
+        raise _HttpError(status, "HTTP %s: %s" % (status, str(response.get("text") or "")[:300]))
     _audit.finish(ctx, status=status, ok=True, response=data)
     return data
 
 
+def _call_once(wire, base_url, model, api_key, body, system, prompt, timeout, provider):
+    """按协议族发**一次**请求，返回回复文本。
+
+    本函数只管「怎么发」；**重试与换道是调用方的事**（`_safe_json` 只出网一次）。
+    """
+    if wire == "anthropic":
+        # ── Anthropic Claude 原生 Messages API ──
+        _url = base_url.rstrip("/") + "/v1/messages"
+        _body = {"model": model, "max_tokens": body.get("max_tokens", 2000),
+                 "system": system,
+                 "messages": [{"role": "user", "content": prompt[:6000]}]}
+        _hdrs = {"Content-Type": "application/json", "x-api-key": api_key,
+                 "anthropic-version": "2023-06-01"}
+        data = _safe_json(_url, _body, _hdrs, timeout,
+                          audit_provider=provider or "anthropic", audit_model=model)
+        return data["content"][0]["text"]
+    if wire == "gemini":
+        # ── Google Gemini 原生 generateContent API ──
+        _url = (base_url.rstrip("/") + "/models/" + model
+                + ":generateContent?key=" + api_key)
+        _body = {"contents": [{"role": "user", "parts": [{"text": prompt[:6000]}]}],
+                 "systemInstruction": {"parts": [{"text": system}]}}
+        data = _safe_json(_url, _body, {"Content-Type": "application/json"}, timeout,
+                          audit_provider=provider or "gemini", audit_model=model)
+        return data["candidates"][0]["content"]["parts"][0]["text"]
+    # ── OpenAI 兼容（agnes/deepseek/kimi/openai/NVIDIA/自定义/本地）──
+    _hdrs = ({"Content-Type": "application/json", "Authorization": "Bearer " + api_key}
+             if "abliteration" not in base_url else
+             {"Content-Type": "application/json", "x-api-key": api_key})
+    _body = dict(body)
+    _body["model"] = model
+    data = _safe_json(base_url.rstrip("/") + "/chat/completions", _body, _hdrs, timeout,
+                      audit_provider=provider or PROVIDER, audit_model=model)
+    _msg = (data.get("choices") or [{}])[0].get("message") or {}
+    _txt = _msg.get("content")
+    if not _txt:
+        # 🔴 推理模型的坑（2026-09-27 实弹取证，agnes 与 NVIDIA 都会踩）：
+        #    max_tokens 太小会被 reasoning 吃光 ⇒ **HTTP 200 但 content 为空**。
+        #    这不是成功。报成 422（参数问题）⇒ 按 I2 **不换道**，
+        #    免得把「我们参数写小了」伪装成「模型不行」。
+        #    调用方看到 REASONING_STARVED 标记会**自适上调 max_tokens 后重试同一家**
+        #    （同一家重试 ≠ 换道，不违反 I1/I2）。
+        if _msg.get("reasoning_content"):
+            raise _HttpError(422, "HTTP 422: %s（provider=%s）"
+                             % (REASONING_STARVED, provider or PROVIDER))
+        raise _HttpError(422, "HTTP 422: 上游 200 但 content 为空（provider=%s）"
+                              % (provider or PROVIDER))
+    return _txt
+
+
 def run(action=None, **params):
     """LLM网关路由入口 — chat: 推理对话; status: 网关状态"""
+    # 本次落点要回写模块级全局（vision_cap 等下游读 BASE_URL/MODEL）——
+    # `global` 必须在函数首部声明：本函数前面几处已在读这些名字。
+    global PROVIDER, API_KEY, BASE_URL, MODEL
     try:
         # ⛔ 兼容 L4 干跑 handler({}) 传 dict: 提取 action, 空则视为 status(静态, 不调LLM)
         if isinstance(action, dict):
             action = action.get("action") or next(iter(action), None)
         if action in ("status", "health", "list", "info") or action is None:
-            return {
+            _out = {
                 "ok": True, "cap": "cloud_llm", "status": "ready",
                 "key_chain": [k[0] for k in _KEY_CHAIN],
                 "provider": PROVIDER or "auto",
             }
+            # 挂上网关读数（选路是不是活的，看这里）。失败不影响 status 本身。
+            try:
+                from . import key_gateway as _KG
+                _out["gateway"] = _KG.run("status")
+            except Exception:                            # noqa: BLE001
+                _out["gateway"] = None
+            return _out
         # 默认 chat: 构建系统提示并转发到LLM
         prompt = params.get("prompt", params.get("q", params.get("message", "")))
         system = _build_system(custom=params.get("system", ""))
+        _want_max_tokens = int(params.get("max_tokens", 2000))
         body = {
             "model": params.get("model", MODEL or "deepseek-flash"),
             "messages": [{"role": "system", "content": system},
                          {"role": "user", "content": prompt[:6000]}],
             "temperature": params.get("temperature", 0.7),
-            "max_tokens": params.get("max_tokens", 2000),
+            "max_tokens": _want_max_tokens,
         }
-        if not API_KEY:
-            return {"ok": False, "error": "未配置 LLM API 密钥 (DEEPSEEK/KIMI/OPENAI/ANTHROPIC/GEMINI_API_KEY)",
-                    "hint": "请配置环境变量后重试"}
+        # ══════════════════════════════════════════════════════════════
+        # 选路：向统一密钥网关要「本次该按什么顺序试」—— **每次调用现算**
+        # ══════════════════════════════════════════════════════════════
+        # 🔴 血账（这就是「一直失灵」的机械根因）：
+        #    旧实现在**模块导入时**跑一次 for-loop，找到第一个有 key 的 provider
+        #    就 `break`，把 PROVIDER/API_KEY/BASE_URL/MODEL 四个模块级全局**定型**，
+        #    此后整个进程生命周期不再变；而且 HTTP 4xx/5xx 只被外层
+        #    `except Exception` 吞成 `{"ok": False}` —— **不重试、不换道**。
+        #    ⇒ 额度耗尽(402)/限流(429)/密钥失效(401) 任一发生 = **硬断连**。
+        #    现在改为「每次现算 + 按错误分类处置」：
+        #      能换道的换道（402/429/401/404），不能换道的如实报错（400/422，I2），
+        #      全不可用时 fail-closed（不瞎挑、不静默降级）。
+        from . import key_gateway as _KG
+        _prefer = str(params.get("provider") or os.environ.get("GBT_LLM_PROVIDER") or "")
+        _pl = _KG.plan(need_tokens=int(params.get("need_tokens", 0) or 0), prefer=_prefer)
+        if not _pl.get("ok"):
+            return {"ok": False, "error": _pl.get("error"), "fail_closed": True,
+                    "brand": _KG.BRAND_TAG, "candidates": _pl.get("candidates"),
+                    "how_to_fix": _pl.get("how_to_fix"),
+                    "hint": "补密钥：deepseek_key set --profile <名>；或 op=reset 清运行态"}
+        _order = [o["provider"] for o in (_pl.get("order") or []) if o.get("alive")]
         _timeout = int(params.get("timeout", 60))
         _max_retries = int(params.get("retries", 2))  # ⛔ 生产打磨: 瞬时错误重试2次+退避
-        _last_err = ""
-        for _attempt in range(_max_retries + 1):
-            try:
-                if PROVIDER == "anthropic":
-                    # ── Anthropic Claude 原生 Messages API ──
-                    _url = BASE_URL.rstrip("/") + "/v1/messages"
-                    _body = {"model": body["model"], "max_tokens": body.get("max_tokens", 2000),
-                             "system": system,
-                             "messages": [{"role": "user", "content": prompt[:6000]}]}
-                    _hdrs = {"Content-Type": "application/json", "x-api-key": API_KEY,
-                             "anthropic-version": "2023-06-01"}
-                    data = _safe_json(_url, _body, _hdrs, _timeout,
-                                      audit_provider="anthropic",
-                                      audit_model=body["model"])
-                    reply = data["content"][0]["text"]
-                elif PROVIDER == "gemini":
-                    # ── Google Gemini 原生 generateContent API ──
-                    _url = (BASE_URL.rstrip("/") + "/models/" + body["model"]
-                            + ":generateContent?key=" + API_KEY)
-                    _body = {"contents": [{"role": "user", "parts": [{"text": prompt[:6000]}]}],
-                             "systemInstruction": {"parts": [{"text": system}]}}
-                    data = _safe_json(_url, _body, {"Content-Type": "application/json"},
-                                      _timeout, audit_provider="gemini",
-                                      audit_model=body["model"])
-                    reply = data["candidates"][0]["content"]["parts"][0]["text"]
-                else:
-                    # ── OpenAI 兼容 (DeepSeek/Kimi/OpenAI/自定义/本地) ──
-                    _hdrs2 = ({"Content-Type": "application/json",
-                               "Authorization": f"Bearer {API_KEY}"}
-                              if "abliteration" not in BASE_URL else
-                              {"Content-Type": "application/json",
-                               "x-api-key": API_KEY})
-                    data = _safe_json(BASE_URL.rstrip("/") + "/chat/completions", body,
-                                      _hdrs2, _timeout, audit_provider=PROVIDER,
-                                      audit_model=body["model"])
-                    reply = data["choices"][0]["message"]["content"]
-                return {"ok": True, "reply": reply, "provider": PROVIDER, "model": body["model"]}
-            except (TimeoutError, urllib.request.URLError, ConnectionError, OSError) as _te:
-                _last_err = str(_te)[:200]
-                if _attempt < _max_retries:
-                    time.sleep(1 + _attempt * 2)  # 退避: 1s/3s
-            except Exception as _e2:
-                return {"ok": False, "error": str(_e2)[:300]}
-        if _last_err:
-            return {"ok": False, "error": f"LLM重试{_max_retries}次仍失败: {_last_err}"}
-        return {"ok": False, "error": "LLM调用失败"}
+        _tried = []
+        for _prov in _order:
+            _mat = _KG.materialize(_prov)
+            if not _mat.get("ok"):
+                _tried.append({"provider": _prov, "skipped": _mat.get("error")})
+                continue
+            # 推理模型要够大的 max_tokens，否则 content 会被 reasoning 吃光
+            # （HTTP 200 也算失败）——网关在声明层给了 min_max_tokens 下限。
+            _body = dict(body)
+            _body["max_tokens"] = max(_want_max_tokens,
+                                      int(_mat.get("min_max_tokens", 0) or 0))
+            # 让下游（vision_cap 等读 BASE_URL/MODEL 的地方）看到**本次真实落点**
+            PROVIDER, API_KEY, BASE_URL, MODEL = (_prov, _mat["key"],
+                                                  _mat["url"], _mat["model"])
+            _err, _st, _d = "", None, {}
+            for _attempt in range(_max_retries + 1):
+                try:
+                    _reply = _call_once(_mat["wire"], _mat["url"], _mat["model"],
+                                        _mat["key"], _body, system, prompt,
+                                        _timeout, _prov)
+                    _KG.note_result(_prov, ok=True)
+                    return {"ok": True, "reply": _reply, "provider": _prov,
+                            "model": _mat["model"], "key_masked": _mat["masked"],
+                            "brand": _KG.BRAND_TAG,
+                            "auto_switched": bool(_pl.get("auto_switched")),
+                            "switched_from": _pl.get("switched_from"),
+                            "tried_before": [t["provider"] for t in _tried]}
+                except Exception as _e:                  # noqa: BLE001
+                    _err = str(_e)[:300]
+                    _st = getattr(_e, "status", None)
+                    # 🔴 推理模型把预算吃光 ⇒ **同一家自适上调 max_tokens 后重试**。
+                    #    同一家重试 ≠ 换道（不违反 I1/I2），而且这是唯一能修好的办法：
+                    #    换道只会把这个模型能答的问题推给别人。
+                    if REASONING_STARVED in _err and _attempt < _max_retries:
+                        _new = min(max(_body["max_tokens"] * 4, 512),
+                                   _REASONING_ESCALATE_CAP)
+                        if _new > _body["max_tokens"]:
+                            print("[key_gateway] 推理吃光预算：%s max_tokens %d → %d 后重试"
+                                  % (_prov, _body["max_tokens"], _new), file=sys.stderr)
+                            _body["max_tokens"] = _new
+                            continue
+                    _d = _KG.note_result(_prov, ok=False, status=_st, error=_err)
+                    # 决策拆两维（血账：早先把这两件事挤在一个 `failover` 里，
+                    # 结果 transient 在 `not failover` 处**立即 return**，
+                    # 重试分支成死代码 ⇒ 一次网络抖动 = 硬断连）：
+                    #   ① 同家再试一次？  ② 试不动了要不要往下走？
+                    if not _d.get("retry_same") and not _d.get("escalate"):
+                        # bad_request / unknown ⇒ **硬停**：我们自己错了，换谁都没用
+                        return {"ok": False, "error": _err, "provider": _prov,
+                                "err_class": _d.get("err_class"), "failover": False,
+                                "why_no_failover": _d.get("action"),
+                                "brand": _KG.BRAND_TAG}
+                    if _d.get("retry_same") and _attempt < _max_retries:
+                        time.sleep(1 + _attempt * 2)     # 退避: 1s/3s
+                        continue
+                    break                                # 本家到此为止 → 下一家
+            _tried.append({"provider": _prov, "err_class": (_d or {}).get("err_class"),
+                           "status": _st, "error": _err})
+        return {"ok": False, "fail_closed": True, "brand": _KG.BRAND_TAG,
+                "error": "全部 %d 条通道都试过且都失败 —— 如实报错，不静默降级"
+                         % len(_order),
+                "tried": _tried,
+                "how_to_fix": "补密钥 / op=reset 清运行态 / 等冷却到期"}
     except Exception as e:
         return {"ok": False, "error": str(e)[:300]}
 if __name__ == "__main__":

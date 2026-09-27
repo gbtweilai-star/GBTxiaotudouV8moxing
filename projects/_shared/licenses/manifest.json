@@ -3,33 +3,6 @@
   "note": "素材许可账 —— 逐件登记（文件 + sha256 + 出处 + 授权）",
   "entries": [
     {
-      "file": ".scratch/_免费样片_v2/_bgm.wav",
-      "sha256": "57ed8aa2d988b88fbb7c61d9eac8537fe619789123e7962a40d5b8c68ab6ee89",
-      "bytes": 2469678,
-      "source": "本仓 ffmpeg/SAPI 自产：《免费样片》v2 BGM 步",
-      "license": "自有（本机自产，CC0等效）",
-      "note": "short-video | sha16=57ed8aa2d988b88f",
-      "at": "2026-09-26T05:00:37"
-    },
-    {
-      "file": ".scratch/_免费样片_v2/_shot1.mp4",
-      "sha256": "f520d555f70f18f3e9988a50bf1429a58460a8339cca9c2e3c1e1d95dda7a55d",
-      "bytes": 2767204,
-      "source": "本仓 ffmpeg/SAPI 自产：《免费样片》v2 素材 步",
-      "license": "自有（本机自产，CC0等效）",
-      "note": "short-video | sha16=f520d555f70f18f3",
-      "at": "2026-09-26T05:00:37"
-    },
-    {
-      "file": ".scratch/_免费样片_v2/_voiceover48.wav",
-      "sha256": "9776dd53f3b53c26c5edd1ce52cf42bd165628504462cb0645360c2b8bd5779e",
-      "bytes": 3067202,
-      "source": "本仓 ffmpeg/SAPI 自产：《免费样片》v2 配音 步",
-      "license": "自有（本机自产，CC0等效）",
-      "note": "short-video | sha16=9776dd53f3b53c26",
-      "at": "2026-09-26T05:00:37"
-    },
-    {
       "file": "projects/film/03-shoot/20260923-film-pipeline-selftest-rehearsal.mp4",
       "sha256": "66ae7284d8a935e9cf2f092273e29a94ee4580fda127551cfb5d9ec1b1569113",
       "bytes": 2401091,
@@ -174,7 +147,7 @@
       "at": "2026-09-26T05:00:37"
     }
   ],
-  "updated": "2026-09-26T05:03:20",
+  "updated": "2026-09-28T01:53:25",
   "removed": [
     {
       "file": "README.md",
@@ -505,6 +478,21 @@
       "file": "projects/_shared/probe-tmp/20260923-music-probe-master.wav",
       "why": "第 34 轮扰动对照撤销",
       "at": "2026-09-23T19:45:16"
+    },
+    {
+      "file": ".scratch/_免费样片_v2/_bgm.wav",
+      "why": "目录 .scratch 是临时生产区且已清空；本仓自产彩排件按隔离判据不许留在生产账（2026-09-27 归入 removed）",
+      "at": "2026-09-28T01:53:25"
+    },
+    {
+      "file": ".scratch/_免费样片_v2/_shot1.mp4",
+      "why": "目录 .scratch 是临时生产区且已清空；本仓自产彩排件按隔离判据不许留在生产账（2026-09-27 归入 removed）",
+      "at": "2026-09-28T01:53:25"
+    },
+    {
+      "file": ".scratch/_免费样片_v2/_voiceover48.wav",
+      "why": "目录 .scratch 是临时生产区且已清空；本仓自产彩排件按隔离判据不许留在生产账（2026-09-27 归入 removed）",
+      "at": "2026-09-28T01:53:25"
     }
   ]
 }

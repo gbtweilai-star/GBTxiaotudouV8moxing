@@ -96,3 +96,31 @@ python tools/binding_hook.py verify     # 复核（漏走钩子的新增在这�
 3. **反盲区判据立功**：新加 `vaults/` 后顶层树 60→63，`test_coverage_readings_fresh` 当场红 ⇒ 重扫矩阵，
    新面被登记（不是被忽略）。
 4. **假账拦截要真试**：`intake(status='已融合')` 用**真有那三件**的能力位去试，当然会过 —— 要拿"缺件"的去试。
+
+
+## 七、常设调用者（谁在跑它们 · 防"摆设"）
+
+能力位**光登记不算接上**：框架自带的 `test_caps_called_audit` 会把"内调型却没人调"的能力位报成**孤儿**。
+这套栈的常设调用者（都是真调用，不是为过判据摆的）：
+
+| 能力位 | 谁在调 | 调来干什么 |
+|---|---|---|
+| `obsidian_vault` | `binding_hook.py after-add` / `devour_fusion.fuse` / `gods_eye.daily` | 建页 · 记一条 · 日报读记忆覆盖 |
+| `cap_tags` | `gods_eye.daily` · `action_gate._scope_needed` · `sec_sweeper.start` | 待批清单进日报 · 判"要不要主人许可" · 标签许可体检 |
+| `action_gate` | `growth_hooks.evolve`（**每一步自动动作先过闸**） | 先看→动脑→执行 |
+| `growth_hooks` | `sec_sweeper.start` · `gods_eye.daily` | 安全棒每轮算短板 · 日报带最短板 |
+| `devour_fusion` | `sec_sweeper.start` · `gods_eye.daily` | 融合体检 · 未融合条数进日报 |
+| `gods_eye` / `task_manager` / `sec_sweeper` | 互相挂进安全棒巡检（门面 / 进程面 / 健康账） | 一处启动、三面都读得到 |
+
+**安全棒一轮现在读七面**：门面（创作页面 + 服务在听）· 进程面（按线归类 + 端口占用者）·
+永久记忆 · 吞天融合 · 标签许可 · 成长钩子 · 控制回路。任一红 ⇒ 进 `alerts`。
+
+## 八、绑定账的"悬空行"与剪枝（`tentacle_bind prune`）
+
+绑定账的不变量是「**账里的资产都真在盘上**」。而产出即绑按 mtime 抓"此后新增"，会抓到**转瞬即逝**的东西：
+血账 `gbt_allinone/recon/capability.json` 是吞天胶囊的中间产物，`ghost_guard` 按设计会清掉它
+（「胶囊降威完整性」条款），于是那行绑定**永久把审计顶红**，人却找不到东西可修。
+
+⇒ `autobind` 尾部顺手 `prune()`：**不在盘上的绑定自动剪掉**，理由进台账；
+单独跑 `python tools/tentacle_bind.py prune` 也行。**这不是洗白数字**：剪的是"确实不在盘上"的行，
+每次都记 `prune` 台账（asset + 原触手 + 理由），真要追还能从 git 里翻回来。

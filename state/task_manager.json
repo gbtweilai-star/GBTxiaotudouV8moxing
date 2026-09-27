@@ -1,53 +1,3026 @@
 {
  "ok": true,
  "op": "list",
- "at": "2026-09-27T20:46:24",
- "count": 347,
+ "at": "2026-09-28T01:38:38",
+ "count": 328,
  "rows": [
-  {
-   "pid": 22792,
-   "name": "ChatGPT.exe",
-   "mem_mb": 117.2,
-   "cpu": 121.2,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.924.2738.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe --type=renderer --standard-schemes=app,codex-sandbox --serv"
-  },
   {
    "pid": 11736,
    "name": "ZCode.exe",
-   "mem_mb": 449.4,
-   "cpu": 107.4,
+   "mem_mb": 547.2,
+   "cpu": 139.8,
    "ports": [],
    "owner": "浏览器",
    "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\ZCode --standard-schemes=zcode-me"
   },
   {
+   "pid": 23004,
+   "name": "WorkBuddyAI.exe",
+   "mem_mb": 772.4,
+   "cpu": 111.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\.workbuddy-ai\\app --standard-schemes="
+  },
+  {
+   "pid": 21768,
+   "name": "python.exe",
+   "mem_mb": 42.9,
+   "cpu": 78.5,
+   "ports": [],
+   "owner": "框架服务",
+   "cmd": "C:\\Python312\\python.exe -c \nimport sys, json; sys.stdout.reconfigure(encoding='utf-8')\nsys.path.insert(0,'.')\nimport gbt_allinone as g\ndef pay(kind, k"
+  },
+  {
    "pid": 20292,
    "name": "LobeHub.exe",
-   "mem_mb": 469.0,
-   "cpu": 105.0,
+   "mem_mb": 461.7,
+   "cpu": 62.6,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
    "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\LobeHub\\LobeHub.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\LobeHub --standard-schemes=ap"
   },
   {
+   "pid": 5124,
+   "name": "MsMpEng.exe",
+   "mem_mb": 192.9,
+   "cpu": 38.4,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 9360,
+   "name": "WorkBuddyAI.exe",
+   "mem_mb": 74.6,
+   "cpu": 33.5,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe --type=gpu-process --no-sandbox --user-data-dir=C:\\Users\\ADMIN\\.workbuddy-ai\\app --g"
+  },
+  {
+   "pid": 27372,
+   "name": "sandbox-center.exe",
+   "mem_mb": 9.0,
+   "cpu": 16.9,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\resources\\app.asar.unpacked\\cli\\vendor\\sandbox\\5.6.10\\sandbox-center.exe --config {\"appHome\":\"C:\\\\Us"
+  },
+  {
+   "pid": 4,
+   "name": "System",
+   "mem_mb": 0.0,
+   "cpu": 12.0,
+   "ports": [
+    139,
+    445
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5788,
+   "name": "ZCode.exe",
+   "mem_mb": 98.2,
+   "cpu": 5.7,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=gpu-process --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\ZCode --gpu-preferences=SAAAAA"
+  },
+  {
+   "pid": 1912,
+   "name": "dwm.exe",
+   "mem_mb": 51.4,
+   "cpu": 5.4,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 9196,
+   "name": "Telegram.exe",
+   "mem_mb": 66.7,
+   "cpu": 4.7,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Telegram Desktop\\Telegram.exe"
+  },
+  {
+   "pid": 13528,
+   "name": "chrome.exe",
+   "mem_mb": 136.6,
+   "cpu": 3.2,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+  },
+  {
+   "pid": 4648,
+   "name": "explorer.exe",
+   "mem_mb": 111.7,
+   "cpu": 3.1,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\Explorer.EXE"
+  },
+  {
+   "pid": 18952,
+   "name": "ZCode.exe",
+   "mem_mb": 78.8,
+   "cpu": 2.5,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe"
+  },
+  {
+   "pid": 27748,
+   "name": "ZCode.exe",
+   "mem_mb": 154.3,
+   "cpu": 2.4,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\resources\\glm\\zcode.cjs app-server --stdio --surface"
+  },
+  {
+   "pid": 2332,
+   "name": "WorkBuddyAI.exe",
+   "mem_mb": 69.9,
+   "cpu": 1.8,
+   "ports": [
+    18488
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe"
+  },
+  {
+   "pid": 20892,
+   "name": "WorkBuddyAI.exe",
+   "mem_mb": 66.6,
+   "cpu": 1.8,
+   "ports": [
+    57380,
+    57381,
+    57382
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\resources\\app.asar\\main\\daemon-app"
+  },
+  {
+   "pid": 5304,
+   "name": "wslservice.exe",
+   "mem_mb": 6.2,
+   "cpu": 1.4,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 13836,
+   "name": "chrome.exe",
+   "mem_mb": 38.4,
+   "cpu": 1.3,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=utility --utility-sub-type=network.mojom.NetworkService --lang=zh-CN --service-sandbox-ty"
+  },
+  {
+   "pid": 9180,
+   "name": "blender.exe",
+   "mem_mb": 5.7,
+   "cpu": 1.3,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\Blender Foundation\\Blender 4.2\\blender.exe"
+  },
+  {
+   "pid": 11464,
+   "name": "conhost.exe",
+   "mem_mb": 0.2,
+   "cpu": 1.3,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 1652,
+   "name": "svchost.exe",
+   "mem_mb": 18.9,
+   "cpu": 0.9,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 2704,
+   "name": "GenOffice.exe",
+   "mem_mb": 10.5,
+   "cpu": 0.9,
+   "ports": [
+    3093
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\GenOffice\\GenOffice.exe --updated"
+  },
+  {
+   "pid": 1360,
+   "name": "csrss.exe",
+   "mem_mb": 5.9,
+   "cpu": 0.9,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 2176,
+   "name": "svchost.exe",
+   "mem_mb": 2.7,
+   "cpu": 0.9,
+   "ports": [
+    49666
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 4444,
+   "name": "svchost.exe",
+   "mem_mb": 5.8,
+   "cpu": 0.8,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 4376,
+   "name": "svchost.exe",
+   "mem_mb": 2.2,
+   "cpu": 0.8,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5616,
+   "name": "LobeHub.exe",
+   "mem_mb": 80.0,
+   "cpu": 0.7,
+   "ports": [
+    33250
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\LobeHub\\LobeHub.exe"
+  },
+  {
+   "pid": 5056,
+   "name": "MpDefenderCoreService.exe",
+   "mem_mb": 11.5,
+   "cpu": 0.7,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 10016,
+   "name": "tail.exe",
+   "mem_mb": 8.9,
+   "cpu": 0.7,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\.workbuddy-ai\\binaries\\PortableGit\\versions\\1.2.0\\usr\\bin\\tail.exe -25"
+  },
+  {
+   "pid": 10472,
+   "name": "svchost.exe",
+   "mem_mb": 7.3,
+   "cpu": 0.7,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 27488,
+   "name": "chrome.exe",
+   "mem_mb": 61.0,
+   "cpu": 0.6,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+  },
+  {
+   "pid": 14432,
+   "name": "chrome.exe",
+   "mem_mb": 25.0,
+   "cpu": 0.6,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=utility --utility-sub-type=network.mojom.NetworkService --lang=zh-CN --service-sandbox-ty"
+  },
+  {
+   "pid": 21076,
+   "name": "node.exe",
+   "mem_mb": 18.3,
+   "cpu": 0.6,
+   "ports": [
+    5678,
+    5679
+   ],
+   "owner": "MCP/工具",
+   "cmd": "C:\\Program Files\\nodejs\\node.exe C:\\Users\\ADMIN\\AppData\\Roaming\\npm/node_modules/n8n/bin/n8n start"
+  },
+  {
+   "pid": 14328,
+   "name": "WeChatAppEx.exe",
+   "mem_mb": 13.9,
+   "cpu": 0.6,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --log-level=2 --helper-handle-value=2"
+  },
+  {
+   "pid": 30672,
+   "name": "python.exe",
+   "mem_mb": 78.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "框架服务",
+   "cmd": "C:\\Users\\ADMIN\\.workbuddy-ai\\binaries\\python\\envs\\default\\Scripts\\python.exe -m pytest gbt_allinone/tests/test_framework.py -q"
+  },
+  {
+   "pid": 13848,
+   "name": "chrome.exe",
+   "mem_mb": 55.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 8324,
+   "name": "WorkBuddyAI.exe",
+   "mem_mb": 52.9,
+   "cpu": 0.0,
+   "ports": [
+    3081
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\resources\\app.asar.unpacked\\cli\\bi"
+  },
+  {
+   "pid": 11368,
+   "name": "chrome.exe",
+   "mem_mb": 50.4,
+   "cpu": 0.0,
+   "ports": [
+    9222
+   ],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --remote-debugging-port=9222 --remote-allow-origins=* --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT"
+  },
+  {
    "pid": 20240,
    "name": "LobeHub.exe",
-   "mem_mb": 31.4,
-   "cpu": 60.7,
+   "mem_mb": 47.7,
+   "cpu": 0.0,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
    "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\LobeHub\\LobeHub.exe --type=gpu-process --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\LobeHub --gpu-preferences="
   },
   {
-   "pid": 18876,
-   "name": "python.exe",
-   "mem_mb": 33.6,
-   "cpu": 60.3,
+   "pid": 16180,
+   "name": "WeChat.exe",
+   "mem_mb": 45.0,
+   "cpu": 0.0,
+   "ports": [
+    8680,
+    13013,
+    13016
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\Tencent\\WeChat\\WeChat.exe -autorun"
+  },
+  {
+   "pid": 2032,
+   "name": "chrome.exe",
+   "mem_mb": 43.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+  },
+  {
+   "pid": 188,
+   "name": "",
+   "mem_mb": 41.3,
+   "cpu": 0.0,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Python312\\python.exe -"
+   "cmd": ""
+  },
+  {
+   "pid": 11292,
+   "name": "chrome.exe",
+   "mem_mb": 40.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --init-isolate-as-foreground --no-pre-read-main-dll --video-"
+  },
+  {
+   "pid": 6656,
+   "name": "chrome.exe",
+   "mem_mb": 31.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+  },
+  {
+   "pid": 24256,
+   "name": "ZCode.exe",
+   "mem_mb": 31.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=utility --utility-sub-type=node.mojom.NodeService --lang=zh-CN --service-sandbox-type=non"
+  },
+  {
+   "pid": 17628,
+   "name": "svchost.exe",
+   "mem_mb": 24.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 18388,
+   "name": "FreeLLMAPI.exe",
+   "mem_mb": 24.4,
+   "cpu": 0.0,
+   "ports": [
+    31415
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\freellmapi-desktop\\FreeLLMAPI.exe"
+  },
+  {
+   "pid": 13820,
+   "name": "chrome.exe",
+   "mem_mb": 22.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=gpu-process --gpu-recent-crash-count=0 --no-pre-read-main-dll --gpu-preferences=WAAAAAAAA"
+  },
+  {
+   "pid": 4968,
+   "name": "svchost.exe",
+   "mem_mb": 22.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 18464,
+   "name": "chrome.exe",
+   "mem_mb": 22.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 10836,
+   "name": "WorkBuddyAI.exe",
+   "mem_mb": 21.3,
+   "cpu": 0.0,
+   "ports": [
+    57408
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\resources\\app.asar.unpacked\\cli\\bi"
+  },
+  {
+   "pid": 17508,
+   "name": "chrome.exe",
+   "mem_mb": 21.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 21084,
+   "name": "chrome.exe",
+   "mem_mb": 20.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=gpu-process --gpu-recent-crash-count=0 --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gb"
+  },
+  {
+   "pid": 26844,
+   "name": "chrome.exe",
+   "mem_mb": 19.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 8356,
+   "name": "chrome.exe",
+   "mem_mb": 19.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 24036,
+   "name": "WmiPrvSE.exe",
+   "mem_mb": 18.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 18624,
+   "name": "msedgewebview2.exe",
+   "mem_mb": 18.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.48\\msedgewebview2.exe --embedded-browser-webview=1 --webview-exe-name=SearchHost.e"
+  },
+  {
+   "pid": 9044,
+   "name": "LobeHub.exe",
+   "mem_mb": 17.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\LobeHub\\LobeHub.exe --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbo"
+  },
+  {
+   "pid": 23016,
+   "name": "chrome.exe",
+   "mem_mb": 17.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 12928,
+   "name": "TextInputHost.exe",
+   "mem_mb": 17.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\TextInputHost.exe -ServerName:InputApp.AppXk0k6mrh4r2q0ct33a9wgbez0x7v9cz5y.mca"
+  },
+  {
+   "pid": 14600,
+   "name": "ZCode.exe",
+   "mem_mb": 17.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\resources\\glm\\zcode.cjs app-server --stdio --surface"
+  },
+  {
+   "pid": 22352,
+   "name": "chrome.exe",
+   "mem_mb": 17.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 7672,
+   "name": "sihost.exe",
+   "mem_mb": 16.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "sihost.exe"
+  },
+  {
+   "pid": 23824,
+   "name": "chrome.exe",
+   "mem_mb": 16.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 16648,
+   "name": "chrome.exe",
+   "mem_mb": 16.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+  },
+  {
+   "pid": 6244,
+   "name": "WorkBuddyAI.exe",
+   "mem_mb": 16.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\resources\\app.asar.unpacked\\resour"
+  },
+  {
+   "pid": 14980,
+   "name": "chrome.exe",
+   "mem_mb": 16.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 23080,
+   "name": "chrome.exe",
+   "mem_mb": 15.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 7444,
+   "name": "chrome.exe",
+   "mem_mb": 15.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 5020,
+   "name": "svchost.exe",
+   "mem_mb": 15.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 16872,
+   "name": "chrome.exe",
+   "mem_mb": 15.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 15636,
+   "name": "node.exe",
+   "mem_mb": 14.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "node C:\\Users\\ADMIN\\.workbuddy-ai\\plugins\\cache\\workbuddy-builtin\\sheetagent\\5.6.2-wb.39458645.g35219ed6.h85a557611a02/mcp/start.mjs"
+  },
+  {
+   "pid": 27564,
+   "name": "node.exe",
+   "mem_mb": 14.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "C:\\Users\\ADMIN\\.workbuddy-ai\\binaries\\node\\versions\\22.22.2-3\\node.exe C:\\Users\\ADMIN\\.workbuddy-ai\\plugins\\cache\\workbuddy-builtin\\weixinpay\\1.6.110/"
+  },
+  {
+   "pid": 11568,
+   "name": "MicrosoftStartFeedProvider.e",
+   "mem_mb": 14.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\WindowsApps\\Microsoft.StartExperiencesApp_1.380.2.0_x64__8wekyb3d8bbwe\\MicrosoftStartFeedProvider\\MicrosoftStartFeedProvider.exe -Emb"
+  },
+  {
+   "pid": 26152,
+   "name": "audiodg.exe",
+   "mem_mb": 13.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\AUDIODG.EXE 0x0000000000000668"
+  },
+  {
+   "pid": 25652,
+   "name": "ZCode.exe",
+   "mem_mb": 13.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=utility --utility-sub-type=network.mojom.NetworkService --lang=zh-CN --service-sandbox-ty"
+  },
+  {
+   "pid": 7256,
+   "name": "svchost.exe",
+   "mem_mb": 13.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\svchost.exe -k UnistackSvcGroup -s WpnUserService"
+  },
+  {
+   "pid": 5948,
+   "name": "chrome.exe",
+   "mem_mb": 12.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 22852,
+   "name": "StartMenuExperienceHost.exe",
+   "mem_mb": 12.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Windows\\SystemApps\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\StartMenuExperienceHost.exe -ServerName:FullTrustApp.AppXykjsye98af63ez2"
+  },
+  {
+   "pid": 24192,
+   "name": "chrome.exe",
+   "mem_mb": 12.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+  },
+  {
+   "pid": 1520,
+   "name": "lsass.exe",
+   "mem_mb": 12.2,
+   "cpu": 0.0,
+   "ports": [
+    49664
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 18204,
+   "name": "chrome.exe",
+   "mem_mb": 12.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 14456,
+   "name": "WeChatAppEx.exe",
+   "mem_mb": 11.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --type=renderer --client_version=1661"
+  },
+  {
+   "pid": 2436,
+   "name": "svchost.exe",
+   "mem_mb": 11.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 6716,
+   "name": "remoting_host.exe",
+   "mem_mb": 11.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files (x86)\\Google\\Chrome Remote Desktop\\154.0.8037.40\\remoting_host.exe --type=network --mojo-pipe-token=16629542737812621589 --crash-serv"
+  },
+  {
+   "pid": 4796,
+   "name": "svchost.exe",
+   "mem_mb": 11.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5568,
+   "name": "WindowsTerminal.exe",
+   "mem_mb": 11.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\WindowsApps\\Microsoft.WindowsTerminal_1.24.11911.0_x64__8wekyb3d8bbwe\\WindowsTerminal.exe --profile {61c54bbd-c2c6-5271-96e7-009a87ff"
+  },
+  {
+   "pid": 13268,
+   "name": "TabTip.exe",
+   "mem_mb": 11.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "/QuitInfo:0000000000000374;0000000000000368;"
+  },
+  {
+   "pid": 8376,
+   "name": "svchost.exe",
+   "mem_mb": 11.0,
+   "cpu": 0.0,
+   "ports": [
+    5040
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 11804,
+   "name": "ZCode.exe",
+   "mem_mb": 11.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=utility --utility-sub-type=node.mojom.NodeService --lang=zh-CN --service-sandbox-type=non"
+  },
+  {
+   "pid": 1796,
+   "name": "svchost.exe",
+   "mem_mb": 10.9,
+   "cpu": 0.0,
+   "ports": [
+    135
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 30148,
+   "name": "bash.exe",
+   "mem_mb": 10.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\.workbuddy-ai\\binaries\\PortableGit\\versions\\1.2.0\\bin\\..\\usr\\bin\\bash.exe -c __codebuddy_payload=$1; shift; __codebuddy_script=$(<\"$__c"
+  },
+  {
+   "pid": 13256,
+   "name": "ctfmon.exe",
+   "mem_mb": 10.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "/QuitInfo:000000000000035C;0000000000000360;"
+  },
+  {
+   "pid": 8288,
+   "name": "bash.exe",
+   "mem_mb": 10.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Git\\bin\\..\\usr\\bin\\bash.exe -c . /c/Users/ADMIN/.zcode/cli/exec/shell-snapshots/snapshot-bash-1790512668320-yd53d9.sh 2>/dev/null || "
+  },
+  {
+   "pid": 13456,
+   "name": "SearchIndexer.exe",
+   "mem_mb": 10.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 22560,
+   "name": "WorkBuddyAI.exe",
+   "mem_mb": 10.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe --type=utility --utility-sub-type=network.mojom.NetworkService --lang=zh-CN --servic"
+  },
+  {
+   "pid": 1216,
+   "name": "svchost.exe",
+   "mem_mb": 10.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 14972,
+   "name": "chrome.exe",
+   "mem_mb": 10.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+  },
+  {
+   "pid": 13536,
+   "name": "sandbox-cli-gc.exe",
+   "mem_mb": 9.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\resources\\app.asar.unpacked\\cli\\vendor\\sandbox\\5.6.10\\sandbox-cli-gc.exe --workspace C:\\Users\\ADMIN\\"
+  },
+  {
+   "pid": 25944,
+   "name": "codex.exe",
+   "mem_mb": 9.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\OpenAI\\Codex\\bin\\codex.exe app-server"
+  },
+  {
+   "pid": 15868,
+   "name": "conhost.exe",
+   "mem_mb": 9.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 25876,
+   "name": "PhoneExperienceHost.exe",
+   "mem_mb": 9.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\WindowsApps\\Microsoft.YourPhone_1.26072.255.0_x64__8wekyb3d8bbwe\\PhoneExperienceHost.exe -ComServer:Background -Embedding"
+  },
+  {
+   "pid": 3648,
+   "name": "chrome.exe",
+   "mem_mb": 9.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 21040,
+   "name": "chrome.exe",
+   "mem_mb": 9.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 2876,
+   "name": "svchost.exe",
+   "mem_mb": 9.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 16372,
+   "name": "chrome.exe",
+   "mem_mb": 9.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+  },
+  {
+   "pid": 3192,
+   "name": "svchost.exe",
+   "mem_mb": 8.9,
+   "cpu": 0.0,
+   "ports": [
+    49668
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 7784,
+   "name": "svchost.exe",
+   "mem_mb": 8.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\svchost.exe -k UnistackSvcGroup -s CDPUserSvc"
+  },
+  {
+   "pid": 14464,
+   "name": "chrome.exe",
+   "mem_mb": 8.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+  },
+  {
+   "pid": 27252,
+   "name": "bash.exe",
+   "mem_mb": 8.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Git\\bin\\..\\usr\\bin\\bash.exe -c . /c/Users/ADMIN/.zcode/cli/exec/shell-snapshots/snapshot-bash-1790512668320-yd53d9.sh 2>/dev/null || "
+  },
+  {
+   "pid": 10480,
+   "name": "WeChatAppEx.exe",
+   "mem_mb": 8.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --type=gpu-process --client_version=1"
+  },
+  {
+   "pid": 19976,
+   "name": "svchost.exe",
+   "mem_mb": 8.3,
+   "cpu": 0.0,
+   "ports": [
+    7680
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5508,
+   "name": "chrome.exe",
+   "mem_mb": 8.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 29728,
+   "name": "sandbox-cli.exe",
+   "mem_mb": 8.2,
+   "cpu": 0.0,
+   "ports": [
+    55482
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\resources\\app.asar.unpacked\\cli\\vendor\\sandbox\\5.6.10\\sandbox-cli.exe --config {\"extraPath\":[\"C:\\\\Us"
+  },
+  {
+   "pid": 8256,
+   "name": "taskhostw.exe",
+   "mem_mb": 8.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "taskhostw.exe {222A245B-E637-4AE9-A93F-A59CA119A75E}"
+  },
+  {
+   "pid": 26168,
+   "name": "python.exe",
+   "mem_mb": 8.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "框架服务",
+   "cmd": "C:\\Users\\ADMIN\\.workbuddy-ai\\binaries\\python\\envs\\default\\Scripts\\python.exe -m pytest gbt_allinone/tests/test_framework.py -q"
+  },
+  {
+   "pid": 5028,
+   "name": "OfficeClickToRun.exe",
+   "mem_mb": 7.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 17128,
+   "name": "SecurityHealthService.exe",
+   "mem_mb": 7.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 3864,
+   "name": "svchost.exe",
+   "mem_mb": 7.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 14444,
+   "name": "chrome.exe",
+   "mem_mb": 7.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+  },
+  {
+   "pid": 23684,
+   "name": "SearchHost.exe",
+   "mem_mb": 7.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\SearchHost.exe -ServerName:CortanaUI.AppXstmwaab17q5s3y22tp6apqz7a45vwv65.mca"
+  },
+  {
+   "pid": 2624,
+   "name": "svchost.exe",
+   "mem_mb": 7.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 6432,
+   "name": "svchost.exe",
+   "mem_mb": 6.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 10488,
+   "name": "node.exe",
+   "mem_mb": 6.7,
+   "cpu": 0.0,
+   "ports": [
+    19988
+   ],
+   "owner": "MCP/工具",
+   "cmd": "C:\\Program Files\\nodejs\\node.exe C:\\Users\\ADMIN\\AppData\\Roaming\\npm\\node_modules\\playwriter\\dist\\start-relay-server.js"
+  },
+  {
+   "pid": 15904,
+   "name": "msedgewebview2.exe",
+   "mem_mb": 6.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.48\\msedgewebview2.exe --type=utility --utility-sub-type=network.mojom.NetworkServi"
+  },
+  {
+   "pid": 12372,
+   "name": "bash.exe",
+   "mem_mb": 6.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Git\\bin\\bash.exe -c . /c/Users/ADMIN/.zcode/cli/exec/shell-snapshots/snapshot-bash-1790512668320-yd53d9.sh 2>/dev/null || true\n. /c/U"
+  },
+  {
+   "pid": 31532,
+   "name": "conhost.exe",
+   "mem_mb": 6.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 2616,
+   "name": "svchost.exe",
+   "mem_mb": 6.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 6884,
+   "name": "chrome.exe",
+   "mem_mb": 6.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --top-chrome-webui --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\"
+  },
+  {
+   "pid": 9012,
+   "name": "RuntimeBroker.exe",
+   "mem_mb": 6.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Windows\\System32\\RuntimeBroker.exe -Embedding"
+  },
+  {
+   "pid": 13020,
+   "name": "node.exe",
+   "mem_mb": 6.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "node --disallow-code-generation-from-strings --disable-proto=delete C:\\Users\\ADMIN\\AppData\\Roaming\\npm\\node_modules\\n8n\\node_modules\\@n8n\\task-runner\\"
+  },
+  {
+   "pid": 15444,
+   "name": "WeChatAppEx.exe",
+   "mem_mb": 6.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --type=utility --utility-sub-type=flu"
+  },
+  {
+   "pid": 15668,
+   "name": "WeChatAppEx.exe",
+   "mem_mb": 6.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --type=utility --utility-sub-type=net"
+  },
+  {
+   "pid": 17796,
+   "name": "node.exe",
+   "mem_mb": 6.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\b63ee7ee40c23b77\\bin\\node.exe C:\\Users\\ADMIN\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\"
+  },
+  {
+   "pid": 23472,
+   "name": "FreeLLMAPI.exe",
+   "mem_mb": 6.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\freellmapi-desktop\\FreeLLMAPI.exe --type=utility --utility-sub-type=network.mojom.NetworkService --lang=zh-CN --"
+  },
+  {
+   "pid": 4976,
+   "name": "svchost.exe",
+   "mem_mb": 6.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 4196,
+   "name": "svchost.exe",
+   "mem_mb": 5.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 2852,
+   "name": "svchost.exe",
+   "mem_mb": 5.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 6736,
+   "name": "AggregatorHost.exe",
+   "mem_mb": 5.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 24788,
+   "name": "NisSrv.exe",
+   "mem_mb": 5.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 27864,
+   "name": "ShellExperienceHost.exe",
+   "mem_mb": 5.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\SystemApps\\ShellExperienceHost_cw5n1h2txyewy\\ShellExperienceHost.exe -ServerName:App.AppXtk181tbxbce2qsex02s8tw7hfxa9xb3t.mca"
+  },
+  {
+   "pid": 21696,
+   "name": "python.exe",
+   "mem_mb": 5.4,
+   "cpu": 0.0,
+   "ports": [
+    8188
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Python312\\python.exe C:\\Users\\ADMIN\\ComfyUI\\main.py --cpu"
+  },
+  {
+   "pid": 4624,
+   "name": "svchost.exe",
+   "mem_mb": 5.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 15760,
+   "name": "chrome.exe",
+   "mem_mb": 5.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 10024,
+   "name": "chrome.exe",
+   "mem_mb": 5.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 21520,
+   "name": "msedgewebview2.exe",
+   "mem_mb": 5.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.48\\msedgewebview2.exe --type=gpu-process --noerrdialogs --user-agent=Mozilla/5.0 ("
+  },
+  {
+   "pid": 1680,
+   "name": "fontdrvhost.exe",
+   "mem_mb": 4.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 8024,
+   "name": "chrome.exe",
+   "mem_mb": 4.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=utility --utility-sub-type=video_capture.mojom.VideoCaptureService --lang=zh-CN --service"
+  },
+  {
+   "pid": 13880,
+   "name": "chrome.exe",
+   "mem_mb": 4.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=utility --utility-sub-type=storage.mojom.StorageService --lang=zh-CN --service-sandbox-ty"
+  },
+  {
+   "pid": 14228,
+   "name": "GenOffice.exe",
+   "mem_mb": 4.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\GenOffice\\GenOffice.exe --type=utility --utility-sub-type=network.mojom.NetworkService --lang=zh-CN --service-sa"
+  },
+  {
+   "pid": 24160,
+   "name": "GenOffice.exe",
+   "mem_mb": 4.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\GenOffice\\GenOffice.exe --type=gpu-process --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\GenOffice --gpu-prefer"
+  },
+  {
+   "pid": 9936,
+   "name": "CrossDeviceService.exe",
+   "mem_mb": 4.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\WindowsApps\\MicrosoftWindows.CrossDevice_1.26072.116.0_x64__cw5n1h2txyewy\\CrossDeviceService.exe -RegisterProcessAsComServer -Embeddi"
+  },
+  {
+   "pid": 16148,
+   "name": "chrome.exe",
+   "mem_mb": 4.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --top-chrome-webui --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer "
+  },
+  {
+   "pid": 16816,
+   "name": "AppActions.exe",
+   "mem_mb": 4.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\AppActions.exe -Embedding"
+  },
+  {
+   "pid": 23140,
+   "name": "chrome.exe",
+   "mem_mb": 4.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 13496,
+   "name": "chrome.exe",
+   "mem_mb": 4.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 3364,
+   "name": "svchost.exe",
+   "mem_mb": 4.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 19712,
+   "name": "FreeLLMAPI.exe",
+   "mem_mb": 4.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\freellmapi-desktop\\FreeLLMAPI.exe --type=gpu-process --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\FreeLLMAPI -"
+  },
+  {
+   "pid": 2292,
+   "name": "svchost.exe",
+   "mem_mb": 4.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 18964,
+   "name": "bash.exe",
+   "mem_mb": 4.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\.workbuddy-ai\\binaries\\PortableGit\\versions\\1.2.0\\bin\\..\\usr\\bin\\bash.exe -c __codebuddy_payload=$1; shift; __codebuddy_script=$(<\"$__c"
+  },
+  {
+   "pid": 28364,
+   "name": "chrome.exe",
+   "mem_mb": 4.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 364,
+   "name": "chrome.exe",
+   "mem_mb": 3.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=utility --utility-sub-type=video_capture.mojom.VideoCaptureService --lang=zh-CN --service"
+  },
+  {
+   "pid": 1840,
+   "name": "svchost.exe",
+   "mem_mb": 3.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 8824,
+   "name": "svchost.exe",
+   "mem_mb": 3.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 22856,
+   "name": "chrome.exe",
+   "mem_mb": 3.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 27376,
+   "name": "chrome.exe",
+   "mem_mb": 3.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browse"
+  },
+  {
+   "pid": 1492,
+   "name": "services.exe",
+   "mem_mb": 3.8,
+   "cpu": 0.0,
+   "ports": [
+    49682
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 20384,
+   "name": "msedgewebview2.exe",
+   "mem_mb": 3.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.48\\msedgewebview2.exe --type=renderer --noerrdialogs --user-agent=Mozilla/5.0 (Win"
+  },
+  {
+   "pid": 29932,
+   "name": "node.exe",
+   "mem_mb": 3.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "C:\\Program Files\\nodejs\\node.exe ./mcp/server.mjs"
+  },
+  {
+   "pid": 5132,
+   "name": "svchost.exe",
+   "mem_mb": 3.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 6180,
+   "name": "svchost.exe",
+   "mem_mb": 3.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 8328,
+   "name": "node_repl.exe",
+   "mem_mb": 3.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\b63ee7ee40c23b77\\bin\\node_repl.exe"
+  },
+  {
+   "pid": 8388,
+   "name": "svchost.exe",
+   "mem_mb": 3.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 21928,
+   "name": "ShellHost.exe",
+   "mem_mb": 3.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Windows\\System32\\ShellHost.exe"
+  },
+  {
+   "pid": 6520,
+   "name": "svchost.exe",
+   "mem_mb": 3.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5064,
+   "name": "NahimicService.exe",
+   "mem_mb": 3.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 9884,
+   "name": "svchost.exe",
+   "mem_mb": 3.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\svchost.exe -k ClipboardSvcGroup -p -s cbdhsvc"
+  },
+  {
+   "pid": 12592,
+   "name": "chrome.exe",
+   "mem_mb": 3.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 23604,
+   "name": "chrome.exe",
+   "mem_mb": 3.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 632,
+   "name": "svchost.exe",
+   "mem_mb": 3.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p -s NPSMSvc"
+  },
+  {
+   "pid": 2752,
+   "name": "node.exe",
+   "mem_mb": 3.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\b63ee7ee40c23b77\\bin\\node.exe C:\\Users\\ADMIN\\.codex\\plugins\\cache\\openai-curated-remote\\co"
+  },
+  {
+   "pid": 4180,
+   "name": "atieclxx.exe",
+   "mem_mb": 3.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 9132,
+   "name": "CrossDeviceResume.exe",
+   "mem_mb": 3.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\CrossDeviceResume.exe /tileid MicrosoftWindows.Client.CBS_cw5n1h2txyewy!CrossDeviceRes"
+  },
+  {
+   "pid": 16864,
+   "name": "RuntimeBroker.exe",
+   "mem_mb": 3.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Windows\\System32\\RuntimeBroker.exe -Embedding"
+  },
+  {
+   "pid": 19564,
+   "name": "chrome.exe",
+   "mem_mb": 3.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=utility --utility-sub-type=audio.mojom.AudioService --lang=zh-CN --service-sandbox-type=a"
+  },
+  {
+   "pid": 5228,
+   "name": "svchost.exe",
+   "mem_mb": 3.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 16932,
+   "name": "bash.exe",
+   "mem_mb": 3.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\.workbuddy-ai\\binaries\\PortableGit\\versions\\1.2.0\\bin\\bash.exe -c __codebuddy_payload=$1; shift; __codebuddy_script=$(<\"$__codebuddy_pa"
+  },
+  {
+   "pid": 17564,
+   "name": "taskhostw.exe",
+   "mem_mb": 3.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "taskhostw.exe"
+  },
+  {
+   "pid": 2172,
+   "name": "svchost.exe",
+   "mem_mb": 3.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 10816,
+   "name": "svchost.exe",
+   "mem_mb": 3.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 1648,
+   "name": "WorkBuddyAI.exe",
+   "mem_mb": 2.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\resources\\app.asar\\main\\sidecar-en"
+  },
+  {
+   "pid": 5520,
+   "name": "svchost.exe",
+   "mem_mb": 2.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5740,
+   "name": "chrome.exe",
+   "mem_mb": 2.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=utility --utility-sub-type=storage.mojom.StorageService --lang=zh-CN --service-sandbox-ty"
+  },
+  {
+   "pid": 18404,
+   "name": "svchost.exe",
+   "mem_mb": 2.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 25660,
+   "name": "node_repl.exe",
+   "mem_mb": 2.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\b63ee7ee40c23b77\\bin\\node_repl.exe"
+  },
+  {
+   "pid": 7984,
+   "name": "chrome.exe",
+   "mem_mb": 2.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=utility --utility-sub-type=audio.mojom.AudioService --lang=zh-CN --service-sandbox-type=a"
+  },
+  {
+   "pid": 12048,
+   "name": "svchost.exe",
+   "mem_mb": 2.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 3980,
+   "name": "svchost.exe",
+   "mem_mb": 2.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 10292,
+   "name": "svchost.exe",
+   "mem_mb": 2.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\svchost.exe -k UdkSvcGroup -s UdkUserSvc"
+  },
+  {
+   "pid": 12256,
+   "name": "ApplicationFrameHost.exe",
+   "mem_mb": 2.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\ApplicationFrameHost.exe -Embedding"
+  },
+  {
+   "pid": 20624,
+   "name": "node.exe",
+   "mem_mb": 2.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "C:\\Program Files\\nodejs\\node.exe ./mcp/server.bundle.mjs"
+  },
+  {
+   "pid": 4992,
+   "name": "svchost.exe",
+   "mem_mb": 2.5,
+   "cpu": 0.0,
+   "ports": [
+    3390
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 17636,
+   "name": "svchost.exe",
+   "mem_mb": 2.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 29172,
+   "name": "svchost.exe",
+   "mem_mb": 2.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 2196,
+   "name": "svchost.exe",
+   "mem_mb": 2.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 13436,
+   "name": "WeChatAppEx.exe",
+   "mem_mb": 2.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --type=renderer --client_version=1661"
+  },
+  {
+   "pid": 2640,
+   "name": "svchost.exe",
+   "mem_mb": 2.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 3632,
+   "name": "svchost.exe",
+   "mem_mb": 2.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5492,
+   "name": "svchost.exe",
+   "mem_mb": 2.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 24680,
+   "name": "RuntimeBroker.exe",
+   "mem_mb": 2.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Windows\\System32\\RuntimeBroker.exe -Embedding"
+  },
+  {
+   "pid": 2648,
+   "name": "svchost.exe",
+   "mem_mb": 1.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 14084,
+   "name": "WindowsTerminal.exe",
+   "mem_mb": 1.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\WindowsApps\\Microsoft.WindowsTerminal_1.24.11911.0_x64__8wekyb3d8bbwe\\WindowsTerminal.exe"
+  },
+  {
+   "pid": 16800,
+   "name": "NhNotifSys.exe",
+   "mem_mb": 1.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\NhNotifSys.exe /app nahimic /wait-install"
+  },
+  {
+   "pid": 25956,
+   "name": "conhost.exe",
+   "mem_mb": 1.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 2204,
+   "name": "svchost.exe",
+   "mem_mb": 1.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 2600,
+   "name": "svchost.exe",
+   "mem_mb": 1.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 2628,
+   "name": "svchost.exe",
+   "mem_mb": 1.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5960,
+   "name": "ZCode.exe",
+   "mem_mb": 1.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\ZCode --standard-schemes=zcode-me"
+  },
+  {
+   "pid": 11468,
+   "name": "svchost.exe",
+   "mem_mb": 1.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 4896,
+   "name": "svchost.exe",
+   "mem_mb": 1.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 7400,
+   "name": "svchost.exe",
+   "mem_mb": 1.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 8104,
+   "name": "svchost.exe",
+   "mem_mb": 1.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 17216,
+   "name": "svchost.exe",
+   "mem_mb": 1.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 3228,
+   "name": "GenOffice.exe",
+   "mem_mb": 1.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\GenOffice\\GenOffice.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\GenOffice --standard-sche"
+  },
+  {
+   "pid": 3624,
+   "name": "svchost.exe",
+   "mem_mb": 1.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 4676,
+   "name": "svchost.exe",
+   "mem_mb": 1.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 13596,
+   "name": "chrome.exe",
+   "mem_mb": 1.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=crashpad-handler --user-data-dir=C:\\Users\\ADMIN\\AppData\\Local\\Google\\Chrome\\User Data /pr"
+  },
+  {
+   "pid": 12840,
+   "name": "RuntimeBroker.exe",
+   "mem_mb": 1.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Windows\\System32\\RuntimeBroker.exe -Embedding"
+  },
+  {
+   "pid": 15996,
+   "name": "chrome.exe",
+   "mem_mb": 1.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=crashpad-handler --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\nativ"
+  },
+  {
+   "pid": 1120,
+   "name": "svchost.exe",
+   "mem_mb": 1.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 2860,
+   "name": "svchost.exe",
+   "mem_mb": 1.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 3280,
+   "name": "SDXHelper.exe",
+   "mem_mb": 1.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\Microsoft Office\\Root\\Office16\\SDXHelper.exe -Embedding"
+  },
+  {
+   "pid": 4368,
+   "name": "svchost.exe",
+   "mem_mb": 1.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 7776,
+   "name": "svchost.exe",
+   "mem_mb": 1.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\svchost.exe -k BthAppGroup -p -s BluetoothUserService"
+  },
+  {
+   "pid": 21108,
+   "name": "ZCode.exe",
+   "mem_mb": 1.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=utility --utility-sub-type=audio.mojom.AudioService --lang=zh-CN --service-sandbox-type=a"
+  },
+  {
+   "pid": 31040,
+   "name": "cmd.exe",
+   "mem_mb": 1.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "cmd.exe /e:ON /v:OFF /d /c C:\\Users\\ADMIN\\.codex\\plugins\\cache\\openai-curated-remote\\codex-security\\0.1.31\\.\\scripts\\launch_codex_security_mcp.cmd --s"
+  },
+  {
+   "pid": 2124,
+   "name": "ZCode.exe",
+   "mem_mb": 1.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --no-warnings C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\resources\\tools\\cua-helper\\dist\\window"
+  },
+  {
+   "pid": 2300,
+   "name": "svchost.exe",
+   "mem_mb": 1.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 2340,
+   "name": "WeChatAppEx.exe",
+   "mem_mb": 1.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --type=renderer --client_version=1661"
+  },
+  {
+   "pid": 7480,
+   "name": "svchost.exe",
+   "mem_mb": 1.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 7664,
+   "name": "svchost.exe",
+   "mem_mb": 1.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 7832,
+   "name": "svchost.exe",
+   "mem_mb": 1.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\svchost.exe -k PenService -s PenService"
+  },
+  {
+   "pid": 7852,
+   "name": "svchost.exe",
+   "mem_mb": 1.2,
+   "cpu": 0.0,
+   "ports": [
+    49681
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 8060,
+   "name": "svchost.exe",
+   "mem_mb": 1.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p -s webthreatdefusersvc"
+  },
+  {
+   "pid": 13248,
+   "name": "WmiPrvSE.exe",
+   "mem_mb": 1.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 4188,
+   "name": "svchost.exe",
+   "mem_mb": 1.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 4204,
+   "name": "svchost.exe",
+   "mem_mb": 1.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5108,
+   "name": "svchost.exe",
+   "mem_mb": 1.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 3528,
+   "name": "svchost.exe",
+   "mem_mb": 1.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 3752,
+   "name": "svchost.exe",
+   "mem_mb": 1.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 4072,
+   "name": "svchost.exe",
+   "mem_mb": 1.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 4536,
+   "name": "svchost.exe",
+   "mem_mb": 1.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 9572,
+   "name": "WidgetBoard.exe",
+   "mem_mb": 1.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\WindowsApps\\MicrosoftWindows.Client.WebExperience_526.21100.40.0_x64__cw5n1h2txyewy\\WidgetBoard.exe -RegisterProcessAsComServer -Serv"
+  },
+  {
+   "pid": 10900,
+   "name": "WidgetService.exe",
+   "mem_mb": 1.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\WindowsApps\\Microsoft.WidgetsPlatformRuntime_1.6.19.0_x64__8wekyb3d8bbwe\\WidgetService\\WidgetService.exe -RegisterProcessAsComServer "
+  },
+  {
+   "pid": 12716,
+   "name": "python.exe",
+   "mem_mb": 1.0,
+   "cpu": 0.0,
+   "ports": [
+    15995
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Python310\\python.exe brain\\gbt_chat_server.py"
+  },
+  {
+   "pid": 14592,
+   "name": "svchost.exe",
+   "mem_mb": 1.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 17388,
+   "name": "cloudflared.exe",
+   "mem_mb": 1.0,
+   "cpu": 0.0,
+   "ports": [
+    20242
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files (x86)\\cloudflared\\cloudflared.exe tunnel --url http://127.0.0.1:8090 --no-autoupdate --logfile C:\\Users\\ADMIN\\Desktop\\天才交易原\\.scratch\\"
+  },
+  {
+   "pid": 1152,
+   "name": "csrss.exe",
+   "mem_mb": 0.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 2344,
+   "name": "svchost.exe",
+   "mem_mb": 0.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5168,
+   "name": "svchost.exe",
+   "mem_mb": 0.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\System32\\svchost.exe -k UnistackSvcGroup"
+  },
+  {
+   "pid": 7544,
+   "name": "cowork-svc.exe",
+   "mem_mb": 0.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 8232,
+   "name": "WorkBuddyAI.exe",
+   "mem_mb": 0.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe --type=crashpad-handler --user-data-dir=C:\\Users\\ADMIN\\.workbuddy-ai\\app /prefetch:4"
+  },
+  {
+   "pid": 12900,
+   "name": "python.exe",
+   "mem_mb": 0.9,
+   "cpu": 0.0,
+   "ports": [
+    4446
+   ],
+   "owner": "框架服务",
+   "cmd": "C:\\Python312\\python.exe C:\\Users\\ADMIN\\.codex\\deepseek_proxy.py"
+  },
+  {
+   "pid": 16720,
+   "name": "RtkAudUService64.exe",
+   "mem_mb": 0.9,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Windows\\System32\\DriverStore\\FileRepository\\realtekservice.inf_amd64_a112e46fc636d880\\RtkAudUService64.exe -background"
+  },
+  {
+   "pid": 1364,
+   "name": "svchost.exe",
+   "mem_mb": 0.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 1624,
+   "name": "msedgewebview2.exe",
+   "mem_mb": 0.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.48\\msedgewebview2.exe --type=utility --utility-sub-type=storage.mojom.StorageServi"
+  },
+  {
+   "pid": 2608,
+   "name": "svchost.exe",
+   "mem_mb": 0.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 3208,
+   "name": "svchost.exe",
+   "mem_mb": 0.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 16248,
+   "name": "svchost.exe",
+   "mem_mb": 0.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 20408,
+   "name": "svchost.exe",
+   "mem_mb": 0.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 26672,
+   "name": "RuntimeBroker.exe",
+   "mem_mb": 0.8,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Windows\\System32\\RuntimeBroker.exe -Embedding"
+  },
+  {
+   "pid": 3188,
+   "name": "svchost.exe",
+   "mem_mb": 0.7,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 3372,
+   "name": "svchost.exe",
+   "mem_mb": 0.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5356,
+   "name": "WeChatPlayer.exe",
+   "mem_mb": 0.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\ThumbPlayer\\4073\\extracted\\WeChatPlayer.exe --user-lib-dir=C:\\Program Files\\Tencent\\WeCh"
+  },
+  {
+   "pid": 19360,
+   "name": "svchost.exe",
+   "mem_mb": 0.6,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 26372,
+   "name": "sandbox-cli.exe",
+   "mem_mb": 0.6,
+   "cpu": 0.0,
+   "ports": [
+    39980
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\resources\\app.asar.unpacked\\cli\\vendor\\sandbox\\5.6.10\\sandbox-cli.exe --config {\"ipcAddress\":\"Editor"
+  },
+  {
+   "pid": 1420,
+   "name": "winlogon.exe",
+   "mem_mb": 0.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 4336,
+   "name": "svchost.exe",
+   "mem_mb": 0.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 7124,
+   "name": "DefenderSessionHelper.exe",
+   "mem_mb": 0.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.26080.4-0\\DefenderSessionHelper.exe"
+  },
+  {
+   "pid": 7792,
+   "name": "WeChatOCR.exe",
+   "mem_mb": 0.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\WeChatOCR\\7079\\extracted\\WeChatOCR.exe --user-lib-dir=C:\\Program Files\\Tencent\\WeChat\\[3"
+  },
+  {
+   "pid": 8160,
+   "name": "svchost.exe",
+   "mem_mb": 0.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 8380,
+   "name": "WeChatUtility.exe",
+   "mem_mb": 0.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\WeChatUtility\\8091\\extracted\\WechatUtility.exe --user-lib-dir=C:\\Program Files\\Tencent\\W"
+  },
+  {
+   "pid": 13188,
+   "name": "msedgewebview2.exe",
+   "mem_mb": 0.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.48\\msedgewebview2.exe --type=crashpad-handler --user-data-dir=C:\\Users\\ADMIN\\AppDa"
+  },
+  {
+   "pid": 25220,
+   "name": "svchost.exe",
+   "mem_mb": 0.5,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\svchost.exe -k DevicesFlow -s DevicesFlowUserSvc"
+  },
+  {
+   "pid": 1352,
+   "name": "wininit.exe",
+   "mem_mb": 0.4,
+   "cpu": 0.0,
+   "ports": [
+    49665
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5092,
+   "name": "RtkAudUService64.exe",
+   "mem_mb": 0.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 7496,
+   "name": "svchost.exe",
+   "mem_mb": 0.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 8348,
+   "name": "conhost.exe",
+   "mem_mb": 0.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 25960,
+   "name": "codex-windows-sandbox-servic",
+   "mem_mb": 0.4,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 26564,
+   "name": "svchost.exe",
+   "mem_mb": 0.3,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5196,
+   "name": "WeChatAppEx.exe",
+   "mem_mb": 0.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --type=crashpad-handler --product-id="
+  },
+  {
+   "pid": 8308,
+   "name": "powershell.exe",
+   "mem_mb": 0.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File C:\\Users\\ADMIN\\Desktop\\天才交易原\\.scratch\\watchdog.ps1"
+  },
+  {
+   "pid": 8984,
+   "name": "conhost.exe",
+   "mem_mb": 0.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 31224,
+   "name": "conhost.exe",
+   "mem_mb": 0.2,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 3180,
+   "name": "atiesrxx.exe",
+   "mem_mb": 0.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 3668,
+   "name": "mmcrashpad_handler64.exe",
+   "mem_mb": 0.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\Tencent\\WeChat\\[3.9.12.57]\\mmcrashpad_handler64.exe --no-rate-limit --database=C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\crash --"
+  },
+  {
+   "pid": 7736,
+   "name": "NahimicAPO4Volume.exe",
+   "mem_mb": 0.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\System32\\NahimicAPO4Volume.exe"
+  },
+  {
+   "pid": 17980,
+   "name": "conhost.exe",
+   "mem_mb": 0.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 20632,
+   "name": "conhost.exe",
+   "mem_mb": 0.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 20908,
+   "name": "dllhost.exe",
+   "mem_mb": 0.1,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\DllHost.exe /Processid:{973D20D7-562D-44B9-B70B-5A0F49CCDF3F}"
+  },
+  {
+   "pid": 748,
+   "name": "smss.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 1500,
+   "name": "LsaIso.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 1684,
+   "name": "fontdrvhost.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 2356,
+   "name": "conhost.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 3172,
+   "name": "amdfendrsr.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 4788,
+   "name": "spoolsv.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [
+    49667
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 5008,
+   "name": "remoting_host.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files (x86)\\Google\\Chrome Remote Desktop\\154.0.8037.40\\remoting_host.exe --type=daemon --host-config=C:\\ProgramData\\Google\\Chrome Remote De"
+  },
+  {
+   "pid": 5604,
+   "name": "ChsIME.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Windows\\System32\\InputMethod\\CHS\\ChsIME.exe -Embedding"
+  },
+  {
+   "pid": 6364,
+   "name": "vmcompute.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 7644,
+   "name": "wlanext.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 7864,
+   "name": "conhost.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 10308,
+   "name": "ZCode.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\resources\\glm\\zcode.cjs __zcode-plugin-host C:\\Users"
+  },
+  {
+   "pid": 10372,
+   "name": "conhost.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 11816,
+   "name": "cmd.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "C:\\WINDOWS\\system32\\cmd.exe /d /s /c C:\\Users\\ADMIN\\.workbuddy-ai\\plugins\\cache\\workbuddy-builtin\\weixinpay\\1.6.110\\bin\\run-node ^C:\\Users\\ADMIN\\.work"
+  },
+  {
+   "pid": 12280,
+   "name": "python.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "框架服务",
+   "cmd": "C:\\Python310\\python.exe C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\deploy\\codex_relay_watchdog.py --once"
+  },
+  {
+   "pid": 14640,
+   "name": "conhost.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 15464,
+   "name": "python.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆\\.venv\\Scripts\\python.exe brain\\gbt_chat_server.py"
+  },
+  {
+   "pid": 15928,
+   "name": "UserOOBEBroker.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Windows\\System32\\oobe\\UserOOBEBroker.exe -Embedding"
+  },
+  {
+   "pid": 16100,
+   "name": "conhost.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 16200,
+   "name": "python.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\ComfyUI\\.venv\\Scripts\\python.exe C:\\Users\\ADMIN\\ComfyUI\\main.py --cpu"
+  },
+  {
+   "pid": 16652,
+   "name": "ZCode.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=crashpad-handler --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\ZCode /prefetch:4 --no-ra"
+  },
+  {
+   "pid": 16876,
+   "name": "conhost.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 17104,
+   "name": "SecurityHealthSystray.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Windows\\System32\\SecurityHealthSystray.exe"
+  },
+  {
+   "pid": 19588,
+   "name": "node.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "node C:\\Users\\ADMIN\\.zcode\\cli\\plugins\\cache\\zcode-plugins-official\\mimosa\\1.0.3/payload/dist/mcp/server.js"
+  },
+  {
+   "pid": 21700,
+   "name": "conhost.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
+  },
+  {
+   "pid": 24504,
+   "name": "sh.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "C:\\Program Files\\Git\\usr\\bin\\sh.exe /c/Users/ADMIN/AppData/Roaming/npm/n8n start"
+  },
+  {
+   "pid": 27816,
+   "name": "editor_sdk.exe",
+   "mem_mb": 0.0,
+   "cpu": 0.0,
+   "ports": [
+    39099
+   ],
+   "owner": "MCP/工具",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\resources\\app.asar.unpacked\\node_modules\\@tencent\\tencent-docs-ai-engine\\bin\\win32-x64\\editor_sdk.ex"
   }
  ],
  "_口径": {

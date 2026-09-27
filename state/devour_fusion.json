@@ -1,0 +1,59 @@
+{
+ "at": "2026-09-28T01:59:03",
+ "rows": [
+  {
+   "at": "2026-09-27T23:22:29",
+   "event": "intake",
+   "id": "dataease",
+   "source": "DataEase（开源 BI）：拖拽出数据大屏/报表，零门槛可视化",
+   "native_cap": "",
+   "tentacle": "",
+   "status": "待吞",
+   "note": "来自主人 2026-09-27 图片；要装上才能吞，装不上就写不上",
+   "three_places": {
+    "registry": true,
+    "api": false,
+    "atlas": false
+   },
+   "tentacle_valid": false,
+   "vault_note": false,
+   "fused": false
+  },
+  {
+   "at": "2026-09-27T23:22:29",
+   "event": "intake",
+   "id": "freecad-mcp",
+   "source": "FreeCAD-MCP：CAD agent 经 MCP 挂工作区（scan→resolve→mount workspace/freecad）",
+   "native_cap": "",
+   "tentacle": "",
+   "status": "待吞",
+   "note": "来自主人 2026-09-27 图片；要装上才能吞，装不上就写不上",
+   "three_places": {
+    "registry": true,
+    "api": false,
+    "atlas": false
+   },
+   "tentacle_valid": false,
+   "vault_note": false,
+   "fused": false
+  },
+  {
+   "at": "2026-09-27T23:22:29",
+   "event": "intake",
+   "id": "win-mcp",
+   "source": "CursorTouch/Windows-MCP（MIT · 7,283★）：Windows 桌面控制 MCP 服务",
+   "native_cap": "",
+   "tentacle": "",
+   "status": "待吞",
+   "note": "来自主人 2026-09-27 图片；要装上才能吞，装不上就写不上",
+   "three_places": {
+    "registry": true,
+    "api": false,
+    "atlas": false
+   },
+   "tentacle_valid": false,
+   "vault_note": false,
+   "fused": false
+  }
+ ]
+}

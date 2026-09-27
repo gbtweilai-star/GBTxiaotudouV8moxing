@@ -1,0 +1,25 @@
+{
+ "deepseek": {
+  "used": {},
+  "cooldown": {
+   "vault:deepseek/agnes": 1790534375.7762978,
+   "env:DEEPSEEK_API_KEY": 1790534375.7886446,
+   "env:AGNES_API_KEY": 1790534375.7987156,
+   "env:MOONSHOT_API_KEY": 1790534375.808125,
+   "env:NVIDIA_API_KEY": 1790534375.8170605
+  },
+  "disabled": [
+   "env:AGNES_API_KEY"
+  ],
+  "exhausted": [
+   "env:DEEPSEEK_API_KEY",
+   "vault:deepseek/agnes",
+   "env:AGNES_API_KEY",
+   "env:MOONSHOT_API_KEY",
+   "env:NVIDIA_API_KEY"
+  ],
+  "switches": 3,
+  "active": "env:MOONSHOT_API_KEY",
+  "last_switch_at": "2026-09-28T01:37:35"
+ }
+}

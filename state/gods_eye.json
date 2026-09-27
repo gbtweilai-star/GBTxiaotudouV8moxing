@@ -1,7 +1,7 @@
 {
  "ok": true,
  "op": "daily",
- "at": "2026-09-27T22:43:28",
+ "at": "2026-09-28T01:59:04",
  "探针汇报": {
   "available": true,
   "deliverables": [
@@ -23,7 +23,7 @@
  "全量扫描": {
   "缺点": [
    {
-    "item": "未清故障 9 条（['F3', 'F5', 'F9', 'F10', 'F11']）",
+    "item": "未清故障 11 条（['F3', 'F5', 'F9', 'F10', 'F11']）",
     "src": "state/排查台账.json"
    }
   ],
@@ -35,9 +35,26 @@
    {
     "item": "密钥槽未就位 3 个（['claude', 'free_pool', 'sec_llm']）",
     "src": "automation_keys.status"
+   },
+   {
+    "item": "吞入未融合 3 条（三件不齐 ⇒ 还不算融合）",
+    "src": "devour_fusion.audit"
+   },
+   {
+    "item": "最短板[故障] 未清故障 11 条：['F3', 'F5', 'F9', 'F10', 'F11']",
+    "src": "state/排查台账.json"
+   },
+   {
+    "item": "最短板[未实现] 未实现登记 1 条：['unimplemented']",
+    "src": "state/unimplemented.json"
    }
   ],
   "卡点": [
+   {
+    "item": "主人未许可的 owner 类能力位 61 个（要用时按名单批）",
+    "src": "cap_tags.audit",
+    "how": "python -m gbt_allinone.tools.cap_tags permit --tag <TAG> --ttl 600"
+   },
    {
     "item": "顾问（claude）**要授权才能问**：['process_execute', 'external_llm'] 现在 0 张 ⇒ 意见取不到",
     "src": "auth_gate.status（只读）",
@@ -51,8 +68,8 @@
  },
  "计数": {
   "缺点": 1,
-  "短板": 2,
-  "卡点": 2,
+  "短板": 5,
+  "卡点": 3,
   "探针可用": true
  },
  "_口径": "每一条都带 `src`（哪个读数文件/哪个能力位）—— **不许编**；探针汇报读的是探针工作区的真文件",

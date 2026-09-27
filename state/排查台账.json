@@ -1,7 +1,7 @@
 {
  "_口径": "唯一进度真源。人读的详细账在 output/blueprint-audit/生产推进-故障清单.md；本文件只放『现在做到哪 / 哪没做 / 未清故障 / 等你拍板』，供宿主插件在重启后自动注入会话头。改了本文件，下一轮会话就看得见。 ｜⚠️ **2026-09-26 07:33 起注**：本文件在此时刻之前的 `updated_at` / `log[].at` 把偏移写成了 `+08:00`，而本机真实时区是 **+07:00**，且当时把 harness 显示的 UTC 当成了当地时间 ⇒ **那些条目作为绝对时刻约差 8 小时**（顺序仍是对的）。本轮起改用 `astimezone()`，偏移由机器给出。",
  "_排班纪律": "每轮结束前更新本文件 + 时间点；不许只写『继续排查』这种没信息量的话。",
- "updated_at": "2026-09-27T13:02+07:00",
+ "updated_at": "2026-09-28T01:54:16",
  "rounds_done": 58,
  "today_done": [
   "**给剩下的未清故障逐条装上探针**：`reverify-open-faults.py` 从「8 条需人读」降到「2 条」。新增 F13/F14/F15/F16/F17/F18/F19 七条探针：F13 读缓解在不在（库 + 判据 + 负控钉死 rc==1）· F14 读生成器位置/写死总数/页头现读数/真探数据年龄 · F15 读最新偏移与机器真偏移是否一致 + 口径是否写明历史缺陷 + 契约有没有偏移不变量 · F16 读三个描述面还有没有 158 项能力 + README 有没有改名快照 + capabilities.html 是否自报 snapshot · F17 读工具是否在仓/是否走保险箱/是否还依赖明文参照 + 真跑一次离线自证 · **F18 读活的那份 `/gbt-master` payload 的 `contexts`** —— 这条会在主人重启后**自己**报「已不成立」，不用谁记得回来关它 · F19 把落盘日志里那个文件红过几次现数一遍（未复现 ≠ 不存在）",
@@ -322,6 +322,20 @@
    "severity": "中",
    "evidence": "批 4 首跑（后台 pwsh-40）：`[FAILED] test_regression_stamp.py  ran=15`；随后三次复跑全绿：① 同入口单文件 `--filter test_regression_stamp` → 15/15 OK 17.2s；② 直接 `-m unittest gbt_allinone.tests.test_regression_stamp` → 15/15 OK 15.4s；③ 同批 4/4 重跑（`--json`，可用 494MB）→ 30 个文件**未过 0**。🔴 **名字是怎么丢的（这是我自己的问题，不是工具的）**：工具**印了** —— 逐文件进度行末尾有 `失败 1 个: <用例名>`，未过清单下面也有 `        · <用例名>`；而我在后台脚本里用 `Select-String -Pattern '本次范围|负载读数|未过|\\[FAILED\\]|合计：'` **把那些行筛掉了**（进度行没有 `[FAILED]`、`·` 行也不匹配）⇒ 名字在终端里出现过、被我自己的过滤器丢掉。同一类错误这一轮犯了**两次**（批 3 那条也是这样丢的）；④ 2026-09-26 第 55 轮**四批全量重跑**（126/126 覆盖）：`4/30 ✅ test_regression_stamp.py ran=15 9.2s` —— **仍未复现**（第四次复跑绿）",
    "state": "**未清**。① 已改做法：新一轮四批横扫**不过滤输出**，整段落盘到 `output/blueprint-audit/2026-09-26-满仓横扫-第N批-第M次.log`，并同时写 `--json`；② 待那四批跑完，看它是否复现 —— 复现就拿到用例名并单独立案，不复制现就如实记「未复现」。**不许因为它复现不出来就当它没有**：负载相关的假红会持续污染横扫的可信度 ⑤ 第 55 轮补：全量重跑亦未复现；用例名始终未取得（丢因见 54 轮记录）。"
+  },
+  {
+   "id": "F20",
+   "what": "能源状态映射与盘上事实不符：key_ref 为空且受控盘不在时，qwen-local 仍报「接线态」，应报「缺key」；NativeDeriver 据此还会生成调用代码（缺 key 的能量本不该生成）",
+   "severity": "中",
+   "evidence": "test_energy_pool.py::AbstractionAndDeriverTests 三条实测红（test_missing_energy_derives_nothing / test_sources_built_from_disk / test_status_mapping_under_a_controlled_disk），断言原文：接线态 != 缺key；本条非 2026-09-27 成长栈改动引入（该轮未碰 energy_pool / llm 侧代码）",
+   "state": "待认领（改能源状态映射，或修判据 —— 二选一都要说清为什么）"
+  },
+  {
+   "id": "F21",
+   "what": "技能缺口**生成器**与**验收器**各算各的域集合：验收器多出 tools / tentacle / image_video 三个域",
+   "severity": "低",
+   "evidence": "test_skill_gap_patch.py::GapSetMatchesVerifierTest::test_same_domains_as_verify_distill 实测红；差集与 2026-09-27 新增能力位的域（mind / system / devour / creation）**无交集** ⇒ 非本轮引入",
+   "state": "待认领（两边都对齐到「注册表现算」的域集合，别再各算各的）"
   }
  ],
  "owner_decisions": [
@@ -759,6 +773,10 @@
   {
    "at": "2026-09-27T12:53+07:00",
    "what": "第 58 轮 · 整理归位 + 改账（主人令「源代码保护好、整理摆放好，别分路分叉」）：**F8 结项** —— 前提「tools/shortvideo-music-mcp/server.js 没进版本库（未跟踪）」**已消除**：该目录（server.js + sample_v2.py，即 config/mcporter.json 里 MCP `adp` 那条的落点）随本轮保护性提交 **59388aaa** 入库，`git ls-files tools/shortvideo-music-mcp` 现可读到 ⇒ 换台机器 clone 下来那条 MCP 不再是断的。同轮：204 件未入库源码全部入库（六件引擎 / 十张能力卡 / 六个技能 / 27 份文档 / 八件台账）；新增技能源↔装对账器 tools/skills_sync.py（79/79 一致，此前实测 10 分叉 · 8 未装 · `gbt-security` 源 43K vs 装 31K 差 1054 行）+ 判据挂进开机自检；嵌套重复 projects/projects 归档 .trash/2026-09-27-散落整合/（19 条绑定按台账纪律退账，未硬删）。未清故障 10 → 9。"
+  },
+  {
+   "at": "2026-09-28T01:54:16",
+   "what": "全量回归 16 红逐条归因：已修（孤儿 / 悬空绑定 / 开机自检）· 环境或负载抖动（隔离跑即过）· 以及新增两条真故障登记 F20/F21"
   }
  ],
  "closed_faults": [

@@ -254,6 +254,32 @@ def _scan_findings() -> dict:
     if health.get("energy", {}).get("free_pool") is False:
         shorts.append({"item": "免费算力池不可达（FreeLLMAPI 未启动）", "src": "state/health.json"})
 
+    # 安全棒健康账（每半天的全量穿透扫描读数就在这）：报警直接进缺点
+    sw = _gate("sec_sweeper", {"op": "health"}).get("payload") or {}
+    for a in (sw.get("alerts") or [])[:3]:
+        gaps.append({"item": f"安全棒报警：{str(a)[:90]}", "src": "sec_sweeper.health"})
+
+    # ── 成长栈四面（主人令 2026-09-27：永久记忆 / 吞天融合 / 标签许可 / 短板）──
+    # 在这里读它们，日报才是"框架整体实力"的日报；同时这四个能力位就有了**常设调用者**
+    # （判据 `test_caps_called_audit` 专门盯"内调型孤儿"，摆设是不许的）。
+    ov = _gate("obsidian_vault", {"op": "status"}).get("payload") or {}
+    if ov.get("missing"):
+        shorts.append({"item": f"永久记忆没铺满：触手库 {ov.get('vaults')}/{ov.get('tentacles')}"
+                               f"（缺 {ov['missing']}）", "src": "obsidian_vault.status"})
+    df = _gate("devour_fusion", {"op": "audit"}).get("payload") or {}
+    if df.get("not_fused"):
+        shorts.append({"item": f"吞入未融合 {df['not_fused']} 条（三件不齐 ⇒ 还不算融合）",
+                       "src": "devour_fusion.audit"})
+    ct = _gate("cap_tags", {"op": "audit"}).get("payload") or {}
+    if ct.get("without_permit"):
+        blockers.append({"item": f"主人未许可的 owner 类能力位 {ct['without_permit']} 个（要用时按名单批）",
+                         "src": "cap_tags.audit", "how": ct.get("how_to") or
+                         "python -m gbt_allinone.tools.cap_tags permit --tag <TAG> --ttl 600"})
+    gh = _gate("growth_hooks", {"op": "shortboard"}).get("payload") or {}
+    for tp in (gh.get("top") or [])[:2]:
+        shorts.append({"item": f"最短板[{tp.get('dim')}] {str(tp.get('what'))[:80]}",
+                       "src": tp.get("src") or "growth_hooks.shortboard"})
+
     # 卡点（阻塞类：要授权 / 缺环境 / 慢）
     # 授权面读数（只读 `auth_gate.status()`，**不消耗**任何授权）。
     # ⚠️ 血账（2026-09-27 实测）：这里原来用 spec_from_file_location 直接装 auth_gate.py，

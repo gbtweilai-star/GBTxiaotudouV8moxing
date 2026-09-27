@@ -185,10 +185,18 @@ def evolve(dry_run: bool = True, item: str = "", **_kw) -> dict:
             s["why"] = "落在 state/holdout.json 封存的验收集里 ⇒ 不许拿它当改进目标（自己出题自己打分）"
     auto = [s for s in steps if s.get("safe") and not s.get("holdout_conflict")]
     need_owner = [s for s in steps if not s.get("safe") or s.get("holdout_conflict")]
-    did = []
+    did, blocked_by_gate = [], []
     if not dry_run:
         for s in auto:
-            did.append(_run_step(s))
+            # 先看→动脑→执行：**每一步自动动作都要过闸**（证据=这条短板的 src 读数，
+            # 假设=这一步的 why）。过不了就不做 —— 这就是"拒绝无脑操作"落在自己身上。
+            g = _preflight(s, pick)
+            if not g.get("ok"):
+                blocked_by_gate.append({"step": s.get("step"), "rules": [x.get("rule") for x in (g.get("refuses") or [])]})
+                continue
+            out = _run_step(s)
+            out["gate_id"] = g.get("gate_id")
+            did.append(out)
     _log({"event": "evolve", "shortboard": pick.get("what", "")[:160], "dry_run": bool(dry_run),
           "auto": len(auto), "need_owner": len(need_owner), "ran": [d.get("step") for d in did]})
     return {"ok": True, "op": "evolve", "shortboard": pick, "dry_run": bool(dry_run),
@@ -196,6 +204,22 @@ def evolve(dry_run: bool = True, item: str = "", **_kw) -> dict:
             "note": ("dry_run=True ⇒ 只出计划，没动手（要看真跑就给 dry_run=False）"
                      if dry_run else "自动那部分做了，带门的原样留给主人"),
             "_口径": "**不自批**：这里永不发授权；缺票的步骤只列不改"}
+
+
+def _preflight(step: dict, pick: dict) -> dict:
+    """把一步自动动作送过 `action_gate`（先看→动脑→执行）。取不到闸就**按不过**算（默认严）。"""
+    try:
+        import importlib.util as _iu
+        sp = _iu.spec_from_file_location("ag_growth", _ROOT / "gbt_allinone" / "tools" / "action_gate.py")
+        ag = _iu.module_from_spec(sp)
+        sp.loader.exec_module(ag)
+        src = str(pick.get("src") or "")
+        ev = src if src and (_ROOT / src).exists() else str(_ROOT / "state" / "shortboard.json")
+        return ag.preflight(action=str(step.get("step") or "")[:120], evidence=ev,
+                            hypothesis=str(step.get("why") or "按短板处方执行这一步")[:200],
+                            stale_ok=True)
+    except Exception as exc:                                   # noqa: BLE001
+        return {"ok": False, "refuses": [{"rule": "闸取不到", "why": f"{type(exc).__name__}: {str(exc)[:80]}"}]}
 
 
 def _steps_for(pick: dict) -> list:

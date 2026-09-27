@@ -1,0 +1,41 @@
+{"at": "2026-09-28T01:12:46", "event": "mark_fail", "slot": "deepseek", "ref": "vault:deepseek/agnes", "kind": "rate_limited", "failover": true, "cooldown": true, "exhaust": false, "disable": false}
+{"at": "2026-09-28T01:12:46", "event": "mark_fail", "slot": "deepseek", "ref": "vault:deepseek/agnes", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:12:46", "event": "mark_fail", "slot": "deepseek", "ref": "vault:deepseek/agnes", "kind": "key_invalid", "failover": true, "cooldown": false, "exhaust": false, "disable": true}
+{"at": "2026-09-28T01:12:46", "event": "mark_fail", "slot": "deepseek", "ref": "vault:deepseek/agnes", "kind": "bad_request", "failover": false, "cooldown": false, "exhaust": false, "disable": false}
+{"at": "2026-09-28T01:12:46", "event": "mark_fail", "slot": "deepseek", "ref": "vault:deepseek/agnes", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:14:32", "event": "mark_fail", "slot": "deepseek", "ref": "vault:deepseek/agnes", "kind": "rate_limited", "failover": true, "cooldown": true, "exhaust": false, "disable": false}
+{"at": "2026-09-28T01:14:32", "event": "switch", "slot": "deepseek", "from": "vault:deepseek/agnes", "to": "env:DEEPSEEK_API_KEY", "why": "前一条不可用，自动落向下一条"}
+{"at": "2026-09-28T01:14:32", "event": "mark_fail", "slot": "deepseek", "ref": "env:DEEPSEEK_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:14:32", "event": "switch", "slot": "deepseek", "from": "env:DEEPSEEK_API_KEY", "to": "env:AGNES_API_KEY", "why": "前一条不可用，自动落向下一条"}
+{"at": "2026-09-28T01:14:32", "event": "mark_fail", "slot": "deepseek", "ref": "env:AGNES_API_KEY", "kind": "key_invalid", "failover": true, "cooldown": false, "exhaust": false, "disable": true}
+{"at": "2026-09-28T01:14:32", "event": "switch", "slot": "deepseek", "from": "env:AGNES_API_KEY", "to": "env:MOONSHOT_API_KEY", "why": "前一条不可用，自动落向下一条"}
+{"at": "2026-09-28T01:14:32", "event": "mark_fail", "slot": "deepseek", "ref": "env:MOONSHOT_API_KEY", "kind": "bad_request", "failover": false, "cooldown": false, "exhaust": false, "disable": false}
+{"at": "2026-09-28T01:14:32", "event": "mark_fail", "slot": "deepseek", "ref": "vault:deepseek/agnes", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:14:32", "event": "mark_fail", "slot": "deepseek", "ref": "env:DEEPSEEK_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:14:32", "event": "mark_fail", "slot": "deepseek", "ref": "env:AGNES_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:14:32", "event": "mark_fail", "slot": "deepseek", "ref": "env:MOONSHOT_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:14:32", "event": "switch", "slot": "deepseek", "from": "env:MOONSHOT_API_KEY", "to": "env:NVIDIA_API_KEY", "why": "前一条不可用，自动落向下一条"}
+{"at": "2026-09-28T01:15:25", "event": "mark_fail", "slot": "deepseek", "ref": "vault:deepseek/agnes", "kind": "rate_limited", "failover": true, "cooldown": true, "exhaust": false, "disable": false}
+{"at": "2026-09-28T01:15:25", "event": "switch", "slot": "deepseek", "from": "vault:deepseek/agnes", "to": "env:DEEPSEEK_API_KEY", "why": "前一条不可用，自动落向下一条"}
+{"at": "2026-09-28T01:15:25", "event": "mark_fail", "slot": "deepseek", "ref": "env:DEEPSEEK_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:15:25", "event": "switch", "slot": "deepseek", "from": "env:DEEPSEEK_API_KEY", "to": "env:AGNES_API_KEY", "why": "前一条不可用，自动落向下一条"}
+{"at": "2026-09-28T01:15:25", "event": "mark_fail", "slot": "deepseek", "ref": "env:AGNES_API_KEY", "kind": "key_invalid", "failover": true, "cooldown": false, "exhaust": false, "disable": true}
+{"at": "2026-09-28T01:15:25", "event": "switch", "slot": "deepseek", "from": "env:AGNES_API_KEY", "to": "env:MOONSHOT_API_KEY", "why": "前一条不可用，自动落向下一条"}
+{"at": "2026-09-28T01:15:25", "event": "mark_fail", "slot": "deepseek", "ref": "env:MOONSHOT_API_KEY", "kind": "bad_request", "failover": false, "cooldown": false, "exhaust": false, "disable": false}
+{"at": "2026-09-28T01:15:25", "event": "mark_fail", "slot": "deepseek", "ref": "vault:deepseek/agnes", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:15:25", "event": "mark_fail", "slot": "deepseek", "ref": "env:DEEPSEEK_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:15:25", "event": "mark_fail", "slot": "deepseek", "ref": "env:AGNES_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:15:25", "event": "mark_fail", "slot": "deepseek", "ref": "env:MOONSHOT_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:15:25", "event": "mark_fail", "slot": "deepseek", "ref": "env:NVIDIA_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:37:35", "event": "mark_fail", "slot": "deepseek", "ref": "vault:deepseek/agnes", "kind": "rate_limited", "failover": true, "cooldown": true, "exhaust": false, "disable": false}
+{"at": "2026-09-28T01:37:35", "event": "switch", "slot": "deepseek", "from": "vault:deepseek/agnes", "to": "env:DEEPSEEK_API_KEY", "why": "前一条不可用，自动落向下一条"}
+{"at": "2026-09-28T01:37:35", "event": "mark_fail", "slot": "deepseek", "ref": "env:DEEPSEEK_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:37:35", "event": "switch", "slot": "deepseek", "from": "env:DEEPSEEK_API_KEY", "to": "env:AGNES_API_KEY", "why": "前一条不可用，自动落向下一条"}
+{"at": "2026-09-28T01:37:35", "event": "mark_fail", "slot": "deepseek", "ref": "env:AGNES_API_KEY", "kind": "key_invalid", "failover": true, "cooldown": false, "exhaust": false, "disable": true}
+{"at": "2026-09-28T01:37:35", "event": "switch", "slot": "deepseek", "from": "env:AGNES_API_KEY", "to": "env:MOONSHOT_API_KEY", "why": "前一条不可用，自动落向下一条"}
+{"at": "2026-09-28T01:37:35", "event": "mark_fail", "slot": "deepseek", "ref": "env:MOONSHOT_API_KEY", "kind": "bad_request", "failover": false, "cooldown": false, "exhaust": false, "disable": false}
+{"at": "2026-09-28T01:37:35", "event": "mark_fail", "slot": "deepseek", "ref": "vault:deepseek/agnes", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:37:35", "event": "mark_fail", "slot": "deepseek", "ref": "env:DEEPSEEK_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:37:35", "event": "mark_fail", "slot": "deepseek", "ref": "env:AGNES_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:37:35", "event": "mark_fail", "slot": "deepseek", "ref": "env:MOONSHOT_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}
+{"at": "2026-09-28T01:37:35", "event": "mark_fail", "slot": "deepseek", "ref": "env:NVIDIA_API_KEY", "kind": "quota_exhausted", "failover": true, "cooldown": true, "exhaust": true, "disable": false}

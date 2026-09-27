@@ -1,0 +1,5 @@
+{"at": "2026-09-27T23:22:03", "event": "after-add", "kind": "obsidian_vault", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
+{"at": "2026-09-27T23:22:04", "event": "after-add", "kind": "cap_tags", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
+{"at": "2026-09-27T23:22:04", "event": "after-add", "kind": "action_gate", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
+{"at": "2026-09-27T23:22:04", "event": "after-add", "kind": "growth_hooks", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
+{"at": "2026-09-27T23:22:05", "event": "after-add", "kind": "devour_fusion", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}

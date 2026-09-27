@@ -200,12 +200,53 @@ def start(full: bool = False, **_kw) -> dict:
     k = keys()
     s = sweep(full=full)
     ready = [x for x in ((k.get("status") or {}).get("slots") or []) if x.get("present")]
+    # ── 成长栈四面 + 控制回路护栏（安全棒每轮都过一遍 ⇒ 这些能力位有常设调用者，
+    #    也是主人令「每半天全量穿透式扫描」要覆盖的面）──
+    growth, galerts = {}, []
+    # 进程面（task_manager）：框架自己的进程数 + 端口占用者数 —— 异常增长是要看的
+    tm = _gate("task_manager", {"op": "list", "limit": 400}).get("payload") or {}
+    if tm.get("ok"):
+        # ⚠️ 口径：按**行**数（进程条数）与**归属**统计；端口列是"占了哪些口"不是流量（那是它的老口径）
+        rows = tm.get("rows") or []
+        by_line = {}
+        port_owners = 0
+        for r in rows:
+            # ⚠️ 血账：字段名是 **owner**（我先前猜成 line/归属 ⇒ 329 条全落"未分类"）。
+            #   键名不一致的亏在本仓吃过好几次：先读形状再取数，别猜字段。
+            line = str(r.get("owner") or "未分类")
+            by_line[line] = by_line.get(line, 0) + 1
+            if r.get("ports"):
+                port_owners += 1
+        growth["进程面"] = {"ok": True, "行": len(rows), "端口占用者": port_owners,
+                            "按线": by_line}
+        fw = by_line.get("框架服务", 0)
+        if fw > 40:
+            galerts.append(f"[进程面] 框架服务进程 {fw} 个（偏多，看一眼是谁）")
+    # 创作页面与服务（gods_eye.see）：自家门面在不在、服务在不在听
+    eye = _gate("gods_eye", {"op": "see"}).get("payload") or {}
+    if eye.get("pages_total"):
+        growth["门面"] = {"ok": eye.get("pages_ok") == eye.get("pages_total"),
+                          "页面": f"{eye.get('pages_ok')}/{eye.get('pages_total')}",
+                          "服务在听": eye.get("services_up")}
+        if (eye.get("pages_ok") or 0) < (eye.get("pages_total") or 0):
+            galerts.append("[门面] 有创作页面不在盘上 ⇒ 跑 gods_eye see 看是哪个")
+    for kind, op, key in (("obsidian_vault", "verify", "永久记忆"),
+                          ("devour_fusion", "verify", "吞天融合"),
+                          ("cap_tags", "verify", "标签许可"),
+                          ("growth_hooks", "verify", "成长钩子"),
+                          ("control_loop", "status", "控制回路")):
+        r = _gate(kind, {"op": op}).get("payload") or {}
+        ok = bool(r.get("ok")) if kind != "control_loop" else True
+        growth[key] = {"ok": ok, "problems": (r.get("problems") or [])[:3]}
+        for pr in (r.get("problems") or [])[:2]:
+            galerts.append(f"[{key}] {str(pr)[:120]}")
     health = {"ok": bool(s.get("ok")), "at": s.get("at"),
               "energy": {"sources": e.get("energy_sources"), "free_pool": e.get("free_pool_reachable")},
               "keys_ready": len(ready), "keys_total": len((k.get("status") or {}).get("slots") or []),
-              "trees": s.get("results"), "alerts": s.get("alerts") or [],
+              "trees": s.get("results"), "alerts": (s.get("alerts") or []) + galerts,
+              "growth": growth,
               "scanned": s.get("scanned"), "reused": s.get("reused"),
-              "_口径": "健康=无报警；报警项逐条写清（树/覆盖/未钩住/需人核）"}
+              "_口径": "健康=无报警；报警项逐条写清（树/覆盖/未钩住/需人核/成长栈四面）"}
     _save(_HEALTH, health)
     _log({"event": "start", "ok": health["ok"], "alerts": len(health["alerts"])})
     return {"ok": health["ok"], "op": "start", "health": health,

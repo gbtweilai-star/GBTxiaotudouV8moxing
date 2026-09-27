@@ -1,0 +1,1404 @@
+{
+ "vaults": {
+  "a1art_skill": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\a1art_skill",
+   "safe": "a1art_skill",
+   "readme_sha": "a42f3c1def7dae1a",
+   "readme_exists": true
+  },
+  "absorb_loop": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\absorb_loop",
+   "safe": "absorb_loop",
+   "readme_sha": "f8823bf6d85d881d",
+   "readme_exists": true
+  },
+  "account_registry": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\account_registry",
+   "safe": "account_registry",
+   "readme_sha": "d060d2ffa7ac9492",
+   "readme_exists": true
+  },
+  "actioncam": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\actioncam",
+   "safe": "actioncam",
+   "readme_sha": "23122b49d9d39324",
+   "readme_exists": true
+  },
+  "agency_tentacles": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\agency_tentacles",
+   "safe": "agency_tentacles",
+   "readme_sha": "ccec1fcea1f383e9",
+   "readme_exists": true
+  },
+  "alerts": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\alerts",
+   "safe": "alerts",
+   "readme_sha": "69508b0b84e4aa23",
+   "readme_exists": true
+  },
+  "asset_index": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\asset_index",
+   "safe": "asset_index",
+   "readme_sha": "8389ff40dfc61ead",
+   "readme_exists": true
+  },
+  "asset_vault_freeze": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\asset_vault_freeze",
+   "safe": "asset_vault_freeze",
+   "readme_sha": "792831522662c5f8",
+   "readme_exists": true
+  },
+  "audio_extract": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\audio_extract",
+   "safe": "audio_extract",
+   "readme_sha": "140ea487d0046213",
+   "readme_exists": true
+  },
+  "audio_mix": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\audio_mix",
+   "safe": "audio_mix",
+   "readme_sha": "9293542ad7db8535",
+   "readme_exists": true
+  },
+  "audit_query": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\audit_query",
+   "safe": "audit_query",
+   "readme_sha": "21794204e779ccaa",
+   "readme_exists": true
+  },
+  "auth_gate_status": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\auth_gate_status",
+   "safe": "auth_gate_status",
+   "readme_sha": "dbac0d24d7cf70bb",
+   "readme_exists": true
+  },
+  "auto_publish": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\auto_publish",
+   "safe": "auto_publish",
+   "readme_sha": "46b4fce01acabbf4",
+   "readme_exists": true
+  },
+  "auto_switch": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\auto_switch",
+   "safe": "auto_switch",
+   "readme_sha": "8494cdd65ed92b7a",
+   "readme_exists": true
+  },
+  "automation_keys": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\automation_keys",
+   "safe": "automation_keys",
+   "readme_sha": "148483f7879ada36",
+   "readme_exists": true
+  },
+  "autopilot": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\autopilot",
+   "safe": "autopilot",
+   "readme_sha": "a1e1af88eba6974a",
+   "readme_exists": true
+  },
+  "awesome_tools_index": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\awesome_tools_index",
+   "safe": "awesome_tools_index",
+   "readme_sha": "57313c617f43836e",
+   "readme_exists": true
+  },
+  "blender": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\blender",
+   "safe": "blender",
+   "readme_sha": "1c2f22ef9401dbc9",
+   "readme_exists": true
+  },
+  "bluetooth": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\bluetooth",
+   "safe": "bluetooth",
+   "readme_sha": "b61edf7d2364b1ca",
+   "readme_exists": true
+  },
+  "brain_execute": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\brain_execute",
+   "safe": "brain_execute",
+   "readme_sha": "c8ac43da54647401",
+   "readme_exists": true
+  },
+  "brain_health": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\brain_health",
+   "safe": "brain_health",
+   "readme_sha": "cfe5052086e09aae",
+   "readme_exists": true
+  },
+  "brain_route": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\brain_route",
+   "safe": "brain_route",
+   "readme_sha": "1ab29b1e97621aa7",
+   "readme_exists": true
+  },
+  "brain_unify": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\brain_unify",
+   "safe": "brain_unify",
+   "readme_sha": "bcc56fc973466c53",
+   "readme_exists": true
+  },
+  "brain_vault": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\brain_vault",
+   "safe": "brain_vault",
+   "readme_sha": "57bcd178ad0c5761",
+   "readme_exists": true
+  },
+  "brain_verify": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\brain_verify",
+   "safe": "brain_verify",
+   "readme_sha": "7d860e29f93640d7",
+   "readme_exists": true
+  },
+  "brand_outro": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\brand_outro",
+   "safe": "brand_outro",
+   "readme_sha": "a503acae3f93ef77",
+   "readme_exists": true
+  },
+  "browser": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\browser",
+   "safe": "browser",
+   "readme_sha": "99d2534d9cfdf95b",
+   "readme_exists": true
+  },
+  "bt_control": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\bt_control",
+   "safe": "bt_control",
+   "readme_sha": "1fa84beca5dddf7c",
+   "readme_exists": true
+  },
+  "capability_net": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\capability_net",
+   "safe": "capability_net",
+   "readme_sha": "5116a1b176384245",
+   "readme_exists": true
+  },
+  "caps_called_audit": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\caps_called_audit",
+   "safe": "caps_called_audit",
+   "readme_sha": "d928087f6e3e706a",
+   "readme_exists": true
+  },
+  "claude_code": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\claude_code",
+   "safe": "claude_code",
+   "readme_sha": "f23ff36b15fcc9d2",
+   "readme_exists": true
+  },
+  "cloud_pc": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\cloud_pc",
+   "safe": "cloud_pc",
+   "readme_sha": "8408439f77257bb4",
+   "readme_exists": true
+  },
+  "code_art": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\code_art",
+   "safe": "code_art",
+   "readme_sha": "7055f1fcd4af17bf",
+   "readme_exists": true
+  },
+  "code_patch": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\code_patch",
+   "safe": "code_patch",
+   "readme_sha": "59c3fb21ce7f09a5",
+   "readme_exists": true
+  },
+  "codebuddy": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\codebuddy",
+   "safe": "codebuddy",
+   "readme_sha": "63d103b3a865e8f5",
+   "readme_exists": true
+  },
+  "codex_chat": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\codex_chat",
+   "safe": "codex_chat",
+   "readme_sha": "b6cdd4a80ca98174",
+   "readme_exists": true
+  },
+  "codex_interrupt": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\codex_interrupt",
+   "safe": "codex_interrupt",
+   "readme_sha": "8d009d93d15ba6e0",
+   "readme_exists": true
+  },
+  "codex_models": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\codex_models",
+   "safe": "codex_models",
+   "readme_sha": "cea79cb9d2bd9d98",
+   "readme_exists": true
+  },
+  "codex_status": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\codex_status",
+   "safe": "codex_status",
+   "readme_sha": "f1769d8e2124357c",
+   "readme_exists": true
+  },
+  "codex_thread_new": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\codex_thread_new",
+   "safe": "codex_thread_new",
+   "readme_sha": "40c16eae52dd5362",
+   "readme_exists": true
+  },
+  "codex_tools": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\codex_tools",
+   "safe": "codex_tools",
+   "readme_sha": "588865587691e815",
+   "readme_exists": true
+  },
+  "codex_turn_send": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\codex_turn_send",
+   "safe": "codex_turn_send",
+   "readme_sha": "12807106a2e34d04",
+   "readme_exists": true
+  },
+  "comfyui": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\comfyui",
+   "safe": "comfyui",
+   "readme_sha": "ee0551cc2ba8c395",
+   "readme_exists": true
+  },
+  "context_vault": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\context_vault",
+   "safe": "context_vault",
+   "readme_sha": "69aee7a09d704f3f",
+   "readme_exists": true
+  },
+  "control_loop": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\control_loop",
+   "safe": "control_loop",
+   "readme_sha": "a109f777e6a1f961",
+   "readme_exists": true
+  },
+  "count_words": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\count_words",
+   "safe": "count_words",
+   "readme_sha": "01994041f9ca943f",
+   "readme_exists": true
+  },
+  "coverage_auditor": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\coverage_auditor",
+   "safe": "coverage_auditor",
+   "readme_sha": "2cc4be76c26f4cab",
+   "readme_exists": true
+  },
+  "coze_mail": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\coze_mail",
+   "safe": "coze_mail",
+   "readme_sha": "e780b32bc2fec572",
+   "readme_exists": true
+  },
+  "create": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\create",
+   "safe": "create",
+   "readme_sha": "97396c4aeb0b1a5b",
+   "readme_exists": true
+  },
+  "credential_steal": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\credential_steal",
+   "safe": "credential_steal",
+   "readme_sha": "251cea2f6e02d5f8",
+   "readme_exists": true
+  },
+  "cross_scan": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\cross_scan",
+   "safe": "cross_scan",
+   "readme_sha": "ef9cc7045f6a6230",
+   "readme_exists": true
+  },
+  "data_hijack": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\data_hijack",
+   "safe": "data_hijack",
+   "readme_sha": "5bd0437b12a52b21",
+   "readme_exists": true
+  },
+  "datakit": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\datakit",
+   "safe": "datakit",
+   "readme_sha": "6d4b73c2ab4d39b0",
+   "readme_exists": true
+  },
+  "deploy_queue": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\deploy_queue",
+   "safe": "deploy_queue",
+   "readme_sha": "0b1a0e396441f058",
+   "readme_exists": true
+  },
+  "desktop_commander": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\desktop_commander",
+   "safe": "desktop_commander",
+   "readme_sha": "ac546f5bb23d71e8",
+   "readme_exists": true
+  },
+  "device_takeover": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\device_takeover",
+   "safe": "device_takeover",
+   "readme_sha": "fef9b482a1cad1c1",
+   "readme_exists": true
+  },
+  "devour_github": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\devour_github",
+   "safe": "devour_github",
+   "readme_sha": "bd17a0caf5a4e3e9",
+   "readme_exists": true
+  },
+  "devour_pulse": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\devour_pulse",
+   "safe": "devour_pulse",
+   "readme_sha": "7025b7e7dc9a30d0",
+   "readme_exists": true
+  },
+  "devour_reflect": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\devour_reflect",
+   "safe": "devour_reflect",
+   "readme_sha": "ba961d0eacb7826a",
+   "readme_exists": true
+  },
+  "devour_scan": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\devour_scan",
+   "safe": "devour_scan",
+   "readme_sha": "f9335ba1b822c672",
+   "readme_exists": true
+  },
+  "director_mood": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\director_mood",
+   "safe": "director_mood",
+   "readme_sha": "a0bd1e1f816ea6dc",
+   "readme_exists": true
+  },
+  "domain:automation": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-automation",
+   "safe": "domain-automation",
+   "readme_sha": "fe0b942f5faea6fa",
+   "readme_exists": true
+  },
+  "domain:brain": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-brain",
+   "safe": "domain-brain",
+   "readme_sha": "03eaabe2228280f1",
+   "readme_exists": true
+  },
+  "domain:collab": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-collab",
+   "safe": "domain-collab",
+   "readme_sha": "99c9f6b69c31f4b3",
+   "readme_exists": true
+  },
+  "domain:comms": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-comms",
+   "safe": "domain-comms",
+   "readme_sha": "ec6987be31330bf0",
+   "readme_exists": true
+  },
+  "domain:creation": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-creation",
+   "safe": "domain-creation",
+   "readme_sha": "991e7fbc51e79025",
+   "readme_exists": true
+  },
+  "domain:data": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-data",
+   "safe": "domain-data",
+   "readme_sha": "c0a1e1d5d8731a84",
+   "readme_exists": true
+  },
+  "domain:desktop": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-desktop",
+   "safe": "domain-desktop",
+   "readme_sha": "7ccc1bfba09d3165",
+   "readme_exists": true
+  },
+  "domain:device": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-device",
+   "safe": "domain-device",
+   "readme_sha": "5dc8976282e0a0c6",
+   "readme_exists": true
+  },
+  "domain:devour": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-devour",
+   "safe": "domain-devour",
+   "readme_sha": "f284396024d01a3f",
+   "readme_exists": true
+  },
+  "domain:engine": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-engine",
+   "safe": "domain-engine",
+   "readme_sha": "658d04a39c51c80a",
+   "readme_exists": true
+  },
+  "domain:finance": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-finance",
+   "safe": "domain-finance",
+   "readme_sha": "356f00213cced158",
+   "readme_exists": true
+  },
+  "domain:framework": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-framework",
+   "safe": "domain-framework",
+   "readme_sha": "4408f27531a4c471",
+   "readme_exists": true
+  },
+  "domain:image_video": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-image_video",
+   "safe": "domain-image_video",
+   "readme_sha": "b9ca44ac1034fc58",
+   "readme_exists": true
+  },
+  "domain:infra": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-infra",
+   "safe": "domain-infra",
+   "readme_sha": "80457ba355f420d7",
+   "readme_exists": true
+  },
+  "domain:integration": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-integration",
+   "safe": "domain-integration",
+   "readme_sha": "76284e8f3839137b",
+   "readme_exists": true
+  },
+  "domain:life": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-life",
+   "safe": "domain-life",
+   "readme_sha": "f9a9db62bfd407a7",
+   "readme_exists": true
+  },
+  "domain:llm": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-llm",
+   "safe": "domain-llm",
+   "readme_sha": "9860a0483cc608d6",
+   "readme_exists": true
+  },
+  "domain:longrun": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-longrun",
+   "safe": "domain-longrun",
+   "readme_sha": "6a6ffb15d7e8df36",
+   "readme_exists": true
+  },
+  "domain:mind": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-mind",
+   "safe": "domain-mind",
+   "readme_sha": "1a3b6000d07e2100",
+   "readme_exists": true
+  },
+  "domain:pipeline": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-pipeline",
+   "safe": "domain-pipeline",
+   "readme_sha": "41d0ca53af4ab701",
+   "readme_exists": true
+  },
+  "domain:project": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-project",
+   "safe": "domain-project",
+   "readme_sha": "b68c86ae3a8379e6",
+   "readme_exists": true
+  },
+  "domain:recon": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-recon",
+   "safe": "domain-recon",
+   "readme_sha": "74de85b258399b43",
+   "readme_exists": true
+  },
+  "domain:security": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-security",
+   "safe": "domain-security",
+   "readme_sha": "cce1cc2b3e3a8090",
+   "readme_exists": true
+  },
+  "domain:social": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-social",
+   "safe": "domain-social",
+   "readme_sha": "545c4e2b66610346",
+   "readme_exists": true
+  },
+  "domain:system": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-system",
+   "safe": "domain-system",
+   "readme_sha": "50d8881b2c64bc8e",
+   "readme_exists": true
+  },
+  "domain:tentacle": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-tentacle",
+   "safe": "domain-tentacle",
+   "readme_sha": "fa24b0b1ceefb4c0",
+   "readme_exists": true
+  },
+  "domain:tools": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-tools",
+   "safe": "domain-tools",
+   "readme_sha": "8c199508f432a6af",
+   "readme_exists": true
+  },
+  "domain:video": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-video",
+   "safe": "domain-video",
+   "readme_sha": "a458df4312d131c0",
+   "readme_exists": true
+  },
+  "domain:vision": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-vision",
+   "safe": "domain-vision",
+   "readme_sha": "4599311b3afcea2a",
+   "readme_exists": true
+  },
+  "domain:voice": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\domain-voice",
+   "safe": "domain-voice",
+   "readme_sha": "1d712ab6501863f8",
+   "readme_exists": true
+  },
+  "drama": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\drama",
+   "safe": "drama",
+   "readme_sha": "b8761191a6ff45ce",
+   "readme_exists": true
+  },
+  "dream_replay": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\dream_replay",
+   "safe": "dream_replay",
+   "readme_sha": "c001717944549fff",
+   "readme_exists": true
+  },
+  "echo": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\echo",
+   "safe": "echo",
+   "readme_sha": "ae0725170f9331d4",
+   "readme_exists": true
+  },
+  "edit_pipeline": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\edit_pipeline",
+   "safe": "edit_pipeline",
+   "readme_sha": "d9cc1ed16db15d57",
+   "readme_exists": true
+  },
+  "emotion_projection": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\emotion_projection",
+   "safe": "emotion_projection",
+   "readme_sha": "8f9d734d07618caf",
+   "readme_exists": true
+  },
+  "energy_pool": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\energy_pool",
+   "safe": "energy_pool",
+   "readme_sha": "4128e760152bf37b",
+   "readme_exists": true
+  },
+  "feishu_embed": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\feishu_embed",
+   "safe": "feishu_embed",
+   "readme_sha": "f427908d1ae2c37d",
+   "readme_exists": true
+  },
+  "file_hygiene": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\file_hygiene",
+   "safe": "file_hygiene",
+   "readme_sha": "0ef9e8d50e9dee58",
+   "readme_exists": true
+  },
+  "film_intel": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\film_intel",
+   "safe": "film_intel",
+   "readme_sha": "80aed5a38d4bce52",
+   "readme_exists": true
+  },
+  "filmkit": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\filmkit",
+   "safe": "filmkit",
+   "readme_sha": "78edbda7c676527e",
+   "readme_exists": true
+  },
+  "gate_visibility": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\gate_visibility",
+   "safe": "gate_visibility",
+   "readme_sha": "2144c1e4641fb736",
+   "readme_exists": true
+  },
+  "genoffice": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\genoffice",
+   "safe": "genoffice",
+   "readme_sha": "205987b58ac96bee",
+   "readme_exists": true
+  },
+  "ghost_guard": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\ghost_guard",
+   "safe": "ghost_guard",
+   "readme_sha": "693d5fe04943e941",
+   "readme_exists": true
+  },
+  "git_read": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\git_read",
+   "safe": "git_read",
+   "readme_sha": "7ccfbe744b562fe5",
+   "readme_exists": true
+  },
+  "git_write": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\git_write",
+   "safe": "git_write",
+   "readme_sha": "47c2cdd23a5db974",
+   "readme_exists": true
+  },
+  "gods_eye": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\gods_eye",
+   "safe": "gods_eye",
+   "readme_sha": "a68315ae64f58078",
+   "readme_exists": true
+  },
+  "gs_h3": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\gs_h3",
+   "safe": "gs_h3",
+   "readme_sha": "49da9ab07a25326c",
+   "readme_exists": true
+  },
+  "h3_video_gen": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\h3_video_gen",
+   "safe": "h3_video_gen",
+   "readme_sha": "77abd8c49bfcb065",
+   "readme_exists": true
+  },
+  "health": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\health",
+   "safe": "health",
+   "readme_sha": "8ffc07964df47bd0",
+   "readme_exists": true
+  },
+  "hook_enforcer": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\hook_enforcer",
+   "safe": "hook_enforcer",
+   "readme_sha": "c912e2288407ae07",
+   "readme_exists": true
+  },
+  "hook_registry": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\hook_registry",
+   "safe": "hook_registry",
+   "readme_sha": "68f57d6ffb5ed672",
+   "readme_exists": true
+  },
+  "inventory": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\inventory",
+   "safe": "inventory",
+   "readme_sha": "f64fe49d57acd92c",
+   "readme_exists": true
+  },
+  "keylogger": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\keylogger",
+   "safe": "keylogger",
+   "readme_sha": "b93f8e04b544385a",
+   "readme_exists": true
+  },
+  "ledger_note": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\ledger_note",
+   "safe": "ledger_note",
+   "readme_sha": "1e7a4462d9efe549",
+   "readme_exists": true
+  },
+  "libtv_skill": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\libtv_skill",
+   "safe": "libtv_skill",
+   "readme_sha": "097d9382e3580e29",
+   "readme_exists": true
+  },
+  "libtv_workflow": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\libtv_workflow",
+   "safe": "libtv_workflow",
+   "readme_sha": "da4cf555a9db7e7a",
+   "readme_exists": true
+  },
+  "life": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\life",
+   "safe": "life",
+   "readme_sha": "8f6b20f3ffbab1c1",
+   "readme_exists": true
+  },
+  "llm_chat": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\llm_chat",
+   "safe": "llm_chat",
+   "readme_sha": "f1ef57370b2926d4",
+   "readme_exists": true
+  },
+  "llm_status": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\llm_status",
+   "safe": "llm_status",
+   "readme_sha": "7a8acc38e4c6f447",
+   "readme_exists": true
+  },
+  "lobehub": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\lobehub",
+   "safe": "lobehub",
+   "readme_sha": "6d632724dc6a7ca9",
+   "readme_exists": true
+  },
+  "local_brain": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\local_brain",
+   "safe": "local_brain",
+   "readme_sha": "c3f458ac4d164561",
+   "readme_exists": true
+  },
+  "long_run_supervisor": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\long_run_supervisor",
+   "safe": "long_run_supervisor",
+   "readme_sha": "0a115a465929fc9f",
+   "readme_exists": true
+  },
+  "look_grade": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\look_grade",
+   "safe": "look_grade",
+   "readme_sha": "4a891e41655a3b2b",
+   "readme_exists": true
+  },
+  "lr_status": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\lr_status",
+   "safe": "lr_status",
+   "readme_sha": "7a295bc3013f650c",
+   "readme_exists": true
+  },
+  "lr_submit": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\lr_submit",
+   "safe": "lr_submit",
+   "readme_sha": "a6446165214f09be",
+   "readme_exists": true
+  },
+  "lr_tick": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\lr_tick",
+   "safe": "lr_tick",
+   "readme_sha": "a2cba004bb37a212",
+   "readme_exists": true
+  },
+  "mcp_call": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mcp_call",
+   "safe": "mcp_call",
+   "readme_sha": "dfd6edd7a6e5ded8",
+   "readme_exists": true
+  },
+  "mcp_connect": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mcp_connect",
+   "safe": "mcp_connect",
+   "readme_sha": "44301b0b75fae714",
+   "readme_exists": true
+  },
+  "mcp_tools": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mcp_tools",
+   "safe": "mcp_tools",
+   "readme_sha": "1c9b36af6ce7a57a",
+   "readme_exists": true
+  },
+  "media_license": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\media_license",
+   "safe": "media_license",
+   "readme_sha": "6ffceb3bdffe613b",
+   "readme_exists": true
+  },
+  "media_pipeline": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\media_pipeline",
+   "safe": "media_pipeline",
+   "readme_sha": "df89870da39cc836",
+   "readme_exists": true
+  },
+  "media_publish": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\media_publish",
+   "safe": "media_publish",
+   "readme_sha": "643bc5c7bc9998c9",
+   "readme_exists": true
+  },
+  "media_run": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\media_run",
+   "safe": "media_run",
+   "readme_sha": "c8216570218941a0",
+   "readme_exists": true
+  },
+  "memory_manager": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\memory_manager",
+   "safe": "memory_manager",
+   "readme_sha": "de301b1f8655cef5",
+   "readme_exists": true
+  },
+  "meta_cognition": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\meta_cognition",
+   "safe": "meta_cognition",
+   "readme_sha": "5d441d9562cb69d7",
+   "readme_exists": true
+  },
+  "mind": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mind",
+   "safe": "mind",
+   "readme_sha": "82e9e49380b170de",
+   "readme_exists": true
+  },
+  "mirror_ascend": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mirror_ascend",
+   "safe": "mirror_ascend",
+   "readme_sha": "da691043c8e3e91b",
+   "readme_exists": true
+  },
+  "mirror_parity": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mirror_parity",
+   "safe": "mirror_parity",
+   "readme_sha": "ab3e37691ad21dd4",
+   "readme_exists": true
+  },
+  "mirror_plan": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mirror_plan",
+   "safe": "mirror_plan",
+   "readme_sha": "498f7bd038ee6a4c",
+   "readme_exists": true
+  },
+  "mirror_rehearse": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mirror_rehearse",
+   "safe": "mirror_rehearse",
+   "readme_sha": "6bbe1f5d3f138de7",
+   "readme_exists": true
+  },
+  "mirror_release": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mirror_release",
+   "safe": "mirror_release",
+   "readme_sha": "e0e781dd068ade84",
+   "readme_exists": true
+  },
+  "mirror_rewind": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mirror_rewind",
+   "safe": "mirror_rewind",
+   "readme_sha": "519ab771842d0aa7",
+   "readme_exists": true
+  },
+  "mirror_scan": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mirror_scan",
+   "safe": "mirror_scan",
+   "readme_sha": "28c16591b72e255b",
+   "readme_exists": true
+  },
+  "mirror_shape": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mirror_shape",
+   "safe": "mirror_shape",
+   "readme_sha": "fa90e4ddde80fde0",
+   "readme_exists": true
+  },
+  "mirror_simulate": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mirror_simulate",
+   "safe": "mirror_simulate",
+   "readme_sha": "0ba44ae72c520e61",
+   "readme_exists": true
+  },
+  "mirror_status": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\mirror_status",
+   "safe": "mirror_status",
+   "readme_sha": "0822f5888a46fd8c",
+   "readme_exists": true
+  },
+  "model_key_pool": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\model_key_pool",
+   "safe": "model_key_pool",
+   "readme_sha": "0158ba4af515d686",
+   "readme_exists": true
+  },
+  "music_intel": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\music_intel",
+   "safe": "music_intel",
+   "readme_sha": "916cfdc32eaeb2b0",
+   "readme_exists": true
+  },
+  "music_publishing": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\music_publishing",
+   "safe": "music_publishing",
+   "readme_sha": "bebd28814369bda7",
+   "readme_exists": true
+  },
+  "n8n_wf": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\n8n_wf",
+   "safe": "n8n_wf",
+   "readme_sha": "7b496345467394cc",
+   "readme_exists": true
+  },
+  "observer_anchor": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\observer_anchor",
+   "safe": "observer_anchor",
+   "readme_sha": "17081ba4fbc5f4b7",
+   "readme_exists": true
+  },
+  "omission_detector": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\omission_detector",
+   "safe": "omission_detector",
+   "readme_sha": "bd483bc8f89d6576",
+   "readme_exists": true
+  },
+  "onboarding_gate": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\onboarding_gate",
+   "safe": "onboarding_gate",
+   "readme_sha": "c234e366b7dbd18f",
+   "readme_exists": true
+  },
+  "one_key_deploy": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\one_key_deploy",
+   "safe": "one_key_deploy",
+   "readme_sha": "f43c91f0fa4d6129",
+   "readme_exists": true
+  },
+  "one_shot": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\one_shot",
+   "safe": "one_shot",
+   "readme_sha": "5210836a9b1dd3a2",
+   "readme_exists": true
+  },
+  "orchestration_kernel": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\orchestration_kernel",
+   "safe": "orchestration_kernel",
+   "readme_sha": "0c0d62b172166892",
+   "readme_exists": true
+  },
+  "osint_scan": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\osint_scan",
+   "safe": "osint_scan",
+   "readme_sha": "54dd0603808f5a0e",
+   "readme_exists": true
+  },
+  "paywallbuster": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\paywallbuster",
+   "safe": "paywallbuster",
+   "readme_sha": "707ba31da8c1a7dd",
+   "readme_exists": true
+  },
+  "penetrating_cross_scan": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\penetrating_cross_scan",
+   "safe": "penetrating_cross_scan",
+   "readme_sha": "8b88272030a92c86",
+   "readme_exists": true
+  },
+  "pentest": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\pentest",
+   "safe": "pentest",
+   "readme_sha": "1e8acdd29c859108",
+   "readme_exists": true
+  },
+  "persona_kernel": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\persona_kernel",
+   "safe": "persona_kernel",
+   "readme_sha": "140ba7edfe4241a5",
+   "readme_exists": true
+  },
+  "pipeline_rollback": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\pipeline_rollback",
+   "safe": "pipeline_rollback",
+   "readme_sha": "5857ad841ed1bc56",
+   "readme_exists": true
+  },
+  "pipeline_status": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\pipeline_status",
+   "safe": "pipeline_status",
+   "readme_sha": "d384523d227c16a0",
+   "readme_exists": true
+  },
+  "pipeline_submit": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\pipeline_submit",
+   "safe": "pipeline_submit",
+   "readme_sha": "29f198926161e147",
+   "readme_exists": true
+  },
+  "pipeline_versions": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\pipeline_versions",
+   "safe": "pipeline_versions",
+   "readme_sha": "1cde8aa8d21534b8",
+   "readme_exists": true
+  },
+  "platform_profile": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\platform_profile",
+   "safe": "platform_profile",
+   "readme_sha": "1eba6f76b5737df6",
+   "readme_exists": true
+  },
+  "proactive_report": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\proactive_report",
+   "safe": "proactive_report",
+   "readme_sha": "8ca8407ced542c65",
+   "readme_exists": true
+  },
+  "project_context": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\project_context",
+   "safe": "project_context",
+   "readme_sha": "a1093c2069c43de9",
+   "readme_exists": true
+  },
+  "projection_card": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\projection_card",
+   "safe": "projection_card",
+   "readme_sha": "6be80adecc7c98af",
+   "readme_exists": true
+  },
+  "prompt_bridge": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\prompt_bridge",
+   "safe": "prompt_bridge",
+   "readme_sha": "ddfeffa9bf8211bd",
+   "readme_exists": true
+  },
+  "quant": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\quant",
+   "safe": "quant",
+   "readme_sha": "b8bfd4b383a7cb0a",
+   "readme_exists": true
+  },
+  "quant_backtest": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\quant_backtest",
+   "safe": "quant_backtest",
+   "readme_sha": "9262feb799065ddc",
+   "readme_exists": true
+  },
+  "quant_params": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\quant_params",
+   "safe": "quant_params",
+   "readme_sha": "76f2db1d19e5c35e",
+   "readme_exists": true
+  },
+  "quant_strategy": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\quant_strategy",
+   "safe": "quant_strategy",
+   "readme_sha": "93bc8a74c204d2b5",
+   "readme_exists": true
+  },
+  "record_grid": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\record_grid",
+   "safe": "record_grid",
+   "readme_sha": "def9121db9079632",
+   "readme_exists": true
+  },
+  "redteam_recon": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\redteam_recon",
+   "safe": "redteam_recon",
+   "readme_sha": "da33262edb43d0c8",
+   "readme_exists": true
+  },
+  "remote_domain": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\remote_domain",
+   "safe": "remote_domain",
+   "readme_sha": "ded54a055421d56e",
+   "readme_exists": true
+  },
+  "render_evolution": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\render_evolution",
+   "safe": "render_evolution",
+   "readme_sha": "4e61a0374159f4b4",
+   "readme_exists": true
+  },
+  "root_fix": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\root_fix",
+   "safe": "root_fix",
+   "readme_sha": "8f9fda4c5b7a823d",
+   "readme_exists": true
+  },
+  "scene_anchor": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\scene_anchor",
+   "safe": "scene_anchor",
+   "readme_sha": "58ee401192787166",
+   "readme_exists": true
+  },
+  "sched_define": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\sched_define",
+   "safe": "sched_define",
+   "readme_sha": "4d0d0c29c60bcc69",
+   "readme_exists": true
+  },
+  "sched_status": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\sched_status",
+   "safe": "sched_status",
+   "readme_sha": "c8fd80077e32b958",
+   "readme_exists": true
+  },
+  "sched_tick": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\sched_tick",
+   "safe": "sched_tick",
+   "readme_sha": "6e3de45141f856be",
+   "readme_exists": true
+  },
+  "scrapling": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\scrapling",
+   "safe": "scrapling",
+   "readme_sha": "4a61669f6461938a",
+   "readme_exists": true
+  },
+  "screen_sniff": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\screen_sniff",
+   "safe": "screen_sniff",
+   "readme_sha": "eaa0c64c5c8b7ea1",
+   "readme_exists": true
+  },
+  "sec_chain": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\sec_chain",
+   "safe": "sec_chain",
+   "readme_sha": "bd433e99ac2897d0",
+   "readme_exists": true
+  },
+  "sec_defenses": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\sec_defenses",
+   "safe": "sec_defenses",
+   "readme_sha": "20f35b5b499395ef",
+   "readme_exists": true
+  },
+  "sec_llm": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\sec_llm",
+   "safe": "sec_llm",
+   "readme_sha": "2ab22e7c32c5a3da",
+   "readme_exists": true
+  },
+  "sec_scan": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\sec_scan",
+   "safe": "sec_scan",
+   "readme_sha": "831857fdf3099ba0",
+   "readme_exists": true
+  },
+  "sec_surface": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\sec_surface",
+   "safe": "sec_surface",
+   "readme_sha": "10e09efad941825c",
+   "readme_exists": true
+  },
+  "sec_sweeper": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\sec_sweeper",
+   "safe": "sec_sweeper",
+   "readme_sha": "2a40cbd179e84257",
+   "readme_exists": true
+  },
+  "selfscan": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\selfscan",
+   "safe": "selfscan",
+   "readme_sha": "dbefb30b9c5504f1",
+   "readme_exists": true
+  },
+  "shared_resources": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\shared_resources",
+   "safe": "shared_resources",
+   "readme_sha": "2d9ad5dcc4d0cdb5",
+   "readme_exists": true
+  },
+  "signature_guard": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\signature_guard",
+   "safe": "signature_guard",
+   "readme_sha": "3142eca86304a517",
+   "readme_exists": true
+  },
+  "social_eng": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\social_eng",
+   "safe": "social_eng",
+   "readme_sha": "d31397d65c32a40c",
+   "readme_exists": true
+  },
+  "stigmergy": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\stigmergy",
+   "safe": "stigmergy",
+   "readme_sha": "7771db6895779823",
+   "readme_exists": true
+  },
+  "surface_bind": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\surface_bind",
+   "safe": "surface_bind",
+   "readme_sha": "cf0a27bbeb42bde3",
+   "readme_exists": true
+  },
+  "svc_inspect": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\svc_inspect",
+   "safe": "svc_inspect",
+   "readme_sha": "1f523ff05ab1d128",
+   "readme_exists": true
+  },
+  "tactics_advise": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\tactics_advise",
+   "safe": "tactics_advise",
+   "readme_sha": "eeebb8868165526d",
+   "readme_exists": true
+  },
+  "task_manager": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\task_manager",
+   "safe": "task_manager",
+   "readme_sha": "7c97dc3872e90f6b",
+   "readme_exists": true
+  },
+  "tentacle": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\tentacle",
+   "safe": "tentacle",
+   "readme_sha": "f5c9a3d23eae6ebe",
+   "readme_exists": true
+  },
+  "tentacle_bind": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\tentacle_bind",
+   "safe": "tentacle_bind",
+   "readme_sha": "af687aff69f928e0",
+   "readme_exists": true
+  },
+  "tentacle_cognition": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\tentacle_cognition",
+   "safe": "tentacle_cognition",
+   "readme_sha": "33e101e30523a5d9",
+   "readme_exists": true
+  },
+  "tentacle_manifest": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\tentacle_manifest",
+   "safe": "tentacle_manifest",
+   "readme_sha": "8c8298fb6924145e",
+   "readme_exists": true
+  },
+  "tentacle_pipeline": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\tentacle_pipeline",
+   "safe": "tentacle_pipeline",
+   "readme_sha": "ad8808e7927ab979",
+   "readme_exists": true
+  },
+  "tentacle_status": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\tentacle_status",
+   "safe": "tentacle_status",
+   "readme_sha": "6c3cfdad776c611f",
+   "readme_exists": true
+  },
+  "think_loop": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\think_loop",
+   "safe": "think_loop",
+   "readme_sha": "439ad4a134424d86",
+   "readme_exists": true
+  },
+  "topic_watch": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\topic_watch",
+   "safe": "topic_watch",
+   "readme_sha": "752e95cc3850e64c",
+   "readme_exists": true
+  },
+  "trace_store": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\trace_store",
+   "safe": "trace_store",
+   "readme_sha": "26971327155b68ab",
+   "readme_exists": true
+  },
+  "transfer": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\transfer",
+   "safe": "transfer",
+   "readme_sha": "4c4e39438ec149c7",
+   "readme_exists": true
+  },
+  "transformer": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\transformer",
+   "safe": "transformer",
+   "readme_sha": "abf263de351b4f5b",
+   "readme_exists": true
+  },
+  "trend_watch": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\trend_watch",
+   "safe": "trend_watch",
+   "readme_sha": "148934ab5e65553b",
+   "readme_exists": true
+  },
+  "truth_scan": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\truth_scan",
+   "safe": "truth_scan",
+   "readme_sha": "659a1b2036b83d47",
+   "readme_exists": true
+  },
+  "ul_tars_desktop": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\ul_tars_desktop",
+   "safe": "ul_tars_desktop",
+   "readme_sha": "6092ea8935e3dd6c",
+   "readme_exists": true
+  },
+  "verification_watch": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\verification_watch",
+   "safe": "verification_watch",
+   "readme_sha": "2b602b27e5bf1bc6",
+   "readme_exists": true
+  },
+  "video_intel": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\video_intel",
+   "safe": "video_intel",
+   "readme_sha": "5f56b8c90dac6161",
+   "readme_exists": true
+  },
+  "vision": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\vision",
+   "safe": "vision",
+   "readme_sha": "c2e76e1676c09651",
+   "readme_exists": true
+  },
+  "voice": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\voice",
+   "safe": "voice",
+   "readme_sha": "c3686f01e853eb97",
+   "readme_exists": true
+  },
+  "voice_orchestra": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\voice_orchestra",
+   "safe": "voice_orchestra",
+   "readme_sha": "bf9aeafed930d81d",
+   "readme_exists": true
+  },
+  "wave_probe": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\wave_probe",
+   "safe": "wave_probe",
+   "readme_sha": "ef2e2c8674c8b526",
+   "readme_exists": true
+  },
+  "wf_cache_clear": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\wf_cache_clear",
+   "safe": "wf_cache_clear",
+   "readme_sha": "20931b5ec372c4b0",
+   "readme_exists": true
+  },
+  "wf_define": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\wf_define",
+   "safe": "wf_define",
+   "readme_sha": "fb75b18d709cfe7a",
+   "readme_exists": true
+  },
+  "wf_resume": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\wf_resume",
+   "safe": "wf_resume",
+   "readme_sha": "51abbba6202d1ea9",
+   "readme_exists": true
+  },
+  "wf_run": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\wf_run",
+   "safe": "wf_run",
+   "readme_sha": "667edb889a3f174a",
+   "readme_exists": true
+  },
+  "wf_status": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\wf_status",
+   "safe": "wf_status",
+   "readme_sha": "fd228f87742a93bb",
+   "readme_exists": true
+  },
+  "zimage_rewash": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\zimage_rewash",
+   "safe": "zimage_rewash",
+   "readme_sha": "d34f58124b993e06",
+   "readme_exists": true
+  },
+  "obsidian_vault": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\obsidian_vault",
+   "safe": "obsidian_vault",
+   "readme_sha": "25126ee68209de25",
+   "readme_exists": true
+  },
+  "cap_tags": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\cap_tags",
+   "safe": "cap_tags",
+   "readme_sha": "92e96fa7ce65e7a8",
+   "readme_exists": true
+  },
+  "action_gate": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\action_gate",
+   "safe": "action_gate",
+   "readme_sha": "4eeebefa093f8ca3",
+   "readme_exists": true
+  },
+  "growth_hooks": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\growth_hooks",
+   "safe": "growth_hooks",
+   "readme_sha": "f710676b61993a30",
+   "readme_exists": true
+  },
+  "devour_fusion": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\devour_fusion",
+   "safe": "devour_fusion",
+   "readme_sha": "8573667605bea675",
+   "readme_exists": true
+  }
+ },
+ "updated_at": "2026-09-27T23:22:05",
+ "root": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults",
+ "counts": {
+  "vaults": 232,
+  "tentacles": 232
+ },
+ "body_index_sha": "d846221601d092ce",
+ "bound_at": "2026-09-27T23:22:05"
+}

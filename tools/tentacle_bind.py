@@ -332,6 +332,33 @@ def auto(dirp: str, tentacle: str) -> dict:
     return {"ok": True, "files": n}
 
 
+def prune(verbose: bool = False) -> dict:
+    """清掉**账上已不在盘上**的绑定（产出即绑会撞上转瞬即逝的中间产物）。
+
+    为什么要有这条：账的不变量是"**账里的资产都真在盘上**"（`test_cap_bind_bidirectional`
+    与 `test_wiring_all_tentacles` 都盯着它）。而产出即绑按 mtime 抓"此后新增"，
+    会抓到**转瞬即逝**的东西 —— 血账：`gbt_allinone/recon/capability.json` 是吞天胶囊的
+    中间产物，`ghost_guard` 会按设计把它清掉（「胶囊降威完整性」条款），于是那一行绑定
+    永久把审计顶红，而人只会看到"资产缺失 1"却找不到东西可修。
+    ⇒ 自愈：**不在盘上的绑定由 autobind 顺手清掉**，理由写进台账（可追溯）。
+    """
+    d = _load()
+    gone = []
+    for rel in list(d):
+        if (ROOT / rel).exists():
+            continue
+        gone.append((rel, (d.get(rel) or {}).get("tentacles")))
+        d.pop(rel, None)
+    if gone:
+        _save(d)
+        for rel, tents in gone:
+            _log("prune", asset=rel, tentacles=tents, why="不在盘上（转瞬即逝的中间产物）")
+        if verbose:
+            for rel, _t in gone:
+                print(f"  ✂ 剪掉已不在盘上的绑定 {rel}")       # noqa: T201
+    return {"ok": True, "pruned": len(gone), "sample": [g[0] for g in gone[:6]]}
+
+
 def suggest(path: str) -> str:
     """按启发式给出触手 kind。
 
@@ -534,7 +561,11 @@ def autobind(kind_hint: str = "", force: bool = False, verbose: bool = False) ->
         skills_sync = {"ok": False, "error": f"{type(exc).__name__}: {str(exc)[:140]}",
                        "note": "技能同步没跑成 —— **如实报**，别让新增技能悄悄停在源里"}
     if found:
-        _log("autobind", files=len(found), bound=len(bound), hint=kind_hint)
+        pruned = prune(verbose=verbose)        # 顺手剪掉已不在盘上的（防"摸不到的资产缺失"永久顶红）
+        _log("autobind", files=len(found), bound=len(bound), hint=kind_hint,
+             pruned=pruned.get("pruned"))
+        if pruned.get("pruned"):
+            bound.append(f"（剪掉 {pruned['pruned']} 条已不在盘上的绑定）")
     if verbose and bound:
         for b in bound[:20]:
             print(f"  ✔ 产出即绑 {b}")
@@ -671,6 +702,10 @@ def main(argv: list) -> int:
         return 0 if scan(verbose=True).get("ok") else 1
     if cmd == "gaps":
         return 0 if gaps(verbose=True).get("ok") else 1
+    if cmd == "prune":
+        r = prune(verbose=True)
+        print(f"  剪枝：{r.get('pruned')} 条绑定已不在盘上（理由进了台账）")
+        return 0
     if cmd == "autobind":
         r = autobind(force=True, verbose=True)
         print(f"  产出即绑：发现 {r.get('found')} · 绑定 {r.get('bound')}")

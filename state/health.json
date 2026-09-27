@@ -1,6 +1,6 @@
 {
  "ok": true,
- "at": "2026-09-27T22:41:03",
+ "at": "2026-09-28T01:38:33",
  "energy": {
   "sources": 9,
   "free_pool": true
@@ -11,50 +11,50 @@
   "gbt_allinone": {
    "fp": {
     "exists": true,
-    "files": 9549,
-    "bytes": 1533866138,
-    "newest_mtime": 1790523643.3
+    "files": 9569,
+    "bytes": 1539495041,
+    "newest_mtime": 1790534305.1
    },
-   "units": 879,
+   "units": 890,
    "coverage": 1.0,
    "missing": 0,
    "sec_needs_human": 0,
    "sec_flagged": 20,
    "ok": true,
-   "at": "2026-09-27T22:40:54",
+   "at": "2026-09-28T01:38:32",
    "reused": false
   },
   "tools": {
    "fp": {
     "exists": true,
-    "files": 627,
-    "bytes": 6494650,
-    "newest_mtime": 1790522517.4
+    "files": 628,
+    "bytes": 6505315,
+    "newest_mtime": 1790526086.5
    },
-   "units": 581,
+   "units": 582,
    "coverage": 1.0,
    "missing": 0,
    "sec_needs_human": 0,
    "sec_flagged": 30,
    "ok": true,
-   "at": "2026-09-27T22:40:57",
-   "reused": false
+   "at": "2026-09-28T01:30:48",
+   "reused": true
   },
   "skills": {
    "fp": {
     "exists": true,
-    "files": 360,
-    "bytes": 4650209,
-    "newest_mtime": 1790522865.7
+    "files": 361,
+    "bytes": 4660930,
+    "newest_mtime": 1790528364.6
    },
-   "units": 360,
+   "units": 361,
    "coverage": 1.0,
    "missing": 0,
    "sec_needs_human": 0,
    "sec_flagged": 1,
    "ok": true,
-   "at": "2026-09-27T22:40:58",
-   "reused": false
+   "at": "2026-09-28T01:30:49",
+   "reused": true
   },
   "docs": {
    "fp": {
@@ -75,9 +75,9 @@
   "state": {
    "fp": {
     "exists": true,
-    "files": 235,
-    "bytes": 152872978,
-    "newest_mtime": 1790523658.5
+    "files": 252,
+    "bytes": 153149395,
+    "newest_mtime": 1790534312.3
    },
    "units": 0,
    "coverage": 1.0,
@@ -85,7 +85,7 @@
    "sec_needs_human": 0,
    "sec_flagged": 0,
    "ok": true,
-   "at": "2026-09-27T22:40:58",
+   "at": "2026-09-28T01:38:32",
    "reused": false
   },
   "memory": {
@@ -134,14 +134,14 @@
    "sec_flagged": 0,
    "ok": true,
    "at": "2026-09-27T22:40:59",
-   "reused": false
+   "reused": true
   },
   "holo_pet": {
    "fp": {
     "exists": true,
     "files": 81,
-    "bytes": 19282380,
-    "newest_mtime": 1790523556.9
+    "bytes": 19282288,
+    "newest_mtime": 1790523802.8
    },
    "units": 80,
    "coverage": 1.0,
@@ -149,8 +149,8 @@
    "sec_needs_human": 0,
    "sec_flagged": 1,
    "ok": true,
-   "at": "2026-09-27T22:41:00",
-   "reused": false
+   "at": "2026-09-28T01:30:50",
+   "reused": true
   },
   "holo_pet_w3": {
    "fp": {
@@ -218,7 +218,45 @@
   }
  },
  "alerts": [],
- "scanned": 6,
- "reused": 7,
- "_口径": "健康=无报警；报警项逐条写清（树/覆盖/未钩住/需人核）"
+ "growth": {
+  "进程面": {
+   "ok": true,
+   "行": 328,
+   "端口占用者": 30,
+   "按线": {
+    "浏览器": 76,
+    "未知（不在我们的标记里）": 231,
+    "框架服务": 5,
+    "MCP/工具": 16
+   }
+  },
+  "门面": {
+   "ok": true,
+   "页面": "7/7",
+   "服务在听": 2
+  },
+  "永久记忆": {
+   "ok": true,
+   "problems": []
+  },
+  "吞天融合": {
+   "ok": true,
+   "problems": []
+  },
+  "标签许可": {
+   "ok": true,
+   "problems": []
+  },
+  "成长钩子": {
+   "ok": true,
+   "problems": []
+  },
+  "控制回路": {
+   "ok": true,
+   "problems": []
+  }
+ },
+ "scanned": 2,
+ "reused": 11,
+ "_口径": "健康=无报警；报警项逐条写清（树/覆盖/未钩住/需人核/成长栈四面）"
 }
