@@ -1,7 +1,7 @@
 {
- "at": "2026-09-28T06:06:34",
+ "at": "2026-09-28T06:33:42",
  "quick": false,
- "耗时s": 50.7,
+ "耗时s": 53.9,
  "顶层树": 65,
  "已扫": 55,
  "排除": 10,
@@ -348,10 +348,10 @@
   },
   {
    "tree": "gbt_allinone",
-   "units": 897,
+   "units": 900,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 897,
+   "agree": 900,
    "arbitrated": 0,
    "sec_flagged": 22,
    "sec_needs_human": 1
@@ -368,10 +368,10 @@
   },
   {
    "tree": "holo_pet",
-   "units": 80,
+   "units": 86,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 80,
+   "agree": 86,
    "arbitrated": 0,
    "sec_flagged": 1,
    "sec_needs_human": 0
@@ -408,10 +408,10 @@
   },
   {
    "tree": "out",
-   "units": 22,
+   "units": 28,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 22,
+   "agree": 28,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -488,10 +488,10 @@
   },
   {
    "tree": "skills",
-   "units": 362,
+   "units": 363,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 362,
+   "agree": 363,
    "arbitrated": 0,
    "sec_flagged": 1,
    "sec_needs_human": 0
@@ -528,10 +528,10 @@
   },
   {
    "tree": "vaults",
-   "units": 717,
+   "units": 723,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 717,
+   "agree": 723,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -614,13 +614,13 @@
  "面B_C": {
   "caps": {
    "ok": true,
-   "units": 209,
+   "units": 211,
    "coverage": 1.0,
    "missing": 0
   },
   "bindings": {
    "ok": true,
-   "units": 6470,
+   "units": 6479,
    "coverage": 1.0,
    "missing": 0
   },
@@ -687,5 +687,5 @@
  },
  "全绿": true,
  "_口径": "没被扫到的面必须显式列出并给理由；隐式跳过=盲区。文件面覆盖必须 1.0；B/C 面断连必须 0；E 面三闸必须全 True。",
- "单元总数": 16622
+ "单元总数": 16644
 }

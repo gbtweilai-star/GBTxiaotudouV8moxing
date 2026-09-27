@@ -122,3 +122,7 @@
 {"at": "2026-09-28T06:03:14", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
 {"at": "2026-09-28T06:03:14", "event": "evolve", "shortboard": "64 个能力位属 owner 类（要主人逐项许可才可调）", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
 {"at": "2026-09-28T06:03:14", "event": "evolve", "shortboard": "未清故障 10 条：['F3', 'F5', 'F9', 'F11', 'F12']", "dry_run": true, "auto": 1, "need_owner": 1, "ran": []}
+{"at": "2026-09-28T06:26:03", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T06:26:04", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T06:30:00", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}
+{"at": "2026-09-28T06:30:01", "event": "shortboard", "count": 3, "top": ["故障", "未实现", "许可"]}

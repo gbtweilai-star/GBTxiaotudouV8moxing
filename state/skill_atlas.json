@@ -1,6 +1,6 @@
 {
  "built_by": "tools/codex-scripts/omni.py build",
- "built_at": "2026-09-28T06:01:12",
+ "built_at": "2026-09-28T06:24:45",
  "note": "框架职业技能图鉴。口径：`omnipulg` = 走万能插（run_task 唯一门）的能力位；`agent-skill` = 由 agent 按技能名加载执行的技能；`design-asset` = 审美素材（料，不是可调用能力）。本图鉴是**现扫**产物，不是手抄清单。",
  "caps_error": "",
  "caps": [
@@ -2287,6 +2287,36 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python tools/codex-scripts/five-dim.py cap agent_rig"
+  },
+  {
+   "kind": "console_hub",
+   "domain": "system",
+   "desc": "工作台中枢：**所有独立页面的唯一数据源**（主人令 2026-09-28「把所有触手连接全面专业化 3D 可视化…每个工作流的独立页面需要精细设计排布…必须先全面扫描确保不能遗漏」）：`pages` 页面登记表（单一真相）· `graph` 3D 图（30 域→209 能力→绑定弧→**运行脉冲=真台账尾**）· `widgets` Bento 九部件（**每个数带 src**）· `layout` 布局记忆 · `scan` **「不能遗漏」机检**（盘上现读 vs 登记表双向比对，未登记=盲区必须 0）。op=pages/graph/widgets/layout/scan/verify/",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "console_hub",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap console_hub"
+  },
+  {
+   "kind": "console_pages",
+   "domain": "creation",
+   "desc": "工作台页面渲染器：把 `console_hub` 的真读数**内联**进页面（渲染产物，file:// 直开）——Bento 自定义工作台（9 部件/拖拽编排/布局记忆）· 触手 3D 全景（域环→能力节点→绑定弧→运行脉冲，签名元素占首屏≥1/5、有光、字不歪）· 每工作流独立页（film/movie/music/short-video）。设计契约按 `gbt-aesthetic` 定档（数据台 4/3/6 · 3D 5/4/5）· 品牌三色冻结不引第四色 · 尊重 prefers-reduced-motion · 无 indigo/无 emoji 图标/无编造指标/无外链图床。op=ren",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "console_pages",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap console_pages"
   },
   {
    "kind": "lobehub",
@@ -7064,6 +7094,25 @@
    "root_count": 3
   },
   {
+   "name": "gbt-distilled-ops",
+   "displayName": "",
+   "desc": "",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-distilled-ops",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
+  },
+  {
    "name": "gbt-dl-101",
    "displayName": "深度学习训练营 · 指挥官手册（6.S191 蒸馏 · 第一层·下）",
    "desc": "GBT小土豆V8 的深度学习选型与指挥手册，蒸馏自 MIT 6.S191《Introduction to Deep Learning》的九讲讲义结构与三个实验的方法论，以指挥官视角重写——书教工程师「怎么建网络」，本件教指挥官「什么活派哪族架构、哪条手艺线练哪种本事」。九讲地图摊成九把选型叉（序列/视觉/生成/强化/并行训练各归其位），三 lab 摊成三条手艺线（音乐生成/人脸检测/微调 LLM），并行训练一节接本仓的负载闸与内存压强派单制。当用户说「深度学习 / 神经网络 / 架构选型 / 序列建模 / Transformer / CNN / 计算机视觉 / 生成模型 / diffusion / GAN / 强化学习 / 微调 / fine-tune / 大模型 / 并行训练 / 6.S191 / 训练营」时使用。边界：AI 认知与派单判断走 gbt-ai-101；框架本体操作走 gbt",
@@ -11638,14 +11687,14 @@
   }
  ],
  "counts": {
-  "caps": 209,
-  "caps_enabled": 209,
-  "caps_safe_no_args": 123,
-  "skills": 369,
-  "skills_raw_before_dedupe": 711,
-  "skills_multi_root": 173,
+  "caps": 211,
+  "caps_enabled": 211,
+  "caps_safe_no_args": 125,
+  "skills": 370,
+  "skills_raw_before_dedupe": 713,
+  "skills_multi_root": 174,
   "skills_by_channel": {
-   "agent-skill": 276,
+   "agent-skill": 277,
    "design-asset": 93
   },
   "design_assets_bulk_total": 235,

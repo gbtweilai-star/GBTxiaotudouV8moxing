@@ -522,6 +522,14 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import agent_rig as _age
         p = payload or {}
         return _age.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "console_hub":
+        from .tools import console_hub as _chub
+        p = payload or {}
+        return _chub.run_op(p.get("op", "pages"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "console_pages":
+        from .tools import console_pages as _cpg
+        p = payload or {}
+        return _cpg.run_op(p.get("op", "render"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "lobehub":
         # LobeHub 桌面端全控：七大面 76 把可控制键；启动/关闭过 process_execute 门，
         # 设置写走白名单 + filesystem_write 门；凭据只回形状（按键名掩码）。

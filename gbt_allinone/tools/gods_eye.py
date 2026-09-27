@@ -166,18 +166,33 @@ def _log(row: dict) -> None:
 
 
 def see(**_kw) -> dict:
-    """眼睛：创作页面（在不在）+ 服务（端口在不在听）。"""
-    pages = []
-    for name, why in CREATION_PAGES:
-        p = _ROOT / "holo_pet" / "assets" / name / "index.html"
-        pages.append({"page": name, "why": why, "exists": p.is_file(),
-                      "kb": round(p.stat().st_size / 1024, 1) if p.is_file() else 0,
-                      "open": f"holo_pet/assets/{name}/index.html"})
+    """眼睛：创作页面（在不在）+ 服务（端口在不在听）。
+
+    ⚠️ 2026-09-28 改口径：页面清单**不再自带** —— 改为读 `console_hub.pages`（**单一真相**）。
+    血账：这里原来自带一个 7 页硬清单，而盘上其实有 **20 个独立页**（扫描抓到的：总入口 · 三方向自动化面板 ·
+    仙侠皮肤预览 · V22 可交互原型/无限画布 · 本轮新建的工作台/3D 全景/四条工作流页）
+    —— **各维护一份清单 = 必然看不见新增的页**。`console_hub` 读不到时退回自带清单（fail-soft，但如实标退路）。
+    """
+    pages, src = [], ""
+    rows = (_gate("console_hub", {"op": "pages"}).get("payload") or {}).get("rows") or []
+    if rows:
+        src = "console_hub.pages（单一真相）"
+        for r in rows:
+            pages.append({"page": r.get("page"), "why": r.get("what"), "kind": r.get("kind"),
+                          "workflow": r.get("workflow"), "exists": bool(r.get("exists")),
+                          "kb": r.get("kb"), "open": r.get("path")})
+    else:
+        src = "退路：gods_eye 自带 7 页清单（console_hub 读不到）"
+        for name, why in CREATION_PAGES:
+            p = _ROOT / "holo_pet" / "assets" / name / "index.html"
+            pages.append({"page": name, "why": why, "exists": p.is_file(),
+                          "kb": round(p.stat().st_size / 1024, 1) if p.is_file() else 0,
+                          "open": f"holo_pet/assets/{name}/index.html"})
     services = [{"port": p, "what": w, "listening": _port_open(p)} for p, w in PORTS]
-    return {"ok": True, "op": "see", "pages": pages,
+    return {"ok": True, "op": "see", "pages": pages, "pages_source": src,
             "pages_ok": sum(1 for x in pages if x["exists"]), "pages_total": len(pages),
             "services": services, "services_up": sum(1 for x in services if x["listening"]),
-            "_口径": "页面=真读文件；服务=真连一次端口（不许拿'应该开着'当读数）"}
+            "_口径": "页面=真读文件（清单来自 console_hub 单一真相）；服务=真连一次端口"}
 
 
 def advisors(**_kw) -> dict:

@@ -1,0 +1,165 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>自定义工作台 · Bento</title><style>
+:root{
+  --bg:#0B0B14; --surface:#12121E; --surface-2:#171726; --line:rgba(0,229,255,.10);
+  --line-soft:rgba(0,229,255,.06);
+  --gold:#F5B041; --cyan:#00E5FF; --violet:#7C4DFF;
+  --text:#E9E9F2; --dim:#8B8BA3; --dim-2:#5C5C74;
+  --ok:#3DDC97; --warn:#F5B041; --bad:#FF6B6B;
+  --r-lg:14px; --r-sm:8px; --gap:14px;
+  --shadow-1:0 1px 0 rgba(255,255,255,.03) inset, 0 1px 2px rgba(4,8,20,.7);
+  --shadow-2:0 0 0 1px rgba(0,229,255,.06), 0 6px 24px -8px rgba(4,10,28,.9),
+             0 18px 48px -24px rgba(0,229,255,.12);
+  --font:ui-sans-serif,system-ui,"Segoe UI",Roboto,"Noto Sans SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"Cascadia Mono",Consolas,monospace;
+}
+/* §5 动效纪律（硬）：尊重系统"减少动效"偏好 —— 一律停掉动画与过渡 */
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);
+  -webkit-font-smoothing:antialiased}
+body{padding:20px 22px 40px;max-width:1680px;margin:0 auto}
+a{color:var(--cyan);text-decoration:none}
+h1{font-size:22px;font-weight:650;letter-spacing:.02em;margin:0 0 4px}
+h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 10px}
+.sub{color:var(--dim);font-size:12px;margin:0 0 16px}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+  border-bottom:1px solid var(--line-soft);padding-bottom:12px;margin-bottom:16px}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{width:26px;height:26px;border-radius:7px;border:1px solid rgba(245,176,65,.5);
+  background:radial-gradient(120% 120% at 30% 20%,rgba(245,176,65,.35),rgba(124,77,255,.18) 60%,transparent);
+  box-shadow:0 0 18px -4px rgba(245,176,65,.5)}
+.card{background:linear-gradient(180deg,var(--surface-2),var(--surface));
+  border:1px solid var(--line);border-radius:var(--r-lg);padding:14px 15px;
+  box-shadow:var(--shadow-2)}
+.src{color:var(--dim-2);font-size:11px;font-family:var(--mono)}
+.na{font-family:var(--mono);font-size:22px;letter-spacing:.02em}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--gap)}
+.mut{color:var(--dim);font-size:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);
+  border-radius:999px;padding:3px 9px;font-size:11px;color:var(--dim);background:rgba(0,229,255,.03)}
+.ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+.ic{width:14px;height:14px;display:inline-block;vertical-align:-2px;stroke:currentColor;
+  fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+.w{cursor:grab} .w:active{cursor:grabbing}
+.wbody{margin-top:2px}
+.bwrap{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.brow{display:grid;grid-template-columns:96px 1fr 34px;gap:8px;align-items:center;font-size:12px}
+.bk{color:var(--dim);font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bbar{height:6px;border-radius:999px;background:rgba(255,255,255,.05);overflow:hidden}
+.bbar i{display:block;height:100%;border-radius:999px;opacity:.85}
+.bv{text-align:right;font-family:var(--mono);color:var(--dim)}
+.wrow{display:flex;flex-direction:column;gap:2px;padding:7px 0;border-bottom:1px solid var(--line-soft)}
+.wrow:last-child{border-bottom:0}
+button.chip{font:inherit;color:var(--dim);background:rgba(0,229,255,.03)}
+button.chip:hover{color:var(--cyan);border-color:rgba(0,229,255,.3)}
+h2 .ic{margin-right:7px;color:var(--cyan);opacity:.85}
+</style></head><body>
+<div class="top"><div class="brand"><span class="mark"></span>
+<div><h1>自定义工作台 · Bento</h1><div class="sub">所有能力与页面收在一屏 · 拖拽编排 · 布局记忆 · 每格带来源</div></div></div>
+<div class="chip">2026-09-28 06:29 · 快照内联 · 数据源 console_hub</div></div>
+
+<div id="bar" style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+  <span class="mut">拖卡片重排 · 布局自动记忆（localStorage）
+  </span>
+  <button id="sync" class="chip" style="cursor:pointer">同步到框架</button>
+  <button id="reset" class="chip" style="cursor:pointer">复位</button>
+  <span id="synced" class="src"></span>
+</div>
+<div id="bento" class="grid"></div>
+<script>
+const DATA = {"widgets": {"ok": true, "op": "widgets", "at": "2026-09-28T06:29:45", "w1_caps": {"total": 211, "domains": 30, "top": {"system": 32, "llm": 25, "security": 22, "pipeline": 18, "creation": 17, "mind": 12, "video": 12, "tentacle": 10}, "src": "caps_registry 现读"}, "w2_pages": {"total": 20, "exists": 20, "src": "console_hub.pages"}, "w3_bindings": {"assets": 6479, "src": "state/asset_bindings.json"}, "w4_health": {"ok": true, "alerts": 0, "at": "2026-09-28T01:38:33", "src": "state/health.json"}, "w5_shortboard": {"count": 3, "top": [{"dim": "故障", "what": "未清故障 10 条：['F3', 'F5', 'F9', 'F11', 'F12']", "src": "state/排查台账.json"}, {"dim": "未实现", "what": "未实现登记 1 条：['unimplemented']", "src": "state/unimplemented.json"}, {"dim": "许可", "what": "64 个能力位属 owner 类（要主人逐项许可才可调）", "src": "state/cap_tags.json"}], "src": "state/shortboard.json"}, "w6_permits": {"owner_class": 64, "total_tags": 209, "src": "state/cap_tags.json"}, "w7_audit": {"findings": 9, "needs_human": 0, "src": "state/code_audit_findings.json"}, "w8_workflows": {"items": {"film": {"label": "电影产线", "dir": "projects/film", "files": 14, "stages": ["01-剧本", "02-分镜", "03-拍摄", "04-素材", "05-剪辑", "06-成片"], "newest_h": 108.5}, "movie": {"label": "成片线", "dir": "projects/movie", "files": 350, "stages": ["产线", "成片", "交付"], "newest_h": 8.4}, "music": {"label": "音乐产线", "dir": "projects/music", "files": 13, "stages": ["01-作词", "02-作曲", "03-编曲", "04-混音", "05-母带", "06-发行"], "newest_h": 108.5}, "short-video": {"label": "短视频产线", "dir": "projects/short-video", "files": 20, "stages": ["01-script", "02-storyboard", "03-raw", "04-cut", "05-publish"], "newest_h": 49.5}}, "src": "projects/* 现读（文件数 + 最新改动时龄）"}, "w9_decisions": {"recent": [{"choice": "修未清故障", "path": "fast", "decider": "Jev（推理模型）"}, {"choice": null, "path": "blocked", "decider": "Jev（推理模型）"}, {"choice": "修未清故障", "path": "fast", "decider": "Jev（推理模型）"}], "src": "state/gods_eye_decisions.jsonl"}, "_口径": "九个部件九个数；**每个都带 src**（页面上要显示来源，不许匿名数字）"}, "pages": {"ok": true, "op": "pages", "count": 20, "rows": [{"page": "workbench", "path": "holo_pet/assets/workbench/index.html", "kind": "枢纽", "workflow": "全部", "what": "Bento 自定义工作台（9 部件 · 拖拽编排 · 布局记忆）", "exists": true, "bytes": 20049, "kb": 19.6}, {"page": "tentacle3d", "path": "holo_pet/assets/tentacle3d/index.html", "kind": "全景", "workflow": "全部", "what": "触手 3D 全景（域→能力→绑定 + 运行脉冲）", "exists": true, "bytes": 68181, "kb": 66.6}, {"page": "wf-film", "path": "holo_pet/assets/wf-film/index.html", "kind": "工作流", "workflow": "film", "what": "电影产线独立页（阶段/判据/近产出）", "exists": true, "bytes": 8553, "kb": 8.4}, {"page": "wf-movie", "path": "holo_pet/assets/wf-movie/index.html", "kind": "工作流", "workflow": "movie", "what": "成片线独立页", "exists": true, "bytes": 9179, "kb": 9.0}, {"page": "wf-music", "path": "holo_pet/assets/wf-music/index.html", "kind": "工作流", "workflow": "music", "what": "音乐产线独立页", "exists": true, "bytes": 8386, "kb": 8.2}, {"page": "wf-short-video", "path": "holo_pet/assets/wf-short-video/index.html", "kind": "工作流", "workflow": "short-video", "what": "短视频产线独立页", "exists": true, "bytes": 9933, "kb": 9.7}, {"page": "console3d", "path": "holo_pet/assets/console3d/index.html", "kind": "执行台", "workflow": "engine", "what": "3D 大脑执行层（原有）", "exists": true, "bytes": 62749, "kb": 61.3}, {"page": "automation", "path": "holo_pet/assets/automation/index.html", "kind": "执行台", "workflow": "automation", "what": "自动化面板（原有）", "exists": true, "bytes": 17385, "kb": 17.0}, {"page": "structure", "path": "holo_pet/assets/structure/index.html", "kind": "执行台", "workflow": "framework", "what": "结构浏览器（原有）", "exists": true, "bytes": 47811, "kb": 46.7}, {"page": "godview", "path": "holo_pet/assets/godview/index.html", "kind": "决策台", "workflow": "framework", "what": "上帝之眼（原有）", "exists": true, "bytes": 11997, "kb": 11.7}, {"page": "health-panel", "path": "holo_pet/assets/health-panel/index.html", "kind": "监控", "workflow": "security", "what": "健康面板（安全棒，原有）", "exists": true, "bytes": 8053, "kb": 7.9}, {"page": "task-manager", "path": "holo_pet/assets/task-manager/index.html", "kind": "监控", "workflow": "system", "what": "任务管理器（原有）", "exists": true, "bytes": 10303, "kb": 10.1}, {"page": "music", "path": "holo_pet/assets/music/index.html", "kind": "执行台", "workflow": "music", "what": "音乐台（原有）", "exists": true, "bytes": 12567, "kb": 12.3}, {"page": "entry", "path": "index.html", "kind": "枢纽", "workflow": "全部", "what": "**总入口**（仓根，30KB）", "exists": true, "bytes": 30555, "kb": 29.8}, {"page": "media-console", "path": "media-console.html", "kind": "执行台", "workflow": "media", "what": "三方向自动化工作流面板（1.3MB）", "exists": true, "bytes": 1339571, "kb": 1308.2}, {"page": "skin-preview", "path": "skin-preview.html", "kind": "门面", "workflow": "design", "what": "仙侠×科技 皮肤预览", "exists": true, "bytes": 93814, "kb": 91.6}, {"page": "v22-prototype", "path": "V22 GBT小土豆V8-可交互原型.html", "kind": "原型", "workflow": "design", "what": "能力中枢·可交互原型（V21/V22）", "exists": true, "bytes": 658813, "kb": 643.4}, {"page": "v22-canvas", "path": "V22 GBT小土豆V8-无限画布.html", "kind": "原型", "workflow": "design", "what": "能力中枢·无限画布（V21/V22）", "exists": true, "bytes": 248239, "kb": 242.4}, {"page": "brain", "path": "brain.html", "kind": "执行台", "workflow": "engine", "what": "大脑执行层（仓根老页，2026-09-13 前）", "exists": true, "bytes": 32318, "kb": 31.6}, {"page": "capabilities", "path": "capabilities.html", "kind": "全景", "workflow": "framework", "what": "能力球（仓根老页，2026-09-13 前）", "exists": true, "bytes": 110491, "kb": 107.9}], "by_kind": {"枢纽": 2, "全景": 2, "工作流": 4, "执行台": 6, "决策台": 1, "监控": 2, "门面": 1, "原型": 2}, "by_workflow": {"全部": 3, "film": 1, "movie": 1, "music": 2, "short-video": 1, "engine": 2, "automation": 1, "framework": 3, "security": 1, "system": 1, "media": 1, "design": 3}, "missing": [], "_口径": "登记表 = 单一真相；scan 会拿它跟盘上现读双向比对"}, "graph_counts": {"domains": 30, "caps": 211, "member_edges": 211, "binding_weight": 6387, "pulses": 36}, "pulses": [{"ledger": "code_audit.jsonl", "event": "scan", "at": "2026-09-28T05:56:20", "age_s": null}, {"ledger": "code_audit.jsonl", "event": "scan", "at": "2026-09-28T05:56:58", "age_s": null}, {"ledger": "code_audit.jsonl", "event": "scan", "at": "2026-09-28T05:57:19", "age_s": null}, {"ledger": "code_audit.jsonl", "event": "scan", "at": "2026-09-28T05:57:47", "age_s": null}, {"ledger": "code_audit.jsonl", "event": "scan", "at": "2026-09-28T05:57:48", "age_s": null}, {"ledger": "code_audit.jsonl", "event": "diff_audit", "at": "2026-09-28T06:09:03", "age_s": null}, {"ledger": "obsidian_memory.jsonl", "event": "provision", "at": "2026-09-28T06:24:46", "age_s": null}, {"ledger": "obsidian_memory.jsonl", "event": "remember", "at": "2026-09-28T06:24:46", "age_s": null}, {"ledger": "obsidian_memory.jsonl", "event": "bind", "at": "2026-09-28T06:24:46", "age_s": null}, {"ledger": "obsidian_memory.jsonl", "event": "provision", "at": "2026-09-28T06:24:46", "age_s": null}, {"ledger": "obsidian_memory.jsonl", "event": "remember", "at": "2026-09-28T06:24:46", "age_s": null}, {"ledger": "obsidian_memory.jsonl", "event": "bind", "at": "2026-09-28T06:24:46", "age_s": null}], "workflows": {"film": {"label": "电影产线", "dir": "projects/film", "files": 14, "stages": ["01-剧本", "02-分镜", "03-拍摄", "04-素材", "05-剪辑", "06-成片"], "newest_h": 108.5}, "movie": {"label": "成片线", "dir": "projects/movie", "files": 350, "stages": ["产线", "成片", "交付"], "newest_h": 8.4}, "music": {"label": "音乐产线", "dir": "projects/music", "files": 13, "stages": ["01-作词", "02-作曲", "03-编曲", "04-混音", "05-母带", "06-发行"], "newest_h": 108.5}, "short-video": {"label": "短视频产线", "dir": "projects/short-video", "files": 20, "stages": ["01-script", "02-storyboard", "03-raw", "04-cut", "05-publish"], "newest_h": 49.5}}};
+const ICON = {"caps": "<svg class='ic' viewBox='0 0 24 24'><path d='M12 3l8 4.5v9L12 21 4 16.5v-9z'/><path d='M12 12l8-4.5M12 12v9M12 12L4 7.5'/></svg>", "pages": "<svg class='ic' viewBox='0 0 24 24'><rect x='3' y='4' width='18' height='16' rx='2'/><path d='M3 9h18M8 4v16'/></svg>", "bind": "<svg class='ic' viewBox='0 0 24 24'><path d='M9 12h6'/><path d='M8 8a4 4 0 000 8h1M16 8a4 4 0 010 8h-1'/></svg>", "health": "<svg class='ic' viewBox='0 0 24 24'><path d='M3 12h4l2-6 3 12 2-6h7'/></svg>", "short": "<svg class='ic' viewBox='0 0 24 24'><path d='M4 19V5M4 19h16'/><path d='M8 15l3-4 3 3 4-6'/></svg>", "key": "<svg class='ic' viewBox='0 0 24 24'><circle cx='8' cy='12' r='3'/><path d='M11 12h10M18 12v3M15 12v2'/></svg>", "audit": "<svg class='ic' viewBox='0 0 24 24'><path d='M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z'/><path d='M9 12l2 2 4-4'/></svg>", "flow": "<svg class='ic' viewBox='0 0 24 24'><circle cx='6' cy='6' r='2.5'/><circle cx='18' cy='8' r='2.5'/><circle cx='10' cy='18' r='2.5'/><path d='M8.2 7.1l7.6.9M7.3 8.2l2 7.6M16.6 10.2l-5 6'/></svg>", "decide": "<svg class='ic' viewBox='0 0 24 24'><path d='M12 3v4M12 17v4M3 12h4M17 12h4'/><circle cx='12' cy='12' r='4'/></svg>"};
+const DEF = [["w1",6,2],["w2",3,2],["w4",3,2],["w5",6,3],["w8",6,3],
+             ["w3",3,2],["w6",3,2],["w7",3,2],["w9",3,2]];
+const TITLE = {w1:"能力位分类",w2:"页面全景",w3:"绑定水位",w4:"框架健康",
+  w5:"最短板",w6:"调用许可",w7:"安全审计",w8:"工作流",w9:"最近决策"};
+const IC = {w1:"caps",w2:"pages",w3:"bind",w4:"health",w5:"short",
+  w6:"key",w7:"audit",w8:"flow",w9:"decide"};
+const KEY = "gbt.workbench.layout.v1";
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function bars(obj,color){
+  const ks=Object.keys(obj); const max=Math.max(1,...ks.map(k=>obj[k]));
+  return `<div class="bwrap">${ks.map(k=>`<div class="brow"><span class="bk">${esc(k)}</span>
+    <span class="bbar"><i style="width:${(obj[k]/max*100).toFixed(1)}%;background:${color}"></i></span>
+    <span class="bv">${obj[k]}</span></div>`).join("")}</div>`;
+}
+function srcOf(t){return `<div class="src">源：${esc(t)}</div>`;}
+function render(id){
+  const W=DATA.widgets, P=DATA.pages, G=DATA.graph_counts;
+  switch(id){
+    case "w1": return `<div class="na">${W.w1_caps.total}</div>
+      <div class="mut">个能力位 · ${W.w1_caps.domains} 个域</div>${bars(W.w1_caps.top,"var(--cyan)")}
+      ${srcOf(W.w1_caps.src)}`;
+    case "w2": return `<div class="na">${P.count}</div>
+      <div class="mut">个独立页面 · 已建 ${P.count-P.missing.length} · 待建 ${P.missing.length}</div>
+      ${bars(P.by_kind,"var(--gold)")}${srcOf("console_hub.pages（登记表=单一真相）")}`;
+    case "w3": return `<div class="na">${W.w3_bindings.assets}</div>
+      <div class="mut">条资产↔触手绑定 · 断连 0</div>
+      <div class="chip" style="margin-top:8px">绑定是双向的：资产查得到触手，触手也叫得出资产</div>
+      ${srcOf(W.w3_bindings.src)}`;
+    case "w4": {const h=W.w4_health;
+      return `<div class="na ${h.ok?"ok":"bad"}">${h.ok?"健康":"有报警"}</div>
+      <div class="mut">报警 ${h.alerts} 条 · 读数 ${esc(h.at||"-")}</div>${srcOf(h.src)}`;}
+    case "w5": {const s=W.w5_shortboard;
+      return `<div class="mut">共 ${s.count} 条，前 ${s.top.length}：</div>`+
+      s.top.map(x=>`<div style="margin:6px 0"><span class="chip">${esc(x.dim)}</span>
+        <span class="mut"> ${esc(x.what)}</span><div class="src">${esc(x.src)}</div></div>`).join("");}
+    case "w6": return `<div class="na">${W.w6_permits.owner_class}</div>
+      <div class="mut">个 owner 类能力位（**只有主人许可才能调**）· 标签共 ${W.w6_permits.total_tags}</div>
+      <div class="chip" style="margin-top:8px">许可只能主人在终端发（TTY+YES）</div>${srcOf(W.w6_permits.src)}`;
+    case "w7": return `<div class="na ${W.w7_audit.findings?"warn":"ok"}">${W.w7_audit.findings}</div>
+      <div class="mut">条 findings · 另 ${W.w7_audit.needs_human} 条需人核（静态判不出，不硬报）</div>
+      ${srcOf(W.w7_audit.src)}`;
+    case "w8": return Object.entries(W.w8_workflows.items).map(([k,v])=>`<div class="wrow">
+      <a href="../wf-${k}/index.html"><b>${esc(v.label)}</b></a>
+      <span class="mut">${v.files} 件 · 最新改动 ${v.newest_h==null?"-":v.newest_h+"h 前"}</span>
+      <div class="src">${esc(v.stages.join(" → "))}</div></div>`).join("")
+      + srcOf("projects/* 现读");
+    case "w9": {const d=W.w9_decisions.recent;
+      return d.length? d.map(x=>`<div style="margin:5px 0"><b>${esc(x.choice||"（挂起）")}</b>
+        <span class="chip">${esc(x.path)}</span><div class="src">决策人：${esc(x.decider)}</div></div>`).join("")
+        : '<div class="mut">暂无决策记录</div>'+srcOf(W.w9_decisions.src);}
+  }
+  return "";
+}
+function layout(){
+  try{const s=JSON.parse(localStorage.getItem(KEY)||"null"); if(Array.isArray(s)&&s.length) return s;}catch(e){}
+  return DEF.map(([id,c,r])=>({id,c,r}));
+}
+function save(l){ try{localStorage.setItem(KEY, JSON.stringify(l));}catch(e){} }
+function paint(){
+  const l=layout(), box=document.getElementById("bento");
+  box.innerHTML = l.map(it=>`<div class="card w" draggable="true" data-id="${it.id}"
+      style="grid-column:span ${Math.min(12,it.c)};grid-row:span ${it.r}">
+      <h2>${ICON[IC[it.id]]||""}${TITLE[it.id]||it.id}</h2><div class="wbody">${render(it.id)}</div></div>`).join("");
+  let drag=null;
+  box.querySelectorAll(".w").forEach(el=>{
+    el.addEventListener("dragstart",e=>{drag=el;el.style.opacity=".4";});
+    el.addEventListener("dragend",()=>{el.style.opacity="1";});
+    el.addEventListener("dragover",e=>e.preventDefault());
+    el.addEventListener("drop",e=>{e.preventDefault();
+      if(!drag||drag===el) return;
+      const cur=layout(); const ids=cur.map(x=>x.id);
+      const a=ids.indexOf(drag.dataset.id), b=ids.indexOf(el.dataset.id);
+      const [m]=cur.splice(a,1); cur.splice(b,0,m); save(cur); paint();
+    });
+  });
+}
+document.getElementById("sync").onclick=async()=>{
+  const l=layout();
+  const cmd=`run_task('console_hub', {'op':'layout','layout_json':${JSON.stringify(JSON.stringify(l))}})`;
+  try{await navigator.clipboard.writeText(cmd);
+    document.getElementById("synced").textContent="已复制同步命令 → 粘到终端即可落进框架";
+  }catch(e){document.getElementById("synced").textContent=cmd;}
+};
+document.getElementById("reset").onclick=()=>{localStorage.removeItem(KEY);paint();};
+paint();
+</script>
+</body></html>

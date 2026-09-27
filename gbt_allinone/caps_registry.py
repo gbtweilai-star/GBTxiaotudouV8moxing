@@ -960,6 +960,18 @@ BENIGN_CAPS = {
         "handler": 'agent_rig',
         "safe": True,
     },
+    "console_hub": {
+        "domain": 'system',
+        "desc": '工作台中枢：**所有独立页面的唯一数据源**（主人令 2026-09-28「把所有触手连接全面专业化 3D 可视化…每个工作流的独立页面需要精细设计排布…必须先全面扫描确保不能遗漏」）：`pages` 页面登记表（单一真相）· `graph` 3D 图（30 域→209 能力→绑定弧→**运行脉冲=真台账尾**）· `widgets` Bento 九部件（**每个数带 src**）· `layout` 布局记忆 · `scan` **「不能遗漏」机检**（盘上现读 vs 登记表双向比对，未登记=盲区必须 0）。op=pages/graph/widgets/layout/scan/verify/where',
+        "handler": 'console_hub',
+        "safe": True,
+    },
+    "console_pages": {
+        "domain": 'creation',
+        "desc": '工作台页面渲染器：把 `console_hub` 的真读数**内联**进页面（渲染产物，file:// 直开）——Bento 自定义工作台（9 部件/拖拽编排/布局记忆）· 触手 3D 全景（域环→能力节点→绑定弧→运行脉冲，签名元素占首屏≥1/5、有光、字不歪）· 每工作流独立页（film/movie/music/short-video）。设计契约按 `gbt-aesthetic` 定档（数据台 4/3/6 · 3D 5/4/5）· 品牌三色冻结不引第四色 · 尊重 prefers-reduced-motion · 无 indigo/无 emoji 图标/无编造指标/无外链图床。op=render/list/verify/where',
+        "handler": 'console_pages',
+        "safe": True,
+    },
     "lobehub": {
         "domain": 'creation',
         "desc": ('LobeHub 桌面端（Electron 2.2.18）全控 —— 主人令 2026-09-27「把 LobeHub.lnk 做成'

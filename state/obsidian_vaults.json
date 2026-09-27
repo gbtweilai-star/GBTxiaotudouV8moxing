@@ -1433,14 +1433,26 @@
    "safe": "agent_rig",
    "readme_sha": "4097ba7e01119e49",
    "readme_exists": true
+  },
+  "console_hub": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\console_hub",
+   "safe": "console_hub",
+   "readme_sha": "feeb24ce90f458ed",
+   "readme_exists": true
+  },
+  "console_pages": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\console_pages",
+   "safe": "console_pages",
+   "readme_sha": "afde1661dfb4d816",
+   "readme_exists": true
   }
  },
- "updated_at": "2026-09-28T06:01:13",
+ "updated_at": "2026-09-28T06:24:46",
  "root": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults",
  "counts": {
-  "vaults": 239,
-  "tentacles": 239
+  "vaults": 241,
+  "tentacles": 241
  },
- "body_index_sha": "b098f4fc505073ef",
- "bound_at": "2026-09-28T06:01:14"
+ "body_index_sha": "3d3715d96563a6f7",
+ "bound_at": "2026-09-28T06:24:46"
 }

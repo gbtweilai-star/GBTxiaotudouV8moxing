@@ -29166,7 +29166,8 @@
    "claude_code",
    "health",
    "obsidian_vault",
-   "memory_bank"
+   "memory_bank",
+   "console_hub"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29189,7 +29190,8 @@
    "claude_code",
    "health",
    "obsidian_vault",
-   "memory_bank"
+   "memory_bank",
+   "console_hub"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -45370,5 +45372,76 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-28T06:03:08"
+ },
+ "gbt_allinone/tools/console_hub.py": {
+  "tentacles": [
+   "domain:tools",
+   "console_hub"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-28T06:18:39"
+ },
+ "gbt_allinone/tools/console_pages.py": {
+  "tentacles": [
+   "console_pages"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-28T06:24:45"
+ },
+ "holo_pet/assets/workbench/index.html": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T06:25:48"
+ },
+ "holo_pet/assets/wf-short-video/index.html": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T06:25:48"
+ },
+ "holo_pet/assets/wf-music/index.html": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T06:25:48"
+ },
+ "holo_pet/assets/wf-movie/index.html": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T06:25:48"
+ },
+ "holo_pet/assets/wf-film/index.html": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T06:25:48"
+ },
+ "holo_pet/assets/tentacle3d/index.html": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T06:25:48"
+ },
+ "gbt_allinone/tests/test_console_workspace.py": {
+  "tentacles": [
+   "console_hub"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T06:26:42"
+ },
+ "skills/gbt-console/SKILL.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T06:33:41"
  }
 }
