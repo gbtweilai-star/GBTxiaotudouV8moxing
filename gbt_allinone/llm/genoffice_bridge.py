@@ -1185,7 +1185,7 @@ def _refuses_non_loopback() -> bool:
 #   ② 写类/出网类 op 的作用域声明挂在 **cap 边界**（`security/policy.py::evaluate`
 #      的 `kind == "genoffice_bridge"` 分支），与本域既有口径一致
 #      （见 `llm/unified.py::status()` 的 `gate` 字段）。本入口**不自挂第二道闸**。
-_RUN_READ_OPS = ("status", "probe")
+# 只有 serve 是"不进能力位"的 —— 其余 op 都走能力位（读类直连 / 写类过门）。
 _RUN_CLI_ONLY = ("serve",)
 
 

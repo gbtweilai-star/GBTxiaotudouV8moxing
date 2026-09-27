@@ -16292,3 +16292,5 @@
 {"at": "2026-09-28T04:07:52", "event": "bind", "asset": "memory/2026-09-28.md", "tentacle": "project_context", "note": "autobind"}
 {"at": "2026-09-28T04:07:57", "event": "autobind", "files": 1, "bound": 1, "hint": "browser", "pruned": 0}
 {"at": "2026-09-28T04:08:13", "event": "autobind", "skills_synced": []}
+{"at": "2026-09-28T04:08:16", "event": "autobind", "files": 1, "bound": 1, "hint": "cloud_pc", "pruned": 0}
+{"at": "2026-09-28T04:08:51", "event": "scan", "bindings": 6463, "missing_asset": 0, "ghost_tentacle": 0}
