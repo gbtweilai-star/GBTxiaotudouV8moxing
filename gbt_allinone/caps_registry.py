@@ -852,6 +852,16 @@ BENIGN_CAPS = {
         "handler": 'coverage_auditor',
         "safe": True,
     },
+    "one_shot": {
+        "domain": 'creation',
+        "desc": '一句话 → 全链计划（主人令 2026-09-27「想什么就能生产什么画面」）：把一句话翻成产线输入 ——'
+                '节奏词→BPM（紧凑120/常规100/舒缓80）· 时长词→分钟 · **帧率由 BPM 反推**（每拍帧数必须整数）·'
+                '题材词→调色（走 filmgrade.INTENT_MAP）· 段落模板（8 拍：运动/机位/景别/能量轮转）·'
+                '交付目标（level/GOP/SSIM 判据）· 并**明确列出缺什么**（写盘要过 filesystem_write 门）。'
+                '**只读**：plan 不写任何文件。op=plan/show',
+        "handler": 'one_shot',
+        "safe": True,
+    },
     "surface_bind": {
         "domain": 'system',
         "desc": '通用「可控制面」绑定器（主人令 2026-09-27：「其他工具全部都要可控按键一个不漏的绑定好」）：'

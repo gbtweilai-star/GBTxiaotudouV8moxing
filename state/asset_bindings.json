@@ -29159,7 +29159,8 @@
    "automation_keys",
    "transformer",
    "project_context",
-   "surface_bind"
+   "surface_bind",
+   "one_shot"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29176,7 +29177,8 @@
    "automation_keys",
    "transformer",
    "project_context",
-   "surface_bind"
+   "surface_bind",
+   "one_shot"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -44972,5 +44974,12 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T21:36:06"
+ },
+ "gbt_allinone/tools/one_shot.py": {
+  "tentacles": [
+   "domain:tools"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T21:41:17"
  }
 }

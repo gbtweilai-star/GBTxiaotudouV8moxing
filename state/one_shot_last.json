@@ -1,0 +1,165 @@
+{
+ "ok": true,
+ "at": "2026-09-27T21:42:02",
+ "prompt": "热血紧凑的打斗，短片",
+ "推导": {
+  "bpm": "120.0（按节奏词（/紧凑|激烈|快|打斗|追逐|战斗/））",
+  "时长": "1.0 分钟（按时长词（/短片|预告|trailer/））",
+  "帧率": "30（由 BPM 反推：每拍帧数必须整数；候选 [24, 30, 60]）",
+  "调色": "热血橙青（INTENT_MAP 命中）"
+ },
+ "网格": {
+  "beats": 120,
+  "beat_s": null
+ },
+ "镜头表": [
+  {
+   "beat": 1,
+   "t": 0.0,
+   "move": "crash_zoom",
+   "angle": "eye",
+   "size": "full",
+   "energy": "intro"
+  },
+  {
+   "beat": 2,
+   "t": 0.5,
+   "move": "whip_lr",
+   "angle": "low",
+   "size": "medium",
+   "energy": "build"
+  },
+  {
+   "beat": 3,
+   "t": 1.0,
+   "move": "whip_rl",
+   "angle": "high",
+   "size": "close",
+   "energy": "verse"
+  },
+  {
+   "beat": 4,
+   "t": 1.5,
+   "move": "pov_bob",
+   "angle": "dutch",
+   "size": "full",
+   "energy": "break"
+  },
+  {
+   "beat": 5,
+   "t": 2.0,
+   "move": "shake",
+   "angle": "eye",
+   "size": "medium",
+   "energy": "chorus"
+  },
+  {
+   "beat": 6,
+   "t": 2.5,
+   "move": "dolly_in",
+   "angle": "low",
+   "size": "close",
+   "energy": "outro"
+  },
+  {
+   "beat": 7,
+   "t": 3.0,
+   "move": "push_out",
+   "angle": "high",
+   "size": "full",
+   "energy": "outro"
+  },
+  {
+   "beat": 8,
+   "t": 3.5,
+   "move": "arc_lr",
+   "angle": "dutch",
+   "size": "medium",
+   "energy": "outro"
+  }
+ ],
+ "manifest（未写盘）": {
+  "bpm": 120.0,
+  "beat_s": 0.5,
+  "fps": 30,
+  "minutes": 1.0,
+  "beats": 8,
+  "quality": "fhd",
+  "grade": "热血橙青",
+  "shots": [
+   {
+    "beat": 1,
+    "dur": 0.5,
+    "move": "crash_zoom",
+    "angle": "eye",
+    "size": "full"
+   },
+   {
+    "beat": 2,
+    "dur": 0.5,
+    "move": "whip_lr",
+    "angle": "low",
+    "size": "medium"
+   },
+   {
+    "beat": 3,
+    "dur": 0.5,
+    "move": "whip_rl",
+    "angle": "high",
+    "size": "close"
+   },
+   {
+    "beat": 4,
+    "dur": 0.5,
+    "move": "pov_bob",
+    "angle": "dutch",
+    "size": "full"
+   },
+   {
+    "beat": 5,
+    "dur": 0.5,
+    "move": "shake",
+    "angle": "eye",
+    "size": "medium"
+   },
+   {
+    "beat": 6,
+    "dur": 0.5,
+    "move": "dolly_in",
+    "angle": "low",
+    "size": "close"
+   },
+   {
+    "beat": 7,
+    "dur": 0.5,
+    "move": "push_out",
+    "angle": "high",
+    "size": "full"
+   },
+   {
+    "beat": 8,
+    "dur": 0.5,
+    "move": "arc_lr",
+    "angle": "dutch",
+    "size": "medium"
+   }
+  ]
+ },
+ "交付目标": {
+  "quality": "fhd",
+  "audio": "loudnorm -14（有音频床时）",
+  "level": "16-255（广播安全）",
+  "gop_s": "≤2.0s",
+  "ssim_ref": "≥0.95 视为保真交付",
+  "三级检查": "filmgrade.deliver_check"
+ },
+ "缺什么": [
+  {
+   "what": "filesystem_write 授权",
+   "why": "出拍/调色/渲染都要写盘",
+   "how": "python -m gbt_allinone auth grant --scope filesystem_write --ttl 600"
+  }
+ ],
+ "规模口径": "以上 8 拍是一个**段落模板**（4.0s）；全片 1.0 分钟按 FORM_8MIN 段落表铺：['intro×8小节', 'build×16小节', 'verse1×32小节', 'chorus1×32小节', 'break×8小节'] ⇒ 总拍数 ≈ 120",
+ "_口径": "**只读**：本 op 不写任何文件（写盘要过 filesystem_write 门）；翻译规则全部可查（节奏词/时长词/INTENT_MAP/energy/size 轮转），不调模型"
+}

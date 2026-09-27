@@ -2954,6 +2954,21 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('surface_bind', {'op':'keys'}))\""
+  },
+  {
+   "kind": "one_shot",
+   "domain": "creation",
+   "desc": "一句话→全链计划（只读）：节奏词→BPM · 时长词→分钟 · 帧率由 BPM 反推 · 题材词→调色 · 8 拍段落模板 · 交付判据 · 明列缺什么（写授权）",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "one_shot",
+   "requires_params": [],
+   "params_hint": "op=plan|show",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('one_shot', {'op':'show'}))\""
   }
  ],
  "skills": [
@@ -11276,7 +11291,7 @@
   }
  ],
  "counts": {
-  "caps": 193,
+  "caps": 194,
   "caps_enabled": 185,
   "caps_safe_no_args": 102,
   "skills": 363,

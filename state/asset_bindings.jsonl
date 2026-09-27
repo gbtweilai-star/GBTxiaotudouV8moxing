@@ -16079,3 +16079,10 @@
 {"at": "2026-09-27T21:36:06", "event": "bind", "asset": "tools/codex-scripts/boot-selfcheck.py", "tentacle": "penetrating_cross_scan", "note": "autobind"}
 {"at": "2026-09-27T21:36:06", "event": "bind", "asset": "gbt_allinone/tests/test_surface_bind.py", "tentacle": "penetrating_cross_scan", "note": "autobind"}
 {"at": "2026-09-27T21:36:09", "event": "autobind", "files": 3, "bound": 3, "hint": "penetrating_cross_scan"}
+{"at": "2026-09-27T21:41:17", "event": "bind", "asset": "gbt_allinone/tools/one_shot.py", "tentacle": "domain:tools", "note": "autobind"}
+{"at": "2026-09-27T21:41:22", "event": "autobind", "files": 1, "bound": 1, "hint": "coverage_matrix"}
+{"at": "2026-09-27T21:41:39", "event": "autobind", "files": 1, "bound": 1, "hint": "coverage_auditor"}
+{"at": "2026-09-27T21:42:02", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "one_shot", "note": "autobind"}
+{"at": "2026-09-27T21:42:02", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "one_shot", "note": "autobind"}
+{"at": "2026-09-27T21:42:03", "event": "autobind", "files": 2, "bound": 2, "hint": "one_shot"}
+{"at": "2026-09-27T21:42:10", "event": "scan", "bindings": 6420, "missing_asset": 0, "ghost_tentacle": 0}

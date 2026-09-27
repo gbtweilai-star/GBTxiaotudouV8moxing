@@ -456,6 +456,11 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import meta_cognition as _mc
         p = payload or {}
         return _mc.run(p.get("op", "law"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "one_shot":
+        # 一句话 → 全链计划（只读；写盘要过门）
+        from .tools import one_shot as _os
+        p = payload or {}
+        return _os.run_op(p.get("op", "show"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "surface_bind":
         # 通用可控制面绑定器：让工具自己报键 → 绑触手 → 重扫对比（消失即断连）。
         from .tools import surface_bind as _sb
