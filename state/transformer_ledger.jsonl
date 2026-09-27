@@ -1,0 +1,4 @@
+{"at": "2026-09-27T20:38:27", "event": "compress", "before": 2339, "after": 1451, "bypass": false, "deduped": 1, "folded": 0, "trimmed": 88}
+{"at": "2026-09-27T20:38:27", "event": "cache", "hit": false, "key": "5e775d74205758ade13c"}
+{"at": "2026-09-27T20:38:27", "event": "cache_put", "key": "5e775d74205758ade13c", "chars": 2}
+{"at": "2026-09-27T20:38:27", "event": "cache", "hit": true, "key": "5e775d74205758ade13c"}

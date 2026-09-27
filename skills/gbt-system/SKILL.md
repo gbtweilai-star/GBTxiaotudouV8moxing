@@ -586,3 +586,57 @@ py -3.14 tools/codex-scripts/five-dim.py cap context_vault                   →
 py -3.14 tools/codex-scripts/five-dim.py cap ledger_note                     → readonly · gates×7 · rows 160 · last_label R-H642
 py -3.14 tools/codex-scripts/five-dim.py cap file_hygiene '{"fix":true}'     → status denied · missing_scopes [filesystem_write]（被门拦下，未绕门）
 ```
+
+---
+
+## 变压器 + 任务管理器（主人令 2026-09-27）
+
+### 一、变压器：为什么"老是能源供给不足"——它**从来没接线**
+**排查结论（不是猜）**：
+- 09-22 设计稿写明「**网关前置的两级变压器**（压缩 + 快速输出，**带前后两个数**）」；
+- 09-26 日报结论：「`panel_server.py` 登记 pending · **从未接线**」；
+- 全仓 grep `变压器` ⇒ 只命中设计稿与交付单，**零实现**。
+⇒ **不是池子小，是该装的变压器没装**：每次调用全量送模型，token 不降 ⇒ 能源必然紧。
+（原设计的"最低能源律"第 4、5 条就是：压缩体积 + 变压增强缩短线路。）
+
+**现在按原设计接上了**（能力位 `transformer`）：
+
+| op | 干什么 | 读数 |
+|---|---|---|
+| `compress` | 输入侧：去重 → 重复 JSON 折叠 → 裁陈旧上下文 | 实测 **2339 → 1451 字符（省 38%）** |
+| `cache_get`/`cache_put` | 输出侧：命中就**根本不叫模型**（最大一笔能源账） | 命中率记在台账里 |
+| `stats` | 累计省下多少字符 / 省下多少次调用 | `state/transformer_ledger.jsonl` |
+| `selftest` | 判据自检（含反向自检：故意砍掉命令段必须被检出） | 全过 |
+
+**硬判据（照原设计 §1.4）**：必给**前后两个数**；**字面量包含关系**（identifiers/files/commands
+压前后必须一个不丢）不成立或没省下来 ⇒ **fail-open 回原样**（宁可没省，不许压坏）。
+
+```python
+g.run_task("transformer", {"op": "compress", "text": "<长 prompt>"})     # 拿前后两个数
+g.run_task("transformer", {"op": "cache_get", "text": "<同一个问题>"})    # 命中=省一次调用
+g.run_task("transformer", {"op": "stats"})                              # 省了多少，账面说话
+```
+
+**还没修的一处（诚实）**：`energy_pool` 的 9 个能源 **`tier` 全是 unknown** ⇒ 设计里的
+**"免费优先"实际没生效**（池子认不出哪个是免费的）。修法：给池子加 tier 判定（按 provider/profile 归类），
+属**改能源池语义**，留给主人一句话。
+
+### 二、任务管理器（能力位 `task_manager`）
+
+一屏看全 **任务 / 归属 / 内存占用 / CPU / 端口 / 进程 ID**（照主人给的那张系统任务管理器的列）。
+
+```python
+g.run_task("task_manager", {"op": "list", "limit": 25})   # 真进程快照（psutil）
+g.run_task("task_manager", {"op": "stop", "pid": 1234})   # 停任务：过 process_execute 门
+g.run_task("task_manager", {"op": "page"})                # 出静态页（快照内联）
+```
+页面：`holo_pet/assets/task-manager/index.html` —— 深色 + 青/橙 + **SVG 图标、无 emoji**
+（我们原有的视觉语言）；快照**内联**（`file://` 直接打开就能看），served over http 时 5 秒自刷新。
+
+**三条诚实口径（踩过坑才写得出）**：
+1. **CPU 要两次采样** —— `process_iter` 的 `info` 是首次缓存，第二遍必须**直接再调** `cpu_percent()`
+   （否则永远是 0.0；实测用忙进程验证过：System Idle 531.7% 真读数）；
+2. **归属按进程名优先** —— 只看命令行会把 `chrome`（它的 `--user-data-dir` 里有我们的路径）
+   误认成"框架服务"（实测踩过）；
+3. **"网络"列是"它占着的端口"，不是流量** —— 本机取不到 per-process 流量，**不编**；
+   另外剔除 System Idle / MemCompression 这类**不是任务**的噪声行。

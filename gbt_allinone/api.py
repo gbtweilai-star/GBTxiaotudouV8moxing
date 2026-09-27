@@ -456,6 +456,16 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import meta_cognition as _mc
         p = payload or {}
         return _mc.run(p.get("op", "law"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "task_manager":
+        # 任务管理器：读真进程（psutil）；stop 过门；page 生成静态页。
+        from .tools import task_manager as _tm
+        p = payload or {}
+        return _tm.run_op(p.get("op", "list"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "transformer":
+        # 变压器（09-22 原设计 · 2026-09-27 接上）：输入侧压缩 + 输出侧缓存；可旁路 fail-open。
+        from .tools import transformer_cap as _tc
+        p = payload or {}
+        return _tc.run_op(p.get("op", "stats"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "automation_keys":
         # 自动化配置密钥口（主人令 2026-09-27）：只存引用、只回掩码、改配置过门、真密钥走 model_key_pool。
         from .tools import automation_keys as _ak

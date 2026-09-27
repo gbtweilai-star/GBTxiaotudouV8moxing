@@ -852,6 +852,28 @@ BENIGN_CAPS = {
         "handler": 'coverage_auditor',
         "safe": True,
     },
+    "task_manager": {
+        "domain": 'system',
+        "desc": '任务管理器（主人令 2026-09-27）：一屏看全「任务 / 归属 / 内存占用 / CPU / 端口 / 进程ID」；'
+                'psutil 读**真进程**（CPU 需两次采样：process_iter 的 info 是首次缓存，第二遍必须直接再调）；'
+                '归属按**进程名优先**认（血账：只看命令行会把 chrome 误认成框架服务）；'
+                '**网络列是"占着的端口"不是流量**（本机取不到 per-process 流量，不编）；'
+                'stop 过 process_execute 门；page 生成我们视觉语言的静态页（SVG 图标·无 emoji·深色+青橙）。'
+                'op=list/stop/page',
+        "handler": 'task_manager',
+        "safe": True,
+    },
+    "transformer": {
+        "domain": 'llm',
+        "desc": '变压器（按 09-22 原设计接上 · 主人令 2026-09-27「排查为什么老能源供给不足」）：'
+                '诊断结论=**它从来没接线**（设计稿写明"网关前置两级变压器"、09-26 登记 pending 未接）⇒ '
+                '输入侧压缩（去重/重复JSON折叠/裁陈旧上下文）+ 输出侧快速（cache 命中=省整次模型调用）；'
+                '**可旁路 fail-open**（字面量包含关系不成立或没省下来 ⇒ 回原样，绝不压坏）；'
+                '**必给前后两个数**（压缩率 + 省字符）并记 state/transformer_ledger.jsonl。'
+                'op=compress/cache_get/cache_put/stats/selftest',
+        "handler": 'transformer',
+        "safe": True,
+    },
     "automation_keys": {
         "domain": 'llm',
         "desc": '自动化配置密钥口（APP 设置调它）：六个槽位（codex/claude/deepseek/browser/free_pool/sec_llm）'

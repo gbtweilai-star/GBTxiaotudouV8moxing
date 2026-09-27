@@ -16032,3 +16032,7 @@
 {"at": "2026-09-27T20:17:44", "event": "bind", "asset": "gbt_allinone/tools/automation_keys.py", "tentacle": "automation_keys", "note": "autobind"}
 {"at": "2026-09-27T20:17:48", "event": "autobind", "files": 5, "bound": 5, "hint": "automation_keys"}
 {"at": "2026-09-27T20:18:39", "event": "scan", "bindings": 6402, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T20:37:10", "event": "bind", "asset": "tools/install_our_agents.py", "tentacle": "energy_pool", "note": "autobind"}
+{"at": "2026-09-27T20:37:10", "event": "bind", "asset": "memory/2026-09-27-助理安装与密钥口.md", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-27T20:37:13", "event": "autobind", "files": 3, "bound": 3, "hint": "energy_pool"}
+{"at": "2026-09-27T20:42:00", "event": "scan", "bindings": 6404, "missing_asset": 0, "ghost_tentacle": 0}

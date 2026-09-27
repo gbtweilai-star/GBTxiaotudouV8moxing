@@ -44844,5 +44844,19 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T20:17:44"
+ },
+ "tools/install_our_agents.py": {
+  "tentacles": [
+   "energy_pool"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T20:37:10"
+ },
+ "memory/2026-09-27-助理安装与密钥口.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T20:37:10"
  }
 }

@@ -2879,6 +2879,36 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('automation_keys', {'op':'status'}))\""
+  },
+  {
+   "kind": "transformer",
+   "domain": "llm",
+   "desc": "变压器（09-22 原设计接上）：输入侧压缩（去重/JSON折叠/裁陈旧）+ 输出侧缓存（命中=省整次调用）；可旁路 fail-open；必给前后两个数",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "transformer",
+   "requires_params": [],
+   "params_hint": "op=compress|cache_get|cache_put|stats|selftest",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('transformer', {'op':'stats' if 'transformer'=='transformer' else 'list'}))\""
+  },
+  {
+   "kind": "task_manager",
+   "domain": "system",
+   "desc": "任务管理器：真进程一屏（任务/归属/内存/CPU/端口/pid）；名优先认归属；端口列≠流量；stop 过门；page 出静态页",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "task_manager",
+   "requires_params": [],
+   "params_hint": "op=list|stop|page",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('task_manager', {'op':'stats' if 'task_manager'=='transformer' else 'list'}))\""
   }
  ],
  "skills": [
@@ -11201,7 +11231,7 @@
   }
  ],
  "counts": {
-  "caps": 188,
+  "caps": 190,
   "caps_enabled": 185,
   "caps_safe_no_args": 102,
   "skills": 363,
