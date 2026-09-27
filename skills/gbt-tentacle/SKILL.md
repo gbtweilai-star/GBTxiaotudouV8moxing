@@ -191,3 +191,74 @@ python tools/codex-scripts/five-dim.py cap mcp_call       # ⚠ 要 process_exec
 | `{"action":"type_to_window",...}` | ❌ denied · `missing: ["desktop_control"]` —— **这就是"看不到"的真因：是门，不是能力** |
 
 **一句话纪律**：**先看（不需授权）→ 要动手就报"缺 desktop_control + 给命令行"，绝不退回"我看不到"。**
+
+---
+
+## 触手舰队 · 按任务启动 N 根（主人令 2026-09-27）
+
+主人原话：「每次执行任务都要启动触手根数来执行任务，比如任务需要一次性启动 5 根…
+一定要做好隔离启动，端口隔离各做各的不妨碍…你负责以总工程师的身份实时监控在工作的自己。」
+
+**说人话的用法**：任务要 5 根，就一句话 ——
+
+```powershell
+python tools/tentacle_fleet.py plan   --n 5 --task "把 A 模块测试补齐"   # 先看落点（端口/工作区）
+python tools/tentacle_fleet.py launch --n 5 --task "..."                # 真起（默认引擎 auto）
+python tools/tentacle_fleet.py status                                   # 总工程师看板（活着没/在听没/最后一行）
+python tools/tentacle_fleet.py logs T03 --tail 20                       # 单根动静
+python tools/tentacle_fleet.py stop all ; python tools/tentacle_fleet.py reap
+```
+
+**四条隔离（缺一条都不叫隔离；下面是本机实测读数）**
+
+| 隔离 | 手段 | 实测（2026-09-27 · 5 根） |
+|---|---|---|
+| 工作区 | 每根一份 `git worktree`（独立分支 `fleet/T0N`） | 5/5 建起；探针逐根自证 `cwd == 自己的 worktree` ✅ |
+| 端口 | 每根一段专属（31000 起 · 步长 10），**启动前真 bind 探测** | 5 段全独占：31000/31010/31020/31030/31040 |
+| 身份 | 独立 `HOME`/`USERPROFILE`/`XDG_CONFIG_HOME` + 各自 `.freebuff/project-id` | 5 个匿名 UUID，**去重 = 5**，并写进 `state/fleet.jsonl` |
+| 日志 | 每根 `.fleet/<id>/worker.log` + 退出码 `exit.code` + 追加台账 | 看板报「已退出（退出码 0）」，不是含糊的"未知" |
+
+**关于"每根注册专属账号"—— 先读实物再说话（实测）**：
+`freebuff` 的 npm 客户端里 **login / signup / oauth / quota / credits 全部零命中**，
+本机身份就是 `.freebuff/project-id` 一个随机 UUID ⇒ **"专属身份" = 独立工作区，不需要注册**。
+而**批量注册账号是本仓红线**（主人 9·23 令：不批量注册 / 不刷平台积分），且违反对方条款 ——
+所以舰队走的是**匿名身份 + 真隔离**，不是"多账号薅额度"。
+
+**引擎现状（如实报，不美化）**：`freebuff` 本机**装不起来** —— 它要写
+`~/.config/manicode/`（实测 `EPERM` / `Permission denied`），下不了自己的二进制。
+舰队预检直接复现这个原因，并**如实降级**为内置探针（`.cmd` 与日志里都写明原因），
+**不许假装 freebuff 在跑**。要真用 freebuff，二选一：
+① 主人在自己的 PowerShell 里跑一次 `freebuff`（主人的身份能写那个目录，装完舰队直接用它）；
+② 走 freebuff 的 Cloud 终端（$0，不需要本机安装）。
+
+**与既有并行的关系**：「五根同时跑」框架里**早就有** —— `five-dim.py multi --file jobs.json`
+（实测：峰值并发 5 · 墙钟 8.9s < 各件之和 12.2s · 5 个隔离位 · 逐件仍走唯一门 `run_task`）。
+舰队补的正是它当时**明说没做的那一层**：**进程级隔离（worktree）+ 端口段 + 身份目录 + 看板与台账**。
+
+### 远程薄终端：把触手伸到别的机器（主人令：云端终端 + 万能插）
+
+`tools/fleet_terminal.py` = **终端那一半**：**零框架体积**（不 import 本仓模块、不带凭据文件），
+只把一条能力调用**送进本体的唯一门**（`run_task`）再把结果拿回来 ⇒ 本地压力与体积都留在本体一侧。
+
+```powershell
+python tools/fleet_terminal.py guard https://your-host/            # 单看一个 URL 过不过闸
+python tools/fleet_terminal.py call --gateway https://your-host --cap mirror_status --dry-run
+python tools/fleet_terminal.py selftest                            # 闸门用例（不出网）
+python tools/fleet_terminal.py selftest --loopback                 # 本机桩真往返（仅自测）
+```
+
+**四条红线（写死在代码里，实测读数在后）**：
+1. **只许 http/https，且主机必须是公网** —— 拒 `localhost`/`127.0.0.0/8`/`::1`/`10/8`/`172.16/12`/
+   `192.168/16`/`169.254/16`/`0.0.0.0`/`*.local`/`.internal`，**域名解析到内网段也拒**（防 DNS 穿透）；
+   自测读数：**13 条必拒全拒 · 2 条必放全放 · 失败 0**。
+2. **令牌只从环境变量读**（`GBT_TERMINAL_TOKEN`），不落盘、不打印、不进日志；**没有令牌直接拒绝发送**
+   —— 自测读数：无令牌 → 拒 ✅；dry-run 里的头是 `Bearer <令牌（不回显）>`。
+3. **能力白名单**：默认只给**只读安全集**；`one_key_deploy` 这类高危**默认被拒**（自测已验）；
+   要放开必须显式 `--allow`，`--allow-all` 只归主人并会打印警告 + 写台账。
+4. **不批量注册任何账号**（主人 9·23 令）：终端只装到**主人自己合法持有的主机**上 ——
+   所以本工具**不"抓免费服务器"**，而是做成**任何一台您已有的机器插上就能用**（Cloudflare 容器、
+   任何云主机、任何常开机器）。
+
+**本体那一半（网关）需要主人授权才能部署，我没有部署任何东西**。网关必须实现：
+`POST /terminal/exec`（`Authorization: Bearer <token>`，体为 `{terminal_id, cap, payload}`），
+且**必须**校验令牌 → 校验能力范围 → **走 `run_task`**（直连模块 = 绕过授权门 = 违规）。

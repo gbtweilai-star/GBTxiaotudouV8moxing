@@ -13689,3 +13689,11 @@
 {"at": "2026-09-27T14:15:00", "event": "scan", "bindings": 4395, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-09-27T14:16:34", "event": "scan", "bindings": 4395, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-09-27T14:36:37", "event": "autobind", "files": 1, "bound": 1, "hint": "hook_enforcer"}
+{"at": "2026-09-27T15:38:33", "event": "bind", "asset": "docs/全树逐行扫描-范围与关键发现.md", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-27T15:38:33", "event": "bind", "asset": "tools/fleet_probe.py", "tentacle": "caps_called_audit", "note": "autobind"}
+{"at": "2026-09-27T15:38:33", "event": "bind", "asset": "tools/full_tree_scan.py", "tentacle": "caps_called_audit", "note": "autobind"}
+{"at": "2026-09-27T15:38:33", "event": "bind", "asset": "tools/tentacle_fleet.py", "tentacle": "caps_called_audit", "note": "autobind"}
+{"at": "2026-09-27T15:38:34", "event": "autobind", "files": 5, "bound": 5, "hint": "caps_called_audit"}
+{"at": "2026-09-27T16:17:59", "event": "bind", "asset": "tools/coverage_matrix.py", "tentacle": "penetrating_cross_scan", "note": "autobind"}
+{"at": "2026-09-27T16:17:59", "event": "bind", "asset": "tools/tentacle_fleet.py", "tentacle": "penetrating_cross_scan", "note": "autobind"}
+{"at": "2026-09-27T16:18:00", "event": "autobind", "files": 3, "bound": 3, "hint": "penetrating_cross_scan"}

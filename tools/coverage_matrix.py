@@ -59,6 +59,8 @@ EXCLUDED = {
     "my-project": "技能试跑脚手架（zenstack+VSCode 模板，11,450 件含 node_modules）",
     "审美相关skill": "第三方设计技能包（自带 LICENSE/NOTICE，按 /_upstream/ 政策不入史）",
     "archive": "历史归档（按 LAYOUT 只增不删，内容已封存）",
+    ".fleet": "触手舰队工作区：每根一份 git worktree「副本」（与源同码）⇒ 扫它是重复劳动；"
+              "舰队自身另有台账 state/fleet.jsonl + 看板 status + 探针逐根自证隔离",
 }
 # 大树：--quick 时跳过（正常 sweep 要扫；它们是源码/文档，不是缓存）
 HEAVY = {"_upstream", "holo_pet", "output", "render"}
@@ -82,6 +84,35 @@ def _tracked_count(path: str) -> int:
     out = subprocess.run(["git", "ls-files", path], cwd=ROOT,
                          capture_output=True, text=True).stdout
     return len([x for x in out.splitlines() if x.strip()])
+
+
+def _cross_scan_trio() -> dict:
+    """**F 面：交叉扫描三件套的常设调用者**（2026-09-27 加）。
+
+    来历（外部评估读数，WorkBuddy 探针工作区 `caps_called_audit`）：**185 位里 175 位有调用者、
+    3 位是孤儿** —— 孤儿正是本仓自建的 `penetrating_cross_scan` / `hook_enforcer` /
+    `omission_detector`：**它们能过唯一门调到，但没有任何代码自动调它们**。
+    ⇒ 判据说"接线 185/185"，而调用者审计说"175 有调用者"，**两句话都对**（量的是两件事）——
+    但"没人自动调"是真缺口：再好的尺子不量东西就等于没有。
+
+    所以本面在每次 sweep 时，**过唯一门**（`run_task`）各调一次（只读 op），
+    把三件套从"孤儿"变成"有常设调用者"。三件套里任何一件报红，本面即红。
+    """
+    out = {}
+    try:
+        sys.path.insert(0, str(ROOT))
+        import gbt_allinone as g
+    except Exception as e:                                     # noqa: BLE001
+        return {"ok": False, "why": f"框架导入失败：{type(e).__name__}: {e}", "caps": {}}
+    for kind in ("penetrating_cross_scan", "hook_enforcer", "omission_detector"):
+        try:
+            r = g.run_task(kind, {"op": "report", "tail": 3})
+            ok = bool(isinstance(r, dict) and r.get("ok", True))
+            out[kind] = {"ok": ok, "status": str(r.get("status") or "")[:40]}
+        except Exception as e:                                 # noqa: BLE001
+            out[kind] = {"ok": False, "why": f"{type(e).__name__}: {str(e)[:120]}"}
+    return {"ok": all(v.get("ok") for v in out.values()), "caps": out,
+            "_口径": "过唯一门 run_task 只读调用；任一红即本面红（孤儿有能力位≠有人用它）"}
 
 
 def vision_surface() -> dict:
@@ -191,6 +222,11 @@ def sweep(quick: bool = False, verbose: bool = True) -> dict:
               f"帧追踪 {vis['eye_frames']['tracked']} · 锁 {'在' if vis['gitignore_lock'] else '缺'}")
         for f in vis["findings"]:
             print(f"     · [{f['severity']}] {f['what']}")
+    trio = _cross_scan_trio()
+    if verbose:
+        bad = [k for k, v in trio["caps"].items() if not v.get("ok")]
+        print(f"  {'✓' if trio['ok'] else '🔴'} F 三件套调用者           "
+              f"{len(trio['caps'])} 位过门调用" + (f" · 红：{bad}" if bad else " · 全绿"))
 
     no_reason = [e for e in excl if not e["ok"]]
     all_trees = len(scan) + len(excl)
@@ -200,8 +236,8 @@ def sweep(quick: bool = False, verbose: bool = True) -> dict:
            "顶层树": all_trees, "已扫": len(scan), "排除": len(excl),
            "扫的树": trees, "排除表": excl,
            "盲区": blind, "无理由排除": no_reason,
-           "面B_C": surfaces, "面E视觉": vis,
-           "全绿": (not blind and not no_reason and vis["ok"]
+           "面B_C": surfaces, "面E视觉": vis, "面F三件套": trio,
+           "全绿": (not blind and not no_reason and vis["ok"] and trio["ok"]
                     and all(s.get("ok") for s in surfaces.values())),
            "_口径": ("没被扫到的面必须显式列出并给理由；隐式跳过=盲区。"
                      "文件面覆盖必须 1.0；B/C 面断连必须 0；E 面三闸必须全 True。"),

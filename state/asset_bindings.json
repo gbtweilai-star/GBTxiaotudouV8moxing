@@ -30756,7 +30756,8 @@
  },
  "tools/coverage_matrix.py": {
   "tentacles": [
-   "selfscan"
+   "selfscan",
+   "penetrating_cross_scan"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T13:12:20"
@@ -30765,7 +30766,8 @@
   "tentacles": [
    "selfscan",
    "mirror_status",
-   "platform_profile"
+   "platform_profile",
+   "caps_called_audit"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T13:12:20"
@@ -30783,5 +30785,27 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T13:12:20"
+ },
+ "docs/全树逐行扫描-范围与关键发现.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T15:38:33"
+ },
+ "tools/fleet_probe.py": {
+  "tentacles": [
+   "caps_called_audit"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T15:38:33"
+ },
+ "tools/tentacle_fleet.py": {
+  "tentacles": [
+   "caps_called_audit",
+   "penetrating_cross_scan"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T15:38:33"
  }
 }

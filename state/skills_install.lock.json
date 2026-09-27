@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-09-27T12:39:27",
+  "generated": "2026-09-27T16:22:09",
   "source": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills",
   "home_hub": "C:\\Users\\ADMIN\\.agents\\skills",
   "ws_hub": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills",
@@ -466,8 +466,8 @@
     "gbt-tentacle": {
       "hub": "home",
       "installed": true,
-      "src_hash": "54046dd3a87d3c00",
-      "hub_hash": "54046dd3a87d3c00",
+      "src_hash": "043b4ac54149119b",
+      "hub_hash": "043b4ac54149119b",
       "files": 1,
       "in_sync": true
     },
