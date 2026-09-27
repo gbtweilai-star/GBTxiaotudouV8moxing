@@ -852,6 +852,17 @@ BENIGN_CAPS = {
         "handler": 'coverage_auditor',
         "safe": True,
     },
+    "comfyui": {
+        "domain": 'creation',
+        "desc": ('ComfyUI（秋叶整合版）全控（主人令 2026-09-27「这个必须也是一个不漏的双向绑定，'
+                 '才能实现无限制审查生产」）：**966 个节点**（每把一把键）+ 11 个 API 端点 + 14 个启动开关 + '
+                 '模型清单（checkpoints/loras/controlnet）；**节点消失=断连**（要解释或补）。'
+                 '出网硬钉（SSRF 防线）：只许本机 http + 主机白名单(127.0.0.1/localhost/::1) + 端口 8188 + '
+                 '路径前缀白名单 + **拒重定向**；读类直连、提交/释放过 filesystem_write 门。'
+                 'op=status/nodes/models/submit/queue/history/free/interrupt/surface/verify'),
+        "handler": 'comfyui',
+        "safe": True,
+    },
     "one_shot": {
         "domain": 'creation',
         "desc": '一句话 → 全链计划（主人令 2026-09-27「想什么就能生产什么画面」）：把一句话翻成产线输入 ——'

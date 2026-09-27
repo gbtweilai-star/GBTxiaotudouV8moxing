@@ -1,0 +1,67 @@
+{
+ "bpm": 120.0,
+ "beat_s": 0.5,
+ "fps": 30,
+ "minutes": 1.0,
+ "beats": 8,
+ "quality": "fhd",
+ "grade": "潮湿阴冷",
+ "shots": [
+  {
+   "beat": 1,
+   "dur": 0.5,
+   "move": "crash_zoom",
+   "angle": "eye",
+   "size": "full"
+  },
+  {
+   "beat": 2,
+   "dur": 0.5,
+   "move": "whip_lr",
+   "angle": "low",
+   "size": "medium"
+  },
+  {
+   "beat": 3,
+   "dur": 0.5,
+   "move": "whip_rl",
+   "angle": "high",
+   "size": "close"
+  },
+  {
+   "beat": 4,
+   "dur": 0.5,
+   "move": "pov_bob",
+   "angle": "dutch",
+   "size": "full"
+  },
+  {
+   "beat": 5,
+   "dur": 0.5,
+   "move": "shake",
+   "angle": "eye",
+   "size": "medium"
+  },
+  {
+   "beat": 6,
+   "dur": 0.5,
+   "move": "dolly_in",
+   "angle": "low",
+   "size": "close"
+  },
+  {
+   "beat": 7,
+   "dur": 0.5,
+   "move": "push_out",
+   "angle": "high",
+   "size": "full"
+  },
+  {
+   "beat": 8,
+   "dur": 0.5,
+   "move": "arc_lr",
+   "angle": "dutch",
+   "size": "medium"
+  }
+ ]
+}

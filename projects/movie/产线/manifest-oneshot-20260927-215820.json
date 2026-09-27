@@ -1,0 +1,80 @@
+{
+ "title": "一句话全链 · 潮湿阴冷的雨夜，她在代码里醒来，节奏紧凑",
+ "quality": "fhd",
+ "bpm": 120.0,
+ "fps": 30,
+ "work_dir": "projects/movie/生成/oneshot-c12b2c",
+ "out_dir": "projects/movie/成片",
+ "output": "oneshot-c12b2c-20260927-215817.mp4",
+ "grade": "潮湿阴冷",
+ "audio": true,
+ "source": "pollinations",
+ "size": "1k",
+ "seed_base": 10832181,
+ "beats": [
+  {
+   "id": "B1",
+   "move": "pov_bob",
+   "angle": "eye",
+   "dur": 0.5,
+   "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, first-person POV action camera, own hands visible at frame bottom, handheld bob, eye level, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
+   "seed": 10832181
+  },
+  {
+   "id": "B2",
+   "move": "whip_lr",
+   "angle": "low",
+   "dur": 0.5,
+   "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, fast whip pan left to right, strong motion blur streaks, low angle looking up, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
+   "seed": 10832182
+  },
+  {
+   "id": "B3",
+   "move": "whip_rl",
+   "angle": "high",
+   "dur": 0.5,
+   "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, fast whip pan right to left, strong motion blur streaks, high angle looking down, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
+   "seed": 10832183
+  },
+  {
+   "id": "B4",
+   "move": "crash_zoom",
+   "angle": "dutch",
+   "dur": 0.5,
+   "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, crash zoom punch-in, sudden tight framing, dutch tilt, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
+   "seed": 10832184
+  },
+  {
+   "id": "B5",
+   "move": "dolly_in",
+   "angle": "eye",
+   "dur": 0.5,
+   "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, slow dolly in, compressing perspective, eye level, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
+   "seed": 10832185
+  },
+  {
+   "id": "B6",
+   "move": "push_out",
+   "angle": "low",
+   "dur": 0.5,
+   "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, push out revealing environment, low angle looking up, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
+   "seed": 10832186
+  },
+  {
+   "id": "B7",
+   "move": "arc_lr",
+   "angle": "high",
+   "dur": 0.5,
+   "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, arc shot circling the subject, high angle looking down, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
+   "seed": 10832187
+  },
+  {
+   "id": "B8",
+   "move": "shake",
+   "angle": "dutch",
+   "dur": 0.5,
+   "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, shaky handheld close quarters, documentary energy, dutch tilt, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
+   "seed": 10832188
+  }
+ ]
+}

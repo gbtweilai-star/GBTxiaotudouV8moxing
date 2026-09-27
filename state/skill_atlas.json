@@ -2969,6 +2969,21 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('one_shot', {'op':'show'}))\""
+  },
+  {
+   "kind": "comfyui",
+   "domain": "creation",
+   "desc": "ComfyUI 全控：966 节点 + 11 端点 + 14 开关 + 模型清单；节点消失=断连；出网硬钉（本机 http + 主机白名单 + 8188 + 路径前缀 + 拒重定向）",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "comfyui",
+   "requires_params": [],
+   "params_hint": "op=status|nodes|models|submit|queue|history|free|interrupt|surface|verify",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('comfyui', {'op':'status'}))\""
   }
  ],
  "skills": [
@@ -11291,7 +11306,7 @@
   }
  ],
  "counts": {
-  "caps": 194,
+  "caps": 195,
   "caps_enabled": 185,
   "caps_safe_no_args": 102,
   "skills": 363,

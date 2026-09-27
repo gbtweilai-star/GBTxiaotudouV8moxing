@@ -29160,7 +29160,8 @@
    "transformer",
    "project_context",
    "surface_bind",
-   "one_shot"
+   "one_shot",
+   "comfyui"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29178,7 +29179,8 @@
    "transformer",
    "project_context",
    "surface_bind",
-   "one_shot"
+   "one_shot",
+   "comfyui"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -44977,9 +44979,138 @@
  },
  "gbt_allinone/tools/one_shot.py": {
   "tentacles": [
-   "domain:tools"
+   "domain:tools",
+   "one_shot"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T21:41:17"
+ },
+ "projects/movie/产线/manifest-oneshot-20260927-215431.json": {
+  "tentacles": [
+   "filmkit"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T21:54:31"
+ },
+ "output/actioncam-demo-拍子表-1080p-ladder/_ref-lossless.mp4": {
+  "tentacles": [
+   "actioncam"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T21:55:29"
+ },
+ "output/actioncam-demo-拍子表-1080p-ladder/主档-1920x1080.mp4": {
+  "tentacles": [
+   "actioncam"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T21:55:29"
+ },
+ "output/actioncam-demo-拍子表-1080p-ladder/兜底-640x360.mp4": {
+  "tentacles": [
+   "actioncam"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T21:55:29"
+ },
+ "output/actioncam-demo-拍子表-1080p-ladder/省流-960x540.mp4": {
+  "tentacles": [
+   "actioncam"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T21:55:29"
+ },
+ "output/actioncam-demo-拍子表-1080p-ladder/移动-1280x720.mp4": {
+  "tentacles": [
+   "actioncam"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T21:55:29"
+ },
+ "projects/movie/产线/manifest-oneshot-20260927-215820.json": {
+  "tentacles": [
+   "filmkit"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T21:59:03"
+ },
+ "projects/movie/生成/oneshot-c12b2c/imgs/B1.png": {
+  "tentacles": [
+   "actioncam",
+   "filmkit"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T22:05:21"
+ },
+ "projects/movie/生成/oneshot-c12b2c/imgs/B2.png": {
+  "tentacles": [
+   "actioncam",
+   "filmkit"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T22:05:21"
+ },
+ "projects/movie/生成/oneshot-c12b2c/imgs/B3.png": {
+  "tentacles": [
+   "actioncam",
+   "filmkit"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T22:05:21"
+ },
+ "projects/movie/生成/oneshot-c12b2c/imgs/B4.png": {
+  "tentacles": [
+   "actioncam",
+   "filmkit"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T22:05:21"
+ },
+ "projects/movie/生成/oneshot-c12b2c/imgs/B5.png": {
+  "tentacles": [
+   "actioncam",
+   "filmkit"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T22:05:21"
+ },
+ "projects/movie/生成/oneshot-c12b2c/imgs/B6.png": {
+  "tentacles": [
+   "actioncam",
+   "filmkit"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T22:05:21"
+ },
+ "projects/movie/生成/oneshot-c12b2c/imgs/B7.png": {
+  "tentacles": [
+   "actioncam",
+   "filmkit"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T22:05:21"
+ },
+ "projects/movie/生成/oneshot-c12b2c/imgs/B8.png": {
+  "tentacles": [
+   "actioncam",
+   "filmkit"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T22:05:21"
+ },
+ "gbt_allinone/tools/comfyui_surface.py": {
+  "tentacles": [
+   "domain:tools",
+   "comfyui"
+  ],
+  "note": "ComfyUI 全控（读/提交/队列/surface/verify）",
+  "bound_at": "2026-09-27T22:08:43"
+ },
+ "state/comfyui_surface.json": {
+  "tentacles": [
+   "comfyui"
+  ],
+  "note": "ComfyUI 可控制面清单（966 节点 + 端点 + 模型 + 开关）",
+  "bound_at": "2026-09-27T22:09:39"
  }
 }

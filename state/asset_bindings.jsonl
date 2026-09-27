@@ -16086,3 +16086,45 @@
 {"at": "2026-09-27T21:42:02", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "one_shot", "note": "autobind"}
 {"at": "2026-09-27T21:42:03", "event": "autobind", "files": 2, "bound": 2, "hint": "one_shot"}
 {"at": "2026-09-27T21:42:10", "event": "scan", "bindings": 6420, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T21:54:31", "event": "bind", "asset": "projects/movie/产线/manifest-oneshot-20260927-215431.json", "tentacle": "filmkit", "note": "autobind"}
+{"at": "2026-09-27T21:54:32", "event": "autobind", "files": 1, "bound": 1, "hint": "actioncam"}
+{"at": "2026-09-27T21:55:29", "event": "bind", "asset": "output/actioncam-demo-拍子表-1080p-ladder/_ref-lossless.mp4", "tentacle": "actioncam", "note": "autobind"}
+{"at": "2026-09-27T21:55:29", "event": "bind", "asset": "output/actioncam-demo-拍子表-1080p-ladder/主档-1920x1080.mp4", "tentacle": "actioncam", "note": "autobind"}
+{"at": "2026-09-27T21:55:29", "event": "bind", "asset": "output/actioncam-demo-拍子表-1080p-ladder/兜底-640x360.mp4", "tentacle": "actioncam", "note": "autobind"}
+{"at": "2026-09-27T21:55:29", "event": "bind", "asset": "output/actioncam-demo-拍子表-1080p-ladder/省流-960x540.mp4", "tentacle": "actioncam", "note": "autobind"}
+{"at": "2026-09-27T21:55:29", "event": "bind", "asset": "output/actioncam-demo-拍子表-1080p-ladder/移动-1280x720.mp4", "tentacle": "actioncam", "note": "autobind"}
+{"at": "2026-09-27T21:55:31", "event": "autobind", "files": 5, "bound": 5, "hint": "actioncam"}
+{"at": "2026-09-27T21:58:18", "event": "bind", "asset": "gbt_allinone/tools/one_shot.py", "tentacle": "one_shot", "note": "autobind"}
+{"at": "2026-09-27T21:58:20", "event": "autobind", "files": 1, "bound": 1, "hint": "one_shot"}
+{"at": "2026-09-27T21:59:03", "event": "bind", "asset": "projects/movie/产线/manifest-oneshot-20260927-215820.json", "tentacle": "filmkit", "note": "autobind"}
+{"at": "2026-09-27T21:59:03", "event": "bind", "asset": "output/actioncam-demo-拍子表-1080p-ladder/_up-省流.mp4", "tentacle": "actioncam", "note": "autobind"}
+{"at": "2026-09-27T21:59:07", "event": "autobind", "files": 6, "bound": 6, "hint": "penetrating_cross_scan"}
+{"at": "2026-09-27T21:59:19", "event": "autobind", "files": 1, "bound": 1, "hint": "actioncam"}
+{"at": "2026-09-27T22:05:21", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B1.png", "tentacle": "actioncam", "note": "actioncam"}
+{"at": "2026-09-27T22:05:21", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B2.png", "tentacle": "actioncam", "note": "actioncam"}
+{"at": "2026-09-27T22:05:21", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B3.png", "tentacle": "actioncam", "note": "actioncam"}
+{"at": "2026-09-27T22:05:21", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B4.png", "tentacle": "actioncam", "note": "actioncam"}
+{"at": "2026-09-27T22:05:21", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B5.png", "tentacle": "actioncam", "note": "actioncam"}
+{"at": "2026-09-27T22:05:21", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B6.png", "tentacle": "actioncam", "note": "actioncam"}
+{"at": "2026-09-27T22:05:21", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B7.png", "tentacle": "actioncam", "note": "actioncam"}
+{"at": "2026-09-27T22:05:22", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B8.png", "tentacle": "actioncam", "note": "actioncam"}
+{"at": "2026-09-27T22:05:22", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B1.png", "tentacle": "filmkit", "note": "autobind"}
+{"at": "2026-09-27T22:05:22", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B2.png", "tentacle": "filmkit", "note": "autobind"}
+{"at": "2026-09-27T22:05:22", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B3.png", "tentacle": "filmkit", "note": "autobind"}
+{"at": "2026-09-27T22:05:22", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B4.png", "tentacle": "filmkit", "note": "autobind"}
+{"at": "2026-09-27T22:05:22", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B5.png", "tentacle": "filmkit", "note": "autobind"}
+{"at": "2026-09-27T22:05:22", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B6.png", "tentacle": "filmkit", "note": "autobind"}
+{"at": "2026-09-27T22:05:22", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B7.png", "tentacle": "filmkit", "note": "autobind"}
+{"at": "2026-09-27T22:05:22", "event": "bind", "asset": "projects/movie/生成/oneshot-c12b2c/imgs/B8.png", "tentacle": "filmkit", "note": "autobind"}
+{"at": "2026-09-27T22:05:27", "event": "autobind", "files": 8, "bound": 8, "hint": "actioncam"}
+{"at": "2026-09-27T22:08:43", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "comfyui", "note": "autobind"}
+{"at": "2026-09-27T22:08:43", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "comfyui", "note": "autobind"}
+{"at": "2026-09-27T22:08:43", "event": "bind", "asset": "gbt_allinone/tools/comfyui_surface.py", "tentacle": "domain:tools", "note": "autobind"}
+{"at": "2026-09-27T22:08:46", "event": "autobind", "files": 4, "bound": 4, "hint": "comfyui"}
+{"at": "2026-09-27T22:08:56", "event": "scan", "bindings": 6437, "missing_asset": 1, "ghost_tentacle": 0}
+{"at": "2026-09-27T22:09:19", "event": "scan", "bindings": 6437, "missing_asset": 1, "ghost_tentacle": 0}
+{"at": "2026-09-27T22:09:39", "event": "unbind", "asset": "output/actioncam-demo-拍子表-1080p-ladder/_up-省流.mp4", "tentacle": "actioncam", "why": "SSIM 阶梯的临时件已清（deliver_ladder 中间产物）"}
+{"at": "2026-09-27T22:09:39", "event": "scan", "bindings": 6436, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T22:09:39", "event": "bind", "asset": "state/comfyui_surface.json", "tentacle": "comfyui", "note": "ComfyUI 可控制面清单（966 节点 + 端点 + 模型 + 开关）"}
+{"at": "2026-09-27T22:09:40", "event": "bind", "asset": "gbt_allinone/tools/comfyui_surface.py", "tentacle": "comfyui", "note": "ComfyUI 全控（读/提交/队列/surface/verify）"}
+{"at": "2026-09-27T22:09:41", "event": "scan", "bindings": 6437, "missing_asset": 0, "ghost_tentacle": 0}

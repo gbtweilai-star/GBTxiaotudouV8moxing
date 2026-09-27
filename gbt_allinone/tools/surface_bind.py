@@ -63,6 +63,12 @@ TOOLS = {
         "min_keys": 3,
         "why": "免费算力引擎（CLI 开关；实测 3 把：--continue/--cwd/--trust-agents）",
     },
+    "comfyui": {
+        "tentacle": "comfyui",
+        "probe": None,            # 专门枚举：走 comfyui_surface（本机 8188 的 /object_info）
+        "min_keys": 900,          # 实测 966 个节点，留余量
+        "why": "本地生图/生视频引擎（966 节点全控）—— 无限制审查生产的底气",
+    },
     "blender": {
         "tentacle": "blender",
         "probe": None,            # 专门枚举（bpy.ops 2409 个）
@@ -134,6 +140,20 @@ def probe(tool: str = "", rescan: bool = True, **_kw) -> dict:
                 "error": f"未登记的工具 {tool!r}（登记表：{sorted(TOOLS)}）"}
     spec = TOOLS[tool]
     exe = _which(tool)
+    if tool == "comfyui":
+        # 本机 ComfyUI（127.0.0.1:8188）活取：966 节点 + 端点 + 模型；节点消失=断连
+        csp = importlib.util.spec_from_file_location(
+            "cs_probe", _ROOT / "gbt_allinone" / "tools" / "comfyui_surface.py")
+        cs = importlib.util.module_from_spec(csp)
+        csp.loader.exec_module(cs)
+        r = cs.surface(rescan=rescan)
+        if not r.get("ok"):
+            return {"ok": False, "op": "probe", "tool": tool,
+                    "installed": True, "why": str(r.get("error"))[:160]}
+        n = (r.get("counts") or {}).get("nodes", 0)
+        return {"ok": True, "op": "probe", "tool": tool, "delegated": "comfyui_surface",
+                "keys": n, "min_keys": spec["min_keys"], "sufficient": n >= spec["min_keys"],
+                "gone": r.get("gone_total"), "added": r.get("added_total")}
     if tool == "blender":
         bsp = importlib.util.spec_from_file_location(
             "bs_probe", _ROOT / "gbt_allinone" / "tools" / "blender_surface.py")
@@ -282,12 +302,16 @@ def verify(**_kw) -> dict:
     for t, spec in TOOLS.items():
         # ⚠️ blender 的清单由 blender_surface 写在 state/blender_surface.json（2409 个 bpy 算子），
         #    不在 surfaces/ 目录 —— 早先 verify 找错地方，误报"没有清单"。
-        p = (_ROOT / "state" / "blender_surface.json") if t == "blender" else (_DIR / f"{t}.json")
+        # 专门枚举的工具：清单不在 surfaces/ 目录（血账：verify 早先因此误报"没有清单"）
+        _special = {"blender": _ROOT / "state" / "blender_surface.json",
+                    "comfyui": _ROOT / "state" / "comfyui_surface.json"}
+        p = _special.get(t) or (_DIR / f"{t}.json")
         if not p.is_file():
             problems.append(f"{t}: 没有清单（装了没探 / 没装）")
             continue
         d = json.loads(p.read_text(encoding="utf-8"))
-        n = (d.get("counts") or {}).get("operators" if t == "blender" else "keys") or 0
+        _key_field = "operators" if t == "blender" else ("nodes" if t == "comfyui" else "keys")
+        n = (d.get("counts") or {}).get(_key_field) or 0
         if n < spec["min_keys"]:
             problems.append(f"{t}: 键 {n} < 阈值 {spec['min_keys']}（**有漏**）")
         if d.get("gone"):

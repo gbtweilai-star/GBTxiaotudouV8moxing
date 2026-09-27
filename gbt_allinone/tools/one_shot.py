@@ -35,6 +35,86 @@ _TEMPO = [("紧凑|激烈|快|打斗|追逐|战斗", 120.0), ("常规|中速|叙
 # 时长词 → 分钟
 _LEN = [("序章|开场", 1.5), ("短片|预告|trailer", 1.0), ("一集|整段", 8.0)]
 
+# ── 翻译层：把"一句话"翻成**能生产的清单**（主人令：想什么就能生产什么画面）──────────
+# 为什么要有这层（血账）：实测 actioncam 的清单要的是 beats[{id,move,angle,dur,prompt,seed}]，
+# 而 prompt 必须是**英文生图提示**（我们生图走 pollinations，纯英文）。中文一句话 → 英文分镜提示。
+_MOVE_EN = {
+    "pov_bob": "first-person POV action camera, own hands visible at frame bottom, handheld bob",
+    "whip_lr": "fast whip pan left to right, strong motion blur streaks",
+    "whip_rl": "fast whip pan right to left, strong motion blur streaks",
+    "crash_zoom": "crash zoom punch-in, sudden tight framing",
+    "dolly_in": "slow dolly in, compressing perspective",
+    "push_out": "push out revealing environment",
+    "arc_lr": "arc shot circling the subject",
+    "shake": "shaky handheld close quarters, documentary energy",
+    "impact_hold": "impact freeze frame, high contrast single beat",
+}
+_ANGLE_EN = {"eye": "eye level", "low": "low angle looking up",
+             "high": "high angle looking down", "dutch": "dutch tilt"}
+_LOOK_EN = {
+    "filmic": "cinematic filmic color grade, film grain",
+    "潮湿阴冷": "cold damp cyan tones, wet reflective surfaces, drizzle, fog",
+    "热血橙青": "teal and orange blockbuster grade, high contrast",
+    "做旧": "aged vintage film look, faded",
+    "褪色胶片": "faded analog film, low saturation",
+    "黑白纪实": "black and white documentary, harsh light",
+    "赛博霓虹": "cyberpunk neon, magenta and cyan glow",
+}
+# 主体词 → 英文视觉（**认不出就如实标注**，不硬编一个假主体）
+_SUBJ = [
+    ("雨夜|下雨|潮湿", "rainy night, wet streets, rain streaks"),
+    ("夜", "night, low key lighting"),
+    ("她|女主|女孩", "a young woman"),
+    ("他|男主", "a young man"),
+    ("代码|程序|屏幕|终端", "glowing code on screens, terminal windows"),
+    ("醒来|苏醒|睁眼", "close on eyes opening, waking up"),
+    ("义庄|灵堂|棺材", "old mortuary hall, paper lanterns, wooden coffins"),
+    ("血|打斗|战|追", "kinetic action, tense confrontation"),
+    ("星|月", "moonlit sky, stars"),
+]
+_MOVE_ORDER = ("pov_bob", "whip_lr", "whip_rl", "crash_zoom", "dolly_in", "push_out", "arc_lr", "shake")
+
+
+def _subject_en(prompt: str) -> tuple:
+    """中文一句话 → 英文主体描述（**命中哪些词也如实回传**）。"""
+    hits, out = [], []
+    for rx, en in _SUBJ:
+        if re.search(rx, prompt):
+            hits.append(rx)
+            out.append(en)
+    return ", ".join(out), hits
+
+
+def _beat_prompt(prompt: str, look: str, move: str, angle: str) -> str:
+    subj, _ = _subject_en(prompt)
+    parts = [subj or "cinematic scene",
+             _MOVE_EN.get(move, move), _ANGLE_EN.get(angle, angle),
+             _LOOK_EN.get(look, look), "cinematic composition, 16:9, high detail"]
+    return ", ".join(p for p in parts if p)
+
+
+def build_manifest(prompt: str, bpm: float, minutes: float, fps: int, quality: str,
+                   look: str, n_beats: int = 8, slug: str = "") -> dict:
+    """产出**能被 actioncam 直接吃**的清单（字段照能跑通的 demo 盘点，不猜）。"""
+    import hashlib as _h
+    beat_s = round(60.0 / bpm, 6)
+    slug = slug or _h.sha256(prompt.encode("utf-8")).hexdigest()[:6]
+    seed_base = int(_h.sha256(prompt.encode("utf-8")).hexdigest()[:8], 16) % 90000000 + 10000000
+    angles = ["eye", "low", "high", "dutch"]
+    beats = []
+    for i in range(n_beats):
+        mv, ang = _MOVE_ORDER[i % len(_MOVE_ORDER)], angles[i % len(angles)]
+        beats.append({"id": f"B{i+1}", "move": mv, "angle": ang, "dur": beat_s,
+                      "prompt": _beat_prompt(prompt, look, mv, ang),
+                      "seed": seed_base + i})
+    return {"title": f"一句话全链 · {prompt[:28]}",
+            "quality": quality, "bpm": bpm, "fps": fps,
+            "work_dir": f"projects/movie/生成/oneshot-{slug}",
+            "out_dir": "projects/movie/成片",
+            "output": f"oneshot-{slug}-{time.strftime('%Y%m%d-%H%M%S')}.mp4",
+            "grade": look, "audio": True, "source": "pollinations", "size": "1k",
+            "seed_base": seed_base, "beats": beats}
+
 
 def _load(path: str, name: str):
     sp = importlib.util.spec_from_file_location(name, _ROOT / path)
@@ -123,10 +203,9 @@ def plan(prompt: str = "", bpm: float = 0.0, minutes: float = 0.0, fps: int = 30
     deliver_target = {"quality": quality, "audio": "loudnorm -14（有音频床时）",
                       "level": "16-255（广播安全）", "gop_s": "≤2.0s", "ssim_ref": "≥0.95 视为保真交付",
                       "三级检查": "filmgrade.deliver_check"}
-    manifest = {"bpm": b, "beat_s": round(beat_s, 6), "fps": der.get("fps", fps) if isinstance(der, dict) else fps,
-                "minutes": mins, "beats": n_beats, "quality": quality, "grade": look,
-                "shots": [{"beat": s["beat"], "dur": round(beat_s, 6), "move": s["move"],
-                           "angle": s["angle"], "size": s["size"]} for s in shots]}
+    # **产出 actioncam 能直接吃的清单**（字段照能跑通的 demo 盘点：beats[{id,move,angle,dur,prompt,seed}]）
+    manifest = build_manifest(prompt, b, mins, _fps, quality, look, n_beats=n_beats)
+    subj_en, subj_hits = _subject_en(prompt)
     need = [{"what": "filesystem_write 授权", "why": "出拍/调色/渲染都要写盘",
              "how": "python -m gbt_allinone auth grant --scope filesystem_write --ttl 600"}]
     out = {"ok": True, "at": time.strftime("%Y-%m-%dT%H:%M:%S"), "prompt": prompt,
@@ -136,6 +215,8 @@ def plan(prompt: str = "", bpm: float = 0.0, minutes: float = 0.0, fps: int = 30
            "网格": grid if not isinstance(grid, dict) or "beats" not in grid else {"beats": len(grid.get("beats") or []),
                                                                             "beat_s": grid.get("beat_s")},
            "镜头表": shots, "manifest（未写盘）": manifest, "交付目标": deliver_target, "缺什么": need,
+           "主体映射": {"英文主体": subj_en or "（**没映射到** —— 清单里用通用 cinematic scene，如实标注）",
+                    "命中词": subj_hits},
            "规模口径": (f"以上 {len(shots)} 拍是一个**段落模板**（{len(shots) * beat_s:.1f}s）；"
                      f"全片 {mins} 分钟按 FORM_8MIN 段落表铺："
                      f"{[f'{k}×{v}小节' for k, v in list(getattr(bg, 'FORM_8MIN', []) or [])[:5]]} ⇒ "

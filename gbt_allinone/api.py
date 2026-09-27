@@ -456,6 +456,11 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import meta_cognition as _mc
         p = payload or {}
         return _mc.run(p.get("op", "law"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "comfyui":
+        # ComfyUI 全控：966 节点 + API 端点 + 模型清单；出网硬钉（只许本机 8188）。
+        from .tools import comfyui_surface as _cs
+        p = payload or {}
+        return _cs.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "one_shot":
         # 一句话 → 全链计划（只读；写盘要过门）
         from .tools import one_shot as _os
