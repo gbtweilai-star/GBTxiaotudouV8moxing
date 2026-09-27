@@ -1,9 +1,9 @@
 {
- "at": "2026-09-27T23:34:18",
+ "at": "2026-09-28T03:53:31",
  "quick": false,
- "耗时s": 107.1,
- "顶层树": 63,
- "已扫": 53,
+ "耗时s": 54.4,
+ "顶层树": 64,
+ "已扫": 54,
  "排除": 10,
  "扫的树": [
   {
@@ -318,10 +318,10 @@
   },
   {
    "tree": "deploy",
-   "units": 151,
+   "units": 162,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 151,
+   "agree": 162,
    "arbitrated": 0,
    "sec_flagged": 3,
    "sec_needs_human": 0
@@ -348,12 +348,12 @@
   },
   {
    "tree": "gbt_allinone",
-   "units": 888,
+   "units": 891,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 888,
+   "agree": 891,
    "arbitrated": 0,
-   "sec_flagged": 20,
+   "sec_flagged": 21,
    "sec_needs_human": 0
   },
   {
@@ -478,10 +478,10 @@
   },
   {
    "tree": "skills",
-   "units": 360,
+   "units": 361,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 360,
+   "agree": 361,
    "arbitrated": 0,
    "sec_flagged": 1,
    "sec_needs_human": 0
@@ -522,6 +522,16 @@
    "coverage": 1.0,
    "missing": 0,
    "agree": 696,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "vercel-brand-protected",
+   "units": 7,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 7,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -600,7 +610,7 @@
   },
   "bindings": {
    "ok": true,
-   "units": 6457,
+   "units": 6461,
    "coverage": 1.0,
    "missing": 0
   },
@@ -667,5 +677,5 @@
  },
  "全绿": true,
  "_口径": "没被扫到的面必须显式列出并给理由；隐式跳过=盲区。文件面覆盖必须 1.0；B/C 面断连必须 0；E 面三闸必须全 True。",
- "单元总数": 16548
+ "单元总数": 16570
 }

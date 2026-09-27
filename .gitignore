@@ -188,3 +188,9 @@ projects/**/生成/
 
 # --- 触手舰队的工作区（每根触手一份 git worktree + 身份 + 日志；"每根都有编号"在这里）---
 .fleet/
+
+# 品牌站保护包（生成物）：deploy/vercel-brand/_protect.py 的默认输出落在仓根
+# （script 自己写 HERE.parent.parent ⇒ <仓根>/vercel-brand-protected/）。
+# 471KB zip + 整棵 strip 树是**产出**不是源码 ⇒ 不进版本控制；但**要进覆盖矩阵**
+# （`python tools/coverage_matrix.py sweep`），免得成为"没人扫过的面"。
+vercel-brand-protected/

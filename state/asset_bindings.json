@@ -38641,9 +38641,10 @@
  },
  "tools/codex-scripts/audit-dead-judgments.py": {
   "tentacles": [
-   "project_context"
+   "project_context",
+   "claude_code"
   ],
-  "note": "asset_index.wire",
+  "note": "autobind",
   "bound_at": "2026-09-27T18:04:15"
  },
  "tools/codex-scripts/audit-dh-status.py": {

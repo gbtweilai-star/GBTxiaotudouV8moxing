@@ -77,6 +77,11 @@ KNOWN = {
         "（包不在盘上），不是恒真。它判的是『这一格该红』，不是『条件成立』。",
     ("tools/codex-scripts/pack-receipt.py", 130, "B/判据是常量"):
         "同上：读不动窗口注册表时**主动记红**的惯用法。",
+    ("gbt_allinone/llm/genoffice_bridge.py", 977, "B/判据是常量"):
+        "**空转防护的备案写法**：本机没装代理时，A5/A6 那两条对照（『代理挡路会伪装成没起』）"
+        "无事可做 ⇒ 这一格**故意记 PASS 并写明原因**（`getproxies()={}` 就在 detail 里）。"
+        "它判的不是『条件成立』，而是『这台机器上这条对照不适用』—— 换成有代理的机器，"
+        "走的是上面 `bool(_defbad)` 那条真判据。**属『已读并接受』，不是恒真判据。**",
     ("tools/codex-scripts/mock-vllm-endpoint.py", 161, "A/and False"):
         "**假端点**报告里的**故意死分支**（`… if False else '见 selftest'`）—— 用来避免真发那记 404 请求。"
         "属 mock 的写法，不是判据。",
