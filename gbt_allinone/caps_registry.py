@@ -890,7 +890,12 @@ BENIGN_CAPS = {
     },
     "genoffice": {
         "domain": 'creation',
-        "desc": '办公文档（GenOffice CLI 0.10+·local-first）：pptx/xlsx/docx/pdf/md/html/csv 创建·转换·读取·结构化编辑，幻灯片渲染审计；文档处理全本地，仅 search/image/media 走主人自配 provider；读类直连，写类过 filesystem_write 门（处理器层挂闸，不碰 policy）',
+        "desc": '办公文档（GenOffice **蒸馏版** · 本地 CLI 0.10+）：info/pdf/guide/capabilities + '
+                'convert/create/merge/slides/sheet/docs/render **全部接通**（文档处理全本地、零云依赖）；'
+                'search/image/media 保留（走主人自配 provider ⇒ **耗积分**，不许念成"全免费"）；'
+                '**控制端类命令（open/selection/mcp/install-cli/skill）默认不接 —— 主人点名放行并留痕**'
+                '（state/genoffice_control.jsonl）；读类直连、写类过 filesystem_write 门'
+                '（处理器层挂闸，不碰 policy）。op=status/ops/<命令名>/run',
         "handler": 'genoffice',
         "safe": False,
     },

@@ -44821,5 +44821,12 @@
   ],
   "note": "asset_index.wire",
   "bound_at": "2026-09-27T18:10:42"
+ },
+ "skills/gbt-genoffice/SKILL.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T20:04:05"
  }
 }
