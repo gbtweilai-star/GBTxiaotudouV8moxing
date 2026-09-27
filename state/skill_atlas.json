@@ -2849,6 +2849,21 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('control_loop', {'op':'selftest'}))\""
+  },
+  {
+   "kind": "asset_index",
+   "domain": "system",
+   "desc": "资产索引：整树资产连接率 100% + 秒查（查 SQLite 索引不扫盘，17-22ms）",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "asset_index",
+   "requires_params": [],
+   "params_hint": "op=build|wire|find|stats",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/asset_index.py stats"
   }
  ],
  "skills": [
@@ -11171,7 +11186,7 @@
   }
  ],
  "counts": {
-  "caps": 186,
+  "caps": 187,
   "caps_enabled": 185,
   "caps_safe_no_args": 102,
   "skills": 363,

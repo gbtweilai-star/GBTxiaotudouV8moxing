@@ -960,6 +960,16 @@ BENIGN_CAPS = {
         "handler": 'tentacle_bind',
         "safe": True,
     },
+    "asset_index": {
+        "domain": 'system',
+        "desc": '资产索引：**整棵树都连上 + 连上即可秒查**（主人令 2026-09-27）。build 把全树扫进 '
+                'state/asset_index.db（键=跟随软链的物理真身，与绑定系统同口径，软链别名去重）；'
+                'wire 给每个资产补触手标签（启发式优先，认不出用回退标签 project_context —— '
+                '诚实标注归属，不假装认出了专门触手）；find 查索引**不扫盘**（实测 17-22ms）。'
+                'op=build/wire/find/stats',
+        "handler": 'asset_index',
+        "safe": True,
+    },
     "control_loop": {
         "domain": 'desktop',
         "desc": '快慢双脑控制回路（蒸馏自 Jev/TypeSafe System One + browser-use/jev-ultrafast）：动作是**枚举**'

@@ -136,9 +136,32 @@ def _load() -> dict:
     return {}
 
 
-def _save(d: dict) -> None:
+def _save(d: dict, tries: int = 6) -> None:
+    """**原子写 + 退避重试**（2026-09-27 实测血账）。
+
+    事故形态：补连接跑到第 271 件时，`write_text` 在 **`open()` 那一刻**抛
+    `OSError: [Errno 22] Invalid argument: state\\asset_bindings.json`
+    —— 同一份文件被同一进程反复开合两百多次后，系统（占用/满盘/杀毒扫描）开始拒绝打开。
+    一轮补连接就整轮崩在这里，且**看不出是谁的错**（文件本身没问题、也能改名）。
+
+    处方：
+      · 写**临时文件**再 `os.replace` **原子替换** ⇒ 任何时刻都不会留下半份坏账；
+      · 失败**退避重试**（0.2s 起，逐次加倍）⇒ 扛过瞬时占用；
+      · 仍失败就**如实抛出**（不吞），但原件仍是上一份完好的。
+    """
     STATE.mkdir(parents=True, exist_ok=True)
-    BINDINGS.write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
+    blob = json.dumps(d, ensure_ascii=False, indent=1)
+    tmp = BINDINGS.with_name(BINDINGS.name + ".tmp")
+    last: Exception | None = None
+    for i in range(tries):
+        try:
+            tmp.write_text(blob, encoding="utf-8")
+            os.replace(tmp, BINDINGS)
+            return
+        except OSError as exc:
+            last = exc
+            time.sleep(0.2 * (2 ** i))
+    raise last if last else OSError("save failed")
 
 
 def _log(event: str, **kw) -> None:
@@ -474,12 +497,37 @@ def autobind(kind_hint: str = "", force: bool = False, verbose: bool = False) ->
     except Exception as exc:                                   # noqa: BLE001
         return {"ok": False, "error": f"{type(exc).__name__}: {str(exc)[:160]}",
                 "found": len(found), "bound": len(bound)}
+    # ── 产出即绑的**第二个动作：新技能自动接上枢纽**（2026-09-27 补的真缺口）────────
+    # 血账：早先"仓内新建技能"要**手工**跑 `tools/skills_sync.py sync` 才会出现在运行时读的
+    # 枢纽里 —— **靠记性 = 会忘**（主人原话："别又自动化新增又失败"）。
+    # 现在：autobind（6 小时环本来就会跑）顺手把源↔装对齐；覆盖前依旧先备份（可回滚）。
+    skills_sync = {"ok": True, "synced": [], "note": "未触发"}
+    try:
+        import importlib.util as _iu
+        _sp = _iu.spec_from_file_location("skills_sync_auto", ROOT / "tools" / "skills_sync.py")
+        _ss = _iu.module_from_spec(_sp)
+        _sp.loader.exec_module(_ss)
+        st = _ss.survey()
+        need = [r["skill"] for r in st["rows"]
+                if r["own"] and r["status"] in ("未安装", "分叉")]
+        if need:
+            out = _ss.do_sync()
+            skills_sync = {"ok": True, "synced": [d["skill"] for d in out["synced"]],
+                           "backup_root": out["backup_root"],
+                           "note": "新技能/分叉技能已自动装到枢纽（覆盖前先备份）"}
+            _log("autobind", skills_synced=skills_sync["synced"])
+        else:
+            skills_sync = {"ok": True, "synced": [], "note": f"技能源↔装 {st['summary']['ok']} 一致，无需动作"}
+    except Exception as exc:                                   # noqa: BLE001
+        skills_sync = {"ok": False, "error": f"{type(exc).__name__}: {str(exc)[:140]}",
+                       "note": "技能同步没跑成 —— **如实报**，别让新增技能悄悄停在源里"}
     if found:
         _log("autobind", files=len(found), bound=len(bound), hint=kind_hint)
     if verbose and bound:
         for b in bound[:20]:
             print(f"  ✔ 产出即绑 {b}")
-    return {"ok": True, "found": len(found), "bound": len(bound), "files": bound[:50]}
+    return {"ok": True, "found": len(found), "bound": len(bound), "files": bound[:50],
+            "skills_sync": skills_sync}
 
 
 def _iter_all(root: Path):

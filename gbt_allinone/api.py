@@ -657,6 +657,27 @@ def _run_benign(kind, payload, policy_decision=None):
             return _pcs.run_pipeline(target, mode="check" if kind == "omission_detector" else "scan")
         return {"ok": False, "error": f"未知 op:{op}（status/report/{'/'.join(want)}）",
                 "fail_closed": True}
+    if kind == "asset_index":
+        # 资产索引：整树连接 + 秒查（主人令 2026-09-27）。**读多写少**：build/wire 会写盘
+        # （索引库与绑定台账），find/stats 只读。输出全走 JSON 契约，不打印人读行。
+        import importlib.util as _iu3
+        from pathlib import Path as _P3
+        _spec3 = _iu3.spec_from_file_location(
+            "asset_idx", _P3(__file__).resolve().parents[1] / "tools" / "asset_index.py")
+        _ai = _iu3.module_from_spec(_spec3)
+        _spec3.loader.exec_module(_ai)
+        p = payload or {}
+        op = (p.get("op") or "stats").lower()
+        if op == "stats":
+            return _ai.stats()
+        if op == "find":
+            return _ai.find(str(p.get("q") or ""), int(p.get("limit") or 20),
+                            str(p.get("label") or ""), str(p.get("ext") or ""))
+        if op == "build":
+            return _ai.build(verbose=False)
+        if op == "wire":
+            return _ai.wire(dry=bool(p.get("dry", True)), limit=int(p.get("limit") or 0))
+        return {"ok": False, "error": f"未知 op:{op}（build/wire/find/stats）", "fail_closed": True}
     if kind == "control_loop":
         # 快慢双脑控制回路（蒸馏自 Jev/TypeSafe System One）：**只决策不动手**，动作仍走 desktop_control 等门。
         # ⚠️ `selftest`/`demo` 会打印人读行 —— run_task 的返回是 **JSON 契约**，人读行混进 stdout 会把严格消费者

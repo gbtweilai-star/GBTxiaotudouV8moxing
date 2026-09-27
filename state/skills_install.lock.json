@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "generated": "2026-09-27T16:59:59",
+  "generated": "2026-09-27T17:40:03",
   "source": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills",
   "home_hub": "C:\\Users\\ADMIN\\.agents\\skills",
   "ws_hub": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills",
-  "count": 81,
-  "in_sync": 81,
+  "count": 83,
+  "in_sync": 83,
   "skills": {
     "autoclaw-mcp-tools": {
       "hub": "home",
@@ -479,11 +479,27 @@
       "files": 1,
       "in_sync": true
     },
+    "gbt-talktrack": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "8fe4a1822e106a31",
+      "hub_hash": "8fe4a1822e106a31",
+      "files": 1,
+      "in_sync": true
+    },
     "gbt-tentacle": {
       "hub": "home",
       "installed": true,
       "src_hash": "043b4ac54149119b",
       "hub_hash": "043b4ac54149119b",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-terminology": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "da80eda225ac97ce",
+      "hub_hash": "da80eda225ac97ce",
       "files": 1,
       "in_sync": true
     },
