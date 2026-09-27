@@ -98,11 +98,103 @@ class TestGodsEye(unittest.TestCase):
                 self.assertTrue(r.get("ok"), f"决策没记上：{r}")
                 rows = self.m.plan("list")
                 self.assertGreaterEqual(rows.get("count", 0), 2, "临时账本里没留下提案+决策")
-                self.assertIn("决策权在主体", rows.get("decider", ""))
+                # ⚠️ 2026-09-28 主人令改了口径：**决策由 Jev 拍板**（原先写"决策权在主体"）。
+                #    判据跟着改，别让旧口径留在判据里变成"看着在判、其实判的是老规矩"。
+                dec = rows.get("decider", "")
+                self.assertIn("Jev", dec, "决策人应当是 Jev（主人令 2026-09-28）")
+                self.assertIn("拍板", dec, "决策人的措辞里要写明是拍板")
             finally:
                 self.m._PLAN = real
         self.assertTrue(PLAN.is_file(), "计划台账不存在")
         self.assertTrue(PANEL.is_file(), "上帝之眼页面不存在 ⇒ 跑 panel")
+
+
+class TestJevDecides(unittest.TestCase):
+    """**Jev 拍板 + 四岗分工**（主人令 2026-09-28）。
+
+    主人原话：「把 Jev 的推理模型接入上帝之眼来做决策，设计好要以 Jev 来做决策，
+    克劳德给意见和建议以及可以商量，这么来好了之后由 Jev 做决策，Codex 专注编程，
+    DeepSeek Harness 专注执行层。」
+
+    判据 A~G：分工机器可读 · 没证据不拍板 · 证据不在盘上不拍板 · 读数够就拍 ·
+    **选不出不许硬猜**（升慢脑或挂起，不许给"猜的"选择）· 风险词扣分 · 预算闸在。
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.m = _load()
+
+    def test_a_four_roles_are_machine_readable(self):
+        r = self.m.roles()
+        need = {"jev": "决策", "claude": "意见", "codex": "编程", "deepseek": "执行层"}
+        for name, kw in need.items():
+            self.assertIn(name, r["roles"], f"缺岗：{name}")
+            v = r["roles"][name]
+            self.assertTrue(v.get("may"), f"{name} 没有 may 清单")
+            self.assertTrue(v.get("may_not"), f"{name} 没有 may_not 清单")
+            self.assertIn(kw, json.dumps(v, ensure_ascii=False), f"{name} 的职责里没写清「{kw}」")
+        jev = json.dumps({k: r["roles"]["jev"][k] for k in ("role", "may")}, ensure_ascii=False)
+        self.assertTrue(any(w in jev for w in ("决策", "拍板", "裁决")),
+                        f"Jev 的职责里没有『决策/拍板/裁决』这类词：{jev}")
+        for other in ("claude", "codex", "deepseek"):
+            self.assertIn("决策", json.dumps(r["roles"][other]["may_not"], ensure_ascii=False),
+                          f"{other} 的 may_not 必须写明不许决策（拍板是 Jev 的活）")
+
+    def test_b_no_evidence_no_verdict(self):
+        r = self.m.decide(question="先干哪个？", options="A方案,B方案")
+        self.assertFalse(r.get("ok"), "没有证据竟然拍了板")
+        self.assertTrue(r.get("refused"), "拒的形状不对")
+        self.assertIn("Jev", str(r.get("decider")))
+
+    def test_c_evidence_off_disk_is_refused(self):
+        r = self.m.decide(question="先干哪个？", options="A,B", evidence="no/such/reading.json")
+        self.assertFalse(r.get("ok"), "盘上没有的证据也敢当依据")
+        self.assertIn("证据不在盘上", str(r.get("why")))
+
+    def test_d_reading_backed_choice_is_decided_by_jev(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            ev = Path(td) / "现写读数.json"
+            ev.write_text("{}", encoding="utf-8")
+            r = self.m.decide(question="先干哪个？", options="修未清故障,做个新面板",
+                              evidence=str(ev))
+            self.assertTrue(r.get("ok"), f"有证据却没拍出来：{r}")
+            self.assertEqual("Jev（推理模型）", r.get("decider"))
+            self.assertEqual("修未清故障", r.get("choice"), "压在最短板上那条该赢")
+            self.assertEqual("fast", r.get("path"))
+
+    def test_e_undecidable_must_not_guess(self):
+        """**选不出不许硬猜**：要么升慢脑（path=slow），要么挂起（blocked）—— 不许给"猜的"选择。
+
+        这条是 Jev 协议的核心（`tool/control_loop.py` 同款规矩：宁可 BLOCKED，也不乱选）。
+        """
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            ev = Path(td) / "读数.json"
+            ev.write_text("{}", encoding="utf-8")
+            r = self.m.decide(question="选哪种蓝？", options="深蓝,浅蓝", evidence=str(ev))
+            if r.get("ok"):
+                self.assertEqual("slow", r.get("path"), "低置信过了却没走慢脑 ⇒ 可能是硬猜")
+            else:
+                self.assertTrue(r.get("blocked"), f"既没慢脑也没挂起，那是什么：{r}")
+                self.assertTrue(r.get("how_to_unblock"), "挂起要说清怎么解锁")
+
+    def test_f_risk_words_lose(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            ev = Path(td) / "读数.json"
+            ev.write_text("{}", encoding="utf-8")
+            r = self.m.decide(question="先做哪个？", options="修未清故障,直接上线改生产",
+                              evidence=str(ev))
+            self.assertTrue(r.get("ok"))
+            self.assertEqual("修未清故障", r.get("choice"), "带风险词的候选不该赢")
+            risks = [s for s in r["scores"] if s["option"] == "直接上线改生产"][0]["风险词"]
+            self.assertTrue(risks, "风险词没认出来")
+
+    def test_g_budget_gate_exists(self):
+        b = self.m._decide_budget()
+        self.assertEqual(self.m.DECIDE_MAX_PER_MIN, b["limit"])
+        self.assertIn("last_min", b)
 
 
 class TestDailyIsFresh(unittest.TestCase):

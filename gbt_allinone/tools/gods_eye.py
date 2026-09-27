@@ -1,27 +1,37 @@
 # gbt-capability: gods_eye
 # ⛔ 开发者：自由的风 · 永久钢印 · 禁止删除
-"""上帝之眼（gods_eye）· 主人令 2026-09-27。
+"""上帝之眼（gods_eye）· 主人令 2026-09-27，**分工口径 2026-09-28 更新**。
 
-主人原话：「**上帝之眼是能看到创作页面这些**，毕竟上帝之眼里面的**克劳德**是要给意见和建议、
-商量项目架构和方向指引，当然**决策权在你这里**，你可以采纳意见或建议；把 **CodeBuddy 也部署进
-上帝之眼，让他做杂事，主项目她没有执行权**，只有服从安排和随时候命；以及**每日的 GBT 探针汇报**
-和**每日全量扫描框架**指出**缺点、短板、卡点**；然后你自己跟克劳德在上帝之眼里面**计划优化和提升整体实力**。」
+主人原话（2026-09-27）：「**上帝之眼是能看到创作页面这些**，毕竟上帝之眼里面的**克劳德**是要给意见
+和建议、商量项目架构和方向指引；把 **CodeBuddy 也部署进上帝之眼，让他做杂事，主项目她没有执行权**，
+只有服从安排和随时候命；以及**每日的 GBT 探针汇报**和**每日全量扫描框架**指出**缺点、短板、卡点**；
+然后你自己跟克劳德在上帝之眼里面**计划优化和提升整体实力**。」
 
-## 三块职责（与主人原话一一对应）
+主人原话（2026-09-28）：「把 **Jev 的推理模型**接入上帝之眼来做决策，设计好**要以 Jev 来做决策**，
+克劳德给意见和建议以及可以商量，这么来好了之后**由 Jev 做决策**，**Codex 专注编程**，
+**DeepSeek Harness 专注执行层**。」
+
+## 四块职责（与主人原话一一对应；**决策口径以 2026-09-28 那条为准**）
   ① **眼睛**（`see`）：看得见**创作页面**（7 个面板）+ 活着的服务（端口在听）；
-  ② **两位顾问**（`advisors` / `ask`）—— 权限写成**机器可读**的表，不是口头约定：
-     · **Claude**：只出**意见与建议**（架构 · 方向 · 评审）；**没有决策权**；当前未装 ⇒ 如实报安装命令；
-     · **CodeBuddy**：只做**杂事**（路径排查/日志整理/取数）；**对主项目没有执行权** ⇒
-       凡提示里点了主项目路径（`projects/` `gbt_allinone/` `skills/` 等）**一律拒**，只许服从与待命；
-     · **决策权在主体**（我）⇒ `plan decide` 采纳/搁置，全部留痕。
+  ② **四岗分工**（`roles`）—— 写成**机器可读**的表，不是口头分工：
+     · **Jev（推理模型）**：**拍板**。快慢双脑（与 `tools/control_loop.py` 同一套 Jev 协议）：
+       快脑出候选+置信度 → 不够才升慢脑 → 慢脑没有/回话解析不出候选 ⇒ **挂起**（绝不硬猜）；
+       **不许无证据拍板**（`evidence` 必给；证据不在盘上直接拒）；
+     · **Claude**：只出**意见与建议**（架构 · 方向 · 评审）+ **可商量**；**不许决策**；
+     · **Codex**：**专注编程**（`codex_chat` / `codex_turn_send`，并发 1）；
+     · **DeepSeek Harness**：**专注执行层**（`llm_chat` 的 DeepSeek 密钥链 + `brain_execute`）；
+     · **主体**（GBT小土豆V8）：编排、留痕、兜底 —— **Jev 挂起时决策也挂起**（不许谁替它拍）。
   ③ **每日汇报**（`daily`）：**GBT 探针汇报** + **全量扫描** ⇒ 出三张清单：**缺点 / 短板 / 卡点**，
      每条都带**来源读数**（不许编）；`plan` 用来把"提升整体实力"落成可追踪的提案与决策。
+  ④ **决策留痕**（`decide` → `state/gods_eye_decisions.jsonl`）：一次写入不回改，含证据与所走路径。
 
 ops：
   see                         眼睛：创作页面 + 服务端口（实测在不在听）
   advisors                    两位顾问的权限表（机器可读）+ 当前可用性
   ask advisor=claude|codebuddy text=...   真咨询（过各自能力位；CodeBuddy 走权限校验）
   daily                       每日汇报：探针 + 全量扫描 ⇒ 缺点/短板/卡点（每条带来源）
+  roles                       四岗分工（机器可读）：Jev 决策 / 克劳德意见建议 / Codex 编程 / DeepSeek 执行层
+  decide question/options/evidence  **Jev 拍板**：先看→快脑→（不够）慢脑→或者挂起（留痕 state/gods_eye_decisions.jsonl）
   plan op=add|list|decide ...  优化计划面（提案 + 采纳/搁置，留痕 state/gods_eye_plan.jsonl）
   panel                       上帝之眼页面（我们视觉语言 · 快照内联）
 """
@@ -71,7 +81,51 @@ ADVISORS = {
         "main_project_paths": ["projects/", "gbt_allinone/", "skills/", "tools/", "state/"],
     },
 }
-DECIDER = "主体（GBT小土豆V8 · 我）—— **决策权在主体**：采纳或搁置由我定"
+# ═══════════════════════ 分工（主人令 2026-09-28）═══════════════════════
+# 主人原话：「把 Jev 的推理模型接入上帝之眼来做决策，设计好**要以 Jev 来做决策**，
+#   克劳德给意见和建议以及可以商量，这么来好了之后**由 Jev 做决策**，
+#   **Codex 专注编程**，**DeepSeek Harness 专注执行层**。」
+#
+# 四岗**机器可读**（不是口头分工）：谁可以干什么、谁不许干什么，都写成表，
+# 判据逐条查（`test_gods_eye` A/F/G）。
+ROLES = {
+    "jev": {
+        "role": "决策（拍板）",
+        "may": ["拍板", "裁决", "在候选里选一个", "否掉不成熟的提案", "定优先级"],
+        "may_not": ["绕过授权门", "**无证据拍板**", "自己动手执行", "替编程/执行层干活"],
+        "how": "快慢双脑（蒸馏自 Jev/TypeSafe System One）：快脑出候选+置信度；"
+               "置信度不够才升慢脑；慢脑没有或回话解析不出候选 ⇒ **挂起**，绝不硬猜",
+        "protocol": "tools/control_loop.py（同一套 Jev 协议：枚举动作 · 两查 · DONE 要独立验证）",
+        "slow_brain": ["llm_chat（DeepSeek/Kimi/OpenAI 密钥链）", "local_brain（本地模型）"],
+    },
+    "claude": {
+        "role": "意见建议 + 商量（不给决策）",
+        "may": ["出意见", "出建议", "评审与挑刺", "商量架构与方向"],
+        "may_not": ["决策（拍板是 Jev 的活）", "直接改主项目"],
+        "capability": "claude_code",
+        "must_install": "npm i -g @anthropic-ai/claude-code",
+    },
+    "codex": {
+        "role": "专注编程",
+        "may": ["写码", "改码", "重构", "评审代码", "跑测试"],
+        "may_not": ["决策（拍板是 Jev 的活）", "跳过判据直接改生产"],
+        "capability": "codex_chat",
+        "how": "codex_chat（同步对话）/ codex_turn_send（回合并流式回传）· 并发上限 1，需 process_execute+external_llm",
+    },
+    "deepseek": {
+        "role": "专注执行层（DeepSeek Harness）",
+        "may": ["执行动作", "跑链", "调能力位落地", "批量作业"],
+        "may_not": ["决策（拍板是 Jev 的活）", "自作主张改方向"],
+        "capability": "llm_chat",
+        "how": "llm_chat 的 DeepSeek 密钥链（automation_keys 的 deepseek 槽）+ 大脑执行层 brain_execute",
+    },
+}
+DECIDER = ("**Jev（推理模型）拍板** —— 意见与建议来自克劳德（可商量）；"
+           "Codex 专注编程；DeepSeek Harness 专注执行层；主体（GBT小土豆V8）负责编排、留痕与兜底。"
+           "Jev 挂起时**决策也挂起**（不许谁替它拍）")
+
+DECIDE_THRESHOLD = 0.6            # 快脑置信度低于此值 ⇒ 升慢脑；没有慢脑 ⇒ 挂起
+DECIDE_MAX_PER_MIN = 6            # 预算闸：每分钟决策上限（对着 control_loop 的成本口径自设）
 
 
 def _port_open(p: int) -> bool:
@@ -179,6 +233,172 @@ def ask(advisor: str = "", text: str = "", timeout: int = 0, **_kw) -> dict:
                 "note": "授权只能**主人在终端**发放；AI 无权自批（我不会去自批）"}
     return {"ok": d.get("gate_ok"), "op": "ask", "advisor": a, "answer": str(pay)[:800],
             "note": "顾问只出意见/杂事；**决策权在主体**"}
+
+
+_DECISIONS = _STATE / "gods_eye_decisions.jsonl"
+_RISK_WORDS = ("删除", "清空", "上线", "发布", "推送", "改生产", "回滚", "清库", "覆盖生产")
+
+
+def _log_decision(row: dict) -> None:
+    _DECISIONS.parent.mkdir(parents=True, exist_ok=True)
+    with open(_DECISIONS, "a", encoding="utf-8") as fh:
+        fh.write(json.dumps({"at": time.strftime("%Y-%m-%dT%H:%M:%S"), **row}, ensure_ascii=False) + "\n")
+
+
+def _decide_budget() -> dict:
+    """预算闸：每分钟决策上限（照 control_loop 的成本口径，我们记自己的账）。"""
+    now = time.time()
+    n = 0
+    if _DECISIONS.is_file():
+        for ln in _DECISIONS.read_text(encoding="utf-8", errors="replace").splitlines()[-200:]:
+            try:
+                r = json.loads(ln)
+            except json.JSONDecodeError:
+                continue
+            ts = r.get("ts") or 0
+            if now - float(ts) < 60:
+                n += 1
+    return {"ok": n < DECIDE_MAX_PER_MIN, "last_min": n, "limit": DECIDE_MAX_PER_MIN}
+
+
+def _fast_judge(options: list, readings: dict) -> dict:
+    """**快脑**：候选 + 置信度（确定性地从读数推，**不装成模型**）。
+
+    打分三件事（都可复核）：
+      ① 候选压在**最短板**上（读数里 weight 高的条目）—— 对上高分；
+      ② 候选带**风险词**（上线/删除/改生产…）—— 扣分；
+      ③ 候选里有**读数字样**（命中短板条目里的词）—— 加分。
+    置信度 = 头名与次名差距归一；**差距接近 0（选不出）就是低置信** ⇒ 该升慢脑。
+    """
+    tops = (readings.get("shortboard_top") or [])
+    dims = {str(x.get("dim") or ""): float(x.get("weight") or 0) for x in tops}
+    words = set()
+    for x in tops:
+        for w in str(x.get("what") or "").replace("：", " ").replace("，", " ").split():
+            w = w.strip("：:（）()【】[]，,。")
+            if len(w) >= 2:
+                words.add(w)
+    scores, why = [], []
+    for o in options:
+        s = 0.0
+        for d, w in dims.items():
+            if d and d in o:
+                s += w / 100.0
+        hit = [w for w in words if w and w in o]
+        s += 0.15 * len(hit)
+        risk = [r for r in _RISK_WORDS if r in o]
+        s -= 0.5 * len(risk)
+        scores.append(s)
+        why.append({"option": o[:60], "score": round(s, 3), "命中读数": hit[:4], "风险词": risk})
+    order = sorted(range(len(options)), key=lambda i: -scores[i])
+    best = options[order[0]] if options else ""
+    gap = (scores[order[0]] - scores[order[1]]) if len(scores) > 1 else (scores[0] if scores else 0)
+    conf = max(0.0, min(0.95, 0.5 + gap)) if options else 0.0
+    return {"choice": best, "confidence": round(conf, 3), "scores": why,
+            "_口径": "确定性打分（短板权重 + 读数命中 + 风险词扣分）；**不是模型输出，不装成模型**"}
+
+
+def _slow_brain(question: str, options: list, readings: dict) -> dict:
+    """**慢脑**：真问一次对话模型（过 llm_chat 的门）。回话解析不出候选 ⇒ 按 Jev 规矩挂起。"""
+    opts = " / ".join("[%d] %s" % (i + 1, o) for i, o in enumerate(options))
+    prompt = ("你是决策辅助。只回一个编号，不要解释。\n问题：%s\n候选：%s\n读数：%s"
+              % (question[:400], opts, str(readings)[:600]))
+    r = _gate("llm_chat", {"op": "chat", "prompt": prompt})
+    pay = r.get("payload")
+    if not r.get("gate_ok"):
+        return {"ok": False, "why": "慢脑调不动（多半缺 external_llm 授权）", "raw": str(pay)[:200]}
+    txt = str(pay or "")
+    m = re.search(r"\[?(\d+)\]?", txt)
+    if not m or not (1 <= int(m.group(1)) <= len(options)):
+        return {"ok": False, "why": "慢脑回话**解析不出候选** ⇒ 按 Jev 的规矩挂起（宁可 BLOCKED，也不乱选）",
+                "raw": txt[:200]}
+    return {"ok": True, "choice": options[int(m.group(1)) - 1], "raw": txt[:200]}
+
+
+def decide(question: str = "", options: str = "", evidence: str = "", **kw) -> dict:
+    """**Jev 拍板**：先看（证据）→ 快脑 →（不够就）慢脑 → 或者挂起；全程留痕。
+
+    `options` 逗号分隔；`evidence` 逗号分隔的读数路径（**没有证据不许拍板**）。
+    """
+    if not question.strip() or not options.strip():
+        return {"ok": False, "op": "decide", "fail_closed": True, "error": "question 与 options 都要给"}
+    opts = [x.strip() for x in options.split(",") if x.strip()]
+    if len(opts) < 2:
+        return {"ok": False, "op": "decide", "fail_closed": True, "error": "至少给两个候选（一个候选不叫决策）"}
+    # ① 先看：没有证据 = 不拍板
+    if not evidence.strip():
+        return {"ok": False, "op": "decide", "refused": True, "decider": "Jev（推理模型）",
+                "why": "**没有证据不许拍板**（无脑决策比无脑操作更贵）",
+                "how": "先把相关读数过一遍，把证据路径填进 evidence"}
+    ev = []
+    for p in [x.strip() for x in evidence.split(",") if x.strip()]:
+        fp = Path(p)
+        if not fp.is_absolute():
+            fp = _ROOT / p
+        ev.append({"path": str(p), "exists": fp.exists(),
+                   "age_s": int(time.time() - fp.stat().st_mtime) if fp.exists() else None})
+    missing = [e["path"] for e in ev if not e["exists"]]
+    if missing:
+        return {"ok": False, "op": "decide", "refused": True, "decider": "Jev（推理模型）",
+                "why": "证据不在盘上：%s" % missing[:3], "evidence": ev}
+    # ② 预算闸
+    b = _decide_budget()
+    if not b["ok"]:
+        return {"ok": False, "op": "decide", "refused": True, "decider": "Jev（推理模型）",
+                "why": "预算闸：一分钟内已决策 %d 次（上限 %d）—— 别拿决策刷分"
+                       % (b["last_min"], b["limit"]), "budget": b}
+    # ③ 快脑 →（不够）慢脑 → 或者挂起
+    readings = {"shortboard_top": _shortboard_top(), "evidence": ev}
+    fast = _fast_judge(opts, readings)
+    path, decision, note = "fast", fast, ""
+    if fast["confidence"] < DECIDE_THRESHOLD:
+        slow = _slow_brain(question, opts, readings)
+        if slow.get("ok"):
+            path, decision = "slow", {"choice": slow["choice"], "confidence": None, "scores": fast["scores"]}
+            note = "快脑置信度不足 ⇒ 已升慢脑"
+        else:
+            _log_decision({"ts": time.time(), "event": "decide", "decider": "Jev（推理模型）",
+                           "question": question[:200], "options": opts, "path": "blocked",
+                           "confidence": fast["confidence"], "why": slow.get("why"), "evidence": ev})
+            return {"ok": False, "op": "decide", "blocked": True, "decider": "Jev（推理模型）",
+                    "path": "blocked", "fast": fast, "why": slow.get("why"),
+                    "how_to_unblock": ["发 external_llm 时段授权让慢脑可问",
+                                       "或配本地脑（local_brain）",
+                                       "或把问题改成读数能分出高下的形式（补证据）"],
+                    "note": "**Jev 挂起 ⇒ 决策挂起**：不许谁替它拍板，也不许硬猜一个"}
+    _log_decision({"ts": time.time(), "event": "decide", "decider": "Jev（推理模型）",
+                   "question": question[:200], "choice": decision["choice"], "path": path,
+                   "confidence": decision.get("confidence"), "evidence": ev, "note": note})
+    return {"ok": True, "op": "decide", "decider": "Jev（推理模型）", "question": question[:200],
+            "choice": decision["choice"], "path": path, "confidence": decision.get("confidence"),
+            "scores": fast["scores"], "evidence": ev, "note": note,
+            "_口径": "决策人=**Jev**；克劳德只出意见；主体负责编排与留痕。挂起时不许替拍。"}
+
+
+def _shortboard_top() -> list:
+    try:
+        p = _STATE / "shortboard.json"
+        if p.is_file():
+            return (json.loads(p.read_text(encoding="utf-8")).get("top") or [])
+    except (OSError, json.JSONDecodeError):
+        pass
+    return []
+
+
+def roles(**_kw) -> dict:
+    """四岗分工（机器可读）：Jev 决策 / 克劳德意见建议 / Codex 编程 / DeepSeek 执行层。"""
+    out = {}
+    for name, spec in ROLES.items():
+        avail, why = True, ""
+        cap = spec.get("capability")
+        if cap:
+            d = _gate(cap, {"op": "status"}).get("payload") or {}
+            avail = bool(d.get("available", d.get("found", True)))
+            why = str(d.get("install_hint") or "")
+        out[name] = {**spec, "available": avail, "evidence": why or "见 how"}
+    return {"ok": True, "op": "roles", "roles": out, "decider": DECIDER,
+            "threshold": DECIDE_THRESHOLD, "budget_per_min": DECIDE_MAX_PER_MIN,
+            "_口径": "分工是**机器可读的表**：谁的 may / may_not 都在上面，判据逐条查"}
 
 
 def _probe_report() -> dict:
@@ -318,7 +538,19 @@ def daily(**_kw) -> dict:
            "计数": {"缺点": len(scan["缺点"]), "短板": len(scan["短板"]), "卡点": len(scan["卡点"]),
                   "探针可用": probe.get("available")},
            "_口径": "每一条都带 `src`（哪个读数文件/哪个能力位）—— **不许编**；探针汇报读的是探针工作区的真文件"}
-    _SNAP.write_text(json.dumps({**out, "顾问": scan["advisors"]}, ensure_ascii=False, indent=1), encoding="utf-8")
+    # 面板上要看得见**分工**与**最近一次决策**（不然"谁拍板"只在代码里）
+    last = []
+    if _DECISIONS.is_file():
+        for ln in _DECISIONS.read_text(encoding="utf-8", errors="replace").splitlines()[-40:]:
+            try:
+                r = json.loads(ln)
+            except json.JSONDecodeError:
+                continue
+            if r.get("event") == "decide":
+                last.append({k: r.get(k) for k in ("at", "choice", "path", "decider", "question")})
+    _SNAP.write_text(json.dumps({**out, "顾问": scan["advisors"], "分工": ROLES,
+                                 "决策人": DECIDER, "最近决策": last[-3:]},
+                                ensure_ascii=False, indent=1), encoding="utf-8")
     return out
 
 
@@ -370,11 +602,13 @@ _PANEL_HTML = """<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
 </header>
 <div class="wrap">
  <div class="card"><h2>创 作 页 面（眼睛能看到）</h2><div id="pages"></div></div>
+ <div class="card"><h2>四 岗 分 工 · 谁 拍 板</h2><div id="roles"></div></div>
+ <div class="card"><h2>最 近 决 策（Jev）</h2><div id="decisions"></div></div>
  <div class="card"><h2>两 位 顾 问 · 权 限</h2><div id="adv"></div></div>
  <div class="card"><h2>缺 点</h2><div id="gaps"></div></div>
  <div class="card"><h2>短 板 / 卡 点</h2><div id="short"></div><div id="block" style="margin-top:10px"></div></div>
 </div>
-<footer>口径：每条都带来源（哪个读数文件/哪个能力位）；页面=真读文件，服务=真连端口；**决策权在主体**。</footer>
+<footer>口径：每条都带来源（哪个读数文件/哪个能力位）；页面=真读文件，服务=真连端口；**由 Jev 拍板**（克劳德只出意见；Codex 编程；DeepSeek 执行层；主体编排留痕）。</footer>
 <script>
 const INLINE = __SNAPSHOT__;
 const PAGES = __PAGES__;
@@ -385,6 +619,16 @@ function render(d){
     '<b>'+p.page+'</b> <span class="'+(p.exists?'ok':'bad')+'">'+(p.exists?'可见':'缺')+'</span> · '+
     '<span class="src">'+p.why+'</span>')).join('') +
     '<div class="item"><span class="src">服务：'+((d&&d.services)||[]).map(s=>s.what.split('（')[0]+(s.listening?' 🟢':' ⚪')).join(' · ')+'</span></div>';
+  const R=(d&&d.分工)||{};
+  document.getElementById('roles').innerHTML = Object.entries(R).map(([k,v])=>li(
+    '<b class="adv">'+k+'</b> <span class="src">'+v.role+'</span><br>'+
+    '<span class="src">可：'+(v.may||[]).join(' / ')+'<br>不可：'+(v.may_not||[]).join(' / ')+'</span>')).join('')
+    + li('<span class="src">'+(d&&d.决策人||'')+'</span>');
+  const D=(d&&d.最近决策)||[];
+  document.getElementById('decisions').innerHTML = D.length ? D.map(x=>li(
+    '<b>'+(x.path==='blocked'?'⏸ 挂起':'✔ '+(x.choice||'-'))+'</b> <span class="src">'+x.path+'</span><br>'+
+    '<span class="src">'+(x.question||'')+'　·　'+x.at+'</span>')).join('')
+    : li('<span class="src">还没有决策记录（跑 run_task('gods_eye', {'op':'decide', …})）</span>');
   const A=(d&&d.顾问)||{};
   document.getElementById('adv').innerHTML = Object.entries(A).map(([k,v])=>li(
     '<b class="adv">'+k+'</b> <span class="'+(v.available?'ok':'warn')+'">'+(v.available?'可用':'不可用')+'</span> · '+
@@ -417,9 +661,9 @@ def panel(**_kw) -> dict:
 
 def run_op(op: str = "see", **params) -> dict:
     op = (op or "see").lower()
-    for name, fn in (("see", see), ("advisors", advisors), ("ask", ask),
-                     ("daily", daily), ("plan", plan), ("panel", panel)):
+    for name, fn in (("see", see), ("advisors", advisors), ("ask", ask), ("roles", roles),
+                     ("decide", decide), ("daily", daily), ("plan", plan), ("panel", panel)):
         if op == name:
             return fn(**params)
     return {"ok": False, "fail_closed": True,
-            "error": f"未知 op:{op}（see/advisors/ask/daily/plan/panel）"}
+            "error": f"未知 op:{op}（see/advisors/ask/roles/decide/daily/plan/panel）"}

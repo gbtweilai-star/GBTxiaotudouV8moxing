@@ -16294,3 +16294,9 @@
 {"at": "2026-09-28T04:08:13", "event": "autobind", "skills_synced": []}
 {"at": "2026-09-28T04:08:16", "event": "autobind", "files": 1, "bound": 1, "hint": "cloud_pc", "pruned": 0}
 {"at": "2026-09-28T04:08:51", "event": "scan", "bindings": 6463, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T04:39:40", "event": "autobind", "files": 2, "bound": 2, "hint": "claude_code", "pruned": 0}
+{"at": "2026-09-28T04:41:04", "event": "autobind", "files": 2, "bound": 2, "hint": "claude_code", "pruned": 0}
+{"at": "2026-09-28T04:41:29", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code", "pruned": 0}
+{"at": "2026-09-28T04:42:55", "event": "autobind", "files": 2, "bound": 2, "hint": "gods_eye", "pruned": 0}
+{"at": "2026-09-28T04:44:10", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code", "pruned": 0}
+{"at": "2026-09-28T04:44:13", "event": "scan", "bindings": 6463, "missing_asset": 0, "ghost_tentacle": 0}
