@@ -16128,3 +16128,17 @@
 {"at": "2026-09-27T22:09:39", "event": "bind", "asset": "state/comfyui_surface.json", "tentacle": "comfyui", "note": "ComfyUI 可控制面清单（966 节点 + 端点 + 模型 + 开关）"}
 {"at": "2026-09-27T22:09:40", "event": "bind", "asset": "gbt_allinone/tools/comfyui_surface.py", "tentacle": "comfyui", "note": "ComfyUI 全控（读/提交/队列/surface/verify）"}
 {"at": "2026-09-27T22:09:41", "event": "scan", "bindings": 6437, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T22:20:00", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code"}
+{"at": "2026-09-27T22:21:01", "event": "bind", "asset": "gbt_allinone/tools/gods_eye.py", "tentacle": "domain:tools", "note": "autobind"}
+{"at": "2026-09-27T22:21:04", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code"}
+{"at": "2026-09-27T22:21:57", "event": "bind", "asset": "gbt_allinone/tools/gods_eye.py", "tentacle": "gods_eye", "note": "上帝之眼（眼睛/顾问/每日/计划）"}
+{"at": "2026-09-27T22:21:57", "event": "bind", "asset": "holo_pet/assets/godview/index.html", "tentacle": "gods_eye", "note": "上帝之眼页面"}
+{"at": "2026-09-27T22:21:57", "event": "bind", "asset": "state/gods_eye.json", "tentacle": "gods_eye", "note": "上帝之眼快照"}
+{"at": "2026-09-27T22:22:01", "event": "bind", "asset": "tools/codex-scripts/boot-selfcheck.py", "tentacle": "claude_code", "note": "autobind"}
+{"at": "2026-09-27T22:22:01", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "claude_code", "note": "autobind"}
+{"at": "2026-09-27T22:22:01", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "claude_code", "note": "autobind"}
+{"at": "2026-09-27T22:22:01", "event": "bind", "asset": "gbt_allinone/tests/test_gods_eye.py", "tentacle": "claude_code", "note": "autobind"}
+{"at": "2026-09-27T22:22:06", "event": "autobind", "files": 5, "bound": 5, "hint": "claude_code"}
+{"at": "2026-09-27T22:22:09", "event": "scan", "bindings": 6440, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T22:23:03", "event": "autobind", "files": 1, "bound": 1, "hint": "claude_code"}
+{"at": "2026-09-27T22:23:05", "event": "scan", "bindings": 6440, "missing_asset": 0, "ghost_tentacle": 0}

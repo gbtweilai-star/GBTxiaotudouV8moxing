@@ -62,6 +62,9 @@ JUDGMENTS = [
     # 2026-09-27 加（主人令「其他工具全部都要可控按键一个不漏的绑定好」）：**可控制面完整性**——
     # 每个装了的工具都必须有"它自己报出来的"可控制键清单（ffmpeg 628 · git 177 · python 302 ·
     # genoffice 19 · freebuff 3 · blender 2409 bpy 算子），且**消失的键必须为空**（断连报警）。
+    # 2026-09-27 加（主人令「上帝之眼」）：眼睛能看见创作页面 · 两顾问权限机器可读 ·
+    # **CodeBuddy 碰主项目必须被拒** · 每日汇报三清单每条带来源 · 计划与决策留痕。
+    ("上帝之眼", "gbt_allinone.tests.test_gods_eye"),
     ("可控制面一个不漏", "gbt_allinone.tests.test_surface_bind"),
     ("技能源装不分叉", "gbt_allinone.tests.test_skills_install_sync"),
     # 2026-09-27 加（主人令「扫描和视觉的钩子全方位无死角覆盖…要不然扫来扫去都是故障」）：

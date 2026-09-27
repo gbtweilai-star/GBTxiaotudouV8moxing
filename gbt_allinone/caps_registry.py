@@ -852,6 +852,18 @@ BENIGN_CAPS = {
         "handler": 'coverage_auditor',
         "safe": True,
     },
+    "gods_eye": {
+        "domain": 'system',
+        "desc": ('上帝之眼（主人令 2026-09-27）：**看得见创作页面**（7 个面板 + 服务端口真连）+ '
+                 '**两位顾问（权限机器可读）**——Claude 只出意见建议（架构/方向/评审，**无决策权**）· '
+                 'CodeBuddy 只做杂事（**对主项目没有执行权**，点主项目路径一律拒，只服从与待命）· '
+                 '**决策权在主体**（我）；**每日汇报** = GBT 探针汇报 + 全量扫描 ⇒ **缺点/短板/卡点**'
+                 '（每条带来源 src，不许编）；`plan` 把"提升整体实力"落成提案与决策（留痕 '
+                 'state/gods_eye_plan.jsonl）；`panel` 出上帝之眼页面。'
+                 'op=see/advisors/ask/daily/plan/panel'),
+        "handler": 'gods_eye',
+        "safe": True,
+    },
     "comfyui": {
         "domain": 'creation',
         "desc": ('ComfyUI（秋叶整合版）全控（主人令 2026-09-27「这个必须也是一个不漏的双向绑定，'

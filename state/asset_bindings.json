@@ -25887,9 +25887,10 @@
  },
  "holo_pet/assets/godview/index.html": {
   "tentacles": [
-   "project_context"
+   "project_context",
+   "gods_eye"
   ],
-  "note": "sweep",
+  "note": "上帝之眼页面",
   "bound_at": "2026-09-27T01:19:22"
  },
  "holo_pet/assets/music/index.html": {
@@ -29161,7 +29162,8 @@
    "project_context",
    "surface_bind",
    "one_shot",
-   "comfyui"
+   "comfyui",
+   "claude_code"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29180,7 +29182,8 @@
    "project_context",
    "surface_bind",
    "one_shot",
-   "comfyui"
+   "comfyui",
+   "claude_code"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29308,7 +29311,8 @@
  "tools/codex-scripts/boot-selfcheck.py": {
   "tentacles": [
    "selfscan",
-   "penetrating_cross_scan"
+   "penetrating_cross_scan",
+   "claude_code"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:25:45"
@@ -45112,5 +45116,27 @@
   ],
   "note": "ComfyUI 可控制面清单（966 节点 + 端点 + 模型 + 开关）",
   "bound_at": "2026-09-27T22:09:39"
+ },
+ "gbt_allinone/tools/gods_eye.py": {
+  "tentacles": [
+   "domain:tools",
+   "gods_eye"
+  ],
+  "note": "上帝之眼（眼睛/顾问/每日/计划）",
+  "bound_at": "2026-09-27T22:21:01"
+ },
+ "state/gods_eye.json": {
+  "tentacles": [
+   "gods_eye"
+  ],
+  "note": "上帝之眼快照",
+  "bound_at": "2026-09-27T22:21:57"
+ },
+ "gbt_allinone/tests/test_gods_eye.py": {
+  "tentacles": [
+   "claude_code"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T22:22:01"
  }
 }
