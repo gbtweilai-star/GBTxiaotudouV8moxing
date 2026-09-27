@@ -29155,7 +29155,8 @@
    "zimage_rewash",
    "look_grade",
    "control_loop",
-   "asset_index"
+   "asset_index",
+   "automation_keys"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29168,7 +29169,8 @@
    "zimage_rewash",
    "look_grade",
    "control_loop",
-   "asset_index"
+   "asset_index",
+   "automation_keys"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -44828,5 +44830,19 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T20:04:05"
+ },
+ "tools/genoffice_pack.py": {
+  "tentacles": [
+   "automation_keys"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T20:17:44"
+ },
+ "gbt_allinone/tools/automation_keys.py": {
+  "tentacles": [
+   "automation_keys"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-27T20:17:44"
  }
 }

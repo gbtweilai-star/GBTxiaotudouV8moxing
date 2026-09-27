@@ -16026,3 +16026,9 @@
 {"at": "2026-09-27T20:04:07", "event": "autobind", "skills_synced": ["gbt-genoffice"]}
 {"at": "2026-09-27T20:04:07", "event": "autobind", "files": 2, "bound": 2, "hint": "genoffice"}
 {"at": "2026-09-27T20:06:23", "event": "scan", "bindings": 6400, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-27T20:17:44", "event": "bind", "asset": "tools/genoffice_pack.py", "tentacle": "automation_keys", "note": "autobind"}
+{"at": "2026-09-27T20:17:44", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "automation_keys", "note": "autobind"}
+{"at": "2026-09-27T20:17:44", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "automation_keys", "note": "autobind"}
+{"at": "2026-09-27T20:17:44", "event": "bind", "asset": "gbt_allinone/tools/automation_keys.py", "tentacle": "automation_keys", "note": "autobind"}
+{"at": "2026-09-27T20:17:48", "event": "autobind", "files": 5, "bound": 5, "hint": "automation_keys"}
+{"at": "2026-09-27T20:18:39", "event": "scan", "bindings": 6402, "missing_asset": 0, "ghost_tentacle": 0}

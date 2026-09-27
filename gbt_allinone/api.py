@@ -456,6 +456,12 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import meta_cognition as _mc
         p = payload or {}
         return _mc.run(p.get("op", "law"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "automation_keys":
+        # 自动化配置密钥口（主人令 2026-09-27）：只存引用、只回掩码、改配置过门、真密钥走 model_key_pool。
+        from .tools import automation_keys as _ak
+        p = payload or {}
+        return _ak.run_op(p.get("op", "status"),
+                          **{k: v for k, v in p.items() if k != "op"})
     if kind == "model_key_pool":
         from .tools import model_key_pool as _mkp
         p = payload or {}

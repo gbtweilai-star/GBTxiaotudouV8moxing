@@ -852,6 +852,17 @@ BENIGN_CAPS = {
         "handler": 'coverage_auditor',
         "safe": True,
     },
+    "automation_keys": {
+        "domain": 'llm',
+        "desc": '自动化配置密钥口（APP 设置调它）：六个槽位（codex/claude/deepseek/browser/free_pool/sec_llm）'
+                '每槽只存**引用**（env:<环境变量名> / vault:<DPAPI profile> / local），**不存值**；'
+                '输出只有掩码（前 4 字符 + ****）；set/unset 过 filesystem_write 门；'
+                'test 做只读闭环自检（free_pool 只打本地 /v1，不花积分、不出公网）；'
+                'where 给设置页看接线契约。真密钥一律走 model_key_pool 的 DPAPI 路径（六条红线在那边）。'
+                'op=status/set/unset/test/where',
+        "handler": 'automation_keys',
+        "safe": True,
+    },
     "model_key_pool": {
         "domain": 'llm',
         "desc": '模型密钥池（只读骨架）：按 owner_ai_id 分池、触手只借不拥有、DPAPI 只存路径、超限只上报',

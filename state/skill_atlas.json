@@ -2864,6 +2864,21 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python tools/asset_index.py stats"
+  },
+  {
+   "kind": "automation_keys",
+   "domain": "llm",
+   "desc": "自动化配置密钥口：六槽位只存引用（env/vault/local）· 只回掩码 · 改配置过 filesystem_write 门 · test 只读闭环自检（free_pool 只打本地 /v1）· 真密钥走 model_key_pool 的 DPAPI",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "automation_keys",
+   "requires_params": [],
+   "params_hint": "op=status|set|unset|test|where",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python -c \"import gbt_allinone as g; print(g.run_task('automation_keys', {'op':'status'}))\""
   }
  ],
  "skills": [
@@ -11186,7 +11201,7 @@
   }
  ],
  "counts": {
-  "caps": 187,
+  "caps": 188,
   "caps_enabled": 185,
   "caps_safe_no_args": 102,
   "skills": 363,

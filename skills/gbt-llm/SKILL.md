@@ -354,3 +354,55 @@ python -m gbt_allinone auth grant --scope external_llm  --ttl 600
 2. `py -3.14 tools/codex-scripts/five-dim.py cap brain_health` → 拿 `score` 与五维 detail；
 3. 任一 `🔒` 位 → 打印的 `missing_scopes` 必须与 §4 静态表**逐个一致**（不一致就是某处漂移了，回来改本文件）；
 4. 声明"某位能用"之前，先问自己：**这条是实测读数，还是我读错了地方？** 拿不准就写"未验"。
+
+---
+
+## 9. 自动化配置密钥口（主人令 2026-09-27 · 能力位 `automation_keys`）
+
+主人原话：「FreeLLMAPI 蒸馏成我们自己的原生、把原控制的移除保留功能，**集成进我们的 APP 设置里面
+当自动化配置密钥口**；保留 Codex 的编程能力、DeepSeek Harness 的执行力、克劳德的意见和建议、
+内置浏览器全控；所有能力挨个连接上并**测试跑通闭环验证**。」
+
+### 9.1 三条硬口径
+1. **只存"引用"，不存值**：设置文件 `state/automation_keys.json` 里只有
+   `env:<环境变量名>` / `vault:<DPAPI profile 名>` / `local` —— **没有密钥值**；
+2. **只回掩码**：任何读数只给 `sk-a1b2****` + "在/不在"，**永不回值**；
+3. **写配置过门**：`set/unset` 过 `filesystem_write`；**新增真密钥走 `model_key_pool`**
+   （DPAPI + auth_gate，六条红线在那边）—— 本口子**不另开写密钥的路径**。
+
+### 9.2 六个槽位（= 挨个接好的能力 + 免费算力）
+| slot | 谁在用 | 引用默认值 |
+|---|---|---|
+| `codex` | Codex 编程能力（官方会话/线程/回合） | `env:OPENAI_API_KEY` |
+| `claude` | 克劳德的意见和建议（Claude Code CLI） | `env:ANTHROPIC_API_KEY` |
+| `deepseek` | DeepSeek Harness 执行力（密钥链） | `vault:deepseek/agnes` |
+| `browser` | 内置浏览器全控（本地控制面） | `local`（通常不需要密钥） |
+| `free_pool` | 免费算力池（FreeLLMAPI 本地 `/v1`） | `env:FREELLMAPI_KEY` |
+| `sec_llm` | 红队专用通道（不与其他混用） | `env:ABLITERATION_API_KEY` |
+
+```python
+g.run_task("automation_keys", {"op": "status"})     # 一屏：引用/在不在/掩码 + ready/total
+g.run_task("automation_keys", {"op": "test"})       # 只读闭环自检（free_pool 只打本地 /v1，不花积分）
+g.run_task("automation_keys", {"op": "where"})      # 给 APP 设置页看的接线契约
+g.run_task("automation_keys", {"op": "set", "slot": "free_pool", "ref": "env:FREELLMAPI_KEY"})  # 过写门
+```
+
+### 9.3 FreeLLMAPI 的蒸馏口径（**留功能、弃控制端**）
+- **留**：本地 `127.0.0.1:31415` 的 `/v1`（**只需统一 API key，不需要它的 dashboard 登录**）
+  —— 我们只吃这一条（实现在 `gbt_allinone/llm/freellmapi.py`）；
+- **弃**：它的 `/api/*` 配置面要 dashboard 会话 token ⇒ **我们不掏 SQLite 里的 token 绕登录**
+  （那是绕门），要配就去它界面登录一次，**一次性动作**；
+- **不改它源码**（改了就没法升级）；**不打印明文**（只 `mask()`）。
+- 它作者自己的限制也照抄：*personal experimentation, not production* · 免费额度受**服务条款**约束 ·
+  无前沿模型 / 延迟不稳 / 无 SLA。
+
+### 9.4 四项能力闭环读数（2026-09-27 实测 · 都过唯一门）
+| 能力 | 读数 | 还缺什么（每条一步） |
+|---|---|---|
+| **DeepSeek 执行力链** | `llm_status → status: ready` ✅ | 无 |
+| **Codex 编程能力** | CLI 已找到（`…\Codex\bin\codex.exe`）· `connected: false` | 一次 `codex` 登录/起会话 |
+| **克劳德 意见建议** | `available: false · found: []`（CLI 未安装） | `npm i -g @anthropic-ai/claude-code` + `ANTHROPIC_API_KEY` |
+| **内置浏览器 全控** | `denied`（要 `browser_control`） | `python -m gbt_allinone auth grant --scope browser_control --ttl 600` |
+| **免费算力池** | 已发现 `http://127.0.0.1:31415` · `up: false` | 启动 FreeLLMAPI 应用 + `FREELLMAPI_KEY` |
+
+> 口径：**缺口是诚实读数，不是失败** —— 每一格都写清"缺什么、谁有权给"，这比"看起来都在跑"有用。
