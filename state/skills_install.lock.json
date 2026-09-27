@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-09-27T20:05:48",
+  "generated": "2026-09-27T20:33:14",
   "source": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills",
   "home_hub": "C:\\Users\\ADMIN\\.agents\\skills",
   "ws_hub": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills",
@@ -354,8 +354,8 @@
     "gbt-llm": {
       "hub": "home",
       "installed": true,
-      "src_hash": "1bd8e3ae3461bf43",
-      "hub_hash": "1bd8e3ae3461bf43",
+      "src_hash": "645b789c677b0c6f",
+      "hub_hash": "645b789c677b0c6f",
       "files": 1,
       "in_sync": true
     },
