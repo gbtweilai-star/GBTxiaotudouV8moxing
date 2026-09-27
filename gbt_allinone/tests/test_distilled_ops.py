@@ -48,12 +48,18 @@ class TestMemoryBank(unittest.TestCase):
             f = Path(td) / "一条记忆.md"
             f.write_text("原始内容", encoding="utf-8")
             ref = str(f)
-            self.assertTrue(self.m.stamp(ref=ref, origin="我推的", why="判据样本").get("ok"))
-            t1 = self.m.trace(ref=ref)
-            self.assertIn("没被动过", t1["content_verdict"], f"刚打完章就说变过：{t1['content_verdict']}")
-            f.write_text("被改过的内容", encoding="utf-8")
-            t2 = self.m.trace(ref=ref)
-            self.assertIn("被改过", t2["content_verdict"], f"改了内容却没报：{t2['content_verdict']}")
+            # ⚠️ 印章台账要**重定向到临时文件**：判据不许往真台账写（血账：早先 gods_eye 判据污染过真账本）
+            real_stamps = self.m._STAMPS
+            self.m._STAMPS = Path(td) / "stamps.jsonl"
+            try:
+                self.assertTrue(self.m.stamp(ref=ref, origin="我推的", why="判据样本").get("ok"))
+                t1 = self.m.trace(ref=ref)
+                self.assertIn("没被动过", t1["content_verdict"], f"刚打完章就说变过：{t1['content_verdict']}")
+                f.write_text("被改过的内容", encoding="utf-8")
+                t2 = self.m.trace(ref=ref)
+                self.assertIn("被改过", t2["content_verdict"], f"改了内容却没报：{t2['content_verdict']}")
+            finally:
+                self.m._STAMPS = real_stamps
 
     def test_b_origin_must_be_declared(self):
         r = self.m.stamp(ref="x.md", origin="大概是主人说的", why="y")
@@ -63,8 +69,9 @@ class TestMemoryBank(unittest.TestCase):
 
     def test_c_alias_cycle_is_reported(self):
         with tempfile.TemporaryDirectory() as td:
-            real = self.m._ALIASES
+            real, real_stamps = self.m._ALIASES, self.m._STAMPS
             self.m._ALIASES = Path(td) / "a.json"
+            self.m._STAMPS = Path(td) / "stamps.jsonl"
             try:
                 self.m.alias(name="mem:x", target="mem:y")
                 self.m.alias(name="mem:y", target="mem:x")
@@ -82,8 +89,9 @@ class TestMemoryBank(unittest.TestCase):
             (src / "a.txt").write_text("A", encoding="utf-8")
             (src / "sub" / "b.txt").write_text("B", encoding="utf-8")
             dst = Path(td) / "new"
-            real = self.m._ALIASES
+            real, real_stamps = self.m._ALIASES, self.m._STAMPS
             self.m._ALIASES = Path(td) / "al.json"
+            self.m._STAMPS = Path(td) / "stamps.jsonl"
             old_sha = self.m._sha
             try:
                 # 造一个"复制后校验失败"：**只让目标侧那一份**对不上（两边都错就相等了 —— 第一版就这么写歪了）
@@ -101,7 +109,7 @@ class TestMemoryBank(unittest.TestCase):
                 self.assertTrue((src / "a.txt").is_file(), "旧家被动过了")
             finally:
                 self.m._sha = old_sha
-                self.m._ALIASES = real
+                self.m._ALIASES, self.m._STAMPS = real, real_stamps
 
 
 class TestAgentConsole(unittest.TestCase):
