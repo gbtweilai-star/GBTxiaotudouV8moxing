@@ -572,7 +572,7 @@ function startSse(broadcast) {
 const TOOLS_CAPS = [
   {
     cap: "prompt_bridge",
-    registered: "caps_registry.py:580",
+    registered: "caps_registry.py:622",
     actions: [
       { name: "status", state: "live", reason: "只读纯函数：先问当前态再决定发不发车（零副作用）" },
       { name: "compile", state: "live", reason: "只读纯本地：四段模板 + 原意保真自检（丢词即 intent_loss）" },
@@ -589,7 +589,7 @@ const TOOLS_CAPS = [
   },
   {
     cap: "coze_mail",
-    registered: "caps_registry.py:487",
+    registered: "caps_registry.py:529",
     actions: [
       { name: "status", state: "live", reason: "只读探针：读 state.json 与通道行数，不调能力层" },
       { name: "search", state: "pending", reason: "后端未接线 backend_not_wired（coze_mail_cap.py:69 _UnwiredTransport）" },
@@ -599,7 +599,7 @@ const TOOLS_CAPS = [
   },
   {
     cap: "create",
-    registered: "caps_registry.py:493",
+    registered: "caps_registry.py:535",
     actions: [
       { name: "status", state: "live", reason: "只读探针：读 state.json 与写根存在性，零字节零目录" },
       { name: "intent", state: "pending", reason: "本地登记（不发网络）；本轮不开放点击" },

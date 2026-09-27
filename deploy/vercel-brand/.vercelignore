@@ -1,0 +1,21 @@
+# 只把「运行时真正需要的东西」传上去。
+# 必须上传：requirements.txt / vercel.json / api/index.py / api/assets/*
+# 其余一律不传 —— 这是黑名单，真正的保险是 _protect.py 里的出货白名单。
+
+_site_check.py
+_live_smoke.py
+_make_preview.py
+_protect.py
+deploy-trigger.py
+DEPLOY-ONLY-交付说明.md
+LICENSE-专有授权.txt
+preview-brand-site.html
+.gbt-deploy-hook
+.gbt-deploy-audit.jsonl
+*.md
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+.env.*
+.vercel/

@@ -249,6 +249,48 @@ BENIGN_CAPS = {
         "handler": 'llm_status',
         "safe": True,
     },
+    # ── 2026-09-28 补（主人令：「你新增的功能和替换的功能有没有按照规定把触手双向绑定好？」）──
+    # 这三个模块此前**一个互锁点都没接**：不在本表、api.py 零分派、图鉴无条目、unimplemented 无登记。
+    # 后果不是"没登记"这么轻 —— `_run_task_core` 第 1772 行写明 `if kind not in BENIGN_CAPS`
+    # 直接回 "unknown capability" ⇒ **触手根本叫不出这三个名字**（实测三连：全部返回该错，
+    # 且 `genoffice_bridge` 被邻近匹配建议成 `genoffice`）。这正是主人令要防的"故障与断连"。
+    "key_gateway": {
+        "domain": 'llm',
+        "desc": '统一密钥网关：**唯一密钥真源**（链序/冷却/禁用/耗尽/换道）+ 触手统一密钥'
+                '（`gbtv8-<32hex>`，库内只存 blake2b 摘要）的铸造与校验 —— 也是触手密钥 '
+                'Y 字端口的取钥处（R-H201：不另开第二条取密钥的路）。'
+                'op=status/whoami/energy/plan/keys/compat/mask/classify/verify/selftest 为'
+                '**读类直连**（只读账本与配置，不落盘、不外发、不铸钥）；'
+                'mint/revoke/note/reset 改**密钥账本与运行态** ⇒ 过 filesystem_write 门；'
+                'materialize 是**唯一返回明文密钥**的路 ⇒ 按 external_llm 收口；'
+                '作用域声明挂在 **cap 边界**（security/policy.py::evaluate），与本域同口径',
+        "handler": 'key_gateway',
+        "safe": False,
+    },
+    "multimodal_port": {
+        "domain": 'llm',
+        "desc": '多模态维度 × 触手密钥 **Y 字端口**：请求在一处分叉、**一次只走一臂** ——'
+                '独立臂（该维度专属密钥）/ 共享臂（共享密钥对按维度分账，须恰好成对、'
+                '指纹互不相同、带 owner_ai_id 可追）；覆盖 text/vision/image/video/code 五维度，'
+                '七道闸 Y0-Y6 机械把关，返回值**永不含明文**（只 key_id/掩码/指纹），'
+                '没钥匙就如实报缺。status/port/catalog/redlines/selftest 为**读类直连**'
+                '（port 只回密钥引用且标 readonly）；probe **真出网**探端点 ⇒ 过 external_llm 门；'
+                '作用域声明挂在 cap 边界（security/policy.py::evaluate）',
+        "handler": 'multimodal_port',
+        "safe": False,
+    },
+    "genoffice_bridge": {
+        "domain": 'llm',
+        "desc": 'GenOffice AI 线 → 统一密钥网关的**本地 OpenAI 兼容桥**（127.0.0.1:31716）：'
+                'GenOffice 侧只需握一把 gbtv8- 统一密钥，换道/冷却/禁用/耗尽全由网关机械闸管 ——'
+                '**不新增 AI 线，只换接头**（保留其 custom provider）。'
+                'op=status/probe 为**读类直连**（只读接线状态 + 回环 GET /health 探活）；'
+                'selftest 会铸一把测试钥 + 起临时端口 + 真出网 ⇒ 过门；'
+                '**serve 不在能力位上**（serve_forever 常驻会挂住调用方 · 纪律第 35 条'
+                '"穿透传输不阻塞"），走 CLI；作用域声明挂在 cap 边界（security/policy.py::evaluate）',
+        "handler": 'genoffice_bridge',
+        "safe": False,
+    },
     "brain_route": {
         "domain": 'llm',
         "desc": '大脑执行层·路由维：意图→能力动态路由（语义匹配+备选建议）',

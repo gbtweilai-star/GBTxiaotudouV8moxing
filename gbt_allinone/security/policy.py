@@ -272,6 +272,51 @@ def evaluate(kind: str, payload: dict | None = None) -> PolicyDecision:
         add("data_export", "filesystem_write", "external_llm")
     elif kind in ("llm_chat", "sec_llm", "autopilot", "think_loop"):
         add("external_llm")
+    # ── 2026-09-28 补：新增三能力位的作用域声明（主人令：新增能力全部要与触手双向绑定）──
+    # 为什么**必须**在这里补，光注册名字不够：
+    #   本函数对**未列出的 kind 是 fail-open** —— `scopes=()` ⇒ `decision.restricted` 为假
+    #   ⇒ `authorize()` 直接放行。三个新位里 `key_gateway` 能铸钥/吊销/重置运行态、
+    #   `multimodal_port`/`genoffice_bridge` 能真出网，若只登记名字不声明作用域，
+    #   就是**带着写盘与出网能力裸奔**，仓内"读类直连、写类过门"的收口在此处失守。
+    #   （同族坑先例见 R-H98/R-H99c：声明与执行漂移，未授权路径可直开线程/发回合。）
+    elif kind == "key_gateway":
+        # 读类（只读账本与配置，不落盘、不外发、不铸钥）⇒ 零作用域：
+        #   status/whoami/energy/plan/keys/compat/mask/classify/verify/selftest
+        # 写类（改密钥账本与运行态）⇒ filesystem_write。
+        # materialize 是**唯一返回明文密钥**的路（R-H201），且仓内全部调用方
+        #   （cloud_llm.py / genoffice_bridge.py）取钥都是为了随后出网调模型
+        #   ⇒ 按 external_llm 收口。
+        # 未列出的 op 一律 fail-closed 按写类处理（将来加写动作不会被静默放行）。
+        op = op or "status"
+        if op == "materialize":
+            add("external_llm")
+        elif op in ("mint", "revoke", "note", "note_result", "report", "reset"):
+            add("filesystem_write")
+        elif op not in ("status", "whoami", "energy", "plan", "mask",
+                        "classify", "verify", "keys", "compat", "selftest"):
+            add("filesystem_write")
+    elif kind == "multimodal_port":
+        # 读类 ⇒ 零作用域：status/catalog/redlines/selftest；`port` 只回**密钥引用**
+        #   （key_id / 掩码 / 指纹，永不含明文）且返回体自标 `readonly: True`。
+        # `probe` **真出网**探端点（本机实测会打真实 HTTP）⇒ external_llm。
+        # 未列出的 op 按"可能出网" fail-closed。
+        op = op or "status"
+        if op == "probe":
+            add("external_llm")
+        elif op not in ("status", "port", "catalog", "redlines", "selftest"):
+            add("external_llm")
+    elif kind == "genoffice_bridge":
+        # status/probe ⇒ 零作用域（只读接线状态 + 回环 GET /health 探本桥存活）。
+        # selftest 三样都占：`KG.mint()` 铸测试钥（filesystem_write）+ 起临时监听
+        #   （network_private）+ 真出网打上游模型（external_llm）。
+        # serve 不在能力位上（serve_forever 常驻会挂住调用方）；真带过来则按起监听收口。
+        op = op or "status"
+        if op == "selftest":
+            add("filesystem_write", "network_private", "external_llm")
+        elif op == "serve":
+            add("network_private")
+        elif op not in ("status", "probe"):
+            add("external_llm")
     elif kind == "life":
         op = op or "status"
         write_ops = {"record", "event", "remember", "daily", "export",

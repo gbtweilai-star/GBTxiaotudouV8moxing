@@ -377,6 +377,31 @@ def _run_benign(kind, payload, policy_decision=None):
     if kind == "llm_status":
         from .llm import bridge as LB
         return LB.status()
+    # ── 2026-09-28 补接线（主人令：新增能力必须与触手双向绑定）──────────────
+    # 三个模块此前在 `api.py` 里是**零引用**：没有分派 ⇒ 即便登记了名字也只在
+    # "能力位三处齐"的 A 项缺一格（framework_state 读数 undispatched）。
+    # 口径（与本域既有写法一致，别再各造一套）：
+    #   · 作用域声明**挂在 cap 边界** —— `security/policy.py::evaluate` 的
+    #     `kind == "<名>"` 分支；不是写在本模块里，见 `llm/unified.py::status()`
+    #     的 `gate` 字段（"external_llm 人工授权门装在 cap 边界"）。
+    #   · 此处只做**分派**：op + 其余 payload 原样透传给处理器。
+    #   · 读类直连 / 写类过门，由中央 `_policy.authorize()` 在分派**之前**统一施加，
+    #     不需要在这里再挂第二道闸（重挂 = 同一件事两处真相，迟早漂移）。
+    if kind == "key_gateway":
+        from .llm import key_gateway as _kg
+        p = payload or {}
+        return _kg.run(p.get("op", "status"),
+                       **{k: v for k, v in p.items() if k != "op"})
+    if kind == "multimodal_port":
+        from .llm import multimodal_port as _mp
+        p = payload or {}
+        return _mp.run(p.get("op", "status"),
+                       **{k: v for k, v in p.items() if k != "op"})
+    if kind == "genoffice_bridge":
+        from .llm import genoffice_bridge as _gb
+        p = payload or {}
+        return _gb.run(p.get("op", "status"),
+                       **{k: v for k, v in p.items() if k != "op"})
 
     # 触手金钥匙（V8：连接大脑执行层的眼睛与双手）
     if kind == "tentacle":

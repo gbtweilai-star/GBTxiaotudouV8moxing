@@ -1,6 +1,6 @@
 {
  "built_by": "tools/codex-scripts/omni.py build",
- "built_at": "2026-09-27T23:21:48",
+ "built_at": "2026-09-28T04:01:01",
  "note": "框架职业技能图鉴。口径：`omnipulg` = 走万能插（run_task 唯一门）的能力位；`agent-skill` = 由 agent 按技能名加载执行的技能；`design-asset` = 审美素材（料，不是可调用能力）。本图鉴是**现扫**产物，不是手抄清单。",
  "caps_error": "",
  "caps": [
@@ -594,6 +594,51 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python tools/codex-scripts/five-dim.py cap llm_status"
+  },
+  {
+   "kind": "key_gateway",
+   "domain": "llm",
+   "desc": "统一密钥网关：**唯一密钥真源**（链序/冷却/禁用/耗尽/换道）+ 触手统一密钥（`gbtv8-<32hex>`，库内只存 blake2b 摘要）的铸造与校验 —— 也是触手密钥 Y 字端口的取钥处（R-H201：不另开第二条取密钥的路）。op=status/whoami/energy/plan/keys/compat/mask/classify/verify/selftest 为**读类直连**（只读账本与配置，不落盘、不外发、不铸钥）；mint/revoke/note/reset 改**密钥账本与运行态** ⇒ 过 filesystem_write 门；materialize 是**唯一",
+   "enabled": true,
+   "reason": "",
+   "safe": false,
+   "handler": "key_gateway",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap key_gateway"
+  },
+  {
+   "kind": "multimodal_port",
+   "domain": "llm",
+   "desc": "多模态维度 × 触手密钥 **Y 字端口**：请求在一处分叉、**一次只走一臂** ——独立臂（该维度专属密钥）/ 共享臂（共享密钥对按维度分账，须恰好成对、指纹互不相同、带 owner_ai_id 可追）；覆盖 text/vision/image/video/code 五维度，七道闸 Y0-Y6 机械把关，返回值**永不含明文**（只 key_id/掩码/指纹），没钥匙就如实报缺。status/port/catalog/redlines/selftest 为**读类直连**（port 只回密钥引用且标 readonly）；probe **真出网**探端点 ⇒ 过 external_llm 门",
+   "enabled": true,
+   "reason": "",
+   "safe": false,
+   "handler": "multimodal_port",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap multimodal_port"
+  },
+  {
+   "kind": "genoffice_bridge",
+   "domain": "llm",
+   "desc": "GenOffice AI 线 → 统一密钥网关的**本地 OpenAI 兼容桥**（127.0.0.1:31716）：GenOffice 侧只需握一把 gbtv8- 统一密钥，换道/冷却/禁用/耗尽全由网关机械闸管 ——**不新增 AI 线，只换接头**（保留其 custom provider）。op=status/probe 为**读类直连**（只读接线状态 + 回环 GET /health 探活）；selftest 会铸一把测试钥 + 起临时端口 + 真出网 ⇒ 过门；**serve 不在能力位上**（serve_forever 常驻会挂住调用方 · 纪律第 35 条\"穿透传输不阻塞\"），",
+   "enabled": true,
+   "reason": "",
+   "safe": false,
+   "handler": "genoffice_bridge",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap genoffice_bridge"
   },
   {
    "kind": "brain_route",
@@ -7568,6 +7613,25 @@
    "root_count": 3
   },
   {
+   "name": "gbt-native-growth",
+   "displayName": "",
+   "desc": "",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-native-growth",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
+  },
+  {
    "name": "gbt-omni",
    "displayName": "GBT 万能插 · 人类视角操控一切",
    "desc": "GBT小土豆V8 的「人类视角操控一切」协议。它把全机职业技能（**能力位/技能/域/审美素材的条数一律现算，见 `omni caliber` —— 不写死，写死一次过期一次**）收进一张现扫图鉴，并把「人一句自然语言 → 落到哪个能力位或哪个技能 → 该跑哪条命令 → 要过哪道门」这条链定死。默认拒绝安全纪律：只自动跑能证明是只读无参的，其余一律只给命令并说明要过的授权门，绝不绕门。当用户说「让框架去做某件事」「操控一切」「人类视角」「万能插」「帮我跑一下」「怎么让它干这个」，或想知道某个职业域有哪些能力可以调时使用。",
@@ -11514,14 +11578,14 @@
   }
  ],
  "counts": {
-  "caps": 202,
-  "caps_enabled": 202,
+  "caps": 205,
+  "caps_enabled": 205,
   "caps_safe_no_args": 119,
-  "skills": 368,
-  "skills_raw_before_dedupe": 709,
-  "skills_multi_root": 172,
+  "skills": 369,
+  "skills_raw_before_dedupe": 711,
+  "skills_multi_root": 173,
   "skills_by_channel": {
-   "agent-skill": 275,
+   "agent-skill": 276,
    "design-asset": 93
   },
   "design_assets_bulk_total": 235,

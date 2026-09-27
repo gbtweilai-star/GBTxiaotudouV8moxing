@@ -87,7 +87,7 @@ ERR_TABLE = {
 #    伪装成「模型不行」。所以必须认正文里的 invalid_request。
 _TEXT_HINTS = (
     ("quota_exhausted", ("insufficient", "quota", "balance", "credit", "额度",
-                         "余额不足", "已用尽", "欠费", "billing")),
+                         "余额不足", "已用尽", "欠费", "billing", "钱包", "充值")),
     ("rate_limited",    ("rate limit", "too many requests", "限流", "请求过于频繁",
                          "rpm", "tpm limit")),
     ("key_invalid",     ("invalid api key", "invalid_api_key", "unauthorized",
@@ -95,8 +95,20 @@ _TEXT_HINTS = (
     ("bad_request",     ("invalid_request", "invalid request", "invalid value",
                          "cannot unmarshal", "missing required", "validation error",
                          "field validation", "参数错误")),
+    # ⚠️ 血账（2026-09-28 实弹）：`not_found` 必须认「**该通道不服务这个模型**」这类正文。
+    #    实测 `api.teamorouter.com` 对过期模型名回的是 **HTTP 400**：
+    #        {"error":{"message":"模型 'gpt-4o-mini' 暂不支持调用，请改用 GET /v1/models …"}}
+    #    400 落进 unset 分支 ⇒ 归 `bad_request` ⇒ 按 I2 **硬停** ⇒
+    #    **一条声明过期模型名（或被重新路由过）的通道，会把整单打死**，
+    #    哪怕 agnes / deepseek 都健康。而它的语义明明是 `not_found`（这家的模型表里没有）
+    #    ⇒ 换道就对了。
+    #    ⚠️ 措辞必须**窄**：绝不加泛化的 "not supported" ——
+    #    「temperature not supported」这类**真参数缺陷**若被拐进 not_found，
+    #    就会换道掩盖掉自己的 bug，正好打穿 I2。
     ("not_found",       ("model_not_found", "not found", "no available channel",
-                         "does not exist", "no such model")),
+                         "does not exist", "no such model",
+                         "暂不支持调用", "不支持调用", "模型不支持",
+                         "unsupported model", "model_not_supported")),
     ("upstream_error",  ("internal server error", "bad gateway", "service unavailable",
                          "upstream", "overloaded")),
     ("transient",       ("timed out", "timeout", "connection", "temporarily unavailable")),
@@ -153,6 +165,20 @@ PROVIDERS = [
          envs=["KIMI_API_KEY", "MOONSHOT_API_KEY"],
          url="https://api.moonshot.cn/v1", model="kimi-k2-0905-preview",
          wire="openai", tier="standard", quota_tokens=0, weight=0.70),
+    # ⚠️ 实测记录（2026-09-28）：本机 `OPENAI_BASE_URL` 实为**路由器**
+    #    `https://api.teamorouter.com/v1`（44 个模型，owned_by 横跨 anthropic /
+    #    deepseek / google / openai / xai / moonshot…），**不服务 `gpt-4o-mini`** ——
+    #    对它的回应是 400 `模型 'gpt-4o-mini' 暂不支持调用`。
+    #    ⇒ 声明里的模型名对这个地址已过期。**故意不改名**，理由两条：
+    #      ① `cloud_llm._KEY_CHAIN` 的同名项被既有测试钉着，改它有回归面；
+    #      ② 更根本的是**这个账号当前 0 余额** —— 实测 `gpt-5.4-mini` /
+    #         `glm-5.3-flash-free` / `deepseek-flash-free` 一律回
+    #         「钱包余额不足，需先充值后调用」。**改名不会让它能用**，
+    #         只会把「模型名错」换成「余额不足」。
+    #    ⇒ 正确的机械处置已由 `_TEXT_HINTS` 承担：
+    #         过期模型名 → `not_found` → 换道；
+    #         余额不足   → `quota_exhausted` → 标记耗尽 + 换道。
+    #      两条都不会再把整单打死。**充上余额后本通道会自己活过来，无需改代码。**
     dict(name="openai",    vault="openai",   envs=["OPENAI_API_KEY"],
          url=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
          model="gpt-4o-mini", wire="openai", tier="standard",
@@ -919,6 +945,16 @@ def selftest() -> dict:
     ck("文本兜底：余额不足", classify(None, "your balance is insufficient") == "quota_exhausted")
     ck("文本兜底：假端点 no available channel",
        classify(None, "503 model_not_found — No available channel for model X") == "not_found")
+    # ⚠️ 回归钉（血账 2026-09-28 实弹）：400 + 「模型暂不支持调用」必须归 not_found 而不是
+    #    bad_request —— 否则一条声明过期模型名的通道会把整单硬停打死。
+    _tmr = ("400 {\"error\":{\"message\":\"模型 'gpt-4o-mini' 暂不支持调用，"
+            "请改用 GET /v1/models 中的其他模型。\",\"type\":\"model_not_found\"}}")
+    ck("文本兜底：400+「暂不支持调用」⇒ not_found（换道，不硬停）",
+       classify(400, _tmr) == "not_found" and decide(classify(400, _tmr))["failover"] is True)
+    ck("I2 未被放宽：400+「参数错误」仍是 bad_request（硬停）",
+       classify(400, "invalid_request: temperature must be a number") == "bad_request"
+       and decide(classify(400, "invalid_request: temperature must be a number"))["escalate"] is False)
+    ck("文本兜底：余额不足/需充值", classify(400, "钱包余额不足，需先充值后调用") == "quota_exhausted")
     ck("I3·储备比例 20%%", RESERVE_RATIO == 0.20)
     ck("掩码不泄明文",
        (lambda k: k not in mask(k, "agnes") and BRAND_TAG in mask(k, "agnes"))("sk-abcdef1234567890xyz"))
