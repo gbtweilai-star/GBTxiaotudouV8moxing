@@ -1,10 +1,10 @@
 {
- "at": "2026-09-27T16:18:00",
- "quick": true,
- "耗时s": 39.4,
- "顶层树": 64,
- "已扫": 49,
- "排除": 15,
+ "at": "2026-09-27T19:28:16",
+ "quick": false,
+ "耗时s": 48.5,
+ "顶层树": 60,
+ "已扫": 52,
+ "排除": 8,
  "扫的树": [
   {
    "tree": ".agents",
@@ -112,16 +112,6 @@
    "coverage": 1.0,
    "missing": 0,
    "agree": 1,
-   "arbitrated": 0,
-   "sec_flagged": 0,
-   "sec_needs_human": 0
-  },
-  {
-   "tree": ".fleet",
-   "units": 15,
-   "coverage": 1.0,
-   "missing": 0,
-   "agree": 15,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -237,6 +227,16 @@
    "sec_needs_human": 0
   },
   {
+   "tree": "_upstream",
+   "units": 9986,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 9986,
+   "arbitrated": 0,
+   "sec_flagged": 321,
+   "sec_needs_human": 0
+  },
+  {
    "tree": "agent-gvmz-gbtv8",
    "units": 32,
    "coverage": 1.0,
@@ -348,10 +348,10 @@
   },
   {
    "tree": "gbt_allinone",
-   "units": 865,
+   "units": 866,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 865,
+   "agree": 866,
    "arbitrated": 0,
    "sec_flagged": 20,
    "sec_needs_human": 0
@@ -364,6 +364,16 @@
    "agree": 2,
    "arbitrated": 0,
    "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "holo_pet",
+   "units": 78,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 78,
+   "arbitrated": 0,
+   "sec_flagged": 1,
    "sec_needs_human": 0
   },
   {
@@ -392,6 +402,16 @@
    "coverage": 1.0,
    "missing": 0,
    "agree": 57,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "output",
+   "units": 130,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 130,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -447,11 +467,21 @@
    "sec_needs_human": 0
   },
   {
-   "tree": "skills",
-   "units": 355,
+   "tree": "render",
+   "units": 359,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 355,
+   "agree": 359,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "skills",
+   "units": 359,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 359,
    "arbitrated": 0,
    "sec_flagged": 1,
    "sec_needs_human": 0
@@ -478,10 +508,10 @@
   },
   {
    "tree": "tools",
-   "units": 574,
+   "units": 579,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 574,
+   "agree": 579,
    "arbitrated": 0,
    "sec_flagged": 30,
    "sec_needs_human": 0
@@ -504,6 +534,11 @@
    "ok": true
   },
   {
+   "tree": ".fleet",
+   "reason": "触手舰队工作区：每根一份 git worktree「副本」（与源同码）⇒ 扫它是重复劳动；舰队自身另有台账 state/fleet.jsonl + 看板 status + 探针逐根自证隔离",
+   "ok": true
+  },
+  {
    "tree": ".git",
    "reason": "版本库本体（不是被扫描对象，是被审计的账）",
    "ok": true
@@ -514,58 +549,14 @@
    "ok": true
   },
   {
-   "tree": ".scratch",
-   "reason": "作业临时区（历次作业临时脚本/中间产物），可由作业重跑",
-   "ok": true
-  },
-  {
    "tree": ".trash",
    "reason": "暂存区（本仓 trash>rm 的落点），真身已判定为重复/废弃",
    "ok": true
   },
   {
-   "tree": "__pycache__",
-   "reason": "字节码缓存，可重建",
-   "ok": true
-  },
-  {
-   "tree": "_upstream",
-   "reason": "quick 模式跳过（heavy，正常 sweep 会扫）",
-   "ok": true,
-   "deferred": true
-  },
-  {
    "tree": "archive",
    "reason": "历史归档（按 LAYOUT 只增不删，内容已封存）",
    "ok": true
-  },
-  {
-   "tree": "dist",
-   "reason": "构建产物（可重建）",
-   "ok": true
-  },
-  {
-   "tree": "holo_pet",
-   "reason": "quick 模式跳过（heavy，正常 sweep 会扫）",
-   "ok": true,
-   "deferred": true
-  },
-  {
-   "tree": "my-project",
-   "reason": "技能试跑脚手架（zenstack+VSCode 模板，11,450 件含 node_modules）",
-   "ok": true
-  },
-  {
-   "tree": "output",
-   "reason": "quick 模式跳过（heavy，正常 sweep 会扫）",
-   "ok": true,
-   "deferred": true
-  },
-  {
-   "tree": "render",
-   "reason": "quick 模式跳过（heavy，正常 sweep 会扫）",
-   "ok": true,
-   "deferred": true
   },
   {
    "tree": "vendor",
@@ -583,13 +574,13 @@
  "面B_C": {
   "caps": {
    "ok": true,
-   "units": 185,
+   "units": 187,
    "coverage": 1.0,
    "missing": 0
   },
   "bindings": {
    "ok": true,
-   "units": 4398,
+   "units": 6399,
    "coverage": 1.0,
    "missing": 0
   },
@@ -651,5 +642,5 @@
  },
  "全绿": true,
  "_口径": "没被扫到的面必须显式列出并给理由；隐式跳过=盲区。文件面覆盖必须 1.0；B/C 面断连必须 0；E 面三闸必须全 True。",
- "单元总数": 5260
+ "单元总数": 15808
 }
