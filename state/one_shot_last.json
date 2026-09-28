@@ -1,12 +1,12 @@
 {
  "ok": true,
- "at": "2026-09-28T07:32:30",
- "prompt": "判据样本：60 秒科技感短片",
+ "at": "2026-09-28T07:41:34",
+ "prompt": "做一条 60 秒、夜色赛博感的短片，主题是“小土豆在深夜的机房里醒来”",
  "推导": {
   "bpm": "100.0（默认（没出现节奏词））",
   "时长": "1.0 分钟（按时长词（/短片|预告|trailer/））",
   "帧率": "30（由 BPM 反推：每拍帧数必须整数；候选 [25, 30, 60]）",
-  "调色": "filmic（INTENT_MAP 命中）"
+  "调色": "赛博霓虹（INTENT_MAP 命中）"
  },
  "网格": {
   "beats": 100,
@@ -79,82 +79,82 @@
   }
  ],
  "manifest（未写盘）": {
-  "title": "一句话全链 · 判据样本：60 秒科技感短片",
+  "title": "一句话全链 · 做一条 60 秒、夜色赛博感的短片，主题是“小土豆在深夜",
   "quality": "fhd",
   "bpm": 100.0,
   "fps": 30,
-  "work_dir": "projects/movie/生成/oneshot-9a0bf7",
+  "work_dir": "projects/movie/生成/oneshot-394301",
   "out_dir": "projects/movie/成片",
-  "output": "oneshot-9a0bf7-20260928-073230.mp4",
-  "grade": "filmic",
+  "output": "oneshot-394301-20260928-074134.mp4",
+  "grade": "赛博霓虹",
   "audio": true,
   "source": "pollinations",
   "size": "1k",
-  "seed_base": 74475628,
+  "seed_base": 70692537,
   "beats": [
    {
     "id": "B1",
     "move": "pov_bob",
     "angle": "eye",
     "dur": 0.6,
-    "prompt": "cinematic scene, first-person POV action camera, own hands visible at frame bottom, handheld bob, eye level, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
-    "seed": 74475628
+    "prompt": "night, low key lighting, close on eyes opening, waking up, first-person POV action camera, own hands visible at frame bottom, handheld bob, eye level, cyberpunk neon, magenta and cyan glow, cinematic composition, 16:9, high detail",
+    "seed": 70692537
    },
    {
     "id": "B2",
     "move": "whip_lr",
     "angle": "low",
     "dur": 0.6,
-    "prompt": "cinematic scene, fast whip pan left to right, strong motion blur streaks, low angle looking up, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
-    "seed": 74475629
+    "prompt": "night, low key lighting, close on eyes opening, waking up, fast whip pan left to right, strong motion blur streaks, low angle looking up, cyberpunk neon, magenta and cyan glow, cinematic composition, 16:9, high detail",
+    "seed": 70692538
    },
    {
     "id": "B3",
     "move": "whip_rl",
     "angle": "high",
     "dur": 0.6,
-    "prompt": "cinematic scene, fast whip pan right to left, strong motion blur streaks, high angle looking down, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
-    "seed": 74475630
+    "prompt": "night, low key lighting, close on eyes opening, waking up, fast whip pan right to left, strong motion blur streaks, high angle looking down, cyberpunk neon, magenta and cyan glow, cinematic composition, 16:9, high detail",
+    "seed": 70692539
    },
    {
     "id": "B4",
     "move": "crash_zoom",
     "angle": "dutch",
     "dur": 0.6,
-    "prompt": "cinematic scene, crash zoom punch-in, sudden tight framing, dutch tilt, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
-    "seed": 74475631
+    "prompt": "night, low key lighting, close on eyes opening, waking up, crash zoom punch-in, sudden tight framing, dutch tilt, cyberpunk neon, magenta and cyan glow, cinematic composition, 16:9, high detail",
+    "seed": 70692540
    },
    {
     "id": "B5",
     "move": "dolly_in",
     "angle": "eye",
     "dur": 0.6,
-    "prompt": "cinematic scene, slow dolly in, compressing perspective, eye level, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
-    "seed": 74475632
+    "prompt": "night, low key lighting, close on eyes opening, waking up, slow dolly in, compressing perspective, eye level, cyberpunk neon, magenta and cyan glow, cinematic composition, 16:9, high detail",
+    "seed": 70692541
    },
    {
     "id": "B6",
     "move": "push_out",
     "angle": "low",
     "dur": 0.6,
-    "prompt": "cinematic scene, push out revealing environment, low angle looking up, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
-    "seed": 74475633
+    "prompt": "night, low key lighting, close on eyes opening, waking up, push out revealing environment, low angle looking up, cyberpunk neon, magenta and cyan glow, cinematic composition, 16:9, high detail",
+    "seed": 70692542
    },
    {
     "id": "B7",
     "move": "arc_lr",
     "angle": "high",
     "dur": 0.6,
-    "prompt": "cinematic scene, arc shot circling the subject, high angle looking down, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
-    "seed": 74475634
+    "prompt": "night, low key lighting, close on eyes opening, waking up, arc shot circling the subject, high angle looking down, cyberpunk neon, magenta and cyan glow, cinematic composition, 16:9, high detail",
+    "seed": 70692543
    },
    {
     "id": "B8",
     "move": "shake",
     "angle": "dutch",
     "dur": 0.6,
-    "prompt": "cinematic scene, shaky handheld close quarters, documentary energy, dutch tilt, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
-    "seed": 74475635
+    "prompt": "night, low key lighting, close on eyes opening, waking up, shaky handheld close quarters, documentary energy, dutch tilt, cyberpunk neon, magenta and cyan glow, cinematic composition, 16:9, high detail",
+    "seed": 70692544
    }
   ]
  },
@@ -174,8 +174,11 @@
   }
  ],
  "主体映射": {
-  "英文主体": "（**没映射到** —— 清单里用通用 cinematic scene，如实标注）",
-  "命中词": []
+  "英文主体": "night, low key lighting, close on eyes opening, waking up",
+  "命中词": [
+   "夜",
+   "醒来|苏醒|睁眼"
+  ]
  },
  "规模口径": "以上 8 拍是一个**段落模板**（4.8s）；全片 1.0 分钟按 FORM_8MIN 段落表铺：['intro×8小节', 'build×16小节', 'verse1×32小节', 'chorus1×32小节', 'break×8小节'] ⇒ 总拍数 ≈ 100",
  "_口径": "**只读**：本 op 不写任何文件（写盘要过 filesystem_write 门）；翻译规则全部可查（节奏词/时长词/INTENT_MAP/energy/size 轮转），不调模型"
