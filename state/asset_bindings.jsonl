@@ -16390,3 +16390,15 @@
 {"at": "2026-09-28T08:26:36", "event": "autobind", "files": 1, "bound": 1, "hint": "console_hub", "pruned": 0}
 {"at": "2026-09-28T08:30:24", "event": "autobind", "files": 1, "bound": 1, "hint": "penetrating_cross_scan", "pruned": 0}
 {"at": "2026-09-28T08:30:35", "event": "scan", "bindings": 6487, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T08:55:36", "event": "bind", "asset": "gbt_allinone/tests/test_preflight_fail_closed.py", "tentacle": "obsidian_vault", "note": "autobind"}
+{"at": "2026-09-28T08:55:43", "event": "autobind", "files": 2, "bound": 2, "hint": "obsidian_vault", "pruned": 0}
+{"at": "2026-09-28T08:58:50", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "room_space", "note": "autobind"}
+{"at": "2026-09-28T08:58:50", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "room_space", "note": "autobind"}
+{"at": "2026-09-28T09:10:53", "event": "bind", "asset": "gbt_allinone/tools/freebuff_term.py", "tentacle": "freebuff_term", "note": "能力位实现文件 ↔ 触手（新增即绑）"}
+{"at": "2026-09-28T09:11:34", "event": "bind", "asset": "holo_pet/assets/freebuff/index.html", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-28T09:11:34", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "freebuff_term", "note": "autobind"}
+{"at": "2026-09-28T09:11:34", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "freebuff_term", "note": "autobind"}
+{"at": "2026-09-28T09:11:46", "event": "autobind", "files": 13, "bound": 13, "hint": "freebuff_term", "pruned": 0}
+{"at": "2026-09-28T09:17:32", "event": "bind", "asset": "gbt_allinone/tests/test_freebuff_term.py", "tentacle": "freebuff_term", "note": "autobind"}
+{"at": "2026-09-28T09:17:43", "event": "autobind", "files": 2, "bound": 2, "hint": "freebuff_term", "pruned": 0}
+{"at": "2026-09-28T09:21:19", "event": "autobind", "files": 10, "bound": 10, "hint": "console_hub", "pruned": 0}

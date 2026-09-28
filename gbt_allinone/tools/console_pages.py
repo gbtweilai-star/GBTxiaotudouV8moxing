@@ -698,6 +698,81 @@ def _load_hub_hero():
     return m
 
 
+def render_freebuff() -> dict:
+    """**freebuff 对话面板**（主人令：把 freebuff 终端集成进对话面板，编程走这个）。
+
+    诚实边界写在页面上：freebuff 是**交互式 TUI**（现读 `--help` 无一次性 prompt）⇒ 静态页
+    **点不动它**；所以这页做三件能做到的：① 状态面 ② 可复制的命令（开终端/登录）③ 升级路径（PTY 桥）。
+    """
+    import importlib.util as _iu
+    sp = _iu.spec_from_file_location("fbt", _ROOT / "gbt_allinone" / "tools" / "freebuff_term.py")
+    fb = _iu.module_from_spec(sp)
+    sp.loader.exec_module(fb)
+    st, fl, lh = fb.status(), fb.flags(), fb.login_hint()
+    data = {"status": st, "flags": fl, "login": lh, "at": time.strftime("%Y-%m-%dT%H:%M:%S")}
+    hero = _load_hub_hero()
+    body = """
+<div class="grid" style="grid-template-columns:repeat(12,1fr)">
+  <div class="card" style="grid-column:span 4"><h2>真身 · 状态（现读）</h2><div id="st"></div></div>
+  <div class="card" style="grid-column:span 4"><h2>能力面（现跑 --help）</h2><div id="fl"></div></div>
+  <div class="card" style="grid-column:span 4"><h2>怎么用（可复制）</h2><div id="how"></div></div>
+</div>
+<div class="card" style="margin-top:14px"><h2>诚实边界 · 以及"面板里直接对话"缺什么</h2>
+  <div id="gap"></div></div>"""
+    script = """
+const D = __DATA__;
+const S = D.status, F = D.flags, L = D.login;
+function row(k, v, cls){return `<div class="fr"><span class="fk">${k}</span>
+  <span class="fv ${cls||''}">${v}</span></div>`;}
+document.getElementById("st").innerHTML =
+  row("版本", S.version, "ok") + row("入口", "<span class='src'>"+(F.entry||"-")+"</span>") +
+  row("隔离 HOME", "<span class='src'>"+S.home+"</span>", S.home_exists?"ok":"bad") +
+  row("二进制", (S.exe_exists? S.exe_mb+" MB":"缺"), S.exe_exists?"ok":"bad") +
+  row("登录态", S.logged_in? "已登录":"<b>未登录</b>（只有主人能登）", S.logged_in?"ok":"warn") +
+  row("模型", (S.settings||{}).model||"-") + row("档位", (S.settings||{}).mode||"-") +
+  row("正常 HOME 下", "起不来（EPERM：只认 $HOME/.config/manicode）", "warn");
+document.getElementById("fl").innerHTML =
+  (F.options||[]).map(o=>`<span class="chip" style="margin:3px 4px 0 0">${o}</span>`).join("") +
+  row("子命令", (F.subcommands||[]).join(" / ")) +
+  row("一次性 prompt", F.has_one_shot_prompt? "有":"<b>没有</b>", F.has_one_shot_prompt?"ok":"warn") +
+  `<div class="src" style="margin-top:8px">${F.verdict||""}</div>`;
+const cmd1 = S.script || (S.home + '\\start-freebuff.cmd');
+document.getElementById("how").innerHTML =
+  `<div class="mut">① 开终端（隔离 HOME + 仓库为工作目录）：</div>
+   <div class="code">${cmd1}</div>
+   <div class="mut" style="margin-top:8px">② 首次在里面登录（只有主人能做）：</div>
+   <div class="code">${(L.powershell||[]).join("\\n")}</div>
+   <div class="mut" style="margin-top:8px">③ 我（本体）的调用形态：</div>
+   <div class="code">run_task('freebuff_term', {'op': 'status'})   // 看真身/登录态
+run_task('freebuff_term', {'op': 'launch'})   // 起终端（要 process_execute 票）</div>`;
+document.getElementById("gap").innerHTML =
+  row("这页能做什么", "看状态 · 抄命令 · 看能力面（现读）") +
+  row("这页做不到什么", "<b>点一下就让 freebuff 干活</b>（它是 TUI，且静态页不能起进程）", "warn") +
+  row("要真在面板里对话", "需要一个<b>本地 PTY 桥</b>：常驻进程 + WebSocket，把 TUI 的输入输出搬到页面上", "warn") +
+  row("那道桥的门", "process_execute 授权 + 主人点头 —— <b>现在没有，不假装有</b>", "bad") +
+  row("现在立刻能用的是什么", "① 双击上面的 cmd 开终端自己聊 ② 登录后我按你的口令帮你起终端/转达") +
+  '<div class="src" style="margin-top:8px">数据来源：freebuff_term.status/flags（渲染时内联）· state/freebuff_term.jsonl</div>';
+"""
+    script = script.replace("__DATA__", json.dumps(data, ensure_ascii=False))
+    extra = """
+.fr{display:grid;grid-template-columns:104px 1fr;gap:8px;padding:5px 0;
+  border-bottom:1px solid var(--line-soft);font-size:12.5px}
+.fr:last-child{border-bottom:0}
+.fk{color:var(--dim-2);font-family:var(--mono)}
+.code{font-family:var(--mono);font-size:11.5px;color:var(--text);background:rgba(0,229,255,.04);
+  border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-top:4px;white-space:pre-wrap}
+"""
+    html = _shell("freebuff · 对话面板", "编程走这个：隔离 HOME 下的 freebuff（0.1.2）· 状态与命令现读",
+                  body, script, extra,
+                  hero=hero.hero_band("freebuff · 对话面板",
+                                      "编程走这个 · 隔离 HOME · TUI（没有一次性 prompt）⇒ 要真跑就开终端",
+                                      chip="编程终端", chip_accent="深空紫", seed="freebuff",
+                                      kind="cubes", sub="FREEBUFF / TERMINAL BRIDGE",
+                                      ctas=[{"label": "全部页面卡库", "href": "../gallery/index.html"},
+                                            {"label": "回工作台", "href": "../workbench/index.html"}]))
+    return _write("holo_pet/assets/freebuff/index.html", html)
+
+
 def render(target: str = "all", **_kw) -> dict:
     out = []
     t = (target or "all").lower()
@@ -707,6 +782,8 @@ def render(target: str = "all", **_kw) -> dict:
         out.append(render_tentacle3d())
     if t in ("all", "gallery"):
         out.append(render_gallery())
+    if t in ("all", "freebuff"):
+        out.append(render_freebuff())
     if t in ("all", "workflows") or t.startswith("workflow:"):
         keys = sorted(_load_hub().WORKFLOWS) if t != "workflows" else []
         if t.startswith("workflow:"):

@@ -29170,7 +29170,9 @@
    "obsidian_vault",
    "memory_bank",
    "console_hub",
-   "hf_voice"
+   "hf_voice",
+   "room_space",
+   "freebuff_term"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29195,7 +29197,9 @@
    "obsidian_vault",
    "memory_bank",
    "console_hub",
-   "hf_voice"
+   "hf_voice",
+   "room_space",
+   "freebuff_term"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -45497,5 +45501,33 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-28T08:26:08"
+ },
+ "gbt_allinone/tests/test_preflight_fail_closed.py": {
+  "tentacles": [
+   "obsidian_vault"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T08:55:36"
+ },
+ "gbt_allinone/tools/freebuff_term.py": {
+  "tentacles": [
+   "freebuff_term"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-28T09:10:53"
+ },
+ "holo_pet/assets/freebuff/index.html": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T09:11:34"
+ },
+ "gbt_allinone/tests/test_freebuff_term.py": {
+  "tentacles": [
+   "freebuff_term"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T09:17:32"
  }
 }

@@ -522,6 +522,44 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import agent_rig as _age
         p = payload or {}
         return _age.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "room_space":
+        # F12：镜像房间空间 —— 隔离开间/规划/排练，**不覆盖全局现实**
+        from . import room_space as _rs
+        p = payload or {}
+        op = p.get("op", "status")
+        if op == "create":
+            return _rs.create(p.get("room_id", ""), p.get("purpose", ""))
+        if op == "enter":
+            return _rs.enter(p.get("room_id", ""), p.get("actor", "owner"), p.get("role", "member"))
+        if op == "define_plan":
+            return _rs.define_plan(p.get("room_id", ""), p.get("plan"))
+        if op == "get_plan":
+            return _rs.get_plan(p.get("room_id", ""))
+        if op == "gate":
+            return _rs.gate(p.get("room_id", ""))
+        return {"ok": True, "op": "status", "note": "room_space 可用 op：create/enter/define_plan/get_plan/frame/gate/namespace"}
+    if kind == "collab_gateway":
+        # F12：协作网关（会话/信箱/同伴）
+        from . import collab_gateway as _cg
+        p = payload or {}
+        op = p.get("op", "status")
+        if op == "open_session":
+            return _cg.open_session(p.get("topic", ""), p.get("members"))
+        if op == "close_session":
+            return _cg.close_session(p.get("session_id", ""))
+        if op == "inbox":
+            return _cg.inbox(p.get("session_id"), p.get("limit", 20))
+        if op == "register_peer":
+            return _cg.register_peer(p.get("peer_id", ""), p.get("kind", ""))
+        if op == "peer_status":
+            return _cg.peer_status(p.get("peer_id", ""))
+        if op == "server_status":
+            return _cg.server_status()
+        return _cg.status(p.get("session_id"))
+    if kind == "freebuff_term":
+        from .tools import freebuff_term as _fbt
+        p = payload or {}
+        return _fbt.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "hf_voice":
         from .tools import hf_voice as _hv
         p = payload or {}
@@ -1894,13 +1932,45 @@ def _run_task_core_body(kind, payload=None, stamp=True, probe=False):
             force=force,
         )
     except Exception as e:  # noqa: BLE001
-        # 感知层故障不能伪造“已检查”，也不能阻止原有能力；如实留痕后继续原路径。
+        # 感知层故障不能伪造"已检查" —— 但**也不能静默放行有副作用的调用**。
+        # ⚠️ F3（2026-09-28 修，原为 fail-open）：这里原来一律 `not_guarded` 后照跑，
+        #    理由是"不能阻止原有能力"。可**只有读类**才有这个说法：**要作用域的**调用一旦
+        #    跳过守卫，就等于"守卫坏了 = 没人管了" ⇒ 现在按风险分流：
+        #      · 读类/安全类：照旧放行（audit 已留 preflight_error，可见）；
+        #      · **要作用域**：**按拒处理（fail-closed）**，并说清"是感知层故障、怎么恢复"。
         _audit("preflight_error", {
             "kind": kind,
             "reason": str(e)[:160],
             **({"probe": True} if _probe else {}),
         })
-        guard = {"status": "not_guarded", "side_effect": False,
+        _scopes = list(getattr(decision.get("decision"), "scopes", ()) or ())
+        # ⚠️ 分类用**权威判据** `preflight.is_side_effect()`（它含 11 个状态改变类 + room_* 特例 +
+        #    "新动作默认不假定安全"），而不是我自己看作用域 —— 一处真相，别造第二把尺。
+        _side = False
+        try:
+            _side = bool(_preflight.is_side_effect(kind, payload, decision.get("decision")))
+        except Exception:                                      # noqa: BLE001
+            _side = True                                        # 判不出来 ⇒ 按有副作用算（严）
+        if _scopes or _side:
+            _audit("preflight_fail_closed", {
+                "kind": kind, "scopes": _scopes, "reason": str(e)[:160],
+                **({"probe": True} if _probe else {}),
+            })
+            return {
+                "status": "denied",
+                "kind": kind,
+                "denied": True,
+                "message": "preflight unavailable; side-effect action refused",
+                "reason": ("感知层（preflight）故障，而这次调用**有副作用** ⇒ **按拒处理**（fail-closed）。"
+                           "F3：异常路径不再 fail-open。"),
+                "error": "preflight_error: " + str(e)[:120],
+                "scopes": _scopes,
+                "missing": decision.get("missing", []),
+                "how_to_grant": ("先重试一次；若持续故障，请主人检查 `gbt_allinone/preflight.py`"
+                                 "（**感知层坏了 ≠ 授权没了**）"),
+                "note": "读类调用不受此影响（只留痕）；这条只拦有副作用的。",
+            }
+        guard = {"status": "not_guarded", "side_effect": False, "degraded": True,
                  "error": str(e)[:160]}
 
     if guard.get("status") in ("acquired", "reuse", "already_running"):

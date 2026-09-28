@@ -1451,14 +1451,20 @@
    "safe": "hf_voice",
    "readme_sha": "7186ba6e20609f37",
    "readme_exists": true
+  },
+  "freebuff_term": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\freebuff_term",
+   "safe": "freebuff_term",
+   "readme_sha": "680e147a46a01f5f",
+   "readme_exists": true
   }
  },
- "updated_at": "2026-09-28T07:54:27",
+ "updated_at": "2026-09-28T09:10:56",
  "root": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults",
  "counts": {
-  "vaults": 242,
-  "tentacles": 242
+  "vaults": 243,
+  "tentacles": 245
  },
- "body_index_sha": "c245ebac440de6dd",
- "bound_at": "2026-09-28T07:54:27"
+ "body_index_sha": "155778c0551f799e",
+ "bound_at": "2026-09-28T09:10:59"
 }

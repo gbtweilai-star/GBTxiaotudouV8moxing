@@ -972,11 +972,38 @@ BENIGN_CAPS = {
         "handler": 'console_pages',
         "safe": True,
     },
+    "freebuff_term": {
+        "domain": 'tools',
+        "desc": ('freebuff 终端集成（主人令 2026-09-28「把 freebuff 这个终端集成进我们的对话面板，'
+                 '编程就走这个」）：**正常 HOME 下 EPERM 起不来**（只认 $HOME/.config/manicode），'
+                 '隔离 HOME（%LOCALAPPDATA%\gbt-freebuff\home）下装成并验活（0.1.2）。'
+                 '`status` 真身/版本/登录态 · `flags` 现跑 --help（**钉住"TUI-only、无一次性 prompt"**）· '
+                 '`launch` 用隔离 HOME 起真终端（过 process_execute 门）· `login_hint` 给主人登录命令。'
+                 'op=status/flags/launch/login_hint/verify/where'),
+        "handler": 'freebuff_term',
+        "safe": True,
+    },
     "hf_voice": {
         "domain": 'voice',
         "desc": 'Hugging Face 歌声/语音（**3 臂轮询**，主人令 2026-09-28「把插件连接好部署语音…安装 3 个这个插件轮询使用避免卡壳」）：本机零算力跑不动歌声合成（语音中枢 v2.0 一手实测）⇒ 真唱走云。**3 臂（hf-1/2/3）按轮询 + 冷却换道**用（与 key_gateway 同一纪律）：单臂连续失败 3 次冷却 300s、自动投下一臂 ⇒ 避免单点卡壳。**出网硬钉**：只 https + 主机白名单（HF 三个官方域）+ 显式拒私有/环回/保留地址 + 拒重定向；**只回掩码**，密钥只走 env:/vault: 引用。`sing` 过 external_llm 门；模型表全部**未验**（本机无 token）。op=status/arms/models/sing/rotate/verify/where',
         "handler": 'hf_voice',
         "safe": True,
+    },
+    "room_space": {
+        "domain": 'system',
+        "desc": ('镜像房间空间（**隔离排练现实**，主人令生产面红线：所有假设/模拟/推演/打磨一律在房间里跑，'
+                 '房间不覆盖全局 mirror_space/reality）：create/enter/define_plan/get_plan/frame/gate/namespace。'
+                 '**F12 补齐**：这套操作原先只在模块层被调用、没进能力注册表 ⇒ 门看不见它；现在按唯一门接线。'),
+        "handler": 'room_space',
+        "safe": False,          # 会写房间状态 ⇒ 按有副作用处理（preflight.is_side_effect 认 room_*）
+    },
+    "collab_gateway": {
+        "domain": 'collab',
+        "desc": ('协作网关（多智能体会话/信箱/同伴注册）：open_session/close_session/status/inbox/'
+                 'register_peer/peer_status/request_peer/server_status/start_server。'
+                 '**F12 补齐**：同上，原先没进注册表 ⇒ 门看不见它。'),
+        "handler": 'collab_gateway',
+        "safe": False,
     },
     "lobehub": {
         "domain": 'creation',
