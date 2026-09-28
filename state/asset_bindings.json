@@ -29169,7 +29169,8 @@
    "health",
    "obsidian_vault",
    "memory_bank",
-   "console_hub"
+   "console_hub",
+   "hf_voice"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -29193,7 +29194,8 @@
    "health",
    "obsidian_vault",
    "memory_bank",
-   "console_hub"
+   "console_hub",
+   "hf_voice"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T07:16:17"
@@ -45466,5 +45468,19 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-28T07:45:35"
+ },
+ "gbt_allinone/tools/hf_voice.py": {
+  "tentacles": [
+   "hf_voice"
+  ],
+  "note": "能力位实现文件 ↔ 触手（新增即绑）",
+  "bound_at": "2026-09-28T07:54:26"
+ },
+ "gbt_allinone/tests/test_hf_voice.py": {
+  "tentacles": [
+   "one_shot"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T07:55:25"
  }
 }

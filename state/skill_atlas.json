@@ -1,6 +1,6 @@
 {
  "built_by": "tools/codex-scripts/omni.py build",
- "built_at": "2026-09-28T06:24:45",
+ "built_at": "2026-09-28T07:54:26",
  "note": "框架职业技能图鉴。口径：`omnipulg` = 走万能插（run_task 唯一门）的能力位；`agent-skill` = 由 agent 按技能名加载执行的技能；`design-asset` = 审美素材（料，不是可调用能力）。本图鉴是**现扫**产物，不是手抄清单。",
  "caps_error": "",
  "caps": [
@@ -2317,6 +2317,21 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python tools/codex-scripts/five-dim.py cap console_pages"
+  },
+  {
+   "kind": "hf_voice",
+   "domain": "voice",
+   "desc": "Hugging Face 歌声/语音（**3 臂轮询**，主人令 2026-09-28「把插件连接好部署语音…安装 3 个这个插件轮询使用避免卡壳」）：本机零算力跑不动歌声合成（语音中枢 v2.0 一手实测）⇒ 真唱走云。**3 臂（hf-1/2/3）按轮询 + 冷却换道**用（与 key_gateway 同一纪律）：单臂连续失败 3 次冷却 300s、自动投下一臂 ⇒ 避免单点卡壳。**出网硬钉**：只 https + 主机白名单（HF 三个官方域）+ 显式拒私有/环回/保留地址 + 拒重定向；**只回掩码**，密钥只走 env:/vault: 引用。`sing` 过 external_ll",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "hf_voice",
+   "requires_params": [],
+   "params_hint": "",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap hf_voice"
   },
   {
    "kind": "lobehub",
@@ -6816,6 +6831,25 @@
    "root_count": 3
   },
   {
+   "name": "gbt-console",
+   "displayName": "",
+   "desc": "",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-console",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
+  },
+  {
    "name": "gbt-control-loop",
    "displayName": "",
    "desc": "快慢双脑控制回路（蒸馏自 Jev / TypeSafe「System One」+ browser-use/jev-ultrafast）：类型化枚举动作 · 两头一次往返 · 只为输入文本才叫生成模型 · 执行前两查 + DONE 独立验证 + 预算闸 + 审计链。用来突破\"电脑操控每步都走大模型\"的瓶颈。",
@@ -7866,6 +7900,25 @@
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
    "root_count": 3
+  },
+  {
+   "name": "gbt-producer",
+   "displayName": "",
+   "desc": "",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-producer",
+   "why": "本会话（DSH）实际读取的技能目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
+   ],
+   "root_count": 2
   },
   {
    "name": "gbt-project",
@@ -11687,14 +11740,14 @@
   }
  ],
  "counts": {
-  "caps": 211,
-  "caps_enabled": 211,
-  "caps_safe_no_args": 125,
-  "skills": 370,
-  "skills_raw_before_dedupe": 713,
-  "skills_multi_root": 174,
+  "caps": 212,
+  "caps_enabled": 212,
+  "caps_safe_no_args": 126,
+  "skills": 372,
+  "skills_raw_before_dedupe": 717,
+  "skills_multi_root": 176,
   "skills_by_channel": {
-   "agent-skill": 277,
+   "agent-skill": 279,
    "design-asset": 93
   },
   "design_assets_bulk_total": 235,

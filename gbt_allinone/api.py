@@ -522,6 +522,10 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import agent_rig as _age
         p = payload or {}
         return _age.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "hf_voice":
+        from .tools import hf_voice as _hv
+        p = payload or {}
+        return _hv.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "console_hub":
         from .tools import console_hub as _chub
         p = payload or {}

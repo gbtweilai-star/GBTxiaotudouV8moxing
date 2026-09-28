@@ -1445,14 +1445,20 @@
    "safe": "console_pages",
    "readme_sha": "afde1661dfb4d816",
    "readme_exists": true
+  },
+  "hf_voice": {
+   "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults\\hf_voice",
+   "safe": "hf_voice",
+   "readme_sha": "7186ba6e20609f37",
+   "readme_exists": true
   }
  },
- "updated_at": "2026-09-28T06:24:46",
+ "updated_at": "2026-09-28T07:54:27",
  "root": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\vaults",
  "counts": {
-  "vaults": 241,
-  "tentacles": 241
+  "vaults": 242,
+  "tentacles": 242
  },
- "body_index_sha": "3d3715d96563a6f7",
- "bound_at": "2026-09-28T06:24:46"
+ "body_index_sha": "c245ebac440de6dd",
+ "bound_at": "2026-09-28T07:54:27"
 }

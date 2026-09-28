@@ -18,3 +18,4 @@
 {"at": "2026-09-28T06:01:31", "event": "after-add", "kind": "agent_rig", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": []}
 {"at": "2026-09-28T06:24:46", "event": "after-add", "kind": "console_hub", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
 {"at": "2026-09-28T06:24:46", "event": "after-add", "kind": "console_pages", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}
+{"at": "2026-09-28T07:54:27", "event": "after-add", "kind": "hf_voice", "tool": "", "legs": {"①登记": true, "②分派": true, "③图鉴": true, "④触手": true, "⑤绑定": true, "⑥记忆页": true}, "missing": [], "fixed": ["⑥记忆页：建库", "⑥记忆页：记一条"]}

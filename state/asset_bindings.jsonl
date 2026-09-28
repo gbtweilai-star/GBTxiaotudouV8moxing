@@ -16375,3 +16375,11 @@
 {"at": "2026-09-28T07:45:35", "event": "bind", "asset": "projects/short-video/01-script/20260928-short-video-深夜机房-小土豆醒来-01script.md", "tentacle": "project_context", "note": "autobind"}
 {"at": "2026-09-28T07:45:45", "event": "autobind", "files": 1, "bound": 1, "hint": "", "pruned": 0}
 {"at": "2026-09-28T07:45:55", "event": "gaps", "missing": 0, "no_kind": 8588, "scanned": 13006}
+{"at": "2026-09-28T07:54:26", "event": "bind", "asset": "gbt_allinone/tools/hf_voice.py", "tentacle": "hf_voice", "note": "能力位实现文件 ↔ 触手（新增即绑）"}
+{"at": "2026-09-28T07:54:28", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "hf_voice", "note": "autobind"}
+{"at": "2026-09-28T07:54:28", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "hf_voice", "note": "autobind"}
+{"at": "2026-09-28T07:54:32", "event": "autobind", "files": 4, "bound": 4, "hint": "hf_voice", "pruned": 0}
+{"at": "2026-09-28T07:55:25", "event": "bind", "asset": "gbt_allinone/tests/test_hf_voice.py", "tentacle": "one_shot", "note": "autobind"}
+{"at": "2026-09-28T07:55:32", "event": "autobind", "files": 2, "bound": 2, "hint": "one_shot", "pruned": 0}
+{"at": "2026-09-28T07:55:34", "event": "scan", "bindings": 6485, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T07:55:38", "event": "gaps", "missing": 0, "no_kind": 8588, "scanned": 13008}

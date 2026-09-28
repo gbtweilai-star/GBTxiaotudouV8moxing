@@ -90,6 +90,10 @@ DIM_META = {
     "image":  {"cn": "生图",   "dir": "文→图", "gate": "image.write"},
     "video":  {"cn": "生视频", "dir": "文→动", "gate": "video.write"},
     "code":   {"cn": "代码",   "dir": "文→码", "gate": "llm.code"},
+    # 主人令 2026-09-28「把插件连接好部署语音…真唱」：**文→声**这一格必须有 ——
+    # 否则"歌声/语音"在多模态端口里没户口（走了也只能算文本维，分账就错了）。
+    # 承载位：`hf_voice`（Hugging Face 3 臂轮询，**真唱走这条**）· `voice`（本地 TTS 念白）。
+    "audio":  {"cn": "歌声/语音", "dir": "文→声", "gate": "audio.write"},
 }
 DIMENSIONS = tuple(DIM_META)
 
@@ -522,8 +526,10 @@ def selftest() -> dict:
     ck("品牌标志在册", BRAND == "GBT小土豆V8" and BRAND_TAG.startswith("🥔"), BRAND_TAG)
 
     # ── 维度在册 ─────────────────────────────────────────────────────
-    ck("五个维度在册（含生图/生视频）",
-       set(DIMENSIONS) == {"text", "vision", "image", "video", "code"}, DIMENSIONS)
+    # ⚠️ 2026-09-28：原断言写死"五个维度"。主人令要歌声 ⇒ 补 `audio`（文→声）这一格，
+    #    断言跟着改（**不许让自检判一个已经过期的契约**）。
+    ck("六个维度在册（含生图/生视频/文→声）",
+       set(DIMENSIONS) == {"text", "vision", "image", "video", "code", "audio"}, DIMENSIONS)
     ck("维度词汇与 energy_pool.capability 对齐（text/image/video/code）",
        {"text", "image", "video", "code"} <= set(DIMENSIONS))
 
