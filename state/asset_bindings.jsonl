@@ -16383,3 +16383,10 @@
 {"at": "2026-09-28T07:55:32", "event": "autobind", "files": 2, "bound": 2, "hint": "one_shot", "pruned": 0}
 {"at": "2026-09-28T07:55:34", "event": "scan", "bindings": 6485, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-09-28T07:55:38", "event": "gaps", "missing": 0, "no_kind": 8588, "scanned": 13008}
+{"at": "2026-09-28T08:26:08", "event": "bind", "asset": "gbt_allinone/tools/console_hero.py", "tentacle": "console_pages", "note": "主视觉模块（被 console_pages 调用）"}
+{"at": "2026-09-28T08:26:08", "event": "bind", "asset": "holo_pet/assets/gallery/index.html", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-28T08:26:09", "event": "bind", "asset": "gbt_allinone/tools/console_hero.py", "tentacle": "domain:tools", "note": "autobind"}
+{"at": "2026-09-28T08:26:13", "event": "autobind", "files": 11, "bound": 11, "hint": "", "pruned": 0}
+{"at": "2026-09-28T08:26:36", "event": "autobind", "files": 1, "bound": 1, "hint": "console_hub", "pruned": 0}
+{"at": "2026-09-28T08:30:24", "event": "autobind", "files": 1, "bound": 1, "hint": "penetrating_cross_scan", "pruned": 0}
+{"at": "2026-09-28T08:30:35", "event": "scan", "bindings": 6487, "missing_asset": 0, "ghost_tentacle": 0}

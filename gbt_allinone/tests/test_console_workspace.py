@@ -25,7 +25,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 T = ROOT / "gbt_allinone" / "tools"
-NEW_PAGES = ["workbench", "tentacle3d", "wf-film", "wf-movie", "wf-music", "wf-short-video"]
+NEW_PAGES = ["gallery", "workbench", "tentacle3d", "wf-film", "wf-movie", "wf-music",
+             "wf-short-video"]
 
 
 def _load(name: str, path: Path):
@@ -118,6 +119,16 @@ class TestConsoleWorkspace(unittest.TestCase):
             out = (cp.stdout or "") + (cp.stderr or "")
             self.assertIn("P0 命中合计: 0", out,
                           f"{name} 审美 P0 不为 0（硬闸）⇒ 退出码 {cp.returncode}\n{out[-300:]}")
+
+    # ---- J 卡库把每一页都排成卡（"每一个页面都需要有视觉感"的机检） ----
+    def test_j_gallery_cards_cover_every_page(self):
+        g = (ROOT / "holo_pet" / "assets" / "gallery" / "index.html").read_text(encoding="utf-8")
+        rows = self.hub.pages()["rows"]
+        missing = [r["page"] for r in rows if f'>{r["page"]}</h3>' not in g]
+        self.assertEqual([], missing, f"卡库漏了这些页的卡：{missing}")
+        self.assertGreaterEqual(g.count('class="pcard"'), len(rows), "卡数少于页数")
+        self.assertNotIn("**", g.split("class=\"cards\"")[-1][:4000],
+                         "卡面里出现 markdown 星号（强调没转成真加粗）")
 
     # ---- I 眼睛看得见全部页 ----
     def test_i_eye_sees_every_registered_page(self):

@@ -109,13 +109,26 @@ def _log(row: dict) -> None:
         fh.write(json.dumps({"at": time.strftime("%Y-%m-%dT%H:%M:%S"), **row}, ensure_ascii=False) + "\n")
 
 
-def _shell(title: str, subtitle: str, body: str, script: str, extra_css: str = "") -> str:
+def _shell(title: str, subtitle: str, body: str, script: str, extra_css: str = "",
+           hero: str = "") -> str:
+    """页面骨架。`hero` = 主视觉带（主人令 2026-09-28：**每个页面都要有视觉感**）。"""
+    hcss = ""
+    if hero:
+        try:
+            sp = importlib.util.spec_from_file_location(
+                "hero_for_pages", _ROOT / "gbt_allinone" / "tools" / "console_hero.py")
+            ch = importlib.util.module_from_spec(sp)
+            sp.loader.exec_module(ch)
+            hcss = ch.HERO_CSS
+        except Exception:                                      # noqa: BLE001
+            hcss, hero = "", ""
     return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{title}</title><style>{TOKENS}{extra_css}</style></head><body>
+<title>{title}</title><style>{TOKENS}{hcss}{extra_css}</style></head><body>
 <div class="top"><div class="brand"><span class="mark"></span>
 <div><h1>{title}</h1><div class="sub">{subtitle}</div></div></div>
 <div class="chip">{time.strftime("%Y-%m-%d %H:%M")} · 快照内联 · 数据源 console_hub</div></div>
+{hero}
 {body}
 <script>{script}</script>
 </body></html>"""
@@ -259,7 +272,12 @@ button.chip:hover{color:var(--cyan);border-color:rgba(0,229,255,.3)}
 h2 .ic{margin-right:7px;color:var(--cyan);opacity:.85}
 """
     html = _shell("自定义工作台 · Bento", "所有能力与页面收在一屏 · 拖拽编排 · 布局记忆 · 每格带来源",
-                  body, script, extra)
+                  body, script, extra,
+                  hero=_hero("枢纽 · 自定义工作台", "拖拽编排 · 布局记忆 · 九种部件，每格都带来源",
+                             chip="工作台", accent="赛博青", seed="workbench", kind="cubes",
+                             sub="GBT WORKBENCH / BENTO GRID",
+                             ctas=[{"label": "看 3D 全景", "href": "../tentacle3d/index.html"},
+                                   {"label": "全部页面卡库", "href": "../gallery/index.html"}]))
     return _write("holo_pet/assets/workbench/index.html", html)
 
 
@@ -506,7 +524,12 @@ fit(); requestAnimationFrame(draw);
     body = body.replace("__ND__", str(counts["domains"])).replace("__NC__", str(counts["caps"])) \
                .replace("__NB__", str(counts["binding_weight"])).replace("__NP__", str(counts["pulses"]))
     html = _shell("触手 3D 全景", "30 个域 → 209 个能力位 → 绑定弧 → 运行脉冲（每条都来自真台账）",
-                  body, script, extra)
+                  body, script, extra,
+                  hero=_hero("触手 3D 全景", "中心是 run_task（唯一门）· 30 个域从核心长出手臂 · 脉冲是真台账事件",
+                             chip="全景", accent="土豆金", seed="tentacle3d", kind="orb",
+                             sub="GBT TENTACLE / SYSTEM MAP 01",
+                             ctas=[{"label": "回工作台", "href": "../workbench/index.html"},
+                                   {"label": "全部页面卡库", "href": "../gallery/index.html"}]))
     return _write("holo_pet/assets/tentacle3d/index.html", html)
 
 
@@ -603,8 +626,76 @@ document.getElementById("recent").innerHTML = D.recent.map(r=>`<div class="rw">
 """
     html = _shell(f"{spec['label']} · 独立页",
                   f"{spec['dir']} · {w['files']} 件 · 最新改动 {w['newest_h']}h 前",
-                  body, script, extra)
+                  body, script, extra,
+                  hero=_hero(f"{spec['label']} · 独立页",
+                             f"{spec['dir']} · {w['files']} 件产出 · 阶段按真实目录现读",
+                             chip=spec["label"], accent="深空紫", seed=key,
+                             kind="wave" if key in ("music",) else ("highway" if key == "short-video" else "racks"),
+                             sub="GBT PIPELINE / %s" % key.upper(),
+                             ctas=[{"label": "全部页面卡库", "href": "../gallery/index.html"}]))
     return _write(f"holo_pet/assets/wf-{key}/index.html", html)
+
+
+def _hero(title: str, subtitle: str, **kw) -> str:
+    """取主视觉带（模块不在就退化成空串 —— 页面照常能开，不因装饰件缺失而白屏）。"""
+    try:
+        sp = importlib.util.spec_from_file_location(
+            "hero_band", _ROOT / "gbt_allinone" / "tools" / "console_hero.py")
+        ch = importlib.util.module_from_spec(sp)
+        sp.loader.exec_module(ch)
+        return ch.hero_band(title, subtitle, **kw)
+    except Exception:                                          # noqa: BLE001
+        return ""
+
+
+def render_gallery() -> dict:
+    """**卡库页**：全部独立页面排成卡片（参考图那个版式）—— 主人令「每一个页面都需要有视觉感」。"""
+    hub = _load_hub()
+    hero = _load_hub_hero()
+    rows = hub.pages()["rows"]
+    order = {"枢纽": 0, "全景": 1, "工作流": 2, "执行台": 3, "决策台": 4, "监控": 5, "门面": 6, "原型": 7}
+    rows = sorted(rows, key=lambda r: (order.get(r.get("kind"), 9), r["page"]))
+    cards = []
+    for r in rows:
+        accent = {"枢纽": "赛博青", "全景": "土豆金", "工作流": "深空紫"}.get(r.get("kind"), "赛博青")
+        kind = hero.pick_archetype(r["page"], {"music": "wave", "wf-music": "wave",
+                                               "wf-film": "racks", "wf-movie": "racks",
+                                               "wf-short-video": "highway",
+                                               "tentacle3d": "orb", "capabilities": "orb",
+                                               "godview": "graph", "brain": "graph"}.get(r["page"], ""))
+        href = "../" + r["path"].replace("holo_pet/assets/", "").replace("/index.html", "/index.html") \
+            if r["path"].startswith("holo_pet/assets/") else "../../" + r["path"]
+        col = hero.ACCENTS[accent]
+        # ⚠️ 血账：`console_hub.PAGES` 的 what 里带 markdown 强调（`**总入口**`），
+        #    直接塞进 HTML 会**原样显示星号** ⇒ 这里转成真加粗。
+        def _em(s: str) -> str:
+            import re as _re
+            return _re.sub(r"\*\*(.+?)\*\*", r"<b></b>", str(s or ""))
+        cards.append(f"""<a class="pcard" href="{href}">
+  <div class="pmedia">{hero.hero_svg(kind, r["page"], col, "GBT / " + r["page"].upper())}</div>
+  <div class="pbody">
+    <span class="pcat" style="color:{col}">{r.get("kind")} · {r.get("workflow")}</span>
+    <h3 class="ptitle">{r["page"]}</h3>
+    <p class="psum">{_em(r.get("what"))}</p>
+    <span class="pgo">打开页面 →{" · %s KB" % r.get("kb") if r.get("kb") else ""}</span>
+  </div></a>""")
+    body = f'<div class="cards">{"".join(cards)}</div>'
+    script = "// 卡库是静态渲染色（数据在生成时就内联好了）"
+    html = _shell("全部页面 · 卡库", f"{len(rows)} 个独立页 · 每页一张主视觉 · 分类与归属现读 console_hub",
+                  body, script, hero.HERO_CSS,
+                  hero=hero.hero_band("全部页面 · 卡库", f"{len(rows)} 个独立页，一屏看全；点卡即开",
+                                      chip="页面全景", chip_accent="土豆金", seed="gallery",
+                                      kind="cubes", sub="GBT PAGE ATLAS / %d PAGES" % len(rows),
+                                      ctas=[{"label": "回工作台", "href": "../workbench/index.html"}]))
+    return _write("holo_pet/assets/gallery/index.html", html)
+
+
+def _load_hub_hero():
+    sp = importlib.util.spec_from_file_location(
+        "hero_for_gallery", _ROOT / "gbt_allinone" / "tools" / "console_hero.py")
+    m = importlib.util.module_from_spec(sp)
+    sp.loader.exec_module(m)
+    return m
 
 
 def render(target: str = "all", **_kw) -> dict:
@@ -614,6 +705,8 @@ def render(target: str = "all", **_kw) -> dict:
         out.append(render_workbench())
     if t in ("all", "tentacle3d"):
         out.append(render_tentacle3d())
+    if t in ("all", "gallery"):
+        out.append(render_gallery())
     if t in ("all", "workflows") or t.startswith("workflow:"):
         keys = sorted(_load_hub().WORKFLOWS) if t != "workflows" else []
         if t.startswith("workflow:"):

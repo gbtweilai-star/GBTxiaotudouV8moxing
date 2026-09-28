@@ -38,6 +38,8 @@ _LEDGER = _STATE / "console_hub.jsonl"
 
 # ── 页面登记表（**单一真相**；新增页面必须登记在这里，否则 scan 会报"盘上有而清单无"）──
 PAGES = [
+    {"page": "gallery", "path": "holo_pet/assets/gallery/index.html", "kind": "枢纽",
+     "workflow": "全部", "what": "全部页面卡库（每页一张主视觉 · 一屏看全 · 点卡即开）"},
     {"page": "workbench", "path": "holo_pet/assets/workbench/index.html", "kind": "枢纽",
      "workflow": "全部", "what": "Bento 自定义工作台（9 部件 · 拖拽编排 · 布局记忆）"},
     {"page": "tentacle3d", "path": "holo_pet/assets/tentacle3d/index.html", "kind": "全景",

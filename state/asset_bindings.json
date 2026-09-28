@@ -45482,5 +45482,20 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-28T07:55:25"
+ },
+ "gbt_allinone/tools/console_hero.py": {
+  "tentacles": [
+   "console_pages",
+   "domain:tools"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T08:26:07"
+ },
+ "holo_pet/assets/gallery/index.html": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T08:26:08"
  }
 }

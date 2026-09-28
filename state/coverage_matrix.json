@@ -1,7 +1,7 @@
 {
- "at": "2026-09-28T07:58:55",
+ "at": "2026-09-28T08:30:24",
  "quick": false,
- "耗时s": 57.4,
+ "耗时s": 72.1,
  "顶层树": 65,
  "已扫": 55,
  "排除": 10,
@@ -348,10 +348,10 @@
   },
   {
    "tree": "gbt_allinone",
-   "units": 903,
+   "units": 904,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 903,
+   "agree": 904,
    "arbitrated": 0,
    "sec_flagged": 22,
    "sec_needs_human": 1
@@ -368,10 +368,10 @@
   },
   {
    "tree": "holo_pet",
-   "units": 86,
+   "units": 87,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 86,
+   "agree": 87,
    "arbitrated": 0,
    "sec_flagged": 1,
    "sec_needs_human": 0
@@ -408,10 +408,10 @@
   },
   {
    "tree": "out",
-   "units": 28,
+   "units": 29,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 28,
+   "agree": 29,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -620,7 +620,7 @@
   },
   "bindings": {
    "ok": true,
-   "units": 6485,
+   "units": 6487,
    "coverage": 1.0,
    "missing": 0
   },
@@ -687,5 +687,5 @@
  },
  "全绿": true,
  "_口径": "没被扫到的面必须显式列出并给理由；隐式跳过=盲区。文件面覆盖必须 1.0；B/C 面断连必须 0；E 面三闸必须全 True。",
- "单元总数": 16652
+ "单元总数": 16655
 }
