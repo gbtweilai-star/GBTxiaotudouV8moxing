@@ -357,3 +357,34 @@ def run_op(op: str = "status", **params) -> dict:
             return fn(**params)
     return {"ok": False, "fail_closed": True,
             "error": f"未知 op:{op}（status/arms/models/sing/rotate/verify/where）"}
+
+
+if __name__ == "__main__":
+    # ── 给主人的命令行入口（免引号地狱）────────────────────────────────────
+    # 血账（2026-09-28）：我先给主人两条命令，结果 ① 没写清要 cd 到仓库根（他站在 C:\Users\ADMIN
+    #   ⇒ ModuleNotFoundError）② 把 `run_task(...)` 这种 Python 代码当成能直接粘进 PowerShell 的命令
+    #   （PowerShell 当场解析报错）。⇒ 现在给**真命令**：本文件 + 仓库根的 `hf-voice.cmd` 包一层，
+    #   主人只要 `.\hf-voice.cmd status`（在仓内）或双击，中文文本也不再需要转义。
+    import argparse
+    ap = argparse.ArgumentParser(description="Hugging Face 歌声/语音（3 臂轮询）—— 给主人的命令行")
+    ap.add_argument("cmd", nargs="?", default="status",
+                    choices=["status", "arms", "models", "sing", "rotate", "verify", "where"])
+    ap.add_argument("--text", default="", help="要念/要唱的文本（sing 用）")
+    ap.add_argument("--model", default="facebook/mms-tts-zho", help="候选模型（见 models）")
+    ap.add_argument("--out", default="", help="落盘路径（默认 state/hf_voice_out/）")
+    ap.add_argument("--arm", default="", help="rotate 用：hf-1 / hf-2 / hf-3")
+    ap.add_argument("--action", default="", help="rotate 用：disable / enable")
+    a = ap.parse_args()
+    # 控制台显示：强制 UTF-8 输出（否则中文在 GBK 控制台里是乱码 —— 实测踩过）
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:                                          # noqa: BLE001
+        pass
+    if a.cmd == "sing":
+        res = sing(text=a.text, model=a.model, out=a.out)
+    elif a.cmd == "rotate":
+        res = rotate(arm=a.arm, action=a.action)
+    else:
+        res = run_op(a.cmd)
+    print(json.dumps(res, ensure_ascii=False, indent=1))       # noqa: T201
+    raise SystemExit(0 if res.get("ok") else 1)
