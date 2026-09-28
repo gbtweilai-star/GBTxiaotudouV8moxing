@@ -1,15 +1,15 @@
 {
  "ok": true,
- "at": "2026-09-27T21:58:17",
- "prompt": "潮湿阴冷的雨夜，她在代码里醒来，节奏紧凑",
+ "at": "2026-09-28T07:32:30",
+ "prompt": "判据样本：60 秒科技感短片",
  "推导": {
-  "bpm": "120.0（按节奏词（/紧凑|激烈|快|打斗|追逐|战斗/））",
-  "时长": "1.0 分钟（默认 1 分钟（短片级））",
-  "帧率": "30（由 BPM 反推：每拍帧数必须整数；候选 [24, 30, 60]）",
-  "调色": "潮湿阴冷（INTENT_MAP 命中）"
+  "bpm": "100.0（默认（没出现节奏词））",
+  "时长": "1.0 分钟（按时长词（/短片|预告|trailer/））",
+  "帧率": "30（由 BPM 反推：每拍帧数必须整数；候选 [25, 30, 60]）",
+  "调色": "filmic（INTENT_MAP 命中）"
  },
  "网格": {
-  "beats": 120,
+  "beats": 100,
   "beat_s": null
  },
  "镜头表": [
@@ -23,7 +23,7 @@
   },
   {
    "beat": 2,
-   "t": 0.5,
+   "t": 0.6,
    "move": "whip_lr",
    "angle": "low",
    "size": "medium",
@@ -31,7 +31,7 @@
   },
   {
    "beat": 3,
-   "t": 1.0,
+   "t": 1.2,
    "move": "whip_rl",
    "angle": "high",
    "size": "close",
@@ -39,7 +39,7 @@
   },
   {
    "beat": 4,
-   "t": 1.5,
+   "t": 1.8,
    "move": "pov_bob",
    "angle": "dutch",
    "size": "full",
@@ -47,7 +47,7 @@
   },
   {
    "beat": 5,
-   "t": 2.0,
+   "t": 2.4,
    "move": "shake",
    "angle": "eye",
    "size": "medium",
@@ -55,7 +55,7 @@
   },
   {
    "beat": 6,
-   "t": 2.5,
+   "t": 3.0,
    "move": "dolly_in",
    "angle": "low",
    "size": "close",
@@ -63,7 +63,7 @@
   },
   {
    "beat": 7,
-   "t": 3.0,
+   "t": 3.6,
    "move": "push_out",
    "angle": "high",
    "size": "full",
@@ -71,7 +71,7 @@
   },
   {
    "beat": 8,
-   "t": 3.5,
+   "t": 4.2,
    "move": "arc_lr",
    "angle": "dutch",
    "size": "medium",
@@ -79,82 +79,82 @@
   }
  ],
  "manifest（未写盘）": {
-  "title": "一句话全链 · 潮湿阴冷的雨夜，她在代码里醒来，节奏紧凑",
+  "title": "一句话全链 · 判据样本：60 秒科技感短片",
   "quality": "fhd",
-  "bpm": 120.0,
+  "bpm": 100.0,
   "fps": 30,
-  "work_dir": "projects/movie/生成/oneshot-c12b2c",
+  "work_dir": "projects/movie/生成/oneshot-9a0bf7",
   "out_dir": "projects/movie/成片",
-  "output": "oneshot-c12b2c-20260927-215817.mp4",
-  "grade": "潮湿阴冷",
+  "output": "oneshot-9a0bf7-20260928-073230.mp4",
+  "grade": "filmic",
   "audio": true,
   "source": "pollinations",
   "size": "1k",
-  "seed_base": 10832181,
+  "seed_base": 74475628,
   "beats": [
    {
     "id": "B1",
     "move": "pov_bob",
     "angle": "eye",
-    "dur": 0.5,
-    "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, first-person POV action camera, own hands visible at frame bottom, handheld bob, eye level, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
-    "seed": 10832181
+    "dur": 0.6,
+    "prompt": "cinematic scene, first-person POV action camera, own hands visible at frame bottom, handheld bob, eye level, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
+    "seed": 74475628
    },
    {
     "id": "B2",
     "move": "whip_lr",
     "angle": "low",
-    "dur": 0.5,
-    "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, fast whip pan left to right, strong motion blur streaks, low angle looking up, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
-    "seed": 10832182
+    "dur": 0.6,
+    "prompt": "cinematic scene, fast whip pan left to right, strong motion blur streaks, low angle looking up, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
+    "seed": 74475629
    },
    {
     "id": "B3",
     "move": "whip_rl",
     "angle": "high",
-    "dur": 0.5,
-    "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, fast whip pan right to left, strong motion blur streaks, high angle looking down, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
-    "seed": 10832183
+    "dur": 0.6,
+    "prompt": "cinematic scene, fast whip pan right to left, strong motion blur streaks, high angle looking down, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
+    "seed": 74475630
    },
    {
     "id": "B4",
     "move": "crash_zoom",
     "angle": "dutch",
-    "dur": 0.5,
-    "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, crash zoom punch-in, sudden tight framing, dutch tilt, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
-    "seed": 10832184
+    "dur": 0.6,
+    "prompt": "cinematic scene, crash zoom punch-in, sudden tight framing, dutch tilt, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
+    "seed": 74475631
    },
    {
     "id": "B5",
     "move": "dolly_in",
     "angle": "eye",
-    "dur": 0.5,
-    "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, slow dolly in, compressing perspective, eye level, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
-    "seed": 10832185
+    "dur": 0.6,
+    "prompt": "cinematic scene, slow dolly in, compressing perspective, eye level, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
+    "seed": 74475632
    },
    {
     "id": "B6",
     "move": "push_out",
     "angle": "low",
-    "dur": 0.5,
-    "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, push out revealing environment, low angle looking up, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
-    "seed": 10832186
+    "dur": 0.6,
+    "prompt": "cinematic scene, push out revealing environment, low angle looking up, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
+    "seed": 74475633
    },
    {
     "id": "B7",
     "move": "arc_lr",
     "angle": "high",
-    "dur": 0.5,
-    "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, arc shot circling the subject, high angle looking down, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
-    "seed": 10832187
+    "dur": 0.6,
+    "prompt": "cinematic scene, arc shot circling the subject, high angle looking down, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
+    "seed": 74475634
    },
    {
     "id": "B8",
     "move": "shake",
     "angle": "dutch",
-    "dur": 0.5,
-    "prompt": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up, shaky handheld close quarters, documentary energy, dutch tilt, cold damp cyan tones, wet reflective surfaces, drizzle, fog, cinematic composition, 16:9, high detail",
-    "seed": 10832188
+    "dur": 0.6,
+    "prompt": "cinematic scene, shaky handheld close quarters, documentary energy, dutch tilt, cinematic filmic color grade, film grain, cinematic composition, 16:9, high detail",
+    "seed": 74475635
    }
   ]
  },
@@ -174,15 +174,9 @@
   }
  ],
  "主体映射": {
-  "英文主体": "rainy night, wet streets, rain streaks, night, low key lighting, a young woman, glowing code on screens, terminal windows, close on eyes opening, waking up",
-  "命中词": [
-   "雨夜|下雨|潮湿",
-   "夜",
-   "她|女主|女孩",
-   "代码|程序|屏幕|终端",
-   "醒来|苏醒|睁眼"
-  ]
+  "英文主体": "（**没映射到** —— 清单里用通用 cinematic scene，如实标注）",
+  "命中词": []
  },
- "规模口径": "以上 8 拍是一个**段落模板**（4.0s）；全片 1.0 分钟按 FORM_8MIN 段落表铺：['intro×8小节', 'build×16小节', 'verse1×32小节', 'chorus1×32小节', 'break×8小节'] ⇒ 总拍数 ≈ 120",
+ "规模口径": "以上 8 拍是一个**段落模板**（4.8s）；全片 1.0 分钟按 FORM_8MIN 段落表铺：['intro×8小节', 'build×16小节', 'verse1×32小节', 'chorus1×32小节', 'break×8小节'] ⇒ 总拍数 ≈ 100",
  "_口径": "**只读**：本 op 不写任何文件（写盘要过 filesystem_write 门）；翻译规则全部可查（节奏词/时长词/INTENT_MAP/energy/size 轮转），不调模型"
 }

@@ -16359,3 +16359,15 @@
 {"at": "2026-09-28T06:30:02", "event": "scan", "bindings": 6479, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-09-28T06:33:41", "event": "bind", "asset": "skills/gbt-console/SKILL.md", "tentacle": "project_context", "note": "autobind"}
 {"at": "2026-09-28T06:33:42", "event": "autobind", "files": 1, "bound": 1, "hint": "penetrating_cross_scan", "pruned": 0}
+{"at": "2026-09-28T07:03:24", "event": "scan", "bindings": 6480, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T07:03:26", "event": "gaps", "missing": 0, "no_kind": 8588, "scanned": 13003}
+{"at": "2026-09-28T07:05:22", "event": "scan", "bindings": 6480, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-09-28T07:10:51", "event": "bind", "asset": "skills/gbt-producer/SKILL.md", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-09-28T07:10:59", "event": "autobind", "files": 2, "bound": 2, "hint": "one_shot", "pruned": 0}
+{"at": "2026-09-28T07:23:02", "event": "autobind", "files": 1, "bound": 1, "hint": "voice", "pruned": 0}
+{"at": "2026-09-28T07:25:31", "event": "bind", "asset": "gbt_allinone/tests/test_chain_readiness.py", "tentacle": "one_shot", "note": "autobind"}
+{"at": "2026-09-28T07:25:34", "event": "autobind", "files": 1, "bound": 1, "hint": "one_shot", "pruned": 0}
+{"at": "2026-09-28T07:28:16", "event": "bind", "asset": "gbt_allinone/tools/research_intel.py", "tentacle": "music_intel", "note": "创作链补齐：能力位实现文件 ↔ 触手"}
+{"at": "2026-09-28T07:29:15", "event": "bind", "asset": "gbt_allinone/tools/edit_core.py", "tentacle": "edit_pipeline", "note": "创作链补齐：能力位实现文件 ↔ 触手"}
+{"at": "2026-09-28T07:29:27", "event": "autobind", "files": 1, "bound": 1, "hint": "one_shot", "pruned": 0}
+{"at": "2026-09-28T07:32:43", "event": "scan", "bindings": 6482, "missing_asset": 0, "ghost_tentacle": 0}

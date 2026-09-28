@@ -1,0 +1,111 @@
+{
+ "rows": [
+  {
+   "cap": "one_shot",
+   "stage": "concept/script（构思→计划）",
+   "op": "plan",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "filmkit",
+   "stage": "storyboard/shots（镜头单）",
+   "op": "status",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "actioncam",
+   "stage": "shots（运镜/机位）",
+   "op": "status",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "comfyui",
+   "stage": "assets（本机生图）",
+   "op": "status",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "zimage_rewash",
+   "stage": "assets（洗图·放大环）",
+   "op": "status",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "edit_pipeline",
+   "stage": "edit（剪辑引擎）",
+   "op": "status",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "audio_extract",
+   "stage": "sound（取声）",
+   "op": "status",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "audio_mix",
+   "stage": "sound/master（混音与母带）",
+   "op": "status",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "media_run",
+   "stage": "export（整链执行器）",
+   "op": "status",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "media_publish",
+   "stage": "publish（发布准备·授权门）",
+   "op": "status",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "voice",
+   "stage": "audio（TTS 念白）",
+   "op": "status",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "voice_orchestra",
+   "stage": "audio（语音中枢编排）",
+   "op": "status",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "music_intel",
+   "stage": "publish（音乐情报·只读）",
+   "op": "group",
+   "ok": true,
+   "denied": false
+  },
+  {
+   "cap": "music_publishing",
+   "stage": "publish（发布平台归位·只读）",
+   "op": "status",
+   "ok": true,
+   "denied": false
+  }
+ ],
+ "gated": [],
+ "fails": [],
+ "readable": 14,
+ "gated_count": 0,
+ "needs_llm_stages": [
+  "concept/script",
+  "lyrics",
+  "arrangement"
+ ]
+}

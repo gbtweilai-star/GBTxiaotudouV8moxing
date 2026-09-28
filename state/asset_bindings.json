@@ -28947,9 +28947,10 @@
  },
  "gbt_allinone/tools/edit_core.py": {
   "tentacles": [
-   "domain:tools"
+   "domain:tools",
+   "edit_pipeline"
   ],
-  "note": "sweep",
+  "note": "创作链补齐：能力位实现文件 ↔ 触手",
   "bound_at": "2026-09-27T06:42:13"
  },
  "gbt_allinone/tools/edit_rules.py": {
@@ -29073,9 +29074,10 @@
  },
  "gbt_allinone/tools/research_intel.py": {
   "tentacles": [
-   "domain:tools"
+   "domain:tools",
+   "music_intel"
   ],
-  "note": "sweep",
+  "note": "创作链补齐：能力位实现文件 ↔ 触手",
   "bound_at": "2026-09-27T06:42:14"
  },
  "gbt_allinone/tools/scan_engine.py": {
@@ -45443,5 +45445,19 @@
   ],
   "note": "autobind",
   "bound_at": "2026-09-28T06:33:41"
+ },
+ "skills/gbt-producer/SKILL.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T07:10:51"
+ },
+ "gbt_allinone/tests/test_chain_readiness.py": {
+  "tentacles": [
+   "one_shot"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-09-28T07:25:31"
  }
 }
