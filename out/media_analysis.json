@@ -1,0 +1,41 @@
+{
+ "at": "2026-09-28T05:47:15",
+ "tooling": "本地等价（ffmpeg blackdetect/silencedetect/scene + signalstats）",
+ "caveat": "blackdetect 的阈值把**深蓝**也算成黑（cut-demo 的底就是暗蓝）⇒ 亮度抽点 YAVG 才是强证据，两者都记下来，不靠单一读数下结论",
+ "per_source": {
+  "video-out/cut-demo.mp4": {
+   "scene_changes": 0,
+   "black_ranges": [
+    "[Parsed_blackdetect_0 @ 000001ee46e1af80] black_start:0 black_end:6.3 black_duration:6.3"
+   ],
+   "silence_ranges": [
+    "（无静音段或音轨缺失）"
+   ],
+   "yavg_samples": {
+    "0": 29.0,
+    "1.59": 29.0,
+    "3.17": 29.0,
+    "4.76": 29.0,
+    "6.25": 29.0
+   },
+   "reading": "亮度全程恒定 ⇒ 合成测试片（无场景变化、无运动）"
+  },
+  "video-out/motion.mp4": {
+   "scene_changes": 0,
+   "black_ranges": [
+    "[Parsed_blackdetect_0 @ 00000293c9378b00] black_start:0 black_end:9.966667 black_duration:9.966667"
+   ],
+   "silence_ranges": [
+    "（无静音段或音轨缺失）"
+   ],
+   "yavg_samples": {
+    "0": 24.3222,
+    "2.5": 24.3222,
+    "5.0": 24.3222,
+    "7.5": 24.3222,
+    "9.9": 24.3223
+   },
+   "reading": "亮度全程恒定 ⇒ 合成测试片（无场景变化、无运动）"
+  }
+ }
+}

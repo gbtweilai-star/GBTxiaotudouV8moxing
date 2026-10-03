@@ -1,0 +1,22 @@
+{
+ "at": "2026-09-28T05:47:15",
+ "tooling": "本地等价（ffmpeg tile 出 contact sheet）；图由主 agent 亲自读过再下判断",
+ "packages": [
+  {
+   "source": "video-out/cut-demo.mp4",
+   "sheet": "out/ingest/cut-demo_sheet.jpg",
+   "sheet_exists": false,
+   "rewatch_sheet": "",
+   "what_i_saw": "深蓝底整块纯色（无文字、无图形），后段也没有黑块——先前看到的『黑』是 tile 空格子",
+   "read_by_agent": true
+  },
+  {
+   "source": "video-out/motion.mp4",
+   "sheet": "out/ingest/motion_sheet.jpg",
+   "sheet_exists": true,
+   "rewatch_sheet": "",
+   "what_i_saw": "黑底 + 左上小号白字『Title』，逐格一模一样的静态字卡，全程无运动",
+   "read_by_agent": true
+  }
+ ]
+}

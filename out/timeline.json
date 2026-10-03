@@ -1,0 +1,75 @@
+{
+ "project": {
+  "name": "gbt-video-edit-selfcheck",
+  "created": "2026-09-28T05:47:15",
+  "assumptions": [
+   "任务说明为空 ⇒ 按技能条款做保守选择：不引入未给素材、不做风格化处理",
+   "两份素材都是合成测试片（纯色/静态字卡）⇒ 本片是**流水线验证片**，不是内容片",
+   "无语音可转（ASR 也不可用）⇒ 走无转录流程，限制记入 report.md"
+  ]
+ },
+ "assets": [
+  {
+   "path": "video-out/cut-demo.mp4",
+   "kind": "video",
+   "duration": 6.346,
+   "width": 640,
+   "height": 360
+  },
+  {
+   "path": "video-out/motion.mp4",
+   "kind": "video",
+   "duration": 10.0,
+   "width": 1920,
+   "height": 1080
+  }
+ ],
+ "sequence": {
+  "canvas": {
+   "width": 1920,
+   "height": 1080,
+   "fps": 30,
+   "pixel_format": "yuv420p"
+  }
+ },
+ "tracks": [
+  {
+   "type": "main",
+   "id": "V1",
+   "clips": [
+    {
+     "source": "video-out/cut-demo.mp4",
+     "start": 0.0,
+     "end": 3.0,
+     "timeline_start": 0.0,
+     "reason": "冷开场：两份素材里唯一带声轨的（低频单音，RMS -21.4dB），用它给片子一个有声的头部，同时验证『非画布分辨率素材→上采样到 1920×1080』这条渲染路径。"
+    },
+    {
+     "source": "video-out/motion.mp4",
+     "start": 0.0,
+     "end": 9.0,
+     "timeline_start": 3.0,
+     "reason": "字卡主体：1080p 原生分辨率、与画布一致（不缩放），承担主体时长；源为静态字卡 ⇒ 画面无运动，这里只做时长裁剪（10s→9s，去掉尾部 1s）。"
+    }
+   ]
+  },
+  {
+   "type": "audio",
+   "id": "A1",
+   "clips": [
+    {
+     "source": "video-out/cut-demo.mp4",
+     "start": 0.0,
+     "end": 3.0,
+     "timeline_start": 0.0,
+     "reason": "保留源片唯一的声轨（3s）；其后源 B 无音轨 ⇒ 由渲染器补静音轨保证音轨连续"
+    }
+   ]
+  }
+ ],
+ "output_canvas": {
+  "width": 1920,
+  "height": 1080,
+  "fps": 30
+ }
+}

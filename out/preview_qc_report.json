@@ -1,0 +1,48 @@
+{
+ "at": "2026-09-28T05:47:24",
+ "tooling": "本地等价（ffprobe + ffmpeg 检测器）",
+ "timeline_sha8": "90946418",
+ "output_sha8": "7471a030",
+ "timeline_sha256": "909464180f07aa77d1722aa8e80c389769ff6013cbd4aaf0c510e38514e6bbbf",
+ "video_sha256": "7471a030a8c35151e269f9a52a93ea6d9013ccbb87102d2cf6cb5e9604c0648f",
+ "covers_current_preview": true,
+ "errors": [],
+ "warnings": [
+  "blackdetect 全程报黑：源素材本身就是纯色/黑底（cut-demo 暗蓝 YAVG=29、motion 黑底 YAVG≈24.3，见 out/media_analysis.json）⇒ 是素材性质不是渲染故障；YAVG 抽点给出同样常数，两处读数一致。",
+  "3s 之后静音：源 B **没有音轨**（out/media.json 记着 audio=null），渲染器按计划补了连续静音轨 ⇒ 预期行为，不是丢音。",
+  "检测到静止段：源 B 是静态字卡（同一帧 10 秒，见 rewatch contact sheet）⇒ 静止来自素材本身，剪掉它等于没有素材可用。"
+ ],
+ "readings": {
+  "duration_s": 12.0,
+  "resolution": "1920x1080",
+  "fps": "30/1",
+  "blackdetect": [
+   "black_start:0 black_end:11.966667 black_duration:11.966667"
+  ],
+  "yavg_samples": {
+   "0.5": 29.0,
+   "1.5": 29.0,
+   "2.5": 29.0,
+   "5.0": 23.3213,
+   "8.0": 23.3213,
+   "11.5": 23.3216
+  },
+  "silence": [
+   "silence_start: 3.000021",
+   "silence_end: 12.010667 | silence_duration: 9.010646"
+  ],
+  "freezedetect": [
+   "lavfi.freezedetect.freeze_start: 0",
+   "lavfi.freezedetect.freeze_duration: 3",
+   "lavfi.freezedetect.freeze_end: 3",
+   "lavfi.freezedetect.freeze_start: 3"
+  ],
+  "mean_volume": "-30.4 dB",
+  "max_volume": "-17.5 dB"
+ },
+ "video_stream_covers": 12.0,
+ "audio_stream_covers": 12.0,
+ "ok": true,
+ "status": "pass",
+ "blockers": []
+}

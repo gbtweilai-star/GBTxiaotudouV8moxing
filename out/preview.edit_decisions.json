@@ -1,0 +1,38 @@
+{
+ "at": "2026-09-28T05:47:24",
+ "timeline_sha8": "90946418",
+ "timeline_sha256": "909464180f07aa77d1722aa8e80c389769ff6013cbd4aaf0c510e38514e6bbbf",
+ "tooling": "本地等价（结构化决策旁车）",
+ "decisions": [
+  {
+   "clip": "video-out/cut-demo.mp4",
+   "range": [
+    0.0,
+    3.0
+   ],
+   "timeline_start": 0.0,
+   "reason": "冷开场：两份素材里唯一带声轨的（低频单音，RMS -21.4dB），用它给片子一个有声的头部，同时验证『非画布分辨率素材→上采样到 1920×1080』这条渲染路径。",
+   "evidence": "out/ingest/*.json（contact sheet 由主 agent 亲自读过） + out/media_analysis.json 的 YAVG 抽点"
+  },
+  {
+   "clip": "video-out/motion.mp4",
+   "range": [
+    0.0,
+    9.0
+   ],
+   "timeline_start": 3.0,
+   "reason": "字卡主体：1080p 原生分辨率、与画布一致（不缩放），承担主体时长；源为静态字卡 ⇒ 画面无运动，这里只做时长裁剪（10s→9s，去掉尾部 1s）。",
+   "evidence": "out/ingest/*.json（contact sheet 由主 agent 亲自读过） + out/media_analysis.json 的 YAVG 抽点"
+  }
+ ],
+ "rejected": [
+  {
+   "option": "只用 motion.mp4（10s）单源裁切",
+   "why_not": "会丢掉唯一带声轨的素材；画面从头到尾同一张静态字卡 ⇒ 更像转封装不是剪辑"
+  },
+  {
+   "option": "把 cut-demo 上采样后拉长到整片",
+   "why_not": "纯色素材拉长只制造静止段、放大上采样模糊，没有剪辑价值"
+  }
+ ]
+}

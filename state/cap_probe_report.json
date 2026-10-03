@@ -1,0 +1,784 @@
+{
+ "tier": "只读档",
+ "total": 147,
+ "buckets": {
+  "REAL": 110,
+  "HONEST_STUB": 10,
+  "FAKE": 2,
+  "NEEDS_CRED": 17,
+  "ERR": 0,
+  "GHOST": 0,
+  "SKIP": 8
+ },
+ "rows": [
+  {
+   "kind": "a1art_skill",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "absorb_loop",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "account_registry",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "action_gate",
+   "bucket": "REAL",
+   "op": "observe"
+  },
+  {
+   "kind": "alerts",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "audit_query",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "audit_read"
+   ],
+   "op": "audit_read"
+  },
+  {
+   "kind": "auth_gate_status",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "auto_switch",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "awesome_tools_index",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "brain_health",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "brain_route",
+   "bucket": "HONEST_STUB",
+   "op": "(default)"
+  },
+  {
+   "kind": "brain_unify",
+   "bucket": "HONEST_STUB",
+   "op": "(default)"
+  },
+  {
+   "kind": "brain_vault",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "brain_verify",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "brand_outro",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "bt_control",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "device_control"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "cap_tags",
+   "bucket": "REAL",
+   "op": "check"
+  },
+  {
+   "kind": "capability_net",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "caps_called_audit",
+   "bucket": "REAL",
+   "op": "audit"
+  },
+  {
+   "kind": "code_art",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "code_audit",
+   "bucket": "REAL",
+   "op": "scan"
+  },
+  {
+   "kind": "codex_interrupt",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "process_execute"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "codex_status",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "codex_thread_new",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "process_execute"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "codex_tools",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "codex_turn_send",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "process_execute",
+    "external_llm"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "comfyui",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "console_hub",
+   "bucket": "REAL",
+   "op": "pages"
+  },
+  {
+   "kind": "console_pages",
+   "bucket": "REAL",
+   "op": "list"
+  },
+  {
+   "kind": "context_vault",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "control_loop",
+   "bucket": "REAL",
+   "op": "observe"
+  },
+  {
+   "kind": "count_words",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "coverage_auditor",
+   "bucket": "REAL",
+   "op": "matrix"
+  },
+  {
+   "kind": "cross_scan",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "datakit",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "devour_fusion",
+   "bucket": "REAL",
+   "op": "list"
+  },
+  {
+   "kind": "devour_github",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "data_export",
+    "filesystem_write"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "devour_pulse",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "data_export",
+    "filesystem_write",
+    "external_llm"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "devour_reflect",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "devour_scan",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "director_mood",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "drama",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "dream_replay",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "echo",
+   "bucket": "FAKE",
+   "op": "(default)"
+  },
+  {
+   "kind": "emotion_projection",
+   "bucket": "REAL",
+   "op": "check"
+  },
+  {
+   "kind": "energy_pool",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "file_hygiene",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "film_intel",
+   "bucket": "REAL",
+   "op": "redlines"
+  },
+  {
+   "kind": "freebuff_term",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "gate_visibility",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "ghost_guard",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "git_read",
+   "bucket": "HONEST_STUB",
+   "op": "只认 status"
+  },
+  {
+   "kind": "gods_eye",
+   "bucket": "REAL",
+   "op": "plan"
+  },
+  {
+   "kind": "growth_hooks",
+   "bucket": "REAL",
+   "op": "verify"
+  },
+  {
+   "kind": "health",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "hook_enforcer",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "hook_registry",
+   "bucket": "REAL",
+   "op": "catalogue"
+  },
+  {
+   "kind": "inventory",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "ledger_note",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "libtv_skill",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "libtv_workflow",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "life",
+   "bucket": "HONEST_STUB",
+   "op": "可用: status"
+  },
+  {
+   "kind": "lobehub",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "local_brain",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "long_run_supervisor",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "lr_status",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "lr_tick",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "mcp_call",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "process_execute"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "mcp_connect",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "process_execute"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "mcp_tools",
+   "bucket": "FAKE",
+   "op": "(default)"
+  },
+  {
+   "kind": "memory_bank",
+   "bucket": "REAL",
+   "op": "verify"
+  },
+  {
+   "kind": "memory_manager",
+   "bucket": "REAL",
+   "op": "index"
+  },
+  {
+   "kind": "meta_cognition",
+   "bucket": "REAL",
+   "op": "law"
+  },
+  {
+   "kind": "mind",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "mirror_ascend",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "deploy_publish"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "mirror_parity",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "filesystem_write"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "mirror_plan",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "mirror_rehearse",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "process_execute",
+    "filesystem_write"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "mirror_rewind",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "deploy_publish"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "mirror_scan",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "mirror_shape",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "mirror_simulate",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "filesystem_write"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "mirror_status",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "music_intel",
+   "bucket": "REAL",
+   "op": "redlines"
+  },
+  {
+   "kind": "observer_anchor",
+   "bucket": "REAL",
+   "op": "check"
+  },
+  {
+   "kind": "obsidian_vault",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    2
+   ],
+   "op": "status"
+  },
+  {
+   "kind": "omission_detector",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "onboarding_gate",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "osint_scan",
+   "bucket": "HONEST_STUB",
+   "op": "(default)"
+  },
+  {
+   "kind": "paywallbuster",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "penetrating_cross_scan",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "persona_kernel",
+   "bucket": "REAL",
+   "op": "laws"
+  },
+  {
+   "kind": "platform_profile",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "proactive_report",
+   "bucket": "REAL",
+   "op": "sources"
+  },
+  {
+   "kind": "project_context",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "projection_card",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "prompt_bridge",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "quant",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "quant_backtest",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "quant_params",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "quant_strategy",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "record_grid",
+   "bucket": "HONEST_STUB",
+   "op": "verify"
+  },
+  {
+   "kind": "root_fix",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "scene_anchor",
+   "bucket": "REAL",
+   "op": "redlines"
+  },
+  {
+   "kind": "sched_status",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "sched_tick",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "scrapling",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "sec_chain",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "sec_defenses",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "sec_scan",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "sec_surface",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "sec_sweeper",
+   "bucket": "REAL",
+   "op": "health"
+  },
+  {
+   "kind": "selfscan",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "shared_resources",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "signature_guard",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "stigmergy",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "surface_bind",
+   "bucket": "REAL",
+   "op": "verify"
+  },
+  {
+   "kind": "svc_inspect",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "tactics_advise",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "task_manager",
+   "bucket": "REAL",
+   "op": "list"
+  },
+  {
+   "kind": "tentacle",
+   "bucket": "HONEST_STUB",
+   "op": "(default)"
+  },
+  {
+   "kind": "tentacle_bind",
+   "bucket": "REAL",
+   "op": "读面：scan"
+  },
+  {
+   "kind": "tentacle_cognition",
+   "bucket": "REAL",
+   "op": "redlines"
+  },
+  {
+   "kind": "tentacle_manifest",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "tentacle_status",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "think_loop",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "external_llm"
+   ],
+   "op": "(default)"
+  },
+  {
+   "kind": "topic_watch",
+   "bucket": "HONEST_STUB",
+   "op": "可选 route"
+  },
+  {
+   "kind": "trace_store",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "transfer",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "transformer",
+   "bucket": "REAL",
+   "op": "selftest"
+  },
+  {
+   "kind": "trend_watch",
+   "bucket": "REAL",
+   "op": "observe"
+  },
+  {
+   "kind": "truth_scan",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "verification_watch",
+   "bucket": "REAL",
+   "op": "status"
+  },
+  {
+   "kind": "vision",
+   "bucket": "NEEDS_CRED",
+   "missing": [
+    "privacy_read"
+   ],
+   "op": "privacy_read"
+  },
+  {
+   "kind": "wave_probe",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "wf_cache_clear",
+   "bucket": "REAL",
+   "op": "(default)"
+  },
+  {
+   "kind": "wf_resume",
+   "bucket": "HONEST_STUB",
+   "op": "(default)"
+  },
+  {
+   "kind": "wf_run",
+   "bucket": "HONEST_STUB",
+   "op": "(default)"
+  },
+  {
+   "kind": "wf_status",
+   "bucket": "REAL",
+   "op": "(default)"
+  }
+ ],
+ "stale_roster": [
+  "answer_shaper",
+  "belief_forge",
+  "case_mine",
+  "command_chain",
+  "creation_camp",
+  "db_probe",
+  "energy_scheduler",
+  "event_ledger",
+  "flow_canvas",
+  "handoff",
+  "policy_delta",
+  "slim_profile",
+  "spend_guard",
+  "train_recipe"
+ ],
+ "made_at": "2026-10-03T15:19:59",
+ "_口径": "只读探针（词表三路取 · 只发 READISH op · 词表空的只读位走默认直调兜底）；FAKE 必须为 0；GHOST=注册表在册但运行时不认；SKIP=编排器名不盲调；STALE_ROSTER=快照名册里的陈旧名（不在活注册表，已剔除不占读数）"
+}

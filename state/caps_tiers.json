@@ -1,0 +1,1456 @@
+{
+ "_口径": "**239 能力位分档**（2026-10-01 第 63 轮 · 探针扩展第①步）。静态分类：**不发一次调用**。依据：caps_registry 的 domain/safe + caps_called_audit 的 CAP_TYPES + 名字语义提示。只读档可自动批量真跑；写/外部/设备档逐位配票才跑。",
+ "made_at": "2026-10-01T21:18:13",
+ "total": 239,
+ "counts": {
+  "只读档": 161,
+  "写档": 41,
+  "外部档": 27,
+  "设备档": 10
+ },
+ "tiers": {
+  "只读档": [
+   {
+    "kind": "a1art_skill",
+    "domain": "image_video",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "absorb_loop",
+    "domain": "brain",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "account_registry",
+    "domain": "data",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "action_gate",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "alerts",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "answer_shaper",
+    "domain": "system",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "audit_query",
+    "domain": "data",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "auth_gate_status",
+    "domain": "system",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "auto_switch",
+    "domain": "mind",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "autopilot",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "awesome_tools_index",
+    "domain": "tools",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "belief_forge",
+    "domain": "mind",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "brain_execute",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "brain_health",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "brain_route",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "brain_unify",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "brain_vault",
+    "domain": "mind",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "brain_verify",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "brand_outro",
+    "domain": "creation",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "bt_control",
+    "domain": "device",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "cap_tags",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "capability_net",
+    "domain": "tools",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "caps_called_audit",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "case_mine",
+    "domain": "recon",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "code_art",
+    "domain": "creation",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "code_audit",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "codex_interrupt",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "codex_status",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "codex_thread_new",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "codex_tools",
+    "domain": "llm",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "codex_turn_send",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "comfyui",
+    "domain": "creation",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "command_chain",
+    "domain": "mind",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "console_hub",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "console_pages",
+    "domain": "creation",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "context_vault",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "control_loop",
+    "domain": "desktop",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "count_words",
+    "domain": "data",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "coverage_auditor",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "creation_camp",
+    "domain": "creation",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "cross_scan",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "datakit",
+    "domain": "data",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "db_probe",
+    "domain": "data",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "devour_fusion",
+    "domain": "devour",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "devour_github",
+    "domain": "devour",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "devour_pulse",
+    "domain": "devour",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "devour_reflect",
+    "domain": "devour",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "devour_scan",
+    "domain": "devour",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "director_mood",
+    "domain": "mind",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "drama",
+    "domain": "creation",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "dream_replay",
+    "domain": "brain",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "echo",
+    "domain": "data",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "emotion_projection",
+    "domain": "creation",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "energy_pool",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "energy_scheduler",
+    "domain": "llm",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "event_ledger",
+    "domain": "security",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "file_hygiene",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "film_intel",
+    "domain": "recon",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "flow_canvas",
+    "domain": "creation",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "freebuff_term",
+    "domain": "tools",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "gate_visibility",
+    "domain": "framework",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "ghost_guard",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "git_read",
+    "domain": "tools",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "gods_eye",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "growth_hooks",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "handoff",
+    "domain": "system",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "health",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "hook_enforcer",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "hook_registry",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "inventory",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "ledger_note",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "libtv_skill",
+    "domain": "video",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "libtv_workflow",
+    "domain": "video",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "life",
+    "domain": "life",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "lobehub",
+    "domain": "creation",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "local_brain",
+    "domain": "mind",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "long_run_supervisor",
+    "domain": "tentacle",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "lr_status",
+    "domain": "longrun",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "lr_tick",
+    "domain": "longrun",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mcp_call",
+    "domain": "tentacle",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mcp_connect",
+    "domain": "tentacle",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mcp_tools",
+    "domain": "tentacle",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "media_pipeline",
+    "domain": "video",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "memory_bank",
+    "domain": "mind",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "memory_manager",
+    "domain": "mind",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "meta_cognition",
+    "domain": "mind",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mind",
+    "domain": "mind",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mirror_ascend",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mirror_parity",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mirror_plan",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mirror_rehearse",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mirror_rewind",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mirror_scan",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mirror_shape",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mirror_simulate",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "mirror_status",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "music_intel",
+    "domain": "recon",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "observer_anchor",
+    "domain": "mind",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "obsidian_vault",
+    "domain": "mind",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "omission_detector",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "onboarding_gate",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "one_shot",
+    "domain": "creation",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "orchestration_kernel",
+    "domain": "system",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "osint_scan",
+    "domain": "recon",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "paywallbuster",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "penetrating_cross_scan",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "persona_kernel",
+    "domain": "mind",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "pipeline_status",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "pipeline_versions",
+    "domain": "pipeline",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "platform_profile",
+    "domain": "project",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "policy_delta",
+    "domain": "security",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "proactive_report",
+    "domain": "mind",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "project_context",
+    "domain": "project",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "projection_card",
+    "domain": "tools",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "prompt_bridge",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "quant",
+    "domain": "finance",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "quant_backtest",
+    "domain": "finance",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "quant_params",
+    "domain": "finance",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "quant_strategy",
+    "domain": "finance",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "record_grid",
+    "domain": "data",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "root_fix",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "scene_anchor",
+    "domain": "creation",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "sched_status",
+    "domain": "engine",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "sched_tick",
+    "domain": "engine",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "scrapling",
+    "domain": "recon",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "sec_chain",
+    "domain": "security",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "sec_defenses",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "sec_scan",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "sec_surface",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "sec_sweeper",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "selfscan",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "shared_resources",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "signature_guard",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "slim_profile",
+    "domain": "system",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "spend_guard",
+    "domain": "system",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "stigmergy",
+    "domain": "collab",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "surface_bind",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "svc_inspect",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "tactics_advise",
+    "domain": "longrun",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "task_manager",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "tentacle",
+    "domain": "tentacle",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "tentacle_bind",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "tentacle_cognition",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "tentacle_manifest",
+    "domain": "tentacle",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "tentacle_pipeline",
+    "domain": "tentacle",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "tentacle_status",
+    "domain": "tentacle",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "think_loop",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "topic_watch",
+    "domain": "recon",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "trace_store",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "train_recipe",
+    "domain": "llm",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "transfer",
+    "domain": "engine",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "transformer",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "trend_watch",
+    "domain": "recon",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "truth_scan",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "verification_watch",
+    "domain": "recon",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "vision",
+    "domain": "vision",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "wave_probe",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "wf_cache_clear",
+    "domain": "engine",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "wf_resume",
+    "domain": "engine",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "wf_run",
+    "domain": "engine",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "wf_status",
+    "domain": "engine",
+    "type": null,
+    "safe": true
+   }
+  ],
+  "写档": [
+   {
+    "kind": "actioncam",
+    "domain": "video",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "agency_tentacles",
+    "domain": "tentacle",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "agent_console",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "agent_control",
+    "domain": "system",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "agent_council",
+    "domain": "mind",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "agent_rig",
+    "domain": "system",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "asset_index",
+    "domain": "system",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "asset_vault_freeze",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "blender",
+    "domain": "creation",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "claude_code",
+    "domain": "llm",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "cli_agent_hub",
+    "domain": "integration",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "code_patch",
+    "domain": "tools",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "codebuddy",
+    "domain": "llm",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "create",
+    "domain": "creation",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "credential_steal",
+    "domain": "security",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "data_hijack",
+    "domain": "security",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "deploy_queue",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "edit_pipeline",
+    "domain": "video",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "filmkit",
+    "domain": "creation",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "genoffice",
+    "domain": "creation",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "genoffice_bridge",
+    "domain": "llm",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "git_write",
+    "domain": "tools",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "gs_h3",
+    "domain": "creation",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "look_grade",
+    "domain": "video",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "lr_submit",
+    "domain": "longrun",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "media_license",
+    "domain": "video",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "media_run",
+    "domain": "video",
+    "type": "external",
+    "safe": false
+   },
+   {
+    "kind": "mirror_release",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "multimodal_port",
+    "domain": "llm",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "n8n_wf",
+    "domain": "automation",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "pentest",
+    "domain": "security",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "pipeline_rollback",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "pipeline_submit",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "redteam_recon",
+    "domain": "security",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "remote_domain",
+    "domain": "security",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "render_evolution",
+    "domain": "creation",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "room_space",
+    "domain": "system",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "sched_define",
+    "domain": "engine",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "thebrain_bridge",
+    "domain": "integration",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "ui_render",
+    "domain": "creation",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "wf_define",
+    "domain": "engine",
+    "type": null,
+    "safe": true
+   }
+  ],
+  "外部档": [
+   {
+    "kind": "auto_publish",
+    "domain": "social",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "automation_keys",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "browser",
+    "domain": "automation",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "cli_chat",
+    "domain": "integration",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "cloud_pc",
+    "domain": "infra",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "codex_chat",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "codex_models",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "collab_gateway",
+    "domain": "collab",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "coze_mail",
+    "domain": "comms",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "feishu_embed",
+    "domain": "integration",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "freellmapi",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "h3_video_gen",
+    "domain": "video",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "key_gateway",
+    "domain": "llm",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "keylogger",
+    "domain": "security",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "llm_chat",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "llm_redteam",
+    "domain": "security",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "llm_status",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "media_publish",
+    "domain": "video",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "model_key_pool",
+    "domain": "llm",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "music_publishing",
+    "domain": "creation",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "notion_bridge",
+    "domain": "integration",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "one_key_deploy",
+    "domain": "pipeline",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "sec_llm",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "social_eng",
+    "domain": "security",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "tripo",
+    "domain": "creation",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "video_intel",
+    "domain": "recon",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "zimage_rewash",
+    "domain": "creation",
+    "type": null,
+    "safe": false
+   }
+  ],
+  "设备档": [
+   {
+    "kind": "audio_extract",
+    "domain": "video",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "audio_mix",
+    "domain": "video",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "bluetooth",
+    "domain": "device",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "desktop_commander",
+    "domain": "tentacle",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "device_takeover",
+    "domain": "security",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "hf_voice",
+    "domain": "voice",
+    "type": "external",
+    "safe": true
+   },
+   {
+    "kind": "screen_sniff",
+    "domain": "security",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "ul_tars_desktop",
+    "domain": "desktop",
+    "type": null,
+    "safe": false
+   },
+   {
+    "kind": "voice",
+    "domain": "voice",
+    "type": null,
+    "safe": true
+   },
+   {
+    "kind": "voice_orchestra",
+    "domain": "voice",
+    "type": null,
+    "safe": true
+   }
+  ]
+ },
+ "_边界": "分档是**保守**的：拿不准的一律进『写档』（宁可多要一张票，不许盲动）。"
+}

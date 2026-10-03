@@ -1,0 +1,8 @@
+{
+ "source": "video-out/motion.mp4",
+ "sheet": "out/ingest/motion_sheet.jpg",
+ "sheet_exists": true,
+ "rewatch_sheet": "",
+ "what_i_saw": "黑底 + 左上小号白字『Title』，逐格一模一样的静态字卡，全程无运动",
+ "read_by_agent": true
+}

@@ -8,3 +8,8 @@
 {"at": "2026-09-28T05:57:47", "event": "scan", "files": 924, "rules": ["CRED-001", "INJ-001", "INJ-002", "DES-001", "JDG-001"], "lines": 258808, "findings": 83, "by_severity": {"high": 65, "medium": 18, "low": 0}}
 {"at": "2026-09-28T05:57:48", "event": "scan", "files": 924, "rules": ["CRED-001", "JDG-001"], "lines": 258808, "findings": 9, "by_severity": {"high": 2, "medium": 7, "low": 0}}
 {"at": "2026-09-28T06:09:03", "event": "diff_audit", "base": "HEAD", "added_lines": 8, "hits": 0}
+{"at": "2026-10-03T14:15:24", "event": "scan", "files": 939, "rules": ["CRED-001", "INJ-001", "INJ-002", "DES-001", "JDG-001"], "lines": 262890, "findings": 85, "by_severity": {"high": 67, "medium": 18, "low": 0}}
+{"at": "2026-10-03T14:19:03", "event": "scan", "files": 939, "rules": ["CRED-001", "INJ-001", "INJ-002", "DES-001", "JDG-001"], "lines": 262894, "findings": 85, "by_severity": {"high": 67, "medium": 18, "low": 0}}
+{"at": "2026-10-03T14:35:48", "event": "scan", "files": 938, "rules": ["CRED-001", "INJ-001", "INJ-002", "DES-001", "JDG-001"], "lines": 262758, "findings": 85, "by_severity": {"high": 67, "medium": 18, "low": 0}}
+{"at": "2026-10-03T14:58:33", "event": "scan", "files": 938, "rules": ["CRED-001", "INJ-001", "INJ-002", "DES-001", "JDG-001"], "lines": 262771, "findings": 85, "by_severity": {"high": 67, "medium": 18, "low": 0}}
+{"at": "2026-10-03T15:23:40", "event": "scan", "files": 938, "rules": ["CRED-001", "INJ-001", "INJ-002", "DES-001", "JDG-001"], "lines": 262781, "findings": 85, "by_severity": {"high": 67, "medium": 18, "low": 0}}

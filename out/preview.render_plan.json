@@ -1,0 +1,19 @@
+{
+ "at": "2026-09-28T05:47:21",
+ "tooling": "本地等价（ffmpeg 滤镜图）—— 技能指定的 render_preview 工具不可达",
+ "canvas": {
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "pixel_format": "yuv420p"
+ },
+ "expected_duration": 12.0,
+ "filter_graph": "[0:v]trim=start=0.0:end=3.0,setpts=PTS-STARTPTS,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=30[v0];[1:v]trim=start=0.0:end=9.0,setpts=PTS-STARTPTS,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=30[v1];[0:a]atrim=start=0.0:end=3.0,asetpts=PTS-STARTPTS,aresample=48000,aformat=sample_rates=48000:channel_layouts=stereo[a0];anullsrc=r=48000:cl=stereo,atrim=0:9.0,asetpts=PTS-STARTPTS[a1];[v0][v1]concat=n=2:v=1:a=0[vout];[a0][a1]concat=n=2:v=0:a=1[aout]",
+ "timeline_sha8": "90946418",
+ "timeline_sha256": "909464180f07aa77d1722aa8e80c389769ff6013cbd4aaf0c510e38514e6bbbf",
+ "why": [
+  "两份源画布不同（640×360 / 1920×1080）⇒ 统一 scale+pad 到画布，先缩后垫、不裁内容",
+  "源 B 无音轨 ⇒ 音轨 = 3s 源音 + 9s 静音，拼成**连续音轨**（QC 要求音轨覆盖整片）",
+  "预览：libx264 veryfast crf20 + aac 48k + faststart（速度优先，非交付母版）"
+ ]
+}

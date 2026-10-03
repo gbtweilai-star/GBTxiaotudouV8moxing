@@ -1,9 +1,9 @@
 {
- "at": "2026-09-28T09:22:45",
+ "at": "2026-10-03T14:04:16",
  "quick": false,
- "耗时s": 81.4,
- "顶层树": 65,
- "已扫": 55,
+ "耗时s": 53.9,
+ "顶层树": 66,
+ "已扫": 56,
  "排除": 10,
  "扫的树": [
   {
@@ -78,10 +78,10 @@
   },
   {
    "tree": ".codebuddy",
-   "units": 174,
+   "units": 175,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 174,
+   "agree": 175,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -98,10 +98,10 @@
   },
   {
    "tree": ".dsh",
-   "units": 72,
+   "units": 88,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 72,
+   "agree": 88,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -227,13 +227,23 @@
    "sec_needs_human": 0
   },
   {
-   "tree": "_upstream",
-   "units": 9986,
+   "tree": ".zcode",
+   "units": 20,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 9986,
+   "agree": 20,
    "arbitrated": 0,
-   "sec_flagged": 321,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "_upstream",
+   "units": 10059,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 10059,
+   "arbitrated": 0,
+   "sec_flagged": 322,
    "sec_needs_human": 0
   },
   {
@@ -318,10 +328,10 @@
   },
   {
    "tree": "deploy",
-   "units": 162,
+   "units": 91,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 162,
+   "agree": 91,
    "arbitrated": 0,
    "sec_flagged": 3,
    "sec_needs_human": 0
@@ -348,10 +358,10 @@
   },
   {
    "tree": "gbt_allinone",
-   "units": 907,
+   "units": 909,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 907,
+   "agree": 909,
    "arbitrated": 0,
    "sec_flagged": 22,
    "sec_needs_human": 1
@@ -398,10 +408,10 @@
   },
   {
    "tree": "memory",
-   "units": 59,
+   "units": 60,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 59,
+   "agree": 60,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -478,10 +488,10 @@
   },
   {
    "tree": "render",
-   "units": 359,
+   "units": 365,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 359,
+   "agree": 365,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -518,10 +528,10 @@
   },
   {
    "tree": "tools",
-   "units": 582,
+   "units": 583,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 582,
+   "agree": 583,
    "arbitrated": 0,
    "sec_flagged": 30,
    "sec_needs_human": 0
@@ -620,7 +630,7 @@
   },
   "bindings": {
    "ok": true,
-   "units": 6491,
+   "units": 6461,
    "coverage": 1.0,
    "missing": 0
   },
@@ -687,5 +697,5 @@
  },
  "全绿": true,
  "_口径": "没被扫到的面必须显式列出并给理由；隐式跳过=盲区。文件面覆盖必须 1.0；B/C 面断连必须 0；E 面三闸必须全 True。",
- "单元总数": 16663
+ "单元总数": 16712
 }

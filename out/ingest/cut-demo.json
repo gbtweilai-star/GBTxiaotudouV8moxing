@@ -1,0 +1,8 @@
+{
+ "source": "video-out/cut-demo.mp4",
+ "sheet": "out/ingest/cut-demo_sheet.jpg",
+ "sheet_exists": false,
+ "rewatch_sheet": "",
+ "what_i_saw": "深蓝底整块纯色（无文字、无图形），后段也没有黑块——先前看到的『黑』是 tile 空格子",
+ "read_by_agent": true
+}

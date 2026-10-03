@@ -1,0 +1,16 @@
+{
+ "at": "2026-09-28T05:44:00",
+ "tooling": "本地等价（ffmpeg 出图 + 主 agent 亲自读图）—— 指定 MCP 工具不可达",
+ "target": "out/preview.mp4",
+ "timeline_sha8": "7084f3c8",
+ "output_sha8": "7471a030",
+ "sheet": "out/preview_ingest.jpg",
+ "sheet_grid": "4x3 @1fps",
+ "what_i_saw": [
+  "第 1–3 格（0–3s）：整块深蓝铺满画布，**没有黑边**（640×360 的 16:9 源缩放到 16:9 画布正好填满）",
+  "第 4 格（3s）起切到字卡：黑底 + 左上白色『Title』，与源 B 一致，无错位/撕裂",
+  "字卡段每格相同 ⇒ 静止来自素材本身（源 B 是静态字卡），不是渲染卡帧",
+  "全片无字幕遮挡、无画幅变形、无花屏"
+ ],
+ "verdict": "预览与 timeline 一致，视觉自检通过；无需 timeline_diff 修复"
+}

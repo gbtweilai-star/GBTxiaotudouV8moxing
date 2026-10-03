@@ -1,32 +1,104 @@
 {
  "ok": true,
  "op": "list",
- "at": "2026-09-28T05:09:13",
- "count": 314,
+ "at": "2026-10-03T15:25:49",
+ "count": 324,
  "rows": [
   {
-   "pid": 11736,
+   "pid": 7732,
+   "name": "python.exe",
+   "mem_mb": 143.6,
+   "cpu": 140.8,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe tools/codex-scripts/cap-probe.py --tier 只读档"
+  },
+  {
+   "pid": 10912,
    "name": "ZCode.exe",
-   "mem_mb": 504.5,
-   "cpu": 133.2,
+   "mem_mb": 1037.4,
+   "cpu": 119.8,
    "ports": [],
    "owner": "浏览器",
    "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\ZCode --standard-schemes=zcode-me"
   },
   {
-   "pid": 10852,
+   "pid": 30292,
    "name": "python.exe",
-   "mem_mb": 179.4,
-   "cpu": 85.3,
+   "mem_mb": 4.8,
+   "cpu": 95.4,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe tools/codex-scripts/five-dim.py cap cross_scan --full"
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe"
+  },
+  {
+   "pid": 22908,
+   "name": "ChatGPT.exe",
+   "mem_mb": 276.1,
+   "cpu": 50.4,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.924.2738.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe --type=renderer --standard-schemes=app,codex-sandbox --serv"
+  },
+  {
+   "pid": 14988,
+   "name": "chrome.exe",
+   "mem_mb": 36.6,
+   "cpu": 41.1,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=gpu-process --gpu-recent-crash-count=0 --no-pre-read-main-dll --gpu-preferences=WAAAAAAAA"
+  },
+  {
+   "pid": 30296,
+   "name": "dwm.exe",
+   "mem_mb": 36.6,
+   "cpu": 36.8,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 10596,
+   "name": "ZCode.exe",
+   "mem_mb": 50.6,
+   "cpu": 24.4,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=gpu-process --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\ZCode --gpu-preferences=SAAAAA"
+  },
+  {
+   "pid": 9012,
+   "name": "WeChatAppEx.exe",
+   "mem_mb": 23.5,
+   "cpu": 20.1,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --type=renderer --client_version=1661"
+  },
+  {
+   "pid": 5152,
+   "name": "MsMpEng.exe",
+   "mem_mb": 107.4,
+   "cpu": 14.3,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
+  },
+  {
+   "pid": 28456,
+   "name": "chrome.exe",
+   "mem_mb": 78.1,
+   "cpu": 13.6,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
   },
   {
    "pid": 4,
    "name": "System",
-   "mem_mb": 0.0,
-   "cpu": 9.5,
+   "mem_mb": 0.1,
+   "cpu": 13.1,
    "ports": [
     139,
     445
@@ -35,210 +107,130 @@
    "cmd": ""
   },
   {
-   "pid": 27748,
-   "name": "ZCode.exe",
-   "mem_mb": 361.1,
-   "cpu": 8.6,
-   "ports": [],
-   "owner": "浏览器",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\resources\\glm\\zcode.cjs app-server --stdio --surface"
-  },
-  {
-   "pid": 5788,
-   "name": "ZCode.exe",
-   "mem_mb": 126.2,
-   "cpu": 6.2,
-   "ports": [],
-   "owner": "浏览器",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=gpu-process --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\ZCode --gpu-preferences=SAAAAA"
-  },
-  {
-   "pid": 1912,
-   "name": "dwm.exe",
-   "mem_mb": 40.0,
-   "cpu": 5.3,
+   "pid": 17268,
+   "name": "codex.exe",
+   "mem_mb": 25.0,
+   "cpu": 11.0,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
-   "cmd": ""
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\OpenAI\\Codex\\bin\\faa963e871dd422c\\codex.exe -c features.code_mode_host=true app-server --analytics-default-enabled -c plu"
   },
   {
-   "pid": 4648,
+   "pid": 28340,
+   "name": "WeChatAppEx.exe",
+   "mem_mb": 12.9,
+   "cpu": 8.3,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --type=gpu-process --client_version=1"
+  },
+  {
+   "pid": 6804,
+   "name": "ChatGPT.exe",
+   "mem_mb": 125.2,
+   "cpu": 7.1,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.924.2738.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe"
+  },
+  {
+   "pid": 9540,
    "name": "explorer.exe",
-   "mem_mb": 139.0,
-   "cpu": 2.6,
+   "mem_mb": 98.4,
+   "cpu": 4.5,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
    "cmd": "C:\\WINDOWS\\Explorer.EXE"
   },
   {
-   "pid": 9196,
-   "name": "Telegram.exe",
-   "mem_mb": 78.6,
-   "cpu": 2.4,
+   "pid": 13148,
+   "name": "Lark.exe",
+   "mem_mb": 26.3,
+   "cpu": 2.9,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Telegram Desktop\\Telegram.exe"
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Lark\\app\\Lark.exe --start_time=1790990828753"
   },
   {
-   "pid": 2332,
-   "name": "WorkBuddyAI.exe",
-   "mem_mb": 48.4,
-   "cpu": 1.3,
-   "ports": [
-    18488
-   ],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe"
-  },
-  {
-   "pid": 4196,
-   "name": "svchost.exe",
-   "mem_mb": 6.9,
-   "cpu": 1.3,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": ""
-  },
-  {
-   "pid": 4180,
-   "name": "atieclxx.exe",
-   "mem_mb": 3.8,
-   "cpu": 1.3,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": ""
-  },
-  {
-   "pid": 14328,
-   "name": "WeChatAppEx.exe",
-   "mem_mb": 13.5,
-   "cpu": 1.2,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --log-level=2 --helper-handle-value=2"
-  },
-  {
-   "pid": 18952,
+   "pid": 21328,
    "name": "ZCode.exe",
-   "mem_mb": 118.7,
-   "cpu": 1.1,
+   "mem_mb": 97.3,
+   "cpu": 2.3,
    "ports": [],
    "owner": "浏览器",
    "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe"
   },
   {
-   "pid": 20292,
+   "pid": 28384,
    "name": "LobeHub.exe",
-   "mem_mb": 112.1,
-   "cpu": 1.1,
+   "mem_mb": 365.2,
+   "cpu": 1.5,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
    "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\LobeHub\\LobeHub.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\LobeHub --standard-schemes=ap"
   },
   {
-   "pid": 24256,
-   "name": "ZCode.exe",
-   "mem_mb": 49.7,
-   "cpu": 1.1,
-   "ports": [],
-   "owner": "浏览器",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=utility --utility-sub-type=node.mojom.NodeService --lang=zh-CN --service-sandbox-type=non"
-  },
-  {
-   "pid": 25944,
-   "name": "codex.exe",
-   "mem_mb": 11.4,
-   "cpu": 1.1,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\OpenAI\\Codex\\bin\\codex.exe app-server"
-  },
-  {
-   "pid": 23004,
-   "name": "WorkBuddyAI.exe",
-   "mem_mb": 896.6,
-   "cpu": 0.0,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\.workbuddy-ai\\app --standard-schemes="
-  },
-  {
-   "pid": 5124,
-   "name": "MsMpEng.exe",
-   "mem_mb": 128.2,
-   "cpu": 0.0,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": ""
-  },
-  {
-   "pid": 25164,
+   "pid": 11136,
    "name": "chrome.exe",
-   "mem_mb": 124.0,
-   "cpu": 0.0,
+   "mem_mb": 86.8,
+   "cpu": 1.5,
    "ports": [],
    "owner": "浏览器",
-   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --no-startup-window /prefetch:5 --flag-switches-begin --flag-switches-end"
   },
   {
-   "pid": 13528,
-   "name": "chrome.exe",
-   "mem_mb": 121.1,
-   "cpu": 0.0,
+   "pid": 1884,
+   "name": "ChatGPT.exe",
+   "mem_mb": 20.6,
+   "cpu": 1.5,
    "ports": [],
-   "owner": "浏览器",
-   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
-  },
-  {
-   "pid": 20892,
-   "name": "WorkBuddyAI.exe",
-   "mem_mb": 69.9,
-   "cpu": 0.0,
-   "ports": [
-    57380,
-    57381,
-    57382
-   ],
    "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\WorkBuddyAI.exe C:\\Users\\ADMIN\\AppData\\Local\\Programs\\WorkBuddyAI\\resources\\app.asar\\main\\daemon-app"
+   "cmd": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.924.2738.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe --type=gpu-process --gpu-recent-crash-count=0 --no-pre-read"
   },
   {
-   "pid": 17628,
+   "pid": 1604,
    "name": "svchost.exe",
-   "mem_mb": 67.1,
-   "cpu": 0.0,
+   "mem_mb": 23.2,
+   "cpu": 0.8,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
    "cmd": ""
   },
   {
-   "pid": 11368,
-   "name": "chrome.exe",
-   "mem_mb": 56.4,
-   "cpu": 0.0,
-   "ports": [
-    9222
-   ],
-   "owner": "浏览器",
-   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --remote-debugging-port=9222 --remote-allow-origins=* --user-data-dir=C:\\Users\\ADMIN\\Desktop\\GBT"
+   "pid": 20452,
+   "name": "LobeHub.exe",
+   "mem_mb": 8.8,
+   "cpu": 0.8,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\LobeHub\\LobeHub.exe --type=gpu-process --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\LobeHub --gpu-preferences="
   },
   {
-   "pid": 6656,
-   "name": "chrome.exe",
-   "mem_mb": 55.4,
-   "cpu": 0.0,
+   "pid": 4980,
+   "name": "svchost.exe",
+   "mem_mb": 19.6,
+   "cpu": 0.7,
    "ports": [],
-   "owner": "浏览器",
-   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+   "owner": "未知（不在我们的标记里）",
+   "cmd": ""
   },
   {
-   "pid": 13836,
-   "name": "chrome.exe",
-   "mem_mb": 54.5,
-   "cpu": 0.0,
+   "pid": 17100,
+   "name": "ZCode.exe",
+   "mem_mb": 18.1,
+   "cpu": 0.7,
    "ports": [],
    "owner": "浏览器",
-   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=utility --utility-sub-type=network.mojom.NetworkService --lang=zh-CN --service-sandbox-ty"
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\resources\\glm\\zcode.cjs app-server --stdio --surface"
+  },
+  {
+   "pid": 16496,
+   "name": "SDXHelper.exe",
+   "mem_mb": 4.0,
+   "cpu": 0.7,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Program Files\\Microsoft Office\\Root\\Office16\\SDXHelper.exe -Embedding"
   }
  ],
  "_口径": {

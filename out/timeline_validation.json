@@ -1,0 +1,21 @@
+{
+ "ok": true,
+ "at": "2026-09-28T05:47:15",
+ "checks": 9,
+ "problems": [],
+ "timeline_sha8": "a5ca8756",
+ "status": "pass",
+ "timeline_sha256": "909464180f07aa77d1722aa8e80c389769ff6013cbd4aaf0c510e38514e6bbbf",
+ "project_contract": {
+  "ok": true,
+  "checks": {
+   "project": true,
+   "assets": 2,
+   "sequence_or_canvas": true,
+   "tracks": 2,
+   "video_or_main_track": true
+  },
+  "why": "项目式 timeline：project + assets[] + sequence/output_canvas + tracks[] + 至少一条 video/main 轨"
+ },
+ "tooling": "本地等价（确定性校验）—— 技能指定的 validate_timeline 工具不可达"
+}

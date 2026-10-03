@@ -1,9 +1,9 @@
 {
- "at": "2026-09-28T06:03:23",
- "count": 209,
+ "at": "2026-10-03T15:25:24",
+ "count": 215,
  "by_permission": {
-  "open": 145,
-  "owner": 64
+  "open": 149,
+  "owner": 66
  },
  "duplicate_tags": {},
  "tags": {
@@ -1133,6 +1133,48 @@
    "permission": "open",
    "scopes": [],
    "why": "policy 无作用域 + 图鉴 safe 且无需确认"
+  },
+  "console_hub": {
+   "tag": "GBT-SYSTEM-CONSOLE-HUB",
+   "domain": "system",
+   "permission": "open",
+   "scopes": [],
+   "why": "policy 无作用域 + 图鉴 safe 且无需确认"
+  },
+  "console_pages": {
+   "tag": "GBT-CREATION-CONSOLE-PAGES",
+   "domain": "creation",
+   "permission": "open",
+   "scopes": [],
+   "why": "policy 无作用域 + 图鉴 safe 且无需确认"
+  },
+  "freebuff_term": {
+   "tag": "GBT-TOOLS-FREEBUFF-TERM",
+   "domain": "tools",
+   "permission": "open",
+   "scopes": [],
+   "why": "policy 无作用域 + 图鉴 safe 且无需确认"
+  },
+  "hf_voice": {
+   "tag": "GBT-VOICE-HF-VOICE",
+   "domain": "voice",
+   "permission": "open",
+   "scopes": [],
+   "why": "policy 无作用域 + 图鉴 safe 且无需确认"
+  },
+  "room_space": {
+   "tag": "GBT-SYSTEM-ROOM-SPACE",
+   "domain": "system",
+   "permission": "owner",
+   "scopes": [],
+   "why": "图鉴标了 safe=false"
+  },
+  "collab_gateway": {
+   "tag": "GBT-COLLAB-COLLAB-GATEWAY",
+   "domain": "collab",
+   "permission": "owner",
+   "scopes": [],
+   "why": "图鉴标了 safe=false"
   },
   "lobehub": {
    "tag": "GBT-CREATION-LOBEHUB",

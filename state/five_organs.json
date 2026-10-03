@@ -1,0 +1,97 @@
+{
+ "_身份定义": "GBT小土豆V8 **不拥有任何技能与工作流**。我们拥有：万能操控的触手 + 原生脑/眼/耳/嘴/手。外部 AI 拥有什么，我们**操控**它们达到同样效果甚至超越。一切外部能力经**吞天→蒸馏**提炼出契合自己的原生能力——**永不冒充五官**。",
+ "_核心": "以自身为核心点设计打通；触手为操控层；五官为官能层。",
+ "made_at": "2026-10-02T06:29:07",
+ "organs": {
+  "脑": {
+   "caps": {
+    "gods_eye": true,
+    "brain_unify": true,
+    "brain_route": true,
+    "truth_scan": true,
+    "llm_chat": true
+   },
+   "cloud": "gbt-potato-v8（Worker gbt-potato-cloud-10 · live 17/17）",
+   "读数": "truth_scan probe · 判决 clean · 26 REAL / 0 FAKE"
+  },
+  "眼": {
+   "caps": {
+    "llm_redteam": true,
+    "coverage_auditor": true
+   },
+   "device": "tentacle see（DXGI 真帧 · eye 窗）",
+   "读数": "帧追踪 0 · .gitignore 锁在"
+  },
+  "耳": {
+   "caps": {
+    "voice": true
+   },
+   "device": "intercom watch（采集+离线识别 · 走唯一门）",
+   "读数": "三腿绿（听/识别/说）· 差一个可用麦克风"
+  },
+  "嘴": {
+   "caps": {
+    "voice": true
+   },
+   "device": "voice tts（win-sapi · Huihui 女声；台湾腔 zh-TW 待装）",
+   "读数": "真出声 ×2（auth_consumed 落审计）"
+  },
+  "手": {
+   "caps": {
+    "tentacle": true,
+    "desktop_commander": true,
+    "file_hygiene": true
+   },
+   "device": "桌面触手（输入/鼠标/键盘/窗口）+ 文件触手",
+   "读数": "票在窗口内即真跑（pipeline 真发布=published）",
+   "注": "desktop_control/file_operation 是**作用域名与模块名**，不是能力位名 —— 手的真身是这三个位（首跑核验纠出，正是名册预检的用途）"
+  }
+ },
+ "control_layer": {
+  "万能触手": {
+   "双向绑定账": 6540,
+   "漏绑真缺口": 0,
+   "页面": 26,
+   "页面 dead": 0,
+   "分档": {
+    "只读档": 161,
+    "写档": 41,
+    "外部档": 27,
+    "设备档": 10
+   }
+  }
+ },
+ "吞天管线（常设）": {
+  "顺序": [
+   "devour_scan（发现外部能力）",
+   "devour_reflect（评估契合度）",
+   "蒸馏（六腿：登记/分派/图鉴/触手/绑定/记忆）",
+   "双向绑定每页",
+   "回路/推进机收口"
+  ],
+  "样本": "llm_redteam（安全精英课程 → 蒸馏 → 239 位 · 六腿齐 · 现役）",
+  "判据": "蒸馏位的探针名必须在册（名册预检）；**永不冒充五官**——只挂触手层"
+ },
+ "在册核验": {
+  "脑": {
+   "缺": [],
+   "结论": "全在册 ✓"
+  },
+  "眼": {
+   "缺": [],
+   "结论": "全在册 ✓"
+  },
+  "耳": {
+   "缺": [],
+   "结论": "全在册 ✓"
+  },
+  "嘴": {
+   "缺": [],
+   "结论": "全在册 ✓"
+  },
+  "手": {
+   "缺": [],
+   "结论": "全 ✓"
+  }
+ }
+}

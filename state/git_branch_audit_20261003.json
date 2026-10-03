@@ -1,0 +1,120 @@
+{
+ "日期": "2026-10-03",
+ "说明": "分支整理台账：删除远端 9 条 copilot/* 会话残渣 + clean-block（内容已并入 main）。任何一条都可凭 sha 用 git branch <名> <sha> 或 git update-ref 救回；4 条未并入的空壳另存了隐藏归档 refs/archive/2026-10-03/*。",
+ "分支": [
+  {
+   "ref": "refs/heads/backup/20261001",
+   "sha": "cea4f6601e8b48f2716b2451fb4eb85d36fc2c82",
+   "date": "2026-10-03",
+   "subject": "chore: checkpoint before switching to main"
+  },
+  {
+   "ref": "refs/remotes/origin/flyio-new-files",
+   "sha": "07c877895c9ab56df27c6e607a45850901ebd8a3",
+   "date": "2026-10-02",
+   "subject": "New files from Fly.io Launch"
+  },
+  {
+   "ref": "refs/remotes/origin/backup/20261001",
+   "sha": "30f0b9f616fe57e4cb1912fade4150f3151c7d7a",
+   "date": "2026-10-02",
+   "subject": "备份快照 2026-10-01：GBT小土豆V8 全量（能力位239 · 13扇窗APP · 云脑云图 · 探针clean · 五官登记册 · 大件已排除）"
+  },
+  {
+   "ref": "refs/heads/main",
+   "sha": "965e273c6469f95e80bb2c0826e3e225cffe5baf",
+   "date": "2026-09-28",
+   "subject": "freebuff 集成进对话面板（隔离 HOME）+ F3 fail-closed + F12 补齐房间/协作接线"
+  },
+  {
+   "ref": "refs/heads/workbuddy/main-a72941c9",
+   "sha": "965e273c6469f95e80bb2c0826e3e225cffe5baf",
+   "date": "2026-09-28",
+   "subject": "freebuff 集成进对话面板（隔离 HOME）+ F3 fail-closed + F12 补齐房间/协作接线"
+  },
+  {
+   "ref": "refs/heads/workbuddy/main-e6215bfd",
+   "sha": "b9dfab202b511e67df3ab0563c0808fb3f5a4462",
+   "date": "2026-09-27",
+   "subject": "LobeHub 探面留痕（清单 + 台账 + 绑定水位）"
+  },
+  {
+   "ref": "refs/remotes/origin/HEAD",
+   "sha": "3523a98da389103ac77f6437841e84fbd6388da6",
+   "date": "2026-09-25",
+   "subject": "语音闭环第二腿：只差 filesystem_write 授权 + 又实测一例报成功但没做事"
+  },
+  {
+   "ref": "refs/remotes/origin/main",
+   "sha": "3523a98da389103ac77f6437841e84fbd6388da6",
+   "date": "2026-09-25",
+   "subject": "语音闭环第二腿：只差 filesystem_write 授权 + 又实测一例报成功但没做事"
+  },
+  {
+   "ref": "refs/remotes/origin/clean-block",
+   "sha": "2170565b405562779c19e7b62d337cc75daee5fe",
+   "date": "2026-09-22",
+   "subject": "按 OUTPUT_RULES.md L115/L334 强制纳入 42 个历史快照（archive/ V1→V21，历史版本可回退）"
+  },
+  {
+   "ref": "refs/remotes/origin/prod-hardening-no-cap-changes",
+   "sha": "f40e03add293e52cb66151b681d1a94efbdd7246",
+   "date": "2026-09-13",
+   "subject": "docs: 新增完整框架能力介绍（纯 AI 框架 + 全 AI 能力权威索引）"
+  },
+  {
+   "ref": "refs/remotes/origin/copilot/remove-wallet-module-references",
+   "sha": "29dd710bda590f35a7304504a44b8fefbceb6c83",
+   "date": "2026-09-12",
+   "subject": "Initial plan"
+  },
+  {
+   "ref": "refs/remotes/origin/copilot/production-strengthening",
+   "sha": "0fed60de3ca61de4121410f04ac0f5c6cf30804e",
+   "date": "2026-09-12",
+   "subject": "Initial plan"
+  },
+  {
+   "ref": "refs/remotes/origin/copilot/harden-ai-framework",
+   "sha": "79f5c3c615058a0856216265e412dcb44e3b5583",
+   "date": "2026-09-12",
+   "subject": "Initial plan"
+  },
+  {
+   "ref": "refs/remotes/origin/copilot/check-bluetooth-connection-issue",
+   "sha": "faaf893d330a75c9fd746d37b7c72c82fa2e3073",
+   "date": "2026-09-13",
+   "subject": "审计归档：技术审计方案 + 原生能力审计 + 生产审计指引四件套"
+  },
+  {
+   "ref": "refs/remotes/origin/copilot/generate-source-code-skeleton",
+   "sha": "61ac48f8b4b260a6c73355329736884dbd54dbb8",
+   "date": "2026-09-12",
+   "subject": "Initial plan"
+  },
+  {
+   "ref": "refs/remotes/origin/copilot/audit-project",
+   "sha": "b9572d26e5f1433b02cfb659f359b3f55f80f815",
+   "date": "2026-09-13",
+   "subject": "GBT小土豆V8 全量源码入库：框架 + 桌面数字人 v5（Mao 形象 + 全息对话客户端 + 行为引擎 + 工具/语音/好感度）"
+  },
+  {
+   "ref": "refs/remotes/origin/copilot/gbt-v8-production-audit",
+   "sha": "b9572d26e5f1433b02cfb659f359b3f55f80f815",
+   "date": "2026-09-13",
+   "subject": "GBT小土豆V8 全量源码入库：框架 + 桌面数字人 v5（Mao 形象 + 全息对话客户端 + 行为引擎 + 工具/语音/好感度）"
+  },
+  {
+   "ref": "refs/remotes/origin/copilot/research-deep-scan-architecture",
+   "sha": "b9572d26e5f1433b02cfb659f359b3f55f80f815",
+   "date": "2026-09-13",
+   "subject": "GBT小土豆V8 全量源码入库：框架 + 桌面数字人 v5（Mao 形象 + 全息对话客户端 + 行为引擎 + 工具/语音/好感度）"
+  },
+  {
+   "ref": "refs/remotes/origin/copilot/review-session-history",
+   "sha": "b9572d26e5f1433b02cfb659f359b3f55f80f815",
+   "date": "2026-09-13",
+   "subject": "GBT小土豆V8 全量源码入库：框架 + 桌面数字人 v5（Mao 形象 + 全息对话客户端 + 行为引擎 + 工具/语音/好感度）"
+  }
+ ]
+}

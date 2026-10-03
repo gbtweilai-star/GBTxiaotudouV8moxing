@@ -1,0 +1,16 @@
+{
+ "at": "2026-09-28T05:47:24",
+ "tooling": "本地等价（ffmpeg 渲染）—— 技能指定的 render_preview 工具不可达",
+ "timeline_sha8": "90946418",
+ "output": "out/preview.mp4",
+ "output_sha8": "7471a030",
+ "timeline_sha256": "909464180f07aa77d1722aa8e80c389769ff6013cbd4aaf0c510e38514e6bbbf",
+ "output_sha256": "7471a030a8c35151e269f9a52a93ea6d9013ccbb87102d2cf6cb5e9604c0648f",
+ "bound_to_current_timeline": true,
+ "duration_s": 12.0,
+ "expected_duration_s": 12.0,
+ "resolution": "1920x1080",
+ "fps": "30/1",
+ "has_audio": true,
+ "bytes": 92986
+}

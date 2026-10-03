@@ -1,0 +1,7 @@
+{
+ "at": "2026-09-28T05:47:15",
+ "provider": "unavailable",
+ "segments": [],
+ "reason": "云端 ASR 不可用（video-edit MCP 工具集不可达，本机也没有可用的转写后端）⇒ 按技能条款转入『无转录流程』并在此记明；不伪造转录内容。",
+ "evidence": "cut-demo 的声轨过零率 0.031、RMS -21.4dB ⇒ 是低频单音不是语音；motion 无音轨。两份素材本来就无语音可转。"
+}
