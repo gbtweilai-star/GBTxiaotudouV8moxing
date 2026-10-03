@@ -1,7 +1,7 @@
 {
  "ok": true,
  "op": "daily",
- "at": "2026-10-03T16:17:59",
+ "at": "2026-10-03T19:08:42",
  "探针汇报": {
   "available": true,
   "deliverables": [
@@ -38,11 +38,7 @@
     "src": "automation_keys.status"
    },
    {
-    "item": "顾问位不可用：['claude', 'codebuddy']",
-    "src": "gods_eye.advisors"
-   },
-   {
-    "item": "永久记忆没铺满：触手库 243/245（缺 2）",
+    "item": "永久记忆没铺满：触手库 243/246（缺 3）",
     "src": "obsidian_vault.status"
    },
    {
@@ -54,8 +50,8 @@
     "src": "state/排查台账.json"
    },
    {
-    "item": "最短板[永久记忆] 触手库 243/245（有触手没有独立库）",
-    "src": "state/obsidian_vaults.json"
+    "item": "最短板[能力位] 1 个能力位没进图鉴：['omni_web']",
+    "src": "state/skill_atlas.json"
    }
   ],
   "卡点": [
@@ -63,13 +59,18 @@
     "item": "主人未许可的 owner 类能力位 66 个（要用时按名单批）",
     "src": "cap_tags.audit",
     "how": "python -m gbt_allinone.tools.cap_tags permit --tag <TAG> --ttl 600"
+   },
+   {
+    "item": "顾问（claude）**要授权才能问**：['process_execute', 'external_llm'] 现在 0 张 ⇒ 意见取不到",
+    "src": "auth_gate.status（只读）",
+    "how": "python -m gbt_allinone auth grant --scope process_execute --ttl 600"
    }
   ]
  },
  "计数": {
   "缺点": 1,
-  "短板": 7,
-  "卡点": 1,
+  "短板": 6,
+  "卡点": 2,
   "探针可用": true
  },
  "_口径": "每一条都带 `src`（哪个读数文件/哪个能力位）—— **不许编**；探针汇报读的是探针工作区的真文件",
@@ -88,8 +89,8 @@
    ],
    "capability": "claude_code",
    "must_install": "npm i -g @anthropic-ai/claude-code",
-   "available": false,
-   "evidence": "npm i -g @anthropic-ai/claude-code"
+   "available": true,
+   "evidence": "C:\\Users\\ADMIN\\AppData\\Roaming\\npm\\claude.CMD"
   },
   "codebuddy": {
    "role": "杂事（服从安排 · 随时候命）",
@@ -112,8 +113,8 @@
     "tools/",
     "state/"
    ],
-   "available": false,
-   "evidence": "{'ok': True, 'op': 'status', 'kind': 'codebuddy', 'dimension': 'llm', 'label': 'CodeBuddy CLI', 'found': [], 'available'"
+   "available": true,
+   "evidence": "C:\\Users\\ADMIN\\AppData\\Local\\codebuddy\\bin\\codebuddy.EXE"
   }
  },
  "分工": {

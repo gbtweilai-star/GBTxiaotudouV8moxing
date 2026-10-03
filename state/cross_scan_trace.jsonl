@@ -2079,3 +2079,115 @@
 {"at": "2026-10-03T15:57:05", "source_kind": "cross_scan", "event": "scan", "target": "caps", "units": 215, "coverage": 1.0, "missing": 0, "mode": "scan"}
 {"at": "2026-10-03T15:57:08", "source_kind": "cross_scan", "event": "scan", "target": "bindings", "units": 6467, "coverage": 1.0, "missing": 0, "mode": "scan"}
 {"at": "2026-10-03T15:57:08", "source_kind": "cross_scan", "event": "scan", "target": "registry", "units": 1, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:03", "source_kind": "cross_scan", "event": "scan", "target": "tree:.agents", "units": 519, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:04", "source_kind": "cross_scan", "event": "security_pass", "units": 519, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:04", "source_kind": "cross_scan", "event": "scan", "target": "tree:.aider-desk", "units": 174, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:04", "source_kind": "cross_scan", "event": "security_pass", "units": 174, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:04", "source_kind": "cross_scan", "event": "scan", "target": "tree:.augment", "units": 174, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:04", "source_kind": "cross_scan", "event": "security_pass", "units": 174, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:04", "source_kind": "cross_scan", "event": "scan", "target": "tree:.autoclaw", "units": 0, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:04", "source_kind": "cross_scan", "event": "scan", "target": "tree:.autohand", "units": 174, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:04", "source_kind": "cross_scan", "event": "security_pass", "units": 174, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:04", "source_kind": "cross_scan", "event": "scan", "target": "tree:.claude", "units": 516, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:05", "source_kind": "cross_scan", "event": "security_pass", "units": 516, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:05", "source_kind": "cross_scan", "event": "scan", "target": "tree:.cluster", "units": 145, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:05", "source_kind": "cross_scan", "event": "security_pass", "units": 145, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:05", "source_kind": "cross_scan", "event": "scan", "target": "tree:.codebuddy", "units": 175, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:05", "source_kind": "cross_scan", "event": "security_pass", "units": 175, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:05", "source_kind": "cross_scan", "event": "scan", "target": "tree:.digihuman", "units": 3, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:05", "source_kind": "cross_scan", "event": "security_pass", "units": 3, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.dsh", "units": 88, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 88, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.etiology", "units": 1, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 1, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.freebuff", "units": 1, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 1, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.gbt", "units": 0, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.openclaw", "units": 3, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 3, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.openclaw-attachments", "units": 8, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 8, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.opencode", "units": 1, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 1, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.tripo", "units": 1, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 1, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.v2c", "units": 1, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 1, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.video", "units": 1, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 1, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.video_agent", "units": 2, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 2, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.windsurf", "units": 71, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 71, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.wrangler", "units": 10, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 10, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "scan", "target": "tree:.zcode", "units": 20, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:06", "source_kind": "cross_scan", "event": "security_pass", "units": 20, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:13", "source_kind": "cross_scan", "event": "scan", "target": "tree:_gbt_webcap", "units": 6350, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:19", "source_kind": "cross_scan", "event": "security_pass", "units": 6350, "flagged": 2, "needs_human": 2}
+{"at": "2026-10-03T19:07:27", "source_kind": "cross_scan", "event": "scan", "target": "tree:_upstream", "units": 10059, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "security_pass", "units": 10059, "flagged": 322, "needs_human": 0}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "scan", "target": "tree:agent-gvmz-gbtv8", "units": 32, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "security_pass", "units": 32, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "scan", "target": "tree:assets", "units": 25, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "security_pass", "units": 25, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "scan", "target": "tree:auth-service", "units": 12, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "security_pass", "units": 12, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "scan", "target": "tree:brain", "units": 2, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "security_pass", "units": 2, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "scan", "target": "tree:caps", "units": 3, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "security_pass", "units": 3, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "scan", "target": "tree:config", "units": 0, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "scan", "target": "tree:data", "units": 174, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "security_pass", "units": 174, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "scan", "target": "tree:delivery", "units": 90, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "security_pass", "units": 90, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "scan", "target": "tree:deploy", "units": 91, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "security_pass", "units": 91, "flagged": 3, "needs_human": 0}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "scan", "target": "tree:design-assets-index", "units": 3, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "security_pass", "units": 3, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "scan", "target": "tree:docs", "units": 29, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:07:56", "source_kind": "cross_scan", "event": "security_pass", "units": 29, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:08", "source_kind": "cross_scan", "event": "scan", "target": "tree:gbt_allinone", "units": 915, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:10", "source_kind": "cross_scan", "event": "security_pass", "units": 915, "flagged": 22, "needs_human": 1}
+{"at": "2026-10-03T19:08:10", "source_kind": "cross_scan", "event": "scan", "target": "tree:generated-images", "units": 2, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:10", "source_kind": "cross_scan", "event": "security_pass", "units": 2, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:12", "source_kind": "cross_scan", "event": "scan", "target": "tree:holo_pet", "units": 89, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:13", "source_kind": "cross_scan", "event": "security_pass", "units": 89, "flagged": 1, "needs_human": 0}
+{"at": "2026-10-03T19:08:14", "source_kind": "cross_scan", "event": "scan", "target": "tree:holo_pet_w3", "units": 252, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:14", "source_kind": "cross_scan", "event": "security_pass", "units": 252, "flagged": 3, "needs_human": 0}
+{"at": "2026-10-03T19:08:14", "source_kind": "cross_scan", "event": "scan", "target": "tree:infinite-canvas-output", "units": 2, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:14", "source_kind": "cross_scan", "event": "security_pass", "units": 2, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:14", "source_kind": "cross_scan", "event": "scan", "target": "tree:memory", "units": 60, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:14", "source_kind": "cross_scan", "event": "security_pass", "units": 60, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:14", "source_kind": "cross_scan", "event": "scan", "target": "tree:out", "units": 117, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:14", "source_kind": "cross_scan", "event": "security_pass", "units": 117, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:14", "source_kind": "cross_scan", "event": "scan", "target": "tree:output", "units": 135, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:16", "source_kind": "cross_scan", "event": "security_pass", "units": 135, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:16", "source_kind": "cross_scan", "event": "scan", "target": "tree:outputs", "units": 25, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:16", "source_kind": "cross_scan", "event": "security_pass", "units": 25, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:16", "source_kind": "cross_scan", "event": "scan", "target": "tree:plugins", "units": 42, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:16", "source_kind": "cross_scan", "event": "security_pass", "units": 42, "flagged": 1, "needs_human": 0}
+{"at": "2026-10-03T19:08:16", "source_kind": "cross_scan", "event": "scan", "target": "tree:potato_pet", "units": 93, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:17", "source_kind": "cross_scan", "event": "security_pass", "units": 93, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:17", "source_kind": "cross_scan", "event": "scan", "target": "tree:prisma", "units": 1, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:17", "source_kind": "cross_scan", "event": "security_pass", "units": 1, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:17", "source_kind": "cross_scan", "event": "scan", "target": "tree:projects", "units": 415, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:17", "source_kind": "cross_scan", "event": "security_pass", "units": 415, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:17", "source_kind": "cross_scan", "event": "scan", "target": "tree:render", "units": 365, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:17", "source_kind": "cross_scan", "event": "security_pass", "units": 365, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:18", "source_kind": "cross_scan", "event": "scan", "target": "tree:skills", "units": 364, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:18", "source_kind": "cross_scan", "event": "security_pass", "units": 364, "flagged": 1, "needs_human": 0}
+{"at": "2026-10-03T19:08:18", "source_kind": "cross_scan", "event": "scan", "target": "tree:state", "units": 0, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:18", "source_kind": "cross_scan", "event": "scan", "target": "tree:store", "units": 0, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:19", "source_kind": "cross_scan", "event": "scan", "target": "tree:tools", "units": 499, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:21", "source_kind": "cross_scan", "event": "security_pass", "units": 499, "flagged": 30, "needs_human": 0}
+{"at": "2026-10-03T19:08:21", "source_kind": "cross_scan", "event": "scan", "target": "tree:vaults", "units": 729, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:21", "source_kind": "cross_scan", "event": "security_pass", "units": 729, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:21", "source_kind": "cross_scan", "event": "scan", "target": "tree:vercel-brand-protected", "units": 7, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:21", "source_kind": "cross_scan", "event": "security_pass", "units": 7, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:21", "source_kind": "cross_scan", "event": "scan", "target": "tree:video-out", "units": 2, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:21", "source_kind": "cross_scan", "event": "security_pass", "units": 2, "flagged": 0, "needs_human": 0}
+{"at": "2026-10-03T19:08:24", "source_kind": "cross_scan", "event": "scan", "target": "caps", "units": 216, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:25", "source_kind": "cross_scan", "event": "scan", "target": "bindings", "units": 6471, "coverage": 1.0, "missing": 0, "mode": "scan"}
+{"at": "2026-10-03T19:08:25", "source_kind": "cross_scan", "event": "scan", "target": "registry", "units": 1, "coverage": 1.0, "missing": 0, "mode": "scan"}

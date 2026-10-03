@@ -976,7 +976,9 @@ BENIGN_CAPS = {
         "domain": 'tools',
         "desc": ('freebuff 终端集成（主人令 2026-09-28「把 freebuff 这个终端集成进我们的对话面板，'
                  '编程就走这个」）：**正常 HOME 下 EPERM 起不来**（只认 $HOME/.config/manicode），'
-                 '隔离 HOME（%LOCALAPPDATA%\gbt-freebuff\home）下装成并验活（0.1.2）。'
+                 # ⚠️ 反斜杠必须写 `\\`：单个 `\g` 是**无效转义** —— 现在只是 SyntaxWarning，
+                 #    将来的 Python 会直接报错（这条修过两次：仓回滚后它会再出现）。
+                 '隔离 HOME（%LOCALAPPDATA%\\gbt-freebuff\\home）下装成并验活（0.1.2）。'
                  '`status` 真身/版本/登录态 · `flags` 现跑 --help（**钉住"TUI-only、无一次性 prompt"**）· '
                  '`launch` 用隔离 HOME 起真终端（过 process_execute 门）· `login_hint` 给主人登录命令。'
                  'op=status/flags/launch/login_hint/verify/where'),
