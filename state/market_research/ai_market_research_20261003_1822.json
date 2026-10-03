@@ -1,0 +1,94 @@
+{
+  "generated_at": "2026-10-03T18:22:56.167252",
+  "source": "OpenRouter API",
+  "total_models": 466,
+  "executive_summary": {
+    "market_size": "466 models from 65+ providers",
+    "pricing_range": "$0 (free) to $150/1M tokens (input)",
+    "key_trend": "Price war: DeepSeek drives costs down 99%+ vs legacy",
+    "free_models": 22,
+    "premium_models": 20
+  },
+  "flagship_comparison": {
+    "openai_gpt4o": {
+      "input": 2.5,
+      "output": 10.0,
+      "context": 128000
+    },
+    "openai_gpt4o_mini": {
+      "input": 0.15,
+      "output": 0.6,
+      "context": 128000
+    },
+    "anthropic_claude_sonnet": {
+      "input": 3.0,
+      "output": 15.0,
+      "context": 200000
+    },
+    "anthropic_claude_haiku": {
+      "input": 1.0,
+      "output": 5.0,
+      "context": 200000
+    },
+    "deepseek_chat_v3": {
+      "input": 0.26,
+      "output": 1.03,
+      "context": 163840
+    },
+    "deepseek_r1": {
+      "input": 0.7,
+      "output": 2.5,
+      "context": 64000
+    },
+    "google_gemini_2.5_pro": {
+      "input": 1.25,
+      "output": 10.0,
+      "context": 1048576
+    },
+    "google_gemini_2.5_flash": {
+      "input": 0.3,
+      "output": 2.5,
+      "context": 1048576
+    }
+  },
+  "cost_efficiency_ranking": [
+    {
+      "rank": 1,
+      "model": "DeepSeek V4 Flash",
+      "input_per_1m": 0.0188,
+      "advantage": "133x cheaper than GPT-4o"
+    },
+    {
+      "rank": 2,
+      "model": "Qwen 3.8 27B",
+      "input_per_1m": 0.0,
+      "advantage": "FREE, strong Chinese"
+    },
+    {
+      "rank": 3,
+      "model": "Google Gemini 2.5 Flash Lite",
+      "input_per_1m": 0.05,
+      "advantage": "1M context, batch discount"
+    },
+    {
+      "rank": 4,
+      "model": "OpenAI GPT-4o Mini",
+      "input_per_1m": 0.07,
+      "advantage": "Reliable, ecosystem"
+    },
+    {
+      "rank": 5,
+      "model": "Meta Llama 3.3 70B",
+      "input_per_1m": 0.1,
+      "advantage": "Open weights, self-hostable"
+    }
+  ],
+  "market_insights": [
+    "Price compression: Top models now 10-100x cheaper than 2023",
+    "Free tier expansion: 22 models free, mostly from NVIDIA/Qwen/Google",
+    "Context war: 1M+ tokens now standard for premium models",
+    "Batch API discount: 50-70% off for offline workloads",
+    "Chinese providers dominating value segment (DeepSeek, Qwen)",
+    "OpenAI maintaining premium positioning but losing market share"
+  ]
+}

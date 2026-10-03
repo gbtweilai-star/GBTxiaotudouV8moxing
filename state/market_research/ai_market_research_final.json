@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-10-03T18:24:05.036366",
+  "research_type": "ai_model_market_analysis",
+  "executive_summary": {
+    "market_size": "466 models from 65+ providers",
+    "pricing_range": "$0 - $150/1M tokens",
+    "key_trend": "Price war driving 90%+ cost reduction since 2023",
+    "winner": "DeepSeek leads cost efficiency, OpenAI leads premium segment"
+  },
+  "recommendations_for_gbt": {
+    "daily_usage": "DeepSeek V4 Flash ($0.0188/1M) - 133x cheaper than GPT-4o",
+    "quality_output": "Claude 3.5 Sonnet ($3/1M) - best reasoning",
+    "long_context": "Gemini 2.5 Pro ($1.25/1M, 1M context) - best value",
+    "free_alternative": "Qwen 3.8 27B - free, strong Chinese",
+    "batch_tasks": "All models with :batch suffix (50-70% discount)"
+  },
+  "strategic_insights": [
+    "Chinese providers (DeepSeek, Qwen) now dominate cost-efficient segment",
+    "OpenAI maintaining premium but losing volume share",
+    "Free model ecosystem expanding (22 models) from NVIDIA/Google/Qwen",
+    "1M+ context windows becoming standard for flagship models",
+    "Batch API discounts (50-70%) creating new cost optimization layer"
+  ],
+  "data_sources": [
+    "OpenRouter API (real-time)",
+    "topic_watch routing",
+    "trend_watch preferences"
+  ]
+}

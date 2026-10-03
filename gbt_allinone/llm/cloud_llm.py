@@ -42,6 +42,15 @@ PROVIDER = ""
 API_KEY  = ""
 BASE_URL = ""
 MODEL    = ""
+# ── 2026-10-03 触手独立密钥路由表：purpose → agnes 子 profile ───────────────
+# 每根触手使用独立账号（独立配额/用量），互不干扰；未配置的触手回落到全局 agnes
+_PURPOSE_ROUTING_MAP = {
+    "neural": "neural_agnes",
+    "vision": "vision_agnes",
+    "devour": "devour_agnes",
+    "omni":   "omni_agnes",
+}
+
 # 手动指定覆盖
 if os.environ.get("GBT_LLM_PROVIDER"):
     _p = os.environ["GBT_LLM_PROVIDER"]
@@ -720,10 +729,13 @@ def run(action=None, **params):
     # `global` 必须在函数首部声明：本函数前面几处已在读这些名字。
     global PROVIDER, API_KEY, BASE_URL, MODEL
     try:
+        # ⛔ 触手独立密钥路由优先于 status 判断：有 purpose 参数时视为 chat 调用
+        _purpose = str(params.get("purpose") or "").strip().lower()
+        _is_tentacle_call = bool(_purpose)
         # ⛔ 兼容 L4 干跑 handler({}) 传 dict: 提取 action, 空则视为 status(静态, 不调LLM)
         if isinstance(action, dict):
             action = action.get("action") or next(iter(action), None)
-        if action in ("status", "health", "list", "info") or action is None:
+        if action in ("status", "health", "list", "info") or (action is None and not _is_tentacle_call):
             _out = {
                 "ok": True, "cap": "cloud_llm", "status": "ready",
                 "key_chain": [k[0] for k in _KEY_CHAIN],
@@ -760,6 +772,46 @@ def run(action=None, **params):
         #      能换道的换道（402/429/401/404），不能换道的如实报错（400/422，I2），
         #      全不可用时 fail-closed（不瞎挑、不静默降级）。
         from . import key_gateway as _KG
+        # ── 触手维度密钥路由（2026-10-03）：按 purpose 选子 profile ──────────
+        # 匹配到触手 profile → 直接使用该 profile 的 key 调 agnes，绕过 key_gateway
+        # （_purpose 已在函数上方 status 判断前计算，此处复用）
+        _matched_prof = None
+        for _kw, _prof in _PURPOSE_ROUTING_MAP.items():
+            if _kw in _purpose:
+                _matched_prof = _prof
+                break
+        if _matched_prof:
+            _tentacle_key = os.environ.get(f"{_matched_prof.upper()}_API_KEY") or ""
+            if not _tentacle_key:
+                try:
+                    from ..deepseek_key import _unprotect_dpapi as _dk_unprotect
+                    from pathlib import Path as _P
+                    _dpapi_path = _P(__file__).parent.parent / "store" / "secrets" / f"{_matched_prof}_api.dpapi"
+                    if _dpapi_path.exists():
+                        _tentacle_key = _dk_unprotect(_dpapi_path.read_bytes(), profile=_matched_prof).decode().strip()
+                except Exception:
+                    pass
+            if _tentacle_key:
+                # 直接用触手独立 key 调 agnes，不走 key_gateway 选路
+                _timeout_t = int(params.get("timeout", 60))
+                _rt = _call_once(
+                    "openai_compatible",
+                    "https://apihub.agnes-ai.com/v1",
+                    "agnes-2.5-flash",
+                    _tentacle_key,
+                    body, system, prompt,
+                    _timeout_t,
+                    "agnes",
+                )
+                return {
+                    "ok": True, "reply": _rt, "provider": "agnes",
+                    "model": "agnes-2.5-flash",
+                    "key_masked": _tentacle_key[:8] + "****",
+                    "brand": _KG.BRAND_TAG,
+                    "tentacle_profile": _matched_prof,
+                    "auto_switched": False, "tried_before": [],
+                }
+        # 无触手 key 或无匹配：走原有 key_gateway 选路
         _prefer = str(params.get("provider") or os.environ.get("GBT_LLM_PROVIDER") or "")
         _pl = _KG.plan(need_tokens=int(params.get("need_tokens", 0) or 0), prefer=_prefer)
         if not _pl.get("ok"):
