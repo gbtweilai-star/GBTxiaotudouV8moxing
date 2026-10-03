@@ -38,6 +38,8 @@ _LEDGER = _STATE / "console_hub.jsonl"
 
 # ── 页面登记表（**单一真相**；新增页面必须登记在这里，否则 scan 会报"盘上有而清单无"）──
 PAGES = [
+    {"page": "keys", "path": "holo_pet/assets/keys/index.html", "kind": "密钥台",
+     "workflow": "security", "what": "密钥台（10 槽位 · **只含掩码** · 零脚本零外链；由 tools/codex-scripts/keys-page.py 重生成）"},
     {"page": "freebuff", "path": "holo_pet/assets/freebuff/index.html", "kind": "执行台",
      "workflow": "programming", "what": "freebuff 对话面板（编程走这个 · 隔离 HOME · 现读状态与命令）"},
     {"page": "gallery", "path": "holo_pet/assets/gallery/index.html", "kind": "枢纽",
