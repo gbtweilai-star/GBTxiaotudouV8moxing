@@ -1,8 +1,8 @@
 {
- "at": "2026-10-03T15:23:40",
+ "at": "2026-10-03T19:13:02",
  "target": "gbt_allinone,tools",
- "files": 938,
- "lines": 262781,
+ "files": 942,
+ "lines": 264346,
  "findings": [
   {
    "id": "F-INJ-001-08c2ee-133",
@@ -20,7 +20,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\recon\\last30days\\engine\\vendor\\bird-search\\lib\\runtime-query-ids.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:37"
+   "at": "2026-10-03T19:12:58"
   },
   {
    "id": "F-INJ-001-435105-233",
@@ -38,7 +38,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:37"
+   "at": "2026-10-03T19:12:58"
   },
   {
    "id": "F-INJ-001-435105-235",
@@ -56,7 +56,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:37"
+   "at": "2026-10-03T19:12:58"
   },
   {
    "id": "F-INJ-001-435105-236",
@@ -74,7 +74,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:37"
+   "at": "2026-10-03T19:12:58"
   },
   {
    "id": "F-INJ-001-435105-237",
@@ -92,7 +92,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:37"
+   "at": "2026-10-03T19:12:58"
   },
   {
    "id": "F-INJ-001-435105-242",
@@ -110,7 +110,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:37"
+   "at": "2026-10-03T19:12:58"
   },
   {
    "id": "F-INJ-001-435105-243",
@@ -128,7 +128,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:37"
+   "at": "2026-10-03T19:12:58"
   },
   {
    "id": "F-INJ-001-435105-245",
@@ -146,7 +146,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:37"
+   "at": "2026-10-03T19:12:58"
   },
   {
    "id": "F-INJ-002-435105-643",
@@ -164,7 +164,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:37"
+   "at": "2026-10-03T19:12:58"
   },
   {
    "id": "F-DES-001-ac78b9-223",
@@ -182,7 +182,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tentacle\\omni_fs.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:37"
+   "at": "2026-10-03T19:12:58"
   },
   {
    "id": "F-DES-001-ac78b9-272",
@@ -200,7 +200,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tentacle\\omni_fs.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:37"
+   "at": "2026-10-03T19:12:58"
   },
   {
    "id": "F-CRED-001-57fe4f-70",
@@ -218,7 +218,7 @@
    },
    "repro": "python -c \"import re,pathlib;print(re.findall(r'(sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{12,})', pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_auto_publish.py').read_text(encoding='utf-8',errors='replace'))[:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:37"
+   "at": "2026-10-03T19:12:58"
   },
   {
    "id": "F-CRED-001-8785bf-45",
@@ -236,7 +236,7 @@
    },
    "repro": "python -c \"import re,pathlib;print(re.findall(r'(sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{12,})', pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_cloud_pc.py').read_text(encoding='utf-8',errors='replace'))[:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:12:59"
   },
   {
    "id": "F-DES-001-1048fd-45",
@@ -254,7 +254,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_code_patch.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:12:59"
   },
   {
    "id": "F-DES-001-1048fd-47",
@@ -272,7 +272,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_code_patch.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:12:59"
   },
   {
    "id": "F-DES-001-0d1258-143",
@@ -290,7 +290,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_coze_mail.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:12:59"
   },
   {
    "id": "F-JDG-001-7bc7b0-6",
@@ -308,7 +308,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_dead_judgments.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:12:59"
   },
   {
    "id": "F-JDG-001-7bc7b0-91",
@@ -326,7 +326,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_dead_judgments.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:12:59"
   },
   {
    "id": "F-DES-001-067ab2-467",
@@ -344,7 +344,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_dependency_face.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:12:59"
   },
   {
    "id": "F-DES-001-067ab2-482",
@@ -362,7 +362,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_dependency_face.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:12:59"
   },
   {
    "id": "F-DES-001-6aba9c-177",
@@ -380,7 +380,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_distilled_ops.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:12:59"
   },
   {
    "id": "F-DES-001-6aba9c-198",
@@ -398,7 +398,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_distilled_ops.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:12:59"
   },
   {
    "id": "F-DES-001-fe469d-121",
@@ -416,7 +416,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_file_operation.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-DES-001-fe469d-126",
@@ -434,7 +434,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_file_operation.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-DES-001-fe469d-127",
@@ -452,7 +452,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_file_operation.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-DES-001-fe469d-131",
@@ -470,7 +470,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_file_operation.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-DES-001-fe469d-531",
@@ -488,7 +488,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_file_operation.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-DES-001-fe469d-609",
@@ -506,7 +506,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_file_operation.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-INJ-002-430fef-11",
@@ -524,7 +524,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_git_repo.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-INJ-002-430fef-160",
@@ -542,7 +542,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_git_repo.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-INJ-001-d5476d-101",
@@ -560,7 +560,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_skill_vet.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-DES-001-d5476d-149",
@@ -578,7 +578,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_skill_vet.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-DES-001-d5476d-168",
@@ -596,7 +596,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_skill_vet.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-INJ-001-d5476d-175",
@@ -614,7 +614,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_skill_vet.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-INJ-002-c5efe9-12",
@@ -632,7 +632,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_skill_vetting.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-DES-001-c5efe9-12",
@@ -650,7 +650,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_skill_vetting.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-INJ-002-a35f09-406",
@@ -668,7 +668,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\penetrating_cross_scan.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-INJ-002-a35f09-422",
@@ -686,7 +686,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\penetrating_cross_scan.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-INJ-002-a35f09-423",
@@ -704,7 +704,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\penetrating_cross_scan.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-DES-001-a35f09-423",
@@ -722,7 +722,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\penetrating_cross_scan.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-DES-001-eea0c4-183",
@@ -740,7 +740,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\selfgrowth.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-DES-001-045453-163",
@@ -758,7 +758,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\skills_sync.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:38"
+   "at": "2026-10-03T19:13:00"
   },
   {
    "id": "F-DES-001-f2a595-99",
@@ -776,7 +776,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\build_shadow_repo.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:01"
   },
   {
    "id": "F-DES-001-feb238-23",
@@ -794,7 +794,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\clean_residue.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:01"
   },
   {
    "id": "F-DES-001-dc34c4-1118",
@@ -812,7 +812,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\cloud-mesh.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:01"
   },
   {
    "id": "F-JDG-001-41ffc1-171",
@@ -830,7 +830,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\criterion_bench.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:01"
   },
   {
    "id": "F-JDG-001-8cef41-7",
@@ -848,7 +848,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\fix-dead-undefined-check.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:01"
   },
   {
    "id": "F-JDG-001-8cef41-14",
@@ -866,7 +866,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\fix-dead-undefined-check.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:01"
   },
   {
    "id": "F-INJ-002-15e1a0-40",
@@ -884,7 +884,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\lark_delete_caches.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:01"
   },
   {
    "id": "F-INJ-002-d2a261-41",
@@ -902,7 +902,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\lark_inventory.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:01"
   },
   {
    "id": "F-DES-001-17d980-171",
@@ -920,7 +920,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\quickscan_evolve.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:01"
   },
   {
    "id": "F-DES-001-17d980-423",
@@ -938,7 +938,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\quickscan_evolve.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:01"
   },
   {
    "id": "F-DES-001-17d980-461",
@@ -956,7 +956,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\quickscan_evolve.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:01"
   },
   {
    "id": "F-DES-001-f32fa7-171",
@@ -974,7 +974,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\shorts-stitch-proof.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-d3309c-120",
@@ -992,7 +992,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\skill-vet.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-002-d3309c-340",
@@ -1010,7 +1010,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\skill-vet.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:39"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-JDG-001-aec86d-85",
@@ -1028,7 +1028,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\sync-panel-snapshot.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-29487a-115",
@@ -1046,7 +1046,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_ledger_sink.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-c660c0-28",
@@ -1064,7 +1064,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_loader_scope.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-f6e86f-19",
@@ -1082,7 +1082,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_loader_scope2.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-d328dd-22",
@@ -1100,7 +1100,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v11_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-d328dd-51",
@@ -1118,7 +1118,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v11_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-587e03-22",
@@ -1136,7 +1136,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v12_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-587e03-51",
@@ -1154,7 +1154,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v12_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-145dc7-22",
@@ -1172,7 +1172,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v13_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-145dc7-72",
@@ -1190,7 +1190,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v13_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-94903b-22",
@@ -1208,7 +1208,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v14_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-94903b-72",
@@ -1226,7 +1226,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v14_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-d51bfe-22",
@@ -1244,7 +1244,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v15_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-d51bfe-72",
@@ -1262,7 +1262,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v15_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-96d369-22",
@@ -1280,7 +1280,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v16_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-96d369-72",
@@ -1298,7 +1298,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v16_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-b34fb1-22",
@@ -1316,7 +1316,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v17_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-b34fb1-72",
@@ -1334,7 +1334,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v17_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-2504a4-22",
@@ -1352,7 +1352,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v18_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-2504a4-72",
@@ -1370,7 +1370,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v18_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-a7be8d-22",
@@ -1388,7 +1388,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v19_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-a7be8d-72",
@@ -1406,7 +1406,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v19_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-34bd90-22",
@@ -1424,7 +1424,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v20_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-34bd90-72",
@@ -1442,7 +1442,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v20_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-493bf9-24",
@@ -1460,7 +1460,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v21_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-493bf9-74",
@@ -1478,7 +1478,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v21_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-002-e09ab9-271",
@@ -1496,7 +1496,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\digihuman\\pipeline.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-JDG-001-c70bb1-41",
@@ -1514,7 +1514,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\shortvideo-music-mcp\\sample_v2.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   },
   {
    "id": "F-INJ-001-1449b6-34",
@@ -1532,7 +1532,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\shortvideo-music-mcp\\server.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T15:23:40"
+   "at": "2026-10-03T19:13:02"
   }
  ],
  "triaged": [

@@ -1,8 +1,8 @@
 {
- "at": "2026-10-03T15:25:24",
- "count": 215,
+ "at": "2026-10-03T19:14:55",
+ "count": 216,
  "by_permission": {
-  "open": 149,
+  "open": 150,
   "owner": 66
  },
  "duplicate_tags": {},
@@ -1496,6 +1496,13 @@
     "filesystem_write"
    ],
    "why": "policy 要求作用域：filesystem_write；图鉴标了 safe=false"
+  },
+  "omni_web": {
+   "tag": "GBT-TENTACLE-OMNI-WEB",
+   "domain": "tentacle",
+   "permission": "open",
+   "scopes": [],
+   "why": "policy 无作用域 + 图鉴 safe 且无需确认"
   },
   "ul_tars_desktop": {
    "tag": "GBT-DESKTOP-UL-TARS-DESKTOP",
