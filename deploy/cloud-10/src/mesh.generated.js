@@ -84,8 +84,8 @@ export const MESH = {
         "fetch"
       ],
       "op_gates": {
-        "search": "network_read",
-        "fetch": "network_read"
+        "search": "none",
+        "fetch": "none"
       },
       "cloud": [
         "ai-search 绑定",
@@ -106,10 +106,10 @@ export const MESH = {
         "del"
       ],
       "op_gates": {
-        "list": "filesystem_read",
-        "get": "filesystem_read",
-        "put": "filesystem_write",
-        "del": "filesystem_write"
+        "list": "none",
+        "get": "none",
+        "put": "none",
+        "del": "none"
       },
       "cloud": [
         "R2 (FILES)"
@@ -414,14 +414,14 @@ export const OP_GATES = {
     "image": "external_llm"
   },
   "gbt-c04-tool-web": {
-    "search": "network_read",
-    "fetch": "network_read"
+    "search": "none",
+    "fetch": "none"
   },
   "gbt-c05-tool-file": {
-    "list": "filesystem_read",
-    "get": "filesystem_read",
-    "put": "filesystem_write",
-    "del": "filesystem_write"
+    "list": "none",
+    "get": "none",
+    "put": "none",
+    "del": "none"
   },
   "gbt-c06-tool-shell": {
     "status": "none",

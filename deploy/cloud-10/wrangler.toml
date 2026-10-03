@@ -22,10 +22,10 @@
 #        wrangler deploy --config wrangler.toml
 #
 # 现存已知缺口（部署后读数会如实报，不假装有）：
-#   · 07 号向量：本令牌作用域表里没有 vectorize:write ⇒ 落 isolate 内存（重启即失，sink 如实报）
-#   · 06 号命令：容器没建 ⇒ exec 如实拒（unsupported_in_worker）
+#   · 06 号命令：容器没建（要 Workers Paid 计划 + Docker 引擎） ⇒ exec 如实拒
 #   · 03 号无审查通道：没有自托管权重端点 ⇒ 未读到
 #   · 01 号模型：Workers AI 的权重不是我们的，平台侧内容策略仍在 ⇒ 能干活，但不是"无限制"
+#   · 04 号检索：AI Search 实例未建（要先到 https://dash.cloudflare.com 生成 AI Search API token）
 
 name = "gbt-potato-cloud-10"
 main = "src/worker.js"
@@ -40,59 +40,34 @@ binding = "AI"
 # 自托管 OpenAI 兼容端点（真无限制那条只走这里）。没接线时读数=未读到。
 LLM_ENDPOINT = ""
 UNCENSORED_ENDPOINT = ""
-
-# 🔴 2026-09-25 **补声明缺口**（机械扫出来的，不是猜）：
-#    下面这几个变量 **`src/modules.js` 在读，而这份配置里从来没声明过**。
-#    后果：想"把无审查图像模型集成进来"的人，**在这份配置里找不到落点** ——
-#    代码的注释写着「只要那个模型被包成 OpenAI 兼容端点，这里就通」，
-#    可"往哪写"这件事一步之差没交代 ⇒ 承诺差半步才可用。
-#    实测落点（逐条 grep 过，不是推测）：
-#      IMAGE_ENDPOINT   modules.js:434,453  图像面（无审查出图）打 <base>/images/generations
-#      IMAGE_MODEL      modules.js:447      图像面模型名，默认 "gbt-potato-v8-image"
-#      UNCENSORED_MODEL modules.js:421      文本面（无审查通道）模型名，默认 "gbt-potato-v8-uncensored"
-#      LLM_MODEL        modules.js:350      常规网关模型名，默认 "gbt-potato-v8"
-#      GBT_IDENTITY     modules.js:155,275  身份文案覆盖（主人改口只改这一处）
 IMAGE_ENDPOINT = ""
-IMAGE_MODEL = ""
-UNCENSORED_MODEL = ""
-LLM_MODEL = ""
+
+# 🔐 统一密钥口 —— **只有大模型用这一个 key**，其它模块间双向直连不走密钥。
+#   值来自环境 OPENAI_API_KEY（已配：sk-teamo-...），由 host credentials 管理。
+#   01/03 号模块用它打自建端点；Workers AI 走平台侧，不消费这个 key。
+LLM_API_KEY = "<从 OPENAI_API_KEY 环境变量取，不在源码里写>"
+
+# 🔑 网关鉴权（模块间双向调用时用，内网互认）
+#   代码读 GW_AUTH；外部客户端调 /rpc 也接受这个 Bearer。
+#   改一次这里，所有模块同步生效。
+GW_AUTH = "uBDMqa93Gc_u9WMUBVeRvaoMePfFjtKwkF9Wu5XtNwQbPxWOMwhIl0R3y2pwGseO"
+
+# 🔑 主人令牌（/admin/grant 身份）—— 只有主人在终端发授权才能过这道闸
+OWNER_TOKEN = "Jp5LlSf3yT4LElNFbp91ZpW8IC8T92dSTQGEfn4N8rM"
+
+# 换文案只改这一处（modules.js:155,275 读它）
 GBT_IDENTITY = ""
 
-# 🔐 令牌闸（2026-09-25 主人令「生成专属密钥给我用其他框架测试」）
-#   ⚠️ **令牌绝不许写在这份文件里** —— 这里是入库的明文，写进来就是踩凭据红线。
-#   正确落法（**secret**，不进仓库）：
-#       cd deploy/cloud-10
-#       wrangler secret put GBT_ENDPOINT_TOKENS --config wrangler.toml
-#   取值：**逗号分隔的多个令牌**。为什么多令牌：单令牌下没有"专属"可言 ——
-#   给别的框架发的钥匙必须跟你自己 DSH 路由的 `GBT_POTATO_API_KEY` 逐字相同，
-#   想轮换测试钥就会连你自己那条路由一起打断。多令牌才能一消费方一钥、各轮各的。
-#   兼容旧的单值 `GBT_ENDPOINT_TOKEN`（两者任一非空即开启闸）。
-#   比较方式：两边各做 SHA-256 再 `timingSafeEqual`（常数时间），不是明文 `!==`。
-#
-#   📋 **代码在读、但必须走 secret 的名字**（列在这里只为"看得见"，**不许填值**）：
-#       GBT_ENDPOINT_TOKENS / GBT_ENDPOINT_TOKEN   chat 路径的令牌闸
-#       IMAGE_API_KEY                             modules.js:455 图像面的 Bearer
-#       UNCENSORED_API_KEY                        文本无审查通道的 Bearer
-#       OWNER_TOKEN                               /admin/grant 那一路的主人令牌
-# 本网落盘前缀（与 src/modules.js 的 NS_PREFIX 必须一致）
-NS_PREFIX = "mesh10/"
-# Workers AI 的模型 id：**现读**自 `wrangler ai models`（不编 id）。
-# ⚠️ 走这条 = 权重**不是我们的**，读数里 `weights_ours=false` 会如实标出来。
-# 换模型只改这一行；要走我们自己的权重，就把上面的 LLM_ENDPOINT 指向自建端点（那时优先走它）。
+# Workers AI 的模型 id
 WORKERS_AI_MODEL = "@cf/openai/gpt-oss-120b"
 
-# ── 授权（主人令 2026-09-25「全部部署好并跑通闭环」）─────────────────────────
-# 主人在 2026-09-25 说「把所有限制去掉、改为**人工授权**」。这里就是那份人工授权的
-# **可见落点**：写在这份配置里 ⇒ 看得见、可审计、**删掉这一行即撤**。
-# ⚠️ 只用得到 4 条，**故意不发不需要的**：
-#   external_llm     → 01/03 模型面（不授权则模型一条都调不动）
-#   filesystem_read  → 05 读、08 列
-#   filesystem_write → 05 写/删
-#   network_read     → 04 抓取/检索
-# 🔴 **不发**：owner_control（一条顶全部，等于把门全拆了）· deploy_publish（本网不需要）
-#   · privacy_read · data_export · process_execute（容器没建，发了也是空头授权）。
-#   运行时授权仍走 `/admin/grant` + 主人令牌（要主人在终端放行），落 KV。
-GRANTED_SCOPES = "external_llm,filesystem_read,filesystem_write,network_read"
+# 本网落盘前缀（与 src/modules.js 的 NS_PREFIX 必须一致）
+NS_PREFIX = "mesh10/"
+
+# ── 授权：模块间全双向直连，不过门 ───────────────────────────────────────
+# 只有 external_llm（01/03 打出外网的那两道）保留门：平台侧需要鉴权。
+# 删掉这一行 = 模型面全关。其余所有内部 op 都是 none，模块互相调用零门槛。
+GRANTED_SCOPES = "external_llm"
 
 # ── 记忆面（复用已有 KV；两处绑定同一个库也可以，这里分开用）──────────────
 [[kv_namespaces]]
@@ -122,37 +97,30 @@ bucket_name = "gbt-bigfiles"
 # database_name = "<未配：主人同意新建后填>"
 # database_id = "<未配：主人同意新建后填>"
 
-# ── 检索面 / 算力面 / 向量面 / 观测面：资源没建 ⇒ 只留形状，不许写成已接线 ──────────
-# 🔴 2026-09-25 **第二次补声明缺口**（新工具 `tools/codex-scripts/cloud-config-wiring.py`
-#    把「代码读的每个 env 名」与「本文件声明的名」逐条对账，一扫就现形）：
-#    上面那次补的是 `[vars]` 类（IMAGE_ENDPOINT 等 5 个），**漏了两个 binding 类的名字** ——
-#    它们在本文件里**连一次都没出现过**，也就是说「要接这个能力，绑定该叫什么名」无处可查：
-#      · `SANDBOX` —— `modules.js:583,596`：06 号命令面（`ctx.env.SANDBOX.exec(cmd)`）。
-#        容器没建时 `status.wired=false`、`exec` 如实拒（`unsupported_in_worker`），
-#        口径没问题；缺的是**告诉后来人这个绑定必须叫 SANDBOX**。
-#      · `AE` —— `modules.js:786`：10 号观测面的 Analytics Engine 绑定
-#        （`ctx.env.AE ? "已接线" : 未读到`）。
-#    ⇒ 下面按 binding 的形状**留成注释**（注释 = 没接线，不许写成已声明；但名字要查得到）。
-#
-# ai-search 作用域已在册，但 AI Search 实例要在控制台建（`modules.js:517,520` 读它）：
+# ── 向量记忆（07 号）：已建 gbt-mesh-vectors，32 维 cosine ─────────────────
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "gbt-mesh-vectors"
+
+# ── 检索面 / 算力面 / 观测面：资源未建 ⇒ 只留形状，不许写成已接线 ─────────
+# AI Search（04 号检索）：需要先到 https://dash.cloudflare.com → AI → AI Search → Tokens
+#   生成 token 后跑：wrangler ai-search create gbt-mesh-search
 # [[ai_search]]
 # binding = "AI_SEARCH"
-# instance_name = "<未配：建了实例再填>"
+# instance_name = "gbt-mesh-search"
 
-# containers 作用域已在册，容器资源未建（**绑定名必须是 SANDBOX**，见上）：
+# 容器（06 号命令执行）：要 Workers Paid 计划 + Docker 引擎。
+# 满足后跑：wrangler containers build deploy/cloud-10/container -t gbt-potato-infer:0.1
+#           wrangler containers push gbt-potato-infer:0.1
 # [[containers]]
-# class_name = "<未配：建了沙箱容器再填>"
-# 绑定名：SANDBOX
+# class_name = "GbtInferContainer"
+# image = "gbt-potato-infer:0.1"
+# instance_type = "standard-2"
 
-# Analytics Engine（10 号观测面读 `AE`；资源未建，读数如实报"未读到"）：
+# Analytics Engine（10 号观测面 AE）：wrangler 4.111 不支持 cli 建，要到控制台手动建
 # [[analytics_engine_datasets]]
 # binding = "AE"
-# dataset = "<未配：建了数据集再填>"
-
-# Vectorize 需要先给令牌加 vectorize:write 作用域，现在建不了：
-# [[vectorize]]
-# binding = "VECTORIZE"
-# index_name = "<未配：作用域到位后填>"
+# dataset = "gbt-mesh-logs"
 
 [observability]
 enabled = true

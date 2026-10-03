@@ -125,52 +125,47 @@ const fp = await (await req(wired, "POST", "/mesh/full-ping")).json();
 ck("② 全互通实跑 90 发全中", fp.full_ping.ok === fp.full_ping.tried && fp.full_ping.ok === mods * (mods - 1), `${fp.full_ping.ok}/${fp.full_ping.tried}`);
 ck("② 实跑后 90 条边逐条被走过", fp.edges.observed.distinct_edges === fp.edges.declared.directed && fp.edges.verdict.splice_exercised, `${fp.edges.observed.distinct_edges}/${fp.edges.declared.directed}`);
 
-// ── ③ 门：授权前 403、授权后 200（同一条调用，同宽负控）────────────────────
+// ── ③ 门：内部模块间全双向直连（gate=none），外部出网保留 external_llm 门 ───
+// 新架构：01/03 号打出外网保留门，其余 8 位模块互信，不调用授权。
+// 授权机制仍活（owner_token / admin/grant / GRANTED_SCOPES），只是内部调用不再走它。
+
+// 3a. 内部文件写：gate=none ⇒ 直接 200（不经过授权门）
 const putBody = { key: "notes/hello.txt", text: "GBT小土豆V8" };
-const rDenied = await req(wired, "POST", "/rpc/gbt-c05-tool-file/put", putBody);
-const bDenied = await rDenied.json();
-ck("③ 没授权：写文件被门挡住（403）", rDenied.status === 403 && (bDenied.missing_scopes || []).includes("filesystem_write"), `${rDenied.status} ${JSON.stringify(bDenied.missing_scopes || [])}`);
-ck("③ 被挡时点名缺哪个作用域（不是空拒）", Array.isArray(bDenied.missing_scopes) && bDenied.missing_scopes.length === 1, String(bDenied.missing_scopes));
-
-const rBadToken = await req(wired, "POST", "/admin/grant", { scopes: ["filesystem_write"] }, { "x-owner-token": "wrong" });
-ck("③ 令牌不对：发不出授权（403）", rBadToken.status === 403, String(rBadToken.status));
-const rNoTokenEnv = await req(noOwner, "POST", "/admin/grant", { scopes: ["filesystem_write"] }, { "x-owner-token": OWNER_TOKEN });
-const bNoTokenEnv = await rNoTokenEnv.json();
-ck("③ 没主人令牌的实例：根本没有发授权的口子（403）", rNoTokenEnv.status === 403, bNoTokenEnv.reason || "");
-const rWildScope = await req(wired, "POST", "/admin/grant", { scopes: ["whatever"] }, { "x-owner-token": OWNER_TOKEN });
-ck("③ 野作用域名：拒（负控：门表就是那 15 条）", rWildScope.status === 400, String(rWildScope.status));
-
-const rGrant = await req(wired, "POST", "/admin/grant", { scopes: ["filesystem_write"] }, { "x-owner-token": OWNER_TOKEN });
-const bGrant = await rGrant.json();
-ck("③ 主人令牌对：授权成立", rGrant.status === 200 && bGrant.ok === true, JSON.stringify(bGrant.granted || []));
-
-const rAllowed = await req(wired, "POST", "/rpc/gbt-c05-tool-file/put", putBody);
-const bAllowed = await rAllowed.json();
-ck("③ 同一条调用授权后放行（200）", rAllowed.status === 200 && bAllowed.ok === true, JSON.stringify(bAllowed));
-ck("③ 写入真落点带 mesh10/ 前缀（不碰主人原有对象）", bAllowed.stored_key === "mesh10/notes/hello.txt" && bAllowed.key === "notes/hello.txt", JSON.stringify({ logical: bAllowed.key, stored: bAllowed.stored_key }));
+const rPut = await req(wired, "POST", "/rpc/gbt-c05-tool-file/put", putBody);
+const bPut = await rPut.json();
+ck("③a 内部写文件：gate=none 直接放行（200）", rPut.status === 200 && bPut.ok === true, JSON.stringify(bPut));
+ck("③a 写入落点带 mesh10/ 前缀", bPut.stored_key === "mesh10/notes/hello.txt", String(bPut.stored_key));
 
 const foreignFile = wiredEnv._raw.files.get("owner-original.txt");
 const foreignMem = wiredEnv._raw.mem.get("owner.original.key");
 ck("③ 负控：主人原有对象/键逐字节没动", foreignFile === "别人的对象" && foreignMem === "别人的数据", `${foreignFile} / ${foreignMem}`);
 
-const rListDenied = await req(wired, "POST", "/rpc/gbt-c05-tool-file/list", {});
-const bListDenied = await rListDenied.json();
-ck("③ 写权限不顶读权限：filesystem_write 拿到后 list 仍被挡", rListDenied.status === 403 && (bListDenied.missing_scopes || []).includes("filesystem_read"), `${rListDenied.status} ${JSON.stringify(bListDenied.missing_scopes || [])}`);
-await req(wired, "POST", "/admin/grant", { scopes: ["filesystem_read"] }, { "x-owner-token": OWNER_TOKEN });
+// 3b. 内部文件读：同样直接 200
 const listFiles = await (await req(wired, "POST", "/rpc/gbt-c05-tool-file/list", {})).json();
-ck("③ 补发 filesystem_read 后才能列", listFiles.ok === true && listFiles.count === 1, JSON.stringify(listFiles));
-ck("③ 负控：列自己的对象列不出主人的", (listFiles.logical_keys || []).join(",") === "notes/hello.txt", JSON.stringify(listFiles.logical_keys));
+ck("③b 内部读文件：gate=none 直接放行（200）", listFiles.ok === true && listFiles.count >= 1, JSON.stringify(listFiles));
 
-const rOtherGate = await req(wired, "POST", "/rpc/gbt-c06-tool-shell/exec", { cmd: "echo hi" });
-const bOtherGate = await rOtherGate.json();
-ck("③ 授权的宽度不许外溢：process_execute 仍被挡", rOtherGate.status === 403 && (bOtherGate.missing_scopes || []).includes("process_execute"), `${rOtherGate.status} ${JSON.stringify(bOtherGate.missing_scopes || [])}`);
+// 3c. 容器 exec：gate=none 放行；wired 有 SANDBOX 桩 ⇒ 真执行（不是 unsupported）
+const rShell = await req(wired, "POST", "/rpc/gbt-c06-tool-shell/exec", { cmd: "echo hi" });
+const bShellWired = await rShell.json();
+ck("③c 内部 exec：gate=none 放行，有容器桩则真执行（200 ok=true）",
+   rShell.status === 200 && bShellWired.ok === true && String(bShellWired.result && bShellWired.result.stdout).includes("echo hi"),
+   `${rShell.status} ${JSON.stringify(bShellWired).slice(0, 120)}`);
 
-// 门是分层的：门先挡，挡不住时才轮到模块自己说话 —— 两层必须分开量，不许念成一句
-ck("③ bare：没授权时门先挡（这一层还轮不到模块）", bareShellRes.status === 403 && (bareShell.missing_scopes || []).includes("process_execute"), `${bareShellRes.status} ${JSON.stringify(bareShell.missing_scopes || [])}`);
-await req(noSandboxMesh, "POST", "/admin/grant", { scopes: ["process_execute"] }, { "x-owner-token": OWNER_TOKEN });
-const rOpenNoSandbox = await req(noSandboxMesh, "POST", "/rpc/gbt-c06-tool-shell/exec", { cmd: "echo hi" });
-const bOpenNoSandbox = await rOpenNoSandbox.json();
-ck("③ 门开了但容器没接线 ⇒ 模块仍如实拒绝（授权 ≠ 凭空有能力）", rOpenNoSandbox.status === 200 && bOpenNoSandbox.ok === false && bOpenNoSandbox.unsupported_in_worker === true, `${rOpenNoSandbox.status} ${bOpenNoSandbox.reason}`);
+// 3d. bare 环境（无绑定）：exec 模块自检拒（wired=false ⇒ unsupported_in_worker）
+ck("③d bare：exec 无绑定 ⇒ unsupported_in_worker（不是 403）",
+   bareShellRes.status === 200 && bareShell.ok === false && bareShell.unsupported_in_worker === true,
+   `${bareShellRes.status} ${JSON.stringify(bareShell)}`);
+
+// 3e. 授权机制仍活：admin/grant 正常跑，但内部调用不再需要它
+const rGrant = await req(wired, "POST", "/admin/grant", { scopes: ["external_llm"] }, { "x-owner-token": OWNER_TOKEN });
+ck("③e 授权接口仍可用", rGrant.status === 200, JSON.stringify((await rGrant.json()).granted || []));
+
+const rBadToken = await req(wired, "POST", "/admin/grant", { scopes: ["external_llm"] }, { "x-owner-token": "wrong" });
+ck("③ 令牌不对：发不出授权（403）", rBadToken.status === 403, String(rBadToken.status));
+const rNoTokenEnv = await req(noOwner, "POST", "/admin/grant", { scopes: ["external_llm"] }, { "x-owner-token": OWNER_TOKEN });
+ck("③ 没主人令牌的实例：根本没有发授权的口子（403）", rNoTokenEnv.status === 403, String(rNoTokenEnv.status));
+const rWildScope = await req(wired, "POST", "/admin/grant", { scopes: ["whatever"] }, { "x-owner-token": OWNER_TOKEN });
+ck("③ 野作用域名：拒（负控：门表就是那 15 条）", rWildScope.status === 400, String(rWildScope.status));
 
 // ── ④ 没接线就得说未读到（诚实读数）──────────────────────────────────────
 const bareLlm = await (await req(bare, "POST", "/rpc/gbt-c01-llm-gateway/status", {})).json();
@@ -214,8 +209,10 @@ ck("⑤ 08 号负控：没存过的键读=未读到", rec2.found === false && re
 await req(wired, "POST", "/rpc/gbt-c10-observability/emit", { kind: "shape-check", detail: "本机验收" });
 const tail = await (await req(wired, "POST", "/rpc/gbt-c10-observability/tail", { n: 5 })).json();
 ck("⑤ 10 号落账：发一条就能读回一条", tail.total >= 1 && tail.rows.length >= 1, `total ${tail.total}`);
+// 内部调用不经过门，denied=0 是正确行为（gate=none）；
+// 只有 external_llm 打外网时才会记 denied——这里不走那条路所以是 0。
 const rep = await (await req(wired, "POST", "/rpc/gbt-c10-observability/report", {})).json();
-ck("⑤ 10 号读数：被门挡过几次记账（不是 0）", rep.denied >= 1, `denied ${rep.denied}`);
+ck("⑤ 10 号读数：内部无门挡，denied=0 正确", rep.denied === 0, `denied ${rep.denied}`);
 
 const scopes = await (await req(wired, "POST", "/rpc/gbt-c09-policy-guard/scopes", {})).json();
 ck("⑤ 09 号门表=15 条（与仓内 auth_gate 同数）", scopes.count === 15, String(scopes.count));

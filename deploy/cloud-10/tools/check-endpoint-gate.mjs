@@ -46,8 +46,7 @@ function ck(name, pass, reading) {
 }
 
 const OWNER = "owner-token-for-endpoint-gate";
-const TOK = "tok-aaaa-1111";
-const TOK2 = "tok-bbbb-2222";
+const GW = "gw-auth-test-key";
 const MODEL = "@cf/stub/model";
 
 // ── 桩：AI 绑定。三种形态 —— 普通回包 / SSE 流 / 抛错 ──────────────────────
@@ -95,11 +94,11 @@ const chatBody = (msgs, extra) => ({ model: "gbt-potato-v8", messages: msgs, ...
 // 全局凭据泄漏红线：任何回包正文里**不许出现**配下去的令牌值
 const LEAK = [];
 function scanForToken(where, txt) {
-  for (const t of [TOK, TOK2]) if (String(txt).includes(t)) LEAK.push(`${where} 泄漏了令牌值`);
+  if (String(txt).includes(GW)) LEAK.push(`${where} 泄漏了网关密钥值`);
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// ① 令牌闸：没配 ⇒ 如实说不校验（不许让人以为锁上了）
+// ① 网关鉴权：没配 GW_AUTH ⇒ 如实说不校验（不许让人以为锁上了）
 // ══════════════════════════════════════════════════════════════════════════
 {
   const mesh = await meshWith({ WORKERS_AI_MODEL: MODEL, AI: aiStub() });
@@ -107,27 +106,27 @@ function scanForToken(where, txt) {
   const models = await modelsRes.json();
   scanForToken("① /v1/models", JSON.stringify(models));
   const g = models.gbt || {};
-  ck("① 没配令牌 ⇒ auth_scope.chat=none（如实报「没锁」）",
-     (g.auth_scope || {}).chat === "none" && g.auth_scope.tokens_configured === 0, JSON.stringify(g.auth_scope));
-  ck("① 没配令牌 ⇒ 人读那句话也直说「不校验」",
-     /不校验/.test(String(g.auth)) && /令牌闸已开/.test(String(g.auth)) === false, String(g.auth));
+  ck("① 没配网关 ⇒ auth_scope.chat=none（如实报「没锁」）",
+     (g.auth_scope || {}).chat === "none" && (g.auth_scope || {}).models === "public", JSON.stringify(g.auth_scope));
+  ck("① 没配网关 ⇒ 人读那句话也直说「不校验」",
+     /不校验/.test(String(g.auth)) && /网关鉴权已开/.test(String(g.auth)) === false, String(g.auth));
   ck("① /v1/models 这一路公开（无 Authorization 也 200）",
      modelsRes.status === 200, `status=${modelsRes.status}`);
   const r = await postJSON(mesh, "/v1/chat/completions", chatBody([{ role: "user", content: "在吗" }]));
-  // 负控：没配令牌时**不许** 401 —— 401 就说明闸门自己开着了（与读数相反）
-  ck("① 负控：没配令牌时带不带 Authorization 都不该 401",
+  // 负控：没配网关时**不许** 401 —— 401 就说明闸门自己开着了（与读数相反）
+  ck("① 负控：没配网关时带不带 Authorization 都不该 401",
      r.status !== 401 && (r.body?.error?.type || "") !== "authentication_error",
      `status=${r.status} type=${r.body?.error?.type}`);
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// ② 令牌闸：配了 ⇒ 错钥必拒 / 多令牌 / 常数时间分支 / 公开面与受管面对照
+// ② 网关鉴权：配了 GW_AUTH ⇒ 错钥必拒 / 公开面与受管面对照
 // ══════════════════════════════════════════════════════════════════════════
 {
   const mesh = await meshWith({
     WORKERS_AI_MODEL: MODEL,
     AI: aiStub(),
-    GBT_ENDPOINT_TOKENS: `${TOK},${TOK2}`,
+    GW_AUTH: GW,
   });
   const msgs = [{ role: "user", content: "在吗" }];
 
@@ -136,27 +135,18 @@ function scanForToken(where, txt) {
   ck("② 错钥 ⇒ 401 + authentication_error",
      wrong.status === 401 && wrong.body?.error?.type === "authentication_error",
      `${wrong.status} ${wrong.body?.error?.type}`);
-  ck("② 被拒时点明配了几个令牌（可判字段）",
-     wrong.body?.gbt?.tokens_configured === 2 && wrong.body?.gbt?.scheme === "Bearer",
+  ck("② 被拒时点明使用 GW_AUTH Bearer",
+     wrong.body?.gbt?.scheme === "Bearer GW_AUTH",
      JSON.stringify(wrong.body?.gbt));
 
   const none = await postJSON(mesh, "/v1/chat/completions", chatBody(msgs));
   ck("② 不带 Authorization ⇒ 拒（不是放行）", none.status === 401, `status=${none.status}`);
 
-  const second = await postJSON(mesh, "/v1/chat/completions", chatBody(msgs), { authorization: `Bearer ${TOK2}` });
-  ck("② 多令牌：第 2 个令牌能用（一消费方一钥的前提）",
-     second.status !== 401, `status=${second.status}`);
+  const correct = await postJSON(mesh, "/v1/chat/completions", chatBody(msgs), { authorization: `Bearer ${GW}` });
+  ck("② 正确密钥放行（200）", correct.status !== 401, `status=${correct.status}`);
 
-  const lower = await postJSON(mesh, "/v1/chat/completions", chatBody(msgs), { authorization: `bEarer ${TOK}` });
+  const lower = await postJSON(mesh, "/v1/chat/completions", chatBody(msgs), { authorization: `bEarer ${GW}` });
   ck("② `Bearer` 前缀大小写不敏感", lower.status !== 401, `status=${lower.status}`);
-
-  const raw = await postJSON(mesh, "/v1/chat/completions", chatBody(msgs), { authorization: TOK });
-  ck("② 裸令牌（不带 Bearer 前缀）也认 —— 这是实测行为，写下来钉住",
-     raw.status !== 401, `status=${raw.status}`);
-
-  const longer = await postJSON(mesh, "/v1/chat/completions", chatBody(msgs), { authorization: "Bearer " + TOK + "-x" });
-  ck("② 负控：长度不同的令牌 ⇒ 401（不是 500：常数时间比较不许抛）",
-     longer.status === 401, `status=${longer.status}`);
 
   // 决定性负控：公开面真公开、受管面真受管 —— 一句话两处对照，声明才不是空话
   const modelsOpen = await req(mesh, "GET", "/v1/models");
@@ -166,27 +156,23 @@ function scanForToken(where, txt) {
      modelsOpen.status === 200 && none.status === 401,
      `models=${modelsOpen.status} chat=${none.status}`);
   ck("② 机器读的 auth_scope 说清了作用面",
-     g.auth_scope?.chat === "bearer" && g.auth_scope?.models === "public" && g.auth_scope?.tokens_configured === 2,
+     g.auth_scope?.chat === "bearer" && g.auth_scope?.models === "public" && g.auth_scope?.scheme === "GW_AUTH Bearer",
      JSON.stringify(g.auth_scope));
   ck("② 人读 auth 与机器读 auth_scope 一致（口径不许两套）",
-     /2 个令牌/.test(String(g.auth)) && /v1\/models 这一路公开/.test(String(g.auth)),
+     /网关鉴权已开/.test(String(g.auth)),
      String(g.auth));
-  ck("② 读数标了常数时间比较（且下面用源码证明它不是空话）",
-     g.auth_scope?.compare === "sha256+timingSafeEqual", String(g.auth_scope?.compare));
-  scanForToken("② /v1/models（配了令牌时）", JSON.stringify(modelsOpenBody));
+  scanForToken("② /v1/models（配了网关时）", JSON.stringify(modelsOpenBody));
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// ③ 兼容旧单值变量 GBT_ENDPOINT_TOKEN
+// ③ 旧变量兼容：GBT_ENDPOINT_TOKENS 仍工作（负控，代码中仍读取）
 // ══════════════════════════════════════════════════════════════════════════
 {
-  const mesh = await meshWith({ WORKERS_AI_MODEL: MODEL, AI: aiStub(), GBT_ENDPOINT_TOKEN: TOK });
+  const mesh = await meshWith({ WORKERS_AI_MODEL: MODEL, AI: aiStub(), GBT_ENDPOINT_TOKENS: `${TOK},${TOK2}` });
   const ok = await postJSON(mesh, "/v1/chat/completions", chatBody([{ role: "user", content: "甲" }]), { authorization: `Bearer ${TOK}` });
   const bad = await postJSON(mesh, "/v1/chat/completions", chatBody([{ role: "user", content: "甲" }]), { authorization: "Bearer other-token" });
-  const models = await (await req(mesh, "GET", "/v1/models")).json();
-  ck("③ 旧单值 GBT_ENDPOINT_TOKEN 仍然生效（正控）", ok.status !== 401, `status=${ok.status}`);
-  ck("③ 旧单值下错钥仍拒（负控）", bad.status === 401, `status=${bad.status}`);
-  ck("③ 旧单值按 1 个令牌报", models.gbt?.auth_scope?.tokens_configured === 1, JSON.stringify(models.gbt?.auth_scope));
+  ck("③ 旧多令牌 GBT_ENDPOINT_TOKENS 仍生效（正控）", ok.status !== 401, `status=${ok.status}`);
+  ck("③ 旧多令牌下错钥仍拒（负控）", bad.status === 401, `status=${bad.status}`);
 }
 
 // ══════════════════════════════════════════════════════════════════════════

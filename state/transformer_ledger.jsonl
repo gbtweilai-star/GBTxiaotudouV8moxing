@@ -53,3 +53,10 @@
 {"at": "2026-10-03T15:19:52", "event": "cache", "hit": "miss"}
 {"at": "2026-10-03T15:19:52", "event": "compress", "before": 48900, "after": 1206, "bypass": false, "protected": 1, "ref": 5000, "deduped": 0, "folded": 0, "trimmed": 4880, "budget": 0}
 {"at": "2026-10-03T15:19:52", "event": "autosize", "used": 48900, "after": 1206, "spill": "state\\context_spill\\ctx-20261003-151952.md"}
+{"at": "2026-10-03T16:01:33", "event": "compress", "before": 2068, "after": 300, "bypass": false, "protected": 1, "ref": 120, "deduped": 0, "folded": 0, "trimmed": 0, "budget": 281}
+{"at": "2026-10-03T16:01:33", "event": "compress", "before": 584, "after": 200, "bypass": false, "protected": 1, "ref": 80, "deduped": 0, "folded": 0, "trimmed": 0, "budget": 165}
+{"at": "2026-10-03T16:01:33", "event": "cache_put", "key": "73ecff030f7eb5a9c436", "chars": 3}
+{"at": "2026-10-03T16:01:33", "event": "cache", "hit": "approx", "distance": 0, "sim": 1.0}
+{"at": "2026-10-03T16:01:33", "event": "cache", "hit": "miss"}
+{"at": "2026-10-03T16:01:33", "event": "compress", "before": 48900, "after": 1206, "bypass": false, "protected": 1, "ref": 5000, "deduped": 0, "folded": 0, "trimmed": 4880, "budget": 0}
+{"at": "2026-10-03T16:01:33", "event": "autosize", "used": 48900, "after": 1206, "spill": "state\\context_spill\\ctx-20261003-160133.md"}

@@ -267,9 +267,7 @@ export function createMesh(env, sharedState) {
     //    工具调用（tools）**原样透传**给上游，回包里的 tool_calls 也**原样带回来**，
     //    但"上游到底支不支持"要**量出来**再说，不许我先替它表态。
     if (method === "GET" && path === "/v1/models") {
-      // 读数用：令牌闸到底配了几个（与 chat 分支同一套取值口径）
-      const _tkRead = String(e.GBT_ENDPOINT_TOKENS || e.GBT_ENDPOINT_TOKEN || "")
-        .split(",").map((s) => s.trim()).filter(Boolean);
+      const _gwAuth = String(e.GW_AUTH || "");
       return json({
         object: "list",
         data: [{ id: "gbt-potato-v8", object: "model", created: 0, owned_by: "GBT小土豆V8" }],
@@ -293,58 +291,38 @@ export function createMesh(env, sharedState) {
           identity: "GBT小土豆V8",
           stream: true,           // 已实现（SSE 分片现测通过）
           tools: true,            // 已实现（tools 原样转发 + tool_calls 原样带回，含第二轮工具结果）
-          // 🔴 口径修正（2026-09-25 · 现读量出来的）：令牌闸**只管 `/v1/chat/completions`**，
-          //    `/v1/models` 这一路**根本不校验** —— 老版只写一句「令牌闸已开（要 Bearer）」，
-          //    读起来像全局已锁，**声明比事实大**（本仓最忌的那种）。现在按**作用面**分开报：
-          //    人读的 `auth`（一句话说清管哪条路）+ 机器读的 `auth_scope`（结构化，可判）。
-          auth: _tkRead.length
-            ? ("令牌闸已开（" + _tkRead.length + " 个令牌 · 常数时间比较）："
-               + "/v1/chat/completions 要 Bearer；/v1/models 这一路公开（不校验）")
-            : "不校验 Authorization（没设 GBT_ENDPOINT_TOKENS / GBT_ENDPOINT_TOKEN）",
+          // 网关鉴权：单 key（GW_AUTH），不是多令牌；/v1/models 公开不校验，/v1/chat 要 Bearer
+          auth: _gwAuth
+            ? ("网关鉴权已开（GW_AUTH 单 key · /v1/models 公开 · /v1/chat 要 Bearer）")
+            : "不校验 Authorization（没设 GW_AUTH）",
           auth_scope: {
-            chat: _tkRead.length ? "bearer" : "none",
+            chat: _gwAuth ? "bearer" : "none",
             models: "public",
-            tokens_configured: _tkRead.length,
-            compare: "sha256+timingSafeEqual",
+            scheme: "GW_AUTH Bearer",
           },
         },
       });
     }
     if (method === "POST" && path === "/v1/chat/completions") {
-      // 🔴 令牌闸（**可选 · 默认关**）。2026-09-25 按主人「生成专属密钥给我用其他框架测试」改：
-      //
-      //   ① **支持多令牌**：`GBT_ENDPOINT_TOKENS`（逗号分隔）+ 兼容旧的单值 `GBT_ENDPOINT_TOKEN`。
-      //      为什么必须多令牌：单令牌下**没有"专属"可言** —— 你给别的框架发的钥匙，
-      //      跟你自己 DSH 路由用的 `GBT_POTATO_API_KEY` 必须是同一个值；想轮换测试钥
-      //      就会**连自己那条路由一起打断**。多令牌才能"一消费方一钥、各轮各的"。
-      //   ② **常数时间比较**：原来是最朴素的 `got !== "Bearer " + token` 明文比较。
-      //      改成两边各做 SHA-256 再 `timingSafeEqual`（等长摘要），
-      //      消掉"按第一个不同字节提前返回"的时序侧信道。
-      //   ③ 读数如实：**没设就明说"不校验"**，不许让人以为已经锁上了；设了就报几个令牌。
-      async function _tokenMatches(got, want) {
+      // 网关鉴权（**统一单 key · GW_AUTH**）。2026-10-03 简化：不再用多令牌，
+      // 所有消费方共享同一把 GW_AUTH，改一次即可轮换。
+      // 常数时间比较：两边各做 SHA-256 再 timingSafeEqual，消掉时序侧信道。
+      const _gwAuth = String(e.GW_AUTH || "");
+      if (_gwAuth) {
+        const got = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
         const enc = new TextEncoder();
         const [a, b] = await Promise.all([
           crypto.subtle.digest("SHA-256", enc.encode(got)),
-          crypto.subtle.digest("SHA-256", enc.encode(want)),
+          crypto.subtle.digest("SHA-256", enc.encode(_gwAuth)),
         ]);
         const ta = new Uint8Array(a), tb = new Uint8Array(b);
-        if (crypto.subtle.timingSafeEqual) return crypto.subtle.timingSafeEqual(ta, tb);
-        let diff = 0;
-        for (let i = 0; i < ta.length; i++) diff |= ta[i] ^ tb[i];
-        return diff === 0;
-      }
-      const _tokens = String(e.GBT_ENDPOINT_TOKENS || e.GBT_ENDPOINT_TOKEN || "")
-        .split(",").map((s) => s.trim()).filter(Boolean);
-      if (_tokens.length) {
-        const got = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
-        let _ok = false;
-        for (const t of _tokens) {
-          if (await _tokenMatches(got, t)) { _ok = true; break; }
-        }
-        if (!_ok) {
+        let ok = false;
+        if (crypto.subtle.timingSafeEqual) ok = crypto.subtle.timingSafeEqual(ta, tb);
+        else { let diff = 0; for (let i = 0; i < ta.length; i++) diff |= ta[i] ^ tb[i]; ok = diff === 0; }
+        if (!ok) {
           return json({
-            error: { message: "Authorization 不对（本端点已开启令牌闸）", type: "authentication_error" },
-            gbt: { tokens_configured: _tokens.length, scheme: "Bearer" },
+            error: { message: "Authorization 不对（本端点已开启网关鉴权）", type: "authentication_error" },
+            gbt: { scheme: "Bearer GW_AUTH" },
           }, 401);
         }
       }

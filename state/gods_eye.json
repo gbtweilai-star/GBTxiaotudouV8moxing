@@ -1,7 +1,7 @@
 {
  "ok": true,
  "op": "daily",
- "at": "2026-10-03T14:06:03",
+ "at": "2026-10-03T16:17:59",
  "探针汇报": {
   "available": true,
   "deliverables": [
@@ -38,6 +38,10 @@
     "src": "automation_keys.status"
    },
    {
+    "item": "顾问位不可用：['claude', 'codebuddy']",
+    "src": "gods_eye.advisors"
+   },
+   {
     "item": "永久记忆没铺满：触手库 243/245（缺 2）",
     "src": "obsidian_vault.status"
    },
@@ -56,21 +60,16 @@
   ],
   "卡点": [
    {
-    "item": "主人未许可的 owner 类能力位 64 个（要用时按名单批）",
+    "item": "主人未许可的 owner 类能力位 66 个（要用时按名单批）",
     "src": "cap_tags.audit",
     "how": "python -m gbt_allinone.tools.cap_tags permit --tag <TAG> --ttl 600"
-   },
-   {
-    "item": "顾问（claude）**要授权才能问**：['process_execute', 'external_llm'] 现在 0 张 ⇒ 意见取不到",
-    "src": "auth_gate.status（只读）",
-    "how": "python -m gbt_allinone auth grant --scope process_execute --ttl 600"
    }
   ]
  },
  "计数": {
   "缺点": 1,
-  "短板": 6,
-  "卡点": 2,
+  "短板": 7,
+  "卡点": 1,
   "探针可用": true
  },
  "_口径": "每一条都带 `src`（哪个读数文件/哪个能力位）—— **不许编**；探针汇报读的是探针工作区的真文件",
@@ -89,8 +88,8 @@
    ],
    "capability": "claude_code",
    "must_install": "npm i -g @anthropic-ai/claude-code",
-   "available": true,
-   "evidence": "C:\\Users\\ADMIN\\AppData\\Roaming\\npm\\claude.CMD"
+   "available": false,
+   "evidence": "npm i -g @anthropic-ai/claude-code"
   },
   "codebuddy": {
    "role": "杂事（服从安排 · 随时候命）",
@@ -113,8 +112,8 @@
     "tools/",
     "state/"
    ],
-   "available": true,
-   "evidence": "C:\\Users\\ADMIN\\AppData\\Local\\codebuddy\\bin\\codebuddy.EXE"
+   "available": false,
+   "evidence": "{'ok': True, 'op': 'status', 'kind': 'codebuddy', 'dimension': 'llm', 'label': 'CodeBuddy CLI', 'found': [], 'available'"
   }
  },
  "分工": {
@@ -203,21 +202,21 @@
  "决策人": "**Jev（推理模型）拍板** —— 意见与建议来自克劳德（可商量）；Codex 专注编程；DeepSeek Harness 专注执行层；主体（GBT小土豆V8）负责编排、留痕与兜底。Jev 挂起时**决策也挂起**（不许谁替它拍）",
  "最近决策": [
   {
-   "at": "2026-10-03T13:09:51",
+   "at": "2026-10-03T14:06:03",
    "choice": "修未清故障",
    "path": "fast",
    "decider": "Jev（推理模型）",
    "question": "先干哪个？"
   },
   {
-   "at": "2026-10-03T13:09:51",
+   "at": "2026-10-03T14:06:03",
    "choice": null,
    "path": "blocked",
    "decider": "Jev（推理模型）",
    "question": "选哪种蓝？"
   },
   {
-   "at": "2026-10-03T13:09:51",
+   "at": "2026-10-03T14:06:03",
    "choice": "修未清故障",
    "path": "fast",
    "decider": "Jev（推理模型）",

@@ -2,9 +2,9 @@
  "tier": "只读档",
  "total": 147,
  "buckets": {
-  "REAL": 110,
+  "REAL": 111,
   "HONEST_STUB": 10,
-  "FAKE": 2,
+  "FAKE": 1,
   "NEEDS_CRED": 17,
   "ERR": 0,
   "GHOST": 0,
@@ -253,7 +253,7 @@
   },
   {
    "kind": "echo",
-   "bucket": "FAKE",
+   "bucket": "REAL",
    "op": "(default)"
   },
   {
@@ -779,6 +779,6 @@
   "spend_guard",
   "train_recipe"
  ],
- "made_at": "2026-10-03T15:19:59",
+ "made_at": "2026-10-03T16:01:44",
  "_口径": "只读探针（词表三路取 · 只发 READISH op · 词表空的只读位走默认直调兜底）；FAKE 必须为 0；GHOST=注册表在册但运行时不认；SKIP=编排器名不盲调；STALE_ROSTER=快照名册里的陈旧名（不在活注册表，已剔除不占读数）"
 }

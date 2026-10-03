@@ -16818,3 +16818,340 @@
 {"at": "2026-10-03T15:24:43", "event": "scan", "bindings": 6464, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-10-03T15:25:36", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
 {"at": "2026-10-03T15:25:50", "event": "scan", "bindings": 6464, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-03T15:47:18", "event": "scan", "bindings": 6464, "missing_asset": 87, "ghost_tentacle": 0}
+{"at": "2026-10-03T15:47:54", "event": "bind", "asset": "out/codex-scripts/block4a_probe_prod4b.out.txt", "tentacle": "filmkit", "note": "test"}
+{"at": "2026-10-03T15:48:36", "event": "unbind", "asset": "tools/codex-scripts/analyze_block3_delta.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:37", "event": "bind", "asset": "out/codex-scripts/analyze_block3_delta.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:37", "event": "unbind", "asset": "tools/codex-scripts/append_memory_block3.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:38", "event": "bind", "asset": "out/codex-scripts/append_memory_block3.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:39", "event": "unbind", "asset": "tools/codex-scripts/block3_addendum_mirror3.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:39", "event": "bind", "asset": "out/codex-scripts/block3_addendum_mirror3.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:40", "event": "unbind", "asset": "tools/codex-scripts/block3_addendum_prod.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:41", "event": "bind", "asset": "out/codex-scripts/block3_addendum_prod.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:41", "event": "unbind", "asset": "tools/codex-scripts/block3_probe.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:42", "event": "bind", "asset": "out/codex-scripts/block3_probe.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:42", "event": "unbind", "asset": "tools/codex-scripts/block3_probe_prod.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:43", "event": "bind", "asset": "out/codex-scripts/block3_probe_prod.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:44", "event": "unbind", "asset": "tools/codex-scripts/block3_probe_prod_preland.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:45", "event": "bind", "asset": "out/codex-scripts/block3_probe_prod_preland.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:45", "event": "unbind", "asset": "tools/codex-scripts/block4a_probe_prod4b.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:46", "event": "unbind", "asset": "tools/codex-scripts/block4b_bridge_probe_prod4b.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:47", "event": "bind", "asset": "out/codex-scripts/block4b_bridge_probe_prod4b.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:48", "event": "unbind", "asset": "tools/codex-scripts/block4b_panel_probe_prod4b.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:49", "event": "bind", "asset": "out/codex-scripts/block4b_panel_probe_prod4b.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:50", "event": "unbind", "asset": "tools/codex-scripts/land_block3.dryrun.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:50", "event": "bind", "asset": "out/codex-scripts/land_block3.dryrun.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:51", "event": "unbind", "asset": "tools/codex-scripts/land_block3.go.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:51", "event": "bind", "asset": "out/codex-scripts/land_block3.go.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:52", "event": "unbind", "asset": "tools/codex-scripts/land_block4b.bridge.go.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:53", "event": "bind", "asset": "out/codex-scripts/land_block4b.bridge.go.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:54", "event": "unbind", "asset": "tools/codex-scripts/land_block4b.panel.go.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:55", "event": "bind", "asset": "out/codex-scripts/land_block4b.panel.go.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:55", "event": "unbind", "asset": "tools/codex-scripts/make_block3_baseline_final.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:56", "event": "bind", "asset": "out/codex-scripts/make_block3_baseline_final.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:56", "event": "unbind", "asset": "tools/codex-scripts/patch_block3_probe_target.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:57", "event": "bind", "asset": "out/codex-scripts/patch_block3_probe_target.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:57", "event": "unbind", "asset": "tools/codex-scripts/regress_framework_gbt_post4b.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:58", "event": "bind", "asset": "out/codex-scripts/regress_framework_gbt_post4b.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:58", "event": "unbind", "asset": "tools/codex-scripts/regress_framework_post4b.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:48:59", "event": "bind", "asset": "out/codex-scripts/regress_framework_post4b.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:48:59", "event": "unbind", "asset": "tools/codex-scripts/render_test.png", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:49:00", "event": "bind", "asset": "out/codex-scripts/render_test.png", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:00", "event": "unbind", "asset": "tools/codex-scripts/write_block4_plan.out.txt", "tentacle": "filmkit", "why": ""}
+{"at": "2026-10-03T15:49:01", "event": "bind", "asset": "out/codex-scripts/write_block4_plan.out.txt", "tentacle": "filmkit", "note": "sweep · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:01", "event": "unbind", "asset": "tools/codex-scripts/b4b_cross_scan.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:02", "event": "bind", "asset": "out/codex-scripts/b4b_cross_scan.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:02", "event": "unbind", "asset": "tools/codex-scripts/b4b_cross_scan.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:03", "event": "bind", "asset": "out/codex-scripts/b4b_cross_scan.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:03", "event": "unbind", "asset": "tools/codex-scripts/b4b_hyg_sig.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:04", "event": "bind", "asset": "out/codex-scripts/b4b_hyg_sig.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:04", "event": "unbind", "asset": "tools/codex-scripts/b4b_hyg_sig.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:05", "event": "bind", "asset": "out/codex-scripts/b4b_hyg_sig.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:05", "event": "unbind", "asset": "tools/codex-scripts/b4b_sig_guard.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:06", "event": "bind", "asset": "out/codex-scripts/b4b_sig_guard.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:06", "event": "unbind", "asset": "tools/codex-scripts/b4b_sig_guard.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:06", "event": "bind", "asset": "out/codex-scripts/b4b_sig_guard.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:07", "event": "unbind", "asset": "tools/codex-scripts/b4_codex_bridge_test.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:07", "event": "bind", "asset": "out/codex-scripts/b4_codex_bridge_test.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:08", "event": "unbind", "asset": "tools/codex-scripts/b4_codex_bridge_test.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:08", "event": "bind", "asset": "out/codex-scripts/b4_codex_bridge_test.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:09", "event": "unbind", "asset": "tools/codex-scripts/block4a_probe.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:09", "event": "bind", "asset": "out/codex-scripts/block4a_probe.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:10", "event": "unbind", "asset": "tools/codex-scripts/block4a_probe.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:10", "event": "bind", "asset": "out/codex-scripts/block4a_probe.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:11", "event": "unbind", "asset": "tools/codex-scripts/block4a_probe_prod.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:12", "event": "bind", "asset": "out/codex-scripts/block4a_probe_prod.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:13", "event": "unbind", "asset": "tools/codex-scripts/block4a_probe_prod.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:13", "event": "bind", "asset": "out/codex-scripts/block4a_probe_prod.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:13", "event": "unbind", "asset": "tools/codex-scripts/bridge_probe.frozen.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:14", "event": "bind", "asset": "out/codex-scripts/bridge_probe.frozen.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:14", "event": "unbind", "asset": "tools/codex-scripts/bridge_probe.frozen.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:15", "event": "bind", "asset": "out/codex-scripts/bridge_probe.frozen.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:16", "event": "unbind", "asset": "tools/codex-scripts/bridge_probe.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:16", "event": "bind", "asset": "out/codex-scripts/bridge_probe.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:17", "event": "unbind", "asset": "tools/codex-scripts/bridge_probe.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:17", "event": "bind", "asset": "out/codex-scripts/bridge_probe.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:18", "event": "unbind", "asset": "tools/codex-scripts/build_panel_mirror4.dryrun.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:18", "event": "bind", "asset": "out/codex-scripts/build_panel_mirror4.dryrun.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:19", "event": "unbind", "asset": "tools/codex-scripts/build_panel_mirror4.dryrun.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:19", "event": "bind", "asset": "out/codex-scripts/build_panel_mirror4.dryrun.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:20", "event": "unbind", "asset": "tools/codex-scripts/build_panel_mirror4.go.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:20", "event": "bind", "asset": "out/codex-scripts/build_panel_mirror4.go.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:21", "event": "unbind", "asset": "tools/codex-scripts/build_panel_mirror4.go.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:22", "event": "bind", "asset": "out/codex-scripts/build_panel_mirror4.go.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:23", "event": "unbind", "asset": "tools/codex-scripts/c1.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:24", "event": "bind", "asset": "out/codex-scripts/c1.out", "tentacle": "project_context", "note": "probe · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:24", "event": "unbind", "asset": "tools/codex-scripts/codex_bridge_baseline.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:25", "event": "bind", "asset": "out/codex-scripts/codex_bridge_baseline.out", "tentacle": "project_context", "note": "probe · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:25", "event": "unbind", "asset": "tools/codex-scripts/codex_v2_panel_netguard.frozen.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:26", "event": "bind", "asset": "out/codex-scripts/codex_v2_panel_netguard.frozen.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:26", "event": "unbind", "asset": "tools/codex-scripts/codex_v2_panel_netguard.frozen.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:26", "event": "bind", "asset": "out/codex-scripts/codex_v2_panel_netguard.frozen.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:27", "event": "unbind", "asset": "tools/codex-scripts/codex_v2_panel_netguard.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:27", "event": "bind", "asset": "out/codex-scripts/codex_v2_panel_netguard.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:28", "event": "unbind", "asset": "tools/codex-scripts/codex_v2_panel_netguard.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:28", "event": "bind", "asset": "out/codex-scripts/codex_v2_panel_netguard.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:29", "event": "unbind", "asset": "tools/codex-scripts/codex_v2_panel_probe.frozen.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:29", "event": "bind", "asset": "out/codex-scripts/codex_v2_panel_probe.frozen.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:30", "event": "unbind", "asset": "tools/codex-scripts/codex_v2_panel_probe.frozen.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:31", "event": "bind", "asset": "out/codex-scripts/codex_v2_panel_probe.frozen.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:31", "event": "unbind", "asset": "tools/codex-scripts/codex_v2_panel_probe.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:32", "event": "bind", "asset": "out/codex-scripts/codex_v2_panel_probe.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:32", "event": "unbind", "asset": "tools/codex-scripts/codex_v2_panel_probe.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:33", "event": "bind", "asset": "out/codex-scripts/codex_v2_panel_probe.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:33", "event": "unbind", "asset": "tools/codex-scripts/codex_v2_route_land.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:34", "event": "bind", "asset": "out/codex-scripts/codex_v2_route_land.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:34", "event": "unbind", "asset": "tools/codex-scripts/codex_v2_route_land.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:35", "event": "bind", "asset": "out/codex-scripts/codex_v2_route_land.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:36", "event": "unbind", "asset": "tools/codex-scripts/ctx_probe.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:36", "event": "bind", "asset": "out/codex-scripts/ctx_probe.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:37", "event": "unbind", "asset": "tools/codex-scripts/ctx_probe.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:37", "event": "bind", "asset": "out/codex-scripts/ctx_probe.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:38", "event": "unbind", "asset": "tools/codex-scripts/ctx_probe2.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:38", "event": "bind", "asset": "out/codex-scripts/ctx_probe2.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:39", "event": "unbind", "asset": "tools/codex-scripts/ctx_probe2.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:39", "event": "bind", "asset": "out/codex-scripts/ctx_probe2.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:40", "event": "unbind", "asset": "tools/codex-scripts/ctx_probe2_firstrun.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:40", "event": "bind", "asset": "out/codex-scripts/ctx_probe2_firstrun.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:41", "event": "unbind", "asset": "tools/codex-scripts/ctx_probe2_firstrun.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:42", "event": "bind", "asset": "out/codex-scripts/ctx_probe2_firstrun.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:42", "event": "unbind", "asset": "tools/codex-scripts/entry_refactor_probe.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:43", "event": "bind", "asset": "out/codex-scripts/entry_refactor_probe.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:44", "event": "unbind", "asset": "tools/codex-scripts/entry_refactor_probe.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:46", "event": "bind", "asset": "out/codex-scripts/entry_refactor_probe.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:47", "event": "unbind", "asset": "tools/codex-scripts/envelope_probe.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:48", "event": "bind", "asset": "out/codex-scripts/envelope_probe.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:48", "event": "unbind", "asset": "tools/codex-scripts/envelope_probe.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:49", "event": "bind", "asset": "out/codex-scripts/envelope_probe.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:49", "event": "unbind", "asset": "tools/codex-scripts/envelope_probe2.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:50", "event": "bind", "asset": "out/codex-scripts/envelope_probe2.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:51", "event": "unbind", "asset": "tools/codex-scripts/envelope_probe2.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:51", "event": "bind", "asset": "out/codex-scripts/envelope_probe2.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:51", "event": "unbind", "asset": "tools/codex-scripts/full_scan.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:53", "event": "bind", "asset": "out/codex-scripts/full_scan.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:53", "event": "unbind", "asset": "tools/codex-scripts/full_scan.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:54", "event": "bind", "asset": "out/codex-scripts/full_scan.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:55", "event": "unbind", "asset": "tools/codex-scripts/mock_push_selftest.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:56", "event": "bind", "asset": "out/codex-scripts/mock_push_selftest.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:56", "event": "unbind", "asset": "tools/codex-scripts/mock_push_selftest.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:49:57", "event": "bind", "asset": "out/codex-scripts/mock_push_selftest.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:57", "event": "unbind", "asset": "tools/codex-scripts/panel_probe.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:58", "event": "bind", "asset": "out/codex-scripts/panel_probe.out", "tentacle": "project_context", "note": "probe · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:58", "event": "unbind", "asset": "tools/codex-scripts/panel_probe_clean.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:49:59", "event": "bind", "asset": "out/codex-scripts/panel_probe_clean.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:49:59", "event": "unbind", "asset": "tools/codex-scripts/panel_probe_clean.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:00", "event": "bind", "asset": "out/codex-scripts/panel_probe_clean.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:00", "event": "unbind", "asset": "tools/codex-scripts/patch_mock_push.dryrun.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:01", "event": "bind", "asset": "out/codex-scripts/patch_mock_push.dryrun.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:01", "event": "unbind", "asset": "tools/codex-scripts/patch_mock_push.dryrun.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:02", "event": "bind", "asset": "out/codex-scripts/patch_mock_push.dryrun.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:02", "event": "unbind", "asset": "tools/codex-scripts/patch_mock_push.go.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:03", "event": "bind", "asset": "out/codex-scripts/patch_mock_push.go.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:03", "event": "unbind", "asset": "tools/codex-scripts/patch_mock_push.go.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:03", "event": "bind", "asset": "out/codex-scripts/patch_mock_push.go.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:04", "event": "unbind", "asset": "tools/codex-scripts/policy_probe.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:05", "event": "bind", "asset": "out/codex-scripts/policy_probe.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:05", "event": "unbind", "asset": "tools/codex-scripts/policy_probe.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:06", "event": "bind", "asset": "out/codex-scripts/policy_probe.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:07", "event": "unbind", "asset": "tools/codex-scripts/policy_probe2.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:07", "event": "bind", "asset": "out/codex-scripts/policy_probe2.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:08", "event": "unbind", "asset": "tools/codex-scripts/policy_probe2.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:09", "event": "bind", "asset": "out/codex-scripts/policy_probe2.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:09", "event": "unbind", "asset": "tools/codex-scripts/probe_panel_import.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:10", "event": "bind", "asset": "out/codex-scripts/probe_panel_import.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:11", "event": "unbind", "asset": "tools/codex-scripts/probe_panel_import.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:11", "event": "bind", "asset": "out/codex-scripts/probe_panel_import.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:12", "event": "unbind", "asset": "tools/codex-scripts/push_off_block3_prod.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:12", "event": "bind", "asset": "out/codex-scripts/push_off_block3_prod.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:13", "event": "unbind", "asset": "tools/codex-scripts/push_off_block3_prod.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:14", "event": "bind", "asset": "out/codex-scripts/push_off_block3_prod.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:14", "event": "unbind", "asset": "tools/codex-scripts/reclass.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:15", "event": "bind", "asset": "out/codex-scripts/reclass.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:15", "event": "unbind", "asset": "tools/codex-scripts/reclass.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:16", "event": "bind", "asset": "out/codex-scripts/reclass.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:17", "event": "unbind", "asset": "tools/codex-scripts/reclass2.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:18", "event": "bind", "asset": "out/codex-scripts/reclass2.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:18", "event": "unbind", "asset": "tools/codex-scripts/reclass2.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:19", "event": "bind", "asset": "out/codex-scripts/reclass2.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:19", "event": "unbind", "asset": "tools/codex-scripts/regress.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:20", "event": "bind", "asset": "out/codex-scripts/regress.out", "tentacle": "project_context", "note": "asset_index.wire · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:20", "event": "unbind", "asset": "tools/codex-scripts/reg_01_codex_bridge.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:21", "event": "bind", "asset": "out/codex-scripts/reg_01_codex_bridge.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:22", "event": "unbind", "asset": "tools/codex-scripts/reg_01_codex_bridge.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:22", "event": "bind", "asset": "out/codex-scripts/reg_01_codex_bridge.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:23", "event": "unbind", "asset": "tools/codex-scripts/reg_02_panel.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:23", "event": "bind", "asset": "out/codex-scripts/reg_02_panel.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:23", "event": "unbind", "asset": "tools/codex-scripts/reg_02_panel.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:24", "event": "bind", "asset": "out/codex-scripts/reg_02_panel.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:24", "event": "unbind", "asset": "tools/codex-scripts/reg_03_framework.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:25", "event": "bind", "asset": "out/codex-scripts/reg_03_framework.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:25", "event": "unbind", "asset": "tools/codex-scripts/reg_03_framework.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:26", "event": "bind", "asset": "out/codex-scripts/reg_03_framework.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:26", "event": "unbind", "asset": "tools/codex-scripts/reg_04_framework.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:26", "event": "bind", "asset": "out/codex-scripts/reg_04_framework.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:27", "event": "unbind", "asset": "tools/codex-scripts/reg_04_framework.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:27", "event": "bind", "asset": "out/codex-scripts/reg_04_framework.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:28", "event": "unbind", "asset": "tools/codex-scripts/reg_05_bridge.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:28", "event": "bind", "asset": "out/codex-scripts/reg_05_bridge.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:29", "event": "unbind", "asset": "tools/codex-scripts/reg_05_bridge.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:30", "event": "bind", "asset": "out/codex-scripts/reg_05_bridge.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:31", "event": "unbind", "asset": "tools/codex-scripts/reg_06_framework.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:31", "event": "bind", "asset": "out/codex-scripts/reg_06_framework.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:31", "event": "unbind", "asset": "tools/codex-scripts/reg_06_framework.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:32", "event": "bind", "asset": "out/codex-scripts/reg_06_framework.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:32", "event": "unbind", "asset": "tools/codex-scripts/reg_07_framework.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:33", "event": "bind", "asset": "out/codex-scripts/reg_07_framework.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:33", "event": "unbind", "asset": "tools/codex-scripts/reg_07_framework.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:34", "event": "bind", "asset": "out/codex-scripts/reg_07_framework.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:34", "event": "unbind", "asset": "tools/codex-scripts/reg_block1_codex_bridge.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:35", "event": "bind", "asset": "out/codex-scripts/reg_block1_codex_bridge.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:35", "event": "unbind", "asset": "tools/codex-scripts/reg_block1_codex_bridge.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:36", "event": "bind", "asset": "out/codex-scripts/reg_block1_codex_bridge.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:36", "event": "unbind", "asset": "tools/codex-scripts/reg_block1_framework.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:36", "event": "bind", "asset": "out/codex-scripts/reg_block1_framework.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:37", "event": "unbind", "asset": "tools/codex-scripts/reg_block1_framework.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:37", "event": "bind", "asset": "out/codex-scripts/reg_block1_framework.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:37", "event": "unbind", "asset": "tools/codex-scripts/reg_block1_panel_server.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:38", "event": "bind", "asset": "out/codex-scripts/reg_block1_panel_server.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:38", "event": "unbind", "asset": "tools/codex-scripts/reg_block1_panel_server.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:39", "event": "bind", "asset": "out/codex-scripts/reg_block1_panel_server.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:39", "event": "unbind", "asset": "tools/codex-scripts/root_dir_scan.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:40", "event": "bind", "asset": "out/codex-scripts/root_dir_scan.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:40", "event": "unbind", "asset": "tools/codex-scripts/root_dir_scan.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:41", "event": "bind", "asset": "out/codex-scripts/root_dir_scan.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:41", "event": "unbind", "asset": "tools/codex-scripts/root_shadow_scan.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:42", "event": "bind", "asset": "out/codex-scripts/root_shadow_scan.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:42", "event": "unbind", "asset": "tools/codex-scripts/root_shadow_scan.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:43", "event": "bind", "asset": "out/codex-scripts/root_shadow_scan.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:43", "event": "unbind", "asset": "tools/codex-scripts/route_probe.frozen.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:44", "event": "bind", "asset": "out/codex-scripts/route_probe.frozen.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:45", "event": "unbind", "asset": "tools/codex-scripts/route_probe.frozen.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:45", "event": "bind", "asset": "out/codex-scripts/route_probe.frozen.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:46", "event": "unbind", "asset": "tools/codex-scripts/route_probe.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:47", "event": "bind", "asset": "out/codex-scripts/route_probe.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:47", "event": "unbind", "asset": "tools/codex-scripts/route_probe.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:47", "event": "bind", "asset": "out/codex-scripts/route_probe.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:48", "event": "unbind", "asset": "tools/codex-scripts/shadow_import_probe.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:49", "event": "bind", "asset": "out/codex-scripts/shadow_import_probe.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:50", "event": "unbind", "asset": "tools/codex-scripts/shadow_import_probe.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:50", "event": "bind", "asset": "out/codex-scripts/shadow_import_probe.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:51", "event": "unbind", "asset": "tools/codex-scripts/shadow_risk.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:51", "event": "bind", "asset": "out/codex-scripts/shadow_risk.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:52", "event": "unbind", "asset": "tools/codex-scripts/shadow_risk.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:52", "event": "bind", "asset": "out/codex-scripts/shadow_risk.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:53", "event": "unbind", "asset": "tools/codex-scripts/smoke_ledger.frozen.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:53", "event": "bind", "asset": "out/codex-scripts/smoke_ledger.frozen.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:54", "event": "unbind", "asset": "tools/codex-scripts/smoke_ledger.frozen.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:55", "event": "bind", "asset": "out/codex-scripts/smoke_ledger.frozen.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:55", "event": "unbind", "asset": "tools/codex-scripts/smoke_ledger.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:56", "event": "bind", "asset": "out/codex-scripts/smoke_ledger.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:56", "event": "unbind", "asset": "tools/codex-scripts/smoke_ledger.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:56", "event": "bind", "asset": "out/codex-scripts/smoke_ledger.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:57", "event": "unbind", "asset": "tools/codex-scripts/ver_01_hyg_sig.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:57", "event": "bind", "asset": "out/codex-scripts/ver_01_hyg_sig.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:57", "event": "unbind", "asset": "tools/codex-scripts/ver_01_hyg_sig.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:58", "event": "bind", "asset": "out/codex-scripts/ver_01_hyg_sig.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:58", "event": "unbind", "asset": "tools/codex-scripts/ver_02_cross.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:50:59", "event": "bind", "asset": "out/codex-scripts/ver_02_cross.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:50:59", "event": "unbind", "asset": "tools/codex-scripts/ver_02_cross.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:50:59", "event": "bind", "asset": "out/codex-scripts/ver_02_cross.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:00", "event": "unbind", "asset": "tools/codex-scripts/ver_03_hyg_sig.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:51:01", "event": "bind", "asset": "out/codex-scripts/ver_03_hyg_sig.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:02", "event": "unbind", "asset": "tools/codex-scripts/ver_03_hyg_sig.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:51:03", "event": "bind", "asset": "out/codex-scripts/ver_03_hyg_sig.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:03", "event": "unbind", "asset": "tools/codex-scripts/ver_04_cross.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:51:04", "event": "bind", "asset": "out/codex-scripts/ver_04_cross.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:04", "event": "unbind", "asset": "tools/codex-scripts/ver_04_cross.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:51:05", "event": "bind", "asset": "out/codex-scripts/ver_04_cross.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:05", "event": "unbind", "asset": "tools/codex-scripts/write_block4b_plan.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:51:06", "event": "bind", "asset": "out/codex-scripts/write_block4b_plan.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:06", "event": "unbind", "asset": "tools/codex-scripts/write_block4b_plan.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:51:07", "event": "bind", "asset": "out/codex-scripts/write_block4b_plan.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:07", "event": "unbind", "asset": "tools/codex-scripts/write_policy_report.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:51:08", "event": "bind", "asset": "out/codex-scripts/write_policy_report.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:08", "event": "unbind", "asset": "tools/codex-scripts/write_policy_report.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:51:09", "event": "bind", "asset": "out/codex-scripts/write_policy_report.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:10", "event": "unbind", "asset": "tools/codex-scripts/write_reports_v2.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:51:10", "event": "bind", "asset": "out/codex-scripts/write_reports_v2.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:11", "event": "unbind", "asset": "tools/codex-scripts/write_reports_v2.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:51:12", "event": "bind", "asset": "out/codex-scripts/write_reports_v2.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:12", "event": "unbind", "asset": "tools/codex-scripts/write_report_root.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:51:13", "event": "bind", "asset": "out/codex-scripts/write_report_root.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:14", "event": "unbind", "asset": "tools/codex-scripts/write_report_root.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:51:15", "event": "bind", "asset": "out/codex-scripts/write_report_root.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:16", "event": "unbind", "asset": "tools/codex-scripts/write_report_shadow.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:51:17", "event": "bind", "asset": "out/codex-scripts/write_report_shadow.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:17", "event": "unbind", "asset": "tools/codex-scripts/write_report_shadow.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:51:18", "event": "bind", "asset": "out/codex-scripts/write_report_shadow.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:18", "event": "unbind", "asset": "tools/codex-scripts/_z28.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:51:19", "event": "bind", "asset": "out/codex-scripts/_z28.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:19", "event": "unbind", "asset": "tools/codex-scripts/_z28.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:51:20", "event": "bind", "asset": "out/codex-scripts/_z28.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:20", "event": "unbind", "asset": "tools/codex-scripts/_z41_closure.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:51:21", "event": "bind", "asset": "out/codex-scripts/_z41_closure.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:21", "event": "unbind", "asset": "tools/codex-scripts/_z41_closure.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:51:22", "event": "bind", "asset": "out/codex-scripts/_z41_closure.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:22", "event": "unbind", "asset": "tools/codex-scripts/_z42_ttlwatch.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:51:22", "event": "bind", "asset": "out/codex-scripts/_z42_ttlwatch.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:23", "event": "unbind", "asset": "tools/codex-scripts/_z42_ttlwatch.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:51:23", "event": "bind", "asset": "out/codex-scripts/_z42_ttlwatch.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:24", "event": "unbind", "asset": "tools/codex-scripts/_z46_closure_v2.out", "tentacle": "project_context", "why": ""}
+{"at": "2026-10-03T15:51:24", "event": "bind", "asset": "out/codex-scripts/_z46_closure_v2.out", "tentacle": "project_context", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:25", "event": "unbind", "asset": "tools/codex-scripts/_z46_closure_v2.out", "tentacle": "tentacle_manifest", "why": ""}
+{"at": "2026-10-03T15:51:26", "event": "bind", "asset": "out/codex-scripts/_z46_closure_v2.out", "tentacle": "tentacle_manifest", "note": "autobind · 分类摆放归仓"}
+{"at": "2026-10-03T15:51:30", "event": "scan", "bindings": 6464, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-03T15:55:50", "event": "bind", "asset": "gbt_allinone/tools/pulse.py", "tentacle": "domain:tools", "note": "autobind"}
+{"at": "2026-10-03T15:55:53", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/daily_pulse.jsonl", "tentacle": "topic_watch", "note": "autobind"}
+{"at": "2026-10-03T15:55:53", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/state.json", "tentacle": "topic_watch", "note": "autobind"}
+{"at": "2026-10-03T15:55:57", "event": "autobind", "files": 3, "bound": 3, "hint": "topic_watch", "pruned": 0}
+{"at": "2026-10-03T15:56:26", "event": "autobind", "files": 1, "bound": 1, "hint": "topic_watch", "pruned": 0}
+{"at": "2026-10-03T15:56:26", "event": "autobind", "files": 1, "bound": 1, "hint": "trend_watch", "pruned": 0}
+{"at": "2026-10-03T15:57:12", "event": "bind", "asset": "gbt_allinone/tools/pulse_agent.py", "tentacle": "domain:tools", "note": "autobind"}
+{"at": "2026-10-03T15:57:15", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/intelligence_log.jsonl", "tentacle": "penetrating_cross_scan", "note": "autobind"}
+{"at": "2026-10-03T15:57:15", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/state.json", "tentacle": "penetrating_cross_scan", "note": "autobind"}
+{"at": "2026-10-03T15:57:17", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/intelligence_log.jsonl", "tentacle": "hook_enforcer", "note": "autobind"}
+{"at": "2026-10-03T15:57:17", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/state.json", "tentacle": "hook_enforcer", "note": "autobind"}
+{"at": "2026-10-03T15:57:20", "event": "autobind", "files": 3, "bound": 3, "hint": "hook_enforcer", "pruned": 0}
+{"at": "2026-10-03T15:58:19", "event": "autobind", "files": 1, "bound": 1, "hint": "sec_scan", "pruned": 0}
+{"at": "2026-10-03T15:58:41", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/intelligence_log.jsonl", "tentacle": "topic_watch", "note": "autobind"}
+{"at": "2026-10-03T15:58:41", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/intelligence_log.jsonl", "tentacle": "trend_watch", "note": "autobind"}
+{"at": "2026-10-03T15:58:41", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/state.json", "tentacle": "trend_watch", "note": "autobind"}
+{"at": "2026-10-03T15:58:43", "event": "autobind", "files": 2, "bound": 2, "hint": "topic_watch", "pruned": 0}
+{"at": "2026-10-03T15:59:33", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/intelligence_log.jsonl", "tentacle": "sec_surface", "note": "autobind"}
+{"at": "2026-10-03T15:59:33", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/state.json", "tentacle": "sec_surface", "note": "autobind"}
+{"at": "2026-10-03T16:00:59", "event": "autobind", "files": 3, "bound": 3, "hint": "sec_surface", "pruned": 0}
+{"at": "2026-10-03T16:01:06", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/intelligence_log.jsonl", "tentacle": "topic_watch", "note": "autobind"}
+{"at": "2026-10-03T16:01:06", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/intelligence_log.jsonl", "tentacle": "sec_sweeper", "note": "autobind"}
+{"at": "2026-10-03T16:01:06", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/state.json", "tentacle": "sec_sweeper", "note": "autobind"}
+{"at": "2026-10-03T16:01:08", "event": "autobind", "files": 2, "bound": 2, "hint": "topic_watch", "pruned": 0}
+{"at": "2026-10-03T16:01:09", "event": "autobind", "files": 2, "bound": 2, "hint": "sec_sweeper", "pruned": 0}
+{"at": "2026-10-03T16:02:53", "event": "bind", "asset": "gbt_allinone/gbt_allinone/store/pulse/intelligence_log.jsonl", "tentacle": "topic_watch", "note": "autobind"}
+{"at": "2026-10-03T16:02:57", "event": "autobind", "files": 3, "bound": 3, "hint": "topic_watch", "pruned": 0}
+{"at": "2026-10-03T16:03:43", "event": "autobind", "files": 2, "bound": 2, "hint": "topic_watch", "pruned": 0}
+{"at": "2026-10-03T16:41:31", "event": "bind", "asset": "gbt_allinone/api.py", "tentacle": "omni_web", "note": "autobind"}
+{"at": "2026-10-03T16:41:31", "event": "bind", "asset": "gbt_allinone/caps_registry.py", "tentacle": "omni_web", "note": "autobind"}
+{"at": "2026-10-03T16:41:31", "event": "bind", "asset": "gbt_allinone/omni_web_cap.py", "tentacle": "omni_web", "note": "autobind"}
+{"at": "2026-10-03T16:41:32", "event": "autobind", "files": 3, "bound": 3, "hint": "omni_web", "pruned": 0}
+{"at": "2026-10-03T18:33:49", "event": "bind", "asset": "tools/codex-scripts/register_tentacle_agnes.py", "tentacle": "topic_watch", "note": "autobind"}
+{"at": "2026-10-03T18:33:49", "event": "bind", "asset": "gbt_allinone/deepseek_key.py", "tentacle": "topic_watch", "note": "autobind"}
+{"at": "2026-10-03T18:33:54", "event": "autobind", "files": 5, "bound": 5, "hint": "topic_watch", "pruned": 0}
