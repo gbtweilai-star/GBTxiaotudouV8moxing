@@ -194,3 +194,13 @@ projects/**/生成/
 # 471KB zip + 整棵 strip 树是**产出**不是源码 ⇒ 不进版本控制；但**要进覆盖矩阵**
 # （`python tools/coverage_matrix.py sweep`），免得成为"没人扫过的面"。
 vercel-brand-protected/
+
+# 大体积视频输出（>100MB，不入库）
+output/actioncam-demo*/
+output/她从代码里醒来*/
+state/surfaces/_home/.config/manicode/freebuff.exe
+render/video/*.mp4
+outputs/**/*.mp4
+video-out/
+state/tentacle-slots/**/out.mp4
+
