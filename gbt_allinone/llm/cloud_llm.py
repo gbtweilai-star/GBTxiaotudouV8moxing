@@ -793,24 +793,71 @@ def run(action=None, **params):
                     pass
             if _tentacle_key:
                 # 直接用触手独立 key 调 agnes，不走 key_gateway 选路
+                # ⛔ 2026-10-03 轮询轮换：429/422 限流 → 自动试下一个触手 key
                 _timeout_t = int(params.get("timeout", 60))
-                _rt = _call_once(
-                    "openai_compatible",
-                    "https://apihub.agnes-ai.com/v1",
-                    "agnes-2.5-flash",
-                    _tentacle_key,
-                    body, system, prompt,
-                    _timeout_t,
-                    "agnes",
-                )
-                return {
-                    "ok": True, "reply": _rt, "provider": "agnes",
-                    "model": "agnes-2.5-flash",
-                    "key_masked": _tentacle_key[:8] + "****",
-                    "brand": _KG.BRAND_TAG,
-                    "tentacle_profile": _matched_prof,
-                    "auto_switched": False, "tried_before": [],
-                }
+                _tried_before = []
+                _last_err = None
+                # 按路由表顺序收集所有已配置的触手 profile（含当前目标）
+                _all_tentacles = []
+                for _kw2, _prof2 in _PURPOSE_ROUTING_MAP.items():
+                    if _kw2 in _purpose or _prof2 == _matched_prof:
+                        _all_tentacles.append(_prof2)
+                # 去重保序
+                _seen = set(); _uniq = []
+                for _p2 in _all_tentacles:
+                    if _p2 not in _seen:
+                        _seen.add(_p2); _uniq.append(_p2)
+                _all_tentacles = _uniq
+
+                for _try_prof in _all_tentacles:
+                    _try_key = os.environ.get(f"{_try_prof.upper()}_API_KEY") or ""
+                    if not _try_key:
+                        try:
+                            from ..deepseek_key import _unprotect_dpapi as _dk_unprotect2
+                            from pathlib import Path as _P2
+                            _dp2 = _P2(__file__).parent.parent / "store" / "secrets" / f"{_try_prof}_api.dpapi"
+                            if _dp2.exists():
+                                _try_key = _dk_unprotect2(_dp2.read_bytes(), profile=_try_prof).decode().strip()
+                        except Exception:
+                            pass
+                    if not _try_key:
+                        _tried_before.append({"profile": _try_prof, "reason": "no_key"})
+                        continue
+                    try:
+                        _rt = _call_once(
+                            "openai_compatible",
+                            "https://apihub.agnes-ai.com/v1",
+                            "agnes-2.5-flash",
+                            _try_key,
+                            body, system, prompt,
+                            _timeout_t,
+                            "agnes",
+                        )
+                        return {
+                            "ok": True, "reply": _rt, "provider": "agnes",
+                            "model": "agnes-2.5-flash",
+                            "key_masked": _try_key[:8] + "****",
+                            "brand": _KG.BRAND_TAG,
+                            "tentacle_profile": _try_prof,
+                            "auto_switched": (_try_prof != _matched_prof),
+                            "tried_before": _tried_before,
+                        }
+                    except _HttpError as _e:
+                        _status = getattr(_e, 'status', 0)
+                        _err_str = str(_e)
+                        _tried_before.append({"profile": _try_prof, "status": _status, "error": _err_str[:200]})
+                        # REASONING_STARVED 是客户端 max_tokens 太小，换 key 也救不了 → 立即抛
+                        if REASONING_STARVED in _err_str:
+                            raise
+                        # 429(限流) / 服务端 422(配额耗尽) → 轮询下一个触手 key
+                        if _status in (429, 422):
+                            _last_err = _e
+                            continue
+                        raise  # 其它错误（401/500等）→ 立即报错
+                # 所有触手 key 都失败
+                if _last_err:
+                    raise _last_err
+                raise _HttpError(503, "所有触手 key 均不可用: " + json.dumps(_tried_before, ensure_ascii=False))
         # 无触手 key 或无匹配：走原有 key_gateway 选路
         _prefer = str(params.get("provider") or os.environ.get("GBT_LLM_PROVIDER") or "")
         _pl = _KG.plan(need_tokens=int(params.get("need_tokens", 0) or 0), prefer=_prefer)
