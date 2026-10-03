@@ -43,15 +43,16 @@ def _get():
     return _mod
 
 
-def chat(prompt, system="", model=None, temperature=0.7, max_tokens=2000, timeout=60):
+def chat(prompt, system="", model=None, temperature=0.7, max_tokens=2000, timeout=60, purpose="generic"):
     """推理对话入口。返回 dict（ok/reply 或 ok/error 如实报）。
 
-    可靠性纪律：ok-but-empty（网关成功但 reply 为空）视为瞬时抖动，
+    reliability discipline: ok-but-empty（网关成功但 reply 为空）视为瞬时抖动，
     最多补试 2 次；仍为空则如实报错，绝不把空字符串当成功交差。
+    purpose 参数透传至 cloud_llm，用于按触手维度路由独立 Agnes 密钥。
     """
     m = _get()
     params = {"prompt": prompt, "system": system, "temperature": temperature,
-              "max_tokens": max_tokens, "timeout": timeout}
+              "max_tokens": max_tokens, "timeout": timeout, "purpose": purpose}
     if model:
         params["model"] = model
     last = None

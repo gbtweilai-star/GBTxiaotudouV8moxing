@@ -961,6 +961,12 @@ def _run_benign(kind, payload, policy_decision=None):
         # 版本库**写面**：policy 里**永远**挂 filesystem_write（不按 op 判）。
         from .tools import git_repo as _gr2
         return _gr2.run_write(payload or {})
+    if kind == "omni_web":
+        # 万能触手·Web六态：看结构/读源码/读讲解/改文件/交给AI/跑项目
+        from . import omni_web_cap as _ow
+        p = payload or {}
+        op = str(p.get("op") or "read_structure")
+        return _ow.run(op=op, **{k: v for k, v in p.items() if k != "op"})
     if kind == "root_fix":
         from . import root_fix
         p = payload or {}

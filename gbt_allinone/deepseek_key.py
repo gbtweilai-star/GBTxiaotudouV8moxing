@@ -117,6 +117,40 @@ _PROFILES: dict[str, dict] = {
         # 实测形状：`free` 开头、不带 sk-/ak- ⇒ 同上
         "pattern": r"^[A-Za-z0-9_\-]{20,}$",
     },
+    # ── 2026-10-03 四触手独立 Agnes 密钥 profile（每根触手独立配额，互不干扰）────────
+    "neural_agnes": {
+        "entropy": b"GBTxiaotudouV8:neural_agnes:v1",
+        "file": "neural_agnes_api.dpapi",
+        "env": "NEURAL_AGNES_API_KEY",
+        "proxy": "",
+        "file_env": "GBT_NEURAL_AGNES_SECRET_FILE",
+        # Agnes key 无固定前缀，允许任意非空字符（>=8位）
+        "pattern": r"^.{8,}$",
+    },
+    "vision_agnes": {
+        "entropy": b"GBTxiaotudouV8:vision_agnes:v1",
+        "file": "vision_agnes_api.dpapi",
+        "env": "VISION_AGNES_API_KEY",
+        "proxy": "",
+        "file_env": "GBT_VISION_AGNES_SECRET_FILE",
+        "pattern": r"^.{8,}$",
+    },
+    "devour_agnes": {
+        "entropy": b"GBTxiaotudouV8:devour_agnes:v1",
+        "file": "devour_agnes_api.dpapi",
+        "env": "DEVOUR_AGNES_API_KEY",
+        "proxy": "",
+        "file_env": "GBT_DEVOUR_AGNES_SECRET_FILE",
+        "pattern": r"^.{8,}$",
+    },
+    "omni_agnes": {
+        "entropy": b"GBTxiaotudouV8:omni_agnes:v1",
+        "file": "omni_agnes_api.dpapi",
+        "env": "OMNI_AGNES_API_KEY",
+        "proxy": "",
+        "file_env": "GBT_OMNI_AGNES_SECRET_FILE",
+        "pattern": r"^.{8,}$",
+    },
 }
 _DEFAULT_PROFILE = "deepseek"
 # 默认形状：sk-/ak- 开头的单行长串（deepseek / agnes 用它，**行为与加多 profile 之前一字不差**）

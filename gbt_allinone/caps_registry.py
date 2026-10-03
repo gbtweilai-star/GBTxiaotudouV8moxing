@@ -1342,6 +1342,16 @@ BENIGN_CAPS = {
         "params_hint": 'paths=要动的仓内路径列表（**必填、不许空**）；commit 还要 message；op=stage|commit',
     },
 
+    "omni_web": {
+        "domain": "tentacle",
+        "desc": "万能触手·Web六态：看结构/读源码/读讲解/改文件/交给AI/跑项目；git+github+stackblitz一键触达",
+        "handler": "omni_web_cap",
+        "safe": True,
+        "requires_params": True,
+        "params": ["op"],
+        "params_hint": "op=看结构|读源码|读讲解|改文件|gitingest|跑项目；repo=GitHub URL或本地路径；files=[...]（read_source）；path/content（edit_file）；max_files/max_chars（gitingest）",
+    },
+
     "ul_tars_desktop": {
         "domain": "desktop",
         "desc": "Ul-TARS Desktop desktop agent",
