@@ -1,27 +1,0 @@
-前置冷却 300 秒（不发任何请求）
-  cooling 0s / 300s  cooling 10s / 300s  cooling 20s / 300s  cooling 30s / 300s  cooling 40s / 300s  cooling 50s / 300s  cooling 60s / 300s  cooling 70s / 300s  cooling 80s / 300s  cooling 90s / 300s  cooling 100s / 300s  cooling 110s / 300s  cooling 120s / 300s  cooling 130s / 300s  cooling 140s / 300s  cooling 150s / 300s  cooling 160s / 300s  cooling 170s / 300s  cooling 180s / 300s  cooling 190s / 300s  cooling 200s / 300s  cooling 210s / 300s  cooling 220s / 300s  cooling 230s / 300s  cooling 240s / 300s  cooling 250s / 300s  cooling 260s / 300s  cooling 270s / 300s  cooling 280s / 300s  cooling 290s / 300s  冷却完成，开始打点                              
-  A#1        -> 200  X-Cache=MISS, HIT, HIT     served_by=cache-bkk2280030-BKK ct=application/atom+xml; charset=utf-8 bytes=2938
-  S#1        -> 406  X-Cache=MISS, MISS         served_by=cache-bkk2280039-BKK ct=None bytes=0
-             body[:160]=b''
-  T3#1       -> 406  X-Cache=MISS, MISS         served_by=cache-bkk2280039-BKK ct=None bytes=0
-             body[:160]=b''
-  T5#1       -> 406  X-Cache=MISS, MISS         served_by=cache-bkk2280033-BKK ct=None bytes=0
-             body[:160]=b''
-  T3#2       -> 406  X-Cache=MISS, MISS         served_by=cache-bkk2280036-BKK ct=None bytes=0
-             body[:160]=b''
-  A#2        -> 200  X-Cache=MISS, HIT, HIT     served_by=cache-bkk2280039-BKK ct=application/atom+xml; charset=utf-8 bytes=2938
-  S#2        -> 406  X-Cache=MISS, MISS         served_by=cache-bkk2280026-BKK ct=None bytes=0
-             body[:160]=b''
-  T3#3       -> 406  X-Cache=MISS, MISS         served_by=cache-bkk2280027-BKK ct=None bytes=0
-             body[:160]=b''
-
-== 汇总 ==
-  A#1    = 200
-  A#2    = 200
-  S#1    = 406
-  S#2    = 406
-  T3#1   = 406
-  T3#2   = 406
-  T3#3   = 406
-  T5#1   = 406
-  T3 三次同结果 -> 确定性成立（不抖动）
