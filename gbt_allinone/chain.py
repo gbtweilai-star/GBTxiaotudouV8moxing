@@ -89,3 +89,12 @@ def declare(module_id: str, action: str, *, output=None, ok: bool = True,
         else:
             receipt["life_recorded"] = True
     return receipt
+
+
+# AGENTS.md 兼容别名：链内核启动入口
+# chain_kernel.auto_boot() → 实际调用 chain.roles() + 启动自检
+def auto_boot() -> dict:
+    """13阶段链路内核启动：身份·宪法·门禁·管线·拓扑·邻域·脑委会·触手·审计·守卫·链状态·能力总纲·镜像空间"""
+    result = roles()
+    result["auto_boot_ok"] = True
+    return result

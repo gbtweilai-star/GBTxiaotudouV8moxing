@@ -31,3 +31,7 @@ def publish(file_path: str, content: str = None, context: str = "") -> dict:
         return {"ok": False, "error": str(r)[:120]}
     except Exception as e:  # noqa: BLE001
         return {"ok": False, "error": f"gatekeeper 垫片: {str(e)[:120]}"}
+
+
+# AGENTS.md 兼容入口
+get_gatekeeper = publish

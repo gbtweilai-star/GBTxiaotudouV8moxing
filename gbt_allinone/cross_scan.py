@@ -593,3 +593,7 @@ def scan(deep: bool = True, h_budget_s: float | None = H_BUDGET_S) -> dict:
     # O54：门禁**跑完** = 成功 = 生产主账本零足迹（不再每跑一次写一行 cross_scan）；
     # 跑不完（X 维隔离门禁自检失败）已在上面落 health_channel_failed —— 《终端失败必须响》。
     return result
+
+
+# AGENTS.md 兼容别名：mesh_scan() = scan()（N触手网格交叉验证的统一入口）
+mesh_scan = scan

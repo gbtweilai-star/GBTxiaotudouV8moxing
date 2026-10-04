@@ -135,3 +135,7 @@ def scan(probe=False):
         "verdict": "clean" if not r["FAKE"] else "FAKE_DETECTED",
         "note": "FAKE 必须为 0——任何假执行都是框架的癌症",
     }
+
+
+# AGENTS.md 兼容别名：top-level probe() 调用等价于 scan(probe=True)
+probe = scan

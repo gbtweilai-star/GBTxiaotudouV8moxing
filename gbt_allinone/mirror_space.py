@@ -329,3 +329,6 @@ status = mirror_status
 
 # 公开别名（设计 §九② —— 落生产时加在 mirror_space.py 两副本上）
 tree_fingerprint = _tree_fingerprint
+
+# AGENTS.md 兼容别名：mirror_fusion.get_mirror() → mirror_space.scan()
+get_mirror = scan

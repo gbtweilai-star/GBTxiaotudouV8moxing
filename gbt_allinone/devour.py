@@ -1268,3 +1268,9 @@ if __name__ == "__main__":
         print(json.dumps(d.state, ensure_ascii=False, indent=2))
     else:
         print(f"DevourTentacle: {d.state['total_devours']} devours, {d.state['total_absorbed']} absorbed, {d.state['total_caps_created']} caps created")
+
+
+# AGENTS.md 兼容别名：devour_tentacle.run() → DevourTentacle().quick_devour()
+def run(**kwargs) -> dict:
+    """吞噬触手一次性运行入口（等价于 get_devourer().quick_devour()）。"""
+    return get_devourer().quick_devour(**kwargs)
