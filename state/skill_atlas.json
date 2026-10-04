@@ -1,6 +1,6 @@
 {
  "built_by": "tools/codex-scripts/omni.py build",
- "built_at": "2026-10-04T11:16:16",
+ "built_at": "2026-10-04T12:22:29",
  "note": "框架职业技能图鉴。口径：`omnipulg` = 走万能插（run_task 唯一门）的能力位；`agent-skill` = 由 agent 按技能名加载执行的技能；`design-asset` = 审美素材（料，不是可调用能力）。本图鉴是**现扫**产物，不是手抄清单。",
  "caps_error": "",
  "caps": [
@@ -3059,6 +3059,24 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python tools/codex-scripts/five-dim.py cap git_write"
+  },
+  {
+   "kind": "brain_council",
+   "domain": "mind",
+   "desc": "脑会·编队群决策引擎：各脑出本域提案，委员长聚合裁决（纯推演·不出网·不落盘）；执行仍走主脑既有授权门",
+   "enabled": true,
+   "reason": "",
+   "safe": true,
+   "handler": "brain_council",
+   "requires_params": [
+    "op",
+    "question"
+   ],
+   "params_hint": "op=status（默认，读群与脑清单）| op=convene & question=…（召开脑会，返回裁决与提案）",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap brain_council"
   },
   {
    "kind": "omni_web",
@@ -11830,8 +11848,8 @@
   }
  ],
  "counts": {
-  "caps": 216,
-  "caps_enabled": 216,
+  "caps": 217,
+  "caps_enabled": 217,
   "caps_safe_no_args": 127,
   "skills": 373,
   "skills_raw_before_dedupe": 728,

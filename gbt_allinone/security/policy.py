@@ -511,6 +511,15 @@ def evaluate(kind: str, payload: dict | None = None) -> PolicyDecision:
         else:
             add("filesystem_write", "privacy_read", "data_export")
 
+    # ── 2026-10-04 补：脑会·编队群（brain_council）—— **显式零作用域**（同 git_read 的写法：
+    #    让"它零作用域"是一条看得见的决定，不是文件里没提所以碰巧没挂）。
+    #    依据主人令「触手职业拉群、群里只出本域意见、决策与执行权全局只属 GBT小土豆V8」：
+    #    脑会是**纯推演**（不出网、不落盘、不起进程，brain_council.py 只 import 标准库 +
+    #    动态导入脑模块）⇒ 读类直连；它产出的只是提案 —— **执行永远另行走既有授权门**。
+    #    🔴 fail-closed 保留：将来给脑会加任何写/出网动作，必须回这里显式挂作用域。
+    if kind == "brain_council":
+        pass
+
     return PolicyDecision(kind=kind, risk=risk, scopes=tuple(scopes),
                           action=action, allow_private=allow_private, details=details)
 

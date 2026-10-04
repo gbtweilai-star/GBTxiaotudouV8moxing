@@ -45766,5 +45766,12 @@
   ],
   "note": "autobind",
   "bound_at": "2026-10-04T11:35:46"
+ },
+ "holo_pet/assets/console/index.html": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-04T12:22:29"
  }
 }

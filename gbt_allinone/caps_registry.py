@@ -1344,6 +1344,18 @@ BENIGN_CAPS = {
         "params_hint": 'paths=要动的仓内路径列表（**必填、不许空**）；commit 还要 message；op=stage|commit',
     },
 
+    "brain_council": {
+        "domain": "mind",
+        "desc": "脑会·编队群决策引擎：各脑出本域提案，委员长聚合裁决（纯推演·不出网·不落盘）；执行仍走主脑既有授权门",
+        "handler": "brain_council",
+        # 2026-10-04 主人令「触手职业拉群、群里只出本域意见、决策执行只属主脑」的引擎位。
+        # 纯只读推演 ⇒ safe=True 可被自动探针；作用域在 security/policy.py 显式空挂（看得见的零）。
+        "safe": True,
+        "requires_params": False,
+        "params": ["op", "question"],
+        "params_hint": "op=status（默认，读群与脑清单）| op=convene & question=…（召开脑会，返回裁决与提案）",
+    },
+
     "omni_web": {
         "domain": "tentacle",
         "desc": "万能触手·Web六态：看结构/读源码/读讲解/改文件/交给AI/跑项目；git+github+stackblitz一键触达",

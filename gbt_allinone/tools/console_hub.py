@@ -38,6 +38,8 @@ _LEDGER = _STATE / "console_hub.jsonl"
 
 # ── 页面登记表（**单一真相**；新增页面必须登记在这里，否则 scan 会报"盘上有而清单无"）──
 PAGES = [
+    {"page": "console", "path": "holo_pet/assets/console/index.html", "kind": "枢纽",
+     "workflow": "全部", "what": "总控台（Genspark 骨架 · GBT 品牌：能力矩阵 · 云插件连接器 · 第二大脑 · **编队群**——职业只出本域意见，决策执行只属主脑）"},
     {"page": "keys", "path": "holo_pet/assets/keys/index.html", "kind": "密钥台",
      "workflow": "security", "what": "密钥台（10 槽位 · **只含掩码** · 零脚本零外链；由 tools/codex-scripts/keys-page.py 重生成）"},
     {"page": "freebuff", "path": "holo_pet/assets/freebuff/index.html", "kind": "执行台",

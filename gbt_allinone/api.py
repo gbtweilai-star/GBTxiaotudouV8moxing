@@ -961,6 +961,17 @@ def _run_benign(kind, payload, policy_decision=None):
         # 版本库**写面**：policy 里**永远**挂 filesystem_write（不按 op 判）。
         from .tools import git_repo as _gr2
         return _gr2.run_write(payload or {})
+    if kind == "brain_council":
+        # 脑会·编队群（2026-10-04 主人令）：各脑只出本域提案，聚合裁决归主脑。
+        # status=只读清单；convene=召开脑会（纯推演，不出网不落盘）。
+        from .brain import brain_council as _bcs
+        p2 = payload or {}
+        op2 = str(p2.get("op") or "status")
+        if op2 == "convene":
+            return _bcs.call_council(str(p2.get("question") or ""))
+        return {"ok": True, "op": "status", "cap": "brain_council",
+                "brains": _bcs.COUNCIL_BRAINS if hasattr(_bcs, "COUNCIL_BRAINS") else [],
+                "note": "op=convene & question=… 召开脑会；执行仍走主脑既有授权门"}
     if kind == "omni_web":
         # 万能触手·Web六态：看结构/读源码/读讲解/改文件/交给AI/跑项目
         # 2026-10-04：按能力位真名导入（真名门面 omni_web.py → 实现 omni_web_cap.py）

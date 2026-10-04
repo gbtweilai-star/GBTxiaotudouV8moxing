@@ -17242,3 +17242,9 @@
 {"at": "2026-10-04T11:35:46", "event": "bind", "asset": "gbt_allinone/quant_tech.py", "tentacle": "quant_params", "note": "autobind"}
 {"at": "2026-10-04T11:35:47", "event": "bind", "asset": "gbt_allinone/adapters/workspace_adapter.py", "tentacle": "quant_params", "note": "autobind"}
 {"at": "2026-10-04T11:35:49", "event": "autobind", "files": 4, "bound": 4, "hint": "quant_params", "pruned": 0}
+{"at": "2026-10-04T11:40:28", "event": "autobind", "files": 1, "bound": 1, "hint": "selfscan", "pruned": 0}
+{"at": "2026-10-04T11:40:50", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-04T11:40:59", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T12:22:29", "event": "bind", "asset": "holo_pet/assets/console/index.html", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-10-04T12:22:33", "event": "autobind", "files": 7, "bound": 5, "hint": "", "pruned": 0}
+{"at": "2026-10-04T12:23:59", "event": "autobind", "files": 9, "bound": 9, "hint": "console_hub", "pruned": 0}
