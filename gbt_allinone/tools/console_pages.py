@@ -776,11 +776,12 @@ document.getElementById("gap").innerHTML =
     return _write("holo_pet/assets/freebuff/index.html", html)
 
 
-# ═══════════════════════════ ⑦ 总控台（Genspark 骨架 · GBT 品牌 · 2026-10-04 主人令） ═══════════════════════════
+# ═══════════════════════════ ⑦ 总控台（一体化工作空间骨架 · GBT 品牌 · 2026-10-04 主人令） ═══════════════════════════
 def render_console() -> dict:
     """**总控台**：一个面板接全部能力 + 编队群（触手职业拉群）。
 
-    主人令（2026-10-04）：① 按 Genspark Super App 骨架重组排布，统一 GBT 品牌；
+    主人令（2026-10-04）：① 参考业界一体化工作空间的骨架重组排布，**统一 GBT 品牌
+    （旧品牌深度替换，我们自己的面上不出现第三方品牌字样）**；
     ② 云插件与触手的双向绑定/互通接清楚，确保自家大模型链路畅通；
     ③ 每个触手职业拉群、群里只出本域专业意见，**决策与执行权全局只属 GBT小土豆V8**，
     职业不得越权跨界。本页 = 静态快照（快照内联口径）；面板桥（panel_server :8765）
@@ -868,41 +869,72 @@ def render_console() -> dict:
 <h3>{r['page']}</h3><div class="cc-note">{r.get('kind')} · {r.get('workflow')} · {r.get('kb', '?')}KB</div></a>"""
         for r in prows[:12])
 
+    def _hud_svg(edges_n: int) -> str:
+        """HUD 雷达（纯内联 SVG，参考安全厂商风的那种环形界面；GBT 青金配色）。"""
+        import random as _rd
+        _rd.seed(8)
+        pts = "".join(
+            f"<circle cx='{20 + _rd.random()*160:.0f}' cy='{20 + _rd.random()*160:.0f}' "
+            f"r='{1 + _rd.random()*1.6:.1f}' fill='rgba(0,229,255,{0.22 + _rd.random()*0.5:.2f})'/>"
+            for _ in range(46))
+        return f"""<svg viewBox="0 0 200 200" style="width:100%;display:block" role="img" aria-label="GBT mesh HUD">
+  <circle cx='100' cy='100' r='92' fill='none' stroke='rgba(0,229,255,.18)'/>
+  <circle cx='100' cy='100' r='74' fill='none' stroke='rgba(0,229,255,.12)' stroke-dasharray='2 5'/>
+  <circle cx='100' cy='100' r='56' fill='none' stroke='rgba(0,229,255,.22)'/>
+  <circle cx='100' cy='100' r='30' fill='none' stroke='rgba(245,176,65,.4)' stroke-dasharray='60 12'/>
+  <path d='M100 8 A92 92 0 0 1 178 55' fill='none' stroke='rgba(0,229,255,.5)' stroke-width='2'/>
+  <line x1='100' y1='4' x2='100' y2='196' stroke='rgba(0,229,255,.10)'/>
+  <line x1='4' y1='100' x2='196' y2='100' stroke='rgba(0,229,255,.10)'/>
+  <polygon points='100,78 119,89 119,111 100,122 81,111 81,89' fill='none' stroke='rgba(245,176,65,.55)'/>
+  <polygon points='100,88 111,94 111,106 100,112 89,106 89,94' fill='none' stroke='rgba(0,229,255,.5)'/>
+  <circle cx='100' cy='100' r='3' fill='#00E5FF'/>
+  {pts}
+  <text x='100' y='184' text-anchor='middle' fill='rgba(0,229,255,.6)' font-size='8' font-family='monospace'>GBT//MESH · {edges_n} EDGES · 10 MODULES</text>
+</svg>"""
+
     body = f"""
 <div class="cc">
   <div class="cc-side">
-    <div class="cc-brand">GBT小土豆V8</div>
-    <a href="#overview">概览</a>
-    <a href="#caps">能力矩阵</a>
-    <a href="#connectors">云插件 · 连接器</a>
-    <a href="#brain">第二大脑 · 记忆图谱</a>
-    <a href="#crew">编队群（触手职业）</a>
-    <a href="#pages">快捷入口</a>
-    <div class="cc-note" style="margin-top:10px">一个面板 · 全部能力<br>决策与执行权只属 GBT小土豆V8</div>
+    <div class="cc-brand">GBT//V8</div>
+    <a href="#overview">01 · 概览</a>
+    <a href="#caps">02 · 能力矩阵</a>
+    <a href="#connectors">03 · 云插件·连接器</a>
+    <a href="#brain">04 · 第二大脑</a>
+    <a href="#crew">05 · 编队群</a>
+    <a href="#pages">06 · 快捷入口</a>
+    <div class="cc-note" style="margin-top:12px">一个面板 · 全部能力<br>决策与执行权<br><b style="color:#F5B041">只属 GBT小土豆V8</b></div>
   </div>
   <div class="cc-main">
-    <section id="overview"><div class="cc-sec">概览</div>
+    <section id="overview"><div class="cc-sec">// 01 — 概览 · BY THE NUMBERS</div>
       <div class="cc-grid">
-        <div class="cc-card"><div class="cc-stat">{len(caps)}</div><div class="cc-note">能力位（caps_registry 现读）</div></div>
-        <div class="cc-card"><div class="cc-stat">{len(domains)}</div><div class="cc-note">能力域</div></div>
-        <div class="cc-card"><div class="cc-stat">{len(mods)}</div><div class="cc-note">云插件（cloud-10 拼接网）</div></div>
-        <div class="cc-card"><div class="cc-stat">{edges_n}</div><div class="cc-note">云网互通边（mesh.edges）</div></div>
-        <div class="cc-card"><div class="cc-stat">{len(crew)}</div><div class="cc-note">编队职业（~/.zcode/agents）</div></div>
-        <div class="cc-card"><div class="cc-stat">{len(brain_mods)}</div><div class="cc-note">脑层模块（brain/）</div></div>
+        <div class="cc-card"><div class="cc-stat cy">{len(caps)}</div><div class="cc-label">能力位 · CAPS_REGISTRY 现读</div></div>
+        <div class="cc-card"><div class="cc-stat gd">{len(domains)}</div><div class="cc-label">能力域 · DOMAINS</div></div>
+        <div class="cc-card"><div class="cc-stat vt">{len(mods)}</div><div class="cc-label">云插件 · CLOUD-10</div></div>
+        <div class="cc-card"><div class="cc-stat cy">{edges_n}</div><div class="cc-label">云网互通边 · MESH.EDGES</div></div>
+        <div class="cc-card"><div class="cc-stat gd">{len(crew)}</div><div class="cc-label">编队职业 · AGENTS</div></div>
+        <div class="cc-card"><div class="cc-stat vt">{len(brain_mods)}</div><div class="cc-label">脑层模块 · BRAIN/</div></div>
       </div>
     </section>
-    <section id="caps"><div class="cc-sec">能力矩阵 · 按域排布</div>
+    <section id="caps"><div class="cc-sec">// 02 — 能力矩阵 · 按域排布</div>
       <div class="cc-grid">{dom_cards}</div>
       <div class="cc-note">点跑入口：面板桥在线时 POST /api/capability（走 api.run_task + policy，不放宽作用域）</div>
     </section>
-    <section id="connectors"><div class="cc-sec">云插件 · 连接器（与触手互通）</div>
-      <div class="cc-grid">{mod_cards}</div>
-      <div class="cc-card" style="margin-top:12px"><h3>自家大模型链路（GBT小土豆V8 · potato）</h3>
-        <div class="cc-note">provider={potato['provider']} · model={potato['model']} · 端点={potato['base_url']} · 密钥={potato['key']}（只显示配/未配，不显值）</div>
-        <div class="cc-note">云网关鉴权：GW_AUTH 走 secret（2026-10-04 起缺钥 fail-closed 拒服务，不再静默放行）</div>
+    <section id="connectors"><div class="cc-sec">// 03 — 云插件 · 连接器（与触手互通）</div>
+      <div class="cc-split">
+        <div class="cc-grid" style="grid-template-columns:repeat(auto-fill,minmax(205px,1fr))">{mod_cards}</div>
+        <div class="cc-card hud">{_hud_svg(edges_n)}
+          <div class="cc-label" style="margin-top:10px">GBT//MESH · LIVE TOPOLOGY</div>
+          <div class="cc-note">自家大模型链路：provider={potato['provider']} · model={potato['model']}<br>
+          端点 {'<span class="cc-ok">已设</span>' if potato['base_url'] != '未设' else '<span class="cc-bad">未设</span>'} ·
+          密钥 {'<span class="cc-ok">已配</span>' if potato['key'] == '已配' else '<span class="cc-bad">未配</span>'}（只显示状态，不显值）</div>
+        </div>
+      </div>
+      <div class="cc-card" style="margin-top:12px"><h3>链路纪律 · LINK DISCIPLINE</h3>
+        <div class="cc-note">GW_AUTH 走 secret：缺钥 ⇒ /v1/chat 与 /rpc <b>fail-closed 拒服务</b>（2026-10-04 起，不再静默放行）。
+        云插件与触手的互通以 mesh.json 单一真源为准；每条互通边都可经 /rpc 现测。</div>
       </div>
     </section>
-    <section id="brain"><div class="cc-sec">第二大脑 · 记忆图谱</div>
+    <section id="brain"><div class="cc-sec">// 04 — 第二大脑 · 记忆图谱</div>
       <div class="cc-grid">
         <div class="cc-card"><h3>脑层模块（{len(brain_mods)}）</h3>
           <div>{''.join(f'<span class="cc-chip">{b}</span>' for b in brain_mods)}</div>
@@ -911,14 +943,14 @@ def render_console() -> dict:
           <div class="cc-note">触手 3D 全景（域→能力→绑定）与 godview 图谱见快捷入口；拓扑索引 gbt_allinone/store/_topology_index.json</div></div>
       </div>
     </section>
-    <section id="crew"><div class="cc-sec">编队群 · 触手职业（只出本域意见）</div>
+    <section id="crew"><div class="cc-sec">// 05 — 编队群 · 触手职业（只出本域意见）</div>
       <div class="cc-rule">群规：每个职业只给<b>各自领域的专业意见和建议</b>；<b>决策与执行权全局只属 GBT小土豆V8</b>。
-      职业不得越权执行任何跨界任务；执行一律经 GBT 的能力门（run_task + policy 授权）落 地。</div>
+      职业不得越权执行任何跨界任务；执行一律经 GBT 的能力门（run_task + policy 授权）落地。</div>
       <div class="cc-card" style="margin-top:10px">{crew_html or '<div class="cc-note">花名册目录为空（~/.zcode/agents）</div>'}</div>
       <div class="cc-note">决策引擎：brain_council（纯推演 · 零作用域 · 已接入 run_task：op=convene）；
       执行引擎：GBT 主脑经既有授权门逐条落跑，职业结论只作为提案输入。</div>
     </section>
-    <section id="pages"><div class="cc-sec">快捷入口</div>
+    <section id="pages"><div class="cc-sec">// 06 — 快捷入口</div>
       <div class="cc-grid">{page_cards}</div>
       <div class="cc-note">全量页面见卡库 gallery（{len(prows)} 页登记）</div>
     </section>
@@ -926,22 +958,55 @@ def render_console() -> dict:
 </div>"""
 
     extra = """
-.cc{display:grid;grid-template-columns:212px 1fr;gap:18px;align-items:start}
-.cc-side{position:sticky;top:12px;background:rgba(0,229,255,.04);border:1px solid var(--line);border-radius:12px;padding:14px 12px}
-.cc-side a{display:block;padding:8px 10px;border-radius:8px;color:var(--text);text-decoration:none;font-size:13px}
-.cc-side a:hover{background:rgba(0,229,255,.08)}
-.cc-brand{font-size:15px;font-weight:700;margin-bottom:10px;letter-spacing:.04em}
-.cc-sec{margin:18px 0 10px;font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--dim-2);text-transform:uppercase}
-.cc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
-.cc-card{background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:12px;padding:12px}
-.cc-card h3{font-size:13.5px;margin:0 0 6px}
-.cc-chip{display:inline-block;margin:2px 4px 0 0;padding:2px 8px;border:1px solid var(--line);border-radius:999px;font-size:11.5px;color:var(--dim-2)}
-.cc-stat{font-size:26px;font-weight:800}
-.cc-note{font-size:11.5px;color:var(--dim-2);margin-top:6px;line-height:1.5}
-.cc-rule{border:1px solid rgba(245,176,65,.4);background:rgba(245,176,65,.06);border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.6}
+/* ── 总控台 · HUD 暗面（参考安全厂商风的冲击感 · GBT 青金紫）────────────── */
+body{background:#04060a}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0 1px,transparent 1px 3px),
+             linear-gradient(rgba(0,229,255,.04) 1px,transparent 1px),
+             linear-gradient(90deg,rgba(0,229,255,.04) 1px,transparent 1px);
+  background-size:auto,44px 44px,44px 44px}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(1100px 640px at 72% -8%,rgba(0,229,255,.09),transparent 62%),
+             radial-gradient(900px 620px at 108% 112%,rgba(124,77,255,.08),transparent 60%)}
+.top,.hero,.cc{position:relative;z-index:1}
+.cc{display:grid;grid-template-columns:232px 1fr;gap:18px;align-items:start}
+.cc-side{position:sticky;top:12px;background:rgba(4,8,12,.86);border:1px solid rgba(0,229,255,.16);
+  border-radius:4px;padding:16px 12px;box-shadow:inset 0 0 24px rgba(0,229,255,.05)}
+.cc-brand{font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:.16em;margin-bottom:12px;
+  color:#00E5FF;text-shadow:0 0 14px rgba(0,229,255,.55)}
+.cc-side a{display:block;padding:8px 10px;border-radius:3px;border-left:2px solid transparent;
+  color:#9fb3bd;text-decoration:none;font-family:var(--mono);font-size:12px;letter-spacing:.08em}
+.cc-side a:hover{border-left-color:#00E5FF;color:#EAF6FA;background:rgba(0,229,255,.06)}
+.cc-sec{display:flex;align-items:center;gap:10px;margin:26px 0 12px;font-family:var(--mono);
+  font-size:12px;font-weight:700;letter-spacing:.2em;color:#7de3ff;text-transform:uppercase}
+.cc-sec::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,#00E5FF,transparent)}
+.cc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.cc-split{display:grid;grid-template-columns:1fr 280px;gap:14px}
+@media (max-width:960px){.cc{grid-template-columns:1fr}.cc-split{grid-template-columns:1fr}.cc-side{position:static}}
+.cc-card{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(10,14,18,.92),rgba(6,9,12,.92));
+  border:1px solid rgba(0,229,255,.14);border-radius:4px;padding:14px;
+  transition:border-color .15s,box-shadow .15s}
+.cc-card::before,.cc-card::after{content:"";position:absolute;width:12px;height:12px;border:0 solid rgba(0,229,255,.55)}
+.cc-card::before{top:0;left:0;border-top-width:1px;border-left-width:1px}
+.cc-card::after{bottom:0;right:0;border-bottom-width:1px;border-right-width:1px}
+.cc-card:hover{border-color:rgba(0,229,255,.45);box-shadow:0 0 0 1px rgba(0,229,255,.10),0 10px 34px rgba(0,229,255,.08)}
+.cc-card h3{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;margin:0 0 6px;color:#EAF6FA}
+.cc-stat{font-family:var(--mono);font-size:46px;font-weight:800;line-height:1;letter-spacing:-.01em;color:#EAF6FA}
+.cc-stat.cy{color:#00E5FF;text-shadow:0 0 20px rgba(0,229,255,.35)}
+.cc-stat.gd{color:#F5B041;text-shadow:0 0 20px rgba(245,176,65,.30)}
+.cc-stat.vt{color:#9E7BFF;text-shadow:0 0 20px rgba(124,77,255,.35)}
+.cc-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:#6c7f8a;text-transform:uppercase;margin-top:8px}
+.cc-chip{display:inline-block;margin:2px 4px 0 0;padding:2px 8px;border:1px solid rgba(0,229,255,.18);
+  border-radius:2px;font-family:var(--mono);font-size:11px;color:#9fdceb;background:rgba(0,229,255,.04)}
+.cc-note{font-size:11.5px;color:var(--dim-2);margin-top:6px;line-height:1.6}
+.cc-ok{color:#33E58C;font-weight:700}.cc-bad{color:#FF3B5C;font-weight:700}
+.cc-rule{border:1px solid rgba(245,176,65,.4);background:rgba(245,176,65,.06);border-radius:4px;
+  padding:12px 14px;font-size:12.5px;line-height:1.7}
 .cc-msg{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line-soft)}
 .cc-msg:last-child{border-bottom:0}
-.cc-avatar{width:30px;height:30px;border-radius:8px;background:rgba(0,229,255,.12);display:flex;align-items:center;justify-content:center;font-size:13px;flex:none}
+.cc-avatar{width:30px;height:30px;border-radius:3px;background:rgba(0,229,255,.10);
+  border:1px solid rgba(0,229,255,.25);display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:13px;color:#7de3ff;flex:none}
 """
     hero = _load_hub_hero().hero_band(
         "GBT小土豆V8 · 总控台", "统一品牌 · 一个面板接全部能力 · 云插件与触手互通 · 编队群只出本域意见",
@@ -955,6 +1020,137 @@ def render_console() -> dict:
                          extra, hero=hero))
 
 
+# ═══════════════════════════ ⑧ 工作空间首页（统一品牌门面 · 旧品牌深度替换） ═══════════════════════════
+def render_home() -> dict:
+    """**工作空间首页**：GBT//V8 自己的门面（旧品牌深度替换 · 原功能不破坏）。
+
+    形态照主人给的工作空间样本：大字 hero + **中央对话框** + 分类能力丝带 + 运行读数。
+    链路全是我们自己的：对话框 → 面板桥 POST /api/message（幂等受理，回合后台跑）；
+    能力 → run_task + policy；模型 → potato（gbt-potato-v8）。第三方品牌字样零出现。
+    """
+    try:
+        prows = _load_hub().pages()["rows"]
+    except Exception:                                      # noqa: BLE001
+        prows = []
+    link = {r["page"]: f"../../../{r['path']}" for r in prows}
+
+    def _grp(title: str, items: list) -> str:
+        chips = "".join(
+            f'<a class="rb-chip" href="{link.get(p, "#") if p in link else href}">{label}</a>'
+            for p, label, href in items)
+        return f'<div class="rb-group"><div class="rb-title">{title}</div><div>{chips}</div></div>'
+
+    ribbon = (
+        _grp("AI 团队", [("console", "编队群 · 14 职业", "#crew"), ("tentacle3d", "触手 3D 全景", "")])
+        + _grp("内容创作", [("wf-film", "电影产线", ""), ("wf-movie", "多镜成片", ""),
+                            ("wf-music", "音乐", ""), ("wf-short-video", "短视频", "")])
+        + _grp("构建套件", [("freebuff", "编程对话", ""), ("gallery", "页面卡库", "")])
+        + _grp("安全与门", [("keys", "密钥台", ""), ("console", "能力门 · policy", "#caps")])
+        + _grp("工具", [("workbench", "Bento 工作台", ""), ("task-manager", "任务管理器", ""),
+                        ("godview", "上帝之眼", "")])
+    )
+
+    body = f"""
+<div class="hm">
+  <section class="hm-hero">
+    <div class="hm-kick">// GBT//V8 · WORKSPACE 1.0 · 统一品牌门面</div>
+    <h1 class="hm-title">交给 <span class="gd">GBT小土豆V8</span>。<br>
+      视频、幻灯片、图片、代码、文档，<br>以及<span class="cy">一切你能指挥的</span>。</h1>
+    <p class="hm-sub">其他 AI 帮你<b>找答案</b>。GBT 帮你<b>做东西</b> —— 一个面板，全部能力；
+    决策与执行权只属主脑，职业只出本域意见。</p>
+    <div class="hm-ask">
+      <textarea id="ask" rows="2" placeholder="交给 GBT小土豆V8：说什么，做什么……"></textarea>
+      <div class="hm-askbar">
+        <span class="rb-chip">potato · gbt-potato-v8</span>
+        <span class="rb-chip">走 /api/message 幂等受理</span>
+        <button class="hm-go" onclick="ask()">对话 →</button>
+      </div>
+      <pre id="reply" class="hm-reply"></pre>
+    </div>
+  </section>
+  <section class="hm-ribbon">{ribbon}</section>
+  <section class="hm-strip">
+    <span id="bridge" class="rb-chip">面板桥：检测中…</span>
+    <span class="rb-chip"><b class="cy">217</b> 能力位 · 30 域</span>
+    <span class="rb-chip">脑层闭环 3/3</span>
+    <span class="rb-chip">决策与执行权只属 GBT小土豆V8</span>
+  </section>
+</div>"""
+
+    script = """
+var $=function(id){return document.getElementById(id)};
+function ask(){
+  var t=$('ask').value.trim(); if(!t) return;
+  var box=$('reply'); box.textContent='…受理中';
+  fetch('/api/message',{method:'POST',headers:{'content-type':'application/json'},
+    body:JSON.stringify({text:t,client_msg_id:'home-'+Date.now()})})
+   .then(function(r){return r.json();})
+   .then(function(d){box.textContent='受理：'+JSON.stringify(d).slice(0,500);
+                     box.className='hm-reply ok';})
+   .catch(function(e){box.textContent='面板桥不在（静态快照）：请经面板桥 :8765 打开本页再对话。'+e;
+                      box.className='hm-reply bad';});
+}
+fetch('/api/state').then(function(r){return r.json();}).then(function(d){
+  var ok=d&&d.ok; var cx=d&&d.codex&&d.codex.connected;
+  $('bridge').innerHTML='面板桥：<b class="'+(ok?'cc-ok':'cc-bad')+'">'+(ok?'在线':'异常')+
+    '</b>'+(cx?' · codex 已连接':'');
+}).catch(function(){ $('bridge').innerHTML='面板桥：<b class="cc-bad">离线</b>（静态快照 · 经 :8765 打开可对话）';});
+"""
+    extra = """
+/* ── 工作空间首页 · HUD 暗面（与总控台同一套语言）────────────────────────── */
+body{background:#04060a}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0 1px,transparent 1px 3px),
+             linear-gradient(rgba(0,229,255,.04) 1px,transparent 1px),
+             linear-gradient(90deg,rgba(0,229,255,.04) 1px,transparent 1px);
+  background-size:auto,44px 44px,44px 44px}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(1100px 640px at 30% -8%,rgba(0,229,255,.10),transparent 62%),
+             radial-gradient(900px 620px at 108% 112%,rgba(124,77,255,.08),transparent 60%)}
+.top,.hm{position:relative;z-index:1}
+.hm{max-width:1080px;margin:26px auto 60px;padding:0 22px}
+.hm-kick{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;color:#7de3ff;margin-bottom:16px}
+.hm-title{font-size:46px;line-height:1.14;font-weight:800;margin:0 0 14px;letter-spacing:-.01em}
+.hm-title .gd{color:#F5B041;text-shadow:0 0 22px rgba(245,176,65,.35)}
+.hm-title .cy{color:#00E5FF;text-shadow:0 0 22px rgba(0,229,255,.4)}
+.hm-sub{color:var(--dim-2);font-size:14.5px;line-height:1.7;margin:0 0 20px;max-width:720px}
+.hm-ask{border:1px solid rgba(0,229,255,.2);border-radius:6px;background:rgba(6,10,14,.9);
+  padding:12px;box-shadow:0 0 0 1px rgba(0,229,255,.05),0 18px 50px rgba(0,229,255,.06)}
+.hm-ask:focus-within{border-color:rgba(0,229,255,.5)}
+.hm-ask textarea{width:100%;background:transparent;border:0;outline:0;resize:none;color:var(--text);
+  font-size:14.5px;font-family:inherit}
+.hm-askbar{display:flex;align-items:center;gap:8px;margin-top:8px}
+.hm-go{margin-left:auto;border:0;border-radius:4px;padding:8px 18px;cursor:pointer;
+  font-weight:700;font-size:13px;color:#04121a;background:#00E5FF;box-shadow:0 0 18px rgba(0,229,255,.35)}
+.hm-go:hover{box-shadow:0 0 26px rgba(0,229,255,.55)}
+.hm-reply{display:none;margin:10px 0 0;padding:10px;border:1px solid var(--line);border-radius:4px;
+  font-family:var(--mono);font-size:11.5px;color:#9fb3bd;white-space:pre-wrap;max-height:180px;overflow:auto}
+.hm-reply.ok{display:block;border-color:rgba(51,229,140,.4)}
+.hm-reply.bad{display:block;border-color:rgba(255,59,92,.4)}
+.hm-ribbon{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:34px}
+.rb-group{border:1px solid rgba(0,229,255,.14);border-radius:4px;padding:12px;
+  background:linear-gradient(180deg,rgba(10,14,18,.92),rgba(6,9,12,.92))}
+.rb-title{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:#6c7f8a;
+  text-transform:uppercase;margin-bottom:8px}
+.rb-chip{display:inline-block;margin:2px 6px 2px 0;padding:4px 10px;border:1px solid rgba(0,229,255,.18);
+  border-radius:2px;font-family:var(--mono);font-size:11.5px;color:#9fdceb;text-decoration:none;
+  background:rgba(0,229,255,.04)}
+.rb-chip:hover{border-color:rgba(0,229,255,.5);color:#EAF6FA}
+.hm-strip{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.cy{color:#00E5FF}.gd{color:#F5B041}
+.cc-ok{color:#33E58C;font-weight:700}.cc-bad{color:#FF3B5C;font-weight:700}
+"""
+    hero = _load_hub_hero().hero_band(
+        "GBT//V8 · 工作空间", "统一品牌门面 · 旧品牌深度替换 · 中央对话框直通主脑",
+        chip="门面", chip_accent="赛博青", seed="workspace", kind="cubes",
+        sub="GBT WORKSPACE / ONE PANEL · ALL CAPABILITIES",
+        ctas=[{"label": "进总控台", "href": "../console/index.html"},
+              {"label": "能力卡库", "href": "../gallery/index.html"}])
+    return _write("holo_pet/assets/home/index.html",
+                  _shell("GBT//V8 · 工作空间", "统一品牌门面 · 中央对话框直通主脑 · 快照内联 + 面板桥现取",
+                         body, script, extra, hero=hero))
+
+
 def render(target: str = "all", **_kw) -> dict:
     out = []
     t = (target or "all").lower()
@@ -966,6 +1162,8 @@ def render(target: str = "all", **_kw) -> dict:
         out.append(render_gallery())
     if t in ("all", "console"):
         out.append(render_console())
+    if t in ("all", "home"):
+        out.append(render_home())
     if t in ("all", "freebuff"):
         out.append(render_freebuff())
     if t in ("all", "workflows") or t.startswith("workflow:"):
