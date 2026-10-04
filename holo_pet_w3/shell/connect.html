@@ -54,11 +54,25 @@
 </head>
 <body>
 <div class="card">
-  <h1>对话面需要一条「带 token 的 URL」</h1>
-  <div class="sub">GBT小土豆V8 桌面壳 · 窗口 <code id="wid">dsh-chat</code> · 批次 W9</div>
+  <h1>对话面 · 主路已在线，DSH 走高级</h1>
+  <div class="sub">GBT小土豆V8 桌面壳 · 窗口 <code id="wid">dsh-chat</code> · 批次 W9 · 2026-10-04 重设计</div>
 
-  <div class="why">
-    <b>这不是壳坏了，是 DSH 的设计。</b><br />
+  <div class="why" style="border-color: var(--gbt-glow-cyan)">
+    <b>主路（GBT 自家对话面）：</b>不耍 token、不依赖第三方——直接用我们自己的大模型链路
+    （potato · gbt-potato-v8），经面板桥 <code>:8765</code> 的 <code>/api/message</code> 幂等受理。<br />
+    下面按钮探测在线状态后<b>在本窗打开</b> GBT 工作空间对话页。
+  </div>
+
+  <div class="row" style="margin: 18px 0 6px">
+    <button id="gbtgo" class="go" type="button">打开 GBT 对话面（主路）</button>
+    <span id="gbtmsg" class="msg"></span>
+  </div>
+
+  <p class="ok" style="margin-top: 4px">✅ 面板桥没起就先跑：
+    <code>py -3.14 holo_pet/panel_server.py --host 127.0.0.1 --port 8765</code></p>
+
+  <div class="why" style="margin-top: 22px">
+    <b>高级 · DSH 对话面（原功能原样保留）：</b>这不是壳坏了，是 DSH 的设计 ——
     实测（2026-09-23）：<code>GET http://127.0.0.1:3080/</code> 回 <b>HTTP 401</b>，正文原文 ——
     <br /><code>dsh web authentication required; reopen the URL printed by dsh web.</code>
   </div>
@@ -85,7 +99,7 @@
   </div>
 </div>
 <script>
-  // 只把窗口 id 显示出来；**不读凭据、不发请求、不写盘**。
+  // 只把窗口 id 显示出来；**不读凭据、不发写请求、不写盘**。
   // URL 走 preload 暴露的动作口交给主进程；主进程只回 host（token 不回显）。
   try {
     const q = new URLSearchParams(location.search);
@@ -100,6 +114,30 @@
 
   const msg = document.getElementById('msg');
   const say = (t, color) => { msg.textContent = t; msg.style.color = color || C_DIM; };
+
+  /* ── 主路：GBT 自家对话面（2026-10-04 重设计）────────────────────────
+     只做一次只读 GET 探测 + 本窗跳转；不代填任何凭据、不写盘。 */
+  const GBT_HOME = 'http://127.0.0.1:8765/assets/home/index.html';
+  const gmsg = document.getElementById('gbtmsg');
+  fetch('http://127.0.0.1:8765/api/state', { method: 'GET' })
+    .then((r) => r.json())
+    .then((d) => {
+      gmsg.textContent = d && d.ok ? '面板桥在线 · codex ' +
+        (d.codex && d.codex.connected ? '已连接' : '未连接') : '面板桥异常';
+      gmsg.style.color = d && d.ok ? C_OK : C_FAULT;
+    })
+    .catch(() => { gmsg.textContent = '面板桥离线（按上面命令起）'; gmsg.style.color = C_FAULT; });
+
+  document.getElementById('gbtgo').addEventListener('click', async () => {
+    try {
+      const r = await fetch('http://127.0.0.1:8765/api/state', { method: 'GET' });
+      const d = await r.json();
+      if (d && d.ok) { location.href = GBT_HOME; return; }
+      gmsg.textContent = '面板桥异常（ok=' + d.ok + '）'; gmsg.style.color = C_FAULT;
+    } catch (e) {
+      gmsg.textContent = '面板桥离线：先跑 panel_server 再点'; gmsg.style.color = C_FAULT;
+    }
+  });
 
   document.getElementById('go').addEventListener('click', async () => {
     const url = document.getElementById('u').value.trim();

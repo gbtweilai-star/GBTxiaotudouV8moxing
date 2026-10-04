@@ -127,8 +127,11 @@ def _listening(port: int) -> list:
     """谁会听这个端口。Windows 走 netstat（不依赖 psutil）。"""
     pids = []
     try:
+        # 2026-10-04 修：netstat 输出是 ANSI(GBK)；text=True 无编码在 UTF-8 模式下
+        # 读线程直接 UnicodeDecodeError ⇒ 守卫的 B1a/FAIL 详情被吞。按 mbcs 解。
         out = subprocess.run(["netstat", "-ano", "-p", "TCP"],
-                             capture_output=True, text=True, timeout=30)
+                             capture_output=True, encoding="mbcs", errors="replace",
+                             timeout=30)
         for line in (out.stdout or "").splitlines():
             parts = line.split()
             if len(parts) >= 5 and parts[0].upper() == "TCP" and parts[3].upper() == "LISTENING":
