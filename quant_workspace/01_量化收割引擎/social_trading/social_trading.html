@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBT 社交交易</title>
+    <style>
+        :root { --bg: #020617; --card: rgba(30,41,59,0.4); --border: rgba(148,163,184,0.08); --text: #f1f5f9; --text-2: #94a3b8; --purple: #c084fc; --gold: #fbbf24; --green: #34d399; --red: #f87171; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .header h1 { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #fff, var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .tab { padding: 0.6rem 1.2rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+        .tab:hover { border-color: rgba(99,102,241,0.3); }
+        .tab.active { background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(99,102,241,0.15)); border-color: rgba(168,85,247,0.4); color: var(--purple); }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
+        
+        .strategy-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; transition: all 0.2s; }
+        .strategy-card:hover { border-color: rgba(168,85,247,0.3); transform: translateY(-2px); }
+        
+        .card-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--accent)); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .author-info { flex: 1; }
+        .author-name { font-weight: 600; font-size: 0.95rem; }
+        .author-handle { font-size: 0.75rem; color: var(--text-3); }
+        .verified-badge { color: var(--gold); font-size: 0.85rem; }
+        
+        .strategy-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .strategy-desc { font-size: 0.85rem; color: var(--text-2); line-height: 1.5; margin-bottom: 1rem; }
+        
+        .metrics { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .metric { padding: 0.4rem 0.75rem; background: rgba(255,255,255,0.03); border-radius: 6px; font-size: 0.75rem; }
+        .metric-value { font-weight: 700; color: var(--green); }
+        .metric-value.gold { color: var(--gold); }
+        .metric-value.red { color: var(--red); }
+        
+        .tags { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .tag { padding: 0.2rem 0.5rem; background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.2); border-radius: 4px; font-size: 0.7rem; color: var(--purple); }
+        
+        .card-actions { display: flex; gap: 0.5rem; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s; }
+        .btn-follow { background: linear-gradient(135deg, var(--purple), var(--accent)); color: #fff; }
+        .btn-follow:hover { box-shadow: 0 4px 12px rgba(168,85,247,0.4); }
+        .btn-like { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+        .btn-comment { background: rgba(99,102,241,0.1); color: var(--accent); border: 1px solid rgba(99,102,241,0.2); }
+        
+        .leaderboard { margin-top: 2rem; }
+        .leaderboard h2 { font-size: 1.3rem; margin-bottom: 1rem; color: var(--purple); }
+        
+        .rank-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 0.5rem; }
+        .rank-num { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+        .rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; }
+        .rank-2 { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); color: #000; }
+        .rank-3 { background: linear-gradient(135deg, #CD7F32, #B87333); color: #fff; }
+        .rank-other { background: rgba(255,255,255,0.05); color: var(--text-2); }
+        
+        .rank-info { flex: 1; }
+        .rank-name { font-weight: 600; }
+        .rank-stats { font-size: 0.75rem; color: var(--text-3); }
+        
+        .rank-metrics { text-align: right; }
+        .rank-return { font-size: 1.1rem; font-weight: 700; color: var(--green); }
+        .rank-sub { font-size: 0.7rem; color: var(--text-3); }
+        
+        .stats-overview { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 2rem 0; }
+        .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--purple); }
+        .stat-label { font-size: 0.75rem; color: var(--text-3); margin-top: 0.25rem; }
+        
+        @media (max-width: 768px) {
+            .stats-overview { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👥 GBT 社交交易</h1>
+            <button class="btn btn-follow">发布策略</button>
+        </div>
+        
+        <div class="stats-overview">
+            <div class="stat-card"><div class="stat-value">1,247</div><div class="stat-label">活跃交易者</div></div>
+            <div class="stat-card"><div class="stat-value">$2.4M</div><div class="stat-label">总跟单量</div></div>
+            <div class="stat-card"><div class="stat-value">67%</div><div class="stat-label">平均胜率</div></div>
+            <div class="stat-card"><div class="stat-value">156</div><div class="stat-label">今日新策略</div></div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('strategies')">🔥 热门策略</div>
+            <div class="tab" onclick="switchTab('newest')">🆕 最新策略</div>
+            <div class="tab" onclick="switchTab('my-follows')">📋 我的跟单</div>
+            <div class="tab" onclick="switchTab('leaderboard')">🏆 排行榜</div>
+        </div>
+        
+        <div id="tab-strategies" class="tab-content">
+            <div class="grid">
+                <div class="strategy-card">
+                    <div class="card-header">
+                        <div class="avatar">C</div>
+                        <div class="author-info">
+                            <div class="author-name">CIS大师 <span class="verified-badge">✓</span></div>
+                            <div class="author-handle">@cis_master · 昨天</div>
+                        </div>
+                    </div>
+                    <div class="strategy-title">BTC 突破回踩买入策略</div>
+                    <div class="strategy-desc">基于布林带收口突破 + EMA 多头排列，在关键支撑位买入，目标 5-8% 收益。</div>
+                    <div class="metrics">
+                        <span class="metric">胜率: <span class="metric-value">78%</span></span>
+                        <span class="metric">收益: <span class="metric-value">+23.5%</span></span>
+                        <span class="metric">夏普: <span class="metric-value gold">1.85</span></span>
+                        <span class="metric">回撤: <span class="metric-value red">-8.2%</span></span>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">BTC</span>
+                        <span class="tag">趋势跟踪</span>
+                        <span class="tag">SWING</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-follow">📋 跟单</button>
+                        <button class="btn btn-like">❤️ 128</button>
+                        <button class="btn btn-comment">💬 23</button>
+                    </div>
+                </div>
+                
+                <div class="strategy-card">
+                    <div class="card-header">
+                        <div class="avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">W</div>
+                        <div class="author-info">
+                            <div class="author-name">波浪大师 <span class="verified-badge">✓</span></div>
+                            <div class="author-handle">⑂ wave_master · 3小时前</div>
+                        </div>
+                    </div>
+                    <div class="strategy-title">ETH 艾略特波浪第五浪买入</div>
+                    <div class="strategy-desc">识别 Elliott Wave 第 5 浪终点，配合 RSI 顶背离，精准捕捉趋势反转。</div>
+                    <div class="metrics">
+                        <span class="metric">胜率: <span class="metric-value">82%</span></span>
+                        <span class="metric">收益: <span class="metric-value">+31.2%</span></span>
+                        <span class="metric">夏普: <span class="metric-value gold">2.10</span></span>
+                        <span class="metric">回撤: <span class="metric-value red">-6.5%</span></span>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">ETH</span>
+                        <span class="tag">波浪理论</span>
+                        <span class="tag">SCALP</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-follow">📋 跟单</button>
+                        <button class="btn btn-like">❤️ 256</button>
+                        <button class="btn btn-comment">💬 45</button>
+                    </div>
+                </div>
+                
+                <div class="strategy-card">
+                    <div class="card-header">
+                        <div class="avatar" style="background: linear-gradient(135deg, #10b981, #059669);">Q</div>
+                        <div class="author-info">
+                            <div class="author-name">QuantMaster</div>
+                            <div class="author-handle">⑂ quant_pro · 今天</div>
+                        </div>
+                    </div>
+                    <div class="strategy-title">SOL 网格交易策略</div>
+                    <div class="strategy-desc">基于 ATR 动态网格，震荡市专用。每个网格层 2-3% 收益，积少成多。</div>
+                    <div class="metrics">
+                        <span class="metric">胜率: <span class="metric-value">85%</span></span>
+                        <span class="metric">收益: <span class="metric-value">+18.7%</span></span>
+                        <span class="metric">夏普: <span class="metric-value gold">1.95</span></span>
+                        <span class="metric">回撤: <span class="metric-value red">-4.2%</span></span>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">SOL</span>
+                        <span class="tag">网格交易</span>
+                        <span class="tag">日内</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-follow">📋 跟单</button>
+                        <button class="btn btn-like">❤️ 89</button>
+                        <button class="btn btn-comment">💬 12</button>
+                    </div>
+                </div>
+                
+                <div class="strategy-card">
+                    <div class="card-header">
+                        <div class="avatar" style="background: linear-gradient(135deg, #8b5cf6, #6366f1);">A</div>
+                        <div class="author-info">
+                            <div class="author-name">AI交易员 <span class="verified-badge">✓</span></div>
+                            <div class="author-handle">⑂ ai_trader · 昨天</div>
+                        </div>
+                    </div>
+                    <div class="strategy-title">AI 多因子选股策略</div>
+                    <div class="strategy-desc">融合动量、价值、质量 3 大因子，机器学习加权评分，精选潜力标的。</div>
+                    <div class="metrics">
+                        <span class="metric">胜率: <span class="metric-value">71%</span></span>
+                        <span class="metric">收益: <span class="metric-value">+42.8%</span></span>
+                        <span class="metric">夏普: <span class="metric-value gold">2.25</span></span>
+                        <span class="metric">回撤: <span class="metric-value red">-11.3%</span></span>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">多资产</span>
+                        <span class="tag">AI选股</span>
+                        <span class="tag">SWING</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-follow">📋 跟单</button>
+                        <button class="btn btn-like">❤️ 312</button>
+                        <button class="btn btn-comment">💬 67</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="tab-leaderboard" class="tab-content" style="display:none">
+            <div class="leaderboard">
+                <h2>🏆 本周排行榜</h2>
+                <div class="rank-item">
+                    <div class="rank-num rank-1">1</div>
+                    <div class="avatar" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">W</div>
+                    <div class="rank-info">
+                        <div class="rank-name">波浪大师 <span class="verified-badge">✓</span></div>
+                        <div class="rank-stats">128 交易 · 82% 胜率</div>
+                    </div>
+                    <div class="rank-metrics">
+                        <div class="rank-return">+31.2%</div>
+                        <div class="rank-sub">夏普 2.10</div>
+                    </div>
+                </div>
+                <div class="rank-item">
+                    <div class="rank-num rank-2">2</div>
+                    <div class="avatar" style="background: linear-gradient(135deg, #c084fc, #818cf8);">A</div>
+                    <div class="rank-info">
+                        <div class="rank-name">AI交易员 <span class="verified-badge">✓</span></div>
+                        <div class="rank-stats">96 交易 · 71% 胜率</div>
+                    </div>
+                    <div class="rank-metrics">
+                        <div class="rank-return">+42.8%</div>
+                        <div class="rank-sub">夏普 2.25</div>
+                    </div>
+                </div>
+                <div class="rank-item">
+                    <div class="rank-num rank-3">3</div>
+                    <div class="avatar" style="background: linear-gradient(135deg, #10b981, #059669);">Q</div>
+                    <div class="rank-info">
+                        <div class="rank-name">QuantMaster</div>
+                        <div class="rank-stats">256 交易 · 85% 胜率</div>
+                    </div>
+                    <div class="rank-metrics">
+                        <div class="rank-return">+18.7%</div>
+                        <div class="rank-sub">夏普 1.95</div>
+                    </div>
+                </div>
+                <div class="rank-item">
+                    <div class="rank-num rank-other">4</div>
+                    <div class="avatar">C</div>
+                    <div class="rank-info">
+                        <div class="rank-name">CIS大师 <span class="verified-badge">✓</span></div>
+                        <div class="rank-stats">64 交易 · 78% 胜率</div>
+                    </div>
+                    <div class="rank-metrics">
+                        <div class="rank-return">+23.5%</div>
+                        <div class="rank-sub">夏普 1.85</div>
+                    </div>
+                </div>
+                <div class="rank-item">
+                    <div class="rank-num rank-other">5</div>
+                    <div class="avatar" style="background: linear-gradient(135deg, #ef4444, #f97316);">T</div>
+                    <div class="rank-info">
+                        <div class="rank-name">趋势跟踪者</div>
+                        <div class="rank-stats">45 交易 · 68% 胜率</div>
+                    </div>
+                    <div class="rank-metrics">
+                        <div class="rank-return">+15.3%</div>
+                        <div class="rank-sub">夏普 1.42</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+            
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tab).style.display = 'block';
+        }
+    </script>
+</body>
+</html>

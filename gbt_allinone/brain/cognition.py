@@ -12,7 +12,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
-sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 
 _IDENTITY = {
     "name": "cognition",

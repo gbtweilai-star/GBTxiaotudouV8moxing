@@ -137,5 +137,8 @@ def scan(probe=False):
     }
 
 
-# AGENTS.md 兼容别名：top-level probe() 调用等价于 scan(probe=True)
-probe = scan
+# AGENTS.md 兼容别名：top-level probe() 等价于 scan(probe=True)（含副作用探针，验证后清理）。
+# 2026-10-04 修：原实现误写 `probe = scan` ⇒ probe() 实际走 scan(probe=False)（readonly），
+# 与注释反着来 —— 外部调用者以为在探，其实只读（可能把"没探"当"无问题"）。
+def probe():
+    return scan(probe=True)

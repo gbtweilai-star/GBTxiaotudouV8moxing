@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBT CIS 量化收割系统 v2.0</title>
+    <style>
+        :root {
+            --bg: #020617;
+            --card: rgba(30,41,59,0.6);
+            --border: rgba(148,163,184,0.1);
+            --text: #f1f5f9;
+            --text-2: #94a3b8;
+            --purple: #c084fc;
+            --gold: #fbbf24;
+            --green: #34d399;
+            --red: #f87171;
+            --blue: #60a5fa;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        
+        /* Header */
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero .badge {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .hero .version {
+            color: var(--text-2);
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        /* Metrics */
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .metric {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--purple);
+        }
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-2);
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Architecture */
+        .section { margin: 2.5rem 0; }
+        .section-title {
+            font-size: 1.4rem;
+            color: var(--purple);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .arch-diagram {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            white-space: pre;
+            color: var(--green);
+        }
+        
+        /* Layer Cards */
+        .layer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .layer-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .layer-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(192,132,252,0.1);
+        }
+        .layer-number {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        .layer-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .layer-desc {
+            font-size: 0.85rem;
+            color: var(--text-2);
+            margin-bottom: 1rem;
+        }
+        .layer-api {
+            font-size: 0.75rem;
+            color: var(--gold);
+            font-family: monospace;
+        }
+        
+        /* Status Table */
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .status-table th {
+            background: var(--card);
+            color: var(--purple);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .status-table td {
+            padding: 0.75rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-badge.ok { background: rgba(52,211,153,0.2); color: var(--green); }
+        .status-badge.warn { background: rgba(251,191,36,0.2); color: var(--gold); }
+        .status-badge.error { background: rgba(248,113,113,0.2); color: var(--red); }
+        
+        /* Market Data */
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .market-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+        .market-symbol {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .market-price {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--gold);
+        }
+        .market-change {
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        .market-change.up { color: var(--green); }
+        .market-change.down { color: var(--red); }
+        .market-volume {
+            font-size: 0.75rem;
+            color: var(--text-2);
+            margin-top: 0.5rem;
+        }
+        
+        /* AI Analysis */
+        .ai-panel {
+            background: linear-gradient(135deg, rgba(192,132,252,0.1), rgba(96,165,250,0.1));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        .ai-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--purple);
+            margin-bottom: 1rem;
+        }
+        .ai-signal {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        .ai-symbol {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .ai-action {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .ai-action.buy { background: rgba(52,211,153,0.2); color: var(--green); }
+        .ai-action.sell { background: rgba(248,113,113,0.2); color: var(--red); }
+        .ai-action.hold { background: rgba(251,191,36,0.2); color: var(--gold); }
+        .ai-confidence {
+            margin-left: auto;
+            font-size: 0.85rem;
+            color: var(--text-2);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-2);
+            font-size: 0.75rem;
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>GBT CIS 量化收割系统</h1>
+            <p style="color: var(--text-2); margin-top: 0.5rem;">专业化全链路系统：集成连接 → 兑换 → 收款 → 量化收割</p>
+            <div class="badge">v2.0.0 生产就绪</div>
+            <div class="version">2026-09-01 18:02 GMT+7</div>
+        </div>
+        
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-value">5/5</div>
+                <div class="metric-label">集成连接</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">7</div>
+                <div class="metric-label">支持资产</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">$100K</div>
+                <div class="metric-label">初始资金</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">5s</div>
+                <div class="metric-label">更新周期</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">🏗️ 五层架构</h2>
+            <div class="arch-diagram">
+┌─────────────────────────────────────────────────────────────┐
+│                    GBT CIS Quantitative                      │
+│                      Harvesting System                       │
+│                      v2.0.0 (专业化版)                        │
+└─────────────────────────────────────────────────────────────┘
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        ▼                     ▼                     ▼
+   ┌──────────┐        ┌──────────┐        ┌──────────┐
+   │  Layer 1 │        │  Layer 2 │        │  Layer 3 │
+   │  集成连接 │        │  兑换服务 │        │  收款服务 │
+   └──────────┘        └──────────┘        └──────────┘
+        │                     │                     │
+        └─────────────────────┼─────────────────────┘
+                              ▼
+                       ┌──────────┐
+                       │  Layer 4 │
+                       │  CIS引擎 │
+                       └──────────┘
+                              │
+                               ▼
+                       ┌──────────┐
+                       │  Layer 5 │
+                       │  AI分析  │
+                       └──────────┘</div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">📊 集成连接状态</h2>
+            <table class="status-table">
+                <thead>
+                    <tr>
+                        <th>服务</th>
+                        <th>状态</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Binance API</td>
+                        <td><span class="status-badge ok">✓ 正常</span></td>
+                        <td>实时行情数据源</td>
+                    </tr>
+                    <tr>
+                        <td>Cap Bridge</td>
+                        <td><span class="status-badge ok">✓ 正常</span></td>
+                        <td>757 AI能力模块</td>
+                    </tr>
+                    <tr>
+                        <td>Payment Gateway</td>
+                        <td><span class="status-badge ok">✓ 正常</span></td>
+                        <td>支付网关服务</td>
+                    </tr>
+                    <tr>
+                        <td>Blockchain Bridge</td>
+                        <td><span class="status-badge ok">✓ 正常</span></td>
+                        <td>多链桥接服务</td>
+                    </tr>
+                    <tr>
+                        <td>Telegram Bot</td>
+                        <td><span class="status-badge ok">✓ 正常</span></td>
+                        <td>消息推送服务</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">🌐 实时市场行情</h2>
+            <div class="market-grid">
+                <div class="market-card">
+                    <div class="market-symbol">BTC/USDT</div>
+                    <div class="market-price">$77,971</div>
+                    <div class="market-change down">↓ -0.85%</div>
+                    <div class="market-volume">成交量: 14,637 BTC</div>
+                </div>
+                <div class="market-card">
+                    <div class="market-symbol">ETH/USDT</div>
+                    <div class="market-price">$2,454</div>
+                    <div class="market-change">→ -0.00%</div>
+                    <div class="market-volume">成交量: 236,317 ETH</div>
+                </div>
+                <div class="market-card">
+                    <div class="market-symbol">SOL/USDT</div>
+                    <div class="market-price">$102.33</div>
+                    <div class="market-change down">↓ -1.42%</div>
+                    <div class="market-volume">成交量: 2,026,757 SOL</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">🤖 AI分析结论</h2>
+            <div class="ai-panel">
+                <div class="ai-title">CIS量化信号分析 (2026-09-01 18:02 GMT+7)</div>
+                
+                <div class="ai-signal">
+                    <span class="ai-symbol">ETHUSDT</span>
+                    <span class="ai-action buy">BUY</span>
+                    <span style="color: var(--text-2); font-size: 0.85rem;">置信度: 72%</span>
+                    <span style="margin-left: auto; color: var(--text-2); font-size: 0.8rem;">强势抗跌</span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-2); margin-top: 0.5rem; padding-left: 1rem;">
+                    跌幅仅-0.002%，在BTC和SOL回调时保持稳定，呈现强势抗跌特征；价格在区间震荡，呈现典型蓄势形态
+                </div>
+                
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; font-size: 0.85rem;">
+                    <strong style="color: var(--gold);">风险等级:</strong> MEDIUM<br>
+                    <strong style="color: var(--purple);">市场状态:</strong> 整体偏弱，BTC和SOL跌幅超1%，ETH几乎持平
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">🔧 五层架构详解</h2>
+            <div class="layer-grid">
+                <div class="layer-card">
+                    <div class="layer-number">1</div>
+                    <div class="layer-title">集成连接模块</div>
+                    <div class="layer-desc">统一管理所有外部服务连接，确保数据流稳定可靠</div>
+                    <div class="layer-api">GET /api/integration/status</div>
+                </div>
+                <div class="layer-card">
+                    <div class="layer-number">2</div>
+                    <div class="layer-title">兑换服务</div>
+                    <div class="layer-desc">提供加密货币兑换服务，支持7种主流资产</div>
+                    <div class="layer-api">POST /api/exchange/rate</div>
+                </div>
+                <div class="layer-card">
+                    <div class="layer-number">3</div>
+                    <div class="layer-title">收款服务</div>
+                    <div class="layer-desc">创建和管理收款请求，集成PLISIO支付网关</div>
+                    <div class="layer-api">POST /api/payment/create</div>
+                </div>
+                <div class="layer-card">
+                    <div class="layer-number">4</div>
+                    <div class="layer-title">CIS量化引擎</div>
+                    <div class="layer-desc">CIS股票交易术驱动的快进快出收割系统</div>
+                    <div class="layer-api">POST /api/cis/execute</div>
+                </div>
+                <div class="layer-card">
+                    <div class="layer-number">5</div>
+                    <div class="layer-title">AI分析模块</div>
+                    <div class="layer-desc">AGNES-2.5-Flash智能分析，生成交易信号</div>
+                    <div class="layer-api">POST /api/cis/analyze</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">📈 CIS核心算法</h2>
+            <table class="status-table">
+                <thead>
+                    <tr>
+                        <th>CIS原则</th>
+                        <th>实现方式</th>
+                        <th>参数</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>强者恒强</td>
+                        <td>动量因子筛选</td>
+                        <td>14日动量 &gt; 3%</td>
+                    </tr>
+                    <tr>
+                        <td>顺势而为</td>
+                        <td>趋势跟随信号</td>
+                        <td>ATR动态止损</td>
+                    </tr>
+                    <tr>
+                        <td>亏损即砍</td>
+                        <td>快速止损</td>
+                        <td>止损 = 5% 或 ATR×1.5</td>
+                    </tr>
+                    <tr>
+                        <td>浮盈加仓</td>
+                        <td>金字塔加仓</td>
+                        <td>每涨2%加仓30%</td>
+                    </tr>
+                    <tr>
+                        <td>超短线</td>
+                        <td>时间止损</td>
+                        <td>最长持仓3天</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">🚀 快速开始</h2>
+            <div style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem;">
+                <div style="font-family: monospace; font-size: 0.85rem; color: var(--green);">
+                    # 启动系统<br>
+                    cd C:\Users\ADMIN\Desktop\GBT小土豆<br>
+                    python cis_harvesting_system_v2.py<br><br>
+                    # 访问服务<br>
+                    API: http://127.0.0.1:8090<br>
+                    WebSocket: ws://127.0.0.1:8090/ws/market
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>GBT CIS Quantitative Harvesting System v2.0</strong></p>
+            <p>专业化全链路系统 | 集成连接 → 兑换 → 收款 → 量化收割</p>
+            <p>© 2026 GBT小土豆 | 生成时间: 2026-09-01 18:02 GMT+7</p>
+        </div>
+    </div>
+</body>
+</html>

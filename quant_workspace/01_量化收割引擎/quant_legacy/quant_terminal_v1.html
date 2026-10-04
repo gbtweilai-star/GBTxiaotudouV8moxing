@@ -1,0 +1,500 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta name="description" content="GBT小土豆 - 去中心化量化交易平台">
+<meta name="keywords" content="GBT, quant, trading, crypto, Binance, AI">
+<meta name="author" content="GBT小土豆">
+<meta property="og:title" content="GBT小土豆 - 量化交易平台">
+<meta property="og:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gbtxiaotudou.com">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GBT小土豆 - 量化交易平台">
+<meta name="twitter:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GBT 閲忓寲缁堢 v1.0</title>
+<style>
+/* DESIGN SYSTEM 鈥?Trading Terminal */
+:root {
+  --bg:#0a0f14;--surface:#111820;--surface2:#0d1319;--border:#1e2d3a;
+  --border-light:#2a3f52;
+  --cyan:#00D4AA;--cyan-dim:rgba(0,212,170,0.12);--cyan-mid:rgba(0,212,170,0.25);
+  --coral:#FF4757;--coral-dim:rgba(255,71,87,0.12);
+  --gold:#F59E0B;--gold-dim:rgba(245,158,11,0.12);
+  --text:#e8edf2;--text2:#8fa4b8;--text3:#4a6275;
+  --font-display:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --font-body:"Inter",system-ui,-apple-system,sans-serif;
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;--space-8:32px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body)}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:0}
+
+/* LAYOUT */
+.app{display:grid;grid-template-columns:200px 1fr;height:100vh;overflow:hidden}
+.aside{background:var(--surface2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:var(--space-4) 0}
+.brand{padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--border);margin-bottom:var(--space-2)}
+.brand-title{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.1em;color:var(--cyan);text-transform:uppercase}
+.brand-sub{font-size:9px;color:var(--text3);letter-spacing:0.05em;margin-top:2px;text-transform:uppercase}
+.nav{flex:1;padding:var(--space-2)}
+.nav-item{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-5);font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;border-left:2px solid transparent;transition:all 100ms}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,0.02)}
+.nav-item.active{color:var(--cyan);border-left-color:var(--cyan);background:var(--cyan-dim)}
+.nav-icon{width:16px;height:16px;opacity:0.7}
+.status-bar{padding:var(--space-4);border-top:1px solid var(--border);font-size:9px;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase}
+.live-dot{display:inline-block;width:6px;height:6px;background:var(--cyan);margin-right:var(--space-2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+.main{display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-3) var(--space-6);border-bottom:1px solid var(--border);background:var(--surface);gap:var(--space-4)}
+.topbar-left{display:flex;align-items:center;gap:var(--space-6)}
+.topbar-title{font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase}
+.topbar-nav{display:flex;gap:var(--space-1)}
+.topbar-tab{padding:var(--space-2) var(--space-4);font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);cursor:pointer;border:1px solid transparent;transition:all 100ms}
+.topbar-tab:hover{color:var(--text2)}
+.topbar-tab.active{color:var(--cyan);border-color:var(--border-light);background:var(--cyan-dim)}
+.topbar-right{display:flex;align-items:center;gap:var(--space-4)}
+.topbar-status{display:flex;align-items:center;gap:var(--space-2);font-size:10px;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase}
+.topbar-btn{padding:var(--space-2) var(--space-4);font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text2);background:var(--surface2);border:1px solid var(--border);cursor:pointer;transition:all 100ms}
+.topbar-btn:hover{border-color:var(--border-light);color:var(--text)}
+
+/* CONTENT AREA */
+.content{padding:var(--space-6);overflow-y:auto;display:grid;gap:var(--space-5)}
+
+/* MARKET TICKER */
+.ticker{display:flex;gap:0;border:1px solid var(--border);background:var(--surface)}
+.ticker-item{flex:1;padding:var(--space-3) var(--space-5);display:flex;flex-direction:column;gap:var(--space-1);border-right:1px solid var(--border);cursor:pointer;transition:background 100ms}
+.ticker-item:last-child{border-right:none}
+.ticker-item:hover{background:rgba(255,255,255,0.02)}
+.ticker-item.active{background:var(--cyan-dim)}
+.ticker-symbol{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.06em;color:var(--text)}
+.ticker-price{font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:-0.01em}
+.ticker-change{font-family:var(--font-display);font-size:10px;font-weight:600;letter-spacing:0.04em}
+.positive{color:var(--cyan)}.negative{color:var(--coral)}
+
+/* GRID LAYOUTS */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4)}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-4)}
+.grid-main{display:grid;grid-template-columns:2fr 1fr;gap:var(--space-4)}
+
+/* PANELS */
+.panel{background:var(--surface);border:1px solid var(--border);padding:var(--space-5)}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:1px solid var(--border)}
+.panel-title{font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text2)}
+.panel-badge{font-size:9px;font-weight:600;letter-spacing:0.06em;padding:2px var(--space-3);text-transform:uppercase;background:var(--cyan-dim);color:var(--cyan)}
+.panel-badge.warn{background:var(--gold-dim);color:var(--gold)}
+.panel-badge.danger{background:var(--coral-dim);color:var(--coral)}
+
+/* KPI CARDS */
+.kpi-card{padding:var(--space-5);border:1px solid var(--border);background:var(--surface)}
+.kpi-label{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:var(--space-2)}
+.kpi-value{font-family:var(--font-display);font-size:24px;font-weight:700;letter-spacing:-0.02em;color:var(--text);line-height:1}
+.kpi-sub{font-size:10px;color:var(--text3);margin-top:var(--space-2);letter-spacing:0.02em}
+.kpi-change{font-family:var(--font-display);font-size:12px;font-weight:600;margin-top:var(--space-2)}
+
+/* SIGNAL TABLE */
+.signal-table{width:100%;border-collapse:collapse}
+.signal-table th{text-align:left;padding:var(--space-3) var(--space-4);font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);background:var(--surface2)}
+.signal-table td{padding:var(--space-3) var(--space-4);font-size:12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.signal-table tr:last-child td{border-bottom:none}
+.signal-table tr:hover td{background:rgba(255,255,255,0.01)}
+.signal-tag{display:inline-block;padding:2px var(--space-3);font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;border:1px solid}
+.signal-tag.buy{color:var(--cyan);border-color:rgba(0,212,170,0.3);background:var(--cyan-dim)}
+.signal-tag.sell{color:var(--coral);border-color:rgba(255,71,87,0.3);background:var(--coral-dim)}
+.signal-tag.hold{color:var(--text3);border-color:var(--border);background:transparent}
+.signal-tag.watch{color:var(--gold);border-color:rgba(245,158,11,0.3);background:var(--gold-dim)}
+.confidence-bar{height:3px;background:var(--border);width:60px;display:inline-block;vertical-align:middle;margin-left:var(--space-2)}
+.confidence-fill{height:100%;background:var(--cyan)}
+
+/* CHART AREA */
+.chart-container{position:relative;height:200px;border:1px solid var(--border);background:var(--surface2);overflow:hidden}
+.chart-container svg{width:100%;height:100%}
+.chart-grid line{stroke:var(--border);stroke-width:0.5}
+.chart-line{fill:none;stroke:var(--cyan);stroke-width:1.5;stroke-linejoin:round}
+.chart-area{fill:var(--cyan-dim);stroke:none}
+.chart-label{font-family:var(--font-display);font-size:9px;fill:var(--text3)}
+.chart-axis{stroke:var(--border);stroke-width:0.5}
+.chart-crosshair{stroke:var(--border-light);stroke-width:0.5;stroke-dasharray:3,3}
+
+/* STRATEGY CARDS */
+.strategy-card{padding:var(--space-4);border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all 100ms}
+.strategy-card:hover{border-color:var(--border-light);background:var(--surface)}
+.strategy-card.active{border-color:var(--cyan);background:var(--cyan-dim)}
+.strategy-name{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text);margin-bottom:var(--space-2)}
+.strategy-desc{font-size:10px;color:var(--text3);margin-bottom:var(--space-3);line-height:1.4}
+.strategy-metrics{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-2)}
+.strategy-metric{font-size:9px;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase}
+.strategy-metric-val{font-family:var(--font-display);font-size:12px;font-weight:600;color:var(--text);margin-top:1px}
+
+/* RISK BARS */
+.risk-row{display:flex;align-items:center;gap:var(--space-4);padding:var(--space-3) 0;border-bottom:1px solid var(--border)}
+.risk-row:last-child{border-bottom:none}
+.risk-label{font-size:10px;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase;width:80px}
+.risk-bar{flex:1;height:4px;background:var(--border);position:relative}
+.risk-fill{height:100%;transition:width 300ms}
+.risk-value{font-family:var(--font-display);font-size:11px;font-weight:600;width:50px;text-align:right}
+
+/* MISC */
+.divider{height:1px;background:var(--border);margin:var(--space-4) 0}
+.text-mono{font-family:var(--font-display)}
+.muted{color:var(--text3)}
+.small{font-size:10px}
+.ub{font-weight:700}
+.w-full{width:100%}
+.mb-1{margin-bottom:var(--space-1)}
+.mb-2{margin-bottom:var(--space-2)}
+.mb-3{margin-bottom:var(--space-3)}
+.mb-4{margin-bottom:var(--space-4)}
+
+@media(max-width:1200px){
+  .app{grid-template-columns:60px 1fr}
+  .brand span,.nav-item span,.status-bar span:not(.live-dot){display:none}
+  .nav-item{justify-content:center;padding:var(--space-3)}
+}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr}
+  .aside{display:none}
+  .grid-4{grid-template-columns:repeat(2,1fr)}
+  .grid-main{grid-template-columns:1fr}
+}
+</style>
+<!-- Floating Help Button -->
+<button class="help-btn" id="helpBtn" onclick="toggleGuide()" title="浣跨敤鎸囧崡">?</button>
+
+<!-- Usage Guide Panel -->
+<div class="guide-panel" id="guidePanel">
+  <div class="guide-header">
+    <span>馃摉 浣跨敤鎸囧崡</span>
+    <button class="guide-close" onclick="toggleGuide()">鉁?/button>
+  </div>
+  <div class="guide-body">
+
+</head>
+<body>
+<div class="app">
+  <aside class="aside">
+    <div class="brand">
+      <div class="brand-title">GBT Quant</div>
+      <div class="brand-sub">涓撲笟閲忓寲缁堢 v1.0</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active"><span>鎬昏</span></div>
+      <div class="nav-item"><span>琛屾儏</span></div>
+      <div class="nav-item"><span>淇″彿</span></div>
+      <div class="nav-item"><span>鍥炴祴</span></div>
+      <div class="nav-item"><span>缁勫悎</span></div>
+      <div class="nav-item"><span>椋庢帶</span></div>
+    </nav>
+    <div class="status-bar"><span class="live-dot"></span><span>杩愯涓?/span></div>
+  </aside>
+
+  <div class="main">
+<div class="usage-guide" style="margin:12px 16px;padding:12px 16px;background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.2);border-radius:4px;font-size:12px;color:#8fa4b8;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+    <span style="font-size:11px;font-weight:700;color:#00D4AA;letter-spacing:0.06em;text-transform:uppercase;">閲忓寲缁堢v1</span>
+    <span style="cursor:pointer;color:#3d5266;font-size:14px;" onclick="this.parentElement.parentElement.remove()">鉁?/span>
+  </div>
+  <ol style="margin:0;padding-left:16px;line-height:1.8;color:#8fa4b8;">
+    <li>閫夋嫨浜ゆ槗瀵?/li><li>鍔犺浇K绾挎暟鎹?/li><li>鍒囨崲鎶€鏈寚鏍?/li><li>瀵煎嚭浜ゆ槗淇″彿</li>
+  </ol>
+</div>
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">甯傚満鎬昏</div>
+        <div class="topbar-nav">
+          <div class="topbar-tab active">瀹炴椂</div>
+          <div class="topbar-tab">24H</div>
+          <div class="topbar-tab">7D</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-status">Binance WS 宸茶繛鎺?/div>
+        <div class="topbar-status" id="clock">--:--:--</div>
+        <button class="topbar-btn" onclick="refreshData()">鍒锋柊</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- TICKER BAR -->
+      <div class="ticker" id="ticker">
+        <div class="ticker-item active" data-symbol="BTCUSDT">
+          <div class="ticker-symbol">BTC/USDT</div>
+          <div class="ticker-price positive" id="btc-price">$81,230</div>
+          <div class="ticker-change positive" id="btc-change">+4.67%</div>
+        </div>
+        <div class="ticker-item" data-symbol="ETHUSDT">
+          <div class="ticker-symbol">ETH/USDT</div>
+          <div class="ticker-price positive" id="eth-price">$2,521</div>
+          <div class="ticker-change positive" id="eth-change">+5.05%</div>
+        </div>
+        <div class="ticker-item" data-symbol="BNBUSDT">
+          <div class="ticker-symbol">BNB/USDT</div>
+          <div class="ticker-price positive" id="bnb-price">$728</div>
+          <div class="ticker-change positive" id="bnb-change">+5.14%</div>
+        </div>
+        <div class="ticker-item" data-symbol="SOLUSDT">
+          <div class="ticker-symbol">SOL/USDT</div>
+          <div class="ticker-price positive" id="sol-price">$104</div>
+          <div class="ticker-change positive" id="sol-change">+3.99%</div>
+        </div>
+        <div class="ticker-item" data-symbol="XRPUSDT">
+          <div class="ticker-symbol">XRP/USDT</div>
+          <div class="ticker-price positive" id="xrp-price">$1.45</div>
+          <div class="ticker-change positive" id="xrp-change">+6.75%</div>
+        </div>
+      </div>
+
+      <!-- KPI ROW -->
+      <div class="grid-4">
+        <div class="kpi-card">
+          <div class="kpi-label">鎬讳綋淇″彿</div>
+          <div class="kpi-value" style="color:var(--gold)">HOLD</div>
+          <div class="kpi-sub">BTC/USDT 路 1 BUY / 3 HOLD</div>
+          <div class="kpi-change muted">缃俊搴?50%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">甯傚満鎯呯华</div>
+          <div class="kpi-value" style="color:var(--cyan)">鐪嬫定</div>
+          <div class="kpi-sub">RSI 涓€у尯鍩?63.27</div>
+          <div class="kpi-change positive">娉㈠姩鐜?0.45%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">鏈€浣崇瓥鐣?/div>
+          <div class="kpi-value">MACD</div>
+          <div class="kpi-sub">90澶╁洖娴?/div>
+          <div class="kpi-change positive">+8.12% 鏀剁泭</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">鏈€澶у洖鎾?/div>
+          <div class="kpi-value" style="color:var(--coral)">4.01%</div>
+          <div class="kpi-sub">椋庢帶闃堝€?15%</div>
+          <div class="kpi-change muted">瀹夊叏浣欓噺 10.99%</div>
+        </div>
+      </div>
+
+      <!-- CHART + SIGNALS -->
+      <div class="grid-main">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">浠锋牸鍥捐〃 路 BTC/USDT</div>
+            <div style="display:flex;gap:var(--space-2)">
+              <div class="panel-badge" style="cursor:pointer">1H</div>
+              <div class="panel-badge warn" style="cursor:pointer">4H</div>
+              <div class="panel-badge" style="cursor:pointer">1D</div>
+            </div>
+          </div>
+          <div class="chart-container" id="price-chart">
+            <svg viewBox="0 0 600 200" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="var(--cyan)" stop-opacity="0.2"/>
+                  <stop offset="100%" stop-color="var(--cyan)" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <g class="chart-grid">
+                <line x1="0" y1="50" x2="600" y2="50"/>
+                <line x1="0" y1="100" x2="600" y2="100"/>
+                <line x1="0" y1="150" x2="600" y2="150"/>
+                <line x1="150" y1="0" x2="150" y2="200"/>
+                <line x1="300" y1="0" x2="300" y2="200"/>
+                <line x1="450" y1="0" x2="450" y2="200"/>
+              </g>
+              <line x1="0" y1="195" x2="600" y2="195" class="chart-axis"/>
+              <line x1="5" y1="0" x2="5" y2="200" class="chart-axis"/>
+              <text x="2" y="35" class="chart-label" text-anchor="end">$82,300</text>
+              <text x="2" y="85" class="chart-label" text-anchor="end">$81,000</text>
+              <text x="2" y="135" class="chart-label" text-anchor="end">$80,000</text>
+              <text x="2" y="185" class="chart-label" text-anchor="end">$79,000</text>
+              <text x="75" y="200" class="chart-label" text-anchor="middle">08:00</text>
+              <text x="225" y="200" class="chart-label" text-anchor="middle">10:00</text>
+              <text x="375" y="200" class="chart-label" text-anchor="middle">12:00</text>
+              <text x="525" y="200" class="chart-label" text-anchor="middle">14:00</text>
+              <path d="M0,120 Q50,115 100,108 T200,95 T300,85 T400,75 T500,60 T600,45" class="chart-line"/>
+              <path d="M0,120 Q50,115 100,108 T200,95 T300,85 T400,75 T500,60 T600,45 L600,200 L0,200 Z" fill="url(#chartGrad)" stroke="none"/>
+              <circle cx="600" cy="45" r="4" fill="var(--cyan)"/>
+              <text x="590" y="38" class="chart-label" fill="var(--cyan)" text-anchor="end">$81,230</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">淇″彿鍒嗘瀽 路 BTC/USDT</div>
+            <div class="panel-badge">瀹炴椂</div>
+          </div>
+          <table class="signal-table">
+            <thead>
+              <tr><th>绛栫暐</th><th>淇″彿</th><th>缃俊搴?/th><th>璇︽儏</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="text-mono ub">MACD</td><td><span class="signal-tag buy">BUY</span></td><td><div style="display:flex;align-items:center;gap:var(--space-2)"><span class="positive ub">95%</span><div class="confidence-bar"><div class="confidence-fill" style="width:95%"></div></div></div></td><td class="muted small">閲戝弶纭 hist=1750</td></tr>
+              <tr><td class="text-mono ub">RSI</td><td><span class="signal-tag hold">HOLD</span></td><td><div style="display:flex;align-items:center;gap:var(--space-2)"><span class="muted">50%</span><div class="confidence-bar"><div class="confidence-fill" style="width:50%;background:var(--text3)"></div></div></div></td><td class="muted small">RSI=63.27 涓€?/td></tr>
+              <tr><td class="text-mono ub">BOLL</td><td><span class="signal-tag hold">HOLD</span></td><td><div style="display:flex;align-items:center;gap:var(--space-2)"><span class="muted">50%</span><div class="confidence-bar"><div class="confidence-fill" style="width:50%;background:var(--text3)"></div></div></div></td><td class="muted small">涓建闄勮繎 甯﹀7.18%</td></tr>
+              <tr><td class="text-mono ub">ATR</td><td><span class="signal-tag watch">WATCH</span></td><td><div style="display:flex;align-items:center;gap:var(--space-2)"><span style="color:var(--gold)" class="ub">50%</span><div class="confidence-bar"><div class="confidence-fill" style="width:50%;background:var(--gold)"></div></div></div></td><td class="muted small">娉㈠姩鐜囨甯?0.45%</td></tr>
+            </tbody>
+          </table>
+          <div class="divider"></div>
+          <div style="font-size:10px;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase">鏁翠綋鍒ゆ柇</div>
+          <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--gold);letter-spacing:-0.02em;margin-top:var(--space-2)">HOLD 路 瑙傛湜</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:var(--space-2)">MACD 鐪嬫定浣?RSI/BOLL 涓€э紝寤鸿瑙傛湜绛夊緟鏇存槑纭俊鍙?/div>
+        </div>
+      </div>
+
+      <!-- STRATEGIES + RISK + PORTFOLIO -->
+      <div class="grid-3">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">绛栫暐琛ㄧ幇</div><div class="panel-badge warn">90澶╁洖娴?/div></div>
+          <div style="display:grid;gap:var(--space-3)">
+            <div class="strategy-card active">
+              <div style="display:flex;justify-content:space-between;align-items:center"><div class="strategy-name">MACD Trend</div><span class="signal-tag buy">鏈€浼?/span></div>
+              <div class="strategy-desc">绉诲姩骞冲潎鏀舵暃鍙戞暎瓒嬪娍璺熻釜绛栫暐</div>
+              <div class="strategy-metrics">
+                <div><div class="strategy-metric">鏀剁泭</div><div class="strategy-metric-val positive">+8.12%</div></div>
+                <div><div class="strategy-metric">鍥炴挙</div><div class="strategy-metric-val" style="color:var(--gold)">4.01%</div></div>
+                <div><div class="strategy-metric">澶忔櫘</div><div class="strategy-metric-val positive">0.45</div></div>
+                <div><div class="strategy-metric">鑳滅巼</div><div class="strategy-metric-val">62%</div></div>
+              </div>
+            </div>
+            <div class="strategy-card">
+              <div style="display:flex;justify-content:space-between;align-items:center"><div class="strategy-name">Bollinger Break</div><span class="signal-tag hold">涓€?/span></div>
+              <div class="strategy-desc">甯冩灄甯︾獊鐮村姩閲忕瓥鐣?/div>
+              <div class="strategy-metrics">
+                <div><div class="strategy-metric">鏀剁泭</div><div class="strategy-metric-val positive">+0.02%</div></div>
+                <div><div class="strategy-metric">鍥炴挙</div><div class="strategy-metric-val">0.06%</div></div>
+                <div><div class="strategy-metric">澶忔櫘</div><div class="strategy-metric-val muted">0.07</div></div>
+                <div><div class="strategy-metric">鑳滅巼</div><div class="strategy-metric-val">55%</div></div>
+              </div>
+            </div>
+            <div class="strategy-card">
+              <div style="display:flex;justify-content:space-between;align-items:center"><div class="strategy-name">RSI Mean Rev</div><span class="signal-tag sell">浜忔崯</span></div>
+              <div class="strategy-desc">鐩稿寮哄急鎸囨暟鍧囧€煎洖褰掔瓥鐣?/div>
+              <div class="strategy-metrics">
+                <div><div class="strategy-metric">鏀剁泭</div><div class="strategy-metric-val negative">-0.14%</div></div>
+                <div><div class="strategy-metric">鍥炴挙</div><div class="strategy-metric-val negative">0.97%</div></div>
+                <div><div class="strategy-metric">澶忔櫘</div><div class="strategy-metric-val negative">-0.06</div></div>
+                <div><div class="strategy-metric">鑳滅巼</div><div class="strategy-metric-val">64%</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">椋庢帶鍙傛暟</div><div class="panel-badge">宸查厤缃?/div></div>
+          <div class="risk-row"><div class="risk-label">鏈€澶у洖鎾?/div><div class="risk-bar"><div class="risk-fill" style="width:27%;background:var(--cyan)"></div></div><div class="risk-value positive">15%</div></div>
+          <div class="risk-row"><div class="risk-label">姝㈡崯绾?/div><div class="risk-bar"><div class="risk-fill" style="width:13%;background:var(--gold)"></div></div><div class="risk-value" style="color:var(--gold)">2%</div></div>
+          <div class="risk-row"><div class="risk-label">鍗曠瑪浠撲綅</div><div class="risk-bar"><div class="risk-fill" style="width:33%;background:var(--cyan)"></div></div><div class="risk-value positive">10%</div></div>
+          <div class="risk-row"><div class="risk-label">鏈€澶ф潬鏉?/div><div class="risk-bar"><div class="risk-fill" style="width:33%;background:var(--cyan)"></div></div><div class="risk-value positive">3x</div></div>
+          <div class="risk-row"><div class="risk-label">褰撳墠鍥炴挙</div><div class="risk-bar"><div class="risk-fill" style="width:27%;background:var(--gold)"></div></div><div class="risk-value" style="color:var(--gold)">4.01%</div></div>
+          <div class="divider"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)">
+            <div><div class="kpi-label">VaR (95%)</div><div class="kpi-value" style="font-size:18px">$2,450</div></div>
+            <div><div class="kpi-label">椋庨櫓棰勭畻</div><div class="kpi-value" style="font-size:18px">$42,500</div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">璧勪骇閰嶇疆</div><div class="panel-badge" style="background:var(--gold-dim);color:var(--gold)">寤鸿璋冩暣</div></div>
+          <div style="display:grid;gap:var(--space-3)">
+            <div style="display:flex;align-items:center;gap:var(--space-4)"><div style="width:4px;height:40px;background:var(--cyan)"></div><div style="flex:1"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;font-weight:600">BTC</span><span style="font-family:var(--font-display);font-size:11px" class="positive">45%</span></div><div style="height:3px;background:var(--border)"><div style="height:100%;width:45%;background:var(--cyan)"></div></div></div></div>
+            <div style="display:flex;align-items:center;gap:var(--space-4)"><div style="width:4px;height:40px;background:var(--gold)"></div><div style="flex:1"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;font-weight:600">ETH</span><span style="font-family:var(--font-display);font-size:11px">25%</span></div><div style="height:3px;background:var(--border)"><div style="height:100%;width:25%;background:var(--gold)"></div></div></div></div>
+            <div style="display:flex;align-items:center;gap:var(--space-4)"><div style="width:4px;height:40px;background:var(--text3)"></div><div style="flex:1"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;font-weight:600">SOL</span><span style="font-family:var(--font-display);font-size:11px">15%</span></div><div style="height:3px;background:var(--border)"><div style="height:100%;width:15%;background:var(--text3)"></div></div></div></div>
+            <div style="display:flex;align-items:center;gap:var(--space-4)"><div style="width:4px;height:40px;background:var(--text3)"></div><div style="flex:1"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;font-weight:600">USDT</span><span style="font-family:var(--font-display);font-size:11px">15%</span></div><div style="height:3px;background:var(--border)"><div style="height:100%;width:15%;background:var(--text3)"></div></div></div></div>
+          </div>
+          <div class="divider"></div>
+          <div style="font-size:10px;color:var(--text3);line-height:1.6">寤鸿灏?SOL 浠撲綅浠?15% 鎻愬崌鑷?20%锛孊TC 閫傚害鍑忎粨鑷?40%锛屼繚鎸?USDT 鐜伴噾缂撳啿銆?/div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--space-3) 0;border-top:1px solid var(--border);font-size:10px;color:var(--text3);letter-spacing:0.04em">
+        <div>GBT Quant Platform v1.0 路 Powered by Binance WebSocket</div>
+        <div>鏁版嵁寤惰繜 &lt; 100ms 路 鏈€鍚庢洿鏂?<span id="last-update">--:--:--</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function updateClock() {
+  const now = new Date();
+  const t = now.toTimeString().slice(0, 8);
+  document.getElementById('clock').textContent = t;
+  document.getElementById('last-update').textContent = t;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+async function refreshData() {
+  try {
+    const resp = await fetch('http://127.0.0.1:8091/api/market/tickers');
+    const data = await resp.json();
+    const tickers = data.tickers;
+    if (tickers.length > 0) {
+      const btc = tickers.find(t => t.symbol === 'BTCUSDT');
+      if (btc) {
+        document.getElementById('btc-price').textContent = '$' + Number(btc.lastPrice).toLocaleString();
+        document.getElementById('btc-change').textContent = (btc.priceChangePercent >= 0 ? '+' : '') + btc.priceChangePercent.toFixed(2) + '%';
+        document.getElementById('btc-change').className = 'ticker-change ' + (btc.priceChangePercent >= 0 ? 'positive' : 'negative');
+      }
+      const eth = tickers.find(t => t.symbol === 'ETHUSDT');
+      if (eth) {
+        document.getElementById('eth-price').textContent = '$' + Number(eth.lastPrice).toLocaleString();
+        document.getElementById('eth-change').textContent = (eth.priceChangePercent >= 0 ? '+' : '') + eth.priceChangePercent.toFixed(2) + '%';
+      }
+    }
+  } catch(e) {}
+}
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+document.querySelectorAll('.topbar-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.topbar-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+document.querySelectorAll('.ticker-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.ticker-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+document.querySelectorAll('.strategy-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.strategy-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+  });
+});
+
+refreshData();
+setInterval(refreshData, 30000);
+</script>
+  </div>
+</div>
+
+<script>
+function toggleGuide() {
+  const panel = document.getElementById('guidePanel');
+  const btn = document.getElementById('helpBtn');
+  if (panel.classList.contains('active')) {
+    panel.classList.remove('active');
+    btn.style.transform = 'scale(1)';
+  } else {
+    panel.classList.add('active');
+    btn.style.transform = 'scale(1.1)';
+  }
+}
+</script>
+
+</body>
+</html>
+

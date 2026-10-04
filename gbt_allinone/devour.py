@@ -1018,6 +1018,9 @@ class DevourTentacle:
         
         self.state.setdefault("recombine_history", [])
         self.state["recombine_history"].append({"sources":[cap1,cap2],"result":new_name,"at":datetime.now().isoformat()})
+        # 2026-10-04：原只增不减（devour_pulse 每轮最多 3 次 recombine，state.json 双线性增长）；
+        # 与同文件 scan_learnings 截 200 的口径对齐。
+        self.state["recombine_history"] = self.state["recombine_history"][-200:]
         self.state["total_caps_created"] += 1
         self._save_state()
         
@@ -1114,6 +1117,8 @@ class DevourTentacle:
         
         self.state.setdefault("innovation_history",[])
         self.state["innovation_history"].append({"at":datetime.now().isoformat(),"created":[c["name"]for c in created]})
+        # 2026-10-04：同上，截 200（原只增不减）
+        self.state["innovation_history"] = self.state["innovation_history"][-200:]
         self.state["total_caps_created"]+=len(created)
         self._save_state()
         

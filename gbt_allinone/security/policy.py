@@ -475,6 +475,42 @@ def evaluate(kind: str, payload: dict | None = None) -> PolicyDecision:
     # social_eng / paywallbuster / asset_vault_freeze / onboarding_gate：
     # 纯离线判定 + 只读体检，与 sec_surface / sec_scan 同类 —— **不挂作用域**。
 
+    # ── 2026-10-04 补：万能触手·Web 六态（omni_web）—— 此前**零作用域 fail-open** ──
+    #   24h 审查实证（不是理论风险）：
+    #     · `edit_file` 真写盘（omni_web_cap.py:285 起，目标路径由调用方给）
+    #     · `read_source` 可被绝对路径穿透 ⇒ 读**任意本机文件**（同函数，原实现无仓根校验）
+    #     · `read_structure/gitingest` 真 `git clone` 落盘 + 出网（:72 起）
+    #   本函数对未列出的 kind 是 fail-open（同上方 key_gateway 段注释）⇒ 只在
+    #   caps_registry 登记名字（:1347）而不在此声明 = 写盘/私读/出网全免授权。
+    #   口径与全仓一致（同族先例 devour_github = data_export + filesystem_write）：
+    #     · 本地路径 ⇒ 读的是本机 ⇒ privacy_read
+    #     · 远程仓库 ⇒ clone 落盘 + 外网取物 ⇒ filesystem_write + data_export
+    #   🔴 fail-closed：未列出的 op 按"写 + 私读 + 外发"三挂处理（将来加动作不被静默放行）。
+    elif kind == "omni_web":
+        op = op or "read_structure"
+        if _needs_private_network(p):
+            add("network_private")
+            allow_private = True
+        _raw = str(p.get("repo") or p.get("url") or "")
+        _is_local = bool(_raw) and (os.path.isabs(_raw) or (len(_raw) > 1 and _raw[1] == ":"))
+        _read_ops = ("read_structure", "read_source", "read", "tree", "结构", "看结构",
+                     "源码", "读源码")
+        if op in _read_ops:
+            if _is_local:
+                add("privacy_read")
+            else:
+                add("filesystem_write", "data_export")
+        elif op in ("read_explanation", "讲解", "读讲解", "explain", "wiki"):
+            pass  # 只打 GitHub API / raw README，不落盘、不克隆 ⇒ 公开只读
+        elif op in ("edit_file", "改文件", "edit", "write"):
+            add("filesystem_write")
+        elif op in ("gitingest", "交给AI", "ai_digest"):
+            add("filesystem_write", "data_export")
+        elif op in ("stackblitz", "跑项目", "run"):
+            pass  # 只生成 URL / 指令，不真跑、不落盘
+        else:
+            add("filesystem_write", "privacy_read", "data_export")
+
     return PolicyDecision(kind=kind, risk=risk, scopes=tuple(scopes),
                           action=action, allow_private=allow_private, details=details)
 

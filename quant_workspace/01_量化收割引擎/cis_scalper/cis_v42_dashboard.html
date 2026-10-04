@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIS v42 - 加密货币快进快出收割系统</title>
+<style>
+:root { --accent: #00D4AA; --gold: #FFD700; --bg: #0a0a0a; --panel: #111; --border: #222; --text: #e0e0e0; --muted: #666; --buy: #00D4AA; --sell: #FF4757; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: "JetBrains Mono", "Consolas", monospace; }
+body { background: var(--bg); color: var(--text); padding: 16px; }
+h1 { color: var(--accent); font-size: 18px; letter-spacing: 0.1em; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+vbadge { background: var(--accent); color: #000; padding: 2px 8px; font-size: 10px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.card { background: var(--panel); border: 1px solid var(--border); padding: 14px; }
+.card-title { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+.metric { font-size: 22px; font-weight: bold; }
+.metric.buy { color: var(--buy); } .metric.sell { color: var(--sell); } .metric.gold { color: var(--gold); }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+th { background: var(--bg); color: var(--muted); padding: 8px; text-align: left; text-transform: uppercase; font-size: 9px; }
+td { padding: 8px; border-bottom: 1px solid var(--border); }
+tr:hover { background: rgba(0,212,170,0.05); }
+.sig-up { color: var(--buy); } .sig-down { color: var(--sell); }
+badge { display: inline-block; padding: 2px 6px; font-size: 9px; border: 1px solid var(--accent); color: var(--accent); margin-left: 4px; }
+.badge.pause { border-color: var(--gold); color: var(--gold); } .badge.blocked { border-color: var(--sell); color: var(--sell); }
+.log { background: var(--bg); padding: 10px; font-size: 10px; max-height: 160px; overflow-y: auto; }
+.log-entry { padding: 2px 0; border-bottom: 1px solid var(--border); }
+.controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+button { background: var(--panel); border: 1px solid var(--accent); color: var(--accent); padding: 8px 16px; font-size: 11px; cursor: pointer; font-family: inherit; }
+button:hover { background: rgba(0,212,170,0.1); }
+button.danger { border-color: var(--sell); color: var(--sell); } button.danger:hover { background: rgba(255,71,87,0.1); }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+.dot.on { background: var(--accent); box-shadow: 0 0 6px var(--accent); } .dot.off { background: var(--sell); }
+.pnl-pos { color: var(--buy); } .pnl-neg { color: var(--sell); }
+.regime-trend { background: rgba(0,212,170,0.2); color: var(--accent); padding: 2px 6px; font-size: 9px; }
+.regime-range { background: rgba(255,215,0,0.2); color: var(--gold); padding: 2px 6px; font-size: 9px; }
+.regime-vol { background: rgba(255,71,87,0.2); color: var(--sell); padding: 2px 6px; font-size: 9px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+@media (max-width: 1200px) { .three-col { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 768px) { .two-col, .three-col { grid-template-columns: 1fr; } }
+.last-update { font-size: 10px; color: var(--muted); margin-top: 8px; text-align: right; }
+</style>
+</head>
+<body>
+<h1>CIS v42 - Crypto Fast In Fast Out Harvesting
+  <vbadge>WebSocket + MACD + Correlation</vbadge>
+  <span style="margin-left:auto;font-size:11px;"><span class="dot on" id="connDot"></span><span id="connStatus">WS Connected</span></span>
+</h1>
+<div style="display:flex;gap:8px;padding:10px 0;flex-wrap:wrap;font-size:10px;">
+  <span style="background:var(--panel);border:1px solid var(--border);padding:4px 10px;color:var(--muted)">多因子共振</span>
+  <span style="color:var(--muted)">&#8594;</span>
+  <span style="background:var(--panel);border:1px solid var(--border);padding:4px 10px;color:var(--muted)">金字塔建仓</span>
+  <span style="color:var(--muted)">&#8594;</span>
+  <span style="background:var(--panel);border:1px solid var(--accent);padding:4px 10px;color:var(--accent)">MACD确认</span>
+  <span style="color:var(--muted)">&#8594;</span>
+  <span style="background:var(--panel);border:1px solid var(--border);padding:4px 10px;color:var(--muted)">动态止损</span>
+  <span style="color:var(--muted)">&#8594;</span>
+  <span style="background:var(--panel);border:1px solid var(--border);padding:4px 10px;color:var(--muted)">快进快出</span>
+</div>
+<div class="grid">
+  <div class="card"><div class="card-title">账户资金</div><div class="metric gold" id="capital">$100,000</div></div>
+  <div class="card"><div class="card-title">持仓数量</div><div class="metric" id="positions">0</div></div>
+  <div class="card"><div class="card-title">累计收益</div><div class="metric" id="totalPnl">$0.00</div></div>
+  <div class="card"><div class="card-title">胜率</div><div class="metric" id="winRate">--%</div></div>
+  <div class="card"><div class="card-title">交易次数</div><div class="metric" id="totalTrades">0</div></div>
+  <div class="card"><div class="card-title">扫描轮次</div><div class="metric" id="scanCount">0</div></div>
+</div>
+<div class="three-col">
+  <div class="card"><div class="card-title">实时信号 <badge id="signalBadge">等待中</badge></div>
+    <table><thead><tr><th>交易对</th><th>方向</th><th>信心</th><th>动量</th><th>RSI</th><th>操作</th></tr></thead>
+    <tbody id="signalBody"><tr><td colspan="6" style="color:var(--muted)">暂无信号</td></tr></tbody>
+  </table></div>
+  <div class="card"><div class="card-title">当前持仓</div>
+    <table><thead><tr><th>交易对</th><th>方向</th><th>入场价</th><th>现价</th><th>P&L</th><th>持仓</th><th>操作</th></tr></thead>
+    <tbody id="posBody"><tr><td colspan="7" style="color:var(--muted)">无持仓</td></tr></tbody>
+  </table></div>
+  <div class="card"><div class="card-title">相关性矩阵</div>
+    <table><thead><tr><th></th><th>BTC</th><th>ETH</th><th>SOL</th></tr></thead>
+    <tbody id="corrBody"></tbody></table></div>
+</div>
+<div class="two-col" style="margin-top:12px">
+  <div class="card"><div class="card-title">风控状态</div>
+    <table><tr><td>连续亏损</td><td id="consecLoss">0</td></tr>
+    <tr><td>今日盈亏</td><td id="dailyPnl">$0.00</td></tr>
+    <tr><td>今日交易</td><td id="dailyTrades">0</td></tr>
+    <tr><td>回撤幅度</td><td id="drawdown">0.00%</td></tr>
+    <tr><td>状态</td><td id="riskStatus"><badge>允许交易</badge></td></tr></table></div>
+  <div class="card"><div class="card-title">交易历史</div>
+    <div class="log" id="tradeLog"><div class="log-entry" style="color:var(--muted)">等待交易记录...</div></div>
+  </div></div>
+<div class="card" style="margin-top:12px"><div class="card-title">市场概况 - 全部交易对</div>
+  <table><thead><tr><th>交易对</th><th>价格</th><th>动量1m</th><th>RSI</th><th>趋势</th><th>强度</th><th>市场状态</th><th>量比</th></tr></thead>
+  <tbody id="marketBody"></tbody></table></div>
+<div class="controls">
+  <button onclick="manualScan()">扫描</button>
+  <button onclick="autoScanToggle()" id="autoBtn">自动扫描</button>
+  <button class="danger" onclick="closeAll()">全部平仓</button>
+  <button onclick="loadHistory()">历史记录</button>
+  <button onclick="loadCorrelation()">相关性</button>
+</div>
+<div class="last-update" id="lastUpdate">上次更新: --</div>
+<script>
+const API = "http://127.0.0.1:8092"; let ws = null; let autoScan = false;
+function connectWS() {
+  const u = "ws://" + location.host + "/ws";
+  ws = new WebSocket(u);
+  ws.onopen = () => { document.getElementById("connDot").className = "dot on"; document.getElementById("connStatus").textContent = "WS Connected"; };
+  ws.onclose = () => { document.getElementById("connDot").className = "dot off"; document.getElementById("connStatus").textContent = "WS Disconnected"; setTimeout(connectWS, 3000); };
+  ws.onmessage = (e) => { const d = JSON.parse(e.data); if (d.type === "init" || d.type === "update") updateUI(d); };
+}
+function updateUI(data) {
+  const s = data.status || {};
+  document.getElementById("positions").textContent = s.open_positions || 0;
+  const pnl = s.total_pnl || 0;
+  const pnlEl = document.getElementById("totalPnl");
+  pnlEl.textContent = (pnl >= 0 ? "+" : "") + "$" + pnl.toFixed(2);
+  pnlEl.className = "metric " + (pnl >= 0 ? "buy" : "sell");
+  document.getElementById("winRate").textContent = (s.win_rate || 0).toFixed(1) + "%";
+  document.getElementById("totalTrades").textContent = s.total_trades || 0;
+  document.getElementById("scanCount").textContent = s.scan_count || 0;
+  const r = s.risk || {};
+  document.getElementById("consecLoss").textContent = r.consecutive_losses || 0;
+  const dpnl = r.daily_pnl || 0;
+  const dpEl = document.getElementById("dailyPnl");
+  dpEl.textContent = (dpnl >= 0 ? "+" : "") + "$" + dpnl.toFixed(2);
+  dpEl.style.color = dpnl >= 0 ? "var(--buy)" : "var(--sell)";
+  document.getElementById("dailyTrades").textContent = r.daily_trades || 0;
+  document.getElementById("drawdown").textContent = (r.drawdown_pct || 0).toFixed(2) + "%";
+  const riskEl = document.getElementById("riskStatus");
+  if (r.is_paused) riskEl.innerHTML = "<badge class="blocked">暂停: " + (r.pause_reason || "") + "</badge>";
+  else riskEl.innerHTML = "<badge>允许交易</badge>";
+  const sb = document.getElementById("signalBody");
+  const sigs = data.signals || {};
+  const sk = Object.keys(sigs);
+  if (sk.length > 0) {
+    let h = "";
+    sk.forEach(sym => {
+      const sig = sigs[sym]; const isL = sig.action === "LONG";
+      h += "<tr>"
+        + "<td><b>" + sym.replace("USDT","") + "</b></td>"
+        + "<td class="sig-" + (isL ? "up" : "down") + "">" + sig.action + "</td>"
+        + "<td>" + (sig.confidence*100).toFixed(0) + "%</td>"
+        + "<td>" + sig.momentum_1m.toFixed(3) + "%</td>"
+        + "<td>" + sig.rsi.toFixed(1) + "</td>"
+        + "<td><button onclick="execSignal(\"" + sym + "\",\"" + sig.action + "\")">交易</button></td>"
+        + "</tr>";
+    });
+    sb.innerHTML = h;
+    document.getElementById("signalBadge").textContent = sk.length + " 信号";
+  } else {
+    sb.innerHTML = "<tr><td colspan="6" style="color:var(--muted)">暂无信号</td></tr>";
+    document.getElementById("signalBadge").textContent = "等待中";
+  }
+  const pb = document.getElementById("posBody");
+  const pos = s.positions || [];
+  if (pos.length > 0) {
+    let h = "";
+    pos.forEach(p => {
+      const isL = p.direction === "LONG"; const pc = p.pnl_pct >= 0 ? "pnl-pos" : "pnl-neg";
+      h += "<tr>"
+        + "<td><b>" + p.symbol.replace("USDT","") + "</b></td>"
+        + "<td class="sig-" + (isL ? "up" : "down") + "">" + p.direction + "</td>"
+        + "<td>$" + p.entry_price.toFixed(4) + "</td>"
+        + "<td>$" + p.current_price.toFixed(4) + "</td>"
+        + "<td class="" + pc + "">" + (p.pnl_pct >= 0 ? "+" : "") + p.pnl_pct.toFixed(2) + "%</td>"
+        + "<td>" + p.hold_time + "s</td>"
+        + "<td><button class="danger" onclick="closePos(\"" + p.position_id + "\")">平仓</button></td>"
+        + "</tr>";
+    });
+    pb.innerHTML = h;
+  } else { pb.innerHTML = "<tr><td colspan="7" style="color:var(--muted)">无持仓</td></tr>"; }
+  const mb = document.getElementById("marketBody");
+  const mk = data.market || {};
+  if (Object.keys(mk).length > 0) {
+    let h = "";
+    Object.entries(mk).forEach(([sym, m]) => {
+      const isUp = m.momentum_1m >= 0;
+      const rc = m.regime === "TRENDING" ? "regime-trend" : (m.regime === "VOLATILE" ? "regime-vol" : "regime-range");
+      h += "<tr>"
+        + "<td><b>" + sym.replace("USDT","") + "</b></td>"
+        + "<td>$" + m.price.toFixed(4) + "</td>"
+        + "<td class="sig-" + (isUp ? "up" : "down") + "">" + (m.momentum_1m >= 0 ? "+" : "") + m.momentum_1m.toFixed(3) + "%</td>"
+        + "<td>" + m.rsi.toFixed(1) + "</td>"
+        + "<td>" + m.trend + "</td>"
+        + "<td>" + m.trend_strength + "%</td>"
+        + "<td><span class="" + rc + "">" + m.regime + "</span></td>"
+        + "<td>" + m.vol_ratio.toFixed(2) + "x</td></tr>";
+    });
+    mb.innerHTML = h;
+  }
+  document.getElementById("lastUpdate").textContent = "上次更新: " + new Date().toLocaleTimeString();
+}
+async function manualScan() {
+  try {
+    const r = await fetch(API + "/api/trade/scan"); const d = await r.json();
+    updateUI(d);
+    if (d.signals && d.signals.length > 0) addLog("扫描发现 " + d.signals.length + " 个信号", "var(--accent)");
+    if (d.exits && d.exits.length > 0) d.exits.forEach(e => addLog(e.symbol + " " + e.direction + " " + (e.pnl_pct >= 0 ? "WIN" : "LOSS") + " " + e.pnl_pct.toFixed(2) + "% | " + e.reason, e.pnl_pct >= 0 ? "var(--buy)" : "var(--sell)"));
+  } catch(e) { addLog("扫描失败: " + e.message, "var(--sell)"); }
+}
+async function execSignal(sym, action) {
+  try {
+    const r = await fetch(API + "/api/trade/execute", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({symbol:sym, action:action})});
+    const d = await r.json();
+    if (d.ok) { addLog("开仓 " + sym + " " + action + " @ " + d.position.entry_price, "var(--buy)"); manualScan(); }
+    else addLog("开仓失败: " + d.error, "var(--sell)");
+  } catch(e) { addLog("请求失败: " + e.message, "var(--sell)"); }
+}
+async function closePos(pid) {
+  try { const r = await fetch(API + "/api/trade/close/" + pid, {method:"POST"}); const d = await r.json();
+    if (d.ok) { addLog(d.symbol + " 平仓 " + (d.pnl_pct >= 0 ? "WIN" : "LOSS") + " " + d.pnl_pct.toFixed(2) + "%", d.pnl_pct >= 0 ? "var(--buy)" : "var(--sell)"); manualScan(); }
+  } catch(e) { addLog("平仓失败: " + e.message, "var(--sell)"); }
+}
+async function closeAll() {
+  if (!confirm("确认全部平仓？")) return;
+  try { const r = await fetch(API + "/api/trade/close-all", {method:"POST"}); const d = await r.json();
+    addLog("全部平仓完成，关闭 " + d.closed + " 个持仓", "var(--gold)"); manualScan();
+  } catch(e) { addLog("操作失败: " + e.message, "var(--sell)"); }
+}
+async function autoScanToggle() {
+  autoScan = !autoScan; const btn = document.getElementById("autoBtn");
+  if (autoScan) {
+    try { await fetch(API + "/api/trade/auto-scan/start", {method:"POST"});
+      btn.textContent = "停止自动扫描"; btn.style.borderColor = "var(--sell)"; btn.style.color = "var(--sell)";
+      addLog("自动扫描已启动", "var(--accent)");
+    } catch(e) { addLog("启动失败: " + e.message, "var(--sell)"); }
+  } else {
+    try { await fetch(API + "/api/trade/auto-scan/stop", {method:"POST"});
+      btn.textContent = "自动扫描"; btn.style.borderColor = ""; btn.style.color = "";
+      addLog("自动扫描已停止", "var(--muted)");
+    } catch(e) { addLog("停止失败: " + e.message, "var(--sell)"); }
+  }
+}
+async function loadHistory() {
+  try { const r = await fetch(API + "/api/history?limit=50"); const d = await r.json();
+    const log = document.getElementById("tradeLog"); log.innerHTML = "";
+    if (d.trades && d.trades.length > 0) {
+      d.trades.reverse().forEach(t => {
+        const c = t.pnl_pct >= 0 ? "var(--buy)" : (t.type === "ENTRY" || t.type === "ADD" ? "var(--accent)" : "var(--sell)");
+        addLog(t.type + " " + t.symbol + " " + (t.pnl_pct !== 0 ? t.pnl_pct.toFixed(2) + "%" : ""), c);
+      });
+    } else log.innerHTML = "<div class="log-entry" style="color:var(--muted)">暂无历史记录</div>";
+  } catch(e) { addLog("加载失败: " + e.message, "var(--sell)"); }
+}
+async function loadCorrelation() {
+  try { const r = await fetch(API + "/api/correlation/matrix"); const d = await r.json();
+    const cb = document.getElementById("corrBody");
+    const syms = Object.keys(d); let h = "";
+    syms.forEach(s1 => {
+      h += "<tr><td><b>" + s1.replace("USDT","") + "</b></td>";
+      syms.forEach(s2 => {
+        const val = d[s1][s2]; const cls = val > 0.7 ? "sig-up" : (val < 0.3 ? "sig-down" : "");
+        h += "<td class="" + cls + "" style="text-align:center;font-size:10px">" + val.toFixed(2) + "</td>";
+      }); h += "</tr>";
+    }); cb.innerHTML = h; addLog("相关性矩阵已更新", "var(--accent)");
+  } catch(e) { addLog("加载失败: " + e.message, "var(--sell)"); }
+}
+function addLog(msg, color) {
+  const log = document.getElementById("tradeLog");
+  const e = document.createElement("div"); e.className = "log-entry";
+  e.style.color = color || "var(--text)";
+  e.textContent = "[" + new Date().toLocaleTimeString() + "] " + msg;
+  log.insertBefore(e, log.firstChild);
+  if (log.children.length > 50) log.removeChild(log.lastChild);
+}
+window.addEventListener("load", () => { connectWS(); manualScan(); loadCorrelation(); });
+</script>
+</body></html>

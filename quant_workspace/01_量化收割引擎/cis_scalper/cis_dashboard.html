@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta name="description" content="GBT小土豆 - 去中心化量化交易平台">
+<meta name="keywords" content="GBT, quant, trading, crypto, Binance, AI">
+<meta name="author" content="GBT小土豆">
+<meta property="og:title" content="GBT小土豆 - 量化交易平台">
+<meta property="og:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gbtxiaotudou.com">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GBT小土豆 - 量化交易平台">
+<meta name="twitter:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIS 自动化快进快出系统 v3.0</title>
+    <style>
+        :root { --accent: #00D4AA; --sell: #FF4757; --gold: #FFD700; --bg: #0a0a0a; --panel: #111111; --border: #222222; --text: #e0e0e0; --muted: #666666; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'JetBrains Mono', 'Consolas', monospace; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; }
+        .header { background: var(--panel); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 18px; color: var(--accent); letter-spacing: 0.1em; }
+        .header .status { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+        .live-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; padding: 12px; }
+        .card { background: var(--panel); border: 1px solid var(--border); padding: 14px; }
+        .card-title { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+        .metric { font-size: 28px; color: var(--accent); font-weight: bold; }
+        .metric.sell { color: var(--sell); }
+        .metric.gold { color: var(--gold); }
+        .metric.warn { color: #ff9800; }
+        .market-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        .coin-card { background: var(--panel); border: 1px solid var(--border); padding: 10px; text-align: center; }
+        .coin-card.buy { border-color: var(--accent); box-shadow: 0 0 10px rgba(0,212,170,0.1); }
+        .coin-name { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+        .coin-price { font-size: 16px; color: var(--text); }
+        .coin-momentum { font-size: 14px; margin-top: 4px; }
+        .coin-momentum.buy { color: var(--accent); }
+        .coin-momentum.sell { color: var(--sell); }
+        .signal-badge { display: inline-block; padding: 2px 8px; font-size: 10px; margin-top: 4px; border: 1px solid; }
+        .signal-badge.buy { color: var(--accent); border-color: var(--accent); }
+        .signal-badge.hold { color: var(--muted); border-color: var(--muted); }
+        .signal-badge.sell { color: var(--sell); border-color: var(--sell); }
+        .positions-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .positions-table th { background: var(--bg); color: var(--muted); padding: 8px; text-align: left; text-transform: uppercase; }
+        .positions-table td { padding: 8px; border-bottom: 1px solid var(--border); }
+        .positions-table tr:hover { background: rgba(0,212,170,0.05); }
+        .pnl-positive { color: var(--accent); }
+        .pnl-negative { color: var(--sell); }
+        .btn { padding: 6px 12px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; font-size: 11px; transition: all 0.2s; }
+        .btn:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-primary { background: var(--accent); color: #000; border-color: var(--accent); }
+        .btn-primary:hover { background: #00b894; }
+        .btn-sell { border-color: var(--sell); color: var(--sell); }
+        .btn-sell:hover { background: var(--sell); color: #fff; }
+        .controls { display: flex; gap: 8px; padding: 12px; }
+        .log-panel { grid-column: span 3; max-height: 200px; overflow-y: auto; }
+        .log-entry { padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
+        .log-entry.entry { color: var(--accent); }
+        .log-entry.exit { color: var(--sell); }
+        .config-panel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .config-item { display: flex; flex-direction: column; gap: 4px; }
+        .config-item label { font-size: 10px; color: var(--muted); }
+        .config-item input { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 6px; font-size: 12px; }
+        .config-item input:focus { outline: none; border-color: var(--accent); }
+        .refresh-timer { font-size: 10px; color: var(--muted); }
+        @media (max-width: 1200px) { .grid { grid-template-columns: 1fr 1fr; } .market-grid { grid-template-columns: repeat(3, 1fr); } .config-panel { grid-template-columns: repeat(2, 1fr); } .log-panel { grid-column: span 2; } }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } .market-grid { grid-template-columns: repeat(2, 1fr); } .log-panel { grid-column: span 1; } }
+    </style>
+<!-- Floating Help Button -->
+<button class="help-btn" id="helpBtn" onclick="toggleGuide()" title="使用指南">?</button>
+
+<!-- Usage Guide Panel -->
+<div class="guide-panel" id="guidePanel">
+  <div class="guide-header">
+    <span>📖 使用指南</span>
+    <button class="guide-close" onclick="toggleGuide()">✕</button>
+  </div>
+  <div class="guide-body">
+
+</head>
+<body>
+    <div class="header">
+        <h1>CIS AUTO TRADER v3.0</h1>
+        <div class="status">
+            <div class="live-dot"></div>
+            <span id="mode">DRY-RUN</span> | 
+            <span id="lastUpdate">--:--:--</span> |
+            <span class="refresh-timer">刷新: <span id="countdown">5</span>s</span>
+        </div>
+    </div>
+    
+    <div class="grid">
+        <!-- Metrics -->
+        <div class="card">
+            <div class="card-title">账户统计</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                <div><div style="font-size:10px;color:var(--muted)">总交易</div><div class="metric" id="totalTrades">0</div></div>
+                <div><div style="font-size:10px;color:var(--muted)">胜率</div><div class="metric gold" id="winRate">0%</div></div>
+                <div><div style="font-size:10px;color:var(--muted)">日内盈亏</div><div class="metric" id="dailyPnL">$0.00</div></div>
+                <div><div style="font-size:10px;color:var(--muted)">持仓数</div><div class="metric warn" id="openPos">0</div></div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">绩效指标</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                <div><div style="font-size:10px;color:var(--muted)">盈利次数</div><div class="metric" id="wins">0</div></div>
+                <div><div style="font-size:10px;color:var(--muted)">亏损次数</div><div class="metric sell" id="losses">0</div></div>
+                <div><div style="font-size:10px;color:var(--muted)">平均盈利</div><div class="metric" id="avgWin">$0</div></div>
+                <div><div style="font-size:10px;color:var(--muted)">平均亏损</div><div class="metric sell" id="avgLoss">$0</div></div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">CIS策略参数</div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.8;">
+                动量周期: <span style="color:var(--accent)" id="momPeriod">14</span> 根1分钟K线<br>
+                动量阈值: <span style="color:var(--accent)" id="momThreshold">2.0</span>%<br>
+                止损: <span style="color:var(--sell)" id="stopLoss">5.0</span>%<br>
+                止盈: <span style="color:var(--accent)" id="takeProfit">10.0</span>%<br>
+                最大持仓: <span id="maxHold">600</span> 秒 (10分钟)<br>
+                最大仓位: <span id="maxPositions">5</span> 个<br>
+                单笔风险: <span id="riskPerTrade">2.0</span>%
+            </div>
+        </div>
+        
+        <!-- Market Overview -->
+        <div class="card" style="grid-column: span 3;">
+            <div class="card-title">实时市场监控</div>
+            <div class="market-grid" id="marketGrid">
+                <div class="coin-card"><div class="coin-name">BTCUSDT</div><div class="coin-price">--</div><div class="coin-momentum">--</div></div>
+            </div>
+        </div>
+        
+        <!-- Positions -->
+        <div class="card" style="grid-column: span 2;">
+            <div class="card-title">
+                持仓管理
+                <div style="float:right;">
+                    <button class="btn btn-sell" onclick="closeAll()">全部平仓</button>
+                </div>
+            </div>
+            <table class="positions-table">
+                <thead>
+                    <tr>
+                        <th>ID</th><th>币种</th><th>入场价</th><th>当前价</th><th>PnL%</th><th>止损价</th><th>止盈价</th><th>持仓时间</th><th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="positionsBody">
+                    <tr><td colspan="9" style="text-align:center;color:var(--muted);">暂无持仓</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Controls -->
+        <div class="card">
+            <div class="card-title">手动控制</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <select id="symbolSelect" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;font-size:12px;">
+                    <option>BTCUSDT</option><option>ETHUSDT</option><option>SOLUSDT</option><option>BNBUSDT</option><option>XRPUSDT</option>
+                </select>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn btn-primary" style="flex:1;" onclick="openPosition()">开仓做多</button>
+                    <button class="btn" onclick="scanAll()">扫描市场</button>
+                </div>
+                <div id="scanResult" style="font-size:11px;color:var(--muted);text-align:center;"></div>
+            </div>
+        </div>
+        
+        <!-- Trade Log -->
+        <div class="card log-panel" style="grid-column: span 3;">
+            <div class="card-title">交易记录</div>
+            <div id="logContainer">
+                <div class="log-entry" style="color:var(--muted);">系统启动，等待交易信号...</div>
+            </div>
+        </div>
+        
+        <!-- Config -->
+        <div class="card" style="grid-column: span 3;">
+            <div class="card-title">策略参数配置</div>
+            <div class="config-panel">
+                <div class="config-item"><label>动量阈值 (%)</label><input type="number" id="cfgMomentum" value="0.02" step="0.01"></div>
+                <div class="config-item"><label>止损比例 (%)</label><input type="number" id="cfgStopLoss" value="5" step="0.5"></div>
+                <div class="config-item"><label>止盈比例 (%)</label><input type="number" id="cfgTakeProfit" value="10" step="0.5"></div>
+                <div class="config-item"><label>最大持仓时间 (秒)</label><input type="number" id="cfgMaxHold" value="600" step="60"></div>
+                <div class="config-item"><label>最大仓位数</label><input type="number" id="cfgMaxPositions" value="5" step="1"></div>
+                <div class="config-item"><label>单笔风险 (%)</label><input type="number" id="cfgRisk" value="2" step="0.5"></div>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:8px;">
+                <button class="btn btn-primary" onclick="saveConfig()">保存配置</button>
+                <button class="btn" onclick="loadConfig()">重置默认</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://127.0.0.1:8092';
+        let countdown = 5;
+        let refreshInterval;
+        
+        async function fetchJSON(path, options = {}) {
+            try {
+                const resp = await fetch(API + path, options);
+                return await resp.json();
+            } catch (e) {
+                console.error('API Error:', e);
+                return null;
+            }
+        }
+        
+        async function loadStatus() {
+            const data = await fetchJSON('/api/status');
+            if (!data) return;
+            
+            document.getElementById('totalTrades').textContent = data.total_trades;
+            document.getElementById('wins').textContent = data.wins;
+            document.getElementById('losses').textContent = data.losses;
+            document.getElementById('winRate').textContent = data.win_rate.toFixed(1) + '%';
+            
+            const pnlEl = document.getElementById('dailyPnL');
+            pnlEl.textContent = (data.daily_pnl >= 0 ? '+' : '') + '$' + data.daily_pnl.toFixed(2);
+            pnlEl.className = 'metric ' + (data.daily_pnl >= 0 ? '' : 'sell');
+            
+            document.getElementById('openPos').textContent = data.open_positions;
+            
+            // Positions table
+            const tbody = document.getElementById('positionsBody');
+            if (data.positions && data.positions.length > 0) {
+                tbody.innerHTML = data.positions.map(p => {
+                    const pnlPct = p.pnl_pct || 0;
+                    const holdTime = Math.floor((Date.now() / 1000) - p.entry_time);
+                    const holdMin = Math.floor(holdTime / 60);
+                    const holdSec = holdTime % 60;
+                    return `<tr>
+                        <td>${p.position_id}</td>
+                        <td>${p.symbol}</td>
+                        <td>$${p.entry_price.toFixed(p.entry_price > 100 ? 2 : 4)}</td>
+                        <td>$${p.current_price.toFixed(p.current_price > 100 ? 2 : 4)}</td>
+                        <td class="${pnlPct >= 0 ? 'pnl-positive' : 'pnl-negative'}">${pnlPct >= 0 ? '+' : ''}${pnlPct.toFixed(2)}%</td>
+                        <td>$${p.stop_loss.toFixed(p.stop_loss > 100 ? 2 : 4)}</td>
+                        <td>$${p.take_profit.toFixed(p.take_profit > 100 ? 2 : 4)}</td>
+                        <td>${holdMin}m ${holdSec}s</td>
+                        <td><button class="btn btn-sell" onclick="closePosition('${p.position_id}')">平仓</button></td>
+                    </tr>`;
+                }).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);">暂无持仓</td></tr>';
+            }
+        }
+        
+        async function loadMarket() {
+            const data = await fetchJSON('/api/market');
+            if (!data) return;
+            
+            const grid = document.getElementById('marketGrid');
+            grid.innerHTML = Object.entries(data).map(([sym, info]) => {
+                const momPct = info.momentum_pct || 0;
+                const isBuy = momPct >= 0;
+                return `<div class="coin-card ${isBuy ? 'buy' : ''}">
+                    <div class="coin-name">${sym.replace('USDT','')}</div>
+                    <div class="coin-price">$${info.price.toFixed(info.price > 100 ? 2 : 4)}</div>
+                    <div class="coin-momentum ${isBuy ? 'buy' : 'sell'}">${momPct >= 0 ? '+' : ''}${momPct.toFixed(3)}%</div>
+                    <span class="signal-badge ${info.signal === 'BUY' ? 'buy' : 'hold'}">${info.signal}</span>
+                </div>`;
+            }).join('');
+        }
+        
+        async function loadConfig() {
+            const data = await fetchJSON('/api/config');
+            if (!data) return;
+            const cfg = data.config;
+            document.getElementById('momPeriod').textContent = cfg.MOMENTUM_PERIOD;
+            document.getElementById('momThreshold').textContent = (cfg.MOMENTUM_THRESHOLD * 100).toFixed(2);
+            document.getElementById('stopLoss').textContent = (cfg.STOP_LOSS_PCT * 100).toFixed(1);
+            document.getElementById('takeProfit').textContent = (cfg.TAKE_PROFIT_PCT * 100).toFixed(1);
+            document.getElementById('maxHold').textContent = cfg.MAX_HOLD_TIME;
+            document.getElementById('maxPositions').textContent = cfg.MAX_OPEN_POSITIONS;
+            document.getElementById('riskPerTrade').textContent = (cfg.RISK_PER_TRADE * 100).toFixed(1);
+        }
+        
+        async function openPosition() {
+            const symbol = document.getElementById('symbolSelect').value;
+            document.getElementById('scanResult').textContent = '正在开仓...';
+            const data = await fetchJSON('/api/trade/execute', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({symbol})
+            });
+            if (data) {
+                if (data.ok) {
+                    document.getElementById('scanResult').textContent = '✓ 开仓成功: ' + symbol;
+                    document.getElementById('scanResult').style.color = 'var(--accent)';
+                    addLog('ENTRY', symbol, data.position.entry_price);
+                } else {
+                    document.getElementById('scanResult').textContent = '✗ ' + data.error;
+                    document.getElementById('scanResult').style.color = 'var(--sell)';
+                    addLog('SKIP', symbol, null, data.error);
+                }
+            }
+            setTimeout(() => document.getElementById('scanResult').textContent = '', 3000);
+        }
+        
+        async function closePosition(pid) {
+            await fetchJSON(`/api/trade/close/${pid}`, {method: 'POST'});
+            addRefresh();
+        }
+        
+        async function closeAll() {
+            const data = await fetchJSON('/api/trade/close-all', {method: 'POST'});
+            if (data) addLog('CLOSE_ALL', null, null, `已平仓 ${data.closed_count} 个持仓`);
+            addRefresh();
+        }
+        
+        async function scanAll() {
+            const data = await fetchJSON('/api/trade/scan', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: '{}'
+            });
+            if (data) {
+                const entryCount = data.entry_signals?.length || 0;
+                const exitCount = data.exit_signals?.length || 0;
+                document.getElementById('scanResult').textContent = `扫描完成: ${entryCount} 个入场信号, ${exitCount} 个出场信号`;
+                document.getElementById('scanResult').style.color = entryCount > 0 ? 'var(--accent)' : 'var(--muted)';
+                (data.entry_signals || []).forEach(s => addLog('SCAN', s.symbol, s.price, `动量 ${s.momentum_pct.toFixed(2)}%`));
+            }
+        }
+        
+        async function saveConfig() {
+            const config = {
+                MOMENTUM_THRESHOLD: parseFloat(document.getElementById('cfgMomentum').value) / 100,
+                STOP_LOSS_PCT: parseFloat(document.getElementById('cfgStopLoss').value) / 100,
+                TAKE_PROFIT_PCT: parseFloat(document.getElementById('cfgTakeProfit').value) / 100,
+                MAX_HOLD_TIME: parseInt(document.getElementById('cfgMaxHold').value),
+                MAX_OPEN_POSITIONS: parseInt(document.getElementById('cfgMaxPositions').value),
+                RISK_PER_TRADE: parseFloat(document.getElementById('cfgRisk').value) / 100,
+            };
+            await fetchJSON('/api/config', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(config)
+            });
+            loadConfig();
+            addLog('CONFIG', null, null, '配置已更新');
+        }
+        
+        function addLog(type, symbol, price, reason = '') {
+            const container = document.getElementById('logContainer');
+            const now = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type === 'ENTRY' || type === 'SCAN' ? 'entry' : type === 'EXIT' || type === 'CLOSE_ALL' ? 'exit' : ''}`;
+            let text = `[${now}] ${type}`;
+            if (symbol) text += ` ${symbol}`;
+            if (price) text += ` @ $${price.toFixed(price > 100 ? 2 : 4)}`;
+            if (reason) text += ` | ${reason}`;
+            entry.textContent = text;
+            container.insertBefore(entry, container.firstChild);
+            if (container.children.length > 50) container.removeChild(container.lastChild);
+        }
+        
+        function addRefresh() {
+            countdown = 5;
+            loadStatus();
+            loadMarket();
+        }
+        
+        function tick() {
+            countdown--;
+            document.getElementById('countdown').textContent = countdown;
+            if (countdown <= 0) {
+                loadStatus();
+                loadMarket();
+                countdown = 5;
+            }
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+        }
+        
+        // Init
+        loadStatus();
+        loadMarket();
+        loadConfig();
+        setInterval(tick, 1000);
+    </script>
+  </div>
+</div>
+
+<script>
+function toggleGuide() {
+  const panel = document.getElementById('guidePanel');
+  const btn = document.getElementById('helpBtn');
+  if (panel.classList.contains('active')) {
+    panel.classList.remove('active');
+    btn.style.transform = 'scale(1)';
+  } else {
+    panel.classList.add('active');
+    btn.style.transform = 'scale(1.1)';
+  }
+}
+</script>
+
+</body>
+</html>

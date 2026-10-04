@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta name="description" content="GBT小土豆 - 去中心化量化交易平台">
+<meta name="keywords" content="GBT, quant, trading, crypto, Binance, AI">
+<meta name="author" content="GBT小土豆">
+<meta property="og:title" content="GBT小土豆 - 量化交易平台">
+<meta property="og:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gbtxiaotudou.com">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GBT小土豆 - 量化交易平台">
+<meta name="twitter:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBT Quant Pro v3.0 — 增强版</title>
+<style>
+:root {
+  --bg: #0a0e14;
+  --surface: #111820;
+  --card: #0d1319;
+  --border: #1e2d3a;
+  --border-light: #2a3f52;
+  --cyan: #00D4AA;
+  --cyan-dim: rgba(0,212,170,0.12);
+  --coral: #FF4757;
+  --coral-dim: rgba(255,71,87,0.12);
+  --gold: #F59E0B;
+  --gold-dim: rgba(245,158,11,0.12);
+  --blue: #3B82F6;
+  --blue-dim: rgba(59,130,246,0.12);
+  --text: #e8edf2;
+  --text2: #8fa4b8;
+  --text3: #4a6275;
+  --font: 'JetBrains Mono', 'Consolas', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); overflow: hidden; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border-light); }
+
+.app { display: grid; grid-template-columns: 200px 1fr 280px; height: 100vh; }
+
+/* SIDEBAR */
+.sidebar { background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+.brand { padding: 20px 16px; border-bottom: 1px solid var(--border); }
+.brand-name { font-size: 14px; font-weight: 800; color: var(--cyan); letter-spacing: 0.12em; }
+.brand-sub { font-size: 9px; color: var(--text3); margin-top: 6px; letter-spacing: 0.06em; }
+.nav { flex: 1; padding: 12px; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; font-size: 11px; font-weight: 600; color: var(--text2); cursor: pointer; border-left: 2px solid transparent; transition: all 150ms; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.02); }
+.nav-item.active { color: var(--cyan); border-left-color: var(--cyan); background: var(--cyan-dim); }
+.nav-badge { margin-left: auto; font-size: 9px; padding: 2px 6px; background: var(--cyan-dim); color: var(--cyan); border-radius: 2px; }
+.status-panel { padding: 16px; border-top: 1px solid var(--border); }
+.live-dot { display: inline-block; width: 6px; height: 6px; background: var(--cyan); margin-right: 8px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.status-text { font-size: 9px; color: var(--text3); line-height: 1.6; }
+
+/* MAIN */
+.main { display: flex; flex-direction: column; overflow: hidden; }
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.topbar-left { display: flex; align-items: center; gap: 24px; }
+.topbar-title { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.topbar-tabs { display: flex; gap: 4px; }
+.topbar-tab { padding: 6px 16px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text3); cursor: pointer; border: 1px solid transparent; transition: all 150ms; }
+.topbar-tab:hover { color: var(--text2); }
+.topbar-tab.active { color: var(--cyan); border-color: var(--border-light); background: var(--cyan-dim); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.status-chip { display: flex; align-items: center; gap: 8px; padding: 5px 12px; background: var(--cyan-dim); border: 1px solid rgba(0,212,170,0.3); font-size: 10px; color: var(--cyan); }
+.refresh-btn { padding: 6px 16px; background: transparent; border: 1px solid var(--border-light); color: var(--text2); font-size: 10px; cursor: pointer; font-family: inherit; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; transition: all 150ms; }
+.refresh-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.auto-label { font-size: 9px; color: var(--text3); }
+
+.content { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+
+/* TICKER */
+.ticker { display: flex; border: 1px solid var(--border); background: var(--surface); }
+.ticker-item { flex: 1; padding: 12px 20px; display: flex; flex-direction: column; gap: 6px; border-right: 1px solid var(--border); cursor: pointer; transition: background 150ms; }
+.ticker-item:last-child { border-right: none; }
+.ticker-item:hover { background: rgba(255,255,255,0.02); }
+.ticker-item.active { background: var(--cyan-dim); }
+.ticker-header { display: flex; justify-content: space-between; align-items: center; }
+.ticker-symbol { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; }
+.ticker-signal { font-size: 9px; padding: 2px 8px; font-weight: 700; letter-spacing: 0.06em; }
+.ticker-signal.buy { background: var(--cyan-dim); color: var(--cyan); }
+.ticker-signal.hold { background: var(--border); color: var(--text3); }
+.ticker-signal.sell { background: var(--coral-dim); color: var(--coral); }
+.ticker-price { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.ticker-footer { display: flex; justify-content: space-between; align-items: center; }
+.ticker-change { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; }
+.ticker-rsi { font-size: 9px; color: var(--text3); }
+
+/* KPI GRID */
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+/* PANELS */
+.panel { background: var(--surface); border: 1px solid var(--border); }
+.panel-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.panel-title { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); }
+.panel-badge { font-size: 9px; font-weight: 600; letter-spacing: 0.06em; padding: 2px 10px; background: var(--cyan-dim); color: var(--cyan); }
+.panel-badge.live { background: rgba(255,71,87,0.15); color: var(--coral); animation: pulse 1.5s infinite; }
+.panel-badge.warn { background: var(--gold-dim); color: var(--gold); }
+.panel-body { padding: 16px; }
+
+/* KPI */
+.kpi { padding: 16px; border: 1px solid var(--border); background: var(--card); }
+.kpi-label { font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.kpi-value { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+.kpi-sub { font-size: 10px; color: var(--text3); margin-top: 6px; }
+.kpi-change { font-size: 12px; font-weight: 600; margin-top: 4px; }
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.data-table th { text-align: left; padding: 10px 14px; font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); border-bottom: 1px solid var(--border); background: var(--card); }
+.data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(255,255,255,0.01); }
+
+.signal-tag { display: inline-block; padding: 3px 10px; font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; }
+.signal-tag.buy { color: var(--cyan); border-color: rgba(0,212,170,0.3); background: var(--cyan-dim); }
+.signal-tag.sell { color: var(--coral); border-color: rgba(255,71,87,0.3); background: var(--coral-dim); }
+.signal-tag.hold { color: var(--text3); border-color: var(--border); }
+
+.confidence-wrap { display: flex; align-items: center; gap: 8px; }
+.confidence-bar { height: 4px; background: var(--border); flex: 1; }
+.confidence-fill { height: 100%; transition: width 400ms; }
+.confidence-fill.high { background: var(--cyan); }
+.confidence-fill.medium { background: var(--gold); }
+.confidence-fill.low { background: var(--coral); }
+.confidence-val { font-size: 10px; font-weight: 600; width: 40px; text-align: right; }
+
+/* RIGHT PANEL */
+.right-panel { background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+.right-section { padding: 16px; border-bottom: 1px solid var(--border); }
+.right-title { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); margin-bottom: 12px; }
+
+.balance-hero { background: linear-gradient(135deg, rgba(0,212,170,0.1), rgba(0,212,170,0.02)); border: 1px solid rgba(0,212,170,0.25); padding: 16px; }
+.bal-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; }
+.bal-value { font-size: 26px; font-weight: 800; color: var(--cyan); margin: 6px 0; letter-spacing: -0.02em; }
+.bal-change { font-size: 12px; }
+.positive { color: var(--cyan); }
+.negative { color: var(--coral); }
+
+.position-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.position-row:last-child { border-bottom: none; }
+.pos-symbol { font-size: 12px; font-weight: 600; }
+.pos-side { font-size: 9px; padding: 2px 8px; font-weight: 600; }
+.pos-side.long { background: var(--cyan-dim); color: var(--cyan); }
+.pos-side.short { background: var(--coral-dim); color: var(--coral); }
+.pos-pnl { font-size: 12px; font-weight: 600; }
+
+.log-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 10px; border-bottom: 1px solid var(--border); }
+.log-row:last-child { border-bottom: none; }
+.log-time { color: var(--text3); }
+.log-action { color: var(--text2); }
+.log-pnl { font-weight: 600; }
+
+.strategy-card { padding: 12px; border: 1px solid var(--border); background: var(--card); margin-bottom: 10px; cursor: pointer; transition: all 150ms; }
+.strategy-card:hover { border-color: var(--border-light); background: var(--surface); }
+.strategy-card.active { border-color: var(--cyan); background: var(--cyan-dim); }
+.strategy-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.strategy-desc { font-size: 9px; color: var(--text3); line-height: 1.4; }
+.strategy-metrics { display: flex; gap: 16px; margin-top: 10px; }
+.str-metric { font-size: 9px; color: var(--text3); }
+.str-metric-val { font-size: 12px; font-weight: 600; color: var(--text); }
+
+.risk-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.risk-row:last-child { border-bottom: none; }
+.risk-label { font-size: 9px; color: var(--text3); width: 72px; text-transform: uppercase; letter-spacing: 0.05em; }
+.risk-bar { flex: 1; height: 4px; background: var(--border); }
+.risk-fill { height: 100%; transition: width 400ms; }
+.risk-value { font-size: 10px; font-weight: 600; width: 44px; text-align: right; }
+
+.last-update { font-size: 9px; color: var(--text3); text-align: right; padding: 12px 16px; border-top: 1px solid var(--border); }
+
+/* NEWS TICKER */
+.news-ticker { background: var(--surface); border: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
+.news-label { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); white-space: nowrap; }
+.news-content { font-size: 11px; color: var(--text2); overflow: hidden; white-space: nowrap; }
+
+@media (max-width: 1200px) {
+  .app { grid-template-columns: 60px 1fr 220px; }
+  .brand span, .nav-item span, .status-panel span:not(.live-dot) { display: none; }
+  .nav-item { justify-content: center; padding: 12px; }
+}
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar, .right-panel { display: none; }
+}
+</style>
+<!-- Floating Help Button -->
+<button class="help-btn" id="helpBtn" onclick="toggleGuide()" title="使用指南">?</button>
+
+<!-- Usage Guide Panel -->
+<div class="guide-panel" id="guidePanel">
+  <div class="guide-header">
+    <span>📖 使用指南</span>
+    <button class="guide-close" onclick="toggleGuide()">✕</button>
+  </div>
+  <div class="guide-body">
+
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="brand">
+      <div class="brand-name">GBT</div>
+      <div class="brand-sub">QUANT TERMINAL PRO V3</div>
+    </div>
+    <div class="nav">
+      <div class="nav-item active"><span>▶</span><span>交易面板</span></div>
+      <div class="nav-item"><span>📊</span><span>回测引擎</span><span class="nav-badge">3</span></div>
+      <div class="nav-item"><span>💰</span><span>支付中心</span></div>
+      <div class="nav-item"><span>🔗</span><span>区块链</span></div>
+      <div class="nav-item"><span>👥</span><span>社交交易</span><span class="nav-badge">LIVE</span></div>
+      <div class="nav-item"><span>📈</span><span>AI分析</span></div>
+      <div class="nav-item"><span>⚙️</span><span>设置</span></div>
+    </div>
+    <div class="status-panel">
+      <div class="status-text"><span class="live-dot"></span>系统运行中</div>
+      <div class="status-text" style="margin-top:8px;">Bridge: 771 CAPs</div>
+      <div class="status-text">成功率: 99.9%</div>
+      <div class="status-text" style="margin-top:4px;color:var(--gold);">DRY-RUN 模式</div>
+    </div>
+  </div>
+
+  <div class="main">
+<div class="usage-guide" style="margin:12px 16px;padding:12px 16px;background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.2);border-radius:4px;font-size:12px;color:#8fa4b8;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+    <span style="font-size:11px;font-weight:700;color:#00D4AA;letter-spacing:0.06em;text-transform:uppercase;">量化Pro v3</span>
+    <span style="cursor:pointer;color:#3d5266;font-size:14px;" onclick="this.parentElement.parentElement.remove()">✕</span>
+  </div>
+  <ol style="margin:0;padding-left:16px;line-height:1.8;color:#8fa4b8;">
+    <li>策略组合管理</li><li>多账户同步</li><li>风险分散配置</li><li>自动化调仓</li>
+  </ol>
+</div>
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">市场监控</div>
+        <div class="topbar-tabs">
+          <div class="topbar-tab active">实时</div>
+          <div class="topbar-tab">历史</div>
+          <div class="topbar-tab">回测</div>
+          <div class="topbar-tab">AI分析</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="status-chip"><span class="live-dot"></span>CIS v4.0 运行中</div>
+        <div class="status-chip" style="background:var(--gold-dim);color:var(--gold);border-color:rgba(245,158,11,0.3);">DRY-RUN</div>
+        <button class="refresh-btn" onclick="refreshAll()">⟳ 刷新</button>
+        <span class="auto-label">自动刷新: 每30秒</span>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- TICKER -->
+      <div class="ticker" id="ticker"></div>
+
+      <!-- NEWS TICKER -->
+      <div class="news-ticker">
+        <div class="news-label">市场动态</div>
+        <div class="news-content" id="newsContent">BTC 下跌0.96% 至$79,028 | ETH 下跌0.69% 至$2,441 | 市场进入休整期，等待新方向...</div>
+      </div>
+
+      <!-- KPI CARDS -->
+      <div class="grid-4" id="kpiGrid"></div>
+
+      <!-- MAIN GRID -->
+      <div class="grid-2">
+        <!-- MARKET DATA -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">市场数据</div>
+            <div class="panel-badge live">LIVE</div>
+          </div>
+          <div style="padding:0;overflow-x:auto;">
+            <table class="data-table" id="marketTable">
+              <tr>
+                <th>币种</th>
+                <th>价格</th>
+                <th>24H变化</th>
+                <th>RSI(14)</th>
+                <th>MACD</th>
+                <th>成交量</th>
+                <th>信号</th>
+                <th>置信度</th>
+              </tr>
+              <tbody id="marketBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SIGNALS -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">交易信号</div>
+            <div class="panel-badge warn">扫描中</div>
+          </div>
+          <div class="panel-body" id="signalList" style="max-height:360px;overflow-y:auto;"></div>
+        </div>
+      </div>
+
+      <!-- BOTTOM GRID -->
+      <div class="grid-2">
+        <!-- STRATEGIES -->
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">策略表现</div><div class="panel-badge">90天</div></div>
+          <div class="panel-body" id="strategyList" style="max-height:240px;overflow-y:auto;"></div>
+        </div>
+
+        <!-- RISK -->
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">风控指标</div></div>
+          <div class="panel-body" id="riskMetrics"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="right-section">
+      <div class="balance-hero">
+        <div class="bal-label">账户总权益</div>
+        <div class="bal-value" id="totalEquity">$100,000</div>
+        <div class="bal-change positive" id="equityChange">+2.4% +$2,384</div>
+      </div>
+    </div>
+
+    <div class="right-section">
+      <div class="right-title">当前持仓</div>
+      <div id="positionsList">
+        <div style="color:var(--text3);font-size:11px;text-align:center;padding:24px 0;">暂无持仓 · DRY-RUN模式</div>
+      </div>
+    </div>
+
+    <div class="right-section">
+      <div class="right-title">最近交易</div>
+      <div id="tradeLog">
+        <div style="color:var(--text3);font-size:10px;text-align:center;padding:20px 0;">等待交易信号...</div>
+      </div>
+    </div>
+
+    <div class="right-section">
+      <div class="right-title">系统状态</div>
+      <div style="font-size:10px;color:var(--text2);line-height:2;" id="systemStatus"></div>
+    </div>
+
+    <div class="last-update" id="lastUpdate">更新于 --:--:--</div>
+  </div>
+</div>
+
+<script>
+const SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT'];
+const API = 'http://127.0.0.1:8092';
+const BINANCE_API = 'https://api.binance.com/api/v3';
+
+const strategies = [
+  { name: 'MACD趋势', desc: '双均线交叉策略', return: '+8.12%', win: '62%', trades: 156, sharpe: 1.8 },
+  { name: 'RSI回归', desc: '超买超卖反转', return: '+5.43%', win: '58%', trades: 203, sharpe: 1.4 },
+  { name: '布林突破', desc: '带宽突破策略', return: '+3.21%', win: '54%', trades: 178, sharpe: 1.1 },
+  { name: 'KDJ指标', desc: '随机震荡器', return: '+2.87%', win: '51%', trades: 142, sharpe: 0.9 }
+];
+
+const riskConfig = [
+  { label: '最大回撤', value: 15, color: 'var(--gold)', max: 20 },
+  { label: '止损线', value: 2, color: 'var(--coral)', max: 5 },
+  { label: '单笔仓位', value: 10, color: 'var(--cyan)', max: 20 },
+  { label: '最大杠杆', value: 33, color: 'var(--text2)', max: 100 },
+  { label: '连续亏损', value: 0, color: 'var(--cyan)', max: 3 }
+];
+
+async function fetchMarket() {
+  try {
+    const [cisRes, binanceRes] = await Promise.all([
+      fetch(API + '/api/market').catch(() => null),
+      fetch(BINANCE_API + '/ticker/24hr?symbols=' + JSON.stringify(SYMBOLS)).catch(() => null)
+    ]);
+    
+    const cisData = cisRes?.ok ? await cisRes.json().then(d => d.markets || {}) : {};
+    const binanceData = binanceRes?.ok ? await binanceRes.json() : [];
+    
+    const result = {};
+    SYMBOLS.forEach(sym => {
+      const bin = binanceData.find(b => b.symbol === sym) || {};
+      const cis = cisData[sym] || {};
+      result[sym] = {
+        price: parseFloat(bin.lastPrice || cis.price || 0),
+        change: parseFloat(bin.priceChangePercent || 0),
+        volume: bin.volume || '0',
+        rsi: cis.rsi || 50,
+        macd_dir: cis.trend || 'DN',
+        vol_ratio: cis.vol_ratio || 0.5
+      };
+    });
+    return result;
+  } catch (e) {
+    console.error('Fetch market failed:', e);
+    return {};
+  }
+}
+
+async function fetchSignals() {
+  try {
+    const res = await fetch(API + '/api/trade/scan');
+    const data = await res.json();
+    return data.signals || [];
+  } catch (e) {
+    console.error('Fetch signals failed:', e);
+    return [];
+  }
+}
+
+function formatPrice(price) {
+  if (!price) return '---';
+  if (price >= 1000) return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (price >= 1) return price.toFixed(2);
+  return price.toFixed(4);
+}
+
+function renderTicker(marketData) {
+  document.getElementById('ticker').innerHTML = SYMBOLS.map(sym => {
+    const d = marketData[sym] || {};
+    const change = d.change || 0;
+    const cls = change >= 0 ? 'positive' : 'negative';
+    return `<div class="ticker-item">
+      <div class="ticker-header">
+        <span class="ticker-symbol">${sym.replace('USDT', '')}</span>
+        <span class="ticker-signal hold">HOLD</span>
+      </div>
+      <div class="ticker-price">$${formatPrice(d.price)}</div>
+      <div class="ticker-footer">
+        <span class="ticker-change ${cls}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</span>
+        <span class="ticker-rsi">RSI: ${d.rsi?.toFixed(0) || '--'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderKPI(signals) {
+  const buyCount = signals.filter(s => s.signal === 'BUY').length;
+  const sellCount = signals.filter(s => s.signal === 'SELL').length;
+  const holdCount = signals.filter(s => s.signal === 'HOLD').length;
+  const avgConf = signals.length > 0 ? signals.reduce((sum, s) => sum + s.confidence, 0) / signals.length : 0;
+  
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi"><div class="kpi-label">看涨信号</div><div class="kpi-value positive">${buyCount}/5</div><div class="kpi-sub">市场情绪偏多</div></div>
+    <div class="kpi"><div class="kpi-label">看跌信号</div><div class="kpi-value negative">${sellCount}/5</div><div class="kpi-sub">暂无做空机会</div></div>
+    <div class="kpi"><div class="kpi-label">观望中</div><div class="kpi-value">${holdCount}/5</div><div class="kpi-sub">等待明确方向</div></div>
+    <div class="kpi"><div class="kpi-label">最优策略</div><div class="kpi-value positive">MACD</div><div class="kpi-sub">+8.12% 90天收益</div></div>
+  `;
+}
+
+function renderMarket(marketData, signals) {
+  const tbody = document.getElementById('marketBody');
+  tbody.innerHTML = SYMBOLS.map(sym => {
+    const d = marketData[sym] || {};
+    const sig = signals.find(s => s.symbol === sym) || {};
+    const change = d.change || 0;
+    const changeCls = change >= 0 ? 'positive' : 'negative';
+    const confClass = sig.confidence >= 0.7 ? 'high' : sig.confidence >= 0.4 ? 'medium' : 'low';
+    const trend = d.macd_dir || '--';
+    const macdText = trend === 'UP' ? '看涨' : trend === 'DN' ? '看跌' : '震荡';
+    const macdColor = trend === 'UP' ? 'var(--cyan)' : trend === 'DN' ? 'var(--coral)' : 'var(--text3)';
+    
+    return `<tr>
+      <td><strong>${sym.replace('USDT', '')}</strong></td>
+      <td>$${formatPrice(d.price)}</td>
+      <td class="${changeCls}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</td>
+      <td>${d.rsi?.toFixed(1) || '--'}</td>
+      <td style="color:${macdColor};font-weight:600;">${macdText}</td>
+      <td>${d.volume ? (parseFloat(d.volume) >= 1000000 ? (parseFloat(d.volume)/1000000).toFixed(1)+'M' : parseFloat(d.volume).toFixed(0)) : '--'}</td>
+      <td><span class="signal-tag ${sig.signal?.toLowerCase() || 'hold'}">${sig.signal || 'HOLD'}</span></td>
+      <td>
+        <div class="confidence-wrap">
+          <div class="confidence-bar"><div class="confidence-fill ${confClass}" style="width:${(sig.confidence||0)*100}%"></div></div>
+          <div class="confidence-val">${(sig.confidence*100).toFixed(0)}%</div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderSignals(signals) {
+  const list = document.getElementById('signalList');
+  const buys = signals.filter(s => s.signal === 'BUY').sort((a,b) => b.confidence - a.confidence);
+  const holds = signals.filter(s => s.signal === 'HOLD');
+  const sells = signals.filter(s => s.signal === 'SELL');
+  
+  let html = '';
+  if (buys.length === 0 && holds.length === 0 && sells.length === 0) {
+    html = '<div style="color:var(--text3);text-align:center;padding:24px 0;"><div style="font-size:24px;margin-bottom:8px;">📊</div>市场休整中<br><span style="font-size:10px;">等待新的交易机会</span></div>';
+  } else {
+    buys.forEach(d => {
+      html += `<div style="padding:12px 0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-weight:700;">${d.symbol.replace('USDT', '')}</span>
+          <span class="signal-tag buy">BUY</span>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-bottom:4px;">置信度 ${(d.confidence*100).toFixed(0)}% · RSI ${d.rsi?.toFixed(1) || '--'}</div>
+        <div style="font-size:10px;color:var(--text2);">${d.reason || '指标共振看涨'}</div>
+      </div>`;
+    });
+    holds.forEach(d => {
+      html += `<div style="padding:10px 0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-weight:600;">${d.symbol.replace('USDT', '')}</span>
+          <span class="signal-tag hold">HOLD</span>
+        </div>
+      </div>`;
+    });
+    sells.forEach(d => {
+      html += `<div style="padding:10px 0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-weight:600;">${d.symbol.replace('USDT', '')}</span>
+          <span class="signal-tag sell">SELL</span>
+        </div>
+      </div>`;
+    });
+  }
+  list.innerHTML = html;
+}
+
+function renderStrategies() {
+  document.getElementById('strategyList').innerHTML = strategies.map((s, i) => `
+    <div class="strategy-card ${i === 0 ? 'active' : ''}">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="strategy-name">${s.name}</div>
+        <div style="color:var(--cyan);font-weight:700;">${s.return}</div>
+      </div>
+      <div class="strategy-desc">${s.desc}</div>
+      <div class="strategy-metrics">
+        <div><span class="str-metric">胜率</span><br><span class="str-metric-val">${s.win}</span></div>
+        <div><span class="str-metric">交易</span><br><span class="str-metric-val">${s.trades}</span></div>
+        <div><span class="str-metric">Sharpe</span><br><span class="str-metric-val">${s.sharpe}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderRisk() {
+  document.getElementById('riskMetrics').innerHTML = riskConfig.map(r => `
+    <div class="risk-row">
+      <div class="risk-label">${r.label}</div>
+      <div class="risk-bar"><div class="risk-fill" style="width:${r.value}%;background:${r.color}"></div></div>
+      <div class="risk-value" style="color:${r.color}">${r.label === '连续亏损' ? '0/' + r.max : r.value + '%'}</div>
+    </div>
+  `).join('');
+}
+
+function renderSystemStatus() {
+  const services = [
+    { name: 'CIS v4.0', port: ':8092', status: true },
+    { name: 'API 网关', port: ':8888', status: true },
+    { name: '能力桥接', port: ':18900', status: true },
+    { name: '支付网关', port: ':8081', status: true },
+    { name: '区块链桥接', port: ':8082', status: true },
+    { name: '社交交易', port: ':8083', status: true },
+    { name: '监控中心', port: ':8085', status: true },
+    { name: '回测引擎', port: ':8089', status: true }
+  ];
+  document.getElementById('systemStatus').innerHTML = services.map(s => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
+      <span>${s.name}</span>
+      <span style="color:${s.status ? 'var(--cyan)' : 'var(--coral)'};font-size:9px;">${s.status ? '●' : '●'} ${s.port}</span>
+    </div>
+  `).join('');
+}
+
+async function refreshAll() {
+  const [signals, market] = await Promise.all([fetchSignals(), fetchMarket()]);
+  renderTicker(market);
+  renderKPI(signals);
+  renderMarket(market, signals);
+  renderSignals(signals);
+  renderStrategies();
+  renderRisk();
+  renderSystemStatus();
+  
+  const now = new Date();
+  document.getElementById('lastUpdate').textContent = `更新于 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+  
+  // Update news ticker
+  const btc = market['BTCUSDT'] || {};
+  const eth = market['ETHUSDT'] || {};
+  const btcChange = btc.change?.toFixed(2) || '0.00';
+  const ethChange = eth.change?.toFixed(2) || '0.00';
+  document.getElementById('newsContent').textContent = 
+    `BTC ${btcChange >= 0 ? '+' : ''}${btcChange}% → $${formatPrice(btc.price)} | ` +
+    `ETH ${ethChange >= 0 ? '+' : ''}${ethChange}% → $${formatPrice(eth.price)} | ` +
+    (signals.length > 0 ? `${signals.length}个交易信号已生成` : '市场休整中，等待新方向...');
+}
+
+// Initial render
+refreshAll();
+
+// Auto refresh every 30 seconds
+setInterval(refreshAll, 30000);
+</script>
+  </div>
+</div>
+
+<script>
+function toggleGuide() {
+  const panel = document.getElementById('guidePanel');
+  const btn = document.getElementById('helpBtn');
+  if (panel.classList.contains('active')) {
+    panel.classList.remove('active');
+    btn.style.transform = 'scale(1)';
+  } else {
+    panel.classList.add('active');
+    btn.style.transform = 'scale(1.1)';
+  }
+}
+</script>
+
+</body>
+</html>

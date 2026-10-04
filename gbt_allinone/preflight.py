@@ -178,6 +178,16 @@ def is_side_effect(kind: str, payload: dict | None, decision=None) -> bool:
         return True
     if kind == "deploy_queue":
         return str(payload.get("op") or "status").lower() in ("submit", "tick")
+    if kind == "omni_web":
+        # 2026-10-04 补：与 security/policy.py 同一把尺（此前这里末尾 return False ⇒ 不认它）。
+        #   读讲解/跑项目 = 只打 GitHub API、只生成 URL ⇒ 无副作用；
+        #   其余（含 read_source 本地路径读文件、edit_file 写盘、gitingest 克隆落盘、
+        #   以及未列出的 op）一律算副作用 —— fail-closed。
+        op = str(payload.get("op") or "read_structure").lower()
+        if op in ("read_explanation", "讲解", "读讲解", "explain", "wiki",
+                  "stackblitz", "跑项目", "run"):
+            return False
+        return True
     if kind == "tentacle":
         action = str(payload.get("action") or "").lower()
         return action not in _READ_ONLY_TENTACLE

@@ -18,6 +18,19 @@ _PROJ = Path(__file__).resolve().parents[2]  # pulse_agent.py→tools→gbt_alli
 if str(_PROJ) not in sys.path:
     sys.path.insert(0, str(_PROJ))
 
+# 2026-10-04：本文件往 stderr 打 ✅/❌；中文 Windows 管道下默认 GBK 会 UnicodeEncodeError。
+# 守卫写法与 five-dim.py / quick_scan.py 同族（hasattr 兜底 + 吞异常安全）。
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+if hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 import gbt_allinone.tentacle.omni_tentacle as _omni
 import gbt_allinone.tools.research_intel as _intel
 
@@ -51,6 +64,22 @@ def _load_state() -> dict:
 def _save_state(s: dict):
     _ensure_dirs()
     PULSE_STATE.write_text(json.dumps(s, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+_LOG_CAP = 2000
+
+
+def _append_jsonl(path: Path, record: dict, cap: int = _LOG_CAP) -> None:
+    """追加一行；超 cap 行裁到尾部 cap 行（与 pulse.py 同一口径，2026-10-04 补轮转）。"""
+    line = json.dumps(record, ensure_ascii=False)
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(line + "\n")
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+        if len(lines) > cap:
+            path.write_text("\n".join(lines[-cap:]) + "\n", encoding="utf-8")
+    except Exception:
+        pass  # 轮转失败不影响本轮结果（下次追加时再试）
 
 
 # ── 步骤一：看屏幕（铁律①） ───────────────────────────────────────────────────
@@ -91,7 +120,10 @@ def _run_cap(cap_name: str, payload: dict | None = None) -> dict:
     env = {**os.environ, "PYTHONPATH": str(_PROJ)}
     # 调试：打印实际命令和环境
     #print(f"[DEBUG _run_cap] cmd={cmd[:3]}... env_PYTHONPATH={env.get('PYTHONPATH')}", file=sys.stderr)
-    r = subprocess.run(cmd, capture_output=True, text=True, cwd=str(_PROJ), timeout=60, env=env)
+    r = subprocess.run(cmd, capture_output=True, text=True, cwd=str(_PROJ), timeout=60, env=env,
+                       # 2026-10-04 修：子脚本强制 UTF-8 输出中文；默认 GBK 解码会让
+                       # 读取线程抛 UnicodeDecodeError、stdout 变 None（实测）⇒ 显式钉死口径。
+                       encoding="utf-8", errors="replace")
     # 调试
     #print(f"[DEBUG _run_cap] RC={r.returncode} STDOUT_len={len(r.stdout)} STDERR={r.stderr[:100]}", file=sys.stderr)
     try:
@@ -149,8 +181,12 @@ def step_research_intel(group: str) -> dict:
     """调研情报骨架：检查三组六维覆盖。"""
     try:
         coverage = _intel.coverage(group)
+        # 2026-10-04 修：coverage() 返回的键是 "cells"（research_intel.py:84），
+        # 原实现读 "rows" ⇒ .get 默认值让 filled 恒 0（静默错读数）。
+        cells = coverage.get("cells", [])
         return {"step": f"research_intel/{group}", "ok": coverage.get("ok"),
-                "filled": sum(1 for r in coverage.get("rows", []) if r.get("filled"))}
+                "filled": sum(1 for r in cells if r.get("filled")),
+                "cells_total": coverage.get("cells_total", len(cells))}
     except Exception as e:
         return {"step": f"research_intel/{group}", "ok": False, "error": str(e)}
 
@@ -246,14 +282,17 @@ def run_pulse(need: str = "AI行业动态与大模型发布", dry: bool = False)
         "ok_all": ok_all,
     }
 
-    # 落盘
-    with open(PULSE_LOG, "a", encoding="utf-8") as f:
-        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    # 落盘（2026-10-04：带轮转的追加口，超 2000 行裁尾 —— 与 pulse.py 同一口径）
+    _append_jsonl(PULSE_LOG, record)
 
     # 更新 state
     if "last_runs" not in state:
         state["last_runs"] = {}
     state["last_runs"][need] = _now()
+    # 2026-10-04：last_runs 原只增不减 ⇒ 每个不同 need 永久驻留；按时间裁到最近 64 条。
+    if len(state["last_runs"]) > 64:
+        _items = sorted(state["last_runs"].items(), key=lambda kv: str(kv[1]))[-64:]
+        state["last_runs"] = dict(_items)
     state["history"].append({"at": _now(), "ok": ok_all, "need": need})
     if len(state["history"]) > 30:
         state["history"] = state["history"][-30:]

@@ -663,14 +663,17 @@ def render_gallery() -> dict:
                                                "wf-short-video": "highway",
                                                "tentacle3d": "orb", "capabilities": "orb",
                                                "godview": "graph", "brain": "graph"}.get(r["page"], ""))
+        # 2026-10-04 修（24h 审查实证）：仓根页原用 "../../" ⇒ 从
+        # holo_pet/assets/gallery/index.html 解析到 holo_pet/ 下（不存在）；
+        # 到仓根要三级：gallery → assets → holo_pet → 仓根。
         href = "../" + r["path"].replace("holo_pet/assets/", "").replace("/index.html", "/index.html") \
-            if r["path"].startswith("holo_pet/assets/") else "../../" + r["path"]
+            if r["path"].startswith("holo_pet/assets/") else "../../../" + r["path"]
         col = hero.ACCENTS[accent]
         # ⚠️ 血账：`console_hub.PAGES` 的 what 里带 markdown 强调（`**总入口**`），
         #    直接塞进 HTML 会**原样显示星号** ⇒ 这里转成真加粗。
         def _em(s: str) -> str:
             import re as _re
-            return _re.sub(r"\*\*(.+?)\*\*", r"<b></b>", str(s or ""))
+            return _re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", str(s or ""))
         cards.append(f"""<a class="pcard" href="{href}">
   <div class="pmedia">{hero.hero_svg(kind, r["page"], col, "GBT / " + r["page"].upper())}</div>
   <div class="pbody">

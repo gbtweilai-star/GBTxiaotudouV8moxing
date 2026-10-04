@@ -23,10 +23,13 @@ def _ensure_imports():
     import gbt_allinone.tentacle.omni_tentacle as _omni_mod
     import gbt_allinone.tools.research_intel as _intel
     import gbt_allinone.topic_watch as _tw
-    return _omni_mod, _intel, _tw
+    # 2026-10-04 修：trend_watch 是**独立模块**，原实现拿 topic_watch 当 trend_watch 用
+    # ⇒「爆火观察」步骤每次读的都是话题追踪的状态（永远绿、读数错位）。
+    import gbt_allinone.trend_watch as _tw2
+    return _omni_mod, _intel, _tw, _tw2
 
 
-_omni_mod, _intel, _tw = _ensure_imports()
+_omni_mod, _intel, _tw, _tw2 = _ensure_imports()
 
 ROOT = Path(__file__).resolve().parents[2]  # 项目根目录
 PULSE_LOG = ROOT / "gbt_allinone" / "store" / "pulse" / "daily_pulse.jsonl"
@@ -93,9 +96,9 @@ def run_topic_watch(need: str) -> dict:
 
 
 def run_trend_watch(op: str = "status") -> dict:
-    """跑爆火观察（trend_watch）。"""
+    """跑爆火观察（trend_watch）。2026-10-04 修：原实现误调 topic_watch（见 _ensure_imports）。"""
     try:
-        r = _tw.run(op=op, payload={})
+        r = _tw2.run(op=op)
         return {"ok": r.get('ok'), "data": r}
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -116,9 +119,32 @@ def run_quick_scan() -> dict:
     import subprocess
     r = subprocess.run(
         [sys.executable, str(ROOT / "tools" / "codex-scripts" / "quick_scan.py")],
-        capture_output=True, text=True, cwd=str(ROOT), timeout=120
+        capture_output=True, text=True, cwd=str(ROOT), timeout=120,
+        # 2026-10-04 修：子脚本强制 UTF-8 输出中文；中文 Windows 默认 GBK 解码
+        # ⇒ 读取线程抛 UnicodeDecodeError、r.stdout 变 None（实测）。显式钉死口径。
+        encoding="utf-8", errors="replace",
     )
-    return {"rc": r.returncode, "stdout": r.stdout[:2000], "stderr": r.stderr[:500]}
+    return {"rc": r.returncode, "stdout": (r.stdout or "")[:2000], "stderr": (r.stderr or "")[:500]}
+
+
+_LOG_CAP = 2000
+
+
+def _append_jsonl(path: Path, record: dict, cap: int = _LOG_CAP) -> None:
+    """追加一行；超 cap 行就裁剪到尾部 cap 行。
+
+    2026-10-04 补：原实现只增不轮转（每日 1 条起、full 模式可反复追加），
+    结构上无界；status() 又是全量读 ⇒ 文件越长读放大越大。
+    """
+    line = json.dumps(record, ensure_ascii=False)
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(line + "\n")
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+        if len(lines) > cap:
+            path.write_text("\n".join(lines[-cap:]) + "\n", encoding="utf-8")
+    except Exception:
+        pass  # 轮转失败不影响本轮结果（下次追加时再试）
 
 
 def _collect_pulse(need: str) -> list:
@@ -213,9 +239,8 @@ def run_pulse(need: str = "AI领域情报和科技新闻", full: bool = False) -
         "ok_all": ok_all,
     }
 
-    # 落盘
-    with open(PULSE_LOG, "a", encoding="utf-8") as f:
-        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    # 落盘（2026-10-04：改走带轮转的追加口，超 2000 行裁尾）
+    _append_jsonl(PULSE_LOG, record)
 
     # 更新 state
     state["last_date"] = today

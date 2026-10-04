@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta name="description" content="GBT小土豆 - 去中心化量化交易平台">
+<meta name="keywords" content="GBT, quant, trading, crypto, Binance, AI">
+<meta name="author" content="GBT小土豆">
+<meta property="og:title" content="GBT小土豆 - 量化交易平台">
+<meta property="og:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gbtxiaotudou.com">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GBT小土豆 - 量化交易平台">
+<meta name="twitter:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBT Quant Pro v3.7 — AI Analysis</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--cyan:#00D4AA;--coral:#FF4757;--gold:#F59E0B;--bg:#0a0f14;--card:#121820}
+body{background:var(--bg);color:#e2e8f0;font-family:'Inter',system-ui,sans-serif;min-height:100vh}
+.header{padding:1rem 2rem;border-bottom:1px solid rgba(48,62,78,0.4);display:flex;justify-content:space-between;align-items:center;background:rgba(10,15,20,0.95);position:sticky;top:0;z-index:100}
+.logo{font-size:1.2rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--cyan)}
+.version{font-size:0.6rem;color:#475569;letter-spacing:0.1em}
+.live-badge{background:rgba(34,197,94,0.15);color:#22C55E;padding:0.15rem 0.4rem;font-size:0.55rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase}
+.container{padding:1.25rem;max-width:1600px;margin:0 auto}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:1.25rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1.25rem}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;margin-bottom:1.25rem}
+.card{background:rgba(18,24,32,0.8);border:1px solid rgba(48,62,78,0.6);padding:1rem}
+.card-title{font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid rgba(48,62,78,0.4);display:flex;justify-content:space-between;align-items:center}
+.metric{display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid rgba(48,62,78,0.2);font-size:0.7rem}
+.metric:last-child{border-bottom:none}
+.metric-label{color:#475569}
+.metric-value{font-family:'JetBrains Mono',monospace;font-weight:600}
+.positive{color:#22C55E}.negative{color:var(--coral)}.neutral{color:#94a3b8}.cyan{color:var(--cyan)}.gold{color:var(--gold)}
+.ai-section{background:linear-gradient(135deg,rgba(0,212,170,0.1),rgba(139,92,246,0.1));border:1px solid rgba(139,92,246,0.3);padding:1.25rem;margin-bottom:1.25rem}
+.ai-title{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#8B5CF6;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.ai-insight{background:rgba(18,24,32,0.6);border-left:2px solid #8B5CF6;padding:0.75rem;margin-bottom:0.75rem;font-size:0.75rem;line-height:1.5}
+.ai-recommendation{background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);padding:1rem;margin-top:1rem}
+.ai-label{font-size:0.55rem;color:#8B5CF6;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem}
+.ai-text{font-size:0.75rem;line-height:1.6;color:#e2e8f0}
+.controls{display:flex;gap:0.4rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.btn{background:rgba(18,24,32,0.8);border:1px solid rgba(48,62,78,0.4);color:#e2e8f0;padding:0.35rem 0.7rem;font-size:0.6rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-ai{background:rgba(139,92,246,0.15);border-color:#8B5CF6;color:#8B5CF6}
+.btn-ai:hover{background:rgba(139,92,246,0.25)}
+.backtest-table{width:100%;border-collapse:collapse;font-size:0.65rem}
+.backtest-table th{text-align:left;padding:0.4rem 0.3rem;border-bottom:1px solid rgba(48,62,78,0.4);color:var(--cyan);font-size:0.55rem;text-transform:uppercase}
+.backtest-table td{padding:0.4rem 0.3rem;border-bottom:1px solid rgba(48,62,78,0.2)}
+.rank-badge{display:inline-block;padding:0.1rem 0.3rem;font-size:0.55rem;font-weight:700;background:rgba(0,212,170,0.2);color:var(--cyan)}
+.status-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(10,15,20,0.95);border-top:1px solid rgba(48,62,78,0.4);padding:0.3rem 2rem;display:flex;justify-content:space-between;font-size:0.55rem;color:#475569}
+.toast{position:fixed;top:1rem;right:1rem;background:rgba(18,24,32,0.95);border:1px solid rgba(0,212,170,0.3);padding:0.6rem 1rem;font-size:0.7rem;z-index:1000;transform:translateX(120%);transition:transform 0.3s}
+.toast.show{transform:translateX(0)}
+
+        #guideOverlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:center;justify-content:center;}
+        .guide-box{background:#121820;border:1px solid rgba(48,62,78,.6);max-width:560px;width:90%;max-height:80vh;overflow-y:auto;padding:1.5rem;border-radius:2px;}
+        .guide-step{padding:.5rem 0;border-bottom:1px solid rgba(48,62,78,.3);font-size:.75rem;line-height:1.5;}
+        .guide-step:last-child{border-bottom:none;}
+        .guide-api{padding:.3rem 0;font-size:.7rem;color:#8fa4b8;font-family:monospace;}
+        .guide-title{color:#00D4AA;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;}
+        .guide-btn{margin-top:1rem;padding:.4rem 1rem;background:rgba(48,62,78,.4);border:1px solid rgba(48,62,78,.6);color:#e2e8f0;font-size:.65rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;width:100%;}
+        
+<style>
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 12px; }
+  .grid { grid-template-columns: 1fr !important; }
+  .card { margin-bottom: 12px; }
+  table { font-size: 12px; }
+  th, td { padding: 8px 6px; }
+}
+@media (max-width: 480px) {
+  h1 { font-size: 18px; }
+  h2 { font-size: 16px; }
+  nav { flex-direction: column; }
+}
+</style></style>
+</head>
+<body>
+<div class="header">
+  <div><div class="logo">GBT QUANT PRO</div><div class="version">v3.7.0 — AI-POWERED ANALYSIS</div></div>
+  <div style="display:flex;align-items:center;gap:1rem"><span class="live-badge"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#22C55E;margin-right:0.3rem"></span>LIVE</span><span class="version" id="lastUpdate">Last: --</span></div>
+</div>
+
+
+    <button onclick="openGuide()" style="padding:.4rem 1rem;background:rgba(0,212,170,.15);border:1px solid rgba(0,212,170,.4);color:#00D4AA;font-size:.65rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;margin-bottom:1rem;">使用指南</button>
+    <div id="guideOverlay" style="display:none;" onclick="if(event.target===this)closeGuide()">
+    <div class="guide-box">
+    <div class="guide-title">使用指南</div>
+    <div><div class="guide-step">1. 选择交易对和策略参数（时间周期、指标阈值）</div>
+<div class="guide-step">2. 点击【AI 分析】获取实时交易信号</div>
+<div class="guide-step">3. 查看 AI 洞察和建议操作</div>
+<div class="guide-step">4. 执行回测验证策略历史表现</div>
+<div class="guide-step">5. 对比多策略排名选择最优配置</div></div>
+    <div style="margin-top:.75rem;"><div class="guide-title" style="margin-bottom:.25rem;">API 端点</div><div class="guide-api">→ POST /api/quant/analyze — AI 信号分析</div>
+<div class="guide-api">→ POST /api/quant/backtest — 策略回测</div>
+<div class="guide-api">→ GET /api/quant/market — 市场行情数据</div></div>
+    <button class="guide-btn" onclick="closeGuide()">关闭</button>
+    </div>
+    </div>
+    <div class="container">
+<div class="usage-guide" style="margin:12px 16px;padding:12px 16px;background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.2);border-radius:4px;font-size:12px;color:#8fa4b8;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+    <span style="font-size:11px;font-weight:700;color:#00D4AA;letter-spacing:0.06em;text-transform:uppercase;">量化交易平台</span>
+    <span style="cursor:pointer;color:#3d5266;font-size:14px;" onclick="this.parentElement.parentElement.remove()">✕</span>
+  </div>
+  <ol style="margin:0;padding-left:16px;line-height:1.8;color:#8fa4b8;">
+    <li>选择策略 (MACD/RSI/布林带)</li><li>设置回测参数与时间范围</li><li>查看回测绩效指标</li><li>一键部署实盘</li>
+  </ol>
+</div>
+
+  <div class="controls">
+    <button class="btn btn-ai" onclick="runAIAnalysis()">🤖 AI Analysis</button>
+    <button class="btn btn-primary" onclick="refreshAll()">⟳ Refresh</button>
+    <button class="btn" onclick="runBacktest()">▶ Backtest</button>
+    <button class="btn" onclick="optimizeParams()">⚙ Optimize</button>
+  </div>
+
+  <div class="ai-section">
+    <div class="ai-title">🧠 GBT AI Analysis Engine</div>
+    <div class="ai-insight">
+      <strong>市场判断：</strong>BTC/USDT 呈现明显上升趋势，MACD 金叉确认，RSI 处于中性偏强区域 (63.27)，布林带带宽收窄后开始扩张，波动率适中。整体市场情绪偏多。
+    </div>
+    <div class="ai-insight">
+      <strong>风险提示：</strong>24h 涨幅已超 4%，短期可能存在回调压力。建议关注 82000 阻力位，若突破则上方空间打开；若受阻回落，可能测试 79000 支撑。
+    </div>
+    <div class="ai-recommendation">
+      <div class="ai-label">AI 交易建议</div>
+      <div class="ai-text">
+        <strong>策略：</strong>MACD 趋势策略表现最优（90天 +8.12%），建议作为主力策略。<br>
+        <strong>仓位：</strong>当前建议持有 BTC 35%、ETH 25%、SOL 20%、BNB 12%，保留 8% 现金以备机会。<br>
+        <strong>止损：</strong>建议设置止损于 78500（约 -3%），对应 ATR 动态止损。
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-4">
+    <div class="card">
+      <div class="card-title">Portfolio Summary</div>
+      <div class="metric"><span class="metric-label">Total Value</span><span class="metric-value positive">$108,120</span></div>
+      <div class="metric"><span class="metric-label">24h P&L</span><span class="metric-value positive">+$4,580</span></div>
+      <div class="metric"><span class="metric-label">Sharpe</span><span class="metric-value cyan">0.45</span></div>
+      <div class="metric"><span class="metric-label">Max DD</span><span class="metric-value neutral">4.01%</span></div>
+      <div class="metric"><span class="metric-label">Win Rate</span><span class="metric-value positive">62.3%</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Risk Metrics</div>
+      <div class="metric"><span class="metric-label">Risk Score</span><span class="metric-value gold">65/100</span></div>
+      <div class="metric"><span class="metric-label">Stop Loss</span><span class="metric-value neutral">-2%</span></div>
+      <div class="metric"><span class="metric-label">Circuit Breaker</span><span class="metric-value positive">Active</span></div>
+      <div class="metric"><span class="metric-label">Max Leverage</span><span class="metric-value neutral">3x</span></div>
+      <div class="metric"><span class="metric-label">Position Size</span><span class="metric-value neutral">10%</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Signal Summary</div>
+      <div style="text-align:center;padding:0.5rem 0">
+        <div style="font-size:1.5rem;font-weight:800;color:#F59E0B">HOLD</div>
+        <div style="font-size:0.55rem;color:#475569;margin-top:0.25rem">Overall Signal</div>
+      </div>
+      <div style="display:flex;justify-content:space-around;font-size:0.65rem">
+        <div><span style="color:#22C55E;font-weight:700">1</span><br><span class="metric-label">BUY</span></div>
+        <div><span style="color:#94a3b8;font-weight:700">3</span><br><span class="metric-label">HOLD</span></div>
+        <div><span style="color:#FF4757;font-weight:700">0</span><br><span class="metric-label">SELL</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">System Status</div>
+      <div class="metric"><span class="metric-label">Services</span><span class="metric-value positive">11/11</span></div>
+      <div class="metric"><span class="metric-label">PostgreSQL</span><span class="metric-value positive">Up 2d</span></div>
+      <div class="metric"><span class="metric-label">WebSocket</span><span class="metric-value positive">Live</span></div>
+      <div class="metric"><span class="metric-label">API Version</span><span class="metric-value cyan">v3.4</span></div>
+      <div class="metric"><span class="metric-label">Last Update</span><span class="metric-value neutral" id="lastUpdateShort">--</span></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Technical Indicators</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.5rem">
+        <div style="background:rgba(18,24,32,0.6);border:1px solid rgba(48,62,78,0.4);padding:0.75rem">
+          <div style="font-size:0.55rem;color:#475569">BTC RSI(14)</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700">63.27</div>
+          <div style="font-size:0.55rem;color:#94a3b8">Neutral Zone</div>
+        </div>
+        <div style="background:rgba(18,24,32,0.6);border:1px solid rgba(48,62,78,0.4);padding:0.75rem">
+          <div style="font-size:0.55rem;color:#475569">BTC MACD</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#22C55E">+1,512</div>
+          <div style="font-size:0.55rem;color:#94a3b8">Bullish Crossover</div>
+        </div>
+        <div style="background:rgba(18,24,32,0.6);border:1px solid rgba(48,62,78,0.4);padding:0.75rem">
+          <div style="font-size:0.55rem;color:#475569">BTC ATR(14)</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700">$364</div>
+          <div style="font-size:0.55rem;color:#94a3b8">Low Volatility</div>
+        </div>
+        <div style="background:rgba(18,24,32,0.6);border:1px solid rgba(48,62,78,0.4);padding:0.75rem">
+          <div style="font-size:0.55rem;color:#475569">Market Sentiment</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#F59E0B">Greed</div>
+          <div style="font-size:0.55rem;color:#94a3b8">Index: 68</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Backtest Results (90 Days, $100K)</div>
+      <table class="backtest-table">
+        <thead><tr><th>Rank</th><th>Strategy</th><th>Return</th><th>Max DD</th><th>Sharpe</th></tr></thead>
+        <tbody>
+          <tr><td><span class="rank-badge">#1</span></td><td>MACD Trend</td><td class="positive">+8.12%</td><td class="neutral">4.01%</td><td class="positive">0.45</td></tr>
+          <tr><td><span class="rank-badge">#2</span></td><td>Bollinger Break</td><td class="positive">+0.02%</td><td class="neutral">0.06%</td><td class="neutral">0.07</td></tr>
+          <tr><td><span class="rank-badge">#3</span></td><td>RSI Mean Rev</td><td class="negative">-0.98%</td><td class="neutral">1.30%</td><td class="negative">-0.49</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">Market Overview</div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem">
+        <div style="display:flex;justify-content:space-between;font-size:0.65rem;padding:0.4rem;background:rgba(18,24,32,0.6);border:1px solid rgba(48,62,78,0.4)">
+          <span>BTC/USDT</span><span class="positive">$81,078</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.65rem;padding:0.4rem;background:rgba(18,24,32,0.6);border:1px solid rgba(48,62,78,0.4)">
+          <span>ETH/USDT</span><span class="positive">$2,511</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.65rem;padding:0.4rem;background:rgba(18,24,32,0.6);border:1px solid rgba(48,62,78,0.4)">
+          <span>SOL/USDT</span><span class="positive">$104</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.65rem;padding:0.4rem;background:rgba(18,24,32,0.6);border:1px solid rgba(48,62,78,0.4)">
+          <span>BNB/USDT</span><span class="positive">$726</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.65rem;padding:0.4rem;background:rgba(18,24,32,0.6);border:1px solid rgba(48,62,78,0.4)">
+          <span>XRP/USDT</span><span class="positive">$1.45</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Portfolio Allocation</div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:0.65rem;margin-bottom:0.25rem"><span>BTC</span><span>35%</span></div>
+          <div style="height:4px;background:rgba(48,62,78,0.6);border-radius:2px"><div style="width:35%;height:100%;background:var(--cyan);border-radius:2px"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:0.65rem;margin-bottom:0.25rem"><span>ETH</span><span>25%</span></div>
+          <div style="height:4px;background:rgba(48,62,78,0.6);border-radius:2px"><div style="width:25%;height:100%;background:var(--cyan);border-radius:2px"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:0.65rem;margin-bottom:0.25rem"><span>SOL</span><span>20%</span></div>
+          <div style="height:4px;background:rgba(48,62,78,0.6);border-radius:2px"><div style="width:20%;height:100%;background:var(--cyan);border-radius:2px"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:0.65rem;margin-bottom:0.25rem"><span>BNB</span><span>12%</span></div>
+          <div style="height:4px;background:rgba(48,62,78,0.6);border-radius:2px"><div style="width:12%;height:100%;background:var(--cyan);border-radius:2px"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:0.65rem;margin-bottom:0.25rem"><span>Cash</span><span>8%</span></div>
+          <div style="height:4px;background:rgba(48,62,78,0.6);border-radius:2px"><div style="width:8%;height:100%;background:#475569;border-radius:2px"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Quick Actions</div>
+      <div style="display:flex;flex-direction:column;gap:0.4rem">
+        <button class="btn" style="width:100%;text-align:left" onclick="analyzeMarket()">📊 Analyze Market</button>
+        <button class="btn" style="width:100%;text-align:left" onclick="scanOpportunities()">🔍 Scan Opportunities</button>
+        <button class="btn" style="width:100%;text-align;left" onclick="rebalance()">⚖️ Rebalance</button>
+        <button class="btn" style="width:100%;text-align:left" onclick="exportReport()">↓ Export Report</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="status-bar">
+  <span>GBT Quant Pro v3.7.0 | PostgreSQL: Up 2d | Bridge: 771 caps</span>
+  <span id="serverTime">Server: --</span>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast show';
+  setTimeout(() => toast.className = 'toast', 3000);
+}
+
+function updateServerTime() {
+  const now = new Date();
+  document.getElementById('serverTime').textContent = 'Server: ' + now.toLocaleTimeString();
+  document.getElementById('lastUpdate').textContent = 'Last: ' + now.toLocaleTimeString();
+  document.getElementById('lastUpdateShort').textContent = now.toLocaleTimeString();
+}
+
+function runAIAnalysis() { showToast('AI analysis running...'); }
+function refreshAll() { showToast('Data refreshed'); }
+function runBacktest() { showToast('Backtest started...'); }
+function optimizeParams() { showToast('Optimizing parameters...'); }
+function analyzeMarket() { showToast('Market analysis in progress...'); }
+function scanOpportunities() { showToast('Scanning for opportunities...'); }
+function rebalance() { showToast('Rebalancing portfolio...'); }
+function exportReport() { showToast('Report exported'); }
+
+updateServerTime();
+setInterval(updateServerTime, 1000);
+</script>
+
+    <script>
+    function openGuide(){var o=document.getElementById('guideOverlay');if(!o)return;o.style.display='flex';}
+    function closeGuide(){var o=document.getElementById('guideOverlay');if(o)o.style.display='none';}
+    </script>
+    </body>
+</html>

@@ -9,7 +9,11 @@ import sys, json, time
 from pathlib import Path
 from typing import Any
 
-sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 
 _INDEX_PATH = Path(__file__).resolve().parent.parent / "store" / "_topology_index.json"
 _BUILD_TIME_KEY = "_built_at"

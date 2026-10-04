@@ -8,7 +8,11 @@ from __future__ import annotations
 import sys
 from typing import Any
 
-sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 
 
 def analyze_trend(topic: str = "AI") -> dict:

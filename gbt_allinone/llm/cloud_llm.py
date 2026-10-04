@@ -797,20 +797,19 @@ def run(action=None, **params):
                 _timeout_t = int(params.get("timeout", 60))
                 _tried_before = []
                 _last_err = None
-                # 按路由表顺序收集所有已配置的触手 profile（含当前目标）
-                _all_tentacles = []
-                for _kw2, _prof2 in _PURPOSE_ROUTING_MAP.items():
-                    if _kw2 in _purpose or _prof2 == _matched_prof:
-                        _all_tentacles.append(_prof2)
-                # 去重保序
-                _seen = set(); _uniq = []
-                for _p2 in _all_tentacles:
-                    if _p2 not in _seen:
-                        _seen.add(_p2); _uniq.append(_p2)
-                _all_tentacles = _uniq
+                # 2026-10-04 修（24h 审查实证）：候选集 = **全部触手 profile**，命中者排第一。
+                #   原条件 `_kw2 in _purpose or _prof2 == _matched_prof` 与选路同源 ⇒
+                #   purpose 只含单个关键词时，候选恒为该 profile 自己 ⇒ 429/422「换下一个」
+                #   永远只有一轮、等于没接（全仓唯一命中路由表的 purpose=devour.consult 即此形态）。
+                #   现在按路由表序全收（没配 key 的会在下面循环里带原因跳过），
+                #   顺序：命中 profile 优先 → 其余按表序补位（确定性，不瞎挑）。
+                _all_tentacles = [_matched_prof] + [
+                    _p2 for _p2 in _PURPOSE_ROUTING_MAP.values() if _p2 != _matched_prof
+                ]
 
                 for _try_prof in _all_tentacles:
                     _try_key = os.environ.get(f"{_try_prof.upper()}_API_KEY") or ""
+                    _no_key_why = ""
                     if not _try_key:
                         try:
                             from ..deepseek_key import _unprotect_dpapi as _dk_unprotect2
@@ -818,10 +817,14 @@ def run(action=None, **params):
                             _dp2 = _P2(__file__).parent.parent / "store" / "secrets" / f"{_try_prof}_api.dpapi"
                             if _dp2.exists():
                                 _try_key = _dk_unprotect2(_dp2.read_bytes(), profile=_try_prof).decode().strip()
-                        except Exception:
-                            pass
+                            else:
+                                _no_key_why = "dpapi 文件不存在"
+                        except Exception as _e2:
+                            # 2026-10-04：原为静默 pass —— 失败要带原因（同仓「失败必带原因」判据）
+                            _no_key_why = f"{type(_e2).__name__}: {str(_e2)[:80]}"
                     if not _try_key:
-                        _tried_before.append({"profile": _try_prof, "reason": "no_key"})
+                        _tried_before.append({"profile": _try_prof, "reason": "no_key",
+                                              "why": _no_key_why or "env 与 dpapi 均未配"})
                         continue
                     try:
                         _rt = _call_once(

@@ -204,3 +204,12 @@ outputs/**/*.mp4
 video-out/
 state/tentacle-slots/**/out.mp4
 
+
+# 万能触手 Web 克隆缓存（omni_web_cap，勿入库；2026-10-04）
+_gbt_webcap/
+
+# 云端本地开发令牌（只留本机，勿入库；2026-10-04）
+deploy/cloud-10/.dev.vars
+
+# 收编的旧源码归档（不入库）
+_legacy_sources/

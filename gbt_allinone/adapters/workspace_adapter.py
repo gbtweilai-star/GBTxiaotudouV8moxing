@@ -1,12 +1,14 @@
 """Workspace 量化交易平台集成适配器（安全版）。
 
-对接项目 C:\\Users\\ADMIN\\Desktop\\Workspace（GBT 量化交易平台）。
+对接量化引擎源码（2026-10-04 起：默认读**仓内** `quant_workspace/`，
+由桌面 `Workspace\01_量化收割引擎` 收编而来；可用 GBT_QUANT_WS 覆盖）。
 只读、不读取 .env / 密钥 / 敏感配置；不集成任何危险能力。
 """
 import os
 from pathlib import Path
 
-WORKSPACE = Path(r"C:\Users\ADMIN\Desktop\Workspace")
+WORKSPACE = Path(os.environ.get("GBT_QUANT_WS")
+                 or (Path(__file__).resolve().parents[2] / "quant_workspace"))
 QUANT_DIR = WORKSPACE / "01_量化收割引擎"
 
 # 平台已知本地服务健康端点（只读 GET，无鉴权要求）

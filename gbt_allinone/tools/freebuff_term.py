@@ -165,6 +165,16 @@ def flags(**_kw) -> dict:
     if not r.get("ok"):
         return r
     txt = r["text"]
+    # 🔴 2026-10-04 修（24h 审查实证）：原实现无条件回 ok=True —— `_invoke.ok` 只表示
+    #    "子进程跑起来了"，不表示"命令成功了"。实测 `freebuff --help` 失败时（wrapper 里
+    #    node 不在 PATH ⇒ 输出"…不是内部或外部命令…"）错误文本被当能力面内联进面板，
+    #    页面上仍显示 ok=true / options=[]（假绿）。现在：exit≠0 或输出不像帮助 ⇒ 如实回失败。
+    looks_like_help = bool(re.search(r"Usage:|Options:|Commands:", txt))
+    if r.get("exit") not in (0, None) or not looks_like_help:
+        return {"ok": False, "op": "flags", "exit": r.get("exit"), "entry": r.get("entry"),
+                "error": f"`freebuff --help` 没有给出正常帮助输出（exit={r.get('exit')}）",
+                "help_excerpt": txt.strip().splitlines()[:6],
+                "_口径": "现跑 `freebuff --help` 解析；失败如实回 ok=false（不许把错误文本当能力面）"}
     opts = sorted(set(re.findall(r"(-\w,?\s*--[a-z-]+|--[a-z-]+|-\w)\b", txt)))
     one_shot = bool(re.search(r"(--prompt|\s-p\b|--print|\bexec\b)", txt))
     return {"ok": True, "op": "flags", "options": opts,

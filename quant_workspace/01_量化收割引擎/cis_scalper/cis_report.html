@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta name="description" content="GBT小土豆 - 去中心化量化交易平台">
+<meta name="keywords" content="GBT, quant, trading, crypto, Binance, AI">
+<meta name="author" content="GBT小土豆">
+<meta property="og:title" content="GBT小土豆 - 量化交易平台">
+<meta property="og:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gbtxiaotudou.com">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GBT小土豆 - 量化交易平台">
+<meta name="twitter:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIS 自动化交易系统 v3.0 — 完成报告</title>
+    <style>
+        :root { --accent: #00D4AA; --sell: #FF4757; --bg: #0a0a0a; --panel: #111; --border: #222; --text: #e0e0e0; --muted: #666; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'JetBrains Mono', 'Consolas', monospace; }
+        body { background: var(--bg); color: var(--text); padding: 20px; }
+        h1 { color: var(--accent); font-size: 24px; letter-spacing: 0.1em; margin-bottom: 20px; }
+        h2 { color: var(--accent); font-size: 16px; margin: 20px 0 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .card { background: var(--panel); border: 1px solid var(--border); padding: 16px; }
+        .card-title { font-size: 10px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+        .metric { font-size: 24px; color: var(--accent); }
+        .metric.warn { color: #ff9800; }
+        .metric.sell { color: var(--sell); }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { background: var(--bg); color: var(--muted); padding: 10px; text-align: left; text-transform: uppercase; }
+        td { padding: 10px; border-bottom: 1px solid var(--border); }
+        tr:hover { background: rgba(0,212,170,0.05); }
+        .status-ok { color: var(--accent); }
+        .status-err { color: var(--sell); }
+        .badge { display: inline-block; padding: 2px 8px; font-size: 10px; border: 1px solid; }
+        .badge.buy { color: var(--accent); border-color: var(--accent); }
+        .badge.hold { color: var(--muted); border-color: var(--muted); }
+        .badge.sell { color: var(--sell); border-color: var(--sell); }
+        .code { background: var(--bg); padding: 12px; border-radius: 4px; font-size: 11px; overflow-x: auto; }
+        .checklist { list-style: none; }
+        .checklist li { padding: 4px 0; }
+        .checklist li::before { content: "✓ "; color: var(--accent); }
+    
+        #guideOverlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:center;justify-content:center;}
+        .guide-box{background:#121820;border:1px solid rgba(48,62,78,.6);max-width:560px;width:90%;max-height:80vh;overflow-y:auto;padding:1.5rem;border-radius:2px;}
+        .guide-step{padding:.5rem 0;border-bottom:1px solid rgba(48,62,78,.3);font-size:.75rem;line-height:1.5;}
+        .guide-step:last-child{border-bottom:none;}
+        .guide-api{padding:.3rem 0;font-size:.7rem;color:#8fa4b8;font-family:monospace;}
+        .guide-title{color:#00D4AA;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;}
+        .guide-btn{margin-top:1rem;padding:.4rem 1rem;background:rgba(48,62,78,.4);border:1px solid rgba(48,62,78,.6);color:#e2e8f0;font-size:.65rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;width:100%;}
+        
+<style>
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 12px; }
+  .grid { grid-template-columns: 1fr !important; }
+  .card { margin-bottom: 12px; }
+  table { font-size: 12px; }
+  th, td { padding: 8px 6px; }
+}
+@media (max-width: 480px) {
+  h1 { font-size: 18px; }
+  h2 { font-size: 16px; }
+  nav { flex-direction: column; }
+}
+</style></style>
+</head>
+<body>
+    <h1>CIS 自动化快进快出交易系统 v3.0</h1>
+    
+    <h2>核心功能</h2>
+    <div class="grid">
+<div class="usage-guide" style="margin:12px 16px;padding:12px 16px;background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.2);border-radius:4px;font-size:12px;color:#8fa4b8;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+    <span style="font-size:11px;font-weight:700;color:#00D4AA;letter-spacing:0.06em;text-transform:uppercase;">CIS报告</span>
+    <span style="cursor:pointer;color:#3d5266;font-size:14px;" onclick="this.parentElement.parentElement.remove()">[x]</span>
+  </div>
+  <ol style="margin:0;padding-left:16px;line-height:1.8;color:#8fa4b8;">
+    <li>生成收割报告</li><li>查看绩效分析</li><li>导出PDF报告</li><li>分享结果</li>
+  </ol>
+</div>
+
+        <div class="card">
+            <div class="card-title">服务地址</div>
+            <div class="metric" style="font-size:14px;">:8092</div>
+        </div>
+        <div class="card">
+            <div class="card-title">运行模式</div>
+            <div class="metric">DRY-RUN</div>
+        </div>
+        <div class="card">
+            <div class="card-title">监控币种</div>
+            <div class="metric">5 个</div>
+        </div>
+        <div class="card">
+            <div class="card-title">动量周期</div>
+            <div class="metric">14根1m K线</div>
+        </div>
+    </div>
+
+    <h2>交易策略 (CIS 量化收割术)</h2>
+    <table>
+        <tr><th>规则</th><th>参数</th><th>说明</th></tr>
+        <tr><td>入场信号</td><td>动量 > 2%</td><td>14根1分钟K线的价格变化率</td></tr>
+        <tr><td>止损</td><td>5%</td><td>ATR动态计算，最大亏损锁定</td></tr>
+        <tr><td>止盈</td><td>10%</td><td>快速锁定利润</td></tr>
+        <tr><td>时间止盈</td><td>600秒</td><td>10分钟强制平仓</td></tr>
+        <tr><td>动量反转</td><td>动量由正转负</td><td>趋势逆转立即离场</td></tr>
+        <tr><td>仓位管理</td><td>ATR-based</td><td>波动率越大仓位越小</td></tr>
+    </table>
+
+    <h2>API 端点</h2>
+    <div class="code">
+GET  /                    # 服务状态<br>
+GET  /api/status          # 账户统计 + 持仓列表<br>
+GET  /api/market          # 5币种实时行情 + 动量<br>
+GET  /api/signal/{symbol} # 单币种入场信号<br>
+POST /api/trade/scan      # 全市场扫描<br>
+POST /api/trade/execute   # 开仓 ({"symbol":"ETHUSDT"})<br>
+POST /api/trade/close/{id}# 平指定仓位<br>
+POST /api/trade/close-all # 一键全部平仓<br>
+GET  /api/history         # 交易历史<br>
+POST /api/config          # 更新参数配置<br>
+    </div>
+
+    <h2>系统状态 (2026-09-04 12:30 GMT+7)</h2>
+    <table>
+        <tr><th>服务</th><th>端口</th><th>状态</th></tr>
+        <tr><td>CIS Auto Trader</td><td>:8092</td><td class="status-ok">✅ 运行中</td></tr>
+        <tr><td>GBT Cap Bridge</td><td>:18900</td><td class="status-ok">✅ 766 caps</td></tr>
+        <tr><td>Quant API</td><td>:8091</td><td class="status-ok">✅ v3.4</td></tr>
+        <tr><td>Wallet Service</td><td>:8093</td><td class="status-ok">✅ v2.0</td></tr>
+        <tr><td>CIS Harvesting</td><td>:8090</td><td class="status-ok">✅ v2.1</td></tr>
+        <tr><td>API Gateway</td><td>:8888</td><td class="status-ok">✅</td></tr>
+        <tr><td>Payment</td><td>:8081</td><td class="status-ok">✅</td></tr>
+        <tr><td>Blockchain</td><td>:8082</td><td class="status-ok">✅</td></tr>
+        <tr><td>Monitor</td><td>:8085</td><td class="status-ok">✅ 11/11</td></tr>
+        <tr><td>Backtest</td><td>:8088</td><td class="status-ok">✅</td></tr>
+        <tr><td>PostgreSQL</td><td>:5432</td><td class="status-ok">✅ Up 2d</td></tr>
+        <tr><td>WebSocket</td><td>:8765</td><td class="status-ok">✅</td></tr>
+    </table>
+
+    <h2>测试验证</h2>
+    <ul class="checklist">
+        <li>✅ 成功开仓 ETHUSDT @ $2,514 (ADR-based 仓位 $10,000)</li>
+        <li>✅ 成功开仓 BTCUSDT @ $81,081 (ADR-based 仓位 $10,000)</li>
+        <li>✅ 成功全部平仓，记录 PnL 统计</li>
+        <li>✅ 交易历史完整记录 ENTRY/EXIT 事件</li>
+        <li>✅ 配置热更新生效 (MOMENTUM_THRESHOLD: 2% → 0.01%)</li>
+        <li>✅ Dashboard HTML 创建完成</li>
+    </ul>
+
+    <h2>文件位置</h2>
+    <table>
+        <tr><th>文件</th><th>说明</th></tr>
+        <tr><td>cis_auto_trader.py</td><td>FastAPI 交易引擎 (v3.0)</td></tr>
+        <tr><td>project/web/cis_dashboard.html</td><td>专业交易仪表盘</td></tr>
+        <tr><td>memory/2026-09-04.md</td><td>今日开发日志</td></tr>
+    </table>
+
+    <h2>Git 提交 (本次)</h2>
+    
+    <button onclick="openGuide()" style="padding:.4rem 1rem;background:rgba(0,212,170,.15);border:1px solid rgba(0,212,170,.4);color:#00D4AA;font-size:.65rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;margin-bottom:1rem;">使用指南</button>
+    <div id="guideOverlay" style="display:none;" onclick="if(event.target===this)closeGuide()">
+    <div class="guide-box">
+    <div class="guide-title">使用指南</div>
+    <div><div class="guide-step">1. 连接 CIS 收割引擎（端口 :8090）</div>
+<div class="guide-step">2. 选择交易对和风险参数（ATR/止损线）</div>
+<div class="guide-step">3. 运行 CIS 智能分析获取入场点位</div>
+<div class="guide-step">4. 执行收割策略并监控持仓状态</div>
+<div class="guide-step">5. 查看绩效报告和盈亏统计</div></div>
+    <div style="margin-top:.75rem;"><div class="guide-title" style="margin-bottom:.25rem;">API 端点</div><div class="guide-api">→ GET /api/integration/status — 引擎状态</div>
+<div class="guide-api">→ POST /api/cis/analyze — 智能分析</div>
+<div class="guide-api">→ POST /api/cis/execute — 执行收割</div>
+<div class="guide-api">→ GET /api/cis/performance — 绩效报告</div></div>
+    <button class="guide-btn" onclick="closeGuide()">关闭</button>
+    </div>
+    </div>
+    <div class="code">
+3494e9e feat: CIS Auto Trader v3.0 with Binance klines momentum and professional dashboard
+    </div>
+
+    <script>
+    function openGuide(){var o=document.getElementById('guideOverlay');if(!o)return;o.style.display='flex';}
+    function closeGuide(){var o=document.getElementById('guideOverlay');if(o)o.style.display='none';}
+    </script>
+    </body>
+</html>

@@ -18,10 +18,61 @@ import time
 import sys
 from pathlib import Path
 
-sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 
 _ROOT = Path(__file__).resolve().parent.parent
 _STORE = _ROOT / "store"
+
+
+def _pkg(name: str):
+    """相对导入优先；被 spec_from_file_location 加载（无包上下文）时回落到绝对导入。
+
+    2026-10-04 修（24h 审查实证）：本模块的唯一真实调用方 omni_process.diagnose() 用
+    `spec_from_file_location("_pscan_diag", ...)` 加载 ⇒ `__package__=""` ⇒ 原来的
+    `from .. import x` 六个扫描层全部 ImportError（被每层 except 吞成假错误、能力归零）。
+    这里两条路都试，让「有包」和「无包」两种加载方式都能真跑。
+    """
+    import importlib
+    try:
+        return importlib.import_module(f"..{name}", package=__package__ or "")
+    except Exception:
+        return importlib.import_module(f"gbt_allinone.{name}")
+
+
+_IMPL_KINDS_CACHE: set | None = None
+
+
+def _api_implemented_kinds() -> set:
+    """从 api.py 抽全部 `kind == "x"` / `kind in (...)` 分支名 —— 「实现存在」的真判据。
+
+    2026-10-04 修：L0 原判据只看 `gbt_allinone/<handler>.py`，实测 216 个能力里
+    **193 个 handler 名没有同名文件**（实现分散在 api.py 分支/子包里）⇒ 每次扫描固定
+    吐 20 条假问题、健康分被压。改用「能力名 ∈ api 真分支 ∪ 文件存在」后缺口为 0。
+    """
+    global _IMPL_KINDS_CACHE
+    if _IMPL_KINDS_CACHE is not None:
+        return _IMPL_KINDS_CACHE
+    import ast
+    kinds: set = set()
+    try:
+        tree = ast.parse((_ROOT / "api.py").read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Compare) and isinstance(node.left, ast.Name) and node.left.id == "kind":
+                for op, comp in zip(node.ops, node.comparators):
+                    if isinstance(op, ast.Eq) and isinstance(comp, ast.Constant) and isinstance(comp.value, str):
+                        kinds.add(comp.value)
+                    elif isinstance(op, ast.In) and isinstance(comp, (ast.Tuple, ast.List, ast.Set)):
+                        for elt in comp.elts:
+                            if isinstance(elt, ast.Constant) and isinstance(elt.value, str):
+                                kinds.add(elt.value)
+    except Exception:
+        pass
+    _IMPL_KINDS_CACHE = kinds
+    return kinds
 
 
 # ── L0~L7 扫描维度定义 ──────────────────────────────────────────────────────
@@ -109,13 +160,21 @@ def _calc_score(issues: list, errors: list) -> float:
 
 # ── 各层扫描实现 ─────────────────────────────────────────────────────────────
 def _scan_files_exist() -> dict:
-    """L0: 核心模块文件是否存在。"""
-    from .. import caps_registry
+    """L0: 核心能力位是否真接线（api.py 有分支 或 handler 文件在）。"""
+    caps_registry = _pkg("caps_registry")
     ac = caps_registry.all_caps()
-    handlers = {info.get("handler", "") for info in ac if info.get("handler")}
-    missing = [h for h in handlers if h and not _handler_file_exists(h)]
+    impl = _api_implemented_kinds()
+    missing = []
+    for info in ac:
+        name = info.get("name", "")
+        handler = info.get("handler", "") or name
+        if not name:
+            continue
+        if name in impl or _handler_file_exists(handler):
+            continue
+        missing.append(name)
     return {
-        "issues": [{"id": h, "msg": f"handler 文件不存在: {h}"} for h in missing[:20]],
+        "issues": [{"id": n, "msg": f"未接线: 无 api.py 分支且无 {n} 对应 handler 文件"} for n in missing[:20]],
         "errors": [],
     }
 
@@ -134,7 +193,7 @@ def _handler_file_exists(handler: str) -> bool:
 
 def _scan_imports() -> dict:
     """L1: 全部 handler 能否正常 import。"""
-    from .. import caps_registry
+    caps_registry = _pkg("caps_registry")
     import importlib
     ac = caps_registry.all_caps()
     errors = []
@@ -158,7 +217,7 @@ def _scan_imports() -> dict:
 
 def _scan_routing() -> dict:
     """L2: caps_registry 注册 vs api.py 路由 一致性。"""
-    from .. import selfscan
+    selfscan = _pkg("selfscan")
     r = selfscan.scan()
     routing = r.get("sections", {}).get("routing", {})
     issues = []
@@ -171,7 +230,7 @@ def _scan_routing() -> dict:
 
 def _scan_keys() -> dict:
     """L3: LLM 密钥链健康度。"""
-    from ..llm import cloud_llm as cl
+    cl = _pkg("llm.cloud_llm")
     r = cl.run(action="status")
     errors = []
     gw = r.get("gateway", {})
@@ -209,7 +268,7 @@ def _scan_store_json() -> dict:
 
 def _scan_audit_anomalies() -> dict:
     """L5: 审计日志近期异常聚合。"""
-    from .. import selfscan
+    selfscan = _pkg("selfscan")
     r = selfscan.scan()
     audit = r.get("sections", {}).get("audit", {})
     runtime = audit.get("runtime_faults", 0)
@@ -221,7 +280,7 @@ def _scan_audit_anomalies() -> dict:
 def _scan_security_surface() -> dict:
     """L6: 安全面基本检测。"""
     try:
-        from .. import cross_scan
+        cross_scan = _pkg("cross_scan")
         r = cross_scan.scan()
         errors = []
         issues = []

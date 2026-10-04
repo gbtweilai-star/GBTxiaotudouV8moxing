@@ -6,7 +6,10 @@ import re
 from pathlib import Path
 
 # 🔴 2026-09-26 修：原来写死本机绝对路径 —— 换机/换用户即静默降级 no_engine_found；现在可用环境变量改
-WS = Path(os.environ.get("GBT_QUANT_WS") or r"C:\Users\ADMIN\Desktop\Workspace")
+# 🔴 2026-10-04 修：默认落点从 `Desktop\Workspace` **收编进仓内** `quant_workspace/`
+#    （主人令「源码集中到一棵工作树」；旧桌面 Workspace 已归档到 .old-projects-20261004）
+WS = Path(os.environ.get("GBT_QUANT_WS")
+          or str(Path(__file__).resolve().parent.parent / "quant_workspace"))
 ENGINE_FILES = [
     WS / "01_量化收割引擎" / "cis_scalper" / "cis_quant_engine.py",
     WS / "01_量化收割引擎" / "cis_harvesting" / "cis_harvesting_system_v2.py",

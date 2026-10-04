@@ -1,6 +1,6 @@
 {
  "built_by": "tools/codex-scripts/omni.py build",
- "built_at": "2026-09-28T09:10:51",
+ "built_at": "2026-10-04T11:16:16",
  "note": "框架职业技能图鉴。口径：`omnipulg` = 走万能插（run_task 唯一门）的能力位；`agent-skill` = 由 agent 按技能名加载执行的技能；`design-asset` = 审美素材（料，不是可调用能力）。本图鉴是**现扫**产物，不是手抄清单。",
  "caps_error": "",
  "caps": [
@@ -3059,6 +3059,23 @@
    "unimplemented": false,
    "channel": "omnipulg",
    "invoke": "python tools/codex-scripts/five-dim.py cap git_write"
+  },
+  {
+   "kind": "omni_web",
+   "domain": "tentacle",
+   "desc": "万能触手·Web六态：看结构/读源码/读讲解/改文件/交给AI/跑项目；git+github+stackblitz一键触达",
+   "enabled": true,
+   "reason": "",
+   "safe": false,
+   "handler": "omni_web",
+   "requires_params": [
+    "op"
+   ],
+   "params_hint": "op=看结构|读源码|读讲解|改文件|gitingest|跑项目；repo=GitHub URL或本地路径；files=[…]（read_source）；path/content/mode（edit_file，mode=write|append|replace）；max_files/max_chars（gitingest）",
+   "needs_confirmation": false,
+   "unimplemented": false,
+   "channel": "omnipulg",
+   "invoke": "python tools/codex-scripts/five-dim.py cap omni_web"
   },
   {
    "kind": "ul_tars_desktop",
@@ -6353,6 +6370,24 @@
    "root_count": 1
   },
   {
+   "name": "gbt-adhd-mode",
+   "displayName": "",
+   "desc": "ADHD 友好输出模式（蒸馏自 ayghri/i-have-adhd v0.3.0, MIT）—— 第一行给下一步动作、多步必编号、结尾留一个两分钟内的动作、每轮重述进度、时间给具体单位、成绩可视化、错误只报因果、列表每组封顶 5 条、零客套；带六条豁免与发送前五删检查。说「开 ADHD 模式 / ADHD 模式」生效，「stop adhd mode / 停止 adhd 模式」关闭；会话内持续，跑题不失效。",
+   "triggers": [],
+   "version": "",
+   "channel": "agent-skill",
+   "root": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
+   "path": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-adhd-mode",
+   "why": "本仓 AGENTS.md 指定的托管目录",
+   "has_references": false,
+   "has_scripts": false,
+   "has_assets": false,
+   "roots": [
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills"
+   ],
+   "root_count": 1
+  },
+  {
    "name": "gbt-aesthetic",
    "displayName": "GBT 审美能力（蒸馏版）",
    "desc": "GBT小土豆V8 的审美能力。做设计、美化界面、给别的项目打磨视觉时用。它把「好看」拆成可执行、可复核的四件事：先做设计读数、再定三档转盘、然后按三轴选型（形态×品牌语言×普适手艺）、最后过 AI 味禁令与验收清单。附带可机检的审计器（tools/codex-scripts/audit_aesthetic.py）把「AI 味」从感觉变成能跑的检查。",
@@ -6890,9 +6925,10 @@
    "has_assets": false,
    "roots": [
     "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-control-loop",
@@ -6909,9 +6945,10 @@
    "has_assets": false,
    "roots": [
     "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-creation",
@@ -7187,9 +7224,10 @@
    "has_assets": false,
    "roots": [
     "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-dl-101",
@@ -7466,9 +7504,10 @@
    "has_assets": false,
    "roots": [
     "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-glmv",
@@ -7815,9 +7854,10 @@
    "has_assets": false,
    "roots": [
     "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-omni",
@@ -7961,9 +8001,10 @@
    "has_assets": false,
    "roots": [
     "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-project",
@@ -8185,9 +8226,10 @@
    "has_assets": false,
    "roots": [
     "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-social",
@@ -8270,9 +8312,10 @@
    "has_assets": false,
    "roots": [
     "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-tentacle",
@@ -8322,9 +8365,10 @@
    "has_assets": false,
    "roots": [
     "C:\\Users\\ADMIN\\.agents\\skills",
+    "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
     "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gbt-tools",
@@ -8642,17 +8686,18 @@
    "triggers": [],
    "version": "",
    "channel": "agent-skill",
-   "root": "C:\\Users\\ADMIN\\.claude\\skills",
-   "path": "C:\\Users\\ADMIN\\.claude\\skills\\genoffice",
-   "why": "Claude Code 侧",
+   "root": "C:\\Users\\ADMIN\\.agents\\skills",
+   "path": "C:\\Users\\ADMIN\\.agents\\skills\\genoffice",
+   "why": "本会话（DSH）实际读取的技能目录",
    "has_references": false,
    "has_scripts": false,
    "has_assets": false,
    "roots": [
+    "C:\\Users\\ADMIN\\.agents\\skills",
     "C:\\Users\\ADMIN\\.claude\\skills",
     "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills"
    ],
-   "root_count": 2
+   "root_count": 3
   },
   {
    "name": "gif-sticker-maker",
@@ -11785,14 +11830,14 @@
   }
  ],
  "counts": {
-  "caps": 215,
-  "caps_enabled": 215,
+  "caps": 216,
+  "caps_enabled": 216,
   "caps_safe_no_args": 127,
-  "skills": 372,
-  "skills_raw_before_dedupe": 717,
+  "skills": 373,
+  "skills_raw_before_dedupe": 728,
   "skills_multi_root": 176,
   "skills_by_channel": {
-   "agent-skill": 279,
+   "agent-skill": 280,
    "design-asset": 93
   },
   "design_assets_bulk_total": 235,

@@ -7,7 +7,11 @@
 from __future__ import annotations
 import sys
 
-sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 
 
 def traverse(target_area: str = "all") -> dict:

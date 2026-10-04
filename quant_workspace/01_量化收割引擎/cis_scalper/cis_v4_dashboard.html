@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta name="description" content="GBT小土豆 - 去中心化量化交易平台">
+<meta name="keywords" content="GBT, quant, trading, crypto, Binance, AI">
+<meta name="author" content="GBT小土豆">
+<meta property="og:title" content="GBT小土豆 - 量化交易平台">
+<meta property="og:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gbtxiaotudou.com">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GBT小土豆 - 量化交易平台">
+<meta name="twitter:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIS v4.0 多维度快进快出收割系统</title>
+    <style>
+        :root { --accent: #00D4AA; --gold: #FFD700; --bg: #0a0a0a; --panel: #111; --border: #222; --text: #e0e0e0; --muted: #666; --buy: #00D4AA; --sell: #FF4757; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'JetBrains Mono', 'Consolas', monospace; }
+        body { background: var(--bg); color: var(--text); padding: 16px; line-height: 1.5; }
+        h1 { color: var(--accent); font-size: 18px; letter-spacing: 0.1em; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+        .version { background: var(--accent); color: #000; padding: 2px 8px; font-size: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; }
+        .card { background: var(--panel); border: 1px solid var(--border); padding: 14px; }
+        .card-title { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+        .metric { font-size: 22px; font-weight: bold; }
+        .metric.buy { color: var(--buy); }
+        .metric.sell { color: var(--sell); }
+        .metric.gold { color: var(--gold); }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        th { background: var(--bg); color: var(--muted); padding: 8px; text-align: left; text-transform: uppercase; font-size: 9px; }
+        td { padding: 8px; border-bottom: 1px solid var(--border); }
+        tr:hover { background: rgba(0,212,170,0.05); }
+        .signal-up { color: var(--buy); }
+        .signal-down { color: var(--sell); }
+        .badge { display: inline-block; padding: 2px 6px; font-size: 9px; border: 1px solid var(--accent); color: var(--accent); margin-left: 4px; }
+        .badge.pause { border-color: var(--gold); color: var(--gold); }
+        .badge.blocked { border-color: var(--sell); color: var(--sell); }
+        .log { background: var(--bg); padding: 10px; font-size: 10px; max-height: 160px; overflow-y: auto; }
+        .log-entry { padding: 2px 0; border-bottom: 1px solid var(--border); }
+        .controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        button { background: var(--panel); border: 1px solid var(--accent); color: var(--accent); padding: 8px 16px; font-size: 11px; cursor: pointer; font-family: inherit; }
+        button:hover { background: rgba(0,212,170,0.1); }
+        button.danger { border-color: var(--sell); color: var(--sell); }
+        button.danger:hover { background: rgba(255,71,87,0.1); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        .status-dot.online { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+        .status-dot.offline { background: var(--sell); }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .flash-buy { animation: flashBuy 1s; }
+        @keyframes flashBuy { 0% { background: rgba(0,212,170,0.3); } 100% { background: transparent; } }
+        .flash-sell { animation: flashSell 1s; }
+        @keyframes flashSell { 0% { background: rgba(255,71,87,0.3); } 100% { background: transparent; } }
+        .config-panel { background: var(--panel); border: 1px solid var(--border); padding: 14px; margin-bottom: 16px; }
+        .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+        .config-item { display: flex; flex-direction: column; gap: 4px; }
+        .config-item label { font-size: 9px; color: var(--muted); text-transform: uppercase; }
+        .config-item input { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 6px 8px; font-size: 11px; font-family: inherit; }
+        .config-item input:focus { outline: none; border-color: var(--accent); }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+        .arch { display: flex; gap: 8px; align-items: center; padding: 10px 0; flex-wrap: wrap; }
+        .arch-step { background: var(--panel); border: 1px solid var(--border); padding: 6px 12px; font-size: 10px; color: var(--muted); }
+        .arch-step.active { border-color: var(--accent); color: var(--accent); }
+        .arch-arrow { color: var(--muted); }
+        .last-update { font-size: 10px; color: var(--muted); margin-top: 8px; text-align: right; }
+        .pnl-pos { color: var(--buy); }
+        .pnl-neg { color: var(--sell); }
+    </style>
+</head>
+<body>
+    <h1>CIS v4.0 <span class="version">WebSocket Real-time</span>
+        <span style="margin-left:auto;font-size:11px;">
+            <span class="status-dot online" id="connDot"></span>
+            <span id="connStatus">WS Connected</span>
+        </span>
+    </h1>
+    
+    <div class="arch">
+        <di
+<div class="usage-guide" style="margin:12px 16px;padding:12px 16px;background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.2);border-radius:4px;font-size:12px;color:#8fa4b8;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+    <span style="font-size:11px;font-weight:700;color:#00D4AA;letter-spacing:0.06em;text-transform:uppercase;">CIS收割系统使用指南</span>
+    <span style="cursor:pointer;color:#3d5266;font-size:14px;" onclick="this.parentElement.parentElement.remove()">✕</span>
+  </div>
+  <ol style="margin:0;padding-left:16px;line-height:1.8;color:#8fa4b8;">
+    <li>选择交易对与策略</li><li>一键启动自动化收割</li><li>查看实时盈亏与风险指标</li><li>调整止损/止盈参数</li>
+  </ol>
+</div>
+v class="arch-step active">市场数据层</div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-step active">信号生成层</div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-step active">确认过滤层</div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-step active">仓位管理层</div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-step active">退出决策层</div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-step active">风控保护层</div>
+    </div>
+
+    <div class="grid" id="statusCards">
+        <div class="card"><div class="card-title">Mode</div><div class="metric" id="modeDisplay">DRY-RUN</div></div>
+        <div class="card"><div class="card-title">Total Trades</div><div class="metric" id="totalTrades">0</div></div>
+        <div class="card"><div class="card-title">Open Positions</div><div class="metric gold" id="openPos">0</div></div>
+        <div class="card"><div class="card-title">Win Rate</div><div class="metric" id="winRate">0%</div></div>
+        <div class="card"><div class="card-title">Daily PnL</div><div class="metric" id="dailyPnl">$0</div></div>
+        <div class="card"><div class="card-title">Risk Status</div><div class="metric" id="riskStatus">OK</div></div>
+    </div>
+
+    <h2 style="color:var(--accent);font-size:12px;margin-bottom:10px;">MARKET <span class="badge">LIVE</span></h2>
+    <table>
+        <thead><tr><th>Symbol</th><th>Price</th><th>Mom 1m</th><th>Mom 5m</th><th>RSI</th><th>ATR%</th><th>Trend</th><th>Signal</th></tr></thead>
+        <tbody id="marketTable"></tbody>
+    </table>
+    <div class="last-update" id="lastUpdate">Last: --</div>
+
+    <div class="two-col" style="margin-top:16px;">
+        <div>
+            <h2 style="color:var(--accent);font-size:12px;margin-bottom:10px;">TRADING LOG</h2>
+            <div class="log" id="logBox"></div>
+        </div>
+        <div>
+            <h2 style="color:var(--accent);font-size:12px;margin-bottom:10px;">ACTIVE POSITIONS</h2>
+            <div class="log" id="posLog"></div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="manualScan()">🔍 Scan All</button>
+        <button onclick="getHistory()">📋 History</button>
+        <button onclick="toggleAutoScan()" id="autoBtn">▶ Auto-Scan</button>
+        <button class="danger" onclick="closeAll()">⛔ Close All</button>
+    </div>
+
+    <h2 style="color:var(--accent);font-size:12px;margin-bottom:10px;">CONFIG</h2>
+    <div class="config-panel">
+        <div class="config-grid">
+            <div class="config-item"><label>Momentum Threshold (%)</label><input type="number" id="momentumTh" value="0.02" step="0.01" onchange="updateConfig()"></div>
+            <div class="config-item"><label>Max Hold (s)</label><input type="number" id="maxHold" value="300" onchange="updateConfig()"></div>
+            <div class="config-item"><label>Stop Loss ATR Mult</label><input type="number" id="stopLossMult" value="1.5" step="0.1" onchange="updateConfig()"></div>
+            <div class="config-item"><label>Take Profit Mult</label><input type="number" id="takeProfitMult" value="2.0" step="0.1" onchange="updateConfig()"></div>
+            <div class="config-item"><label>Max Positions</label><input type="number" id="maxPos" value="3" onchange="updateConfig()"></div>
+            <div class="config-item"><label>Dry Run</label><input type="checkbox" id="dryRun" checked onchange="updateConfig()"></div>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let reconnectTimer = null;
+        let autoScanTimer = null;
+        let lastSignals = {};
+        const API = 'http://127.0.0.1:8092';
+
+        function connectWS() {
+            const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const host = '127.0.0.1:8092';
+            ws = new WebSocket(`${proto}//${host}/ws`);
+            
+            ws.onopen = () => {
+                document.getElementById('connDot').className = 'status-dot online';
+                document.getElementById('connStatus').textContent = 'WS Connected';
+                addLog('WebSocket connected', 'info');
+                if (reconnectTimer) clearTimeout(reconnectTimer);
+            };
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'init') {
+                    updateFromData(data);
+                    addLog('Initial data received', 'info');
+                } else if (data.type === 'update') {
+                    const hadSignals = {...lastSignals};
+                    updateFromData(data);
+                    // Flash any new signals
+                    for (const sym of Object.keys(data.signals || {})) {
+                        if (!hadSignals[sym]) {
+                            flashRow(sym, data.signals[sym].action);
+                        }
+                    }
+                }
+            };
+            
+            ws.onclose = () => {
+                document.getElementById('connDot').className = 'status-dot offline';
+                document.getElementById('connStatus').textContent = 'Disconnected';
+                addLog('WebSocket disconnected, reconnecting...', 'risk');
+                reconnectTimer = setTimeout(connectWS, 3000);
+            };
+            
+            ws.onerror = () => {
+                addLog('WebSocket error', 'risk');
+            };
+        }
+
+        function updateFromData(data) {
+            // Update status
+            if (data.status) {
+                document.getElementById('modeDisplay').textContent = data.status.dry_run ? 'DRY-RUN' : 'LIVE';
+                document.getElementById('totalTrades').textContent = data.status.total_trades;
+                document.getElementById('openPos').textContent = data.status.open_positions;
+                document.getElementById('winRate').textContent = data.status.win_rate ? (data.status.win_rate * 100).toFixed(1) + '%' : '0%';
+                
+                const pnl = data.status.daily_pnl || 0;
+                const pnlEl = document.getElementById('dailyPnl');
+                pnlEl.textContent = (pnl >= 0 ? '+' : '') + '$' + pnl.toFixed(2);
+                pnlEl.className = 'metric ' + (pnl >= 0 ? 'buy' : 'sell');
+                
+                const risk = data.status.risk;
+                const riskEl = document.getElementById('riskStatus');
+                if (risk.is_paused) {
+                    riskEl.textContent = 'PAUSED';
+                    riskEl.className = 'metric sell';
+                } else {
+                    riskEl.textContent = 'OK';
+                    riskEl.className = 'metric buy';
+                }
+            }
+            
+            // Update market table
+            if (data.market) {
+                const tbody = document.getElementById('marketTable');
+                tbody.innerHTML = '';
+                for (const [sym, ind] of Object.entries(data.market)) {
+                    const momClass = ind.momentum_1m >= 0 ? 'signal-up' : 'signal-down';
+                    const trendClass = ind.trend === 'UP' ? 'signal-up' : ind.trend === 'DN' ? 'signal-down' : 'signal-hold';
+                    const hasSignal = data.signals && data.signals[sym];
+                    const signalClass = hasSignal ? (hasSignal.action === 'BUY' ? 'signal-up' : 'signal-down') : '';
+                    const signalText = hasSignal ? `<span class="${signalClass}">${hasSignal.action} ${Math.round(hasSignal.confidence*100)}%</span>` : '<span class="signal-hold">--</span>';
+                    
+                    const rowId = sym.replace('USDT', '');
+                    tbody.innerHTML += `<tr id="row-${rowId}">
+                        <td><strong>${sym.replace('USDT','')}</strong></td>
+                        <td>$${ind.price.toFixed(2)}</td>
+                        <td class="${momClass}">${(ind.momentum_1m*100).toFixed(3)}%</td>
+                        <td class="${momClass}">${(ind.momentum_5m*100).toFixed(3)}%</td>
+                        <td>${ind.rsi.toFixed(1)}</td>
+                        <td>${ind.atr_pct.toFixed(2)}%</td>
+                        <td class="${trendClass}">${ind.trend}</td>
+                        <td>${signalText}</td>
+                    </tr>`;
+                }
+            }
+            
+            // Update last timestamp
+            if (data.timestamp) {
+                const d = new Date(data.timestamp);
+                document.getElementById('lastUpdate').textContent = `Last update: ${d.toLocaleTimeString()}`;
+            }
+            
+            // Store current signals
+            lastSignals = data.signals || {};
+        }
+
+        function flashRow(sym, action) {
+            const row = document.getElementById(`row-${sym.replace('USDT', '')}`);
+            if (row) {
+                row.classList.add(action === 'BUY' ? 'flash-buy' : 'flash-sell');
+                setTimeout(() => row.classList.remove(action === 'BUY' ? 'flash-buy' : 'flash-sell'), 1000);
+            }
+        }
+
+        function addLog(msg, type='info') {
+            const log = document.getElementById('logBox');
+            const time = new Date().toLocaleTimeString();
+            const colors = { info: 'var(--muted)', buy: 'var(--buy)', sell: 'var(--sell)', risk: 'var(--gold)' };
+            log.innerHTML = `<div class="log-entry" style="color:${colors[type]||colors.info}">[${time}] ${msg}</div>` + log.innerHTML;
+            if (log.children.length > 50) log.removeChild(log.lastChild);
+        }
+
+        async function fetchJSON(path) {
+            try {
+                const r = await fetch(API + path);
+                return await r.json();
+            } catch(e) { addLog('API error: ' + e.message, 'risk'); return null; }
+        }
+
+        async function manualScan() {
+            addLog('Manual scan initiated...');
+            const data = await fetchJSON('/api/trade/scan');
+            if (!data) return;
+            const sigs = data.signals || [];
+            addLog(`Scan complete: ${sigs.length} signals found`, 'info');
+            for (const s of sigs) {
+                addLog(`${s.symbol}: ${s.action} conf=${Math.round(s.confidence*100)}% - ${s.reasons.join(', ')}`, s.action === 'BUY' ? 'buy' : 'sell');
+            }
+        }
+
+        async function getHistory() {
+            const data = await fetchJSON('/api/history?limit=20');
+            if (!data) return;
+            const log = document.getElementById('posLog');
+            log.innerHTML = '';
+            const trades = data.trades || [];
+            for (const t of trades) {
+                log.innerHTML += `<div class="log-entry" style="color:${t.type==='ENTRY'?'var(--buy)':'var(--sell)'}">[${t.time}] ${t.type} ${t.symbol} $${t.price}</div>`;
+            }
+            if (trades.length === 0) {
+                log.innerHTML = '<div class="log-entry" style="color:var(--muted)">No trades yet</div>';
+            }
+        }
+
+        function toggleAutoScan() {
+            if (autoScanTimer) {
+                clearInterval(autoScanTimer);
+                autoScanTimer = null;
+                document.getElementById('autoBtn').textContent = '▶ Auto-Scan';
+                addLog('Auto-scan stopped', 'info');
+            } else {
+                autoScanTimer = setInterval(manualScan, 60000);
+                document.getElementById('autoBtn').textContent = '⏹ Stop Auto-Scan';
+                addLog('Auto-scan started (60s interval)', 'info');
+            }
+        }
+
+        async function closeAll() {
+            await fetchJSON('/api/trade/close-all');
+            addLog('All positions closed', 'sell');
+        }
+
+        async function updateConfig() {
+            const payload = {
+                MOMENTUM_THRESHOLD: parseFloat(document.getElementById('momentumTh').value) / 100,
+                MAX_HOLD_TIME: parseInt(document.getElementById('maxHold').value),
+                STOP_LOSS_MULT: parseFloat(document.getElementById('stopLossMult').value),
+                TAKE_PROFIT_MULT: parseFloat(document.getElementById('takeProfitMult').value),
+                MAX_OPEN_POSITIONS: parseInt(document.getElementById('maxPos').value),
+                DRY_RUN: document.getElementById('dryRun').checked
+            };
+            const data = await fetchJSON('/api/config');
+            if (data && data.ok) {
+                addLog('Config updated', 'info');
+            }
+        }
+
+        // Initialize
+        connectWS();
+        getHistory();
+    </script>
+
+<!-- CIS Guide -->
+<div id="cisGuide" style="display:none;position:fixed;bottom:20px;right:20px;width:400px;background:rgba(17,22,32,0.98);border:1px solid #1e2d3a;border-radius:8px;padding:16px;z-index:300;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #1e2d3a;">
+    <span style="font-size:11px;font-weight:700;color:#00D4AA;letter-spacing:0.08em;text-transform:uppercase;">CIS AUTO TRADER GUIDE</span>
+    <button onclick="document.getElementById('cisGuide').style.display='none'" style="background:none;border:none;color:#5a6a7a;cursor:pointer;font-size:16px;">&times;</button>
+  </div>
+  <div style="font-size:11px;color:#8fa4b8;line-height:1.7;">
+    <div style="margin-bottom:10px;padding:10px;background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.15);border-radius:4px;">
+      <div style="font-weight:600;color:#00D4AA;margin-bottom:4px;">五层收割系统</div>
+      每层独立止盈止损，分批建仓/平仓，降低风险同时提高收益
+    </div>
+    <div style="margin-bottom:10px;padding:10px;background:rgba(255,184,0,0.05);border:1px solid rgba(255,184,0,0.15);border-radius:4px;">
+      <div style="font-weight:600;color:#FFB800;margin-bottom:4px;">四因子共振</div>
+      RSI + MACD + 布林带 + 成交量 四个指标同时满足才触发信号
+    </div>
+    <div style="margin-bottom:10px;padding:10px;background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.15);border-radius:4px;">
+      <div style="font-weight:600;color:#A855F7;margin-bottom:4px;">ATR动态止损</div>
+      根据当前波动率自动调整止损距离，避免被正常波动震出
+    </div>
+    <div style="padding:10px;background:rgba(255,71,87,0.05);border:1px solid rgba(255,71,87,0.15);border-radius:4px;">
+      <div style="font-weight:600;color:#FF4757;margin-bottom:4px;">操作建议</div>
+      先开模拟盘验证策略，确认盈利后再切换实盘
+    </div>
+  </div>
+</div>
+
+<button onclick="document.getElementById('cisGuide').style.display=document.getElementById('cisGuide').style.display==='none'?'block':'none'" style="position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:8px;background:rgba(0,212,170,0.15);border:1px solid rgba(0,212,170,0.3);color:#00D4AA;font-size:18px;cursor:pointer;z-index:300;display:flex;align-items:center;justify-content:center;" title="使用说明">?</button>
+
+</body>
+</html>

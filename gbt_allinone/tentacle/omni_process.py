@@ -13,6 +13,28 @@ except Exception:
     pass
 
 
+def _load_penetration_scan():
+    """加载 brain/penetration_scan：优先**包导入**（相对导入才有包上下文）；
+    不行再回落 spec 加载（该模块的 _pkg() 已能自愈两种加载路）。
+
+    2026-10-04 修（24h 审查实证）：原实现只有 spec 一条路 ⇒ `__package__=""`
+    ⇒ penetration_scan 里 6 处 `from .. import …` 全部 ImportError，被每层 except
+    吞成假错误 ⇒ diagnose/deep_diagnose 的自诊断能力实际归零。
+    """
+    _root = _P(__file__).resolve().parent.parent.parent
+    if str(_root) not in _sys.path:
+        _sys.path.insert(0, str(_root))
+    try:
+        from gbt_allinone.brain import penetration_scan as _mod
+        return _mod
+    except Exception:
+        import importlib.util as _iu
+        _spec = _iu.spec_from_file_location("_pscan_diag", str(_P(__file__).resolve().parent.parent / "brain" / "penetration_scan.py"))
+        _mod = _iu.module_from_spec(_spec)
+        _spec.loader.exec_module(_mod)
+        return _mod
+
+
 class OmniProcessMixin:
     """process 域能力 — 21 方法"""
 
@@ -165,10 +187,8 @@ class OmniProcessMixin:
 
     def diagnose(self):
         """触手自诊断 — 穿透式交叉扫描 (L0+L1 + 交叉验证)"""
-        import importlib.util as _iu
         try:
-            spec = _iu.spec_from_file_location("_pscan_diag", str(ROOT / "brain" / "penetration_scan.py"))
-            mod = _iu.module_from_spec(spec); spec.loader.exec_module(mod)
+            mod = _load_penetration_scan()
             r = mod.quick_scan()
             result = {
                 "ok": r["ok"],
@@ -192,11 +212,9 @@ class OmniProcessMixin:
 
     def deep_diagnose(self):
         """深度诊断 — 穿透式交叉扫描 (全层 + N触手网格 + 共识评分)"""
-        import importlib.util as _iu
         results = {}
         try:
-            spec = _iu.spec_from_file_location("_ps_diag", str(ROOT / "brain" / "penetration_scan.py"))
-            mod = _iu.module_from_spec(spec); spec.loader.exec_module(mod)
+            mod = _load_penetration_scan()
             r = mod.run_full_scan(deep=True)
             results["full_scan"] = {
                 "ok": r["ok"], "errors": r.get("total_errors", 0),

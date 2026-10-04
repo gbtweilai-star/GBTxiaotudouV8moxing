@@ -47,13 +47,14 @@ IMAGE_ENDPOINT = ""
 #   01/03 号模块用它打自建端点；Workers AI 走平台侧，不消费这个 key。
 LLM_API_KEY = "<从 OPENAI_API_KEY 环境变量取，不在源码里写>"
 
-# 🔑 网关鉴权（模块间双向调用时用，内网互认）
-#   代码读 GW_AUTH；外部客户端调 /rpc 也接受这个 Bearer。
-#   改一次这里，所有模块同步生效。
-GW_AUTH = "uBDMqa93Gc_u9WMUBVeRvaoMePfFjtKwkF9Wu5XtNwQbPxWOMwhIl0R3y2pwGseO"
-
-# 🔑 主人令牌（/admin/grant 身份）—— 只有主人在终端发授权才能过这道闸
-OWNER_TOKEN = "Jp5LlSf3yT4LElNFbp91ZpW8IC8T92dSTQGEfn4N8rM"
+# 🔑 网关鉴权（模块间双向调用时用，内网互认）+ 主人令牌（/admin/grant 身份）
+#   🔴🔴 2026-10-04 纪律恢复：**令牌绝不许写在这份文件里**（它是入库的明文）。
+#       这里**故意不写值** —— 代码读的是同名绑定，用 secret 注入（每次改只需重灌 secret）：
+#         wrangler secret put GW_AUTH    --config wrangler.toml
+#         wrangler secret put OWNER_TOKEN --config wrangler.toml
+#       没设 GW_AUTH ⇒ /v1/chat 与 /rpc 的鉴权 fail-closed 拒服务（2026-10-04 起，不再静默放行）；
+#       没设 OWNER_TOKEN ⇒ /admin/grant 本来就拒（worker.js L560 已 fail-closed），不用动。
+#   （本文件历史上有过一版明文入库 —— 已从工作区清掉；**已泄漏的那把请主人轮换掉**。）
 
 # 换文案只改这一处（modules.js:155,275 读它）
 GBT_IDENTITY = ""

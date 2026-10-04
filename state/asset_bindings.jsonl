@@ -17168,3 +17168,77 @@
 {"at": "2026-10-03T19:13:54", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
 {"at": "2026-10-03T19:14:28", "event": "scan", "bindings": 6471, "missing_asset": 0, "ghost_tentacle": 0}
 {"at": "2026-10-03T19:15:05", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-03T22:20:11", "event": "bind", "asset": "gbt_allinone/brain/penetration_scan.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:20:11", "event": "bind", "asset": "gbt_allinone/brain/__init__.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:20:13", "event": "autobind", "files": 27, "bound": 27, "hint": "health", "pruned": 0}
+{"at": "2026-10-03T22:24:38", "event": "bind", "asset": "gbt_allinone/brain/neural_tentacle.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:24:40", "event": "autobind", "files": 1, "bound": 1, "hint": "selfscan", "pruned": 0}
+{"at": "2026-10-03T22:25:07", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-03T22:25:30", "event": "scan", "bindings": 6474, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-03T22:30:38", "event": "bind", "asset": "gbt_allinone/brain/brain_council.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:30:39", "event": "bind", "asset": "gbt_allinone/brain/cap_optimizer.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:30:39", "event": "bind", "asset": "gbt_allinone/brain/cognition.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:30:39", "event": "bind", "asset": "gbt_allinone/brain/cross_validation.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:30:39", "event": "bind", "asset": "gbt_allinone/brain/curiosity_engine.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:30:39", "event": "bind", "asset": "gbt_allinone/brain/deep_reasoner.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:30:39", "event": "bind", "asset": "gbt_allinone/brain/exploration_engine.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:30:39", "event": "bind", "asset": "gbt_allinone/brain/intent_broker.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:30:39", "event": "bind", "asset": "gbt_allinone/brain/market_intelligence.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:30:39", "event": "bind", "asset": "gbt_allinone/brain/tentacle_reasoner.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:30:39", "event": "bind", "asset": "gbt_allinone/brain/topology_index.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:30:39", "event": "bind", "asset": "gbt_allinone/brain/vision_tentacle.py", "tentacle": "domain:brain", "note": "autobind"}
+{"at": "2026-10-03T22:30:41", "event": "autobind", "files": 13, "bound": 13, "hint": "selfscan", "pruned": 0}
+{"at": "2026-10-03T22:31:13", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-03T22:31:35", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-03T22:32:46", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-03T22:33:01", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-03T22:33:35", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-03T22:33:47", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-03T22:34:22", "event": "autobind", "files": 8, "bound": 8, "hint": "git_read", "pruned": 0}
+{"at": "2026-10-03T22:34:33", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-03T22:37:52", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-03T22:38:15", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-03T22:38:53", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-03T22:39:06", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-03T22:39:45", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-03T22:39:58", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T08:42:30", "event": "bind", "asset": "gbt_allinone/chain.py", "tentacle": "voice", "note": "autobind"}
+{"at": "2026-10-04T08:42:30", "event": "bind", "asset": "gbt_allinone/mirror_space.py", "tentacle": "voice", "note": "autobind"}
+{"at": "2026-10-04T08:42:36", "event": "autobind", "files": 5, "bound": 5, "hint": "voice", "pruned": 0}
+{"at": "2026-10-04T09:25:15", "event": "bind", "asset": "gbt_allinone/devour.py", "tentacle": "voice", "note": "autobind"}
+{"at": "2026-10-04T09:25:18", "event": "autobind", "files": 1, "bound": 1, "hint": "voice", "pruned": 0}
+{"at": "2026-10-04T09:26:20", "event": "autobind", "files": 8, "bound": 8, "hint": "ghost_guard", "pruned": 0}
+{"at": "2026-10-04T09:26:52", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T09:27:27", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-04T09:28:33", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T09:29:01", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-04T09:29:22", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T09:31:47", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-04T09:32:25", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T09:33:23", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-04T09:33:55", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T09:34:53", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-04T09:35:25", "event": "scan", "bindings": 6486, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T11:16:13", "event": "prune", "asset": "gbt_allinone/gbt_allinone/store/pulse/daily_pulse.jsonl", "tentacles": ["topic_watch"], "why": "不在盘上（转瞬即逝的中间产物）"}
+{"at": "2026-10-04T11:16:13", "event": "prune", "asset": "gbt_allinone/gbt_allinone/store/pulse/state.json", "tentacles": ["topic_watch", "penetrating_cross_scan", "hook_enforcer", "trend_watch", "sec_surface", "sec_sweeper"], "why": "不在盘上（转瞬即逝的中间产物）"}
+{"at": "2026-10-04T11:16:13", "event": "prune", "asset": "gbt_allinone/gbt_allinone/store/pulse/intelligence_log.jsonl", "tentacles": ["penetrating_cross_scan", "hook_enforcer", "trend_watch", "sec_surface", "sec_sweeper", "topic_watch"], "why": "不在盘上（转瞬即逝的中间产物）"}
+{"at": "2026-10-04T11:16:14", "event": "bind", "asset": "gbt_allinone/omni_web.py", "tentacle": "omni_web", "note": "autobind"}
+{"at": "2026-10-04T11:16:15", "event": "autobind", "files": 31, "bound": 26, "hint": "", "pruned": 0}
+{"at": "2026-10-04T11:17:41", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-04T11:17:49", "event": "scan", "bindings": 6484, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T11:18:52", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-04T11:18:59", "event": "scan", "bindings": 6484, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T11:20:11", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-04T11:20:19", "event": "scan", "bindings": 6484, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T11:21:43", "event": "bind", "asset": "gbt_allinone/deploy/codex_relay_watchdog.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-10-04T11:21:43", "event": "autobind", "files": 3, "bound": 3, "hint": "selfscan", "pruned": 0}
+{"at": "2026-10-04T11:22:03", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-04T11:22:11", "event": "scan", "bindings": 6484, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T11:22:42", "event": "bind", "asset": "tools/codex-scripts/brain-closure-check.py", "tentacle": "selfscan", "note": "autobind"}
+{"at": "2026-10-04T11:22:43", "event": "autobind", "files": 1, "bound": 1, "hint": "selfscan", "pruned": 0}
+{"at": "2026-10-04T11:23:02", "event": "autobind", "files": 8, "bound": 8, "hint": "console_pages", "pruned": 0}
+{"at": "2026-10-04T11:23:10", "event": "scan", "bindings": 6485, "missing_asset": 0, "ghost_tentacle": 0}
+{"at": "2026-10-04T11:35:46", "event": "bind", "asset": "memory/2026-10-04.md", "tentacle": "project_context", "note": "autobind"}
+{"at": "2026-10-04T11:35:46", "event": "bind", "asset": "gbt_allinone/quant_tech.py", "tentacle": "quant_params", "note": "autobind"}
+{"at": "2026-10-04T11:35:47", "event": "bind", "asset": "gbt_allinone/adapters/workspace_adapter.py", "tentacle": "quant_params", "note": "autobind"}
+{"at": "2026-10-04T11:35:49", "event": "autobind", "files": 4, "bound": 4, "hint": "quant_params", "pruned": 0}

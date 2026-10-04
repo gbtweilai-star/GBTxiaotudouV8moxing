@@ -168,9 +168,12 @@ class AppController:
         if pid:
             info = self._processes.get(pid, {})
             try:
-                p = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/FO", "JSON"],
-                                   capture_output=True, text=True, timeout=5)
-                if p.returncode == 0:
+                # 2026-10-04 修：tasklist 输出是 ANSI(GBK)；text=True 无编码在 UTF-8 模式下炸读线程。
+                # （此处只看 returncode，但读取线程的异常同样会让子进程调用失败。）
+                p = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/NH"],
+                                   capture_output=True, encoding="mbcs", errors="replace",
+                                   timeout=5)
+                if p.returncode == 0 and str(pid) in (p.stdout or ""):
                     info["alive"] = True
                 else:
                     info["alive"] = False
@@ -184,9 +187,20 @@ class AppController:
     def list_all(self) -> List[dict]:
         """列出所有用户进程"""
         try:
-            p = subprocess.run(["tasklist", "/FO", "JSON"], capture_output=True, text=True, timeout=10)
+            # 2026-10-04 修：① `tasklist /FO JSON` **不是合法取值**（合法是 TABLE|LIST|CSV）
+            #   ⇒ 恒 rc≠0 ⇒ 本方法恒返回 []（P11 记过的"无效命令假读数"）；
+            #   ② 编码按 mbcs 解（系统 CLI = ANSI/GBK）。
+            p = subprocess.run(["tasklist", "/FO", "CSV", "/NH"],
+                               capture_output=True, encoding="mbcs", errors="replace", timeout=10)
             if p.returncode == 0:
-                return json.loads(p.stdout).get("Process", [])
+                import csv as _csv
+                rows = list(_csv.reader((p.stdout or "").splitlines()))
+                out = []
+                for r in rows:
+                    if len(r) >= 5:
+                        out.append({"Image Name": r[0], "PID": r[1], "Session Name": r[2],
+                                    "Session#": r[3], "Mem Usage": r[4]})
+                return out
         except Exception as e:
             self.alert.add("warning", "app_controller", f"列出进程失败: {str(e)[:50]}")
         return []
@@ -347,12 +361,15 @@ class GameController:
     def _find_game_pid(self, name: str) -> int:
         """查找游戏进程PID"""
         try:
-            p = subprocess.run(["tasklist", "/FI", f"IMAGENAME eq {name}", "/FO", "JSON"],
-                               capture_output=True, text=True, timeout=5)
+            # 2026-10-04 修：同 list_all —— `/FO JSON` 非法（恒 rc≠0 ⇒ 恒找不到），
+            # 改 CSV 逐行解析；编码按 mbcs。没匹配时 tasklist 输出一行提示（1 个字段）⇒ 跳过。
+            p = subprocess.run(["tasklist", "/FI", f"IMAGENAME eq {name}", "/FO", "CSV", "/NH"],
+                               capture_output=True, encoding="mbcs", errors="replace", timeout=5)
             if p.returncode == 0:
-                processes = json.loads(p.stdout).get("Process", [])
-                if processes:
-                    return int(processes[0].get("PID", 0))
+                import csv as _csv
+                rows = list(_csv.reader((p.stdout or "").splitlines()))
+                if rows and len(rows[0]) >= 2:
+                    return int(str(rows[0][1]).strip())
         except Exception: pass
         return 0
 

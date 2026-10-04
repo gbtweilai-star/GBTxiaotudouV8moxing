@@ -32499,9 +32499,10 @@
  },
  "gbt_allinone/chain.py": {
   "tentacles": [
-   "project_context"
+   "project_context",
+   "voice"
   ],
-  "note": "asset_index.wire",
+  "note": "autobind",
   "bound_at": "2026-09-27T17:42:24"
  },
  "gbt_allinone/checkpoint.py": {
@@ -32572,9 +32573,10 @@
  },
  "gbt_allinone/devour.py": {
   "tentacles": [
-   "project_context"
+   "project_context",
+   "voice"
   ],
-  "note": "asset_index.wire",
+  "note": "autobind",
   "bound_at": "2026-09-27T17:42:25"
  },
  "gbt_allinone/dimension_naming.py": {
@@ -32644,7 +32646,8 @@
  "gbt_allinone/mirror_space.py": {
   "tentacles": [
    "project_context",
-   "tentacle_manifest"
+   "tentacle_manifest",
+   "voice"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T17:42:25"
@@ -32694,9 +32697,10 @@
  },
  "gbt_allinone/quant_tech.py": {
   "tentacles": [
-   "project_context"
+   "project_context",
+   "quant_params"
   ],
-  "note": "asset_index.wire",
+  "note": "autobind",
   "bound_at": "2026-09-27T17:42:26"
  },
  "gbt_allinone/room_space.py": {
@@ -32793,9 +32797,10 @@
  },
  "gbt_allinone/adapters/workspace_adapter.py": {
   "tentacles": [
-   "project_context"
+   "project_context",
+   "quant_params"
   ],
-  "note": "asset_index.wire",
+  "note": "autobind",
   "bound_at": "2026-09-27T17:42:26"
  },
  "gbt_allinone/adapters/__init__.py": {
@@ -32850,7 +32855,8 @@
  "gbt_allinone/deploy/codex_relay_watchdog.py": {
   "tentacles": [
    "project_context",
-   "tentacle_manifest"
+   "tentacle_manifest",
+   "selfscan"
   ],
   "note": "autobind",
   "bound_at": "2026-09-27T17:42:27"
@@ -45614,43 +45620,12 @@
   "note": "autobind",
   "bound_at": "2026-10-03T15:55:50"
  },
- "gbt_allinone/gbt_allinone/store/pulse/daily_pulse.jsonl": {
-  "tentacles": [
-   "topic_watch"
-  ],
-  "note": "autobind",
-  "bound_at": "2026-10-03T15:55:53"
- },
- "gbt_allinone/gbt_allinone/store/pulse/state.json": {
-  "tentacles": [
-   "topic_watch",
-   "penetrating_cross_scan",
-   "hook_enforcer",
-   "trend_watch",
-   "sec_surface",
-   "sec_sweeper"
-  ],
-  "note": "autobind",
-  "bound_at": "2026-10-03T15:55:53"
- },
  "gbt_allinone/tools/pulse_agent.py": {
   "tentacles": [
    "domain:tools"
   ],
   "note": "autobind",
   "bound_at": "2026-10-03T15:57:12"
- },
- "gbt_allinone/gbt_allinone/store/pulse/intelligence_log.jsonl": {
-  "tentacles": [
-   "penetrating_cross_scan",
-   "hook_enforcer",
-   "trend_watch",
-   "sec_surface",
-   "sec_sweeper",
-   "topic_watch"
-  ],
-  "note": "autobind",
-  "bound_at": "2026-10-03T15:57:15"
  },
  "gbt_allinone/omni_web_cap.py": {
   "tentacles": [
@@ -45665,5 +45640,131 @@
   ],
   "note": "autobind",
   "bound_at": "2026-10-03T18:33:49"
+ },
+ "gbt_allinone/brain/penetration_scan.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:20:11"
+ },
+ "gbt_allinone/brain/__init__.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:20:11"
+ },
+ "gbt_allinone/brain/neural_tentacle.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:24:38"
+ },
+ "gbt_allinone/brain/brain_council.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:30:38"
+ },
+ "gbt_allinone/brain/cap_optimizer.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:30:38"
+ },
+ "gbt_allinone/brain/cognition.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:30:39"
+ },
+ "gbt_allinone/brain/cross_validation.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:30:39"
+ },
+ "gbt_allinone/brain/curiosity_engine.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:30:39"
+ },
+ "gbt_allinone/brain/deep_reasoner.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:30:39"
+ },
+ "gbt_allinone/brain/exploration_engine.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:30:39"
+ },
+ "gbt_allinone/brain/intent_broker.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:30:39"
+ },
+ "gbt_allinone/brain/market_intelligence.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:30:39"
+ },
+ "gbt_allinone/brain/tentacle_reasoner.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:30:39"
+ },
+ "gbt_allinone/brain/topology_index.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:30:39"
+ },
+ "gbt_allinone/brain/vision_tentacle.py": {
+  "tentacles": [
+   "domain:brain"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-03T22:30:39"
+ },
+ "gbt_allinone/omni_web.py": {
+  "tentacles": [
+   "omni_web"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-04T11:16:14"
+ },
+ "tools/codex-scripts/brain-closure-check.py": {
+  "tentacles": [
+   "selfscan"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-04T11:22:42"
+ },
+ "memory/2026-10-04.md": {
+  "tentacles": [
+   "project_context"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-04T11:35:46"
  }
 }

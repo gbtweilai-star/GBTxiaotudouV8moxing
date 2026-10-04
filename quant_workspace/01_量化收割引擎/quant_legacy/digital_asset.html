@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta name="description" content="GBT小土豆 - 去中心化量化交易平台">
+<meta name="keywords" content="GBT, quant, trading, crypto, Binance, AI">
+<meta name="author" content="GBT小土豆">
+<meta property="og:title" content="GBT小土豆 - 量化交易平台">
+<meta property="og:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gbtxiaotudou.com">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GBT小土豆 - 量化交易平台">
+<meta name="twitter:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>数字资产中心 - GBT 小土豆</title>
+<style>
+:root{--gold:#c9a84c;--bg:#0a0a0a;--surface:#141414;--border:rgba(255,255,255,0.08);--text:#e0e0e6;--dim:#9fa8b1;--muted:#5a5d63;--success:#3fb950;--warning:#d29922;--error:#f85149;--blue:#58a6ff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+.nav{position:fixed;top:0;width:100%;z-index:100;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(10,10,10,0.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-logo{font-size:16px;font-weight:600;color:var(--gold);text-decoration:none}
+.nav-links{display:flex;gap:1.5rem;list-style:none}
+.nav-links a{color:var(--dim);text-decoration:none;font-size:13px;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold)}
+.container{max-width:1200px;margin:0 auto;padding:6rem 1.5rem 3rem}
+.page-title{font-size:2rem;font-weight:600;margin-bottom:0.5rem}
+.page-subtitle{color:var(--dim);font-size:0.9rem;margin-bottom:2rem}
+.tabs{display:flex;gap:0.5rem;margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:0}
+.tab{padding:0.75rem 1.5rem;cursor:pointer;border-radius:8px 8px 0 0;color:var(--dim);font-size:14px;transition:all 0.2s;border-bottom:2px solid transparent}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab:hover{color:var(--text)}
+.panel{display:none}
+.panel.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+.card-title{font-size:1rem;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.grid{display:grid;gap:1rem}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:768px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+.btn{padding:0.75rem 1.5rem;border-radius:8px;border:none;cursor:pointer;font-size:14px;font-weight:500;transition:all 0.2s}
+.btn-primary{background:var(--gold);color:#000}
+.btn-primary:hover{background:#d4b85c}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.input{width:100%;padding:0.75rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none}
+.input:focus{border-color:var(--gold)}
+.input-group{margin-bottom:1rem}
+.input-label{display:block;font-size:12px;color:var(--dim);margin-bottom:0.5rem}
+.amount-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem}
+.amount-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:1rem;color:var(--text);font-size:1rem;font-weight:500;cursor:pointer;transition:all 0.2s}
+.amount-btn:hover,.amount-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.1)}
+.token-select{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.token-btn{padding:0.5rem 1rem;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px;transition:all 0.2s}
+.token-btn:hover,.token-btn.active{border-color:var(--gold);color:var(--gold)}
+.metric-card{text-align:center;padding:1.5rem}
+.metric-value{font-size:2rem;font-weight:700;color:var(--gold)}
+.metric-label{font-size:12px;color:var(--dim);margin-top:0.25rem}
+.addr-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:monospace;font-size:12px;word-break:break-all;color:var(--dim);margin:0.5rem 0}
+.status-badge{display:inline-flex;align-items:center;gap:0.25rem;padding:0.25rem 0.75rem;border-radius:20px;font-size:12px;font-weight:500}
+.status-badge.pending{background:rgba(210,153,34,0.2);color:var(--warning)}
+.status-badge.success{background:rgba(63,185,80,0.2);color:var(--success)}
+.status-badge.processing{background:rgba(88,166,255,0.2);color:var(--blue)}
+.order-item{display:flex;align-items:center;justify-content:space-between;padding:1rem;background:var(--bg);border-radius:8px;margin-bottom:0.75rem}
+.order-info{display:flex;flex-direction:column;gap:0.25rem}
+.order-id{font-size:12px;color:var(--muted)}
+.order-amount{font-size:1rem;font-weight:600}
+.order-time{font-size:11px;color:var(--muted)}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.5rem;font-size:14px;z-index:200;display:none;box-shadow:0 8px 32px rgba(0,0,0,0.5)}
+.toast.show{display:block}
+.toast.success{border-color:var(--success)}
+.toast.error{border-color:var(--error)}
+.swap-arrow{font-size:2rem;color:var(--gold);text-align:center;margin:1rem 0}
+</style>
+<!-- Floating Help Button -->
+<button class="help-btn" id="helpBtn" onclick="toggleGuide()" title="使用指南">?</button>
+
+<!-- Usage Guide Panel -->
+<div class="guide-panel" id="guidePanel">
+  <div class="guide-header">
+    <span>📖 使用指南</span>
+    <button class="guide-close" onclick="toggleGuide()">✕</button>
+  </div>
+  <div class="guide-body">
+
+</head>
+<body>
+<nav class="nav">
+<a href="/" class="nav-logo">GBT 小土豆</a>
+<ul class="nav-links">
+<li><a href="/v9_ultimate">量化终端</a></li>
+<li><a href="/payment">支付中心</a></li>
+<li><a href="/wallet">钱包</a></li>
+</ul>
+</nav>
+
+<div class="container">
+<div class="usage-guide" style="margin:12px 16px;padding:12px 16px;background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.2);border-radius:4px;font-size:12px;color:#8fa4b8;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+    <span style="font-size:11px;font-weight:700;color:#00D4AA;letter-spacing:0.06em;text-transform:uppercase;">数字资产</span>
+    <span style="cursor:pointer;color:#3d5266;font-size:14px;" onclick="this.parentElement.parentElement.remove()">✕</span>
+  </div>
+  <ol style="margin:0;padding-left:16px;line-height:1.8;color:#8fa4b8;">
+    <li>查看资产总览</li><li>多链余额查询</li><li>Token兑换</li><li>跨链桥接</li>
+  </ol>
+</div>
+
+<h1 class="page-title">数字资产中心</h1>
+<p class="page-subtitle">钱包桥接 · 兑换交易 · 加密收款 — 全链一站</p>
+
+<div class="tabs">
+<div class="tab active" onclick="switchTab('wallet')">🔐 钱包管理</div>
+<div class="tab" onclick="switchTab('swap')">🔄 兑换交易</div>
+<div class="tab" onclick="switchTab('pay')">💰 加密收款</div>
+<div class="tab" onclick="switchTab('history')">📋 历史记录</div>
+</div>
+
+<!-- Wallet Panel -->
+<div id="panel-wallet" class="panel active">
+<div class="grid grid-4">
+<div class="card metric-card">
+<div class="metric-value" id="total-balance">$0.00</div>
+<div class="metric-label">总资产 (USD)</div>
+</div>
+<div class="card metric-card">
+<div class="metric-value" style="color:var(--success)" id="eth-balance">0.0</div>
+<div class="metric-label">ETH</div>
+</div>
+<div class="card metric-card">
+<div class="metric-value" style="color:var(--blue)" id="usdt-balance">0.0</div>
+<div class="metric-label">USDT</div>
+</div>
+<div class="card metric-card">
+<div class="metric-value" style="color:var(--gold)" id="usdc-balance">0.0</div>
+<div class="metric-label">USDC</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-title">🔗 连接钱包</div>
+<div class="grid grid-2">
+<div>
+<div class="input-group">
+<label class="input-label">链</label>
+<select class="input" id="connect-chain">
+<option value="ethereum">Ethereum (ERC20)</option>
+<option value="arbitrum">Arbitrum</option>
+<option value="base">Base</option>
+<option value="polygon">Polygon</option>
+<option value="tron">TRON (TRC20)</option>
+<option value="bitcoin">Bitcoin</option>
+</select>
+</div>
+<div class="input-group">
+<label class="input-label">网络</label>
+<select class="input" id="connect-network">
+<option value="mainnet">Mainnet</option>
+<option value="sepolia">Sepolia (测试)</option>
+<option value="goerli">Goerli (测试)</option>
+</select>
+</div>
+</div>
+<div>
+<div class="input-group">
+<label class="input-label">钱包地址</label>
+<input class="input" id="connect-addr" placeholder="0x..." />
+</div>
+<button class="btn btn-primary" style="width:100%" onclick="connectWallet()">连接钱包</button>
+</div>
+</div>
+<div id="wallet-list" style="margin-top:1rem"></div>
+</div>
+
+<div class="card">
+<div class="card-title">🌉 跨链桥接</div>
+<div class="grid grid-2">
+<div>
+<div class="input-group"><label class="input-label">原链</label><select class="input" id="bridge-from"><option>Ethereum</option><option>Arbitrum</option><option>Base</option><option>Polygon</option></select></div>
+<div class="input-group"><label class="input-label">目标链</label><select class="input" id="bridge-to"><option>Arbitrum</option><option>Base</option><option>Polygon</option><option>Ethereum</option></select></div>
+<div class="input-group"><label class="input-label">代币</label><input class="input" id="bridge-token" value="ETH" /></div>
+</div>
+<div>
+<div class="input-group"><label class="input-label">金额</label><input class="input" id="bridge-amount" type="number" step="0.01" /></div>
+<button class="btn btn-primary" style="width:100%" onclick="doBridge()">发起桥接</button>
+<div id="bridge-result" style="margin-top:1rem"></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Swap Panel -->
+<div id="panel-swap" class="panel">
+<div class="card">
+<div class="card-title">🔄 兑换交易</div>
+<div class="grid grid-2">
+<div>
+<div class="input-group"><label class="input-label">从</label>
+<div style="display:flex;gap:0.5rem"><input class="input" id="swap-from-amount" type="number" step="0.0001" placeholder="0.0" style="flex:1" /><select class="input" id="swap-from-token" style="width:120px"><option>ETH</option><option>USDT</option><option>USDC</option><option>ARB</option><option>BTC</option><option>MATIC</option><option>PEPE</option></select></div>
+</div>
+<div class="token-select" id="swap-from-list"></div>
+</div>
+<div style="text-align:center"><div class="swap-arrow">↓</div></div>
+<div>
+<div class="input-group"><label class="input-label">到</label>
+<div style="display:flex;gap:0.5rem"><input class="input" id="swap-to-amount" placeholder="估算输出" readonly style="flex:1;background:var(--bg)" /><select class="input" id="swap-to-token" style="width:120px"><option>USDT</option><option>ETH</option><option>USDC</option><option>ARB</option><option>BTC</option></select></div>
+</div>
+<div class="token-select" id="swap-to-list"></div>
+</div>
+</div>
+<div id="swap-quote" style="margin:1rem 0;padding:1rem;background:var(--bg);border-radius:8px;font-size:13px;color:var(--dim)"></div>
+<div class="grid grid-2">
+<div><div class="input-group"><label class="input-label">滑点容忍度 (%)</label><input class="input" id="swap-slippage" type="number" step="0.1" value="0.5" /></div></div>
+<div><div class="input-group"><label class="input-label">Gas 预估</label><input class="input" id="swap-gas" placeholder="~$3.50" readonly /></div></div>
+</div>
+<button class="btn btn-primary" style="width:100%" onclick="doSwap()">兑换</button>
+</div>
+</div>
+
+<!-- Pay Panel -->
+<div id="panel-pay" class="panel">
+<div class="grid grid-2">
+<div class="card">
+<div class="card-title">💰 创建收款发票</div>
+<div class="input-group"><label class="input-label">金额</label><input class="input" id="pay-amount" type="number" step="0.01" value="100" /></div>
+<div class="input-group"><label class="input-label">代币</label>
+<div class="token-select"><button class="token-btn active" onclick="setPayCurrency(this,'USDT')">USDT</button><button class="token-btn" onclick="setPayCurrency(this,'USDC')">USDC</button><button class="token-btn" onclick="setPayCurrency(this,'ETH')">ETH</button><button class="token-btn" onclick="setPayCurrency(this,'BTC')">BTC</button></div>
+</div>
+<input class="input" id="pay-desc" placeholder="描述 (可选)" value="GBT充值" style="margin-bottom:1rem" />
+<button class="btn btn-primary" style="width:100%" onclick="createInvoice()">生成收款地址</button>
+<div id="invoice-result"></div>
+</div>
+<div class="card">
+<div class="card-title">📱 收款码</div>
+<div id="qr-area" style="text-align:center;padding:2rem;background:var(--bg);border-radius:8px">
+<p style="color:var(--muted)">点击"生成收款地址"后显示二维码</p>
+</div>
+<div id="pay-address-box" style="margin-top:1rem"></div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">📋 发票列表</div>
+<div id="invoice-list"><p style="color:var(--muted)">暂无发票</p></div>
+</div>
+</div>
+
+<!-- History Panel -->
+<div id="panel-history" class="panel">
+<div class="card">
+<div class="card-title">📋 交易记录</div>
+<div id="tx-list"><p style="color:var(--muted)">暂无交易记录</p></div>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE = 'http://127.0.0.1:18900';
+let selectedPayCurrency = 'USDT';
+let connectedWallets = [];
+let invoices = [];
+let transactions = [];
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+async function api(endpoint, params) {
+  try {
+    const resp = await fetch(API_BASE + endpoint, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(params)});
+    return await resp.json();
+  } catch(e) { return {ok:false, error:e.message}; }
+}
+
+// === Wallet ===
+async function connectWallet() {
+  const chain = document.getElementById('connect-chain').value;
+  const network = document.getElementById('connect-network').value;
+  const address = document.getElementById('connect-addr').value.trim();
+  if (!address) return toast('请输入钱包地址', 'error');
+  const r = await api('/api/cap/wallet_bridge/connect', {chain, network, address, wallet_id: 'user_' + Date.now()});
+  if (r.ok) {
+    toast('钱包连接成功: ' + chain);
+    connectedWallets.push(r);
+    renderWallets();
+  } else {
+    toast('连接失败: ' + (r.error || '未知错误'), 'error');
+  }
+}
+
+function renderWallets() {
+  const el = document.getElementById('wallet-list');
+  if (!connectedWallets.length) { el.innerHTML = '<p style="color:var(--muted)">未连接钱包</p>'; return; }
+  el.innerHTML = connectedWallets.map(w => `
+    <div class="order-item">
+      <div class="order-info"><span class="order-amount">${w.chain}</span><span class="order-id">${w.address}</span></div>
+      <span class="status-badge success">已连接</span>
+    </div>`).join('');
+}
+
+async function doBridge() {
+  const from = document.getElementById('bridge-from').value;
+  const to = document.getElementById('bridge-to').value;
+  const token = document.getElementById('bridge-token').value;
+  const amount = parseFloat(document.getElementById('bridge-amount').value) || 0;
+  if (!amount) return toast('请输入金额', 'error');
+  const r = await api('/api/cap/wallet_bridge/bridge', {from_chain:from.toLowerCase(), to_chain:to.toLowerCase(), token, amount});
+  const el = document.getElementById('bridge-result');
+  if (r.ok) {
+    el.innerHTML = `<div class="order-item"><div class="order-info"><span class="order-amount">${amount} ${token}</span><span class="order-id">${from} → ${to}</span></div><span class="status-badge processing">处理中</span></div>`;
+    transactions.unshift({id:r.bridge_id, type:'bridge', from, to, amount, token, status:'processing', time:Date.now()});
+    renderHistory();
+    toast('桥接已发起');
+  } else {
+    toast('桥接失败: ' + (r.error||''), 'error');
+  }
+}
+
+// === Swap ===
+function renderSwapTokens() {
+  const tokens = ['ETH','USDT','USDC','ARB','BTC','MATIC','PEPE'];
+  document.getElementById('swap-from-list').innerHTML = tokens.map(t => `<button class="token-btn" onclick="selectSwapToken('from','${t}')">${t}</button>`).join('');
+  document.getElementById('swap-to-list').innerHTML = tokens.map(t => `<button class="token-btn" onclick="selectSwapToken('to','${t}')">${t}</button>`).join('');
+}
+
+function selectSwapToken(side, token) {
+  document.getElementById('swap-' + side + '-token').value = token;
+  calculateSwap();
+}
+
+function calculateSwap() {
+  const from = document.getElementById('swap-from-token').value;
+  const to = document.getElementById('swap-to-token').value;
+  const amount = parseFloat(document.getElementById('swap-from-amount').value) || 0;
+  if (!amount) return;
+  const prices = {ETH:3500,USDT:1,USDC:1,ARB:1.2,BTC:67000,MATIC:0.85,PEPE:0.000008};
+  const fromPrice = prices[from] || 0;
+  const toPrice = prices[to] || 1;
+  const estimated = (amount * fromPrice / toPrice * 0.995).toFixed(6);
+  document.getElementById('swap-to-amount').value = estimated;
+  document.getElementById('swap-quote').innerHTML = `汇率: 1 ${from} = ${(fromPrice/toPrice).toFixed(6)} ${to} | 预估 Gas: ~$${(Math.random()*5+2).toFixed(2)}`;
+  document.getElementById('swap-gas').value = '~$' + (Math.random()*5+2).toFixed(2);
+}
+
+async function doSwap() {
+  const from = document.getElementById('swap-from-token').value;
+  const to = document.getElementById('swap-to-token').value;
+  const amount = parseFloat(document.getElementById('swap-from-amount').value) || 0;
+  if (!amount) return toast('请输入金额', 'error');
+  const r = await api('/api/cap/token_swap/swap', {from_token:from, to_token:to, amount, wallet_id:'default'});
+  if (r.ok) {
+    toast('兑换已发起: ' + amount + ' ' + from + ' → ' + r.amount_out.toFixed(6) + ' ' + to);
+    transactions.unshift({id:r.tx_id, type:'swap', from, to, amount, out:r.amount_out, status:'pending', time:Date.now()});
+    renderHistory();
+  } else {
+    toast('兑换失败: ' + (r.error||''), 'error');
+  }
+}
+
+// === Pay ===
+function setPayCurrency(el, currency) {
+  document.querySelectorAll('#panel-pay .token-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedPayCurrency = currency;
+}
+
+async function createInvoice() {
+  const amount = parseFloat(document.getElementById('pay-amount').value) || 0;
+  const desc = document.getElementById('pay-desc').value;
+  if (!amount) return toast('请输入金额', 'error');
+  const r = await api('/api/cap/crypto_pay/create_invoice', {amount, currency:selectedPayCurrency, description:desc, wallet_id:'default'});
+  const el = document.getElementById('invoice-result');
+  if (r.ok) {
+    el.innerHTML = `
+      <div style="margin-top:1rem;padding:1rem;background:var(--bg);border-radius:8px">
+        <p style="font-size:12px;color:var(--muted)">收款地址</p>
+        <div class="addr-box">${r.address}</div>
+        <p style="font-size:12px;color:var(--muted)">金额: ${r.amount} ${r.currency}</p>
+        <p style="font-size:12px;color:var(--muted)">有效期至: ${new Date(r.expires_at*1000).toLocaleString()}</p>
+        <button class="btn btn-outline" style="margin-top:0.5rem" onclick="copyAddr('${r.address}')">复制地址</button>
+      </div>`;
+    document.getElementById('qr-area').innerHTML = `<div style="font-size:8px;line-height:8px;color:var(--success)">${r.qr_data.substring(0,200).split('').map(c=>c==='1'?'█':' ').join('')}</div><p style="margin-top:0.5rem;font-size:11px;color:var(--muted)">QR Data</p>`;
+    invoices.push({...r, time:Date.now()});
+    renderInvoices();
+    toast('发票已创建');
+  } else {
+    toast('创建失败: ' + (r.error||''), 'error');
+  }
+}
+
+function copyAddr(addr) {
+  navigator.clipboard.writeText(addr);
+  toast('地址已复制');
+}
+
+function renderInvoices() {
+  const el = document.getElementById('invoice-list');
+  if (!invoices.length) { el.innerHTML = '<p style="color:var(--muted)">暂无发票</p>'; return; }
+  el.innerHTML = invoices.map(inv => `
+    <div class="order-item">
+      <div class="order-info"><span class="order-amount">${inv.amount} ${inv.currency}</span><span class="order-id">${inv.invoice_id.slice(-8)}</span></div>
+      <span class="status-badge ${inv.status}">${inv.status==='pending'?'待支付':'已完成'}</span>
+    </div>`).join('');
+}
+
+function renderHistory() {
+  const el = document.getElementById('tx-list');
+  if (!transactions.length) { el.innerHTML = '<p style="color:var(--muted)">暂无交易</p>'; return; }
+  el.innerHTML = transactions.slice(0,10).map(tx => `
+    <div class="order-item">
+      <div class="order-info"><span class="order-amount">${tx.type==='bridge'?tx.amount+' '+tx.token : tx.amount+' '+tx.from}</span><span class="order-id">${tx.type} · ${new Date(tx.time).toLocaleString()}</span></div>
+      <span class="status-badge ${tx.status}">${tx.status}</span>
+    </div>`).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderSwapTokens();
+  document.getElementById('swap-from-amount').addEventListener('input', calculateSwap);
+});
+</script>
+  </div>
+</div>
+
+<script>
+function toggleGuide() {
+  const panel = document.getElementById('guidePanel');
+  const btn = document.getElementById('helpBtn');
+  if (panel.classList.contains('active')) {
+    panel.classList.remove('active');
+    btn.style.transform = 'scale(1)';
+  } else {
+    panel.classList.add('active');
+    btn.style.transform = 'scale(1.1)';
+  }
+}
+</script>
+
+</body>
+</html>

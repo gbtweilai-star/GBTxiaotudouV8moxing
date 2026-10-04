@@ -129,9 +129,10 @@ class SingleInstance:
 
 def _pid_alive(pid: int) -> bool:
     try:
+        # 2026-10-04 修：系统 CLI 输出是 ANSI(GBK)；text=True 无编码在 UTF-8 模式下会炸读线程。
         out = subprocess.run(
             ["tasklist", "/FI", "PID eq %d" % pid, "/NH"],
-            capture_output=True, text=True, timeout=15,
+            capture_output=True, encoding="mbcs", errors="replace", timeout=15,
         ).stdout
         return str(pid) in out
     except Exception:
@@ -188,8 +189,11 @@ def probe() -> dict:
 def listener_pids() -> list[int]:
     """谁在监听 4446。用 netstat 解析，避免依赖 psutil。"""
     try:
+        # 2026-10-04 修：netstat 与 tasklist 同病（系统 CLI = ANSI/GBK 输出），
+        # text=True 无编码在 UTF-8 模式（PYTHONUTF8=1）下会炸读线程 ⇒ 恒返回 []。
         out = subprocess.run(["netstat", "-ano", "-p", "tcp"],
-                             capture_output=True, text=True, timeout=20).stdout
+                             capture_output=True, encoding="mbcs", errors="replace",
+                             timeout=20).stdout
     except Exception as exc:  # noqa: BLE001
         log("netstat 调用失败: %s" % exc, "WARN")
         return []

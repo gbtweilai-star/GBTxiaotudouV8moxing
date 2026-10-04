@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta name="description" content="GBT小土豆 - 去中心化量化交易平台">
+<meta name="keywords" content="GBT, quant, trading, crypto, Binance, AI">
+<meta name="author" content="GBT小土豆">
+<meta property="og:title" content="GBT小土豆 - 量化交易平台">
+<meta property="og:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gbtxiaotudou.com">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GBT小土豆 - 量化交易平台">
+<meta name="twitter:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GBT Quant Terminal v1.1</title>
+<style>
+:root{--bg:#080c10;--surface:#0f1519;--surface2:#0b1014;--border:#1a2330;--border-light:#243044;--cyan:#00D4AA;--cyan-dim:rgba(0,212,170,0.1);--cyan-mid:rgba(0,212,170,0.2);--coral:#FF4757;--coral-dim:rgba(255,71,87,0.1);--gold:#F59E0B;--gold-dim:rgba(245,158,11,0.1);--text:#e2e8f0;--text2:#8fa4b8;--text3:#3d5266;--font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--font-sans:"Inter",system-ui,-apple-system,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-sans);overflow:hidden}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border-light)}
+.app{display:grid;grid-template-columns:180px 1fr;height:100vh}
+.aside{background:var(--surface2);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.brand{padding:14px 16px;border-bottom:1px solid var(--border)}
+.brand-title{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.12em;color:var(--cyan);text-transform:uppercase}
+.brand-version{font-size:9px;color:var(--text3);margin-top:3px;letter-spacing:0.04em}
+.nav{flex:1;padding:8px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:10px;font-weight:600;color:var(--text2);cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;border-left:2px solid transparent;transition:all 80ms}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,0.015)}
+.nav-item.active{color:var(--cyan);border-left-color:var(--cyan);background:var(--cyan-dim)}
+.nav-item svg{width:14px;height:14px;opacity:0.6;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.status-footer{padding:12px 16px;border-top:1px solid var(--border);font-size:9px;color:var(--text3);letter-spacing:0.04em}
+.live-dot{display:inline-block;width:5px;height:5px;background:var(--cyan);margin-right:6px;animation:pulse 2s infinite;border-radius:50%}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.main{display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--border);background:var(--surface)}
+.topbar-left{display:flex;align-items:center;gap:24px}
+.topbar-title{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase}
+.topbar-tabs{display:flex;gap:2px}
+.topbar-tab{padding:5px 12px;font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);cursor:pointer;border:1px solid transparent;transition:all 80ms;font-family:var(--font-mono)}
+.topbar-tab:hover{color:var(--text2)}
+.topbar-tab.active{color:var(--cyan);border-color:var(--border-light);background:var(--cyan-dim)}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.topbar-status{display:flex;align-items:center;gap:6px;font-size:9px;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase;font-family:var(--font-mono)}
+.topbar-btn{padding:5px 12px;font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text2);background:var(--surface2);border:1px solid var(--border);cursor:pointer;transition:all 80ms;font-family:var(--font-mono)}
+.topbar-btn:hover{border-color:var(--border-light);color:var(--text)}
+.content{padding:16px;overflow-y:auto}
+.ticker{display:flex;gap:0;border:1px solid var(--border);background:var(--surface);margin-bottom:16px}
+.ticker-item{flex:1;padding:10px 14px;display:flex;flex-direction:column;gap:4px;border-right:1px solid var(--border);cursor:pointer;transition:background 80ms}
+.ticker-item:last-child{border-right:none}
+.ticker-item:hover{background:rgba(255,255,255,0.015)}
+.ticker-item.active{background:var(--cyan-dim)}
+.ticker-symbol{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text)}
+.ticker-price{font-family:var(--font-mono);font-size:15px;font-weight:700;letter-spacing:-0.01em}
+.ticker-change{font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:0.04em}
+.positive{color:var(--cyan)}.negative{color:var(--coral)}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.grid-main{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:16px}
+.panel{background:var(--surface);border:1px solid var(--border);padding:14px}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.panel-title{font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text2)}
+.panel-badge{font-size:8px;font-weight:700;letter-spacing:0.08em;padding:2px 8px;text-transform:uppercase;background:var(--cyan-dim);color:var(--cyan);font-family:var(--font-mono)}
+.panel-badge.warn{background:var(--gold-dim);color:var(--gold)}
+.panel-badge.danger{background:var(--coral-dim);color:var(--coral)}
+.kpi-card{padding:14px;border:1px solid var(--border);background:var(--surface);position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:0.3}
+.kpi-label{font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.kpi-value{font-family:var(--font-mono);font-size:22px;font-weight:700;letter-spacing:-0.02em;color:var(--text);line-height:1}
+.kpi-sub{font-size:9px;color:var(--text3);margin-top:6px;letter-spacing:0.02em}
+.kpi-change{font-family:var(--font-mono);font-size:11px;font-weight:600;margin-top:6px}
+.signal-table{width:100%;border-collapse:collapse}
+.signal-table th{text-align:left;padding:8px 10px;font-size:8px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);background:var(--surface2)}
+.signal-table td{padding:8px 10px;font-size:11px;border-bottom:1px solid var(--border);vertical-align:middle;font-family:var(--font-mono)}
+.signal-table tr:last-child td{border-bottom:none}
+.signal-table tr:hover td{background:rgba(255,255,255,0.01)}
+.signal-tag{display:inline-block;padding:2px 7px;font-size:8px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:1px solid;font-family:var(--font-mono)}
+.signal-tag.buy{color:var(--cyan);border-color:rgba(0,212,170,0.3);background:var(--cyan-dim)}
+.signal-tag.sell{color:var(--coral);border-color:rgba(255,71,87,0.3);background:var(--coral-dim)}
+.signal-tag.hold{color:var(--text3);border-color:var(--border);background:transparent}
+.signal-tag.watch{color:var(--gold);border-color:rgba(245,158,11,0.3);background:var(--gold-dim)}
+.confidence-bar{height:3px;background:var(--border);width:50px;display:inline-block;vertical-align:middle;margin-left:6px}
+.confidence-fill{height:100%;background:var(--cyan);transition:width 300ms}
+.chart-container{position:relative;height:180px;border:1px solid var(--border);background:var(--surface2);overflow:hidden}
+.chart-container svg{width:100%;height:100%}
+.chart-grid line{stroke:var(--border);stroke-width:0.5}
+.chart-line{fill:none;stroke:var(--cyan);stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+.chart-area{fill:var(--cyan-dim);stroke:none}
+.chart-label{font-family:var(--font-mono);font-size:8px;fill:var(--text3)}
+.chart-axis{stroke:var(--border);stroke-width:0.5}
+.strategy-card{padding:12px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all 80ms}
+.strategy-card:hover{border-color:var(--border-light);background:var(--surface)}
+.strategy-card.active{border-color:var(--cyan);background:var(--cyan-dim)}
+.strategy-name{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text);margin-bottom:4px}
+.strategy-desc{font-size:9px;color:var(--text3);margin-bottom:8px;line-height:1.4}
+.strategy-metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.strategy-metric{font-size:8px;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase;font-family:var(--font-mono)}
+.strategy-metric-val{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--text);margin-top:2px}
+.risk-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+.risk-row:last-child{border-bottom:none}
+.risk-label{font-size:9px;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase;width:70px;font-family:var(--font-mono)}
+.risk-bar{flex:1;height:3px;background:var(--border)}
+.risk-fill{height:100%;transition:width 300ms}
+.risk-value{font-family:var(--font-mono);font-size:10px;font-weight:600;width:45px;text-align:right}
+.divider{height:1px;background:var(--border);margin:12px 0}
+.muted{color:var(--text3)}.small{font-size:9px}.ub{font-weight:700}
+.orderbook{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border)}
+.orderbook-side{padding:8px}
+.orderbook-side.asks{border-right:1px solid var(--border)}
+.orderbook-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:3px 0;font-size:10px;font-family:var(--font-mono)}
+.orderbook-header{font-size:8px;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase;padding-bottom:6px;border-bottom:1px solid var(--border);margin-bottom:6px}
+.footer{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--border);font-size:9px;color:var(--text3);letter-spacing:0.04em;font-family:var(--font-mono)}
+@media(max-width:1200px){.app{grid-template-columns:50px 1fr}.brand .brand-title,.brand .brand-version,.nav-item span,.status-footer span:not(.live-dot){display:none}.nav-item{justify-content:center;padding:12px}}
+@media(max-width:900px){.app{grid-template-columns:1fr}.aside{display:none}.grid-4,.grid-3{grid-template-columns:repeat(2,1fr)}.grid-main{grid-template-columns:1fr}}
+</style>
+<!-- Floating Help Button -->
+<button class="help-btn" id="helpBtn" onclick="toggleGuide()" title="使用指南">?</button>
+
+<!-- Usage Guide Panel -->
+<div class="guide-panel" id="guidePanel">
+  <div class="guide-header">
+    <span>📖 使用指南</span>
+    <button class="guide-close" onclick="toggleGuide()">✕</button>
+  </div>
+  <div class="guide-body">
+
+</head>
+<body>
+<div class="app">
+  <aside class="aside">
+    <div class="brand">
+      <div class="brand-title">GBT Quant</div>
+      <div class="brand-version">v1.1 PRO</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" data-page="dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>总览</span></div>
+      <div class="nav-item" data-page="market"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>行情</span></div>
+      <div class="nav-item" data-page="signals"><svg viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg><span>信号</span></div>
+      <div class="nav-item" data-page="backtest"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>回测</span></div>
+      <div class="nav-item" data-page="portfolio"><svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg><span>组合</span></div>
+      <div class="nav-item" data-page="risk"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>风控</span></div>
+    </nav>
+    <div class="status-footer"><span class="live-dot"></span><span id="uptime">运行中</span></div>
+  </aside>
+  <div class="main">
+<div class="usage-guide" style="margin:12px 16px;padding:12px 16px;background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.2);border-radius:4px;font-size:12px;color:#8fa4b8;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+    <span style="font-size:11px;font-weight:700;color:#00D4AA;letter-spacing:0.06em;text-transform:uppercase;">量化终端v11</span>
+    <span style="cursor:pointer;color:#3d5266;font-size:14px;" onclick="this.parentElement.parentElement.remove()">✕</span>
+  </div>
+  <ol style="margin:0;padding-left:16px;line-height:1.8;color:#8fa4b8;">
+    <li>多资产组合配置</li><li>实时风险计算</li><li>自动化执行引擎</li><li>绩效分析报告</li>
+  </ol>
+</div>
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">市场总览</div>
+        <div class="topbar-tabs">
+          <div class="topbar-tab active" data-period="1h">1H</div>
+          <div class="topbar-tab" data-period="4h">4H</div>
+          <div class="topbar-tab" data-period="1d">1D</div>
+          <div class="topbar-tab" data-period="1w">1W</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-status"><span class="live-dot"></span>Binance WS</div>
+        <div class="topbar-status" id="clock">--:--:--</div>
+        <button class="topbar-btn" onclick="refreshAll()">刷新</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="ticker" id="ticker">
+        <div class="ticker-item active" data-symbol="BTCUSDT">
+          <div class="ticker-symbol">BTC/USDT</div>
+          <div class="ticker-price positive" id="btc-price">$81,230</div>
+          <div class="ticker-change positive" id="btc-change">+4.67%</div>
+        </div>
+        <div class="ticker-item" data-symbol="ETHUSDT">
+          <div class="ticker-symbol">ETH/USDT</div>
+          <div class="ticker-price positive" id="eth-price">$2,521</div>
+          <div class="ticker-change positive" id="eth-change">+5.05%</div>
+        </div>
+        <div class="ticker-item" data-symbol="BNBUSDT">
+          <div class="ticker-symbol">BNB/USDT</div>
+          <div class="ticker-price positive" id="bnb-price">$728</div>
+          <div class="ticker-change positive" id="bnb-change">+5.14%</div>
+        </div>
+        <div class="ticker-item" data-symbol="SOLUSDT">
+          <div class="ticker-symbol">SOL/USDT</div>
+          <div class="ticker-price positive" id="sol-price">$104</div>
+          <div class="ticker-change positive" id="sol-change">+3.99%</div>
+        </div>
+        <div class="ticker-item" data-symbol="XRPUSDT">
+          <div class="ticker-symbol">XRP/USDT</div>
+          <div class="ticker-price positive" id="xrp-price">$1.45</div>
+          <div class="ticker-change positive" id="xrp-change">+6.75%</div>
+        </div>
+      </div>
+      <div class="grid-4">
+        <div class="kpi-card"><div class="kpi-label">总体信号</div><div class="kpi-value" style="color:var(--gold)" id="overall-signal">HOLD</div><div class="kpi-sub" id="signal-detail">1 BUY / 3 HOLD</div><div class="kpi-change muted" id="signal-confidence">置信度 50%</div></div>
+        <div class="kpi-card"><div class="kpi-label">市场情绪</div><div class="kpi-value" style="color:var(--cyan)" id="market-sentiment">看涨</div><div class="kpi-sub" id="rsi-info">RSI 63.27 中性</div><div class="kpi-change positive">波动率 0.45%</div></div>
+        <div class="kpi-card"><div class="kpi-label">最佳策略</div><div class="kpi-value">MACD</div><div class="kpi-sub">90天回测</div><div class="kpi-change positive" id="best-return">+8.12% 收益</div></div>
+        <div class="kpi-card"><div class="kpi-label">最大回撤</div><div class="kpi-value" style="color:var(--coral)" id="max-dd">4.01%</div><div class="kpi-sub">阈值 15% | 安全余量 10.99%</div><div class="kpi-change muted">风险等级: 中</div></div>
+      </div>
+      <div class="grid-main">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">价格图表 · BTC/USDT</div><div style="display:flex;gap:6px"><div class="panel-badge" style="cursor:pointer">1H</div><div class="panel-badge warn" style="cursor:pointer">4H</div><div class="panel-badge" style="cursor:pointer">1D</div></div></div>
+          <div class="chart-container" id="price-chart">
+            <svg viewBox="0 0 600 180" preserveAspectRatio="none">
+              <defs><linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--cyan)" stop-opacity="0.15"/><stop offset="100%" stop-color="var(--cyan)" stop-opacity="0"/></linearGradient></defs>
+              <g class="chart-grid"><line x1="0" y1="45" x2="600" y2="45"/><line x1="0" y1="90" x2="600" y2="90"/><line x1="0" y1="135" x2="600" y2="135"/><line x1="150" y1="0" x2="150" y2="180"/><line x1="300" y1="0" x2="300" y2="180"/><line x1="450" y1="0" x2="450" y2="180"/></g>
+              <line x1="0" y1="176" x2="600" y2="176" class="chart-axis"/><line x1="4" y1="0" x2="4" y2="180" class="chart-axis"/>
+              <text x="2" y="30" class="chart-label" text-anchor="end">$82,300</text><text x="2" y="75" class="chart-label" text-anchor="end">$81,500</text><text x="2" y="120" class="chart-label" text-anchor="end">$80,500</text><text x="2" y="165" class="chart-label" text-anchor="end">$79,500</text>
+              <text x="75" y="180" class="chart-label" text-anchor="middle">08:00</text><text x="225" y="180" class="chart-label" text-anchor="middle">10:00</text><text x="375" y="180" class="chart-label" text-anchor="middle">12:00</text><text x="525" y="180" class="chart-label" text-anchor="middle">14:00</text>
+              <path d="M0,110 Q50,105 100,95 T200,80 T300,70 T400,60 T500,45 T600,35" class="chart-line" id="price-line"/>
+              <path d="M0,110 Q50,105 100,95 T200,80 T300,70 T400,60 T500,45 T600,35 L600,176 L0,176 Z" class="chart-area" id="price-area"/>
+              <circle cx="600" cy="35" r="3" fill="var(--cyan)" id="price-dot"/><text x="590" y="28" class="chart-label" fill="var(--cyan)" text-anchor="end" id="current-price">$81,230</text>
+            </svg>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">信号分析 · BTC/USDT</div><div class="panel-badge">实时</div></div>
+          <table class="signal-table">
+            <thead><tr><th>策略</th><th>信号</th><th>置信度</th><th>技术细节</th></tr></thead>
+            <tbody id="signal-tbody">
+              <tr><td class="ub">MACD</td><td><span class="signal-tag buy">BUY</span></td><td><div style="display:flex;align-items:center;gap:6px"><span class="positive ub">95%</span><div class="confidence-bar"><div class="confidence-fill" style="width:95%"></div></div></div></td><td class="muted small">金叉 hist=1750</td></tr>
+              <tr><td class="ub">RSI</td><td><span class="signal-tag hold">HOLD</span></td><td><div style="display:flex;align-items:center;gap:6px"><span class="muted">50%</span><div class="confidence-bar"><div class="confidence-fill" style="width:50%;background:var(--text3)"></div></div></div></td><td class="muted small">RSI=63.27</td></tr>
+              <tr><td class="ub">BOLL</td><td><span class="signal-tag hold">HOLD</span></td><td><div style="display:flex;align-items:center;gap:6px"><span class="muted">50%</span><div class="confidence-bar"><div class="confidence-fill" style="width:50%;background:var(--text3)"></div></div></div></td><td class="muted small">中轨带宽7.18%</td></tr>
+              <tr><td class="ub">ATR</td><td><span class="signal-tag watch">WATCH</span></td><td><div style="display:flex;align-items:center;gap:6px"><span style="color:var(--gold)" class="ub">50%</span><div class="confidence-bar"><div class="confidence-fill" style="width:50%;background:var(--gold)"></div></div></div></td><td class="muted small">波动率0.45%</td></tr>
+            </tbody>
+          </table>
+          <div class="divider"></div>
+          <div style="font-size:9px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;font-family:var(--font-mono)">综合判断</div>
+          <div style="font-family:var(--font-mono);font-size:16px;font-weight:700;color:var(--gold);letter-spacing:-0.01em;margin-top:4px" id="final-verdict">HOLD · 观望</div>
+          <div style="font-size:9px;color:var(--text3);margin-top:4px;line-height:1.5" id="verdict-reason">MACD看涨但RSI/BOLL中性，建议等待更明确信号</div>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">策略表现</div><div class="panel-badge warn">90天回测</div></div>
+          <div style="display:grid;gap:8px">
+            <div class="strategy-card active">
+              <div style="display:flex;justify-content:space-between;align-items:center"><div class="strategy-name">MACD Trend</div><span class="signal-tag buy">最优</span></div>
+              <div class="strategy-desc">移动平均收敛发散趋势跟踪</div>
+              <div class="strategy-metrics"><div><div class="strategy-metric">收益</div><div class="strategy-metric-val positive">+8.12%</div></div><div><div class="strategy-metric">回撤</div><div class="strategy-metric-val" style="color:var(--gold)">4.01%</div></div><div><div class="strategy-metric">夏普</div><div class="strategy-metric-val positive">0.45</div></div><div><div class="strategy-metric">胜率</div><div class="strategy-metric-val">62%</div></div></div>
+            </div>
+            <div class="strategy-card">
+              <div style="display:flex;justify-content:space-between;align-items:center"><div class="strategy-name">Bollinger Break</div><span class="signal-tag hold">中性</span></div>
+              <div class="strategy-desc">布林带突破动量策略</div>
+              <div class="strategy-metrics"><div><div class="strategy-metric">收益</div><div class="strategy-metric-val positive">+0.02%</div></div><div><div class="strategy-metric">回撤</div><div class="strategy-metric-val">0.06%</div></div><div><div class="strategy-metric">夏普</div><div class="strategy-metric-val muted">0.07</div></div><div><div class="strategy-metric">胜率</div><div class="strategy-metric-val">55%</div></div></div>
+            </div>
+            <div class="strategy-card">
+              <div style="display:flex;justify-content:space-between;align-items:center"><div class="strategy-name">RSI Mean Rev</div><span class="signal-tag sell">亏损</span></div>
+              <div class="strategy-desc">相对强弱指数均值回归</div>
+              <div class="strategy-metrics"><div><div class="strategy-metric">收益</div><div class="strategy-metric-val negative">-0.14%</div></div><div><div class="strategy-metric">回撤</div><div class="strategy-metric-val negative">0.97%</div></div><div><div class="strategy-metric">夏普</div><div class="strategy-metric-val negative">-0.06</div></div><div><div class="strategy-metric">胜率</div><div class="strategy-metric-val">64%</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">风控参数</div><div class="panel-badge">已配置</div></div>
+          <div class="risk-row"><div class="risk-label">最大回撤</div><div class="risk-bar"><div class="risk-fill" style="width:27%;background:var(--cyan)"></div></div><div class="risk-value positive">15%</div></div>
+          <div class="risk-row"><div class="risk-label">止损线</div><div class="risk-bar"><div class="risk-fill" style="width:13%;background:var(--gold)"></div></div><div class="risk-value" style="color:var(--gold)">2%</div></div>
+          <div class="risk-row"><div class="risk-label">单笔仓位</div><div class="risk-bar"><div class="risk-fill" style="width:33%;background:var(--cyan)"></div></div><div class="risk-value positive">10%</div></div>
+          <div class="risk-row"><div class="risk-label">最大杠杆</div><div class="risk-bar"><div class="risk-fill" style="width:33%;background:var(--cyan)"></div></div><div class="risk-value positive">3x</div></div>
+          <div class="risk-row"><div class="risk-label">当前回撤</div><div class="risk-bar"><div class="risk-fill" style="width:27%;background:var(--gold)"></div></div><div class="risk-value" style="color:var(--gold)">4.01%</div></div>
+          <div class="divider"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div><div class="kpi-label">VaR (95%)</div><div class="kpi-value" style="font-size:16px">$2,450</div></div>
+            <div><div class="kpi-label">风险预算</div><div class="kpi-value" style="font-size:16px">$42,500</div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">资产配置</div><div class="panel-badge warn">建议调整</div></div>
+          <div style="display:grid;gap:10px">
+            <div style="display:flex;align-items:center;gap:10px"><div style="width:3px;height:36px;background:var(--cyan)"></div><div style="flex:1"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:10px;font-weight:600">BTC</span><span style="font-family:var(--font-mono);font-size:10px" class="positive">45%</span></div><div style="height:3px;background:var(--border)"><div style="height:100%;width:45%;background:var(--cyan)"></div></div></div></div>
+            <div style="display:flex;align-items:center;gap:10px"><div style="width:3px;height:36px;background:var(--gold)"></div><div style="flex:1"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:10px;font-weight:600">ETH</span><span style="font-family:var(--font-mono);font-size:10px">25%</span></div><div style="height:3px;background:var(--border)"><div style="height:100%;width:25%;background:var(--gold)"></div></div></div></div>
+            <div style="display:flex;align-items:center;gap:10px"><div style="width:3px;height:36px;background:var(--text3)"></div><div style="flex:1"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:10px;font-weight:600">SOL</span><span style="font-family:var(--font-mono);font-size:10px">15%</span></div><div style="height:3px;background:var(--border)"><div style="height:100%;width:15%;background:var(--text3)"></div></div></div></div>
+            <div style="display:flex;align-items:center;gap:10px"><div style="width:3px;height:36px;background:var(--text3)"></div><div style="flex:1"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:10px;font-weight:600">USDT</span><span style="font-family:var(--font-mono);font-size:10px">15%</span></div><div style="height:3px;background:var(--border)"><div style="height:100%;width:15%;background:var(--text3)"></div></div></div></div>
+          </div>
+          <div class="divider"></div>
+          <div style="font-size:9px;color:var(--text3);line-height:1.5">建议将 SOL 仓位从 15% 提升至 20%，BTC 适度减仓至 40%，保持 USDT 现金缓冲应对波动。</div>
+        </div>
+      </div>
+      <div class="footer">
+        <div>GBT QUANT PLATFORM v1.1 · BINANCE WEBSOCKET · 延迟 &lt;100ms</div>
+        <div>最后更新 <span id="last-update">--:--:--</span> · 服务状态 <span style="color:var(--cyan)">ALL HEALTHY</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function updateClock(){const n=new Date(),t=n.toTimeString().slice(0,8);document.getElementById('clock').textContent=t;document.getElementById('last-update').textContent=t}
+setInterval(updateClock,1000);updateClock();
+async function refreshAll(){try{const r=await fetch('http://127.0.0.1:8091/api/market/tickers'),d=await r.json();(d.tickers||[]).forEach(t=>{const p=document.getElementById(t.symbol.replace('USDT','-price').toLowerCase()),c=document.getElementById(t.symbol.replace('USDT','-change').toLowerCase());if(p){p.textContent='$'+Number(t.lastPrice).toLocaleString();p.className='ticker-price '+(t.priceChangePercent>=0?'positive':'negative')}if(c){c.textContent=(t.priceChangePercent>=0?'+':'')+t.priceChangePercent.toFixed(2)+'%';c.className='ticker-change '+(t.priceChangePercent>=0?'positive':'negative')}})}catch(e){console.error(e)}}
+async function refreshSignals(){try{const r=await fetch('http://127.0.0.1:8091/api/signals/BTCUSDT',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}),d=await r.json();const s=d.strategies||{},macd=s.MACD||{},rsi=s.RSI||{},b oll=s.BOLL||{},atr=s.ATR||{};const buyCount=d.buy_count||0,holdCount=d.hold_count||0;document.getElementById('signal-detail').textContent=buyCount+' BUY / '+holdCount+' HOLD';document.getElementById('overall-signal').textContent=(d.overall_signal||'HOLD');document.getElementById('overall-signal').style.color=d.overall_signal==='BUY'?'var(--cyan)':d.overall_signal==='SELL'?'var(--coral)':'var(--gold)';document.getElementById('rsi-info').textContent='RSI '+(rsi.indicators?.rsi||'63.27');const tbody=document.getElementById('signal-tbody');if(tbody){const rows=tbody.querySelectorAll('tr');const signals=[macd.signal,rsi.signal,(böll||{}).signal,atr.signal];const confs=[macd.confidence,rsi.confidence,(böll||{}).confidence,atr.confidence];const reasons=['金叉 hist=1750','RSI='+rsi.indicators?.rsi?.split('=')[1]?.split(';')[0],'带宽7.18%','波动率0.45%'];rows.forEach((row,i)=>{const tag=row.querySelector('.signal-tag');if(tag)tag.className='signal-tag '+(signals[i]==='BUY'?'buy':signals[i]==='SELL'?'sell':signals[i]==='WATCH'?'watch':'hold').toLowerCase();const conf=row.querySelector('.positive,.muted,[style*="color:var(--gold)"]');if(conf)conf.textContent=Math.round(confs[i])+'%';const detail=row.cells[3];if(detail)detail.textContent=reasons[i]})}}catch(e){console.error(e)}}
+refreshAll();refreshSignals();setInterval(refreshAll,30000);setInterval(refreshSignals,60000);
+document.querySelectorAll('.nav-item').forEach(item=>{item.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));item.classList.add('active')})});
+document.querySelectorAll('.topbar-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.topbar-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active')})});
+document.querySelectorAll('.ticker-item').forEach(item=>{item.addEventListener('click',()=>{document.querySelectorAll('.ticker-item').forEach(i=>i.classList.remove('active'));item.classList.add('active')})});
+document.querySelectorAll('.strategy-card').forEach(card=>{card.addEventListener('click',()=>{document.querySelectorAll('.strategy-card').forEach(c=>c.classList.remove('active'));card.classList.add('active')})});
+</script>
+  </div>
+</div>
+
+<script>
+function toggleGuide() {
+  const panel = document.getElementById('guidePanel');
+  const btn = document.getElementById('helpBtn');
+  if (panel.classList.contains('active')) {
+    panel.classList.remove('active');
+    btn.style.transform = 'scale(1)';
+  } else {
+    panel.classList.add('active');
+    btn.style.transform = 'scale(1.1)';
+  }
+}
+</script>
+
+</body>
+</html>

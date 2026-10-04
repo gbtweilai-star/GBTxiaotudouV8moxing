@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta name="description" content="GBT小土豆 - 去中心化量化交易平台">
+<meta name="keywords" content="GBT, quant, trading, crypto, Binance, AI">
+<meta name="author" content="GBT小土豆">
+<meta property="og:title" content="GBT小土豆 - 量化交易平台">
+<meta property="og:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gbtxiaotudou.com">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GBT小土豆 - 量化交易平台">
+<meta name="twitter:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBT Quant Terminal Pro</title>
+<style>
+:root {
+  --bg: #0a0e14;
+  --surface: #111820;
+  --card: #0d1319;
+  --border: #1e2d3a;
+  --border-light: #2a3f52;
+  --cyan: #00D4AA;
+  --cyan-dim: rgba(0,212,170,0.12);
+  --coral: #FF4757;
+  --coral-dim: rgba(255,71,87,0.12);
+  --gold: #F59E0B;
+  --gold-dim: rgba(245,158,11,0.12);
+  --text: #e8edf2;
+  --text2: #8fa4b8;
+  --text3: #4a6275;
+  --font: 'JetBrains Mono', 'Consolas', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); overflow: hidden; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border-light); }
+
+/* LAYOUT */
+.app { display: grid; grid-template-columns: 180px 1fr 260px; height: 100vh; }
+
+/* SIDEBAR */
+.sidebar { background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+.brand { padding: 16px; border-bottom: 1px solid var(--border); }
+.brand-name { font-size: 13px; font-weight: 700; color: var(--cyan); letter-spacing: 0.1em; }
+.brand-sub { font-size: 9px; color: var(--text3); margin-top: 4px; letter-spacing: 0.05em; }
+.nav { flex: 1; padding: 8px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 11px; font-weight: 600; color: var(--text2); cursor: pointer; border-left: 2px solid transparent; transition: all 100ms; text-transform: uppercase; letter-spacing: 0.05em; }
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.02); }
+.nav-item.active { color: var(--cyan); border-left-color: var(--cyan); background: var(--cyan-dim); }
+.nav-icon { width: 14px; height: 14px; opacity: 0.7; }
+.status-panel { padding: 12px; border-top: 1px solid var(--border); font-size: 9px; color: var(--text3); }
+.live-dot { display: inline-block; width: 6px; height: 6px; background: var(--cyan); margin-right: 6px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* MAIN */
+.main { display: flex; flex-direction: column; overflow: hidden; }
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.topbar-left { display: flex; align-items: center; gap: 20px; }
+.topbar-title { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.topbar-tabs { display: flex; gap: 4px; }
+.topbar-tab { padding: 6px 14px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text3); cursor: pointer; border: 1px solid transparent; transition: all 100ms; }
+.topbar-tab:hover { color: var(--text2); }
+.topbar-tab.active { color: var(--cyan); border-color: var(--border-light); background: var(--cyan-dim); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.status-chip { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: var(--cyan-dim); border: 1px solid rgba(0,212,170,0.3); font-size: 10px; color: var(--cyan); }
+
+/* CONTENT */
+.content { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+
+/* TICKER */
+.ticker { display: flex; border: 1px solid var(--border); background: var(--surface); }
+.ticker-item { flex: 1; padding: 10px 16px; display: flex; flex-direction: column; gap: 4px; border-right: 1px solid var(--border); cursor: pointer; transition: background 100ms; }
+.ticker-item:last-child { border-right: none; }
+.ticker-item:hover { background: rgba(255,255,255,0.02); }
+.ticker-item.active { background: var(--cyan-dim); }
+.ticker-symbol { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; }
+.ticker-price { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+.ticker-change { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; }
+.positive { color: var(--cyan); }
+.negative { color: var(--coral); }
+
+/* GRID */
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+
+/* PANELS */
+.panel { background: var(--surface); border: 1px solid var(--border); }
+.panel-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.panel-title { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); }
+.panel-badge { font-size: 9px; font-weight: 600; letter-spacing: 0.06em; padding: 2px 8px; background: var(--cyan-dim); color: var(--cyan); }
+.panel-badge.warn { background: var(--gold-dim); color: var(--gold); }
+.panel-badge.danger { background: var(--coral-dim); color: var(--coral); }
+.panel-body { padding: 14px; }
+
+/* KPI */
+.kpi { padding: 14px; border: 1px solid var(--border); background: var(--card); }
+.kpi-label { font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+.kpi-value { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+.kpi-sub { font-size: 10px; color: var(--text3); margin-top: 4px; }
+.kpi-change { font-size: 12px; font-weight: 600; margin-top: 4px; }
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.data-table th { text-align: left; padding: 8px 10px; font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); border-bottom: 1px solid var(--border); background: var(--card); }
+.data-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(255,255,255,0.01); }
+
+/* SIGNAL TAG */
+.signal-tag { display: inline-block; padding: 3px 8px; font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; }
+.signal-tag.buy { color: var(--cyan); border-color: rgba(0,212,170,0.3); background: var(--cyan-dim); }
+.signal-tag.sell { color: var(--coral); border-color: rgba(255,71,87,0.3); background: var(--coral-dim); }
+.signal-tag.hold { color: var(--text3); border-color: var(--border); }
+.signal-tag.watch { color: var(--gold); border-color: rgba(245,158,11,0.3); background: var(--gold-dim); }
+
+/* CONFIDENCE BAR */
+.confidence-wrap { display: flex; align-items: center; gap: 8px; }
+.confidence-bar { height: 4px; background: var(--border); flex: 1; }
+.confidence-fill { height: 100%; background: var(--cyan); transition: width 300ms; }
+.confidence-fill.high { background: var(--cyan); }
+.confidence-fill.medium { background: var(--gold); }
+.confidence-fill.low { background: var(--coral); }
+.confidence-val { font-size: 10px; font-weight: 600; width: 36px; text-align: right; }
+
+/* CHART PLACEHOLDER */
+.chart-area { height: 180px; border: 1px solid var(--border); background: var(--card); display: flex; align-items: center; justify-content: center; color: var(--text3); font-size: 11px; position: relative; overflow: hidden; }
+.chart-grid { position: absolute; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 20px 20px; }
+.chart-line { position: absolute; bottom: 40px; left: 10%; right: 10%; height: 2px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); transform: skewY(-5deg); }
+
+/* RIGHT PANEL */
+.right-panel { background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+.right-section { padding: 14px; border-bottom: 1px solid var(--border); }
+.right-title { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); margin-bottom: 10px; }
+
+/* BALANCE CARD */
+.balance-hero { background: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(0,212,170,0.02)); border: 1px solid rgba(0,212,170,0.2); border-radius: 8px; padding: 14px; }
+.bal-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; }
+.bal-value { font-size: 24px; font-weight: 800; color: var(--cyan); margin: 4px 0; letter-spacing: -0.02em; }
+.bal-change { font-size: 11px; }
+
+/* POSITION ROW */
+.position-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.position-row:last-child { border-bottom: none; }
+.pos-symbol { font-size: 11px; font-weight: 600; }
+.pos-side { font-size: 9px; padding: 2px 6px; border-radius: 2px; }
+.pos-side.long { background: var(--cyan-dim); color: var(--cyan); }
+.pos-side.short { background: var(--coral-dim); color: var(--coral); }
+.pos-pnl { font-size: 11px; font-weight: 600; }
+
+/* TRADE LOG */
+.log-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 10px; border-bottom: 1px solid var(--border); }
+.log-row:last-child { border-bottom: none; }
+.log-time { color: var(--text3); }
+.log-action { color: var(--text2); }
+.log-pnl { font-weight: 600; }
+
+/* STRATEGY CARD */
+.strategy-card { padding: 10px; border: 1px solid var(--border); background: var(--card); margin-bottom: 8px; cursor: pointer; transition: all 100ms; }
+.strategy-card:hover { border-color: var(--border-light); background: var(--surface); }
+.strategy-card.active { border-color: var(--cyan); background: var(--cyan-dim); }
+.strategy-name { font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.strategy-desc { font-size: 9px; color: var(--text3); line-height: 1.4; }
+.strategy-metrics { display: flex; gap: 12px; margin-top: 8px; }
+.str-metric { font-size: 9px; color: var(--text3); }
+.str-metric-val { font-size: 11px; font-weight: 600; color: var(--text); }
+
+/* RISK BARS */
+.risk-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.risk-row:last-child { border-bottom: none; }
+.risk-label { font-size: 9px; color: var(--text3); width: 70px; text-transform: uppercase; letter-spacing: 0.05em; }
+.risk-bar { flex: 1; height: 4px; background: var(--border); }
+.risk-fill { height: 100%; transition: width 300ms; }
+.risk-value { font-size: 10px; font-weight: 600; width: 40px; text-align: right; }
+
+@media (max-width: 1200px) {
+  .app { grid-template-columns: 60px 1fr 200px; }
+  .brand span, .nav-item span, .status-panel span:not(.live-dot) { display: none; }
+  .nav-item { justify-content: center; padding: 10px; }
+}
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar, .right-panel { display: none; }
+}
+</style>
+<!-- Floating Help Button -->
+<button class="help-btn" id="helpBtn" onclick="toggleGuide()" title="使用指南">?</button>
+
+<!-- Usage Guide Panel -->
+<div class="guide-panel" id="guidePanel">
+  <div class="guide-header">
+    <span>📖 使用指南</span>
+    <button class="guide-close" onclick="toggleGuide()">✕</button>
+  </div>
+  <div class="guide-body">
+
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="brand">
+      <div class="brand-name">GBT</div>
+      <div class="brand-sub">QUANT TERMINAL PRO</div>
+    </div>
+    <div class="nav">
+      <div class="nav-item active"><span class="nav-icon">▶</span><span>交易面板</span></div>
+      <div class="nav-item"><span class="nav-icon">📊</span><span>回测引擎</span></div>
+      <div class="nav-item"><span class="nav-icon">💰</span><span>支付中心</span></div>
+      <div class="nav-item"><span class="nav-icon">🔗</span><span>区块链</span></div>
+      <div class="nav-item"><span class="nav-icon">👥</span><span>社交交易</span></div>
+      <div class="nav-item"><span class="nav-icon">⚙️</span><span>设置</span></div>
+    </div>
+    <div class="status-panel">
+      <span class="live-dot"></span>LIVE
+      <div style="margin-top:6px;">Bridge: 771 CAPS</div>
+      <div>成功率: 99.9%</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+<div class="usage-guide" style="margin:12px 16px;padding:12px 16px;background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.2);border-radius:4px;font-size:12px;color:#8fa4b8;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+    <span style="font-size:11px;font-weight:700;color:#00D4AA;letter-spacing:0.06em;text-transform:uppercase;">量化Pro终端</span>
+    <span style="cursor:pointer;color:#3d5266;font-size:14px;" onclick="this.parentElement.parentElement.remove()">✕</span>
+  </div>
+  <ol style="margin:0;padding-left:16px;line-height:1.8;color:#8fa4b8;">
+    <li>连接交易所API</li><li>加载预设策略模板</li><li>配置风险参数</li><li>实时监控与预警</li>
+  </ol>
+</div>
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">市场监控</div>
+        <div class="topbar-tabs">
+          <div class="topbar-tab active">实时</div>
+          <div class="topbar-tab">历史</div>
+          <div class="topbar-tab">回测</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="status-chip"><span class="live-dot"></span>CIS v4.0 运行中</div>
+        <button style="padding:6px 12px;background:var(--cyan-dim);border:1px solid var(--cyan);color:var(--cyan);font-size:10px;cursor:pointer;font-family:inherit;text-transform:uppercase;letter-spacing:0.06em;font-weight:600;" onclick="refreshAll()">刷新</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- TICKER -->
+      <div class="ticker" id="ticker"></div>
+
+      <!-- KPI CARDS -->
+      <div class="grid-4" id="kpiGrid"></div>
+
+      <!-- MAIN GRID -->
+      <div class="grid-2">
+        <!-- LEFT: MARKET DATA -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">市场数据</div>
+            <div class="panel-badge">LIVE</div>
+          </div>
+          <div class="panel-body" style="padding:0;">
+            <table class="data-table" id="marketTable">
+              <tr>
+                <th>币种</th>
+                <th>价格</th>
+                <th>24H变化</th>
+                <th>RSI</th>
+                <th>MACD</th>
+                <th>成交量</th>
+                <th>信号</th>
+                <th>置信度</th>
+              </tr>
+              <tbody id="marketBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- RIGHT: SIGNALS -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">交易信号</div>
+            <div class="panel-badge warn">SCANNING</div>
+          </div>
+          <div class="panel-body" id="signalList"></div>
+        </div>
+      </div>
+
+      <!-- BOTTOM GRID -->
+      <div class="grid-2">
+        <!-- STRATEGY PERFORMANCE -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">策略表现</div>
+          </div>
+          <div class="panel-body" id="strategyList"></div>
+        </div>
+
+        <!-- RISK METRICS -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">风控指标</div>
+          </div>
+          <div class="panel-body" id="riskMetrics"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="right-section">
+      <div class="balance-hero">
+        <div class="bal-label">账户总权益</div>
+        <div class="bal-value">$100,000</div>
+        <div class="bal-change positive">+2.4% +$2,384</div>
+      </div>
+    </div>
+
+    <div class="right-section">
+      <div class="right-title">当前持仓</div>
+      <div id="positionsList">
+        <div style="color:var(--text3);font-size:11px;text-align:center;padding:20px 0;">暂无持仓</div>
+      </div>
+    </div>
+
+    <div class="right-section">
+      <div class="right-title">最近交易</div>
+      <div id="tradeLog">
+        <div style="color:var(--text3);font-size:10px;text-align:center;padding:16px 0;">等待交易...</div>
+      </div>
+    </div>
+
+    <div class="right-section">
+      <div class="right-title">系统状态</div>
+      <div style="font-size:10px;color:var(--text2);line-height:1.8;">
+        <div style="display:flex;justify-content:space-between;"><span>CIS v4.0</span><span style="color:var(--cyan);">● 运行</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>API 网关</span><span style="color:var(--cyan);">● 运行</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>能力桥接</span><span style="color:var(--cyan);">● 运行</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>支付网关</span><span style="color:var(--cyan);">● 运行</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>区块链桥接</span><span style="color:var(--cyan);">● 运行</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>监控中心</span><span style="color:var(--cyan);">● 运行</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>回测引擎</span><span style="color:var(--cyan);">● 运行</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT'];
+const API = 'http://127.0.0.1:8092';
+
+// Mock data for demo (replace with real API calls)
+const mockData = {
+  BTCUSDT: { price: 80992, change: 1.2, rsi: 58.6, macd: '看涨', volume: '高', signal: 'BUY', conf: 0.83 },
+  ETHUSDT: { price: 2523, change: 1.8, rsi: 63.4, macd: '看涨', volume: '高', signal: 'BUY', conf: 0.83 },
+  SOLUSDT: { price: 104, change: -0.5, rsi: 68.4, macd: '震荡', volume: '中', signal: 'HOLD', conf: 0.50 },
+  BNBUSDT: { price: 717, change: 0.8, rsi: 65.1, macd: '看涨', volume: '中', signal: 'BUY', conf: 0.50 },
+  XRPUSDT: { price: 1.45, change: 2.1, rsi: 52.3, macd: '看涨', volume: '高', signal: 'BUY', conf: 0.67 }
+};
+
+const strategies = [
+  { name: 'MACD趋势', desc: '双均线交叉策略', return: '+8.12%', win: '62%', trades: 156, sharpe: 1.8 },
+  { name: 'RSI回归', desc: '超买超卖反转', return: '+5.43%', win: '58%', trades: 203, sharpe: 1.4 },
+  { name: '布林突破', desc: '带宽突破策略', return: '+3.21%', win: '54%', trades: 178, sharpe: 1.1 },
+  { name: 'KDJ指标', desc: '随机 oscillator', return: '+2.87%', win: '51%', trades: 142, sharpe: 0.9 }
+];
+
+function formatPrice(price) {
+  if (price >= 1000) return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (price >= 1) return price.toFixed(2);
+  return price.toFixed(4);
+}
+
+function renderTicker() {
+  const ticker = document.getElementById('ticker');
+  ticker.innerHTML = SYMBOLS.map(sym => {
+    const d = mockData[sym];
+    const cls = d.change >= 0 ? 'positive' : 'negative';
+    return `<div class="ticker-item">
+      <div class="ticker-symbol">${sym.replace('USDT', '')}</div>
+      <div class="ticker-price">$${formatPrice(d.price)}</div>
+      <div class="ticker-change ${cls}">${d.change >= 0 ? '+' : ''}${d.change}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderKPI() {
+  const buyCount = SYMBOLS.filter(s => mockData[s].signal === 'BUY').length;
+  const sellCount = SYMBOLS.filter(s => mockData[s].signal === 'SELL').length;
+  const avgConf = (SYMBOLS.reduce((sum, s) => sum + mockData[s].conf, 0) / SYMBOLS.length).toFixed(2);
+  
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi"><div class="kpi-label">看涨信号</div><div class="kpi-value positive">${buyCount}/5</div><div class="kpi-sub">市场情绪偏多</div></div>
+    <div class="kpi"><div class="kpi-label">看跌信号</div><div class="kpi-value negative">${sellCount}/5</div><div class="kpi-sub">暂无做空机会</div></div>
+    <div class="kpi"><div class="kpi-label">平均置信度</div><div class="kpi-value">${(avgConf*100).toFixed(0)}%</div><div class="kpi-sub">AI分析强度</div></div>
+    <div class="kpi"><div class="kpi-label">最优策略</div><div class="kpi-value positive">MACD</div><div class="kpi-sub">+8.12% 90天收益</div></div>
+  `;
+}
+
+function renderMarket() {
+  const tbody = document.getElementById('marketBody');
+  tbody.innerHTML = SYMBOLS.map(sym => {
+    const d = mockData[sym];
+    const changeCls = d.change >= 0 ? 'positive' : 'negative';
+    const confClass = d.conf >= 0.7 ? 'high' : d.conf >= 0.4 ? 'medium' : 'low';
+    return `<tr>
+      <td><strong>${sym.replace('USDT', '')}</strong></td>
+      <td>$${formatPrice(d.price)}</td>
+      <td class="${changeCls}">${d.change >= 0 ? '+' : ''}${d.change}%</td>
+      <td>${d.rsi.toFixed(1)}</td>
+      <td>${d.macd}</td>
+      <td>${d.volume}</td>
+      <td><span class="signal-tag ${d.signal.toLowerCase()}">${d.signal}</span></td>
+      <td>
+        <div class="confidence-wrap">
+          <div class="confidence-bar"><div class="confidence-fill ${confClass}" style="width:${d.conf*100}%"></div></div>
+          <div class="confidence-val">${(d.conf*100).toFixed(0)}%</div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderSignals() {
+  const list = document.getElementById('signalList');
+  const buys = SYMBOLS.filter(s => mockData[s].signal === 'BUY').map(s => ({ sym: s, ...mockData[s] }));
+  const holds = SYMBOLS.filter(s => mockData[s].signal === 'HOLD').map(s => ({ sym: s, ...mockData[s] }));
+  
+  let html = '';
+  buys.forEach(d => {
+    html += `<div style="padding:10px 0;border-bottom:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-weight:700;">${d.sym.replace('USDT', '')}</span>
+        <span class="signal-tag buy">BUY</span>
+      </div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:4px;">置信度 ${(d.conf*100).toFixed(0)}% · RSI ${d.rsi.toFixed(1)}</div>
+      <div style="font-size:10px;color:var(--text2);">MACD ${d.macd}，成交量${d.volume}</div>
+    </div>`;
+  });
+  holds.forEach(d => {
+    html += `<div style="padding:10px 0;border-bottom:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-weight:700;">${d.sym.replace('USDT', '')}</span>
+        <span class="signal-tag hold">HOLD</span>
+      </div>
+      <div style="font-size:10px;color:var(--text3);">观望中 · RSI ${d.rsi.toFixed(1)}</div>
+    </div>`;
+  });
+  list.innerHTML = html || '<div style="color:var(--text3);text-align:center;padding:20px;">暂无信号</div>';
+}
+
+function renderStrategies() {
+  const list = document.getElementById('strategyList');
+  list.innerHTML = strategies.map((s, i) => `
+    <div class="strategy-card ${i === 0 ? 'active' : ''}">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="strategy-name">${s.name}</div>
+        <div style="color:var(--cyan);font-weight:700;">${s.return}</div>
+      </div>
+      <div class="strategy-desc">${s.desc}</div>
+      <div class="strategy-metrics">
+        <div><span class="str-metric">胜率</span><br><span class="str-metric-val">${s.win}</span></div>
+        <div><span class="str-metric">交易</span><br><span class="str-metric-val">${s.trades}</span></div>
+        <div><span class="str-metric">Sharpe</span><br><span class="str-metric-val">${s.sharpe}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderRisk() {
+  document.getElementById('riskMetrics').innerHTML = `
+    <div class="risk-row"><div class="risk-label">最大回撤</div><div class="risk-bar"><div class="risk-fill" style="width:15%;background:var(--gold)"></div></div><div class="risk-value" style="color:var(--gold)">15%</div></div>
+    <div class="risk-row"><div class="risk-label">止损线</div><div class="risk-bar"><div class="risk-fill" style="width:10%;background:var(--coral)"></div></div><div class="risk-value" style="color:var(--coral)">2%</div></div>
+    <div class="risk-row"><div class="risk-label">单笔仓位</div><div class="risk-bar"><div class="risk-fill" style="width:10%;background:var(--cyan)"></div></div><div class="risk-value" style="color:var(--cyan)">10%</div></div>
+    <div class="risk-row"><div class="risk-label">最大杠杆</div><div class="risk-bar"><div class="risk-fill" style="width:33%;background:var(--text2)"></div></div><div class="risk-value">3x</div></div>
+    <div class="risk-row"><div class="risk-label">连续亏损</div><div class="risk-bar"><div class="risk-fill" style="width:0%;background:var(--cyan)"></div></div><div class="risk-value">0/3</div></div>
+  `;
+}
+
+function refreshAll() {
+  renderTicker();
+  renderKPI();
+  renderMarket();
+  renderSignals();
+  renderStrategies();
+  renderRisk();
+}
+
+// Initial render
+refreshAll();
+
+// Auto refresh every 30 seconds
+setInterval(refreshAll, 30000);
+</script>
+  </div>
+</div>
+
+<script>
+function toggleGuide() {
+  const panel = document.getElementById('guidePanel');
+  const btn = document.getElementById('helpBtn');
+  if (panel.classList.contains('active')) {
+    panel.classList.remove('active');
+    btn.style.transform = 'scale(1)';
+  } else {
+    panel.classList.add('active');
+    btn.style.transform = 'scale(1.1)';
+  }
+}
+</script>
+
+</body>
+</html>

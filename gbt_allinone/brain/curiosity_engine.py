@@ -8,7 +8,11 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 
 _BRAIN_DIR = Path(__file__).resolve().parent
 _KNOWN_MODULES = [

@@ -36,10 +36,18 @@ _GH_RE = re.compile(
     r"(?:\.git)?$"
 )
 
+# 2026-10-04 修：克隆缓存**锚定仓根**（原来用 Path.cwd() ⇒ 同一调用从不同 cwd
+# 落进随机目录、同一 "user/repo" 会被判成本地/远程两种）。口径同 quick_scan.py 的
+# 「仓根按 __file__ 定位 ⇒ 与 cwd 无关」；该目录已进 .gitignore（_gbt_webcap/）。
+_WEB_ROOT = Path(__file__).resolve().parent.parent
+_CACHE_DIR = _WEB_ROOT / "_gbt_webcap"
+
 def parse_gh_url(url: str) -> dict | None:
     """解析 GitHub URL → {owner, repo, url, is_local}"""
     url = url.strip()
-    if Path(url).is_absolute() or (Path.cwd() / url).exists():
+    # 本地判定：绝对路径 / 当前 cwd 下存在 / 仓根下存在（2026-10-04：补仓根一路，
+    # 削弱 cwd 依赖 —— 同一字符串在不同 cwd 下尽量给出同一判定）
+    if Path(url).is_absolute() or (Path.cwd() / url).exists() or (_WEB_ROOT / url).exists():
         return {"owner": None, "repo": None, "url": url, "is_local": True}
     m = _GH_RE.search(url)
     if not m:
@@ -56,15 +64,21 @@ def parse_gh_url(url: str) -> dict | None:
 # ═══════════════════════════════════════════
 
 def _github_api(owner: str, repo: str, path: str = "") -> dict | None:
-    """GitHub REST API，失败返回 None（不抛）。"""
+    """GitHub REST API，失败返回 None（不抛）。
+
+    2026-10-04 加固（Mimosa 钩子实证 SSRF 面后改走仓库统一网络闸）：
+    原来直接 urlopen 动态拼出的 URL ⇒ 现在一律经 net_guard.safe_request_json
+    （协议/主机/IP 边界校验 + DNS 固定 + 每跳重校验 + 读上限）。
+    """
     try:
+        from .security import net_guard as _ng
         req_url = f"https://api.github.com/repos/{owner}/{repo}/{path}".strip("/")
-        req = urllib.request.Request(req_url, headers={
-            "Accept": "application/vnd.github+json",
-            "User-Agent": "GBT-OmniWeb/1.0"
-        })
-        with urllib.request.urlopen(req, timeout=15) as r:
-            return json.loads(r.read())
+        r = _ng.safe_request_json(
+            req_url,
+            headers={"Accept": "application/vnd.github+json", "User-Agent": "GBT-OmniWeb/1.0"},
+            timeout=15.0, max_bytes=4 * 1024 * 1024,
+        )
+        return r.get("json")
     except Exception:
         return None
 
@@ -75,14 +89,20 @@ def _clone_or_pull(repo_url: str, target_dir: str) -> dict:
         if Path(target_dir).exists():
             r = subprocess.run(
                 ["git", "-C", target_dir, "pull", "--ff-only"],
-                capture_output=True, text=True, timeout=60
+                capture_output=True, text=True, timeout=60,
+                # 2026-10-04：中文 Windows 默认 GBK 解码 git 的 UTF-8 输出 ⇒ 乱码或
+                # 读取线程 UnicodeDecodeError（stdout 变 None）。显式钉死口径。
+                encoding="utf-8", errors="replace",
             )
-            return {"ok": r.returncode == 0, "stdout": r.stdout[:500]}
+            out = r.stdout or ""
+            return {"ok": r.returncode == 0, "stdout": out[:500]}
         r = subprocess.run(
-            ["git", "clone", "--depth", "1", "--no-single-branch", repo_url, target_dir],
-            capture_output=True, text=True, timeout=120
+            # `--` 分隔：URL 以 `-` 开头时不会被 git 当选项吃掉
+            ["git", "clone", "--depth", "1", "--no-single-branch", "--", repo_url, target_dir],
+            capture_output=True, text=True, timeout=120,
+            encoding="utf-8", errors="replace",
         )
-        return {"ok": r.returncode == 0, "stdout": r.stdout[:500], "stderr": r.stderr[:300]}
+        return {"ok": r.returncode == 0, "stdout": (r.stdout or "")[:500], "stderr": (r.stderr or "")[:300]}
     except subprocess.TimeoutExpired:
         return {"ok": False, "error": "clone/pull 超时（60s）"}
     except Exception as e:
@@ -92,12 +112,20 @@ def _clone_or_pull(repo_url: str, target_dir: str) -> dict:
 def _repo_dir(info: dict) -> str:
     if info.get("is_local"):
         return info["url"]
-    return str(Path.cwd() / "_gbt_webcap" / f"{info['owner']}__{info['repo']}")
+    # 2026-10-04：落点锚定仓根（见 _CACHE_DIR 注释）
+    return str(_CACHE_DIR / f"{info['owner']}__{info['repo']}")
 
 
 def _ensure_cloned(info: dict) -> dict | None:
     if info.get("is_local"):
         return None
+    # 2026-10-04 补：远程 URL 先过 net_guard（公网限定）—— 与 scrapling_cap 同族口径。
+    #   file:// / ssh:// / 本机 / 内网地址在这里就被拦，防御层不依赖上游 policy。
+    try:
+        from .security import net_guard as _ng
+        _ng.validate_url(str(info["url"]), allow_private=False)
+    except Exception as e:
+        return {"ok": False, "error": f"URL 未过网络闸（只允许公网 http/https）: {str(e)[:160]}"}
     d = _repo_dir(info)
     r = _clone_or_pull(info["url"], d)
     if not r["ok"]:
@@ -187,7 +215,7 @@ def op_read_source(params: dict) -> dict:
     if err:
         return {"ok": False, "error": f"仓库克隆失败: {err.get('error')}", "repo": info["url"]}
 
-    root = Path(_repo_dir(info))
+    root = Path(_repo_dir(info)).resolve()
     results = []
     for fp in (files or [""]):
         if not fp:
@@ -203,7 +231,18 @@ def op_read_source(params: dict) -> dict:
             except Exception as e:
                 results.append({"path": "", "content": None, "error": str(e)})
             continue
-        full = root / fp.lstrip("/")
+        # 2026-10-04 修（24h 审查实证）：原实现 `root / fp.lstrip("/")` 遇绝对路径会被
+        # pathlib 整体替换（实测 `Path(root)/"C:/Windows/win.ini"` → `C:\Windows\win.ini`）
+        # ⇒ 读任意本机文件的原语。现在先 resolve 再验仓根包含，越界如实拒。
+        try:
+            full = (root / fp.lstrip("/")).resolve()
+            full.relative_to(root)
+        except ValueError:
+            results.append({"path": fp, "content": None, "error": f"路径越界（只允许仓库内相对路径）: {fp}"})
+            continue
+        except Exception as e:
+            results.append({"path": fp, "content": None, "error": str(e)[:200]})
+            continue
         if not full.exists():
             results.append({"path": fp, "content": None, "error": f"文件不存在: {fp}"})
             continue
@@ -252,25 +291,21 @@ def op_read_explanation(params: dict) -> dict:
     else:
         meta = {"name": f"{info['owner']}/{info['repo']}", "error": "API 无法访问"}
 
-    # 尝试拉 README 原始内容
+    # 尝试拉 README 原始内容（2026-10-04：同 _github_api，一律走 net_guard 统一网络闸）
     if not readme_content:
-        try:
-            req = urllib.request.Request(
-                f"https://raw.githubusercontent.com/{info['owner']}/{info['repo']}/main/README.md",
-                headers={"User-Agent": "GBT-OmniWeb/1.0"}
-            )
-            with urllib.request.urlopen(req, timeout=10) as r:
-                readme_content = r.read().decode("utf-8", errors="replace")
-        except Exception:
+        for _branch in ("main", "master"):
             try:
-                req = urllib.request.Request(
-                    f"https://raw.githubusercontent.com/{info['owner']}/{info['repo']}/master/README.md",
-                    headers={"User-Agent": "GBT-OmniWeb/1.0"}
+                from .security import net_guard as _ng
+                _r = _ng.safe_request(
+                    f"https://raw.githubusercontent.com/{info['owner']}/{info['repo']}/{_branch}/README.md",
+                    headers={"User-Agent": "GBT-OmniWeb/1.0"},
+                    timeout=10.0, max_bytes=200_000,
                 )
-                with urllib.request.urlopen(req, timeout=10) as r:
-                    readme_content = r.read().decode("utf-8", errors="replace")
+                readme_content = (_r.get("body") or b"").decode("utf-8", errors="replace")
+                if readme_content:
+                    break
             except Exception:
-                pass
+                continue
 
     return {
         "ok": True,
@@ -287,7 +322,9 @@ def op_edit_file(params: dict) -> dict:
     url = params.get("repo") or params.get("url") or ""
     filepath = params.get("path") or ""
     content = params.get("content")
-    operation = params.get("op", "write")  # write | append | replace
+    # 2026-10-04 修：api.py 分派时把顶层 "op"（edit_file）剥掉后才进来 ⇒ 这里读不到它，
+    # append/replace 分支不可达（静默按 write 处理）。子操作改从 mode/sub_op 取。
+    operation = str(params.get("mode") or params.get("sub_op") or params.get("op") or "write")
 
     info = parse_gh_url(url)
     if not info or not info.get("is_local"):
@@ -334,6 +371,24 @@ def op_edit_file(params: dict) -> dict:
         return {"ok": False, "error": f"写入失败: {str(e)[:200]}"}
 
 
+def _is_excluded(rel: str, exclude_patterns) -> bool:
+    """路径段排除判定（跨平台）。
+
+    2026-10-04 修（24h 审查实证）：原实现 `rel.split("/")` 在 Windows 上恒不命中
+    （str(Path) 用反斜杠）⇒ 排除表整表失效；且 "*.lock" 这类带通配的模式做的是
+    等值比较，任何平台都恒不命中。现在：无通配 = 段名等值；有通配 = fnmatch 段名/文件名。
+    """
+    from fnmatch import fnmatch
+    parts = Path(rel).parts
+    for pat in exclude_patterns:
+        if any(ch in pat for ch in "*?["):
+            if any(fnmatch(part, pat) for part in parts):
+                return True
+        elif pat in parts:
+            return True
+    return False
+
+
 def op_gitingest(params: dict) -> dict:
     """Gitingest：将仓库转译为 AI 友好的纯文本格式"""
     url = params.get("repo") or params.get("url") or ""
@@ -356,7 +411,7 @@ def op_gitingest(params: dict) -> dict:
         if not p.is_file():
             continue
         rel = str(p.relative_to(root))
-        if any(skip in rel.split("/") for skip in exclude_patterns):
+        if _is_excluded(rel, exclude_patterns):
             continue
         suffix = p.suffix.lower()
         if suffix in (".pyc", ".pyo", ".class", ".o", ".obj", ".exe", ".dll", ".so",

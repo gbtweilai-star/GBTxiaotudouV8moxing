@@ -125,8 +125,13 @@ def _pid_alive(pid: int) -> bool:
     if not pid:
         return False
     try:
+        # 2026-10-04 修（深扫实测抓到）：tasklist 是系统 CLI，中文 Windows 输出 ANSI(GBK)。
+        # 原写法 text=True 无编码 ⇒ 在 UTF-8 模式（PYTHONUTF8=1）下读线程直接
+        # UnicodeDecodeError('utf-8' codec can't decode byte 0xd0) ⇒ 存活判定恒 False。
+        # 口径同 tools/tentacle_fleet.py:321「这类系统工具的读数一律按 mbcs 解」。
         out = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/NH"],
-                             capture_output=True, text=True, timeout=8).stdout
+                             capture_output=True, encoding="mbcs", errors="replace",
+                             timeout=8).stdout
         return str(pid) in out
     except Exception:
         return False

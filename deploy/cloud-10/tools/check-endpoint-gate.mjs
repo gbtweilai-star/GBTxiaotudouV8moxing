@@ -70,7 +70,9 @@ function req(mesh, method, path, body, headers) {
   return mesh.fetch(
     new Request("https://mesh.local" + path, {
       method,
-      headers: { "content-type": "application/json", ...(headers || {}) },
+      // 2026-10-04：/v1/chat 与 /rpc 现在缺 GW_AUTH 就 fail-closed ⇒ 脚手架上默认带
+      // 测试网关钥匙；要测「不带 Authorization」的用例显式传 { authorization: "" } 覆盖。
+      headers: { "content-type": "application/json", authorization: `Bearer ${GW}`, ...(headers || {}) },
       body: method === "POST" ? JSON.stringify(body || {}) : undefined,
     }),
   );
@@ -78,7 +80,9 @@ function req(mesh, method, path, body, headers) {
 
 // 云端契约：受门动作要先有授权。本机照同一条路走，**不旁路**。
 async function meshWith(env) {
-  const mesh = createMesh({ OWNER_TOKEN: OWNER, ...env });
+  // 2026-10-04：默认配测试网关钥匙（GW）；要测"没配网关"的场景显式传 GW_AUTH: ""。
+  const { GW_AUTH: gwOverride, ...rest } = env || {};
+  const mesh = createMesh({ OWNER_TOKEN: OWNER, GW_AUTH: gwOverride === undefined ? GW : gwOverride, ...rest });
   await req(mesh, "POST", "/admin/grant", { scopes: ["external_llm"] }, { "x-owner-token": OWNER });
   return mesh;
 }
@@ -98,25 +102,25 @@ function scanForToken(where, txt) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// ① 网关鉴权：没配 GW_AUTH ⇒ 如实说不校验（不许让人以为锁上了）
+// ① 网关鉴权：没配 GW_AUTH ⇒ **fail-closed**（2026-10-04 收紧；原口径是"如实说不校验"）
 // ══════════════════════════════════════════════════════════════════════════
 {
-  const mesh = await meshWith({ WORKERS_AI_MODEL: MODEL, AI: aiStub() });
+  const mesh = await meshWith({ WORKERS_AI_MODEL: MODEL, AI: aiStub(), GW_AUTH: "" });
   const modelsRes = await req(mesh, "GET", "/v1/models");
   const models = await modelsRes.json();
   scanForToken("① /v1/models", JSON.stringify(models));
   const g = models.gbt || {};
-  ck("① 没配网关 ⇒ auth_scope.chat=none（如实报「没锁」）",
-     (g.auth_scope || {}).chat === "none" && (g.auth_scope || {}).models === "public", JSON.stringify(g.auth_scope));
-  ck("① 没配网关 ⇒ 人读那句话也直说「不校验」",
-     /不校验/.test(String(g.auth)) && /网关鉴权已开/.test(String(g.auth)) === false, String(g.auth));
+  ck("① 没配网关 ⇒ auth_scope.chat=fail-closed（如实报「锁不上就不服务」）",
+     (g.auth_scope || {}).chat === "fail-closed" && (g.auth_scope || {}).models === "public", JSON.stringify(g.auth_scope));
+  ck("① 没配网关 ⇒ 人读那句话直说 fail-closed（不再说「不校验」）",
+     /fail-closed/.test(String(g.auth)) && /不校验/.test(String(g.auth)) === false, String(g.auth));
   ck("① /v1/models 这一路公开（无 Authorization 也 200）",
      modelsRes.status === 200, `status=${modelsRes.status}`);
   const r = await postJSON(mesh, "/v1/chat/completions", chatBody([{ role: "user", content: "在吗" }]));
-  // 负控：没配网关时**不许** 401 —— 401 就说明闸门自己开着了（与读数相反）
-  ck("① 负控：没配网关时带不带 Authorization 都不该 401",
-     r.status !== 401 && (r.body?.error?.type || "") !== "authentication_error",
-     `status=${r.status} type=${r.body?.error?.type}`);
+  // 2026-10-04 收紧：没配网关时**不许放行** —— 必须 503 + configuration_error（fail-closed）
+  ck("① fail-closed：没配网关时 /v1/chat 拒服务（503 configuration_error）",
+     r.status === 503 && (r.body?.error?.type || "") === "configuration_error" && !!r.body?.gbt?.fail_closed,
+     `status=${r.status} type=${r.body?.error?.type} fc=${r.body?.gbt?.fail_closed}`);
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -139,7 +143,7 @@ function scanForToken(where, txt) {
      wrong.body?.gbt?.scheme === "Bearer GW_AUTH",
      JSON.stringify(wrong.body?.gbt));
 
-  const none = await postJSON(mesh, "/v1/chat/completions", chatBody(msgs));
+  const none = await postJSON(mesh, "/v1/chat/completions", chatBody(msgs), { authorization: "" });
   ck("② 不带 Authorization ⇒ 拒（不是放行）", none.status === 401, `status=${none.status}`);
 
   const correct = await postJSON(mesh, "/v1/chat/completions", chatBody(msgs), { authorization: `Bearer ${GW}` });
@@ -162,17 +166,29 @@ function scanForToken(where, txt) {
      /网关鉴权已开/.test(String(g.auth)),
      String(g.auth));
   scanForToken("② /v1/models（配了网关时）", JSON.stringify(modelsOpenBody));
+
+  // ── 2026-10-04 新增：配了网关 ⇒ /rpc 与 /v1/chat 同规格（原实现 /rpc 零鉴权）──────
+  const rpcNoAuth = await postJSON(mesh, "/rpc/gbt-c01-llm-gateway/ping", {}, { authorization: "" });
+  ck("② 配了网关 ⇒ /rpc 不带 Authorization = 401（不是放行）",
+     rpcNoAuth.status === 401, `status=${rpcNoAuth.status} reason=${rpcNoAuth.body?.reason}`);
+  const rpcOk = await postJSON(mesh, "/rpc/gbt-c01-llm-gateway/ping", {}, { authorization: `Bearer ${GW}` });
+  ck("② 配了网关 ⇒ /rpc 带对钥放行（200）", rpcOk.status === 200, `status=${rpcOk.status}`);
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// ③ 旧变量兼容：GBT_ENDPOINT_TOKENS 仍工作（负控，代码中仍读取）
+// ③ 旧变量退役：GBT_ENDPOINT_TOKENS 已不再被读取（2026-10-03 简化 ⇒ 负控）
+//    ⚠️ 修 2026-10-04：原用例引用**未定义**的 TOK/TOK2 ⇒ 本文件此前跑到 ③ 就崩，
+//       ④~⑨ 从来没被执行过（24h 审查实证）。口径跟着事实走：现在要证的恰恰是
+//       「旧多令牌不再生效」，并配一条正控证明 401 是旧令牌造成的、不是实例坏了。
 // ══════════════════════════════════════════════════════════════════════════
 {
-  const mesh = await meshWith({ WORKERS_AI_MODEL: MODEL, AI: aiStub(), GBT_ENDPOINT_TOKENS: `${TOK},${TOK2}` });
-  const ok = await postJSON(mesh, "/v1/chat/completions", chatBody([{ role: "user", content: "甲" }]), { authorization: `Bearer ${TOK}` });
-  const bad = await postJSON(mesh, "/v1/chat/completions", chatBody([{ role: "user", content: "甲" }]), { authorization: "Bearer other-token" });
-  ck("③ 旧多令牌 GBT_ENDPOINT_TOKENS 仍生效（正控）", ok.status !== 401, `status=${ok.status}`);
-  ck("③ 旧多令牌下错钥仍拒（负控）", bad.status === 401, `status=${bad.status}`);
+  const LEGACY = "legacy-multi-token-1";
+  const mesh = await meshWith({ WORKERS_AI_MODEL: MODEL, AI: aiStub(),
+    GBT_ENDPOINT_TOKENS: `${LEGACY},legacy-multi-token-2`, GW_AUTH: GW });
+  const oldTok = await postJSON(mesh, "/v1/chat/completions", chatBody([{ role: "user", content: "甲" }]), { authorization: `Bearer ${LEGACY}` });
+  ck("③ 旧多令牌 GBT_ENDPOINT_TOKENS 已退役（负控：拿旧令牌必 401）", oldTok.status === 401, `status=${oldTok.status}`);
+  const newTok = await postJSON(mesh, "/v1/chat/completions", chatBody([{ role: "user", content: "甲" }]), { authorization: `Bearer ${GW}` });
+  ck("③ 正控：同一实例上 GW_AUTH 仍放行（证明 401 是旧令牌造成的，不是实例坏了）", newTok.status === 200, `status=${newTok.status}`);
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -378,6 +394,6 @@ if (asJson) {
   console.log(`端点闸本机验收：${rows.length - failed.length}/${rows.length} 通过 · 离线 · 未出一字节网`);
   console.log("  · 本机跑 ≠ 云端跑：这里验的是代码行为（给定输入→给定输出），云上真读数要真部署后另量。");
   console.log("  · Node 没有 crypto.subtle.timingSafeEqual ⇒ 本机走回退分支；云上走 Workers 扩展那条。");
-  console.log("  · 令牌闸只覆盖 /v1/chat/completions；/v1/models 公开 —— 上面两条判据是对照着量的。");
+  console.log("  · 令牌闸覆盖 /v1/chat/completions 与 /rpc（2026-10-04 收紧）；/v1/models 公开 —— 判据是对照着量的。");
 }
 process.exit(failed.length ? 1 : 0);

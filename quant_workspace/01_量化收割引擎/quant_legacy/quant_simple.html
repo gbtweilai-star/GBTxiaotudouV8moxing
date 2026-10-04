@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta name="description" content="GBT小土豆 - 去中心化量化交易平台">
+<meta name="keywords" content="GBT, quant, trading, crypto, Binance, AI">
+<meta name="author" content="GBT小土豆">
+<meta property="og:title" content="GBT小土豆 - 量化交易平台">
+<meta property="og:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gbtxiaotudou.com">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GBT小土豆 - 量化交易平台">
+<meta name="twitter:description" content="去中心化、零KYC、AI驱动的量化交易平台">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBT 量化交易 — 简洁版</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --bg: #0f0f0f;
+    --card: #1a1a1a;
+    --border: #333;
+    --text: #fff;
+    --muted: #888;
+    --buy: #00D4AA;
+    --sell: #FF4757;
+    --warn: #FFA500;
+    --hold: #888;
+    --cyan: #00D4AA;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  
+  /* 顶部标题 */
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cyan);
+    margin-bottom: 0.5rem;
+  }
+  .header .subtitle {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  
+  /* 状态概览 */
+  .status-bar {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--card);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .status-item {
+    text-align: center;
+  }
+  .status-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .status-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--cyan);
+  }
+  
+  /* 市场信号卡片 */
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: var(--cyan);
+    border-radius: 2px;
+  }
+  
+  .signal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .signal-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.2s;
+  }
+  .signal-card:hover {
+    border-color: var(--cyan);
+    transform: translateY(-2px);
+  }
+  .signal-card.buy {
+    border-left: 4px solid var(--buy);
+  }
+  .signal-card.sell {
+    border-left: 4px solid var(--sell);
+  }
+  .signal-card.hold {
+    border-left: 4px solid var(--hold);
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .symbol {
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+  .price {
+    font-size: 1.1rem;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  
+  .signal-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .signal-badge.buy {
+    background: rgba(0, 212, 170, 0.15);
+    color: var(--buy);
+  }
+  .signal-badge.sell {
+    background: rgba(255, 71, 87, 0.15);
+    color: var(--sell);
+  }
+  .signal-badge.hold {
+    background: rgba(136, 136, 136, 0.15);
+    color: var(--hold);
+  }
+  
+  .metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  .metric {
+    background: rgba(255,255,255,0.03);
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+  .metric-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.25rem;
+  }
+  .metric-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  
+  .explanation {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: rgba(0, 212, 170, 0.05);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .explanation strong {
+    color: var(--cyan);
+  }
+  
+  /* 服务状态 */
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  
+  .service-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .service-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--buy);
+  }
+  .service-dot.down {
+    background: var(--sell);
+  }
+  .service-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .service-port {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  
+  /* 更新时间 */
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+  
+  /* 自动刷新指示 */
+  .refresh-indicator {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .refresh-indicator .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--buy);
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+        #guideOverlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:center;justify-content:center;}
+        .guide-box{background:#121820;border:1px solid rgba(48,62,78,.6);max-width:560px;width:90%;max-height:80vh;overflow-y:auto;padding:1.5rem;border-radius:2px;}
+        .guide-step{padding:.5rem 0;border-bottom:1px solid rgba(48,62,78,.3);font-size:.75rem;line-height:1.5;}
+        .guide-step:last-child{border-bottom:none;}
+        .guide-api{padding:.3rem 0;font-size:.7rem;color:#8fa4b8;font-family:monospace;}
+        .guide-title{color:#00D4AA;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;}
+        .guide-btn{margin-top:1rem;padding:.4rem 1rem;background:rgba(48,62,78,.4);border:1px solid rgba(48,62,78,.6);color:#e2e8f0;font-size:.65rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;width:100%;}
+        
+<style>
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 12px; }
+  .grid { grid-template-columns: 1fr !important; }
+  .card { margin-bottom: 12px; }
+  table { font-size: 12px; }
+  th, td { padding: 8px 6px; }
+}
+@media (max-width: 480px) {
+  h1 { font-size: 18px; }
+  h2 { font-size: 16px; }
+  nav { flex-direction: column; }
+}
+</style></style>
+</head>
+<body>
+
+<div class="refresh-indicator">
+<div class="usage-guide" style="margin:12px 16px;padding:12px 16px;background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.2);border-radius:4px;font-size:12px;color:#8fa4b8;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+    <span style="font-size:11px;font-weight:700;color:#00D4AA;letter-spacing:0.06em;text-transform:uppercase;">量化简易版</span>
+    <span style="cursor:pointer;color:#3d5266;font-size:14px;" onclick="this.parentElement.parentElement.remove()">[x]</span>
+  </div>
+  <ol style="margin:0;padding-left:16px;line-height:1.8;color:#8fa4b8;">
+    <li>选择交易对与策略</li><li>设置回测参数</li><li>运行回测引擎</li><li>查看绩效报告</li>
+  </ol>
+</div>
+
+  <span class="dot"></span>
+  <span id="lastUpdate">更新中...</span>
+</div>
+
+<!-- 顶部标题 -->
+<div class="header">
+  <h1>📊 GBT 量化交易面板</h1>
+  <p class="subtitle">实时市场信号 · 自动交易监控 · 简单易读</p>
+</div>
+
+<!-- 状态概览 -->
+<div class="status-bar">
+  <div class="status-item">
+    <div class="status-label">运行服务</div>
+    <div class="status-value">8/8</div>
+  </div>
+  <div class="status-item">
+    <div class="status-label">看涨信号</div>
+    <div class="status-value" id="buyCount">5</div>
+  </div>
+  <div class="status-item">
+    <div class="status-label">看跌信号</div>
+    <div class="status-value" style="color: var(--sell)" id="sellCount">0</div>
+  </div>
+  <div class="status-item">
+    <div class="status-label">平均置信度</div>
+    <div class="status-value" id="avgConf">83%</div>
+  </div>
+</div>
+
+<!-- 市场信号 -->
+<div class="section-title">市场信号（每币种一张卡片）</div>
+<div class="signal-grid" id="signalGrid">
+  <!-- 动态生成 -->
+</div>
+
+<!-- 服务状态 -->
+<div class="section-title">服务状态</div>
+<div class="service-grid">
+  <div class="service-card">
+    <div class="service-dot"></div>
+    <div>
+      <div class="service-name">CIS v4.0 自动交易</div>
+      <div class="service-port">:8092</div>
+    </div>
+  </div>
+  <div class="service-card">
+    <div class="service-dot"></div>
+    <div>
+      <div class="service-name">API 网关</div>
+      <div class="service-port">:8888</div>
+    </div>
+  </div>
+  <div class="service-card">
+    <div class="service-dot"></div>
+    <div>
+      <div class="service-name">能力桥接</div>
+      <div class="service-port">:18900</div>
+    </div>
+  </div>
+  <div class="service-card">
+    <div class="service-dot"></div>
+    <div>
+      <div class="service-name">支付网关</div>
+      <div class="service-port">:8081</div>
+    </div>
+  </div>
+  <div class="service-card">
+    <div class="service-dot"></div>
+    <div>
+      <div class="service-name">区块链桥接</div>
+      <div class="service-port">:8082</div>
+    </div>
+  </div>
+  <div class="service-card">
+    <div class="service-dot"></div>
+    <div>
+      <div class="service-name">社交交易</div>
+      <div class="service-port">:8083</div>
+    </div>
+  </div>
+  <div class="service-card">
+    <div class="service-dot"></div>
+    <div>
+      <div class="service-name">监控中心</div>
+      <div class="service-port">:8085</div>
+    </div>
+  </div>
+  <div class="service-card">
+    <div class="service-dot"></div>
+    <div>
+      <div class="service-name">回测引擎</div>
+      <div class="service-port">:8089</div>
+    </div>
+  </div>
+</div>
+
+<!-- 底部 -->
+<div class="footer">
+  <p>GBT 量化交易平台 | 数据来源: Binance | 自动刷新: 30秒</p>
+  <p>点击卡片查看详细信号分析</p>
+</div>
+
+<script>
+const SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT'];
+
+// 指标说明
+const METRICS_INFO = {
+  'RSI': '相对强弱指数。30以下超卖（买入机会），70以上超买（卖出机会）。40-60为中性区间。',
+  'MACD': '平滑异同移动平均线。红柱表示上涨动能，绿柱表示下跌动能。金叉看涨，死叉看跌。',
+  '置信度': 'AI模型判断信号的可靠程度。0-1之间，越高越可信。0.8以上为强信号。',
+  '成交量': '近期交易活跃度。放量上涨更可信，缩量上涨需警惕。'
+};
+
+async function fetchSignals() {
+  try {
+    const res = await fetch('http://127.0.0.1:8092/api/trade/scan');
+    const data = await res.json();
+    return data.signals || [];
+  } catch (e) {
+    console.error('获取信号失败:', e);
+    return [];
+  }
+}
+
+async function fetchPrices() {
+  try {
+    const res = await fetch('http://127.0.0.1:8092/api/market');
+    const data = await res.json();
+    return data.markets || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function renderSignals(signals, markets) {
+  const grid = document.getElementById('signalGrid');
+  grid.innerHTML = '';
+  
+  let buyCount = 0;
+  let sellCount = 0;
+  let totalConf = 0;
+  let confCount = 0;
+  
+  SYMBOLS.forEach(symbol => {
+    const signal = signals.find(s => s.symbol === symbol);
+    const market = markets[symbol];
+    
+    const card = document.createElement('div');
+    card.className = `signal-card ${signal?.signal || 'HOLD'}`;
+    
+    const price = market?.price || '---';
+    const change = market?.change || 0;
+    const changeClass = change >= 0 ? 'positive' : 'negative';
+    
+    if (signal) {
+      if (signal.signal === 'BUY') buyCount++;
+      else if (signal.signal === 'SELL') sellCount++;
+      totalConf += signal.confidence;
+      confCount++;
+    }
+    
+    const confPercent = signal ? Math.round(signal.confidence * 100) : 0;
+    
+    card.innerHTML = `
+      <div class="card-header">
+        <div>
+          <div class="symbol">${symbol.replace('USDT', '')}</div>
+          <div class="price">$${price} <span class="${changeClass}">(${change >= 0 ? '+' : ''}${change}%)</span></div>
+        </div>
+        <div class="signal-badge ${signal?.signal || 'hold'}">
+          ${signal?.signal || 'HOLD'}
+        </div>
+      </div>
+      
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-label">RSI (强弱)</div>
+          <div class="metric-value">${signal?.rsi || '--'}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">置信度</div>
+          <div class="metric-value">${confPercent}%</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">MACD</div>
+          <div class="metric-value">${signal?.macd || '--'}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">成交量</div>
+          <div class="metric-value">${signal?.volume_status || '--'}</div>
+        </div>
+      </div>
+      
+      
+    <button onclick="openGuide()" style="padding:.4rem 1rem;background:rgba(0,212,170,.15);border:1px solid rgba(0,212,170,.4);color:#00D4AA;font-size:.65rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;margin-bottom:1rem;">使用指南</button>
+    <div id="guideOverlay" style="display:none;" onclick="if(event.target===this)closeGuide()">
+    <div class="guide-box">
+    <div class="guide-title">使用指南</div>
+    <div><div class="guide-step">1. 输入交易对名称（如 BTCUSDT）</div>
+<div class="guide-step">2. 选择基础技术指标（RSI/MACD/布林带）</div>
+<div class="guide-step">3. 点击【分析】获取简单买入/卖出信号</div>
+<div class="guide-step">4. 查看置信度和风险提示</div>
+<div class="guide-step">5. 导出分析报告用于决策参考</div></div>
+    <div style="margin-top:.75rem;"><div class="guide-title" style="margin-bottom:.25rem;">API 端点</div><div class="guide-api">→ POST /api/quant/simple-analyze — 简易分析</div>
+<div class="guide-api">→ GET /api/quant/balance — 账户余额查询</div></div>
+    <button class="guide-btn" onclick="closeGuide()">关闭</button>
+    </div>
+    </div>
+    <div class="explanation">
+        <strong>解读：</strong>${getExplanation(signal, market)}
+      </div>
+    `;
+    
+    grid.appendChild(card);
+  });
+  
+  // 更新统计
+  document.getElementById('buyCount').textContent = buyCount;
+  document.getElementById('sellCount').textContent = sellCount;
+  document.getElementById('avgConf').textContent = confCount > 0 ? Math.round(totalConf / confCount * 100) + '%' : '--';
+}
+
+function getExplanation(signal, market) {
+  if (!signal) return '当前无明确信号，建议观望。';
+  
+  let parts = [];
+  
+  if (signal.signal === 'BUY') {
+    if (signal.confidence >= 0.8) {
+      parts.push('AI判断<strong>强烈看涨</strong>，可考虑入场。');
+    } else if (signal.confidence >= 0.5) {
+      parts.push('AI判断<strong>看涨</strong>，但置信度中等。');
+    } else {
+      parts.push('AI判断<strong>轻微看涨</strong>，需谨慎。');
+    }
+  } else if (signal.signal === 'SELL') {
+    parts.push('AI判断<strong>看跌</strong>，建议减仓或观望。');
+  } else {
+    parts.push('当前<strong>无明显方向</strong>，建议观望。');
+  }
+  
+  if (signal.rsi) {
+    if (signal.rsi < 30) parts.push('RSI超卖，可能有反弹机会。');
+    else if (signal.rsi > 70) parts.push('RSI超买，注意回调风险。');
+    else if (signal.rsi >= 40 && signal.rsi <= 60) parts.push('RSI在中性区间，趋势不明确。');
+  }
+  
+  return parts.join(' ');
+}
+
+async function update() {
+  const [signals, markets] = await Promise.all([
+    fetchSignals(),
+    fetchPrices()
+  ]);
+  renderSignals(signals, markets);
+  
+  const now = new Date();
+  document.getElementById('lastUpdate').textContent = 
+    `更新于 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+}
+
+// 初始加载
+update();
+
+// 每30秒自动刷新
+setInterval(update, 30000);
+</script>
+
+
+    <script>
+    function openGuide(){var o=document.getElementById('guideOverlay');if(!o)return;o.style.display='flex';}
+    function closeGuide(){var o=document.getElementById('guideOverlay');if(o)o.style.display='none';}
+    </script>
+    </body>
+</html>

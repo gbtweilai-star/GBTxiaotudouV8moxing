@@ -271,8 +271,7 @@ export function createMesh(env, sharedState) {
       return json({
         object: "list",
         data: [{ id: "gbt-potato-v8", object: "model", created: 0, owned_by: "GBT小土豆V8" }],
-        gbt: {
-          upstream: e.WORKERS_AI_MODEL || null,
+        gbt: {          upstream: e.WORKERS_AI_MODEL || null,
           // 🔴 2026-09-25 **修「会说谎的指示灯」**（实测，不是理论风险）：
           //    原来这里是 `Boolean(e.LLM_ENDPOINT)` —— 只要**配置**了 LLM_ENDPOINT
           //    就报「权重是我们的」。而本文件 `e.AI.run` **只有一处**
@@ -291,12 +290,15 @@ export function createMesh(env, sharedState) {
           identity: "GBT小土豆V8",
           stream: true,           // 已实现（SSE 分片现测通过）
           tools: true,            // 已实现（tools 原样转发 + tool_calls 原样带回，含第二轮工具结果）
-          // 网关鉴权：单 key（GW_AUTH），不是多令牌；/v1/models 公开不校验，/v1/chat 要 Bearer
+          // 网关鉴权：单 key（GW_AUTH），不是多令牌；/v1/models 公开不校验，/v1/chat 要 Bearer。
+          // 🔴 2026-10-04 收紧（24h 审查实证）：**没设 GW_AUTH ⇒ /v1/chat 与 /rpc fail-closed 拒服务**，
+          //    不再"没设就不校验"（那等于公开 workers.dev 端点静默裸奔）。本地开发请显式设 GW_AUTH。
           auth: _gwAuth
             ? ("网关鉴权已开（GW_AUTH 单 key · /v1/models 公开 · /v1/chat 要 Bearer）")
-            : "不校验 Authorization（没设 GW_AUTH）",
+            : "🔴 未设 GW_AUTH ⇒ /v1/chat 与 /rpc fail-closed 拒服务（2026-10-04 起，不再静默放行）",
           auth_scope: {
-            chat: _gwAuth ? "bearer" : "none",
+            chat: _gwAuth ? "bearer" : "fail-closed",
+            rpc: _gwAuth ? "bearer" : "open(dev)",
             models: "public",
             scheme: "GW_AUTH Bearer",
           },
@@ -307,8 +309,20 @@ export function createMesh(env, sharedState) {
       // 网关鉴权（**统一单 key · GW_AUTH**）。2026-10-03 简化：不再用多令牌，
       // 所有消费方共享同一把 GW_AUTH，改一次即可轮换。
       // 常数时间比较：两边各做 SHA-256 再 timingSafeEqual，消掉时序侧信道。
+      // 🔴 2026-10-04 收紧（24h 审查实证）：**没设 GW_AUTH ⇒ fail-closed（503）**——
+      //    原实现"没设就跳过校验"，在公开 workers.dev 端点上等于静默裸奔。
       const _gwAuth = String(e.GW_AUTH || "");
-      if (_gwAuth) {
+      if (!_gwAuth) {
+        return json({
+          error: {
+            message: "网关密钥未配置（GW_AUTH 未设）⇒ 本端点 fail-closed 拒服务。" +
+              "部署端请：wrangler secret put GW_AUTH --config wrangler.toml",
+            type: "configuration_error",
+          },
+          gbt: { scheme: "Bearer GW_AUTH", fail_closed: true },
+        }, 503);
+      }
+      {
         const got = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
         const enc = new TextEncoder();
         const [a, b] = await Promise.all([
@@ -582,6 +596,25 @@ export function createMesh(env, sharedState) {
       });
     }
     if (method === "POST" && path.startsWith("/rpc/")) {
+      // 2026-10-04 收紧（24h 审查）：网关配了（GW_AUTH 非空）⇒ /rpc 与 /v1/chat 同规格要求 bearer
+      //   —— 公开 workers.dev 上匿名调用者能触发全部"未挂作用域"的 module op（写 KV/R2/内存），
+      //   原实现此处零鉴权。没配网关（本地开发态）保持原样，读数见 /v1/models 的 auth_scope.rpc。
+      const _gwRpc = String(e.GW_AUTH || "");
+      if (_gwRpc) {
+        const _gotR = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
+        const _encR = new TextEncoder();
+        const [_ha, _hb] = await Promise.all([
+          crypto.subtle.digest("SHA-256", _encR.encode(_gotR)),
+          crypto.subtle.digest("SHA-256", _encR.encode(_gwRpc)),
+        ]);
+        const _ta = new Uint8Array(_ha), _tb = new Uint8Array(_hb);
+        let _okR = false;
+        if (crypto.subtle.timingSafeEqual) _okR = crypto.subtle.timingSafeEqual(_ta, _tb);
+        else { let _d = 0; for (let i = 0; i < _ta.length; i++) _d |= _ta[i] ^ _tb[i]; _okR = _d === 0; }
+        if (!_okR) {
+          return json({ ok: false, reason: "Authorization 不对（本端点已开启网关鉴权）", gbt: { scheme: "Bearer GW_AUTH" } }, 401);
+        }
+      }
       const parts = path.split("/").filter(Boolean);
       if (parts.length < 3) return json({ ok: false, reason: "用法 /rpc/<id>/<op>" }, 400);
       let body = {};

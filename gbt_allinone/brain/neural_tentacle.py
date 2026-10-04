@@ -8,7 +8,11 @@
 from __future__ import annotations
 import sys, time, json
 from pathlib import Path
-sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 
 _ROOT = Path(__file__).resolve().parent.parent
 _STATE_PATH = _ROOT / "store" / "_neural_state.json"

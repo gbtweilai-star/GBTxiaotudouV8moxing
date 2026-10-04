@@ -1347,11 +1347,16 @@ BENIGN_CAPS = {
     "omni_web": {
         "domain": "tentacle",
         "desc": "万能触手·Web六态：看结构/读源码/读讲解/改文件/交给AI/跑项目；git+github+stackblitz一键触达",
-        "handler": "omni_web_cap",
-        "safe": True,
+        "handler": "omni_web",
+        # 🔴 2026-10-04 修：原为 True（cross_scan 会把 safe 位当只读位自动探针调用）。
+        #   实证：edit_file 真写盘、read_source 可读任意本机文件、gitingest 真 clone ——
+        #   不是只读位 ⇒ 置 False，让 auto-probe 跳过它并在 unsafe 名单里如实可见。
+        #   作用域声明见 security/policy.py 的 omni_web 分支：
+        #   本地读=privacy_read；远程=filesystem_write+data_export；edit_file=filesystem_write。
+        "safe": False,
         "requires_params": True,
         "params": ["op"],
-        "params_hint": "op=看结构|读源码|读讲解|改文件|gitingest|跑项目；repo=GitHub URL或本地路径；files=[...]（read_source）；path/content（edit_file）；max_files/max_chars（gitingest）",
+        "params_hint": "op=看结构|读源码|读讲解|改文件|gitingest|跑项目；repo=GitHub URL或本地路径；files=[…]（read_source）；path/content/mode（edit_file，mode=write|append|replace）；max_files/max_chars（gitingest）",
     },
 
     "ul_tars_desktop": {
