@@ -116,7 +116,7 @@ def mesh(rows=None) -> dict:
             "逐对": edges,
             "口径": "有向边（A→B 与 B→A 各算一条）；同机直调 ≠ 我能替你算，只是**调得到**",
             "诚实边界": "**互通不解决 CPU** —— 跑的还是同一颗 CPU。"
-                        "它解决的是不重复造 / 不孤岛 / 可换路。"}
+            "它解决的是不重复造 / 不孤岛 / 可换路。"}
 
 
 def arrange(n: int, names=None) -> dict:
@@ -174,7 +174,7 @@ def cmd_matrix(a) -> int:
         return 2
     brief = dict(m)
     brief["逐对"] = m["逐对"][:40] + ([{"…": "共 %d 条，其余省略" % len(m["逐对"])}]
-                                   if len(m["逐对"]) > 40 else [])
+                                  if len(m["逐对"]) > 40 else [])
     print(json.dumps(brief, ensure_ascii=False, indent=1))
     print("✅ 全互通：%d 个节点 ⇒ 应有 %d 条有向边，实得 %d 条，无通道 %d 条"
           % (m["节点数"], m["应有有向边"], m["实得有向边"], len(m["没有通道的对"]))

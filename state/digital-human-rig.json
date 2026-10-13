@@ -1,0 +1,1548 @@
+{
+ "schema": "digital-human-rig/1",
+ "updated_at": "2026-10-08T16:20:00+08:00",
+ "height_units": 0.9800363241938612,
+ "height_basis": "身高 = 输入 GLB 的 AABB 高度（glTF Y 轴）= 0.98004 单位；Tripo 任意尺度，不套 cm；一切阈值按身高百分比",
+ "input": {
+  "path": "C:\\Users\\ADMIN\\Downloads\\futuristic cosplay outfit 3d model.glb",
+  "bytes": 65211820,
+  "header": {
+   "magic": "glTF",
+   "version": 2,
+   "declared_length": 65211820,
+   "length_matches": true,
+   "json_chunk_len": 1912,
+   "json_chunk_type": "JSON"
+  },
+  "gltf_json": {
+   "generator": "Tripo",
+   "nodes": 1,
+   "meshes": 1,
+   "skins": null,
+   "animations": null,
+   "materials": 1,
+   "textures": 2,
+   "accessors": 4,
+   "source_vertices": 1013000,
+   "source_triangles": 1956491,
+   "source_aabb_min": [
+    -0.1948242336511612,
+    0.0,
+    -0.08705902099609375
+   ],
+   "source_aabb_max": [
+    0.1948242336511612,
+    0.980072021484375,
+    0.08705902099609375
+   ]
+  },
+  "verdict": "静态网格：skins=None animations=None ⇒ 骨架/蒙皮/动画全部从零建"
+ },
+ "proxy": {
+  "full_verts": 1013000,
+  "full_polys": 1956491,
+  "decimated": true,
+  "ratio": 0.092001,
+  "target_faces": 180000,
+  "proxy_verts": 117504,
+  "proxy_polys": 179999,
+  "decimate_seconds": 71.0,
+  "reason": "空闲物理内存 < 2.5GB ⇒ 按纪律先在抽稀代理上建骨/做动作/验证",
+  "weld": {
+   "threshold": 0.0006,
+   "components_before": 358,
+   "largest_before": 2509,
+   "components_after": 2,
+   "largest_after": 85973,
+   "verts_after": 85977,
+   "polys_after": 170631,
+   "note": "抽稀后按 0.0006 焊接重合点，降低碎片度"
+  },
+  "blend_bytes": 30953952
+ },
+ "memory": {
+  "min_avail_mb": 676.4,
+  "min_avail_mb_across_session": 93.1,
+  "min_avail_mb_note": "本任务全程（多次 Blender 进程，含并行任务占用）实测最低空闲 93.1 MB；绑骨脚本自身采样器在本轮记录到的最低值见 min_avail_mb。两者都远低于 2.5GB 门限 ⇒ 全程走抽稀代理。",
+  "samples": [
+   {
+    "stage": "start",
+    "avail_mb": 755.3,
+    "total_mb": 7562.5,
+    "t": "2026-10-08 12:05:16"
+   },
+   {
+    "stage": "reuse_blend",
+    "avail_mb": 676.4,
+    "total_mb": 7562.5,
+    "t": "2026-10-08 12:05:18"
+   },
+   {
+    "stage": "after_trace",
+    "avail_mb": 713.5,
+    "total_mb": 7562.5,
+    "t": "2026-10-08 12:05:41"
+   },
+   {
+    "stage": "after_render_01_呼吸",
+    "avail_mb": 712.9,
+    "total_mb": 7562.5,
+    "t": "2026-10-08 12:05:41"
+   },
+   {
+    "stage": "after_render_02_打招呼",
+    "avail_mb": 712.9,
+    "total_mb": 7562.5,
+    "t": "2026-10-08 12:05:41"
+   },
+   {
+    "stage": "after_render_03_走两步",
+    "avail_mb": 712.9,
+    "total_mb": 7562.5,
+    "t": "2026-10-08 12:05:41"
+   },
+   {
+    "stage": "after_render_04_转身",
+    "avail_mb": 712.9,
+    "total_mb": 7562.5,
+    "t": "2026-10-08 12:05:41"
+   },
+   {
+    "stage": "after_render_05_蹲起",
+    "avail_mb": 712.9,
+    "total_mb": 7562.5,
+    "t": "2026-10-08 12:05:41"
+   },
+   {
+    "stage": "after_render_06_伸懒腰",
+    "avail_mb": 712.9,
+    "total_mb": 7562.5,
+    "t": "2026-10-08 12:05:41"
+   },
+   {
+    "stage": "after_hero_front_full",
+    "avail_mb": 2183.0,
+    "total_mb": 7562.5,
+    "t": "2026-10-08 12:18:51"
+   },
+   {
+    "stage": "after_hero_3q_full",
+    "avail_mb": 2144.0,
+    "total_mb": 7562.5,
+    "t": "2026-10-08 12:22:11"
+   },
+   {
+    "stage": "after_hero_face_closeup",
+    "avail_mb": 2727.8,
+    "total_mb": 7562.5,
+    "t": "2026-10-08 12:27:54"
+   }
+  ],
+  "decimated": true,
+  "full_precision_skin_run": false,
+  "full_precision_not_run_reason": "空闲物理内存最低实测 676.4 MB，不足跑全精度(1956491 面)蒙皮+渲染；这是**因内存未跑**，不是做完了"
+ },
+ "skeleton": {
+  "ready": true,
+  "bone_count": 19,
+  "hierarchy": {
+   "hips": null,
+   "spine": "hips",
+   "chest": "spine",
+   "neck": "chest",
+   "head": "neck",
+   "shoulder_L": "chest",
+   "upper_arm_L": "shoulder_L",
+   "forearm_L": "upper_arm_L",
+   "hand_L": "forearm_L",
+   "shoulder_R": "chest",
+   "upper_arm_R": "shoulder_R",
+   "forearm_R": "upper_arm_R",
+   "hand_R": "forearm_R",
+   "thigh_L": "hips",
+   "shin_L": "thigh_L",
+   "foot_L": "shin_L",
+   "thigh_R": "hips",
+   "shin_R": "thigh_R",
+   "foot_R": "shin_R"
+  },
+  "bones": [
+   {
+    "name": "hips",
+    "parent": null,
+    "head": [
+     0.00835,
+     0.002849,
+     0.51944
+    ],
+    "tail": [
+     0.00835,
+     0.002849,
+     0.588042
+    ],
+    "length": 0.068603
+   },
+   {
+    "name": "spine",
+    "parent": "hips",
+    "head": [
+     0.00835,
+     0.002849,
+     0.588042
+    ],
+    "tail": [
+     0.00835,
+     0.002849,
+     0.705647
+    ],
+    "length": 0.117604
+   },
+   {
+    "name": "chest",
+    "parent": "spine",
+    "head": [
+     0.00835,
+     0.002849,
+     0.705647
+    ],
+    "tail": [
+     0.00835,
+     0.002849,
+     0.837951
+    ],
+    "length": 0.132305
+   },
+   {
+    "name": "neck",
+    "parent": "chest",
+    "head": [
+     0.00835,
+     0.002849,
+     0.837951
+    ],
+    "tail": [
+     0.00835,
+     0.002849,
+     0.877153
+    ],
+    "length": 0.039201
+   },
+   {
+    "name": "head",
+    "parent": "neck",
+    "head": [
+     0.00835,
+     0.002849,
+     0.877153
+    ],
+    "tail": [
+     0.00835,
+     0.002849,
+     0.980057
+    ],
+    "length": 0.102904
+   },
+   {
+    "name": "shoulder_L",
+    "parent": "chest",
+    "head": [
+     0.00835,
+     0.002849,
+     0.825211
+    ],
+    "tail": [
+     0.057339,
+     0.025859,
+     0.815509
+    ],
+    "length": 0.054986
+   },
+   {
+    "name": "upper_arm_L",
+    "parent": "shoulder_L",
+    "head": [
+     0.057339,
+     0.025859,
+     0.815509
+    ],
+    "tail": [
+     0.131033,
+     0.030234,
+     0.621363
+    ],
+    "length": 0.207707
+   },
+   {
+    "name": "forearm_L",
+    "parent": "upper_arm_L",
+    "head": [
+     0.131033,
+     0.030234,
+     0.621363
+    ],
+    "tail": [
+     0.14188,
+     0.011594,
+     0.478278
+    ],
+    "length": 0.144702
+   },
+   {
+    "name": "hand_L",
+    "parent": "forearm_L",
+    "head": [
+     0.14188,
+     0.011594,
+     0.478278
+    ],
+    "tail": [
+     0.149904,
+     -0.002195,
+     0.372434
+    ],
+    "length": 0.107039
+   },
+   {
+    "name": "shoulder_R",
+    "parent": "chest",
+    "head": [
+     0.00835,
+     0.002849,
+     0.825211
+    ],
+    "tail": [
+     -0.040639,
+     0.025859,
+     0.815509
+    ],
+    "length": 0.054986
+   },
+   {
+    "name": "upper_arm_R",
+    "parent": "shoulder_R",
+    "head": [
+     -0.040639,
+     0.025859,
+     0.815509
+    ],
+    "tail": [
+     -0.114333,
+     0.030234,
+     0.621363
+    ],
+    "length": 0.207707
+   },
+   {
+    "name": "forearm_R",
+    "parent": "upper_arm_R",
+    "head": [
+     -0.114333,
+     0.030234,
+     0.621363
+    ],
+    "tail": [
+     -0.12518,
+     0.011594,
+     0.478278
+    ],
+    "length": 0.144702
+   },
+   {
+    "name": "hand_R",
+    "parent": "forearm_R",
+    "head": [
+     -0.12518,
+     0.011594,
+     0.478278
+    ],
+    "tail": [
+     -0.133204,
+     -0.002195,
+     0.372434
+    ],
+    "length": 0.107039
+   },
+   {
+    "name": "thigh_L",
+    "parent": "hips",
+    "head": [
+     0.073852,
+     -0.014261,
+     0.51944
+    ],
+    "tail": [
+     0.11463,
+     0.004939,
+     0.279331
+    ],
+    "length": 0.244303
+   },
+   {
+    "name": "shin_L",
+    "parent": "thigh_L",
+    "head": [
+     0.11463,
+     0.004939,
+     0.279331
+    ],
+    "tail": [
+     0.155574,
+     0.024217,
+     0.038242
+    ],
+    "length": 0.2453
+   },
+   {
+    "name": "foot_L",
+    "parent": "shin_L",
+    "head": [
+     0.155574,
+     0.024217,
+     0.038242
+    ],
+    "tail": [
+     0.173501,
+     -0.064146,
+     0.017661
+    ],
+    "length": 0.092482
+   },
+   {
+    "name": "thigh_R",
+    "parent": "hips",
+    "head": [
+     -0.057152,
+     -0.014261,
+     0.51944
+    ],
+    "tail": [
+     -0.09793,
+     0.004939,
+     0.279331
+    ],
+    "length": 0.244303
+   },
+   {
+    "name": "shin_R",
+    "parent": "thigh_R",
+    "head": [
+     -0.09793,
+     0.004939,
+     0.279331
+    ],
+    "tail": [
+     -0.138874,
+     0.024217,
+     0.038242
+    ],
+    "length": 0.2453
+   },
+   {
+    "name": "foot_R",
+    "parent": "shin_R",
+    "head": [
+     -0.138874,
+     0.024217,
+     0.038242
+    ],
+    "tail": [
+     -0.156801,
+     -0.064146,
+     0.017661
+    ],
+    "length": 0.092482
+   }
+  ],
+  "symmetry": {
+   "pairs": [
+    {
+     "bone": "shoulder",
+     "len_L": 0.054986387,
+     "len_R": 0.054986383,
+     "len_diff": 4.234e-09,
+     "mirror_angle_deg": 0.0
+    },
+    {
+     "bone": "upper_arm",
+     "len_L": 0.207707351,
+     "len_R": 0.207707353,
+     "len_diff": 2.242e-09,
+     "mirror_angle_deg": 0.0
+    },
+    {
+     "bone": "forearm",
+     "len_L": 0.144701519,
+     "len_R": 0.144701519,
+     "len_diff": 5.53e-10,
+     "mirror_angle_deg": 0.0
+    },
+    {
+     "bone": "hand",
+     "len_L": 0.10703949,
+     "len_R": 0.107039489,
+     "len_diff": 1.122e-09,
+     "mirror_angle_deg": 0.0
+    },
+    {
+     "bone": "thigh",
+     "len_L": 0.244302592,
+     "len_R": 0.244302592,
+     "len_diff": 0.0,
+     "mirror_angle_deg": 0.0
+    },
+    {
+     "bone": "shin",
+     "len_L": 0.245299733,
+     "len_R": 0.245299731,
+     "len_diff": 1.424e-09,
+     "mirror_angle_deg": 0.0
+    },
+    {
+     "bone": "foot",
+     "len_L": 0.092482306,
+     "len_R": 0.092482306,
+     "len_diff": 0.0,
+     "mirror_angle_deg": 0.0
+    }
+   ],
+   "max_len_diff": 4.234e-09,
+   "max_mirror_angle_deg": 0.0,
+   "method": "只实测一侧（自然下垂那条臂 + 一侧腿）→ 镜像 ⇒ 对称由构造保证"
+  }
+ },
+ "skinning": {
+  "ready": true,
+  "method": "自写包络蒙皮（包络半径/骨架跳距门≤2跳/跨侧压制/髋缝软化/沿网格平滑2×λ0.30/死骨兜底/每顶点≤4影响）",
+  "group_count": 19,
+  "unweighted_verts": 0,
+  "zero_cover_bones": [],
+  "weight_params": {
+   "envelope_radius_H": {
+    "hips": 0.068,
+    "spine": 0.05,
+    "chest": 0.055,
+    "neck": 0.025,
+    "head": 0.06,
+    "shoulder": 0.025,
+    "upper_arm": 0.03,
+    "forearm": 0.024,
+    "hand": 0.024,
+    "thigh": 0.028,
+    "shin": 0.029,
+    "foot": 0.022
+   },
+   "hop_gate": 2,
+   "smooth_iter": 4,
+   "smooth_lambda": 0.35,
+   "max_influences": 4,
+   "cross_side_gate": "1/(0.30+0.70*clip(|u|/(0.09H),0,1))"
+  },
+  "weight_stats_before": {
+   "opp_mean": 0.0,
+   "opp_max": 0.0,
+   "hip_band_first_hips": 2881,
+   "hip_band_first_thigh": 639,
+   "hip_band_first_hand": 0,
+   "hip_band_n": 3520,
+   "hip_band_first_hist_top": {
+    "hips": 2881,
+    "thigh_R": 324,
+    "thigh_L": 315
+   }
+  },
+  "weight_stats_after": {
+   "opp_mean": 1.3554848010244314e-05,
+   "opp_max": 0.03316887840628624,
+   "hip_band_first_hips": 3462,
+   "hip_band_first_thigh": 58,
+   "hip_band_first_hand": 0,
+   "hip_band_n": 3520,
+   "hip_band_first_hist_top": {
+    "hips": 3462,
+    "thigh_L": 33,
+    "thigh_R": 25
+   }
+  },
+  "bone_ownership": {
+   "hips": {
+    "n_verts": 12036,
+    "centroid": [
+     0.0025,
+     -0.0087,
+     0.5464
+    ],
+    "centroid_off_from_bone": 0.013,
+    "centroid_lateral_u": -0.0058
+   },
+   "spine": {
+    "n_verts": 1716,
+    "centroid": [
+     0.0083,
+     -0.0011,
+     0.6571
+    ],
+    "centroid_off_from_bone": 0.004,
+    "centroid_lateral_u": -0.0001
+   },
+   "chest": {
+    "n_verts": 12158,
+    "centroid": [
+     -0.0211,
+     -0.024,
+     0.7581
+    ],
+    "centroid_off_from_bone": 0.0399,
+    "centroid_lateral_u": -0.0294
+   },
+   "neck": {
+    "n_verts": 0
+   },
+   "head": {
+    "n_verts": 13290,
+    "centroid": [
+     -0.0244,
+     -0.0171,
+     0.8937
+    ],
+    "centroid_off_from_bone": 0.0384,
+    "centroid_lateral_u": -0.0328
+   },
+   "shoulder_L": {
+    "n_verts": 149,
+    "centroid": [
+     0.0434,
+     0.0182,
+     0.8226
+    ],
+    "centroid_off_from_bone": 0.0044,
+    "centroid_lateral_u": 0.0351
+   },
+   "upper_arm_L": {
+    "n_verts": 4359,
+    "centroid": [
+     0.0964,
+     0.0386,
+     0.741
+    ],
+    "centroid_off_from_bone": 0.0149,
+    "centroid_lateral_u": 0.0881
+   },
+   "forearm_L": {
+    "n_verts": 2330,
+    "centroid": [
+     0.1234,
+     0.0162,
+     0.5306
+    ],
+    "centroid_off_from_bone": 0.0147,
+    "centroid_lateral_u": 0.1151
+   },
+   "hand_L": {
+    "n_verts": 1748,
+    "centroid": [
+     0.1353,
+     -0.0052,
+     0.4551
+    ],
+    "centroid_off_from_bone": 0.016,
+    "centroid_lateral_u": 0.127
+   },
+   "shoulder_R": {
+    "n_verts": 251,
+    "centroid": [
+     -0.0267,
+     0.0163,
+     0.8223
+    ],
+    "centroid_off_from_bone": 0.0047,
+    "centroid_lateral_u": -0.0351
+   },
+   "upper_arm_R": {
+    "n_verts": 3571,
+    "centroid": [
+     -0.0769,
+     0.0248,
+     0.7752
+    ],
+    "centroid_off_from_bone": 0.0197,
+    "centroid_lateral_u": -0.0852
+   },
+   "forearm_R": {
+    "n_verts": 433,
+    "centroid": [
+     -0.0959,
+     0.0062,
+     0.5136
+    ],
+    "centroid_off_from_bone": 0.0284,
+    "centroid_lateral_u": -0.1042
+   },
+   "hand_R": {
+    "n_verts": 96,
+    "centroid": [
+     -0.1044,
+     0.004,
+     0.4437
+    ],
+    "centroid_off_from_bone": 0.0236,
+    "centroid_lateral_u": -0.1128
+   },
+   "thigh_L": {
+    "n_verts": 3880,
+    "centroid": [
+     0.1009,
+     -0.0119,
+     0.3313
+    ],
+    "centroid_off_from_bone": 0.0135,
+    "centroid_lateral_u": 0.0926
+   },
+   "shin_L": {
+    "n_verts": 11780,
+    "centroid": [
+     0.1381,
+     0.0246,
+     0.1468
+    ],
+    "centroid_off_from_bone": 0.0091,
+    "centroid_lateral_u": 0.1298
+   },
+   "foot_L": {
+    "n_verts": 1116,
+    "centroid": [
+     0.1639,
+     -0.0288,
+     0.0218
+    ],
+    "centroid_off_from_bone": 0.0048,
+    "centroid_lateral_u": 0.1555
+   },
+   "thigh_R": {
+    "n_verts": 3974,
+    "centroid": [
+     -0.0822,
+     -0.0197,
+     0.3387
+    ],
+    "centroid_off_from_bone": 0.0206,
+    "centroid_lateral_u": -0.0905
+   },
+   "shin_R": {
+    "n_verts": 11251,
+    "centroid": [
+     -0.1231,
+     0.0084,
+     0.153
+    ],
+    "centroid_off_from_bone": 0.0076,
+    "centroid_lateral_u": -0.1315
+   },
+   "foot_R": {
+    "n_verts": 1735,
+    "centroid": [
+     -0.1446,
+     -0.0356,
+     0.0254
+    ],
+    "centroid_off_from_bone": 0.0063,
+    "centroid_lateral_u": -0.153
+   }
+  }
+ },
+ "actions": {
+  "ready": true,
+  "count": 6,
+  "defs": {
+   "01_呼吸": {
+    "frames": 48,
+    "desc": "胸/肩微起伏 + 骨盆重心左右漂 + 双脚轮流提踵"
+   },
+   "02_打招呼": {
+    "frames": 48,
+    "desc": "抬**左**臂挥手（肩带-上臂-前臂-腕联动；右臂受壳层限制只给≤12°）+ 重心移右腿（右膝下沉、右脚碾转）+ 左脚离地"
+   },
+   "03_走两步": {
+    "frames": 48,
+    "desc": "髋-腿-脚迈步（双脚交替离地）+ 反向摆臂"
+   },
+   "04_转身": {
+    "frames": 48,
+    "desc": "髋/脊/头分级旋转（55°/18°/+9°/+12°）+ 双脚原地碾转"
+   },
+   "05_蹲起": {
+    "frames": 56,
+    "desc": "髋-膝-踝三关节联动下沉 + 提踵 + 起身"
+   },
+   "06_伸懒腰": {
+    "frames": 56,
+    "desc": "左臂上举（右臂受壳层限制←14°）+ 脊/胸/颈/头逐级后仰 + 双脚提踵"
+   }
+  },
+  "end_effector_cum_disp_ratio_of_H": {
+   "01_呼吸": {
+    "hand_L": 0.146838,
+    "hand_R": 0.201756,
+    "foot_L": 0.06118,
+    "foot_R": 0.060625
+   },
+   "02_打招呼": {
+    "hand_L": 2.491181,
+    "hand_R": 0.380962,
+    "foot_L": 0.060548,
+    "foot_R": 0.049487
+   },
+   "03_走两步": {
+    "hand_L": 1.239187,
+    "hand_R": 1.191125,
+    "foot_L": 0.622149,
+    "foot_R": 0.592729
+   },
+   "04_转身": {
+    "hand_L": 0.373302,
+    "hand_R": 0.449074,
+    "foot_L": 0.277821,
+    "foot_R": 0.264422
+   },
+   "05_蹲起": {
+    "hand_L": 0.739624,
+    "hand_R": 0.739624,
+    "foot_L": 0.169009,
+    "foot_R": 0.166199
+   },
+   "06_伸懒腰": {
+    "hand_L": 2.545887,
+    "hand_R": 0.741928,
+    "foot_L": 0.103795,
+    "foot_R": 0.103781
+   }
+  },
+  "thresholds": {
+   "end_effector": 0.03,
+   "squat_hip": 0.05,
+   "foot_lift": 0.01
+  },
+  "unit": "单位=身高(H)；数值为**路径积分累计位移 / H**"
+ },
+ "export": {
+  "path": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\projects\\digital-human\\out\\dh_rigged.glb",
+  "bytes": 17650372,
+  "magic": "glTF",
+  "version": 2,
+  "declared_length": 17650372,
+  "length_matches": true,
+  "animation_count": 6,
+  "animation_names": [
+   "01_呼吸",
+   "02_打招呼",
+   "03_走两步",
+   "04_转身",
+   "05_蹲起",
+   "06_伸懒腰"
+  ],
+  "channel_count": 342,
+  "sampler_count": 342,
+  "channels_per_anim": {
+   "01_呼吸": 57,
+   "02_打招呼": 57,
+   "03_走两步": 57,
+   "04_转身": 57,
+   "05_蹲起": 57,
+   "06_伸懒腰": 57
+  },
+  "skin_count": 1,
+  "skins_joints": [
+   19
+  ],
+  "nodes": 21,
+  "meshes": 1,
+  "accessors": 357,
+  "ready": true
+ },
+ "render": {
+  "ready": true,
+  "engine_used": "CYCLES",
+  "samples": 96,
+  "resolution": [
+   640,
+   800
+  ],
+  "hero_resolution": {
+   "hero_front_full": {
+    "lens": 80.0,
+    "res": [
+     1536,
+     1920
+    ],
+    "path": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\projects\\digital-human\\out\\frames\\_英雄静帧\\hero_front_full.png",
+    "bytes": 3473754,
+    "sec": 437.26
+   },
+   "hero_3q_full": {
+    "lens": 80.0,
+    "res": [
+     1536,
+     1920
+    ],
+    "path": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\projects\\digital-human\\out\\frames\\_英雄静帧\\hero_3q_full.png",
+    "bytes": 3438178,
+    "sec": 200.45
+   },
+   "hero_face_closeup": {
+    "lens": 135.0,
+    "res": [
+     1536,
+     1920
+    ],
+    "path": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\projects\\digital-human\\out\\frames\\_英雄静帧\\hero_face_closeup.png",
+    "bytes": 3694000,
+    "sec": 342.37
+   }
+  },
+  "color_management": {
+   "view_transform": "AgX",
+   "look": "AgX - Punchy",
+   "exposure": 0.25,
+   "gamma": 1.0
+  },
+  "materials": [
+   {
+    "material": "tripo_node_dba74d6f-48ff-47b0-9729-2214d40cc5da_material",
+    "normal_map_node": true,
+    "normal_map_wired": true,
+    "normal_strength": 1.0,
+    "normal_space": "TANGENT",
+    "applied": {
+     "Roughness": 0.42,
+     "Coat Weight": 0.12,
+     "Coat Roughness": 0.25,
+     "Subsurface Weight": 0.0,
+     "Specular IOR Level": 0.5,
+     "Subsurface Radius": [
+      0.006,
+      0.003,
+      0.0015
+     ],
+     "note": "单材质网格：皮革/皮肤无法按部位分离 ⇒ 同一 BSDF 统一上清漆+轻微次表面"
+    }
+   }
+  ],
+  "lights_W": {
+   "DH_Key": 120.0,
+   "DH_Fill": 40.0,
+   "DH_Rim": 65.0,
+   "size_m": 1.5
+  },
+  "floor": {
+   "size": 8.0,
+   "base_color": [
+    0.34,
+    0.34,
+    0.36
+   ],
+   "roughness": 0.85,
+   "z": -0.00048,
+   "purpose": "接触阴影/落地感"
+  },
+  "total_files": 60,
+  "engine_note": "Cycles GPU(HIP) 实测不可用：Failed to load HIP kernel from kernel_gfx90c.fatbin.zst (Shared object initialization failed) ⇒ Cycles 只能 CPU(实测 34.6 s/帧@1080x1350/128spp+降噪)；六段动作帧按主人「够看动作」口径走 EEVEE_NEXT 256spp(5.9 s/帧)，英雄静帧走 Cycles CPU"
+ },
+ "criteria": {
+  "all_green": true,
+  "items": [
+   {
+    "id": "C1",
+    "name": "输入件是真 GLB，且本来没有骨架/动画（⇒ 绑骨确实是零基础建的）",
+    "pass": true,
+    "detail": "magic=glTF v2 长度自洽=True · skins=None animations=None · 源 1013000 顶点 / 1956491 三角面",
+    "negative": false
+   },
+   {
+    "id": "C2",
+    "name": "内存纪律留痕：有实测空闲内存读数，且因 <2.5GB 而抽稀（全精度蒙皮未跑）",
+    "pass": true,
+    "detail": "采样 12 条，最低空闲 676.4 MB；全精度 1956491 面 → 代理 170631 面（焊接后 85977 顶点，ratio=0.0920）",
+    "negative": false
+   },
+   {
+    "id": "C3",
+    "name": "骨架齐全：全肢体（髋/脊/胸/颈/头 + 左右 肩-上臂-前臂-手 + 左右 髋-大腿-小腿-脚）",
+    "pass": true,
+    "detail": "骨数=19；缺=无",
+    "negative": false
+   },
+   {
+    "id": "C4",
+    "name": "骨架**左右对称**：对应骨长差 ≤1e-4 且镜像后指向夹角 ≤0.5°",
+    "pass": true,
+    "detail": "最大骨长差=4.234e-09 单位（shoulder 4.23e-09, upper_arm 2.24e-09, forearm 5.53e-10, hand 1.12e-09, thigh 0.00e+00, shin 1.42e-09, foot 0.00e+00）· 最大镜像夹角=0.000e+00° ；逐对：7 对",
+    "negative": false
+   },
+   {
+    "id": "C5",
+    "name": "蒙皮存在且干净：顶点组=骨数 · 无权重顶点=0 · 权重和=1 · 零覆盖骨为空",
+    "pass": true,
+    "detail": "方法=自写包络蒙皮（包络半径/骨架跳距门≤2跳/跨侧压制/髋缝软化/沿网格平滑2×λ0.30/死骨兜底/每顶点≤4影响）\n        组=19 无权重顶点=0(0.0000%) 平均权重和=1.00000 零覆盖骨=无",
+    "negative": false
+   },
+   {
+    "id": "C6",
+    "name": "权重自检（数字口径）：髋带第一影响骨 hips 占比 ≥60% 且跨侧权重峰值 ≤0.5",
+    "pass": true,
+    "detail": "髋带顶点 n=3520：第一影响骨 hips 2881→3462 (81.8%→98.4%)；跨侧权重 均值 0.0000→0.0000 峰值 0.0000→0.0332",
+    "negative": false
+   },
+   {
+    "id": "C7",
+    "name": "六段动作**真在动**（逐帧读数为准）：每个相邻帧都有非零变化 且 每段 ≥3 个关节参与",
+    "pass": true,
+    "detail": "最低相邻帧非零比例=1.0000；最少参与关节=18/19",
+    "negative": false
+   },
+   {
+    "id": "C8",
+    "name": "六段动作**全肢体**：四末端 tail 累计位移 全部 ≥3% 身高（24/24 达标）",
+    "pass": true,
+    "detail": "24/24 达标，最小 4.95%（02_打招呼）",
+    "negative": false
+   },
+   {
+    "id": "C9",
+    "name": "走两步专属：**双脚交替**（各 ≥2 帧独立离地，另一脚同帧基本不动）",
+    "pass": true,
+    "detail": "左独立离地 18 帧 / 右独立离地 14 帧（判据：抬脚≥1.00%H 且另一脚同帧位移<0.2×抬脚量=0.0020 单位）\n        交替样例 (帧, 抬脚, 离地量%, 另一脚同帧位移)：[(2, '左', 3.62, 0.01524), (3, '左', 4.99, 0.01007), (4, '左', 5.62, 0.00659), (44, '右', 5.39, 0.0089), (45, '右', 4.81, 0.01681)]",
+    "negative": false
+   },
+   {
+    "id": "C10",
+    "name": "蹲起专属：髋/膝/踝**三关节同时变化**（各 >5°）且 髋部竖直位移 ≥5% 身高",
+    "pass": true,
+    "detail": "髋竖直位移 0.2303 单位 = 23.50%H（阈值 ≥5.00%H）；三关节角度变化 髋 40.90° / 膝 68.63° / 踝 50.06°",
+    "negative": false
+   },
+   {
+    "id": "C11",
+    "name": "导出的 GLB **真有 animation 通道**（真读文件字节，不看脚本日志）",
+    "pass": true,
+    "detail": "dh_rigged.glb 17650372 字节 · magic=glTF v2 长度自洽=True · animations=6 通道合计=342 · skin=1×19 关节\n        逐段通道数={'01_呼吸': 57, '02_打招呼': 57, '03_走两步': 57, '04_转身': 57, '05_蹲起': 57, '06_伸懒腰': 57}",
+    "negative": false
+   },
+   {
+    "id": "C12",
+    "name": "独立复核：**从导出的 GLB 自己解节点层级+采样器**算末端骨头位移，与 trace 的 H_ 系列差 ≤35%",
+    "pass": true,
+    "detail": "01_呼吸/hand_L GLB节点头=12.7%H trace骨头=12.7%H； 01_呼吸/hand_R GLB节点头=17.0%H trace骨头=17.0%H； 01_呼吸/foot_L GLB节点头=0.8%H trace骨头=0.8%H； 01_呼吸/foot_R GLB节点头=0.6%H trace骨头=0.6%H … 共 24 项",
+    "negative": false
+   },
+   {
+    "id": "C13",
+    "name": "渲染帧真的落盘且是合法 PNG；含 ≥1920 高的英雄静帧",
+    "pass": true,
+    "detail": "PNG 共 190 张；动作帧最小 640x800；英雄静帧 3 张（最大高 1920，要求 ≥1920）",
+    "negative": false
+   },
+   {
+    "id": "C14",
+    "name": "台账口径对齐：骨数/动作数/代理顶点数 与 rig_core 一致（可被外部复算）",
+    "pass": true,
+    "detail": "rig_core: 骨=19 动作=6 代理顶点=85977（报告焊接后=85977）trace 抽样顶点=240",
+    "negative": false
+   }
+  ]
+ },
+ "negative_controls": [
+  {
+   "probe": "bone-len",
+   "mutation": {
+    "bone_len": "('forearm', 'L')"
+   },
+   "expected_red": true,
+   "observed_red": true,
+   "red_items": [
+    "C4 骨架**左右对称**：对应骨长差 ≤1e-4 且镜像后指向夹角 ≤0.5°"
+   ],
+   "verdict": "判据有效",
+   "t": "2026-10-08 12:08:24"
+  },
+  {
+   "probe": "frozen-frames",
+   "mutation": {
+    "frozen": "03_走两步"
+   },
+   "expected_red": true,
+   "observed_red": true,
+   "red_items": [
+    "C7 六段动作**真在动**（逐帧读数为准）：每个相邻帧都有非零变化 且 每段 ≥3 个关节参与",
+    "C8 六段动作**全肢体**：四末端 tail 累计位移 全部 ≥3% 身高（24/24 达标）",
+    "C9 走两步专属：**双脚交替**（各 ≥2 帧独立离地，另一脚同帧基本不动）",
+    "C12 独立复核：**从导出的 GLB 自己解节点层级+采样器**算末端骨头位移，与 trace 的 H_ 系列差 ≤35%"
+   ],
+   "verdict": "判据有效",
+   "t": "2026-10-08 12:08:28"
+  },
+  {
+   "probe": "lock-ends",
+   "mutation": {
+    "lock_ends": "01_呼吸"
+   },
+   "expected_red": true,
+   "observed_red": true,
+   "red_items": [
+    "C8 六段动作**全肢体**：四末端 tail 累计位移 全部 ≥3% 身高（24/24 达标）",
+    "C12 独立复核：**从导出的 GLB 自己解节点层级+采样器**算末端骨头位移，与 trace 的 H_ 系列差 ≤35%"
+   ],
+   "verdict": "判据有效",
+   "t": "2026-10-08 12:08:31"
+  }
+ ],
+ "deviations": [
+  "判据件路径：主人令点名 tools/codex-scripts/dh-rig-check.py，但该路径已被**并行任务**（页面侧 GBT-RIG-SPEC 机检）在 08:12 占用 ⇒ 本件改落 dh-rig-check-rig.py，不覆盖他人产物。",
+  "打招呼：规格要求「抬右臂」，实测右臂几何被烘焙成「手扶头发」抬起姿势、与对称骨架的右臂骨不重合（bone_ownership 证据）⇒ 挥手改由**左臂**执行，右臂只给 ≤12° 安全小角。",
+  "伸懒腰：右臂限幅 ≤14°（同上原因），左臂全举。"
+ ],
+ "known_limits": [
+  "全精度蒙皮未跑（内存原因，见 memory 段）",
+  "右臂：网格烘焙姿势与对称骨架不重合 ⇒ 该侧网格几何几乎不跟随右臂骨；右臂读数为**骨级**位移",
+  "单材质网格 ⇒ 清漆/次表面只能在同一 BSDF 统一施加，无法按皮革/皮肤分部位",
+  "旋转/位移读数在 Blender 空间（mesh 局部=世界）；glTF 导出经 Y-up 转换，轴向不同但距离不变"
+ ],
+ "artifacts": {
+  "rigged_glb": {
+   "path": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\projects\\digital-human\\out\\dh_rigged.glb",
+   "bytes": 17650372
+  },
+  "blend": {
+   "path": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\projects\\digital-human\\out\\dh_rigged.blend",
+   "bytes": 30953952
+  },
+  "trace": {
+   "path": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\projects\\digital-human\\out\\trace.json",
+   "bytes": 634378
+  },
+  "report": {
+   "path": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\projects\\digital-human\\out\\rig_report.json",
+   "bytes": 40872
+  },
+  "frames_dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\projects\\digital-human\\out\\frames",
+  "rig_script": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\blender\\dh_rig.py",
+  "checker": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\dh-rig-check-rig.py",
+  "doc": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\docs\\数字人-绑骨与全肢体动作.md"
+ },
+ "r2_delivery": {
+  "round": "第二轮：网格修复与重渲（2026-10-08 晚）",
+  "decision": "04_转身 抛光版入选并上页；片段已由页面线复制进包 holo_pet_w3/digital-human/act-04-turn.mp4，桌面已出新版；v2a 版保留备查",
+  "clip_selected": {
+   "path": "projects/digital-human/out/clips-v2/act-04-turn.mp4",
+   "bytes": 381840,
+   "resolution": [
+    1080,
+    1350
+   ],
+   "fps": 5,
+   "frames": 10,
+   "duration_s": 2.0,
+   "codec": "libx264 crf20 yuv420p faststart 无插值"
+  },
+  "clip_backup_v2a": {
+   "path": "projects/digital-human/out/clips-v2/act-04-turn-v2a.mp4",
+   "bytes": 378193,
+   "note": "上一版（IK err 0.01123H 未抛光版）备查；两版 md5 独立可回滚"
+  },
+  "frames_dir": "projects/digital-human/out/frames-v2/04_转身（10 张 hd_f*.png 1080x1350 EEVEE256spp + r04_report.json；旧版帧在 _v2a/）",
+  "blend_r2": {
+   "path": "projects/digital-human/out/dh_rigged_r2_04b.blend",
+   "bytes": 30993100,
+   "v1_untouched_md5": "00399da43361c541d88d76c2728f08e0"
+  },
+  "root_causes_fixed": [
+   {
+    "id": "hips-axis",
+    "problem": "04 的转身其实是绕世界横轴把骨盆侧倒 53.9 度（观感像深弯腰；同相位左右腿世界角差 29.5 度；左脚抬高 0.057H）",
+    "root_cause": "hips_q = Quaternion(up_axis, base) 直接赋给 pose_bone.rotation_quaternion（骨局部系），未走 P.by_axis 的世界轴换算；hips 骨世界朝 +Z 故局部 Z 映射世界 -Y",
+    "evidence": "hips 骨骼 Y 轴世界 = (-0.8084, 0, 0.5886) 与竖轴 53.9 度；hips Z 轴 = (0,-1,0) 无偏航；thigh_L.head z 0.5096->0.5666 = +0.0570 与腿短 0.0571H 逐位吻合",
+    "fix": "hips 改走 P.by_axis(hips, None, up_axis, degrees(base)) 取 basis（世界竖直轴）",
+    "readings": "04@21 面积比 1.1527->1.0562；超长 35.258->10.313（走两步 34.74）；max 58.8x->26.6x；最大块按面积 0.379%->0.029%；hips Y 轴 -> (0,0,1)"
+   },
+   {
+    "id": "hip-socket-loc",
+    "problem": "腿部 IK err 0.01123H（左脚够不到原意踝位）",
+    "root_cause": "给腿部 IK 的髋窝位置取自 v1 姿态的 thigh.head，漏加 hips.location（骨盆位移）；且骨架静置腿已 100.02% 伸直（髋-踝 0.4897 vs L1+L2 0.4896），骨盆水平偏移几毫米即触发截断",
+    "fix": "髋窝改用修好后骨盆下的 base_of(thigh_x, pose_hips).translation；骨盆竖直下沉系数 0.006->0.016（额外微沉 0.010H*turn）",
+    "readings": "IK err 0.01123H -> 关键帧 0.0 / 抽样帧最大 2.3e-4H；代价超长 6.346->7.646（+20%，仍 4.5x 优于走两步 34.74），max/大于50倍/最大块三档不变"
+   }
+  ],
+  "bar": {
+   "shard_extent_H": 0.04,
+   "shard_area_pct": 0.07,
+   "calibrated_from": "01_呼吸@24 与 03_走两步@21（主人已验收干净）",
+   "metric_caveat": "同一最大块按面数与按面积差数倍：03_走两步@21 按面数 351 面/0.068%/0.040H，按面积 309 面/0.473%/0.185H（同属手贴髋薄缝）。两种口径同时报，判据不因此放宽"
+  },
+  "clip_frames_readings": {
+   "f000": {
+    "area_ratio": 1.0007,
+    "excess": 0.0,
+    "gt50": 0,
+    "max": 2.3,
+    "ik_err_H": [
+     0.000102,
+     0.000102
+    ]
+   },
+   "f005_f043": {
+    "area_ratio": 1.0112,
+    "excess": 0.983,
+    "gt50": 0,
+    "max": 11.5,
+    "ik_err_H": [
+     0.000221,
+     0.00023
+    ]
+   },
+   "f011_f037": {
+    "area_ratio": 1.0274,
+    "excess": 3.961,
+    "gt50": 0,
+    "max": 20.1,
+    "ik_err_H": [
+     4e-06,
+     1.6e-05
+    ]
+   },
+   "f016_f032": {
+    "area_ratio": 1.0381,
+    "excess": 6.138,
+    "gt50": 0,
+    "max": 24.4,
+    "ik_err_H": [
+     0.0,
+     0.0
+    ]
+   },
+   "f021_f027": {
+    "area_ratio": 1.0469,
+    "excess": 7.646,
+    "gt50": 0,
+    "max": 26.9,
+    "shard_faces": 65,
+    "shard_pct": 0.017,
+    "shard_extent_H": 0.026,
+    "ik_err_H": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "frozen": [
+   "02_打招呼/05_蹲起/06_伸懒腰 等主人方向（收幅标注版 / 暂不上页 / 网格重做）",
+   "GLB 不重导（等 02/05/06 定案一次性重导）",
+   "01/02/03 中 01 与 03 不重跑（实测无需）",
+   "全精度蒙皮仍未跑（内存，全程 85977 顶点代理）"
+  ],
+  "logbook_entries": "128-135, 137-144",
+  "artifacts_dir": "projects/digital-human/out/_diag_r2（step1_rip…step8_r04 全部证据）"
+ },
+ "r3_delivery": {
+  "round": "第三轮：网格修复与重渲（2026-10-08 晚·第二程）",
+  "decision": "两成一不成：04 头资修正并重渲出新片段；拆壳封边找到真根因、数值过尺但观感不过 ⇒ 02/05/06 维持冻结；右臂重姿判不可行",
+  "task1_survey": {
+   "source_patches": 358,
+   "note": "源 GLB 本来就是 358 片独立面片；我方 remove_doubles(0.0006) 焊成 2 块",
+   "cross_group_edges_src": 17986,
+   "left_arm_flank_same_patch": {
+    "comp": 208,
+    "verts": 31357,
+    "bbox": [
+     [
+      0.0098,
+      -0.0485,
+      0.5611
+     ],
+     [
+      0.1288,
+      0.079,
+      0.7491
+     ]
+    ],
+    "labels": {
+     "upper_arm_L": 14823,
+     "hips": 8683,
+     "spine": 5609
+    },
+    "why": "侧腰与上臂是同一片 ⇒ 抬臂必拉侧腰；权重层压不掉"
+   },
+   "left_hand_patches": [
+    315,
+    310,
+    316,
+    302,
+    311,
+    313,
+    323,
+    294,
+    308,
+    293
+   ],
+   "left_hip_patches": [
+    229,
+    230,
+    235,
+    91,
+    69,
+    250
+   ],
+   "proxy_cross_faces": {
+    "armL<->torso": 762,
+    "armR<->torso": 851,
+    "arm<->leg": 62,
+    "torso<->leg": 317
+   },
+   "proxy_seam_clusters_top": [
+    {
+     "faces": 260,
+     "area_pct": 0.7252,
+     "uz": [
+      0.087,
+      0.445
+     ],
+     "zH": [
+      0.373,
+      0.545
+     ],
+     "bones": "hips/thigh_L/hand_L"
+    },
+    {
+     "faces": 185,
+     "area_pct": 0.4458,
+     "uz": [
+      -0.07,
+      0.431
+     ],
+     "bones": "hips/thigh_R"
+    },
+    {
+     "faces": 436,
+     "area_pct": 0.4239,
+     "uz": [
+      0.055,
+      0.775
+     ],
+     "bones": "chest/upper_arm_L/shoulder_L"
+    },
+    {
+     "faces": 544,
+     "area_pct": 0.4063,
+     "uz": [
+      -0.052,
+      0.786
+     ],
+     "bones": "chest/upper_arm_R/shoulder_R"
+    }
+   ],
+   "right_arm_answer": "不是独立连通部件（整网格仅 2 块）：右臂几何散在片 0/1/53/149/153/33/133/155；右手扶头发处与头熔接（源 armR<->torso 2824 面；代理 head|upper_arm_R 249 面）、右腋第二处熔接（代理 544 面）"
+  },
+  "task1_fix_attempt": {
+   "verdict": "数值过尺、观感不过 ⇒ 不入片；02/05/06 维持冻结",
+   "best_variant": "锚骨去斑 + 跨肢体面切开(hop=2) + 圆顶补盖 + 按锚 mask 重蒙皮(mask=hop<=2, 片内平滑16轮λ0.5) + 二次切口(接触区大三角/焊接短边被拉开)",
+   "readings_02_f21": {
+    "gt4_edges": 473,
+    "shard_faces": 59,
+    "shard_faces_pct": 0.033,
+    "shard_area_pct": 0.012,
+    "shard_extent_H": 0.022,
+    "max_ratio": 1476.5
+   },
+   "baseline_v1_02_f21": {
+    "gt4_edges": 4377,
+    "shard_faces": 860,
+    "shard_faces_pct": 0.701,
+    "shard_extent_H": 0.142,
+    "max_ratio": 431.6,
+    "excess": 238.389
+   },
+   "cost": {
+    "cut_faces": 3229,
+    "cut_area_pct": 3.185,
+    "cap_faces": 10104
+   },
+   "why_not_shipped": "渲图肉眼仍有带状残留（实心帆→细条带）且髋/大腿出现新的碎片与补盖斑",
+   "probe_scripts": [
+    ".scratch/dh_surgery5.py",
+    ".scratch/dh_surgery.py",
+    ".scratch/dh_unweld4.py"
+   ],
+   "metric_selfcheck": "本轮抓到并修正了我方探针的撕裂块聚类 bug（面id配对 tile 应为 repeat）；修正后与第二轮读数逐位吻合"
+  },
+  "task2_head": {
+   "problem": "04 观感低头像鞠躬（主人点名）",
+   "root_cause": "第二轮只重写 hips 旋转关键帧，脊链(spine/chest/neck/head)相对四元数仍按旧（侧倒的）父姿态算 ⇒ 残留前倾",
+   "measure_all_six_head_pitch_deg": {
+    "01_呼吸": [
+     -0.09,
+     0.09
+    ],
+    "02_打招呼": [
+     -6.9,
+     0.0
+    ],
+    "03_走两步": [
+     -0.7,
+     0.46
+    ],
+    "04_转身": [
+     0.0,
+     36.77
+    ],
+    "05_蹲起": [
+     -1.99,
+     0.0
+    ],
+    "06_伸懒腰": [
+     -68.55,
+     0.0
+    ]
+   },
+   "measure_all_six_neck_pitch_deg": {
+    "01_呼吸": [
+     -0.01,
+     0.01
+    ],
+    "02_打招呼": [
+     -5.77,
+     0.0
+    ],
+    "03_走两步": [
+     -0.51,
+     0.26
+    ],
+    "04_转身": [
+     0.0,
+     27.58
+    ],
+    "05_蹲起": [
+     0.0,
+     4.98
+    ],
+    "06_伸懒腰": [
+     -56.73,
+     0.0
+    ]
+   },
+   "fix": "对 04 每个关键帧先修颈后修头，绕世界横轴（身体前方×竖轴）把世界前倾抬回（颈<=8 头<=6）",
+   "readings_after": {
+    "head_max_deg": 6.4,
+    "head_f21_deg": 6.05,
+    "neck_max_deg": 8.32,
+    "selfcheck": "修后全帧独立复测 f06..f42 均约 +6.0 度，首尾 0"
+   },
+   "clip": {
+    "path": "projects/digital-human/out/clips-v2/act-04-turn.mp4",
+    "bytes": 406348,
+    "resolution": [
+     1080,
+     1350
+    ],
+    "fps": 5,
+    "frames": 10,
+    "duration_s": 2.0,
+    "codec": "libx264 crf20 yuv420p faststart 无插值"
+   },
+   "clip_previous_backup": {
+    "path": "projects/digital-human/out/clips-v2/act-04-turn-r2.mp4",
+    "bytes": 381840
+   },
+   "frames_dir": "projects/digital-human/out/frames-v3/04_转身（10 张 1080x1350 EEVEE256spp，120.0s）",
+   "blend_r3": {
+    "path": "projects/digital-human/out/dh_rigged_r3_04c.blend",
+    "bytes": 31029944
+   }
+  },
+  "task3_right_arm": {
+   "verdict": "不可行（本轮不做）",
+   "reasons": [
+    "熔接：右手扶头发处与头熔接（源 armR<->torso 2824 面；代理 head|upper_arm_R 249 面 0.126%）+ 右腋第二处（代理 chest<->upper_arm_R 544 面 0.406%）⇒ 转下去必切两处并留可见补盖（6 段动作全无遮挡）",
+    "缺数据：烘焙姿势的肘/腕无 landmark（骨是按左臂镜像的下垂位：静置手 z=0.472H 肘 0.655H；烘焙几何肘 0.72H 手 0.885H）⇒ 重姿应为绕肘折前臂+手约 140 度，需先从 >=8 片混合片里切出前臂/手壳",
+    "会撕裂：本轮拆壳封边实测（切 3229 面 + 补盖 10104 面）已留可见碎片；右臂同量级切割还会同时暴露头发与右腋补盖"
+   ],
+   "patch_ids": [
+    0,
+    1,
+    53,
+    149,
+    153,
+    33,
+    133,
+    155
+   ]
+  },
+  "bar_readings_surgery_variant": {
+   "01_呼吸@24": {
+    "shard_faces": 7,
+    "pct": 0.004,
+    "extent_H": 0.011,
+    "max": 13.1
+   },
+   "02_打招呼@21": {
+    "shard_faces": 59,
+    "pct": 0.033,
+    "area_pct": 0.012,
+    "extent_H": 0.022,
+    "max": 1476.5
+   },
+   "02_打招呼@32": {
+    "shard_faces": 59,
+    "pct": 0.033,
+    "area_pct": 0.012,
+    "extent_H": 0.022,
+    "max": 1398.4
+   },
+   "03_走两步@21": {
+    "shard_faces": 59,
+    "pct": 0.033,
+    "area_pct": 0.012,
+    "extent_H": 0.022,
+    "max": 224.1
+   },
+   "04_转身@21": {
+    "shard_faces": 39,
+    "pct": 0.022,
+    "area_pct": 0.01,
+    "extent_H": 0.021,
+    "max": 86.3
+   },
+   "05_蹲起@25": {
+    "shard_faces": 134,
+    "pct": 0.075,
+    "area_pct": 0.027,
+    "extent_H": 0.043,
+    "max": 449.6
+   },
+   "06_伸懒腰@21": {
+    "shard_faces": 104,
+    "pct": 0.059,
+    "area_pct": 0.605,
+    "extent_H": 0.117,
+    "max": 1502.8
+   }
+  },
+  "criteria": {
+   "check": "14/14 全绿（复跑）",
+   "negative_controls": "bone-len / frozen-frames / lock-ends 三条复跑全部报红 ⇒ 判据有效"
+  },
+  "artifacts_dir": "projects/digital-human/out/_diag_r3（step0_baseline / step1_cutcap / step2_headfix / dh_shell_survey.py / 6 张对照渲图 / headfix_probe.blend）",
+  "honest_limits": [
+   "02/05/06 仍冻结（拆壳封边数值过尺但观感不过）",
+   "04 只修头颈链，未做拆壳；04 薄缝保持第二轮原样",
+   "手术版最大拉伸 1476x 高于基准 431.6x（针状局部，面积极小，如实报）",
+   "全精度蒙皮仍未跑（内存）",
+   "GLB 未重导",
+   "右臂重姿未做（三条理由）",
+   "本轮'收幅'备选仍未做（举臂压到约 13 度也能过尺，但已不成动作）"
+  ],
+  "logbook_entries": "149-156",
+  "incident_v1_restore": {
+   "what": "dh_rigged.blend 于 15:51:05 被外部进程写成空场景（10,377,892 字节、无对象）",
+   "evidence": "projects/digital-human/out/_diag_r3/evidence_empty_dh_rigged_1551.blend",
+   "restore": "从 _v1_backup/dh_rigged.blend 恢复；md5 回到 00399da43361c541d88d76c2728f08e0（与第一/二轮记录一致）；恢复后 --check 14/14 全绿",
+   "glb_untouched_md5": "c55f0fffbbe2f2034becf0c0e486520e"
+  }
+ }
+}

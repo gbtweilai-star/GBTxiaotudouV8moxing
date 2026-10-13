@@ -83,7 +83,7 @@ P1[:, 0] = (P1[:, 0] - cx_h) * SCALE + cx_b
 P1[:, 2] = (P1[:, 2] - cz_h) * SCALE + cz_b
 print(f"对齐：头顶点 {top_h:+.4f}→{top_b:+.4f} · 缩放 {SCALE} · 中轴 x {cx_h:+.4f}→{cx_b:+.4f} · "
       f"z {cz_h:+.4f}→{cz_b:+.4f}")
-print(f"  缩放后头模 y 范围 {P1[:,1].min():+.4f} .. {P1[:,1].max():+.4f}（身体 Neck 在 y={head_j_y:+.4f}）")
+print(f"  缩放后头模 y 范围 {P1[:, 1].min():+.4f} .. {P1[:, 1].max():+.4f}（身体 Neck 在 y={head_j_y:+.4f}）")
 
 # ── ② 切：只留 y > Y_CUT（三个角都在面上方） ─────────────────────────────
 keep = (P1[Ih[:, 0], 1] > Y_CUT) & (P1[Ih[:, 1], 1] > Y_CUT) & (P1[Ih[:, 2], 1] > Y_CUT)
@@ -96,7 +96,7 @@ UVh2 = UVh[used]
 Nh2 = Nh[used]
 Ih3 = remap[Ih2].astype(np.uint32)
 print(f"切面 y>{Y_CUT}：保留三角 {len(Ih3)} / {len(Ih)}（{len(Ih3)/len(Ih)*100:.1f}%）· "
-      f"顶点 {len(Ph2)} · 保留部分 y 范围 {Ph2[:,1].min():+.4f}..{Ph2[:,1].max():+.4f}")
+      f"顶点 {len(Ph2)} · 保留部分 y 范围 {Ph2[:, 1].min():+.4f}..{Ph2[:, 1].max():+.4f}")
 
 # ── ③ 蒙皮：Head 为主，根部按高度渐变混入 Neck ───────────────────────────
 t = np.clip((Ph2[:, 1] - Y_CUT) / (top_b - Y_CUT), 0, 1)

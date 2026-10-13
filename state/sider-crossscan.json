@@ -1,0 +1,191 @@
+{
+ "at": "2026-10-10T04:34:32",
+ "扩展ID": "difoiogjjojoaoomphldepapgpbgkhkb",
+ "V8侧": {
+  "目录": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store\\native_browser\\profile\\Default\\Extensions\\difoiogjjojoaoomphldepapgpbgkhkb",
+  "在盘": true,
+  "版本目录": [
+   "5.33.0_0",
+   "5.34.1_0"
+  ],
+  "版本": "5.34.1",
+  "manifest_version": 3,
+  "件数": 315,
+  "字节": 96524979,
+  "功能页数": 20,
+  "功能页": [
+   "alert-window",
+   "answer-compare",
+   "arkose-frame",
+   "artifacts",
+   "audio-preview",
+   "block-preview",
+   "camera-permissions",
+   "camera-record",
+   "claw-file-preview",
+   "claw-file-preview-sandbox",
+   "code-agent-preview",
+   "deep-research",
+   "file-preview",
+   "microphone-permissions",
+   "network",
+   "options",
+   "record-background",
+   "repl-sandbox-runner",
+   "sidepanel",
+   "standalone"
+  ],
+  "语言数": 56,
+  "含zh_TW": true,
+  "权限": [
+   "storage",
+   "cookies",
+   "contextMenus",
+   "scripting",
+   "userScripts",
+   "activeTab",
+   "unlimitedStorage",
+   "tabs",
+   "sidePanel",
+   "offscreen",
+   "alarms",
+   "declarativeNetRequest"
+  ],
+  "host权限": [
+   "https://*.openai.com/",
+   "<all_urls>"
+  ],
+  "注入条数": 9,
+  "注入": [
+   {
+    "js": "content-script.js",
+    "matches": 206
+   },
+   {
+    "js": "content-chat.openai.com.js",
+    "matches": 1
+   },
+   {
+    "js": "content-all.js",
+    "matches": 1
+   },
+   {
+    "js": "content-youtube-embed.js",
+    "matches": 2
+   },
+   {
+    "js": "inject-xhr-hack.js",
+    "matches": 2
+   },
+   {
+    "js": "inject-json-hack.js",
+    "matches": 1
+   },
+   {
+    "js": "all-frames.js",
+    "matches": 1
+   },
+   {
+    "js": "all-frames-main-start.js",
+    "matches": 2
+   },
+   {
+    "js": "assets/gdocs.js",
+    "matches": 1
+   }
+  ],
+  "sandbox页": [
+   "claw-file-preview-sandbox.html",
+   "repl-sandbox-runner.html"
+  ],
+  "她的后端口": [
+   "/api/chat"
+  ],
+  "内嵌AWS": true,
+  "人机验证": [
+   "arkose"
+  ],
+  "update_url": "https://clients2.google.com/service/update2/crx",
+  "side_panel": "sidepanel.html"
+ },
+ "V9侧": {
+  "目录": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V9\\state\\chrome_cdp\\Default\\Extensions\\difoiogjjojoaoomphldepapgpbgkhkb",
+  "在盘": false,
+  "版本目录": []
+ },
+ "本地状态": {
+  "在盘": true,
+  "字节": 2669181,
+  "账户登录相关键": [
+   "CQovTujFiFJ1soimI6ptbnaNquyq3gWN3FzxO4JBJr5dnzl0YJJVipRgiqUsc",
+   "HBCY3BAwiEhPhFCcviP33t4L9yqa3us",
+   "HHzE7Yu6g4Mk52NLGjOnqeVIpJHvaq5vazyh5SFXf7Japw11VaKWEfmyQXLH1",
+   "Hcost_credit",
+   "Lcost_credit",
+   "MYPTUhAByMKppc5HT4YCyH6APP8r9vqBIVOILFCIeAiHOwjq4ZeyfXRNToKEn",
+   "QoYTqEj3JVipqTgj2xT64NSxqz9vxje9FIpo1zz8yQ1anT",
+   "SJRvVJjdF6NdaVIpAPkAkDgge0nJ1EiuC3Pa6lEIKJAfJNgIkSIGxrK0YvGD4",
+   "Tokens",
+   "Unita24userSpaceOnUse",
+   "UserToken",
+   "Users",
+   "V0userSpaceOnUs",
+   "VipTo",
+   "WUserInfo__",
+   "X0nPndiVVipvmGdTqYmEH3leZbGsaKTlEqVO6XybyVhA3G0LrIyB",
+   "X4FEG0tmf6J8rhxACeckpCWkKhtvIpIxFUq1uGokAyI9vIoJkO7M9ydKlwkoM",
+   "XPricingPlan__",
+   "XVipInfo__",
+   "XWisebaseAllSavedUrl",
+   "ZTcg8SfBkrjw5EVIP0TK1kYen2c3bAtp8z5",
+   "account",
+   "advancedCreditWeight",
+   "advanced_credit_p",
+   "author",
+   "authority",
+   "dvDlowmEn3uef15ViPy8s6lJgDx8L9MfHiaK9PYyaYuwTgzpk8Gmze1c5DZLz",
+   "ejFOfLy2uD5685tmrKAzreCz9OTCBvggceR2uIGS9f4vIpDCBEDKRJtDD0iUb",
+   "email",
+   "emailZ",
+   "fresh_token",
+   "getUserStatus__",
+   "ghBm449viPFs",
+   "isNewPlan20260413Qi",
+   "lBmhgovp3VIPDkuoTJ3agJJb8",
+   "login",
+   "m8oauth2",
+   "must_new_plan",
+   "offScreenStatus",
+   "paid_plan",
+   "pi5rw8MoaujjvMLpC38Gc92ilqpVIp3otq0RkSELY9XJKJafRbmw59BzKmB",
+   "plann",
+   "prompt_max_token",
+   "qQEYqjx0B4gBKgFjKEsHCNEyEyxk1EYmmLpD25MviPVEvAvEAcv1NItklkOcR",
+   "requireVIP",
+   "ricingPlan",
+   "rox7m8fSiciGAEKKFkmEBMowCRcJhI5lpxAVIpmOoSU2AdG2QRSICkJXDiVIp",
+   "sCNUser",
+   "session",
+   "session_",
+   "session_id",
+   "status",
+   "taskCenterNewUser",
+   "twisebase",
+   "user",
+   "userInfo",
+   "userSpaceOnUs",
+   "userSpaceOnUse",
+   "userTypeDeta",
+   "user_script",
+   "user_scripts",
+   "vAKLmRkrxvIpwL4wCgYeR57dAnnlm88",
+   "vipJ",
+   "vipPeriodInfo",
+   "watch_sessions",
+   "wisebase",
+   "yxO5BHyvOpCAAKP7jCTotHIoEChFc14CzSy2WZncSPLsauTHYUF5TzZbocuAy"
+  ],
+  "判定": "**已登录**（见到账户/VIP/状态键）",
+  "口径": "以 Local Extension Settings 的**键名**为准（值多是压缩的，读不出就别硬读）"
+ }
+}

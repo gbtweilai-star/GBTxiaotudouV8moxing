@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- head 只是源文件的元数据；运行时**只克隆 <template> 里的东西**，其余（含整个 head）丢弃 -->
+  </head>
+  <body>
+    <template>
+      <style>
+        /* 契约：子合成的根一律用 #root 选择器（lint: subcomposition_root_styled_by_class） */
+        #root { position: absolute; inset: 0; display: grid; place-items: center; }
+        .kicker { font-size: 40px; letter-spacing: 0.42em; color: #7c8aa5; margin-bottom: 26px; text-align: center; }
+        .brand  { font-size: 196px; font-weight: 800; color: #f5b041; line-height: 1; }
+      </style>
+      <div id="root" data-composition-id="scene-s1" data-width="1920" data-height="1080">
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="kicker" id="k">GBTPOTATO</div>
+          <div class="brand"  id="b">GBT</div>
+        </div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        // 只动 transform / opacity（含 text-reflow 的属性会 snap，lint: gsap_non_transform_motion）
+        tl.from("#k", { opacity: 0, y: 26, duration: 0.9, ease: "power3.out" }, 0.1);
+        tl.from("#b", { y: 90, opacity: 0, duration: 1.0, ease: "power3.out" }, 0.35);
+        tl.to("#b",  { y: -60, opacity: 0, duration: 0.5, ease: "power2.in" }, 2.9);   // 宿主只给 3.4s，收在 3.4 内
+        window.__timelines["scene-s1"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

@@ -99,7 +99,8 @@ def gather() -> dict:
                         ("ullTotalVirtual", ctypes.c_ulonglong),
                         ("ullAvailVirtual", ctypes.c_ulonglong),
                         ("ullAvailExtendedVirtual", ctypes.c_ulonglong)]
-        m = _M(); m.dwLength = ctypes.sizeof(_M)
+        m = _M()
+        m.dwLength = ctypes.sizeof(_M)
         ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(m))
         f["空闲MB"] = m.ullAvailPhys // 1024 ** 2
         f["占用率%"] = m.dwMemoryLoad
@@ -138,7 +139,7 @@ def verdict(f: dict) -> dict:
                  if isinstance(free, int) else "**未读到**"})
     blocked = [r["条件"] for r in rows if not r["过"]]
     return {"判决": ("✅ **READY**（四个条件都满足，可以照 §九 清单动手）" if not blocked
-                  else "🔴 **BLOCKED**（%d/4 条未满足）" % len(blocked)),
+                   else "🔴 **BLOCKED**（%d/4 条未满足）" % len(blocked)),
             "未满足": blocked, "逐条": rows,
             "口径": "**四绿才 READY**；未满足就**不动手**（先解决它们，别硬上）"}
 
@@ -201,7 +202,7 @@ def cmd_threshold(a) -> int:
         "现在的阈值（由数据推）": STABLE_MIN,
         "推法": "活跃期最大间隔 %s × ~1.8 ⇒ %d 分钟" % (mx, STABLE_MIN),
         "🔴 残余风险（不许省）": "静默判据只能**降低**误判概率，**证明不了**「他以后不会再写」；"
-                         "真正的证据只有**事后时间**。所以条件①即使判 ✅，也不当「绝对安全」念。",
+        "真正的证据只有**事后时间**。所以条件①即使判 ✅，也不当「绝对安全」念。",
     }, ensure_ascii=False, indent=1))
     return 0
 

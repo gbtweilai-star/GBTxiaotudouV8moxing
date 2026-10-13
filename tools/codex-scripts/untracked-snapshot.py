@@ -86,7 +86,7 @@ def snapshot() -> int:
          "口径": "只快照关键未跟踪件（工具/文档/账本/状态）—— 等主人授权入库前的回滚点",
          "逐件": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps({"快照": {"at": ts, "件数": len(rows),
-                              "总字节": sum(r["字节"] for r in rows)},
+                             "总字节": sum(r["字节"] for r in rows)},
                       "落点": str(dest.relative_to(ROOT))}, ensure_ascii=False, indent=1))
     return 0
 

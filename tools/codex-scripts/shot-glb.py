@@ -4,7 +4,9 @@
 前置：先起本地服务（plugins/gbt-master/tools/serve-digital-human.mjs → 8788，它服务整个工作区）
 用法：python tools/codex-scripts/shot-glb.py <工作区相对路径.glb> <输出名.png> [rot]
 """
-import json, pathlib, sys
+import json
+import pathlib
+import sys
 from playwright.sync_api import sync_playwright
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
@@ -49,4 +51,3 @@ with sync_playwright() as pw:
     print("问题:", errs[:4] if errs else "无")
     print("saved:", out)
     b.close()
-

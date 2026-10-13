@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """构建 V6：V5 基础上加「语音」「蓝牙」两块真面板。归档 V5 → 写 V6。"""
-import json
 import re
 import shutil
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 V5P = BASE / "V5 GBT小土豆V8-可交互原型.html"
 V6P = BASE / "V6 GBT小土豆V8-可交互原型.html"

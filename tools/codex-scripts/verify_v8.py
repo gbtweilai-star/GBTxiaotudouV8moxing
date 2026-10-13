@@ -15,7 +15,7 @@ except Exception:  # noqa: BLE001
 # 落在 …\tools\（tools 下 0 个 html，实测 FileNotFoundError）。向上找根标记。
 BASE = next(p for p in Path(__file__).resolve().parents if (p / "gbt_allinone").is_dir())
 # V8 早已从根目录移入 archive/，历史版本的自检要能重跑就得允许指到归档目录。
-import os as _os
+import os as _os  # noqa: E402
 if _os.environ.get("GBT_DELIVERABLE_DIR"):
     BASE = BASE / _os.environ["GBT_DELIVERABLE_DIR"]
 CANVAS = BASE / "V8 GBT小土豆V8-无限画布.html"
@@ -24,15 +24,18 @@ fails, warns, oks = [], [], []
 
 
 def ok(m):
-    oks.append(m); print("  PASS  " + m)
+    oks.append(m)
+    print("  PASS  " + m)
 
 
 def bad(m):
-    fails.append(m); print("  FAIL  " + m)
+    fails.append(m)
+    print("  FAIL  " + m)
 
 
 def warn(m):
-    warns.append(m); print("  WARN  " + m)
+    warns.append(m)
+    print("  WARN  " + m)
 
 
 print("=" * 78)
@@ -91,7 +94,7 @@ else:
     lt = G["longrun_tools"]
     (ok if lt["lr_progress"]["total"] == 58 and lt["lr_progress"]["done"] == 33 else bad)(
         "长程任务 %s（done %s / failed %s）" % (lt["lr_progress"]["total"], lt["lr_progress"]["done"],
-                                              lt["lr_progress"]["failed"]))
+                                          lt["lr_progress"]["failed"]))
     (ok if len(lt["capability_net"]["seven_columns"]) == 7 else bad)(
         "穿透网七栏 %d 个" % len(lt["capability_net"]["seven_columns"]))
     # 只查清单条数会漏掉「清单 7 条、画布只画 5 行」：旧画布把 7 栏手写死成 5 项，

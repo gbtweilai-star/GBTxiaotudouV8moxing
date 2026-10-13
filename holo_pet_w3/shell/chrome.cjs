@@ -42,6 +42,17 @@ const FRESH_ID = "gbtc-fresh";
 /* 哪些窗不注入：DSH 的窗（内容不是我们的）、以及一切没有本地 file 的窗。 */
 const NEVER = new Set(["dsh-chat"]);
 
+/* 🔴 品牌标 = **真 Logo**（主人令 2026-10-07 指着截图里的品牌位说「这里的 Logo」）。
+   原来这里是个 9px 的小金点（`background: var(--gbt-gold)` 的圆点）——
+   品牌位放一个色点，等于没有品牌。现在读品牌真资产：
+   `build/tray-logo-32.png` 是 `assets/brand/logo-potato-32.png` 的**逐字节复制**
+   （同字节由 `tests/test_tray_logo.cjs` 钉住，含「随便换一张就报红」的负对照）。
+   ⚠️ 这里必须给**绝对 file:// URL**：铬是注入到**各层级的页面**里的，
+   相对路径会随页面深度变化；`__dirname` 在开发态与打包态都指向壳自己的目录，所以用它算。 */
+const path = require("node:path");
+const { pathToFileURL } = require("node:url");
+const LOGO_URL = pathToFileURL(path.join(__dirname, "..", "build", "tray-logo-32.png")).href;
+
 /* 注入的样式。**只用 var(--gbt-*, <准用集内兜底>)** —— 不引入新色号。 */
 const CSS = `
 #${BAR_ID} {
@@ -59,8 +70,8 @@ const CSS = `
   flex-wrap: nowrap; overflow: hidden;
 }
 #${BAR_ID} .gbtc-mark {
-  width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto;
-  background: var(--gbt-gold, #F5B041);
+  width: 18px; height: 18px; border-radius: 5px; flex: 0 0 auto;
+  background: url("${LOGO_URL}") center/contain no-repeat;
 }
 #${BAR_ID} .gbtc-brand { font-weight: 600; letter-spacing: .02em; white-space: nowrap; flex: 0 0 auto; }
 #${BAR_ID} .gbtc-brand b { color: var(--gbt-gold, #F5B041); font-weight: 600; }
@@ -209,11 +220,22 @@ function barScript(entry, registry) {
     b.title = it.local ? ("切到：" + it.full) : (it.full + "（要主人运行时给 URL）");
     b.addEventListener("click", function(){
       var br = window.gbtW3;
-      if (!br || typeof br.showWindow !== "function") return;   /* 没宿主：不假装能跳 */
+      if (!br) return;                                           /* 没宿主：不假装能跳 */
       b.disabled = true;
-      Promise.resolve(br.showWindow({ id: it.id })).catch(function(){}).then(function(){
-        setTimeout(function(){ b.disabled = false; }, 400);
-      });
+      /* 🔴 面板内跳页（主人令 2026-10-04：「要固定在 APP 面板上」，不再开一推窗）：
+         优先请**面板窗**在内容区里切到该页；面板不在/失败才回落到开窗（老路，托盘仍可用）。 */
+      var done = function(){ setTimeout(function(){ b.disabled = false; }, 400); };
+      if (typeof br.panelGoto === "function") {
+        Promise.resolve(br.panelGoto({ id: it.id }))
+          .then(function(r){ if (!r || !r.ok) { if (typeof br.showWindow === "function") return br.showWindow({ id: it.id }); } })
+          .catch(function(){}).then(done);
+        return;
+      }
+      if (typeof br.showWindow === "function") {
+        Promise.resolve(br.showWindow({ id: it.id })).catch(function(){}).then(done);
+        return;
+      }
+      done();
     });
     nav.appendChild(b);
   });

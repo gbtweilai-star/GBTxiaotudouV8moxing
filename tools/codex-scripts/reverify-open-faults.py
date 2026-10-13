@@ -90,10 +90,10 @@ def probe_f3() -> tuple:
     if not f.is_file():
         return "需人读", {"说明": "api.py 不在"}
     lines = f.read_text(encoding="utf-8", errors="replace").splitlines()
-    hits = [(i + 1, l.strip()) for i, l in enumerate(lines)
-            if "preflight" in l.lower() and ("except" in l or "log" in l or "except" in l)]
-    seg = [(i + 1, l.rstrip()) for i, l in enumerate(lines[1570:1600], start=1570)]
-    has_return_in_except = any("return" in l or "raise" in l for _n, l in seg)
+    hits = [(i + 1, li.strip()) for i, li in enumerate(lines)
+            if "preflight" in li.lower() and ("except" in li or "log" in li or "except" in li)]
+    seg = [(i + 1, li.rstrip()) for i, li in enumerate(lines[1570:1600], start=1570)]
+    has_return_in_except = any("return" in li or "raise" in li for _n, li in seg)
     return "需人读", {
         "api.py 里带 preflight 的异常/留痕行": ["%d: %s" % h for h in hits[:6]],
         "原引用段 1571-1600 里有没有 return/raise（有=已收紧）": has_return_in_except,
@@ -170,7 +170,7 @@ def probe_f5() -> tuple:
                     "为什么走这条": _imp,
                 }
     return "需人读", {"说明": "模块属性与源码两处都没读到 _DIMS_NOT_IMPL —— **读不到 ≠ 不成立**",
-                     "模块属性一层": _imp, "_读不到_主数据": True}
+                   "模块属性一层": _imp, "_读不到_主数据": True}
 
 
 # ── F8：mcporter 引用的目录没进版本库 ─────────────────────────────────────
@@ -220,7 +220,7 @@ def probe_f10() -> tuple:
         lst = ML.run("list")
     except Exception as exc:  # noqa: BLE001
         return "需人读", {"说明": "读不到许可账：%s: %s" % (type(exc).__name__, str(exc)[:100]),
-                          "_读不到_主数据": True}
+                       "_读不到_主数据": True}
     ents = lst.get("entries") or []
     bad = [str(e.get("file")) for e in ents if not str(e.get("file") or "").startswith("projects/")]
     return ("仍成立" if bad else "已不成立"), {
@@ -252,7 +252,7 @@ def probe_f11() -> tuple:
                     break
     except Exception as exc:  # noqa: BLE001
         return "需人读", {"说明": "读不到注册表：%s: %s" % (type(exc).__name__, str(exc)[:80]),
-                          "_读不到_主数据": True}
+                       "_读不到_主数据": True}
     sys.path.insert(0, str(ROOT))
     from gbt_allinone import deepseek_key as dk
 
@@ -276,7 +276,7 @@ def probe_f11() -> tuple:
     if nonempty == 0:
         return "需人读", {
             "说明": "整个保险箱一个 profile 都没读到 ⇒ **不能**据此判『分叉已修好』"
-                    "（多半是本次 store 不是生产 store —— 开机自检就是跑在隔离 store 里的）",
+            "（多半是本次 store 不是生产 store —— 开机自检就是跑在隔离 store 里的）",
             "本器看到的 vault 路径": str(ROOT / "gbt_allinone" / "store" / "secrets"),
             "权威读数在哪": "python tools/codex-scripts/key-consistency-check.py（对生产 store 跑）",
             "_读不到_主数据": True,
@@ -299,7 +299,7 @@ def probe_f12() -> tuple:
         names = {c["name"] for c in CR.all_caps()}
     except Exception as exc:  # noqa: BLE001
         return "需人读", {"说明": "读不到注册表：%s: %s" % (type(exc).__name__, str(exc)[:80]),
-                          "_读不到_主数据": True}
+                       "_读不到_主数据": True}
     watch = ["room_space", "mirror_space", "qiankun", "deployment_rehearsal", "collab_gateway",
              "notion", "tripo"]
     absent = [n for n in watch if n not in names]
@@ -319,7 +319,7 @@ def _strip_py_docstrings(text: str) -> str:
     """
     t = re.sub(r'"""(?:.|\n)*?"""', "", text)
     t = re.sub(r"'''(?:.|\n)*?'''", "", t)
-    return "\n".join(l for l in t.splitlines() if not l.lstrip().startswith("#"))
+    return "\n".join(li for li in t.splitlines() if not li.lstrip().startswith("#"))
 
 
 # ── F13：isolation_sweep 被压着时 rc=2 ⇒ 判红 ─────────────────────────────
@@ -332,7 +332,7 @@ def probe_f13() -> tuple:
     tst = ROOT / "gbt_allinone" / "tests" / "test_isolation_sweep.py"
     if not lib.is_file() or not tst.is_file():
         return "需人读", {"说明": "isolation_sweep.py 或它的判据不在盘上",
-                          "_读不到_主数据": True}
+                       "_读不到_主数据": True}
     lt = lib.read_text(encoding="utf-8", errors="replace")
     tt = tst.read_text(encoding="utf-8", errors="replace")
     lib_mit = ("_cannot_tell" in lt) and ("本次无法判定" in lt)
@@ -351,7 +351,7 @@ def probe_f13() -> tuple:
         "负控钉死 rc == 1（不再用 assertNotEqual(rc,0)）": neg_pinned,
         "还没改回去的老写法 assertNotEqual(rc,0)": "%d 处（别的用例可能合法在用，本探针不据此判）" % neg_old,
         "边界": "只读源码；**不制造负载** ⇒ 永远不能据此说『负载下不会 rc=2』。"
-                "绿不绿由 `test_isolation_sweep` 那条判据回答",
+        "绿不绿由 `test_isolation_sweep` 那条判据回答",
     }
 
 
@@ -362,7 +362,7 @@ def probe_f14() -> tuple:
     pdata = ROOT / "state" / "caps-probe-accum.json"
     if not gen.is_file():
         return "需人读", {"说明": "生成器不在仓里（它该在 tools/codex-scripts/）",
-                          "_读不到_主数据": True}
+                       "_读不到_主数据": True}
     code = _strip_py_docstrings(gen.read_text(encoding="utf-8", errors="replace"))
     hard = sorted(set(re.findall(r"\b(?:138|157|183)\b", code)))
     live = None
@@ -511,7 +511,7 @@ def probe_f18() -> tuple:
             cat = json.loads(r.read().decode("utf-8"))
     except Exception as exc:  # noqa: BLE001
         return "需人读", {"说明": "取不到 /gbt-master：%s: %s" % (type(exc).__name__, str(exc)[:80]),
-                          "_读不到_主数据": True}
+                       "_读不到_主数据": True}
     want = ("gbt-master-panels", "gbt-digital-human", "gbt-progress-ledger")
     ctxs = cat.get("contexts")
     if not isinstance(ctxs, list):
@@ -553,7 +553,7 @@ def probe_f19() -> tuple:
         "该文件红过的行": red, "绿过的行": green,
         "红的那几行": hits[:4] or "无",
         "为什么判不了": "本探针**不制造负载** ⇒ 复现不了就永远拿不到用例名；"
-                        "**未复现 ≠ 不存在**（负载相关的假红会一直污染横扫的可信度）",
+        "**未复现 ≠ 不存在**（负载相关的假红会一直污染横扫的可信度）",
     }
 
 
@@ -661,7 +661,7 @@ def main(argv=None) -> int:
         if reading.get("_读不到_主数据") and verdict != "需人读":
             verdict = "需人读"
             reading = dict(reading, **{"被本器降级": "探针自报『主数据没读到』 ⇒ 结论强制降为"
-                                                  "『需人读』（不许由读不到推出已不成立）"})
+                                       "『需人读』（不许由读不到推出已不成立）"})
         rows.append({"id": fid, "what": f.get("what"), "verdict": verdict, "reading": reading,
                      "台账原记的 state": f.get("state")})
 

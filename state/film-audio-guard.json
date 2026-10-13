@@ -1,0 +1,216 @@
+{
+ "逐条": [
+  {
+   "文件": "projects\\film\\06-final\\20260923-film-pipeline-selftest-rehearsal.mp4",
+   "面": "彩排/演示",
+   "音轨": 0,
+   "有视频": true,
+   "时长s": 3.0,
+   "有配对音源": true,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\film\\06-final\\20261009-film-堂屋-06export.mp4",
+   "面": "出厂面",
+   "音轨": 1,
+   "有视频": true,
+   "时长s": 72.0,
+   "有配对音源": true,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\film\\05-edit\\20260923-film-pipeline-selftest-rehearsal.mp4",
+   "面": "彩排/演示",
+   "音轨": 0,
+   "有视频": true,
+   "时长s": 3.0,
+   "有配对音源": true,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\film\\05-edit\\20261009-film-堂屋-05edit.mp4",
+   "面": "出厂面",
+   "音轨": 1,
+   "有视频": true,
+   "时长s": 72.0,
+   "有配对音源": true,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\short-video\\05-publish\\20260923-short-video-pipeline-selftest-rehearsal.mp4",
+   "面": "彩排/演示",
+   "音轨": 0,
+   "有视频": true,
+   "时长s": 3.0,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\short-video\\05-publish\\20260926-short-video-免费样片-05export.mp4",
+   "面": "出厂面",
+   "音轨": 1,
+   "有视频": true,
+   "时长s": 14.0,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\short-video\\05-publish\\20260926-short-video-免费样片-rehearsal.mp4",
+   "面": "彩排/演示",
+   "音轨": 1,
+   "有视频": true,
+   "时长s": 14.0,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\short-video\\06-final\\20261010-short-video-醒来-ep01-达标.mp4",
+   "面": "出厂面",
+   "音轨": 1,
+   "有视频": true,
+   "时长s": 60.0,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\movie\\成片\\actioncam-demo-拍子表-1080p.mp4",
+   "面": "彩排/演示",
+   "音轨": 1,
+   "有视频": true,
+   "时长s": 7.2,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\movie\\成片\\actioncam-demo-拍子表.mp4",
+   "面": "彩排/演示",
+   "音轨": 0,
+   "有视频": true,
+   "时长s": 6.88,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\movie\\成片\\多镜试片-E1开场.mp4",
+   "面": "彩排/演示",
+   "音轨": 1,
+   "有视频": true,
+   "时长s": 58.68,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\movie\\成片\\她从代码里醒来-E1E3-HD.mp4",
+   "面": "出厂面",
+   "音轨": 1,
+   "有视频": true,
+   "时长s": 221.56,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\movie\\成片\\她从代码里醒来-E1E3-多镜.mp4",
+   "面": "出厂面",
+   "音轨": 1,
+   "有视频": true,
+   "时长s": 215.88,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\movie\\成片\\末班义庄-序章-HD-v2.mp4",
+   "面": "出厂面",
+   "音轨": 1,
+   "有视频": true,
+   "时长s": 604.84,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\movie\\成片\\末班义庄-序章-HD.mp4",
+   "面": "出厂面",
+   "音轨": 1,
+   "有视频": true,
+   "时长s": 604.84,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\film\\03-shoot\\20260923-film-pipeline-selftest-rehearsal.mp4",
+   "面": "彩排/演示",
+   "音轨": 0,
+   "有视频": true,
+   "时长s": 3.0,
+   "有配对音源": true,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\film\\03-shoot\\20261009-film-堂屋-03shots.mp4",
+   "面": "中间件",
+   "音轨": 0,
+   "有视频": true,
+   "时长s": 72.0,
+   "有配对音源": true,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\short-video\\03-raw\\20260923-short-video-pipeline-selftest-rehearsal.mp4",
+   "面": "彩排/演示",
+   "音轨": 0,
+   "有视频": true,
+   "时长s": 3.0,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\short-video\\03-raw\\20260926-short-video-免费样片-rehearsal.mp4",
+   "面": "彩排/演示",
+   "音轨": 0,
+   "有视频": true,
+   "时长s": 3.0,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\short-video\\03-raw\\20261009-short-video-醒来-03assets.mp4",
+   "面": "中间件",
+   "音轨": 0,
+   "有视频": true,
+   "时长s": 60.0,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\short-video\\03-raw\\20261009-short-video-醒来-ep01-03assets.mp4",
+   "面": "中间件",
+   "音轨": 0,
+   "有视频": true,
+   "时长s": 20.0,
+   "有配对音源": false,
+   "判": "ok"
+  },
+  {
+   "文件": "projects\\short-video\\03-raw\\20261009-short-video-醒来-ep02-03assets.mp4",
+   "面": "中间件",
+   "音轨": 0,
+   "有视频": true,
+   "时长s": 20.0,
+   "有配对音源": false,
+   "判": "ok"
+  }
+ ],
+ "红": [],
+ "彩排不判": [
+  "projects\\film\\06-final\\20260923-film-pipeline-selftest-rehearsal.mp4",
+  "projects\\film\\05-edit\\20260923-film-pipeline-selftest-rehearsal.mp4",
+  "projects\\short-video\\05-publish\\20260923-short-video-pipeline-selftest-rehearsal.mp4",
+  "projects\\short-video\\05-publish\\20260926-short-video-免费样片-rehearsal.mp4",
+  "projects\\movie\\成片\\actioncam-demo-拍子表-1080p.mp4",
+  "projects\\movie\\成片\\actioncam-demo-拍子表.mp4",
+  "projects\\movie\\成片\\多镜试片-E1开场.mp4",
+  "projects\\film\\03-shoot\\20260923-film-pipeline-selftest-rehearsal.mp4",
+  "projects\\short-video\\03-raw\\20260923-short-video-pipeline-selftest-rehearsal.mp4",
+  "projects\\short-video\\03-raw\\20260926-short-video-免费样片-rehearsal.mp4"
+ ],
+ "口径": "**出厂面**里有视频流却 0 音轨 ⇒ 红；**中间件**（03-shoot/03-raw）允许无音轨；**彩排/演示件**（名字含 rehearsal/selftest/demo/试片）**不判但必须标出来** —— 「不是不判，是把为什么可以不判写进读数」"
+}

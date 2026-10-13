@@ -38,8 +38,17 @@ def grams(text, n: int = 2) -> set:
     同名 `_grams`。算法只有一份，改口径只改这一处。
     """
     s = str(text).lower()
-    return ({s[i:i + n] for i in range(max(0, len(s) - n + 1))}
-            | ({s} if len(s) <= n else set()))
+    out = {s[i:i + n] for i in range(max(0, len(s) - n + 1))}
+    # 2026-10-13 两条 gram 卫生（都实测过、都只踢"不承载语义"的东西）：
+    #   ① 纯数字串不算词 ② **含空白的 gram 不算词**
+    # ② 的实测病象：`把这张图放大到 2560 并锐化一下` 里，`vision_grounding`/`media_stamp`/
+    #    `answer_shaper` 各拿 4.5，命中项**全是** `' 2'` / `'0 '` / `'到 '` 这类跨空格垃圾；
+    #    而真该命中的 `zimage_rewash` 只靠 `'放大'` 拿 1.5。⇒ 空白不承载语义，踢掉。
+    #    只踢"含空白的 gram"（不做全文去空格）⇒ 英文非空格 n-gram 照旧，英文匹配不受损。
+    out = {g for g in out if not g.isdigit() and not any(c.isspace() for c in g)}
+    if len(s) <= n and not s.isdigit() and not any(c.isspace() for c in s):
+        out.add(s)
+    return out
 
 
 def method_table() -> dict:
@@ -118,27 +127,72 @@ def choose(intent: str, *, provider: str = "tentacle_method") -> dict:
     table = method_table()
     lines = "\n".join(f"- {i['method']}（{i['neighborhood']}）{i['hint']}"
                       for i in table["items"])
-    prompt = f"方法清单（共 {table['count']} 个）：\n{lines}\n\n人话：{text}"
-    try:
-        from .llm import unified as LLM
-        r = LLM.ask(prompt, system=SYSTEM, temperature=0.0, max_tokens=300,
-                    timeout=60, purpose="semantic_route")
-    except Exception as exc:  # noqa: BLE001
-        return {"ok": False, "path": "semantic", "error": f"{type(exc).__name__}: {exc}"[:160]}
-    if not r.get("ok"):
-        return {"ok": False, "path": "semantic", "provider": r.get("provider"),
-                "error": r.get("error", "模型调用失败"),
-                "note": "主路不可用 ⇒ 上层应如实降级到辅路，并把降级这件事报出来"}
-    raw = str(r.get("reply") or "")
-    body = raw.strip()
-    if body.startswith("```"):
-        body = body.strip("`")
-        body = body.split("\n", 1)[1] if "\n" in body else body
-    try:
-        data = json.loads(body)
-    except Exception as exc:  # noqa: BLE001
-        return {"ok": False, "path": "semantic", "error": f"模型输出不是合法 JSON: {exc}",
-                "raw_head": raw[:200]}
+    # 🔴 2026-10-12 修（实测根因：一句寒暄「你好，我是主人」被模型当聊天回，
+    #    没输出 JSON ⇒ 主路整条失效 ⇒ 永远降级到词表辅路 ⇒ intent 路由不出能力）。
+    #    两处加固，都只在这一个函数内，不动架构：
+    #      ① **格式约束提到结尾再钉一次**（长清单会把模型的格式注意力冲散，
+    #         实测把「只输出 JSON」放 system 里不够，必须在人话之后**最后一句**再说）；
+    #      ② **非 JSON / 空返回 ⇒ 追加一句纠正重试一次**（偶发跑偏不该判整条主路死刑）。
+    #    纪律不变：仍不许把降级结果冒充主路结果；两次都不合法才如实报错降级。
+    def _strip_fence(s: str) -> str:
+        b = str(s or "").strip()
+        if b.startswith("```"):
+            b = b.strip("`")
+            b = b.split("\n", 1)[1] if "\n" in b else b
+        return b.strip()
+
+    prompt = (f"方法清单（共 {table['count']} 个）：\n{lines}\n\n人话：{text}\n\n"
+              "现在只输出 JSON 对象本身（第一个字符必须是 {），不要任何解释、"
+              "不要寒暄、不要 Markdown 代码块围栏。")
+    # 🔴 2026-10-12 第二次加固（实测残留：约 1/6 的句子两轮都不给 JSON ——
+    #    第 2 轮仍带着 89 条方法清单，模型的格式注意力**又被冲散**）。
+    #    => 第 2 轮**把清单撤掉**，只留「人话 + 待选名字」和一句纯格式要求：
+    #       模型这时的任务从"在长清单里挑"退成"把已定的事写成 JSON"，跑偏面小得多。
+    #       纪律不变：这样拿到的仍必须是**清单内的真名字**（下面 invalid_method 照样拦）。
+    _retry_prompt = (
+        f"人话：{text}\n\n"
+        f"可选方法名（只许从这些里选一个，或 null）：{', '.join(i['method'] for i in table['items'])}\n\n"
+        "立刻只输出这一行 JSON，不要任何别的字："
+        "{\"method\": \"<上面的名字之一，或 null>\", \"confidence\": <0-1小数>, "
+        "\"reason\": \"<一句话>\"}")
+    raw, r, data, err = "", None, None, ""
+    _attempts_detail: list = []
+    for _attempt in (1, 2, 3):
+        _msg = (prompt if _attempt == 1 else
+                _retry_prompt if _attempt == 2 else
+                # 🔴 2026-10-12 第三次兜底（实测残留：约 1/6 句子两轮仍不给 JSON，
+                #    且**不同句子的失败在轮次间会换人** ⇒ 说明是模型侧随机跑偏，
+                #    不是某个 prompt 写坏了）。第 3 轮做两件事：**清单再缩一次**
+                #    （只给名字，砍掉邻域与提示词），并把格式要求压成最短一句。
+                #    仍不合法 ⇒ 如实报三层都失败，绝不冒充。
+                f"从下列名字里选一个，或 null：{', '.join(i['method'] for i in table['items'])}\n"
+                f"人话：{text}\n"
+                "只回 JSON：{\"method\": null, \"confidence\": 0, \"reason\": \"\"}")
+        try:
+            from .llm import unified as LLM
+            r = LLM.ask(_msg, system=SYSTEM, temperature=0.0, max_tokens=300,
+                        timeout=60, purpose="semantic_route")
+        except Exception as exc:  # noqa: BLE001
+            err = f"{type(exc).__name__}: {exc}"[:160]
+            _attempts_detail.append({"attempt": _attempt, "error": err})
+            continue
+        if not r.get("ok"):
+            return {"ok": False, "path": "semantic", "provider": r.get("provider"),
+                    "error": r.get("error", "模型调用失败"),
+                    "note": "主路不可用 ⇒ 上层应如实降级到辅路，并把降级这件事报出来"}
+        raw = str(r.get("reply") or "")
+        try:
+            data = json.loads(_strip_fence(raw))
+            err = ""
+            break
+        except Exception as exc:  # noqa: BLE001
+            err = f"模型输出不是合法 JSON: {exc}"
+            _attempts_detail.append({"attempt": _attempt, "raw_head": raw[:120]})
+    if data is None:
+        return {"ok": False, "path": "semantic", "error": err or "模型输出不是合法 JSON",
+                "raw_head": raw[:200], "attempts": 3,
+                "attempts_detail": _attempts_detail,
+                "note": "三层加固（原样 / 去长清单 / 只给名字）都不合法 ⇒ 如实降级，不冒充"}
     picked = data.get("method")
     if picked is None:
         return {"ok": True, "path": "semantic", "method": None,

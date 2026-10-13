@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """pymeshlab 缝保护 QEM → OBJ → 自建 GLB（贴图沿用 part-head.glb 的原件）。
 用 python 3.12 跑（pymeshlab 在那边）。"""
-import json, pathlib, struct
+import json
+import pathlib
+import struct
 import numpy as np
 import pymeshlab as ml
 
@@ -36,7 +38,9 @@ for line in OBJ.read_text(errors="ignore").splitlines():
             a = tok.split("/")
             tri.append((int(a[0]) - 1, int(a[1]) - 1 if len(a) > 1 and a[1] else 0))
         F.append(tri)
-V = np.array(V, np.float64); VT = np.array(VT, np.float64); F = np.array(F, np.int64)
+V = np.array(V, np.float64)
+VT = np.array(VT, np.float64)
+F = np.array(F, np.int64)
 print(f"OBJ：顶点 {len(V)} · UV {len(VT)} · 面 {len(F)}")
 
 # 按 (顶点, UV) 重编号（OBJ 的 v/vt 是分开索引；glTF 需要每顶点一套属性）
@@ -61,24 +65,34 @@ J = json.loads(raw[20:20 + jl].decode("utf-8"))
 off = 20 + jl + ((-jl) % 4)
 bl, = struct.unpack_from("<I", raw, off)
 BIN = raw[off + 8: off + 8 + bl]
-mat = J["materials"][0]; pbr = mat.get("pbrMetallicRoughness", {})
-buf = bytearray(); views = []; accs = []; imgs = []; texs = []
+mat = J["materials"][0]
+pbr = mat.get("pbrMetallicRoughness", {})
+buf = bytearray()
+views = []
+accs = []
+imgs = []
+texs = []
 
 
 def view(data, target=None):
     while len(buf) % 4:
         buf.append(0)
-    o = len(buf); buf.extend(data)
+    o = len(buf)
+    buf.extend(data)
     v = {"buffer": 0, "byteOffset": o, "byteLength": len(data)}
-    if target: v["target"] = target
-    views.append(v); return len(views) - 1
+    if target:
+        v["target"] = target
+    views.append(v)
+    return len(views) - 1
 
 
 def add(arr, ct, typ, target=None, mm=False):
     vi = view(arr.tobytes(), target)
     a = {"bufferView": vi, "componentType": ct, "count": len(arr), "type": typ}
-    if mm: a.update({"min": [float(x) for x in arr.min(axis=0)], "max": [float(x) for x in arr.max(axis=0)]})
-    accs.append(a); return len(accs) - 1
+    if mm:
+        a.update({"min": [float(x) for x in arr.min(axis=0)], "max": [float(x) for x in arr.max(axis=0)]})
+    accs.append(a)
+    return len(accs) - 1
 
 
 a_p = add(NV.astype(np.float32), 5126, "VEC3", 34962, True)
@@ -96,7 +110,7 @@ for tex_obj in (pbr.get("baseColorTexture"), mat.get("normalTexture")):
 G = {"asset": {"version": "2.0", "generator": "GBT · pymeshlab 缝保护 QEM"},
      "scene": 0, "scenes": [{"nodes": [0]}], "nodes": [{"mesh": 0, "name": "head_pml"}],
      "meshes": [{"name": "head_pml", "primitives": [{"attributes": {"POSITION": a_p, "NORMAL": a_n, "TEXCOORD_0": a_u},
-                                                      "indices": a_i, "material": 0}]}],
+                                                     "indices": a_i, "material": 0}]}],
      "materials": [{"name": "head", "pbrMetallicRoughness": {"baseColorTexture": {"index": 0},
                                                              "metallicFactor": 0, "roughnessFactor": 0.7}}],
      "textures": texs, "images": imgs,

@@ -83,12 +83,12 @@ BRIDGE_JS = """
   };
 })();
 """ % json.dumps({k: payload(k) for k, _ in
-                   [("w3:config", 0), ("w3:state", 0), ("w3:tasks", 0), ("w3:env", 0),
-                    ("w3:ledger", 0), ("w3:health", 0), ("w3:matrix", 0), ("w3:mindmap", 0),
-                    ("w3:selfcheck", 0), ("w3:introspect", 0), ("w3:tools", 0), ("w3:h1", 0),
-                    ("w3:pets", 0), ("w3:summon", 0), ("w3:eigenflux", 0),
-                    ("w3:coverage", 0), ("w3:orphans", 0), ("w3:gene", 0)]},
-                  ensure_ascii=False)
+                  [("w3:config", 0), ("w3:state", 0), ("w3:tasks", 0), ("w3:env", 0),
+                   ("w3:ledger", 0), ("w3:health", 0), ("w3:matrix", 0), ("w3:mindmap", 0),
+                   ("w3:selfcheck", 0), ("w3:introspect", 0), ("w3:tools", 0), ("w3:h1", 0),
+                   ("w3:pets", 0), ("w3:summon", 0), ("w3:eigenflux", 0),
+                   ("w3:coverage", 0), ("w3:orphans", 0), ("w3:gene", 0)]},
+                 ensure_ascii=False)
 
 OUT.mkdir(parents=True, exist_ok=True)
 

@@ -213,3 +213,25 @@ deploy/cloud-10/.dev.vars
 
 # 收编的旧源码归档（不入库）
 _legacy_sources/
+
+# VoiceStudio 本地语音工作台运行时（PID/日志/产出音频/巡检快照；回执单文件另存 state/voicestudio_acceptance.json；2026-10-04）
+state/voicestudio/
+
+# ── 2026-10-14 补（主人令「推送到开源仓库」· 推前先挡住重量级产物）──
+# 依据（现读）：要提交的脏件合计 12.5GB，其中 outputs/ 11.9GB、projects/digital-human 628MB；
+# 而 GitHub **单文件 >100MB 直接拒推** ⇒ 模型权重与工作产物不入库（它们本来也不是"仓库代码"）。
+# 注：已被跟踪的旧件不受影响（ignore 不会把已跟踪的踢出去），这里只挡新增。
+outputs/cloud/
+outputs/gbt_v8_merged/
+outputs/vision-print/
+projects/digital-human/out/
+**/_plates/
+state/browser_own_profile/
+state/drama-frames/
+state/memory_fts.db
+state/asset_index.db
+state/logbook-snapshot.json
+state/surfaces/_home/.config/manicode/
+*.part
+*.blend
+*.blend1

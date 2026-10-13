@@ -188,7 +188,7 @@ def account_coverage(registry_names: set) -> dict:
             "**未探（账里没有）**": missing, "未探位数": len(missing),
             "出处": srcs,
             "口径": "**未探 ≠ 故障**（新能力尚未探是事实）；但**要点名**，"
-                    "不许把「168/168 有账」读成「全都有账」"}
+            "不许把「168/168 有账」读成「全都有账」"}
 
 
 def dispatch_coverage(benign_names: set, src_text: str | None = None) -> dict:
@@ -245,8 +245,8 @@ def dispatch_coverage(benign_names: set, src_text: str | None = None) -> dict:
                     "🔴 **%d 位在整个 api.py 里一次都没出现**：%s ⇒ 调用会「报成功但什么都没干」"
                     % (len(hard_missing), "、".join(hard_missing[:8]))),
             "口径": "只认 `kind == \"X\"` 与 `kind in (…)`（AST，不扫文本）；"
-                    "在 api.py 出现过但判据没认出的**只点名、不判红**（可能有表驱动）；"
-                    "**UNIMPLEMENTED_CAPS 不算**（那些名字设计上就没有实现）"}
+            "在 api.py 出现过但判据没认出的**只点名、不判红**（可能有表驱动）；"
+            "**UNIMPLEMENTED_CAPS 不算**（那些名字设计上就没有实现）"}
 
 
 # 「空话分支」的判据词：分支**只**回这些，等于**没有实现**（只是骗过"有着落"那道闸）
@@ -307,7 +307,7 @@ def empty_branch_check(benign_names: set, src_text: str | None = None) -> dict:
                     "🔴 **%d 位只有空话分支**（有分支、不干活）：%s ⇒ 这是**用空话骗闸**，不算实现"
                     % (len(suspects), "、".join(suspects[:6]))),
             "口径": "分支体**只**有 `return None` 或只回「未实现」字样 = 空话；"
-                    "**只要有一次真调用就不算**（宁松不枉）"}
+            "**只要有一次真调用就不算**（宁松不枉）"}
 
 
 def restore() -> dict:
@@ -428,7 +428,7 @@ def cmd_selftest(a) -> int:
     # ④ 恢复源必须在（否则"复原命令"是空头支票）
     ck("**已知良好副本或恢复脚本至少有一个在**", GOOD.is_file() or REBUILD.is_file(),
        "good=%s rebuild=%s" % (GOOD.name if GOOD.is_file() else "缺",
-                              REBUILD.name if REBUILD.is_file() else "缺"))
+                               REBUILD.name if REBUILD.is_file() else "缺"))
     # ⑤ 🔴 **登记 vs 接线**：判据要会咬 —— 编一个"登记了但没接线"的名字，必须被点名
     d = dispatch_coverage({"count_words", "__绝对没有接线的假位__"})
     ck("**负控：登记了但没接线的名字必须被点名**",

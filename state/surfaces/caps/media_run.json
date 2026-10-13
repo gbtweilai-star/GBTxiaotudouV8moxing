@@ -1,0 +1,36 @@
+{
+ "cap": "media_run",
+ "domain": "video",
+ "desc": "三方向自动化工作流**执行器**：一次调用把一条链从头走到尾，每步落真件 + 同批登记许可。链取自 `media_pipeline.KINDS`（music: lyrics→arrangement→audio→master→export · short_video: script→storyboard→assets→edit→export · film: concept→script→shots→sound→edit→export）。🔴 **没有实现器的步如实标 `not_implemented`**（人/未实现的活不许当成跑过了）；自产输入（本机 ffmpeg 合成）⇒ 许可可如实写自有。落点只在 `projects/<方向>/<格>/`，命名合家规。",
+ "safe": false,
+ "ops": [
+  {
+   "op": "parse_timed",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "plan",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "run",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "status",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "template",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "static-heuristic",
+ "handler_file": "gbt_allinone\\tools\\media_run.py",
+ "params": [],
+ "params_hint": "",
+ "handler": "media_run",
+ "slot": "g2-11",
+ "group": 2,
+ "role": "AI 短剧工作流（脚本→分镜→素材→剪辑→成片）"
+}

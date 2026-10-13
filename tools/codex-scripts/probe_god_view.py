@@ -55,12 +55,12 @@ print("② 四视图数据源（窗口直读 store）")
 print("=" * 96)
 views = {
     "看自己（cpu/内存/磁盘）": [("holo_pet/mind_engine.py", "psutil 读数"),
-                              ("holo_pet_w3/selfvision", "自我视觉验证（设计说 P1/P2）")],
+                       ("holo_pet_w3/selfvision", "自我视觉验证（设计说 P1/P2）")],
     "看任务（队列/管线）": [("gbt_allinone/store/tasks.json", "任务队列"),
-                          ("gbt_allinone/store/pipeline", "管线目录")],
+                   ("gbt_allinone/store/pipeline", "管线目录")],
     "看环境（服务探活）": [("holo_pet/services.py", "探活实现")],
     "看账本（四路账本）": [("gbt_allinone/store/ledger", "**常驻账本**（设计要求的落点）"),
-                        ("gbt_allinone/store/health", "健康账本")],
+                  ("gbt_allinone/store/health", "健康账本")],
 }
 for name, items in views.items():
     print("\n  ● %s" % name)

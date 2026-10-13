@@ -116,7 +116,7 @@ def creds():
         "user": user, "user_env": un, "user_mask": mask(user),
         "pass": pw, "pass_env": pwn,
         "状态": {"host": "已配" if host else "默认值", "user": "已配" if user else "未配",
-                 "pass": "已配" if pw else "未配"},
+               "pass": "已配" if pw else "未配"},
     }
 
 
@@ -149,9 +149,9 @@ def cmd_status(a):
     c = creds()
     res = {"ok": True, "status": "status",
            "凭据": {"host": c["状态"]["host"], "user": c["状态"]["user"], "pass": c["状态"]["pass"],
-                    "host值": c["host"], "host变量": c["host_env"],
-                    "账号掩码": c["user_mask"], "账号变量": c["user_env"],
-                    "密码变量": c["pass_env"]},
+                  "host值": c["host"], "host变量": c["host_env"],
+                  "账号掩码": c["user_mask"], "账号变量": c["user_env"],
+                  "密码变量": c["pass_env"]},
            "收信端点": tcp_probe(c["host"], c["port"])}
     sh = os.environ.get("GBT_SMTP_HOST") or env2("GBT_SMTP_HOST")[1]
     sp = os.environ.get("GBT_SMTP_PORT") or env2("GBT_SMTP_PORT")[1]
@@ -160,7 +160,7 @@ def cmd_status(a):
         "状态": "已配" if sh else "未配",
         "_注意": "这条是 forwardemail + 自有域名，**不是** Zoho；双向绑定要的是同一个账号收发。"}
     res["_口径"] = ("「端点可达」只证明网络与 TLS 通，**不证明能登录** —— 两件事分开报。"
-                    "密码只报已配/未配与前 4 位掩码，本件不落盘、不回显。")
+                  "密码只报已配/未配与前 4 位掩码，本件不落盘、不回显。")
     print(json.dumps(res, ensure_ascii=False, indent=1))
     return 0
 
@@ -229,7 +229,7 @@ def cmd_roundtrip(a):
         return rc
     tag = "gbt-bind-%d" % int(time.time())
     from_addr = c["user"]
-    sh = os.environ.get("GBT_SMTP_HOST")
+    os.environ.get("GBT_SMTP_HOST")
     use_zoho = (a.smtp_host or DEFAULTS["smtp_host"])
     port = int(a.smtp_port or DEFAULTS["smtp_port"])
     out = {"ok": False, "status": "roundtrip", "account": c["user_mask"], "标记": tag,
@@ -247,9 +247,9 @@ def cmd_roundtrip(a):
         out["第一腿（SMTP 发给自己）"] = {"ok": True, "host": use_zoho, "port": port}
     except Exception as e:                                                 # noqa: BLE001
         out["第一腿（SMTP 发给自己）"] = {"ok": False, "host": use_zoho, "port": port,
-                                  "why": scrub(e, c["pass"])}
+                                 "why": scrub(e, c["pass"])}
         out["_口径"] = ("**双向只成了一半不到**：发信腿没过 ⇒ 没资格说「绑上了」。"
-                        "注意这与已经配好的 forwardemail 那条不是同一件事。")
+                      "注意这与已经配好的 forwardemail 那条不是同一件事。")
         print(json.dumps(out, ensure_ascii=False, indent=1))
         return 5
     found = None
@@ -271,15 +271,15 @@ def cmd_roundtrip(a):
         print(json.dumps(out, ensure_ascii=False, indent=1))
         return 6
     out["第二腿（IMAP 读回来）"] = ({"ok": True, "找到": True, "邮件号": found,
-                              "等了多少秒": round((a.wait or 90) - max(0, deadline - time.time()), 1)}
-                             if found else
-                             {"ok": True, "找到": False,
-                              "why": "发出去了但 %ss 内没在 INBOX 里查到（Zoho 免费版投递可能慢，"
-                                     "或进了垃圾箱）⇒ **这一腿不算成立**" % (a.wait or 90)})
+                             "等了多少秒": round((a.wait or 90) - max(0, deadline - time.time()), 1)}
+                            if found else
+                            {"ok": True, "找到": False,
+                             "why": "发出去了但 %ss 内没在 INBOX 里查到（Zoho 免费版投递可能慢，"
+                             "或进了垃圾箱）⇒ **这一腿不算成立**" % (a.wait or 90)})
     out["ok"] = bool(found)
     out["status"] = "roundtrip_ok" if found else "roundtrip_half"
     out["_口径"] = ("双向 = 发得出去 **且** 收得回来，两条腿都有读数才算。"
-                    "自检信带唯一标记（可删），没有动收件箱里任何别的信。")
+                  "自检信带唯一标记（可删），没有动收件箱里任何别的信。")
     print(json.dumps(out, ensure_ascii=False, indent=1))
     return 0 if found else 6
 
@@ -339,16 +339,16 @@ def cmd_probe(a):
     res = {"ok": bool(imap_ok), "status": "login_ok" if imap_ok else "auth_failed",
            "account": c["user_mask"], "IMAP": imap, "SMTP": smtp,
            "下一步": ("收信腿通了 ⇒ 可以跑 roundtrip 验双向" if imap_ok and smtp_ok else
-                    "只有一条腿通 ⇒ 去 Zoho 后台查另一条腿的开关" if (imap_ok or smtp_ok) else
-                    "两条腿一起被拒 ⇒ 问题在**凭据本身**，按下面顺序查：\n"
-                    "  ① **两步验证与应用专用密码必须配套**：开了 2FA 就必须用应用专用密码（主密码一律不过）；"
-                    "没开 2FA 时应用专用密码也**不生效** —— 这两种错配都会得到同一个 `AUTHENTICATIONFAILED`。\n"
-                    "  ② **setx 时那个密码串有没有打错**（应用密码是随机串，手输极易错一格）；"
-                    "更稳的做法：复制粘贴，或先写进一个临时文件核对再 setx。\n"
-                    "  ③ Zoho 后台 → 设置 → 邮件 → 邮件账户 → **IMAP 访问 = 启用**（Zoho 默认不开）。\n"
-                    "  ④ 账号收信域到底是不是 `zohomail.com`（浏览器登进 mail.zoho.com 看右上角那个地址最准）。")}
+                   "只有一条腿通 ⇒ 去 Zoho 后台查另一条腿的开关" if (imap_ok or smtp_ok) else
+                   "两条腿一起被拒 ⇒ 问题在**凭据本身**，按下面顺序查：\n"
+                   "  ① **两步验证与应用专用密码必须配套**：开了 2FA 就必须用应用专用密码（主密码一律不过）；"
+                   "没开 2FA 时应用专用密码也**不生效** —— 这两种错配都会得到同一个 `AUTHENTICATIONFAILED`。\n"
+                   "  ② **setx 时那个密码串有没有打错**（应用密码是随机串，手输极易错一格）；"
+                   "更稳的做法：复制粘贴，或先写进一个临时文件核对再 setx。\n"
+                   "  ③ Zoho 后台 → 设置 → 邮件 → 邮件账户 → **IMAP 访问 = 启用**（Zoho 默认不开）。\n"
+                   "  ④ 账号收信域到底是不是 `zohomail.com`（浏览器登进 mail.zoho.com 看右上角那个地址最准）。")}
     res["_口径"] = ("密码只从环境变量读（含 setx 写进注册表的那份），**不落盘、不回显、异常文本过脱敏**；"
-                    "「握得上手」与「认证通过」分开报。失败重试有上限，不做撞库。")
+                  "「握得上手」与「认证通过」分开报。失败重试有上限，不做撞库。")
     print(json.dumps(res, ensure_ascii=False, indent=1))
     return 0 if imap_ok else 5
 
@@ -359,16 +359,16 @@ def cmd_bind(a):
     STATE.parent.mkdir(parents=True, exist_ok=True)
     rec = {"绑定时间": time.strftime("%Y-%m-%dT%H:%M:%S"), "服务": "Zoho Mail",
            "收信": {"host": c["host"], "port": c["port"], "host变量": c["host_env"],
-                    "账号掩码": c["user_mask"], "账号变量": c["user_env"]},
+                  "账号掩码": c["user_mask"], "账号变量": c["user_env"]},
            "密码落点": {"变量名": c["pass_env"] or PASS_VARS[0], "值": "不落盘（只在环境变量里）"},
            "发信（既有）": {"host": os.environ.get("GBT_SMTP_HOST"), "状态": "已配"
-                            if os.environ.get("GBT_SMTP_HOST") else "未配"},
+                      if os.environ.get("GBT_SMTP_HOST") else "未配"},
            "凭据状态": c["状态"]}
     if c["user"] and not any(d in c["user"] for d in ZOHO_HINT):
         rec["_账号域核对"] = ("⚠️ 这个账号的域**看起来不是 Zoho 的**（收到 %s）⇒ "
-                              "请核对 `GBT_IMAP_USER` 是不是真填了 %s 那个地址；"
-                              "本件不回退到别的服务的账号（那会写下假账）。"
-                              % (c["user_mask"], "payzelle@zohomail.com"))
+                         "请核对 `GBT_IMAP_USER` 是不是真填了 %s 那个地址；"
+                         "本件不回退到别的服务的账号（那会写下假账）。"
+                         % (c["user_mask"], "payzelle@zohomail.com"))
     STATE.write_text(json.dumps(rec, ensure_ascii=False, indent=1), "utf-8")
     print(json.dumps({"ok": True, "status": "bound", "落点": str(STATE), "记录": rec,
                       "_口径": "固化的是**非密配置**；密码只在环境变量里，本文件里没有它。"},

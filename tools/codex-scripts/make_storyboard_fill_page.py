@@ -18,7 +18,6 @@
 """
 from __future__ import annotations
 
-import json
 import re
 import sys
 from pathlib import Path
@@ -229,8 +228,8 @@ def render_work(w: dict, rows: list) -> str:
                 f'<span class="nrole">{esc(r["role"])}</span>') if r["narration"] else \
                ('<span class="nr empty">本片无旁白（虚构叙事）—— '
                 '此镜的「理由」请对着上面<b>画面</b>写</span>')
-        opts_r = "".join(f'<option value="{esc(o)}"></option>' for o in RENDER_OPTS)
-        opts_d = "".join(f'<option value="{esc(o)}"></option>' for o in DEPTH_OPTS)
+        "".join(f'<option value="{esc(o)}"></option>' for o in RENDER_OPTS)
+        "".join(f'<option value="{esc(o)}"></option>' for o in DEPTH_OPTS)
         trs.append(f"""
       <tr data-shot="{r['idx']}">
         <td class="num">{r['idx']}</td>
@@ -679,7 +678,7 @@ def main() -> int:
         # 宽式判据（与交付物侧同口径）：窄式漏 ←→↔⇒①②③◇⌘，覆盖面缺口由 audit_craft_gate.py 量出
         "无 emoji 当图标（宽式·扣白名单）": not emoji_hits(back),
         "无裸圆角（0 除外）": not re.search(r"border-radius:\s*(?!0\s*;)(?!var\()\d",
-                                            re.sub(r":root\s*\{.*?\}", "", back, flags=re.S)),
+                                    re.sub(r":root\s*\{.*?\}", "", back, flags=re.S)),
         "渲染区无 markdown 泄漏": not re.search(r"\*\*|`[^`]*`", body),
         "无 lorem/占位文": not re.search(r"lorem ipsum|placeholder text|sample content", back, re.I),
     }

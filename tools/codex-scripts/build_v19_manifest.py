@@ -4,12 +4,11 @@
 """
 import ast
 import json
-import re
 import sys
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 

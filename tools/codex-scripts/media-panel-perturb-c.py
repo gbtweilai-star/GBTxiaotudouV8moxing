@@ -16,12 +16,12 @@
 纪律（第 34 轮学到的）：**扰动必须先自证生效**（这里以"骨架栏确实动了"为生效证据，
   同时另取一次 `scaffold()` 的直接返回作为独立读数），再去下结论。
 """
-import hashlib
-import json
-import re
-import subprocess
-import sys
-from pathlib import Path
+import hashlib  # noqa: E402
+import json  # noqa: E402
+import re  # noqa: E402
+import subprocess  # noqa: E402
+import sys  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[2]

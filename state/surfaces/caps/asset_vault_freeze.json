@@ -1,0 +1,15 @@
+{
+ "cap": "asset_vault_freeze",
+ "domain": "security",
+ "desc": "资产单点损失**体检**（防御侧）：卷影副本/防篡改开关/BitLocker/关键资产清单，不加密不冻结",
+ "safe": true,
+ "ops": [],
+ "ops_method": "handler 文件未找到",
+ "handler_file": "",
+ "params": [],
+ "params_hint": "",
+ "handler": "asset_vault_freeze",
+ "slot": "g3-27",
+ "group": 3,
+ "role": "资产单点损失体检"
+}

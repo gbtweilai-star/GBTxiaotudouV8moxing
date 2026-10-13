@@ -12,6 +12,7 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 targets = sys.argv[1:] or ["gbt_allinone/positions.py"]
 
+
 def fix_line(line: str) -> str:
     """把一行里「内层成对的中文双引号」换成 「」。
 
@@ -34,12 +35,14 @@ def fix_line(line: str) -> str:
             fixed, op = [], True
             for ch in inner:
                 if ch == '"':
-                    fixed.append("「" if op else "」"); op = not op
+                    fixed.append("「" if op else "」")
+                    op = not op
                 else:
                     fixed.append(ch)
             tail = st[m.end(2) + 1:]
             return f'{m.group(1)}"{"".join(fixed)}"{tail}'
     return line
+
 
 total_fixed = 0
 for t in targets:

@@ -1,0 +1,48 @@
+{
+ "cap": "media_pipeline",
+ "domain": "video",
+ "desc": "AI短视频/电影/音乐流水线：镜像房间编排、产物自审、版权/安全/品牌/质量检查、主人授权后发布",
+ "safe": true,
+ "ops": [
+  {
+   "op": "collaborate",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "compose",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "knowledge",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "launch_cycle",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "plan",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "publish",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "review",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "status",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "static-heuristic",
+ "handler_file": "gbt_allinone\\tools\\media_pipeline.py",
+ "params": [],
+ "params_hint": "",
+ "handler": "media_pipeline",
+ "slot": "g2-12",
+ "group": 2,
+ "role": "AI 电影工作流（概念→剧本→镜头→声音→剪辑）"
+}

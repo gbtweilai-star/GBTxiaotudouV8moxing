@@ -98,14 +98,14 @@ def fit_rows(sizes: dict, vram_gb, free_ram_gb) -> dict:
             row["装得进显存+空闲内存"] = gib <= both
             row["差多少GiB"] = round(gib - both, 2)
             row["判定"] = ("可装（**不等于跑得动**）" if gib <= both else
-                          "🔴 **装不下**（还差 %.2f GiB）" % (gib - both))
+                         "🔴 **装不下**（还差 %.2f GiB）" % (gib - both))
         rows.append(row)
     smallest = rows[0] if rows else None
     return {"ok": True, "总档数": len(rows), "逐档": rows, "最小档": smallest,
             "本机": {"显存GB": vram_gb, "空闲内存GB": free_ram_gb if free_ram_gb is None
-                     else round(free_ram_gb, 2)},
+                   else round(free_ram_gb, 2)},
             "口径": "**装得下 ≠ 跑得动**：这里只判「文件大小 vs 可用资源」这个必要不充分条件；"
-                    "真跑还要 KV cache/上下文/框架开销。"}
+            "真跑还要 KV cache/上下文/框架开销。"}
 
 
 def cmd_show(repo: str) -> int:
@@ -113,7 +113,7 @@ def cmd_show(repo: str) -> int:
         sizes = fetch_sizes(repo)
     except Exception as exc:
         print(json.dumps({"判决": "🔴 **未读到权重表**（%s: %s）⇒ 拒（不拿记忆顶替）"
-                                  % (type(exc).__name__, str(exc)[:60])}, ensure_ascii=False, indent=1))
+                          % (type(exc).__name__, str(exc)[:60])}, ensure_ascii=False, indent=1))
         return 2
     loc = local_resources()
     fit = fit_rows(sizes, loc.get("显存GB"), loc.get("空闲内存GB"))
@@ -128,7 +128,7 @@ def cmd_show(repo: str) -> int:
     for r in fit["逐档"]:
         extra = ("" if "装得进显存" not in r else
                  " ｜ 显存%s ｜ 合计%s" % ("✅" if r["装得进显存"] else "❌",
-                                        "✅" if r["装得进显存+空闲内存"] else "❌"))
+                                     "✅" if r["装得进显存+空闲内存"] else "❌"))
         print("  %-34s %6.2f GiB%s ｜ %s" % (r["档"], r["文件GiB"], extra, r["判定"]))
     print("-" * 76)
     print("最小档：%s（%.2f GiB）" % (fit["最小档"]["档"], fit["最小档"]["文件GiB"]))

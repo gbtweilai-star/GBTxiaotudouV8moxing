@@ -156,5 +156,81 @@ def main():
     return 0
 
 
+def check_contract(p) -> tuple:
+    """S7 契约门：GLB 里**真的**挂上了 morph targets + targetNames + expressions.preset。
+
+    🔴 2026-10-10 补。起因：judge-map 逐阶段清点负控出处，S7 那格是空的。
+    看清了一件重要的事：S7 原来的"门"**只是生成器 main() 的退出码** —— 它跑成功就算过，
+    **并不检查产物里到底有没有那些东西**。本函数把"契约真的落在产物里"单独做成可判的读数，
+    这样它才有正负例可言（而不是"生成脚本没报错"）。
+    判据（逐条都从文件里**算出来**，不看注释）：
+      · meshes[0].primitives[0].targets 个数 == extras.targetNames 个数 且 > 0
+      · VRMC_vrm.expressions.preset 的键集覆盖 targetNames
+      · 每个 target 的 POSITION 增量 accessor 存在、count == 顶点数
+    """
+    if not p.exists():
+        return False, "缺 %s" % p.name
+    J, _ = load(p)
+    prim = J["meshes"][0]["primitives"][0]
+    tg = prim.get("targets") or []
+    names = ((J["meshes"][0].get("extras") or {}).get("targetNames")) or []
+    nvert = J["accessors"][prim["attributes"]["POSITION"]]["count"]
+    preset = (((J.get("extensions") or {}).get("VRMC_vrm") or {})
+              .get("expressions") or {}).get("preset") or {}
+    bad = []
+    if not tg:
+        bad.append("primitives[0].targets 空（没挂 morph）")
+    if len(names) != len(tg):
+        bad.append("targetNames(%d) 与 targets(%d) 数量不符" % (len(names), len(tg)))
+    if not names:
+        bad.append("extras.targetNames 空")
+    miss = [n for n in names if n not in preset]
+    if miss:
+        bad.append("expressions.preset 缺 %s" % miss)
+    for k, t in enumerate(tg):
+        ai = (t or {}).get("POSITION")
+        if ai is None:
+            bad.append("targets[%d] 没有 POSITION" % k); continue
+        if J["accessors"][ai].get("count") != nvert:
+            bad.append("targets[%d] count %s ≠ 顶点数 %d"
+                       % (k, J["accessors"][ai].get("count"), nvert))
+    ok = not bad
+    return ok, ("morph %d 个 %s · preset %d 个 · 顶点 %d"
+                % (len(tg), names[:4], len(preset), nvert)
+                + ("" if ok else " · ✗ " + "; ".join(bad)))
+
+
+def selftest() -> int:
+    """S7 契约门的负控：**真件配对**（有 morph 的 vs 没 morph 的）。
+
+    正例 = model-expressions.glb（本脚本的产物，已挂 morph）
+    负例 = model-rigged.glb（上一步产物，**没有** morph targets）
+    ==两边都是仓里真件，我不造假的来凑数。==
+    """
+    fails, n = [], [0]
+
+    def c(name, got, want):
+        n[0] += 1
+        ok = (got == want)
+        print("  %-56s %s" % (name, "✅" if ok else "❌ 期望 %s 得到 %s" % (want, got)))
+        if not ok:
+            fails.append(name)
+
+    c("check_contract 负例·缺件 ⇒ 红", check_contract(RIG / "_nope.glb")[0], False)
+    noexpr = RIG / "model-rigged.glb"
+    if noexpr.is_file():
+        c("check_contract 负例·model-rigged.glb **没挂 morph** ⇒ 红",
+          check_contract(noexpr)[0], False)
+    if OUT.is_file():
+        c("check_contract 正例·model-expressions.glb 挂了 morph ⇒ 过",
+          check_contract(OUT)[0], True)
+    print()
+    print("expr-make 自检: %s（%d 条）"
+          % ("**全部通过**" if not fails else "**%d 条失败**" % len(fails), n[0]))
+    return 0 if not fails else 1
+
+
 if __name__ == "__main__":
+    if "selftest" in sys.argv:
+        raise SystemExit(selftest())
     raise SystemExit(main())

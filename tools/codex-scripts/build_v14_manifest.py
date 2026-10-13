@@ -176,4 +176,4 @@ print("V14 新补的 %d 组核心模块：" % len(core))
 for gid, c in core.items():
     print("   %-10s %-20s %2d 文件 / %6s 行" % (gid, c["zh"], c["n"], f"{c['lines']:,}"))
 print("   合计 %d 文件 / %s 行" % (sum(c["n"] for c in core.values()),
-                                f"{sum(c['lines'] for c in core.values()):,}"))
+                              f"{sum(c['lines'] for c in core.values()):,}"))

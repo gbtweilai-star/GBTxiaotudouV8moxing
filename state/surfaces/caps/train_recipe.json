@@ -1,0 +1,32 @@
+{
+ "cap": "train_recipe",
+ "domain": "llm",
+ "desc": "训练配方与就绪闸（train-llm-from-scratch #10 蒸馏）：**本机零算力 ⇒ 不接真训练**；readiness 现读 torch/CUDA/磁盘/语料并逐条报缺口（缺什么谁能补）；plan 出七阶段配方（每阶段输入/输出/判据）；ledger 实验账**没 src 不收**。op=readiness/plan/ledger/where",
+ "safe": true,
+ "ops": [
+  {
+   "op": "ledger",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "plan",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "readiness",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "where",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "static-heuristic",
+ "handler_file": "gbt_allinone\\tools\\train_recipe.py",
+ "params": [],
+ "params_hint": "",
+ "handler": "train_recipe",
+ "slot": "g1-07",
+ "group": 1,
+ "role": "训练/微调配方（就绪闸 + 七阶段）"
+}

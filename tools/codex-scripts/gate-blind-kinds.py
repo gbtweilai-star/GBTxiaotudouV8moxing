@@ -83,7 +83,15 @@ def _py_files() -> list:
     return _FILES
 
 
-BRANCH_RE = re.compile(r'if kind == "([a-z_0-9]+)":(.*?)(?=\n    if kind == |\Z)', re.S)
+# 🔴 2026-10-10 真根因修复（体检 rc=1：位级写目标抽样 崩 unindent does not match）：
+#    原来边界**只认 if kind == 形态** ⇒ api.py 里那些 **if kind in (a,b,c)** 的分支
+#    **不被当边界**，于是**下一支的代码被整段吞进上一支** ⇒ 片段里出现 4 空格的代码行
+#    （正文在 8）⇒ unindent does not match（实测：datakit 那一支吞掉了 quant_strategy 那一支）。**8 支中招。**
+#    ⇒ 边界改成认**全部同级分支头**：if kind == / if kind in / elif / else: / return @4 空格。
+#    （注释仍会被吞 —— 那无害：注释不参与缩进判定，且解析器那侧已有抬齐兜底。）
+BRANCH_RE = re.compile(
+    r'if kind == "([a-z_0-9]+)":(.*?)'
+    r'(?=\n    (?:if kind (?:==|in) |elif |else:|if cap |return )|\Z)', re.S)
 
 
 def split_branches(txt: str) -> dict:
@@ -142,7 +150,30 @@ def _branch_called(body: str):
         # **下一支之前那段行首 4 空格的注释**一并吞进来 ⇒ `textwrap.dedent` 算出的
         # 公共缩进变成 4，而分支正文在 8 ⇒ **仍然 IndentationError**（实测 9 支全中）。
         # 不再猜缩进：**套一层 `if True:`**，片段只需相对缩进自洽即可解析。
-        tree = ast.parse("if True:\n" + body)
+        #
+        # 🔴 2026-10-10 第三刀（体检 rc=1 追根因，实测仍崩）：套 `if True:` **只解决"整体缩进偏深"**，
+        #    解决不了**切片把"下一支之前那段 4 空格注释"吞进来**的情形 —— 那几行比正文（8 空格）
+        #    **还浅** ⇒ `unindent does not match any outer indentation level`（实测：自检③回归负控）。
+        #    真修法：**解析前把低于正文基准缩进的行抬到基准**（切片吞进来的注释本就该抬齐），
+        #    基准 = **代码行**（非注释非空）的最小缩进 —— 注释不参与定基准，否则又被它带偏。
+        _lines = body.splitlines()
+        _code = [ln for ln in _lines if ln.strip() and not ln.strip().startswith("#")]
+        if not _code:
+            return None
+        _base = min(len(ln) - len(ln.lstrip()) for ln in _code)
+        _fixed = []
+        for ln in _lines:
+            if not ln.strip():
+                _fixed.append("")
+                continue
+            _ind = len(ln) - len(ln.lstrip())
+            # 🔴 第三刀的修正（实测证明只抬注释不够）：**注释本来就不参与缩进判定**，
+            #    真正让解析崩的是**代码行**缩进比基准还浅（切片切穿了嵌套块）。
+            #    ⇒ **任何**低于基准的行一律抬到基准：保证片段内不存在"低于基准的 dedent"。
+            #    语义代价：极少数被切穿的嵌套块会被压平 —— 本函数只取**第一个 return 的调用**，
+            #    压平不影响它读到的那一个；而"整支崩掉"会让整道闸不可用（那才是真损失）。
+            _fixed.append((" " * _base + ln.lstrip()) if _ind < _base else ln)
+        tree = ast.parse("if True:\n" + "\n".join(_fixed))
     except Exception as e:
         raise RuntimeError("分支原文解析不了（不允许静默返回 None）：%s" % str(e)[:120])
     for n in ast.walk(tree):
@@ -206,6 +237,7 @@ def func_writes(p: Path, fname: str, depth: int = 2, seen=None) -> dict:
             res["下一层读过"] = list(dict.fromkeys(callees))[:8]
         return res
     return {"找到": "**未读到**（模块里没有这个函数名）"}
+
 
 def _audit():
     """**加载 `gate-blind-audit.py`**（带连字符的文件名，走 importlib）。
@@ -277,7 +309,7 @@ def run() -> dict:
                      "函数里有删除类": bool(det.get("删除类"))})
     return {"ok": True, "位数": len(rows), "逐位": rows,
             "口径": "**静态读到的写目标，不是全集**；"
-                    "「函数里有删除类」≠「该位一定会删」（要真跑才知道）"}
+            "「函数里有删除类」≠「该位一定会删」（要真跑才知道）"}
 
 
 def cmd_run(a) -> int:

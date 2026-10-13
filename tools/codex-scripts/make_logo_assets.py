@@ -19,7 +19,7 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 SRC = Path.home() / ".dsh" / "attachments" / "v1" / "objects" / "c7" / \
     "c7b9017c8eacbb5ac6f60f6f0b85bea57cbc8b7b31bd2022c1cb053044e898b1"
 OUT = BASE / "assets" / "brand"
@@ -62,10 +62,10 @@ box = full.getchannel("A").point(lambda v: 255 if v > 10 else 0).getbbox()
 print("内容包围盒:", box, "占比 %.1f%%" % (100 * (box[2] - box[0]) * (box[3] - box[1]) / (h * w)))
 
 pad = int(max(box[2] - box[0], box[3] - box[1]) * 0.03)
-l, t, r, b = max(box[0] - pad, 0), max(box[1] - pad, 0), min(box[2] + pad, w), min(box[3] + pad, h)
-side = max(r - l, b - t)
+lft, t, r, b = max(box[0] - pad, 0), max(box[1] - pad, 0), min(box[2] + pad, w), min(box[3] + pad, h)
+side = max(r - lft, b - t)
 crop = Image.new("RGBA", (side, side), (0, 0, 0, 0))
-crop.paste(full.crop((l, t, r, b)), ((side - (r - l)) // 2, (side - (b - t)) // 2))
+crop.paste(full.crop((lft, t, r, b)), ((side - (r - lft)) // 2, (side - (b - t)) // 2))
 print("正方形化:", crop.size)
 
 for n in (512, 256, 128, 64, 32):

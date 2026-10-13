@@ -1,68 +1,14 @@
 {
  "ok": true,
  "op": "list",
- "at": "2026-10-03T19:14:27",
- "count": 317,
+ "at": "2026-10-13T23:26:54",
+ "count": 366,
  "rows": [
-  {
-   "pid": 28384,
-   "name": "LobeHub.exe",
-   "mem_mb": 965.1,
-   "cpu": 151.6,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\LobeHub\\LobeHub.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\LobeHub --standard-schemes=ap"
-  },
-  {
-   "pid": 17332,
-   "name": "python.exe",
-   "mem_mb": 167.7,
-   "cpu": 132.8,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe tools/codex-scripts/cap-probe.py --tier 只读档"
-  },
-  {
-   "pid": 30292,
-   "name": "python.exe",
-   "mem_mb": 4.8,
-   "cpu": 94.5,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe"
-  },
-  {
-   "pid": 20452,
-   "name": "LobeHub.exe",
-   "mem_mb": 36.4,
-   "cpu": 41.0,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\LobeHub\\LobeHub.exe --type=gpu-process --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\LobeHub --gpu-preferences="
-  },
-  {
-   "pid": 30296,
-   "name": "dwm.exe",
-   "mem_mb": 28.6,
-   "cpu": 31.8,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": ""
-  },
-  {
-   "pid": 22908,
-   "name": "ChatGPT.exe",
-   "mem_mb": 409.3,
-   "cpu": 28.5,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.924.2738.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe --type=renderer --standard-schemes=app,codex-sandbox --serv"
-  },
   {
    "pid": 4,
    "name": "System",
-   "mem_mb": 0.1,
-   "cpu": 25.5,
+   "mem_mb": 8.1,
+   "cpu": 181.2,
    "ports": [
     139,
     445
@@ -71,174 +17,227 @@
    "cmd": ""
   },
   {
-   "pid": 17268,
-   "name": "codex.exe",
-   "mem_mb": 35.9,
-   "cpu": 15.7,
+   "pid": 16984,
+   "name": "WindowsTerminal.exe",
+   "mem_mb": 26.3,
+   "cpu": 129.8,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\OpenAI\\Codex\\bin\\faa963e871dd422c\\codex.exe -c features.code_mode_host=true app-server --analytics-default-enabled -c plu"
+   "cmd": "C:\\Program Files\\WindowsApps\\Microsoft.WindowsTerminal_1.24.12741.0_x64__8wekyb3d8bbwe\\WindowsTerminal.exe --profile {61c54bbd-c2c6-5271-96e7-009a87ff"
   },
   {
-   "pid": 5152,
-   "name": "MsMpEng.exe",
-   "mem_mb": 157.1,
-   "cpu": 13.0,
+   "pid": 27716,
+   "name": "python.exe",
+   "mem_mb": 531.6,
+   "cpu": 112.0,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
-   "cmd": ""
+   "cmd": "C:\\Python310\\python.exe C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\five-dim.py cap cross_scan"
   },
   {
-   "pid": 10912,
-   "name": "ZCode.exe",
-   "mem_mb": 161.4,
-   "cpu": 10.6,
-   "ports": [],
-   "owner": "浏览器",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\ZCode --standard-schemes=zcode-me"
-  },
-  {
-   "pid": 6804,
-   "name": "ChatGPT.exe",
-   "mem_mb": 203.5,
-   "cpu": 7.6,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.924.2738.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe"
-  },
-  {
-   "pid": 1884,
-   "name": "ChatGPT.exe",
-   "mem_mb": 22.7,
-   "cpu": 2.2,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.924.2738.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe --type=gpu-process --gpu-recent-crash-count=0 --no-pre-read"
-  },
-  {
-   "pid": 11136,
+   "pid": 17872,
    "name": "chrome.exe",
-   "mem_mb": 87.9,
-   "cpu": 2.1,
+   "mem_mb": 126.5,
+   "cpu": 59.2,
    "ports": [],
    "owner": "浏览器",
-   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --no-startup-window /prefetch:5 --flag-switches-begin --flag-switches-end"
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=gpu-process --gpu-recent-crash-count=0 --no-pre-read-main-dll --gpu-preferences=WAAAAAAAA"
   },
   {
-   "pid": 10596,
-   "name": "ZCode.exe",
-   "mem_mb": 56.5,
-   "cpu": 1.1,
-   "ports": [],
-   "owner": "浏览器",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=gpu-process --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\ZCode --gpu-preferences=SAAAAA"
-  },
-  {
-   "pid": 21328,
-   "name": "ZCode.exe",
-   "mem_mb": 46.5,
-   "cpu": 1.1,
-   "ports": [],
-   "owner": "浏览器",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe"
-  },
-  {
-   "pid": 9736,
-   "name": "WeChat.exe",
-   "mem_mb": 27.1,
-   "cpu": 1.1,
-   "ports": [
-    8680,
-    13013,
-    13016
-   ],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Program Files\\Tencent\\WeChat\\WeChat.exe -autorun"
-  },
-  {
-   "pid": 9012,
-   "name": "WeChatAppEx.exe",
-   "mem_mb": 14.5,
-   "cpu": 1.1,
-   "ports": [],
-   "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --type=renderer --client_version=1661"
-  },
-  {
-   "pid": 30580,
-   "name": "ZCode.exe",
-   "mem_mb": 160.1,
-   "cpu": 0.0,
-   "ports": [],
-   "owner": "浏览器",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\resources\\glm\\zcode.cjs app-server --stdio --surface"
-  },
-  {
-   "pid": 26572,
+   "pid": 21360,
    "name": "chrome.exe",
-   "mem_mb": 134.1,
-   "cpu": 0.0,
+   "mem_mb": 283.5,
+   "cpu": 58.2,
    "ports": [],
    "owner": "浏览器",
-   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --no-startup-window /prefetch:5"
   },
   {
-   "pid": 9540,
+   "pid": 15028,
+   "name": "chrome.exe",
+   "mem_mb": 168.3,
+   "cpu": 49.8,
+   "ports": [],
+   "owner": "浏览器",
+   "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer --lang=zh-CN --devi"
+  },
+  {
+   "pid": 1940,
+   "name": "dwm.exe",
+   "mem_mb": 50.1,
+   "cpu": 48.8,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "dwm.exe"
+  },
+  {
+   "pid": 9084,
    "name": "explorer.exe",
-   "mem_mb": 98.0,
-   "cpu": 0.0,
+   "mem_mb": 121.3,
+   "cpu": 48.0,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
    "cmd": "C:\\WINDOWS\\Explorer.EXE"
   },
   {
-   "pid": 3356,
+   "pid": 49112,
+   "name": "powershell.exe",
+   "mem_mb": 47.9,
+   "cpu": 38.7,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoProfile -Command try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n"
+  },
+  {
+   "pid": 33912,
+   "name": "node.exe",
+   "mem_mb": 265.8,
+   "cpu": 28.2,
+   "ports": [],
+   "owner": "MCP/工具",
+   "cmd": "C:\\Program Files\\nodejs\\\\node.exe C:\\Program Files\\nodejs\\\\node_modules\\npm\\bin\\npx-cli.js playwriter@latest"
+  },
+  {
+   "pid": 5592,
+   "name": "MsMpEng.exe",
+   "mem_mb": 170.1,
+   "cpu": 25.1,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.26080.4-0\\MsMpEng.exe"
+  },
+  {
+   "pid": 3660,
+   "name": "WeChatAppEx.exe",
+   "mem_mb": 8.6,
+   "cpu": 22.4,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --type=gpu-process --client_version=1"
+  },
+  {
+   "pid": 49264,
+   "name": "Genspark Super App.exe",
+   "mem_mb": 54.6,
+   "cpu": 12.7,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\gensparkaio\\Genspark Super App.exe --type=gpu-process --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\gensparkaio"
+  },
+  {
+   "pid": 20000,
+   "name": "WeChatAppEx.exe",
+   "mem_mb": 10.4,
+   "cpu": 11.3,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Tencent\\WeChat\\XPlugin\\Plugins\\RadiumWMPF\\14315\\extracted\\runtime\\WeChatAppEx.exe --type=renderer --client_version=1661"
+  },
+  {
+   "pid": 35392,
+   "name": "tmux.exe",
+   "mem_mb": 5.1,
+   "cpu": 7.4,
+   "ports": [
+    64563
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\gensparkaio\\portable-git\\PortableGit\\usr\\bin\\tmux.exe -L genspark-code -f /c/Users/ADMIN/AppData/Roaming/gensparkaio/sp"
+  },
+  {
+   "pid": 14900,
    "name": "Telegram.exe",
-   "mem_mb": 68.5,
-   "cpu": 0.0,
+   "mem_mb": 62.2,
+   "cpu": 5.8,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
    "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\Telegram Desktop\\Telegram.exe"
   },
   {
-   "pid": 10216,
-   "name": "LobeHub.exe",
-   "mem_mb": 65.5,
-   "cpu": 0.0,
+   "pid": 1836,
+   "name": "svchost.exe",
+   "mem_mb": 9.7,
+   "cpu": 3.7,
    "ports": [
-    33250
+    135
    ],
    "owner": "未知（不在我们的标记里）",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\LobeHub\\LobeHub.exe"
+   "cmd": "C:\\WINDOWS\\system32\\svchost.exe -k RPCSS -p"
   },
   {
-   "pid": 28604,
-   "name": "ZCode.exe",
-   "mem_mb": 42.8,
-   "cpu": 0.0,
-   "ports": [
-    64710
-   ],
-   "owner": "浏览器",
-   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\ZCode\\ZCode.exe --type=utility --utility-sub-type=node.mojom.NodeService --lang=zh-CN --service-sandbox-type=non"
-  },
-  {
-   "pid": 188,
-   "name": "",
-   "mem_mb": 41.2,
-   "cpu": 0.0,
+   "pid": 51652,
+   "name": "conhost.exe",
+   "mem_mb": 0.7,
+   "cpu": 3.4,
    "ports": [],
    "owner": "未知（不在我们的标记里）",
-   "cmd": ""
+   "cmd": "\\??\\C:\\WINDOWS\\system32\\conhost.exe 0x4"
   },
   {
-   "pid": 2520,
+   "pid": 59508,
+   "name": "codex.exe",
+   "mem_mb": 45.8,
+   "cpu": 2.7,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\OpenAI\\Codex\\bin\\codex.exe app-server --listen stdio://"
+  },
+  {
+   "pid": 20864,
    "name": "chrome.exe",
-   "mem_mb": 35.0,
-   "cpu": 0.0,
+   "mem_mb": 17.3,
+   "cpu": 2.5,
    "ports": [],
    "owner": "浏览器",
    "cmd": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe --type=renderer --extension-process --no-pre-read-main-dll --video-capture-use-gpu-memory-buffer"
+  },
+  {
+   "pid": 7716,
+   "name": "codex.exe",
+   "mem_mb": 76.1,
+   "cpu": 2.4,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\OpenAI\\Codex\\bin\\codex.exe"
+  },
+  {
+   "pid": 42836,
+   "name": "Genspark Super App.exe",
+   "mem_mb": 47.1,
+   "cpu": 2.2,
+   "ports": [
+    16829,
+    16831
+   ],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\gensparkaio\\Genspark Super App.exe --updated"
+  },
+  {
+   "pid": 50444,
+   "name": "script.exe",
+   "mem_mb": 1.1,
+   "cpu": 2.1,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Roaming\\gensparkaio\\portable-git\\PortableGit\\usr\\bin\\script.exe -qefc exec '/c/Users/ADMIN/AppData/Roaming/gensparkaio/portable"
+  },
+  {
+   "pid": 54584,
+   "name": "Genspark Super App.exe",
+   "mem_mb": 76.5,
+   "cpu": 2.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\gensparkaio\\Genspark Super App.exe --type=renderer --user-data-dir=C:\\Users\\ADMIN\\AppData\\Roaming\\gensparkaio --"
+  },
+  {
+   "pid": 7208,
+   "name": "svchost.exe",
+   "mem_mb": 4.2,
+   "cpu": 2.0,
+   "ports": [],
+   "owner": "未知（不在我们的标记里）",
+   "cmd": "C:\\WINDOWS\\system32\\svchost.exe -k osprivacy -p -s camsvc"
   }
  ],
  "_口径": {

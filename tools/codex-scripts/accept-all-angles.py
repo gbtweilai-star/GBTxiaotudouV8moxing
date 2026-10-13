@@ -151,7 +151,7 @@ def angle_ops() -> dict:
     rc, out, err, dt = _run([PY, str(ROOT / "tools" / "codex-scripts" / "quick_scan.py"),
                              "--json", str(Path(tempfile.gettempdir()) / "gbt-accept-scan.json")],
                             300)
-    line = next((l for l in out.splitlines() if l.startswith("故障：")), "")
+    line = next((li for li in out.splitlines() if li.startswith("故障：")), "")
     if not line:
         return {"state": "FAIL", "why": "速扫没给出故障行（rc=%d）：%s" % (rc, (err or out)[:160]),
                 "how": "py -3.14 tools/codex-scripts/quick_scan.py"}
@@ -330,7 +330,7 @@ def angle_delivery() -> dict:
                        % (n_red, bad[0][:150] if bad else (out2 or "")[-150:]),
                 "how": "cd holo_pet_w3 && npm run pack  →  py -3.14 tools/codex-scripts/pack-receipt.py"}
     return {"state": "PASS", "why": "清单 + 装机回执都在，**且现量过**（包与源码同源）· 守卫 %s"
-                                   % (m.group(0) if m else "?"),
+            % (m.group(0) if m else "?"),
             "how": "py -3.14 tools/codex-scripts/pack-receipt.py --dry"}
 
 

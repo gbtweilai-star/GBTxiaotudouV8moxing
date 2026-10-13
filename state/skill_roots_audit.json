@@ -1,5 +1,5 @@
 {
- "at": "2026-09-27T14:33:50",
+ "at": "2026-10-13T17:28:45",
  "roots": {
   "ws-source": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills",
   "openclaw-managed": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills",
@@ -20,13 +20,13 @@
    "ws-source": {
     "sha": "F87C0ECEC86DB79DA959E2488F169E60328ADD7CA80B83FBEB34BD83558B2DA8",
     "bytes": 956,
-    "mtime": "09-25 10:37",
+    "mtime": "09-28 12:25",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\autoclaw-mcp-tools"
    },
    "openclaw-managed": {
     "sha": "F87C0ECEC86DB79DA959E2488F169E60328ADD7CA80B83FBEB34BD83558B2DA8",
     "bytes": 956,
-    "mtime": "09-22 18:38",
+    "mtime": "09-28 12:25",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\autoclaw-mcp-tools"
    },
    "user-agents": {
@@ -40,85 +40,97 @@
    "ws-source": {
     "sha": "DF56080E8C3261030DDB5DC176584CB8CFF98031E728A237364E3B29F8EAD811",
     "bytes": 11087,
-    "mtime": "09-22 22:03",
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\digihuman-pipeline"
    },
    "openclaw-managed": {
-    "sha": "DF56080E8C3261030DDB5DC176584CB8CFF98031E728A237364E3B29F8EAD811",
-    "bytes": 11087,
-    "mtime": "09-22 22:03",
+    "sha": "CF5CE318CE06B4E3BEA132EF726C30B177882EAF92B92A75DC1F04FC2352C56E",
+    "bytes": 11099,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\digihuman-pipeline"
    },
    "user-agents": {
     "sha": "DF56080E8C3261030DDB5DC176584CB8CFF98031E728A237364E3B29F8EAD811",
     "bytes": 11087,
-    "mtime": "09-22 22:03",
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\digihuman-pipeline"
    }
   },
   "gbt-aesthetic": {
    "ws-source": {
-    "sha": "B3DAC4C9BABBDD879973981CF3987FBE94CFF3BEFF501D0F0C5B61F1C41D1D5B",
-    "bytes": 34239,
-    "mtime": "09-23 08:40",
+    "sha": "1D146BD8C441D03EBB2B6C8E57E9DE5C8A6B1BF9D70CFB34958FBB5506DF986A",
+    "bytes": 34734,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-aesthetic"
    },
    "openclaw-managed": {
-    "sha": "B3DAC4C9BABBDD879973981CF3987FBE94CFF3BEFF501D0F0C5B61F1C41D1D5B",
-    "bytes": 34239,
-    "mtime": "09-23 08:40",
+    "sha": "072DC3164E969B8273DC4D0B7386E8D18843A3C9C83FF8A36EB26877A7BC2AA3",
+    "bytes": 34740,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-aesthetic"
    },
    "dsh-project": {
-    "sha": "B3DAC4C9BABBDD879973981CF3987FBE94CFF3BEFF501D0F0C5B61F1C41D1D5B",
-    "bytes": 34239,
-    "mtime": "09-23 08:40",
+    "sha": "072DC3164E969B8273DC4D0B7386E8D18843A3C9C83FF8A36EB26877A7BC2AA3",
+    "bytes": 34740,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-aesthetic"
    },
    "user-agents": {
-    "sha": "B3DAC4C9BABBDD879973981CF3987FBE94CFF3BEFF501D0F0C5B61F1C41D1D5B",
-    "bytes": 34239,
-    "mtime": "09-23 08:40",
+    "sha": "1D146BD8C441D03EBB2B6C8E57E9DE5C8A6B1BF9D70CFB34958FBB5506DF986A",
+    "bytes": 34734,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-aesthetic"
    }
   },
   "gbt-ai-101": {
    "ws-source": {
-    "sha": "780C79461E2AF498DF831DE7DCD287C3782E60E2030705E43614B22305126DA0",
-    "bytes": 13294,
-    "mtime": "09-26 23:48",
+    "sha": "0ABB8598E671211D726FB34911422A5AFA287A46346FA258E7F807D61A976329",
+    "bytes": 13551,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-ai-101"
    },
    "openclaw-managed": {
-    "sha": "780C79461E2AF498DF831DE7DCD287C3782E60E2030705E43614B22305126DA0",
-    "bytes": 13294,
-    "mtime": "09-27 00:03",
+    "sha": "2D3FB5827A105013E349D26C76CE3429A072B645CEA374721F4E10ABDAF8823D",
+    "bytes": 13567,
+    "mtime": "09-28 20:56",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-ai-101"
    },
+   "dsh-project": {
+    "sha": "2D3FB5827A105013E349D26C76CE3429A072B645CEA374721F4E10ABDAF8823D",
+    "bytes": 13567,
+    "mtime": "09-28 20:57",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-ai-101"
+   },
    "user-agents": {
-    "sha": "780C79461E2AF498DF831DE7DCD287C3782E60E2030705E43614B22305126DA0",
-    "bytes": 13294,
-    "mtime": "09-26 23:48",
+    "sha": "0ABB8598E671211D726FB34911422A5AFA287A46346FA258E7F807D61A976329",
+    "bytes": 13551,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-ai-101"
    }
   },
   "gbt-ai-anything": {
    "ws-source": {
-    "sha": "73A0D79D95FEA17C4520C1450B80D1EA1E4EF2A4D0DAF1C183A0B4562CFDE0D4",
-    "bytes": 9918,
-    "mtime": "09-27 00:51",
+    "sha": "A04CD0E025E57A4323DF8A295F9CDDD03B2E750DC115ADC5CC9ABBAE54C249DE",
+    "bytes": 10093,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-ai-anything"
    },
    "openclaw-managed": {
-    "sha": "73A0D79D95FEA17C4520C1450B80D1EA1E4EF2A4D0DAF1C183A0B4562CFDE0D4",
-    "bytes": 9918,
-    "mtime": "09-27 00:52",
+    "sha": "C8C24F8271F06ECAE26D5F828F43C76D96E2EAD4F16730A2A069367A60207C89",
+    "bytes": 10095,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-ai-anything"
    },
+   "dsh-project": {
+    "sha": "C8C24F8271F06ECAE26D5F828F43C76D96E2EAD4F16730A2A069367A60207C89",
+    "bytes": 10095,
+    "mtime": "09-28 20:30",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-ai-anything"
+   },
    "user-agents": {
-    "sha": "73A0D79D95FEA17C4520C1450B80D1EA1E4EF2A4D0DAF1C183A0B4562CFDE0D4",
-    "bytes": 9918,
-    "mtime": "09-27 00:51",
+    "sha": "A04CD0E025E57A4323DF8A295F9CDDD03B2E750DC115ADC5CC9ABBAE54C249DE",
+    "bytes": 10093,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-ai-anything"
    }
   },
@@ -134,6 +146,12 @@
     "bytes": 9544,
     "mtime": "09-27 00:52",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-ai-edu"
+   },
+   "dsh-project": {
+    "sha": "8AB887A9EF0CFA229C82934EEC580003C114A6FCA093359154362342D7D3974A",
+    "bytes": 9544,
+    "mtime": "09-28 20:30",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-ai-edu"
    },
    "user-agents": {
     "sha": "8AB887A9EF0CFA229C82934EEC580003C114A6FCA093359154362342D7D3974A",
@@ -170,27 +188,27 @@
   },
   "gbt-arkcli": {
    "ws-source": {
-    "sha": "5B2CBD6A59DAAE886260B885FB9BC75188F70096D92E412EE585D1FF8496FD9B",
-    "bytes": 12391,
-    "mtime": "09-22 22:38",
+    "sha": "90D05611E645B3A40E623C85EEF53D030C2CE0ABE176D12610EC572BD34B4E90",
+    "bytes": 12582,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-arkcli"
    },
    "openclaw-managed": {
-    "sha": "5B2CBD6A59DAAE886260B885FB9BC75188F70096D92E412EE585D1FF8496FD9B",
-    "bytes": 12391,
-    "mtime": "09-22 22:38",
+    "sha": "86BAC54E616AEAD8C41E53E513D70AEE652FAA3D0529579FD510D173E11A8230",
+    "bytes": 12584,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-arkcli"
    },
    "dsh-project": {
-    "sha": "5B2CBD6A59DAAE886260B885FB9BC75188F70096D92E412EE585D1FF8496FD9B",
-    "bytes": 12391,
-    "mtime": "09-22 22:38",
+    "sha": "86BAC54E616AEAD8C41E53E513D70AEE652FAA3D0529579FD510D173E11A8230",
+    "bytes": 12584,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-arkcli"
    },
    "user-agents": {
-    "sha": "5B2CBD6A59DAAE886260B885FB9BC75188F70096D92E412EE585D1FF8496FD9B",
-    "bytes": 12391,
-    "mtime": "09-22 23:23",
+    "sha": "90D05611E645B3A40E623C85EEF53D030C2CE0ABE176D12610EC572BD34B4E90",
+    "bytes": 12582,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-arkcli"
    }
   },
@@ -248,53 +266,53 @@
   },
   "gbt-automation": {
    "ws-source": {
-    "sha": "C8BEE3FF68380C2C8E470641E57B9D49F0DB7C7EA236F686647F33B17CEA208B",
-    "bytes": 34205,
-    "mtime": "09-27 00:08",
+    "sha": "C7816DD23983A849A6548EE70163CC2ED8CF623C240469B70CA4FCD91893808E",
+    "bytes": 34699,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-automation"
    },
    "openclaw-managed": {
-    "sha": "C8BEE3FF68380C2C8E470641E57B9D49F0DB7C7EA236F686647F33B17CEA208B",
-    "bytes": 34205,
-    "mtime": "09-27 00:15",
+    "sha": "D107EC722B55FE477F4EDFD8B0251F37E52CFFE497F04FE9446A111A71FE9CC7",
+    "bytes": 34733,
+    "mtime": "09-28 20:56",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-automation"
    },
    "dsh-project": {
-    "sha": "EE3C282BF66D9EE38142875850B272FCBE30B49FF2BE6AAC813DC75AFA0767FE",
-    "bytes": 29723,
-    "mtime": "09-22 22:28",
+    "sha": "D107EC722B55FE477F4EDFD8B0251F37E52CFFE497F04FE9446A111A71FE9CC7",
+    "bytes": 34733,
+    "mtime": "09-28 20:57",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-automation"
    },
    "user-agents": {
-    "sha": "C8BEE3FF68380C2C8E470641E57B9D49F0DB7C7EA236F686647F33B17CEA208B",
-    "bytes": 34205,
-    "mtime": "09-27 00:08",
+    "sha": "C7816DD23983A849A6548EE70163CC2ED8CF623C240469B70CA4FCD91893808E",
+    "bytes": 34699,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-automation"
    }
   },
   "gbt-brain": {
    "ws-source": {
-    "sha": "AA3EAD559E39ED695D981EA49808F791CBE0BC7B5F652B929D8DF9DE59CFB64D",
-    "bytes": 33864,
-    "mtime": "09-22 22:17",
+    "sha": "A6762F5207721E0B56F8CFD093AA07F9D94A1D87A4D7B594846F7DB9D81EF864",
+    "bytes": 34277,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-brain"
    },
    "openclaw-managed": {
-    "sha": "AA3EAD559E39ED695D981EA49808F791CBE0BC7B5F652B929D8DF9DE59CFB64D",
-    "bytes": 33864,
-    "mtime": "09-22 22:17",
+    "sha": "79FCC32DC2E178439D4F0F32013134D6A32C0C94BBE1AB4897EF4512187D79EB",
+    "bytes": 34283,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-brain"
    },
    "dsh-project": {
-    "sha": "AA3EAD559E39ED695D981EA49808F791CBE0BC7B5F652B929D8DF9DE59CFB64D",
-    "bytes": 33864,
-    "mtime": "09-22 22:17",
+    "sha": "79FCC32DC2E178439D4F0F32013134D6A32C0C94BBE1AB4897EF4512187D79EB",
+    "bytes": 34283,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-brain"
    },
    "user-agents": {
-    "sha": "AA3EAD559E39ED695D981EA49808F791CBE0BC7B5F652B929D8DF9DE59CFB64D",
-    "bytes": 33864,
-    "mtime": "09-22 22:17",
+    "sha": "A6762F5207721E0B56F8CFD093AA07F9D94A1D87A4D7B594846F7DB9D81EF864",
+    "bytes": 34277,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-brain"
    }
   },
@@ -308,7 +326,7 @@
    "openclaw-managed": {
     "sha": "26D3D7A6EC834B088EB3E3D70AEF85B8EE99C98055E5FEF0FF785EE0F755261B",
     "bytes": 4050,
-    "mtime": "09-22 23:25",
+    "mtime": "09-22 23:24",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-brain-vault"
    },
    "dsh-project": {
@@ -326,27 +344,27 @@
   },
   "gbt-chengfeng": {
    "ws-source": {
-    "sha": "A4B8573FBC5DC22D77BAC4D4D79D1F7940F353AEAC512858A808B97B4F66F417",
-    "bytes": 53931,
-    "mtime": "09-22 22:54",
+    "sha": "36232DEAF47A52C7618047C3518A8DA4E055FCB7D511E58BDAD3436B988ED30D",
+    "bytes": 54631,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-chengfeng"
    },
    "openclaw-managed": {
-    "sha": "A4B8573FBC5DC22D77BAC4D4D79D1F7940F353AEAC512858A808B97B4F66F417",
-    "bytes": 53931,
-    "mtime": "09-22 22:54",
+    "sha": "C468E5A1998594CF94CE8B306B6456D0CF3278A7A38F5B235F41E2714703AAA6",
+    "bytes": 54639,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-chengfeng"
    },
    "dsh-project": {
-    "sha": "A4B8573FBC5DC22D77BAC4D4D79D1F7940F353AEAC512858A808B97B4F66F417",
-    "bytes": 53931,
-    "mtime": "09-22 23:17",
+    "sha": "C468E5A1998594CF94CE8B306B6456D0CF3278A7A38F5B235F41E2714703AAA6",
+    "bytes": 54639,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-chengfeng"
    },
    "user-agents": {
-    "sha": "A4B8573FBC5DC22D77BAC4D4D79D1F7940F353AEAC512858A808B97B4F66F417",
-    "bytes": 53931,
-    "mtime": "09-22 22:54",
+    "sha": "36232DEAF47A52C7618047C3518A8DA4E055FCB7D511E58BDAD3436B988ED30D",
+    "bytes": 54631,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-chengfeng"
    }
   },
@@ -378,157 +396,223 @@
   },
   "gbt-code-taste": {
    "ws-source": {
-    "sha": "46637437C7174594F0DDAA9DDDA484E0870F9BDDC8B1CAE05370643C0069E594",
-    "bytes": 37663,
-    "mtime": "09-23 01:37",
+    "sha": "5D957E762CCF1106CC9986AD0B0351F99221BC0D56F997E8B3F34E3A581F76D0",
+    "bytes": 38121,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-code-taste"
    },
    "openclaw-managed": {
-    "sha": "46637437C7174594F0DDAA9DDDA484E0870F9BDDC8B1CAE05370643C0069E594",
-    "bytes": 37663,
-    "mtime": "09-23 01:37",
+    "sha": "62169CB6A8B17800B85252E6C415FED9030226DF2538BBC3204A5760F41171F0",
+    "bytes": 38125,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-code-taste"
    },
    "dsh-project": {
-    "sha": "46637437C7174594F0DDAA9DDDA484E0870F9BDDC8B1CAE05370643C0069E594",
-    "bytes": 37663,
-    "mtime": "09-23 01:37",
+    "sha": "62169CB6A8B17800B85252E6C415FED9030226DF2538BBC3204A5760F41171F0",
+    "bytes": 38125,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-code-taste"
    },
    "user-agents": {
-    "sha": "46637437C7174594F0DDAA9DDDA484E0870F9BDDC8B1CAE05370643C0069E594",
-    "bytes": 37663,
-    "mtime": "09-23 01:37",
+    "sha": "5D957E762CCF1106CC9986AD0B0351F99221BC0D56F997E8B3F34E3A581F76D0",
+    "bytes": 38121,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-code-taste"
    }
   },
   "gbt-collab": {
    "ws-source": {
-    "sha": "43B9B477949260A966AE10EBEA90B80B1AD4B5A795ABF79A1599873F6809ECDF",
-    "bytes": 32702,
-    "mtime": "09-22 22:31",
+    "sha": "B0833CEC5FB6858E012839398D483D4316B51C45AFCC1E619B5CA376FBC1DD32",
+    "bytes": 33153,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-collab"
    },
    "openclaw-managed": {
-    "sha": "43B9B477949260A966AE10EBEA90B80B1AD4B5A795ABF79A1599873F6809ECDF",
-    "bytes": 32702,
-    "mtime": "09-22 22:31",
+    "sha": "28A3CFDF6D0800763BE95052BFD9E80C8C53D85C7B739D73382F09A40F3E9514",
+    "bytes": 33157,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-collab"
    },
    "dsh-project": {
-    "sha": "43B9B477949260A966AE10EBEA90B80B1AD4B5A795ABF79A1599873F6809ECDF",
-    "bytes": 32702,
-    "mtime": "09-22 22:31",
+    "sha": "28A3CFDF6D0800763BE95052BFD9E80C8C53D85C7B739D73382F09A40F3E9514",
+    "bytes": 33157,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-collab"
    },
    "user-agents": {
-    "sha": "43B9B477949260A966AE10EBEA90B80B1AD4B5A795ABF79A1599873F6809ECDF",
-    "bytes": 32702,
-    "mtime": "09-22 22:31",
+    "sha": "B0833CEC5FB6858E012839398D483D4316B51C45AFCC1E619B5CA376FBC1DD32",
+    "bytes": 33153,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-collab"
+   }
+  },
+  "gbt-command": {
+   "ws-source": {
+    "sha": "966E14C86299AA8BBBD0005219ECACF1601BD9C93811F2948FBB2CFC558CE0B2",
+    "bytes": 11362,
+    "mtime": "10-08 09:53",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-command"
+   },
+   "user-agents": {
+    "sha": "966E14C86299AA8BBBD0005219ECACF1601BD9C93811F2948FBB2CFC558CE0B2",
+    "bytes": 11362,
+    "mtime": "10-08 09:53",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-command"
    }
   },
   "gbt-comms": {
    "ws-source": {
-    "sha": "0C1E9CE42A50CC98460B46228FC2740F50F611D7085C9DDEA6AF787AC2BFE9A2",
-    "bytes": 27750,
-    "mtime": "09-22 22:16",
+    "sha": "A76A4F1403F96183536AAF2786C3F7D7F581D1EB1CC0C1DD8CE013CC3EFF5F68",
+    "bytes": 28125,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-comms"
    },
    "openclaw-managed": {
-    "sha": "0C1E9CE42A50CC98460B46228FC2740F50F611D7085C9DDEA6AF787AC2BFE9A2",
-    "bytes": 27750,
-    "mtime": "09-22 22:16",
+    "sha": "C4DD08908168CD12E49B6C26A25F7145A181F4D5898C2D01E8998F3367F8A573",
+    "bytes": 28178,
+    "mtime": "09-28 19:36",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-comms"
    },
    "dsh-project": {
-    "sha": "0C1E9CE42A50CC98460B46228FC2740F50F611D7085C9DDEA6AF787AC2BFE9A2",
-    "bytes": 27750,
-    "mtime": "09-22 22:16",
+    "sha": "C4DD08908168CD12E49B6C26A25F7145A181F4D5898C2D01E8998F3367F8A573",
+    "bytes": 28178,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-comms"
    },
    "user-agents": {
-    "sha": "0C1E9CE42A50CC98460B46228FC2740F50F611D7085C9DDEA6AF787AC2BFE9A2",
-    "bytes": 27750,
-    "mtime": "09-22 22:16",
+    "sha": "A76A4F1403F96183536AAF2786C3F7D7F581D1EB1CC0C1DD8CE013CC3EFF5F68",
+    "bytes": 28125,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-comms"
+   }
+  },
+  "gbt-console": {
+   "ws-source": {
+    "sha": "1FA3DC863A8AD5D69FF9E7FCADCB04C0B20DBCDEFB2ACB784561F23E6251601E",
+    "bytes": 9236,
+    "mtime": "10-03 12:45",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-console"
+   },
+   "openclaw-managed": {
+    "sha": "CE1EC71720BD51254029F9436B2C80AE22FE2904CA22BB3A4C0DBB06445FAF32",
+    "bytes": 9238,
+    "mtime": "09-28 19:35",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-console"
+   },
+   "dsh-project": {
+    "sha": "CE1EC71720BD51254029F9436B2C80AE22FE2904CA22BB3A4C0DBB06445FAF32",
+    "bytes": 9238,
+    "mtime": "09-28 20:30",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-console"
+   },
+   "user-agents": {
+    "sha": "1FA3DC863A8AD5D69FF9E7FCADCB04C0B20DBCDEFB2ACB784561F23E6251601E",
+    "bytes": 9236,
+    "mtime": "10-03 12:45",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-console"
+   }
+  },
+  "gbt-control-loop": {
+   "ws-source": {
+    "sha": "C3341B5C3E5EBE8D43CF9013007384E3E34B4E02E2B2CC09EEBADD8D4B36ED47",
+    "bytes": 6168,
+    "mtime": "10-03 12:45",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-control-loop"
+   },
+   "openclaw-managed": {
+    "sha": "9F9AA0E2BB6F36DAB56D6C453874C59747FEE4617F18ACEBA362F1F75B90FD7B",
+    "bytes": 6174,
+    "mtime": "09-28 19:35",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-control-loop"
+   },
+   "dsh-project": {
+    "sha": "9F9AA0E2BB6F36DAB56D6C453874C59747FEE4617F18ACEBA362F1F75B90FD7B",
+    "bytes": 6174,
+    "mtime": "09-28 20:30",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-control-loop"
+   },
+   "user-agents": {
+    "sha": "C3341B5C3E5EBE8D43CF9013007384E3E34B4E02E2B2CC09EEBADD8D4B36ED47",
+    "bytes": 6168,
+    "mtime": "10-03 12:45",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-control-loop"
    }
   },
   "gbt-creation": {
    "ws-source": {
-    "sha": "2B30611F90F682D3BAE5D7EF4061F6A2D712C2DFF7BE5FE5C2C26DA6EF8A6C6A",
-    "bytes": 47416,
-    "mtime": "09-27 09:16",
+    "sha": "CF736AE7529F0A06633C9AE76FB75A94B2C26052F1889D52F2EC84C2FC4215C9",
+    "bytes": 51879,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-creation"
    },
    "openclaw-managed": {
-    "sha": "2B30611F90F682D3BAE5D7EF4061F6A2D712C2DFF7BE5FE5C2C26DA6EF8A6C6A",
-    "bytes": 47416,
-    "mtime": "09-27 09:17",
+    "sha": "AA8206BC20B0B5AB35535658CA0B94D2FA294429D7E2CE298E01E23BB9C92EA0",
+    "bytes": 51996,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-creation"
    },
    "dsh-project": {
-    "sha": "6C120A1F78FBAF604C809440A4EEC6738E1F458CE9331CA96D48442C59140290",
-    "bytes": 35094,
-    "mtime": "09-22 22:03",
+    "sha": "AA8206BC20B0B5AB35535658CA0B94D2FA294429D7E2CE298E01E23BB9C92EA0",
+    "bytes": 51996,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-creation"
    },
    "user-agents": {
-    "sha": "2B30611F90F682D3BAE5D7EF4061F6A2D712C2DFF7BE5FE5C2C26DA6EF8A6C6A",
-    "bytes": 47416,
-    "mtime": "09-27 09:16",
+    "sha": "CF736AE7529F0A06633C9AE76FB75A94B2C26052F1889D52F2EC84C2FC4215C9",
+    "bytes": 51879,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-creation"
    }
   },
   "gbt-dangerous": {
    "ws-source": {
-    "sha": "FB0203A20EC33AC15CC666D8B3BB0D2AF7F5CAA6071416BC66F0BBFC2770C0A4",
-    "bytes": 10678,
-    "mtime": "09-24 06:58",
+    "sha": "AF68F17C3E6275CB7B7313EED828FFB3305A1B99726A4867DF05C087BD974E6A",
+    "bytes": 10838,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-dangerous"
    },
    "openclaw-managed": {
-    "sha": "FB0203A20EC33AC15CC666D8B3BB0D2AF7F5CAA6071416BC66F0BBFC2770C0A4",
-    "bytes": 10678,
-    "mtime": "09-24 06:59",
+    "sha": "A50A3937777D8796644B62F23D2DA42558F1377A17D6E2457F4BADE346E9DA24",
+    "bytes": 10840,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-dangerous"
    },
    "dsh-project": {
-    "sha": "FB0203A20EC33AC15CC666D8B3BB0D2AF7F5CAA6071416BC66F0BBFC2770C0A4",
-    "bytes": 10678,
-    "mtime": "09-24 06:59",
+    "sha": "A50A3937777D8796644B62F23D2DA42558F1377A17D6E2457F4BADE346E9DA24",
+    "bytes": 10840,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-dangerous"
    },
    "user-agents": {
-    "sha": "FB0203A20EC33AC15CC666D8B3BB0D2AF7F5CAA6071416BC66F0BBFC2770C0A4",
-    "bytes": 10678,
-    "mtime": "09-24 06:59",
+    "sha": "AF68F17C3E6275CB7B7313EED828FFB3305A1B99726A4867DF05C087BD974E6A",
+    "bytes": 10838,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-dangerous"
    }
   },
   "gbt-data": {
    "ws-source": {
-    "sha": "E4AC8EB68C3331BEAEAA18D4BEE6055A7E16A8459E1A2AD9071E425975180AD6",
-    "bytes": 24517,
-    "mtime": "09-27 00:02",
+    "sha": "AEF6EB31688A4B192BD430C482F06C087EBE96931F74D47634FE1B965FCA911D",
+    "bytes": 24923,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-data"
    },
    "openclaw-managed": {
-    "sha": "E4AC8EB68C3331BEAEAA18D4BEE6055A7E16A8459E1A2AD9071E425975180AD6",
-    "bytes": 24517,
-    "mtime": "09-27 00:15",
+    "sha": "DEC145720C14443D66A78DE92B8A5F2980FDDBD22292902D682887732437C3F3",
+    "bytes": 24927,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-data"
    },
    "dsh-project": {
-    "sha": "FB4C2E0851F100D79F2B9DA4CECE4C16004F666CF33968A86DFD380A11403976",
-    "bytes": 22443,
-    "mtime": "09-22 22:04",
+    "sha": "DEC145720C14443D66A78DE92B8A5F2980FDDBD22292902D682887732437C3F3",
+    "bytes": 24927,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-data"
    },
    "user-agents": {
-    "sha": "E4AC8EB68C3331BEAEAA18D4BEE6055A7E16A8459E1A2AD9071E425975180AD6",
-    "bytes": 24517,
-    "mtime": "09-27 00:02",
+    "sha": "AEF6EB31688A4B192BD430C482F06C087EBE96931F74D47634FE1B965FCA911D",
+    "bytes": 24923,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-data"
    }
   },
@@ -568,7 +652,7 @@
    "openclaw-managed": {
     "sha": "626AD99709CD117915EAA5D50FDD2C9D56C504524788968A933BC7CE216B0DEF",
     "bytes": 32213,
-    "mtime": "09-22 23:18",
+    "mtime": "09-22 23:39",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-design-mastery"
    },
    "dsh-project": {
@@ -586,93 +670,131 @@
   },
   "gbt-desktop": {
    "ws-source": {
-    "sha": "E2C946950BF72FA3D7F28E7F77E52B912EEB0ED839ACC53A2EB1667FB94B3378",
-    "bytes": 13392,
-    "mtime": "09-26 23:24",
+    "sha": "7A215FFA3A5A49DD2E200BFEAAFA18199689253AED141BDC30399FA03F4AC26F",
+    "bytes": 14394,
+    "mtime": "10-11 01:55",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-desktop"
    },
    "openclaw-managed": {
-    "sha": "E2C946950BF72FA3D7F28E7F77E52B912EEB0ED839ACC53A2EB1667FB94B3378",
-    "bytes": 13392,
-    "mtime": "09-26 23:25",
+    "sha": "6094479C807474A224CF0B17E718AFB57ACB3F3FBF0B7D6D390176ACA06D3C75",
+    "bytes": 13642,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-desktop"
    },
+   "dsh-project": {
+    "sha": "6094479C807474A224CF0B17E718AFB57ACB3F3FBF0B7D6D390176ACA06D3C75",
+    "bytes": 13642,
+    "mtime": "09-28 20:30",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-desktop"
+   },
    "user-agents": {
-    "sha": "E2C946950BF72FA3D7F28E7F77E52B912EEB0ED839ACC53A2EB1667FB94B3378",
-    "bytes": 13392,
-    "mtime": "09-26 23:24",
+    "sha": "7A215FFA3A5A49DD2E200BFEAAFA18199689253AED141BDC30399FA03F4AC26F",
+    "bytes": 14394,
+    "mtime": "10-11 01:55",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-desktop"
    }
   },
   "gbt-device": {
    "ws-source": {
-    "sha": "99B9B8541763BE663EFDE9E85F49815883F0AED47F0EAACE2AEBF520397605F7",
-    "bytes": 27566,
-    "mtime": "09-22 22:09",
+    "sha": "3C81B773924183D3F91CDEEF10E1F1CCFFBA8F6CA4AFB211F34969A0A0D3AA0F",
+    "bytes": 28022,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-device"
    },
    "openclaw-managed": {
-    "sha": "99B9B8541763BE663EFDE9E85F49815883F0AED47F0EAACE2AEBF520397605F7",
-    "bytes": 27566,
-    "mtime": "09-22 22:09",
+    "sha": "14C161BB03E21A3AC529A92FFA6B7D59CE16239FD0D4E549D98278722E0144F0",
+    "bytes": 28026,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-device"
    },
    "dsh-project": {
-    "sha": "99B9B8541763BE663EFDE9E85F49815883F0AED47F0EAACE2AEBF520397605F7",
-    "bytes": 27566,
-    "mtime": "09-22 22:09",
+    "sha": "14C161BB03E21A3AC529A92FFA6B7D59CE16239FD0D4E549D98278722E0144F0",
+    "bytes": 28026,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-device"
    },
    "user-agents": {
-    "sha": "99B9B8541763BE663EFDE9E85F49815883F0AED47F0EAACE2AEBF520397605F7",
-    "bytes": 27566,
-    "mtime": "09-22 22:09",
+    "sha": "3C81B773924183D3F91CDEEF10E1F1CCFFBA8F6CA4AFB211F34969A0A0D3AA0F",
+    "bytes": 28022,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-device"
    }
   },
   "gbt-devour": {
    "ws-source": {
-    "sha": "6FC9A19D06FB5AC325A42A9AE95FC3531AF2650688B3DFD1A80536E0887E2FC2",
-    "bytes": 29301,
-    "mtime": "09-24 07:28",
+    "sha": "B5504AC0F2ACCD86093F3984FA31AEF0EE8EB4FB06E0CCB36C15A133794D4F74",
+    "bytes": 29672,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-devour"
    },
    "openclaw-managed": {
-    "sha": "6FC9A19D06FB5AC325A42A9AE95FC3531AF2650688B3DFD1A80536E0887E2FC2",
-    "bytes": 29301,
-    "mtime": "09-24 07:36",
+    "sha": "7481FCF4D0590EF9D9200BC78509AAC345A8895E38E5CF971408A559DB24F448",
+    "bytes": 29812,
+    "mtime": "09-28 19:36",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-devour"
    },
    "dsh-project": {
-    "sha": "6FC9A19D06FB5AC325A42A9AE95FC3531AF2650688B3DFD1A80536E0887E2FC2",
-    "bytes": 29301,
-    "mtime": "09-24 07:36",
+    "sha": "7481FCF4D0590EF9D9200BC78509AAC345A8895E38E5CF971408A559DB24F448",
+    "bytes": 29812,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-devour"
    },
    "user-agents": {
-    "sha": "6FC9A19D06FB5AC325A42A9AE95FC3531AF2650688B3DFD1A80536E0887E2FC2",
-    "bytes": 29301,
-    "mtime": "09-24 07:36",
+    "sha": "B5504AC0F2ACCD86093F3984FA31AEF0EE8EB4FB06E0CCB36C15A133794D4F74",
+    "bytes": 29672,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-devour"
+   }
+  },
+  "gbt-distilled-ops": {
+   "ws-source": {
+    "sha": "376D651176A8AD12C1B706340D0F304DC841AFDD8028DFCC1C96F719EA915C58",
+    "bytes": 7301,
+    "mtime": "09-28 06:02",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-distilled-ops"
+   },
+   "openclaw-managed": {
+    "sha": "376D651176A8AD12C1B706340D0F304DC841AFDD8028DFCC1C96F719EA915C58",
+    "bytes": 7301,
+    "mtime": "09-28 06:02",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-distilled-ops"
+   },
+   "dsh-project": {
+    "sha": "376D651176A8AD12C1B706340D0F304DC841AFDD8028DFCC1C96F719EA915C58",
+    "bytes": 7301,
+    "mtime": "09-28 20:30",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-distilled-ops"
+   },
+   "user-agents": {
+    "sha": "376D651176A8AD12C1B706340D0F304DC841AFDD8028DFCC1C96F719EA915C58",
+    "bytes": 7301,
+    "mtime": "09-28 06:02",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-distilled-ops"
    }
   },
   "gbt-dl-101": {
    "ws-source": {
-    "sha": "A8590C730354F1E0EFE7A8B40148CB834FF0C9A018F7B0E83B18C3AEA84F38C7",
-    "bytes": 14800,
-    "mtime": "09-26 23:48",
+    "sha": "4B5CA4C476101BF104D9822F1734ED09AD8FACC7F34BD3322AA043015F243CEB",
+    "bytes": 15035,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-dl-101"
    },
    "openclaw-managed": {
-    "sha": "A8590C730354F1E0EFE7A8B40148CB834FF0C9A018F7B0E83B18C3AEA84F38C7",
-    "bytes": 14800,
-    "mtime": "09-27 00:03",
+    "sha": "FE42F34EB9AEA14F188A99EF19F19D5BCF5ADAF0653F25E77648DA0FAF5BD76A",
+    "bytes": 15078,
+    "mtime": "09-28 20:56",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-dl-101"
    },
+   "dsh-project": {
+    "sha": "FE42F34EB9AEA14F188A99EF19F19D5BCF5ADAF0653F25E77648DA0FAF5BD76A",
+    "bytes": 15078,
+    "mtime": "09-28 20:57",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-dl-101"
+   },
    "user-agents": {
-    "sha": "A8590C730354F1E0EFE7A8B40148CB834FF0C9A018F7B0E83B18C3AEA84F38C7",
-    "bytes": 14800,
-    "mtime": "09-26 23:48",
+    "sha": "4B5CA4C476101BF104D9822F1734ED09AD8FACC7F34BD3322AA043015F243CEB",
+    "bytes": 15035,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-dl-101"
    }
   },
@@ -704,27 +826,27 @@
   },
   "gbt-engine": {
    "ws-source": {
-    "sha": "1ED640A05C7B1BD7538289105339CCAD78E7288BEA39D40F3A813E434D9D4D20",
-    "bytes": 40392,
-    "mtime": "09-22 22:12",
+    "sha": "9DB59508F58DADEC16B7B4BF14EA60F4EA9524898CD83EBA1AD57C398B25B5CC",
+    "bytes": 40887,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-engine"
    },
    "openclaw-managed": {
-    "sha": "1ED640A05C7B1BD7538289105339CCAD78E7288BEA39D40F3A813E434D9D4D20",
-    "bytes": 40392,
-    "mtime": "09-22 22:12",
+    "sha": "894F7AA6C95074D96ACC53D446AA5C892C0D116506D40714C763B39D5BF1358B",
+    "bytes": 40944,
+    "mtime": "09-28 19:36",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-engine"
    },
    "dsh-project": {
-    "sha": "1ED640A05C7B1BD7538289105339CCAD78E7288BEA39D40F3A813E434D9D4D20",
-    "bytes": 40392,
-    "mtime": "09-22 22:12",
+    "sha": "894F7AA6C95074D96ACC53D446AA5C892C0D116506D40714C763B39D5BF1358B",
+    "bytes": 40944,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-engine"
    },
    "user-agents": {
-    "sha": "1ED640A05C7B1BD7538289105339CCAD78E7288BEA39D40F3A813E434D9D4D20",
-    "bytes": 40392,
-    "mtime": "09-22 22:12",
+    "sha": "9DB59508F58DADEC16B7B4BF14EA60F4EA9524898CD83EBA1AD57C398B25B5CC",
+    "bytes": 40887,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-engine"
    }
   },
@@ -782,27 +904,27 @@
   },
   "gbt-finance": {
    "ws-source": {
-    "sha": "0F0F23CBBE3D90CA14A9F0F0DFC3FC6C87EE9031FDCB8865BD02452DC9F5D7FE",
-    "bytes": 29573,
-    "mtime": "09-22 22:05",
+    "sha": "CABF80EA1D34946DEDBE43B3B88FCA0F95F20F0ADA6800F38B061988F98187BF",
+    "bytes": 30086,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-finance"
    },
    "openclaw-managed": {
-    "sha": "0F0F23CBBE3D90CA14A9F0F0DFC3FC6C87EE9031FDCB8865BD02452DC9F5D7FE",
-    "bytes": 29573,
-    "mtime": "09-22 22:05",
+    "sha": "81C60D06B93062D35A1AF9C4A24EA1D8BBC894DDD0A81537D430C643009BEE29",
+    "bytes": 30098,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-finance"
    },
    "dsh-project": {
-    "sha": "0F0F23CBBE3D90CA14A9F0F0DFC3FC6C87EE9031FDCB8865BD02452DC9F5D7FE",
-    "bytes": 29573,
-    "mtime": "09-22 22:05",
+    "sha": "81C60D06B93062D35A1AF9C4A24EA1D8BBC894DDD0A81537D430C643009BEE29",
+    "bytes": 30098,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-finance"
    },
    "user-agents": {
-    "sha": "0F0F23CBBE3D90CA14A9F0F0DFC3FC6C87EE9031FDCB8865BD02452DC9F5D7FE",
-    "bytes": 29573,
-    "mtime": "09-22 22:05",
+    "sha": "CABF80EA1D34946DEDBE43B3B88FCA0F95F20F0ADA6800F38B061988F98187BF",
+    "bytes": 30086,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-finance"
    }
   },
@@ -856,6 +978,32 @@
     "bytes": 25035,
     "mtime": "09-22 22:37",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-frontend"
+   }
+  },
+  "gbt-genoffice": {
+   "ws-source": {
+    "sha": "4BC12AC0FED03837EDCBF159F79291F2A3A4FE4835F60A9358DFD433C7C08108",
+    "bytes": 5119,
+    "mtime": "09-27 20:04",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-genoffice"
+   },
+   "openclaw-managed": {
+    "sha": "4BC12AC0FED03837EDCBF159F79291F2A3A4FE4835F60A9358DFD433C7C08108",
+    "bytes": 5119,
+    "mtime": "09-27 20:04",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-genoffice"
+   },
+   "dsh-project": {
+    "sha": "4BC12AC0FED03837EDCBF159F79291F2A3A4FE4835F60A9358DFD433C7C08108",
+    "bytes": 5119,
+    "mtime": "09-28 20:30",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-genoffice"
+   },
+   "user-agents": {
+    "sha": "4BC12AC0FED03837EDCBF159F79291F2A3A4FE4835F60A9358DFD433C7C08108",
+    "bytes": 5119,
+    "mtime": "09-27 20:04",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-genoffice"
    }
   },
   "gbt-glmv": {
@@ -938,235 +1086,261 @@
   },
   "gbt-infra": {
    "ws-source": {
-    "sha": "72BDD9FBF52304C4A8803F20B20977ED48FD0D0947EE0B149A6D1BC53CBE9C2A",
-    "bytes": 28979,
-    "mtime": "09-22 22:30",
+    "sha": "DD27328532809468A3BE47FACEAE3860828BAEE62B89E23A5A61F5DDDD0C72A4",
+    "bytes": 29391,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-infra"
    },
    "openclaw-managed": {
-    "sha": "72BDD9FBF52304C4A8803F20B20977ED48FD0D0947EE0B149A6D1BC53CBE9C2A",
-    "bytes": 28979,
-    "mtime": "09-22 22:30",
+    "sha": "1F8557707627A17911A6221F06F5420B86C9A622FFCF961C848C28A9938F1A6E",
+    "bytes": 29395,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-infra"
    },
    "dsh-project": {
-    "sha": "72BDD9FBF52304C4A8803F20B20977ED48FD0D0947EE0B149A6D1BC53CBE9C2A",
-    "bytes": 28979,
-    "mtime": "09-22 22:30",
+    "sha": "1F8557707627A17911A6221F06F5420B86C9A622FFCF961C848C28A9938F1A6E",
+    "bytes": 29395,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-infra"
    },
    "user-agents": {
-    "sha": "72BDD9FBF52304C4A8803F20B20977ED48FD0D0947EE0B149A6D1BC53CBE9C2A",
-    "bytes": 28979,
-    "mtime": "09-22 22:30",
+    "sha": "DD27328532809468A3BE47FACEAE3860828BAEE62B89E23A5A61F5DDDD0C72A4",
+    "bytes": 29391,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-infra"
    }
   },
   "gbt-integration": {
    "ws-source": {
-    "sha": "25DEC0E8F21E181F3264FBA2E883CC48617C2D394E5D130F0A439E018E137D1B",
-    "bytes": 25897,
-    "mtime": "09-22 22:29",
+    "sha": "179E6A9EF25E4AAC3D3978E1D112F56F6C95C8078D8A47BFF437788BFF1A5F59",
+    "bytes": 26274,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-integration"
    },
    "openclaw-managed": {
-    "sha": "25DEC0E8F21E181F3264FBA2E883CC48617C2D394E5D130F0A439E018E137D1B",
-    "bytes": 25897,
-    "mtime": "09-22 22:29",
+    "sha": "C7F9F159D9649110377A645596D17269601B13D909F6563BC573D33D04F986C8",
+    "bytes": 49512,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-integration"
    },
    "dsh-project": {
-    "sha": "25DEC0E8F21E181F3264FBA2E883CC48617C2D394E5D130F0A439E018E137D1B",
-    "bytes": 25897,
-    "mtime": "09-22 22:29",
+    "sha": "C7F9F159D9649110377A645596D17269601B13D909F6563BC573D33D04F986C8",
+    "bytes": 49512,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-integration"
    },
    "user-agents": {
-    "sha": "25DEC0E8F21E181F3264FBA2E883CC48617C2D394E5D130F0A439E018E137D1B",
-    "bytes": 25897,
-    "mtime": "09-22 22:29",
+    "sha": "179E6A9EF25E4AAC3D3978E1D112F56F6C95C8078D8A47BFF437788BFF1A5F59",
+    "bytes": 26274,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-integration"
    }
   },
   "gbt-lark": {
    "ws-source": {
-    "sha": "96FBDC3E9CFA04035F4C20368B6A0807E59166590546FC6ADCF19A24D7466118",
-    "bytes": 29038,
-    "mtime": "09-22 22:16",
+    "sha": "F4963F0DED96974C7AB2593E75EC3D66F96BC5189106F9D08A00C466D34E4B27",
+    "bytes": 29468,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-lark"
    },
    "openclaw-managed": {
-    "sha": "96FBDC3E9CFA04035F4C20368B6A0807E59166590546FC6ADCF19A24D7466118",
-    "bytes": 29038,
-    "mtime": "09-22 22:16",
+    "sha": "974D401FE177B88C0360E01F4FEE8B39238B741EF0345D908B45CEBE2596DBA6",
+    "bytes": 29470,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-lark"
    },
    "dsh-project": {
-    "sha": "96FBDC3E9CFA04035F4C20368B6A0807E59166590546FC6ADCF19A24D7466118",
-    "bytes": 29038,
-    "mtime": "09-22 22:16",
+    "sha": "974D401FE177B88C0360E01F4FEE8B39238B741EF0345D908B45CEBE2596DBA6",
+    "bytes": 29470,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-lark"
    },
    "user-agents": {
-    "sha": "96FBDC3E9CFA04035F4C20368B6A0807E59166590546FC6ADCF19A24D7466118",
-    "bytes": 29038,
-    "mtime": "09-22 22:16",
+    "sha": "F4963F0DED96974C7AB2593E75EC3D66F96BC5189106F9D08A00C466D34E4B27",
+    "bytes": 29468,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-lark"
    }
   },
   "gbt-life": {
    "ws-source": {
-    "sha": "4D431B8062C6F2A7663C9500E8235B0086D5C4FC8838574AB90EF095762C6A84",
-    "bytes": 25128,
-    "mtime": "09-22 22:29",
+    "sha": "F7B9DC46B7758C922D805442ABC9E624A75DEA13637EA4E2B6A44A268019A4BF",
+    "bytes": 25512,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-life"
    },
    "openclaw-managed": {
-    "sha": "4D431B8062C6F2A7663C9500E8235B0086D5C4FC8838574AB90EF095762C6A84",
-    "bytes": 25128,
-    "mtime": "09-22 22:29",
+    "sha": "6FDF9EC10F57A2E51A709C22C26ED795EC3463A05E8B966914CA5F1CE18459CC",
+    "bytes": 25518,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-life"
    },
    "dsh-project": {
-    "sha": "4D431B8062C6F2A7663C9500E8235B0086D5C4FC8838574AB90EF095762C6A84",
-    "bytes": 25128,
-    "mtime": "09-22 22:29",
+    "sha": "6FDF9EC10F57A2E51A709C22C26ED795EC3463A05E8B966914CA5F1CE18459CC",
+    "bytes": 25518,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-life"
    },
    "user-agents": {
-    "sha": "4D431B8062C6F2A7663C9500E8235B0086D5C4FC8838574AB90EF095762C6A84",
-    "bytes": 25128,
-    "mtime": "09-22 22:29",
+    "sha": "F7B9DC46B7758C922D805442ABC9E624A75DEA13637EA4E2B6A44A268019A4BF",
+    "bytes": 25512,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-life"
    }
   },
   "gbt-llm": {
    "ws-source": {
-    "sha": "EE394B000BEC1A5C4B64925F0F49D0E8ADF65F28480315ECE47595B6DB6B35F7",
-    "bytes": 31478,
-    "mtime": "09-27 00:03",
+    "sha": "1507576D22D80304471DADEE50D7AFA24C64A38AC8408FF842B1DF2B17D165D5",
+    "bytes": 35542,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-llm"
    },
    "openclaw-managed": {
-    "sha": "EE394B000BEC1A5C4B64925F0F49D0E8ADF65F28480315ECE47595B6DB6B35F7",
-    "bytes": 31478,
-    "mtime": "09-27 00:15",
+    "sha": "B88E8C93025ED8441193D9ED20B76F5E0F56AF7C2BF16EE2945E1CD845FA8F8C",
+    "bytes": 35554,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-llm"
    },
    "dsh-project": {
-    "sha": "9E1B90C2CBDE6FF1EC6CDE2DE8764234F61085128C6AE3830C6A0141D61B0314",
-    "bytes": 27807,
-    "mtime": "09-22 22:12",
+    "sha": "B88E8C93025ED8441193D9ED20B76F5E0F56AF7C2BF16EE2945E1CD845FA8F8C",
+    "bytes": 35554,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-llm"
    },
    "user-agents": {
-    "sha": "EE394B000BEC1A5C4B64925F0F49D0E8ADF65F28480315ECE47595B6DB6B35F7",
-    "bytes": 31478,
-    "mtime": "09-27 00:03",
+    "sha": "1507576D22D80304471DADEE50D7AFA24C64A38AC8408FF842B1DF2B17D165D5",
+    "bytes": 35542,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-llm"
    }
   },
   "gbt-longrun": {
    "ws-source": {
-    "sha": "C8A974348F0BD8B0D12539DC774B1B99F380A2421BAA193F3F219112DDEAF08B",
-    "bytes": 26630,
-    "mtime": "09-22 22:15",
+    "sha": "16E5F54EB86D0AF6011BAF1AFF85A9602B6CAA8E0B58EFC4D5F8FC1721A5E4BC",
+    "bytes": 26935,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-longrun"
    },
    "openclaw-managed": {
-    "sha": "C8A974348F0BD8B0D12539DC774B1B99F380A2421BAA193F3F219112DDEAF08B",
-    "bytes": 26630,
-    "mtime": "09-22 22:15",
+    "sha": "D735D866B0AEB6CC58431A16DD3AA689CFA3BA9A7580E072B14A308A403BB539",
+    "bytes": 26947,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-longrun"
    },
    "dsh-project": {
-    "sha": "C8A974348F0BD8B0D12539DC774B1B99F380A2421BAA193F3F219112DDEAF08B",
-    "bytes": 26630,
-    "mtime": "09-22 22:15",
+    "sha": "D735D866B0AEB6CC58431A16DD3AA689CFA3BA9A7580E072B14A308A403BB539",
+    "bytes": 26947,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-longrun"
    },
    "user-agents": {
-    "sha": "C8A974348F0BD8B0D12539DC774B1B99F380A2421BAA193F3F219112DDEAF08B",
-    "bytes": 26630,
-    "mtime": "09-22 22:15",
+    "sha": "16E5F54EB86D0AF6011BAF1AFF85A9602B6CAA8E0B58EFC4D5F8FC1721A5E4BC",
+    "bytes": 26935,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-longrun"
    }
   },
   "gbt-mind": {
    "ws-source": {
-    "sha": "7CCD96B402D8DDB5DE5632F6C9764BC7E4173A323426A2E429AB03CD116AF925",
-    "bytes": 39952,
-    "mtime": "09-22 22:11",
+    "sha": "A7CC112152AC6A5705E8B4AFB5E19898038A20735B5A0FE6CA28C966CCFF4D2C",
+    "bytes": 40340,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-mind"
    },
    "openclaw-managed": {
-    "sha": "7CCD96B402D8DDB5DE5632F6C9764BC7E4173A323426A2E429AB03CD116AF925",
-    "bytes": 39952,
-    "mtime": "09-22 22:11",
+    "sha": "BA56E941FC6C6D7E4409B9B9D9983FFBB62140F0B79FDA5632CC362744908885",
+    "bytes": 40348,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-mind"
    },
    "dsh-project": {
-    "sha": "7CCD96B402D8DDB5DE5632F6C9764BC7E4173A323426A2E429AB03CD116AF925",
-    "bytes": 39952,
-    "mtime": "09-22 22:11",
+    "sha": "BA56E941FC6C6D7E4409B9B9D9983FFBB62140F0B79FDA5632CC362744908885",
+    "bytes": 40348,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-mind"
    },
    "user-agents": {
-    "sha": "7CCD96B402D8DDB5DE5632F6C9764BC7E4173A323426A2E429AB03CD116AF925",
-    "bytes": 39952,
-    "mtime": "09-22 22:11",
+    "sha": "A7CC112152AC6A5705E8B4AFB5E19898038A20735B5A0FE6CA28C966CCFF4D2C",
+    "bytes": 40340,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-mind"
+   }
+  },
+  "gbt-native-growth": {
+   "ws-source": {
+    "sha": "93E4AD2A6FDAD7E9AFB68CE95B2E8AA9391E0114C7CC327EC1FC24001AD57E01",
+    "bytes": 10973,
+    "mtime": "10-03 12:45",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-native-growth"
+   },
+   "openclaw-managed": {
+    "sha": "984E57F12A226DA658C5EBCB9D57829A822C3E10BF21D42C5463E8811DB8F110",
+    "bytes": 11011,
+    "mtime": "09-28 20:56",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-native-growth"
+   },
+   "dsh-project": {
+    "sha": "984E57F12A226DA658C5EBCB9D57829A822C3E10BF21D42C5463E8811DB8F110",
+    "bytes": 11011,
+    "mtime": "09-28 20:57",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-native-growth"
+   },
+   "user-agents": {
+    "sha": "93E4AD2A6FDAD7E9AFB68CE95B2E8AA9391E0114C7CC327EC1FC24001AD57E01",
+    "bytes": 10973,
+    "mtime": "10-03 12:45",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-native-growth"
    }
   },
   "gbt-omni": {
    "ws-source": {
-    "sha": "4F3D0FEA7FBD9B3F4B06ADA7A929101EE4FA68D5C79712B5A713F838308147A1",
-    "bytes": 22552,
-    "mtime": "09-24 07:27",
+    "sha": "471B9C907AA0DF26C41D807E08239E7B4EDA7B11DED9B3832444285362089EE4",
+    "bytes": 22850,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-omni"
    },
    "openclaw-managed": {
-    "sha": "4F3D0FEA7FBD9B3F4B06ADA7A929101EE4FA68D5C79712B5A713F838308147A1",
-    "bytes": 22552,
-    "mtime": "09-24 07:36",
+    "sha": "EF9E259B8C0DC72EFED0EF6CCE177138E17B3CA7D2E84E3FEEE6CF3388328CA7",
+    "bytes": 27669,
+    "mtime": "09-28 20:56",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-omni"
    },
    "dsh-project": {
-    "sha": "4F3D0FEA7FBD9B3F4B06ADA7A929101EE4FA68D5C79712B5A713F838308147A1",
-    "bytes": 22552,
-    "mtime": "09-24 07:36",
+    "sha": "EF9E259B8C0DC72EFED0EF6CCE177138E17B3CA7D2E84E3FEEE6CF3388328CA7",
+    "bytes": 27669,
+    "mtime": "09-28 20:57",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-omni"
    },
    "user-agents": {
-    "sha": "4F3D0FEA7FBD9B3F4B06ADA7A929101EE4FA68D5C79712B5A713F838308147A1",
-    "bytes": 22552,
-    "mtime": "09-24 07:36",
+    "sha": "471B9C907AA0DF26C41D807E08239E7B4EDA7B11DED9B3832444285362089EE4",
+    "bytes": 22850,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-omni"
    }
   },
   "gbt-pipeline": {
    "ws-source": {
-    "sha": "E18314B78104323AB8351D47E3A2CA77DB1425499EF2DD3EA19699F5CDE75252",
-    "bytes": 42370,
-    "mtime": "09-22 22:15",
+    "sha": "CACA1AAE57411439368B4C321C0601AC5DFCC5331B8938522BE582419321C9C8",
+    "bytes": 42804,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-pipeline"
    },
    "openclaw-managed": {
-    "sha": "E18314B78104323AB8351D47E3A2CA77DB1425499EF2DD3EA19699F5CDE75252",
-    "bytes": 42370,
-    "mtime": "09-22 22:15",
+    "sha": "80D36506E1B6567361A62647183B16320852E69A22B825E3C25ED7C5E81AF0B1",
+    "bytes": 42818,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-pipeline"
    },
    "dsh-project": {
-    "sha": "E18314B78104323AB8351D47E3A2CA77DB1425499EF2DD3EA19699F5CDE75252",
-    "bytes": 42370,
-    "mtime": "09-22 22:15",
+    "sha": "80D36506E1B6567361A62647183B16320852E69A22B825E3C25ED7C5E81AF0B1",
+    "bytes": 42818,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-pipeline"
    },
    "user-agents": {
-    "sha": "E18314B78104323AB8351D47E3A2CA77DB1425499EF2DD3EA19699F5CDE75252",
-    "bytes": 42370,
-    "mtime": "09-22 22:15",
+    "sha": "CACA1AAE57411439368B4C321C0601AC5DFCC5331B8938522BE582419321C9C8",
+    "bytes": 42804,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-pipeline"
    }
   },
@@ -1180,7 +1354,7 @@
    "openclaw-managed": {
     "sha": "A9D36B2B8696A5A6E89A972A6F516BBF6D555EC23EFC46D94759D1917FD30CF1",
     "bytes": 7452,
-    "mtime": "09-22 23:25",
+    "mtime": "09-22 23:24",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-potato"
    },
    "dsh-project": {
@@ -1198,53 +1372,79 @@
   },
   "gbt-pptx": {
    "ws-source": {
-    "sha": "2BB0D9830934EF0ECB7F85F5F794534132AA025EC0394D36D52BD28AF4D5B2F5",
-    "bytes": 31053,
-    "mtime": "09-22 22:32",
+    "sha": "BA7EB84BCA9FECA24810A8F5CCDD15AC7639A04788087058B0B753BBC5E6B14D",
+    "bytes": 31546,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-pptx"
    },
    "openclaw-managed": {
-    "sha": "2BB0D9830934EF0ECB7F85F5F794534132AA025EC0394D36D52BD28AF4D5B2F5",
-    "bytes": 31053,
-    "mtime": "09-22 22:32",
+    "sha": "C1D9953087CAD715E64DD6472F5EFF27454F1F8958723761667AE1419AC232CA",
+    "bytes": 31552,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-pptx"
    },
    "dsh-project": {
-    "sha": "2BB0D9830934EF0ECB7F85F5F794534132AA025EC0394D36D52BD28AF4D5B2F5",
-    "bytes": 31053,
-    "mtime": "09-22 23:17",
+    "sha": "C1D9953087CAD715E64DD6472F5EFF27454F1F8958723761667AE1419AC232CA",
+    "bytes": 31552,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-pptx"
    },
    "user-agents": {
-    "sha": "2BB0D9830934EF0ECB7F85F5F794534132AA025EC0394D36D52BD28AF4D5B2F5",
-    "bytes": 31053,
-    "mtime": "09-22 22:32",
+    "sha": "BA7EB84BCA9FECA24810A8F5CCDD15AC7639A04788087058B0B753BBC5E6B14D",
+    "bytes": 31546,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-pptx"
+   }
+  },
+  "gbt-producer": {
+   "ws-source": {
+    "sha": "05D766B4567C3D070F1F8E620A1900CA740ED7E67099F2ACC989A53B107FB948",
+    "bytes": 15538,
+    "mtime": "10-03 12:45",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-producer"
+   },
+   "openclaw-managed": {
+    "sha": "50D826CC801D2147E129B8B65A88E9CA559B33CADE696561F16F37C05A7866B4",
+    "bytes": 15554,
+    "mtime": "09-28 19:35",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-producer"
+   },
+   "dsh-project": {
+    "sha": "50D826CC801D2147E129B8B65A88E9CA559B33CADE696561F16F37C05A7866B4",
+    "bytes": 15554,
+    "mtime": "09-28 20:30",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-producer"
+   },
+   "user-agents": {
+    "sha": "05D766B4567C3D070F1F8E620A1900CA740ED7E67099F2ACC989A53B107FB948",
+    "bytes": 15538,
+    "mtime": "10-03 12:45",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-producer"
    }
   },
   "gbt-project": {
    "ws-source": {
-    "sha": "6588D8E91688EA35CCE1DBF2D41FF3B73463EF2A9C0F9C89E63AF923B6817F46",
-    "bytes": 30942,
-    "mtime": "09-22 22:26",
+    "sha": "841EEF5EAB07D8D3072C560C981D8B728552DC8F403427ECC36C0ED53D5A5C3C",
+    "bytes": 31294,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-project"
    },
    "openclaw-managed": {
-    "sha": "6588D8E91688EA35CCE1DBF2D41FF3B73463EF2A9C0F9C89E63AF923B6817F46",
-    "bytes": 30942,
-    "mtime": "09-22 22:26",
+    "sha": "470F597EFE12264318FE72236E04B7987A8CE2A54AB8B6D572A78B54397FC514",
+    "bytes": 31302,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-project"
    },
    "dsh-project": {
-    "sha": "6588D8E91688EA35CCE1DBF2D41FF3B73463EF2A9C0F9C89E63AF923B6817F46",
-    "bytes": 30942,
-    "mtime": "09-22 22:26",
+    "sha": "470F597EFE12264318FE72236E04B7987A8CE2A54AB8B6D572A78B54397FC514",
+    "bytes": 31302,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-project"
    },
    "user-agents": {
-    "sha": "6588D8E91688EA35CCE1DBF2D41FF3B73463EF2A9C0F9C89E63AF923B6817F46",
-    "bytes": 30942,
-    "mtime": "09-22 22:26",
+    "sha": "841EEF5EAB07D8D3072C560C981D8B728552DC8F403427ECC36C0ED53D5A5C3C",
+    "bytes": 31294,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-project"
    }
   },
@@ -1276,53 +1476,53 @@
   },
   "gbt-quickscan": {
    "ws-source": {
-    "sha": "F707AF2787AABEA19EDEE82A8D6679C71A28EDE3C84B5AE945DD8DF115745F21",
-    "bytes": 27590,
-    "mtime": "09-23 03:16",
+    "sha": "1D41BC34DCFF93F7A8A359CA9A9AD46CFA17A69F194682E8FB5E4D92231443D0",
+    "bytes": 27938,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-quickscan"
    },
    "openclaw-managed": {
-    "sha": "F707AF2787AABEA19EDEE82A8D6679C71A28EDE3C84B5AE945DD8DF115745F21",
-    "bytes": 27590,
-    "mtime": "09-23 03:16",
+    "sha": "17E88917CF0DF57B5C40BB2B20EE00291528E77138E65E9F7ABF76FF84159058",
+    "bytes": 28013,
+    "mtime": "09-28 20:56",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-quickscan"
    },
    "dsh-project": {
-    "sha": "F707AF2787AABEA19EDEE82A8D6679C71A28EDE3C84B5AE945DD8DF115745F21",
-    "bytes": 27590,
-    "mtime": "09-23 03:16",
+    "sha": "17E88917CF0DF57B5C40BB2B20EE00291528E77138E65E9F7ABF76FF84159058",
+    "bytes": 28013,
+    "mtime": "09-28 20:57",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-quickscan"
    },
    "user-agents": {
-    "sha": "F707AF2787AABEA19EDEE82A8D6679C71A28EDE3C84B5AE945DD8DF115745F21",
-    "bytes": 27590,
-    "mtime": "09-23 03:16",
+    "sha": "1D41BC34DCFF93F7A8A359CA9A9AD46CFA17A69F194682E8FB5E4D92231443D0",
+    "bytes": 27938,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-quickscan"
    }
   },
   "gbt-recon": {
    "ws-source": {
-    "sha": "8A1C773A0EE092AA80D745A0D39DE2065CF37FDEB83D1A8B58C1A72364FE9059",
-    "bytes": 38816,
-    "mtime": "09-27 00:14",
+    "sha": "C02D4BFCEA75DD51367F711ADA922DCEDD71DFEACA13918DBE7C6E0FA22E4047",
+    "bytes": 39272,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-recon"
    },
    "openclaw-managed": {
-    "sha": "8A1C773A0EE092AA80D745A0D39DE2065CF37FDEB83D1A8B58C1A72364FE9059",
-    "bytes": 38816,
-    "mtime": "09-27 00:15",
+    "sha": "18FB780F48A101F8DE59E82408471F17FFF0FE445BD0228E3582855374732DB7",
+    "bytes": 39280,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-recon"
    },
    "dsh-project": {
-    "sha": "D6CA72CA4A2EDB6F5BAF0B4F36BA2AAD7A14F3A50F093CA59EBCF6C3925BFB97",
-    "bytes": 36649,
-    "mtime": "09-22 22:16",
+    "sha": "18FB780F48A101F8DE59E82408471F17FFF0FE445BD0228E3582855374732DB7",
+    "bytes": 39280,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-recon"
    },
    "user-agents": {
-    "sha": "8A1C773A0EE092AA80D745A0D39DE2065CF37FDEB83D1A8B58C1A72364FE9059",
-    "bytes": 38816,
-    "mtime": "09-27 00:14",
+    "sha": "C02D4BFCEA75DD51367F711ADA922DCEDD71DFEACA13918DBE7C6E0FA22E4047",
+    "bytes": 39272,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-recon"
    }
   },
@@ -1382,149 +1582,253 @@
    "ws-source": {
     "sha": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260",
     "bytes": 43500,
-    "mtime": "09-27 09:12",
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-security"
    },
    "openclaw-managed": {
-    "sha": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260",
-    "bytes": 43500,
-    "mtime": "09-27 09:13",
+    "sha": "0DDE1C9D263F9594DF4081BB02700D1CE7A00CDEDF5EB4831845E9351FDF8FF3",
+    "bytes": 43508,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-security"
    },
    "dsh-project": {
-    "sha": "D25EECE415A4CD70F7D47B9EC0B78B71EA28C490F99FE2D8D2C33393FB2A4440",
-    "bytes": 31000,
-    "mtime": "09-23 04:20",
+    "sha": "0DDE1C9D263F9594DF4081BB02700D1CE7A00CDEDF5EB4831845E9351FDF8FF3",
+    "bytes": 43508,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-security"
    },
    "user-agents": {
     "sha": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260",
     "bytes": 43500,
-    "mtime": "09-27 09:12",
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-security"
+   }
+  },
+  "gbt-selfgrowth": {
+   "ws-source": {
+    "sha": "056AC2D53BF4E1F36F6C13E9CC68F5052C10DE9CD88BAF6FAB47ADEB7A765E35",
+    "bytes": 16093,
+    "mtime": "10-03 12:45",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-selfgrowth"
+   },
+   "openclaw-managed": {
+    "sha": "E26AC8FCBB2B5F357AE703404127E770B2EB706CAE1C6FA8B134E5D5DBE6024A",
+    "bytes": 16121,
+    "mtime": "09-28 20:56",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-selfgrowth"
+   },
+   "dsh-project": {
+    "sha": "E26AC8FCBB2B5F357AE703404127E770B2EB706CAE1C6FA8B134E5D5DBE6024A",
+    "bytes": 16121,
+    "mtime": "09-28 20:57",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-selfgrowth"
+   },
+   "user-agents": {
+    "sha": "056AC2D53BF4E1F36F6C13E9CC68F5052C10DE9CD88BAF6FAB47ADEB7A765E35",
+    "bytes": 16093,
+    "mtime": "10-03 12:45",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-selfgrowth"
+   }
+  },
+  "gbt-showreel": {
+   "ws-source": {
+    "sha": "2058271E04D383399CED2BCD41C3B230C229842BBFC7E4D17DBAF88DDF367CDE",
+    "bytes": 8322,
+    "mtime": "10-13 17:28",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-showreel"
+   },
+   "openclaw-managed": {
+    "sha": "2058271E04D383399CED2BCD41C3B230C229842BBFC7E4D17DBAF88DDF367CDE",
+    "bytes": 8322,
+    "mtime": "10-13 17:28",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-showreel"
+   },
+   "user-agents": {
+    "sha": "2058271E04D383399CED2BCD41C3B230C229842BBFC7E4D17DBAF88DDF367CDE",
+    "bytes": 8322,
+    "mtime": "10-13 17:28",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-showreel"
    }
   },
   "gbt-social": {
    "ws-source": {
-    "sha": "EB546AF1768273F63FC514BDA9E7D1B35615674C197A7C7F7198289A714EB6C3",
-    "bytes": 31436,
-    "mtime": "09-22 22:30",
+    "sha": "6F25C484F61C92BCD23A86E2B001CBBC61493B59DBD264587E9E9BCD5B96253D",
+    "bytes": 31870,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-social"
    },
    "openclaw-managed": {
-    "sha": "EB546AF1768273F63FC514BDA9E7D1B35615674C197A7C7F7198289A714EB6C3",
-    "bytes": 31436,
-    "mtime": "09-22 22:30",
+    "sha": "753F4B5F06643FD6E14660094A8FA821A642CE9E7EA39B53B1383E5A06FCDF7C",
+    "bytes": 31874,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-social"
    },
    "dsh-project": {
-    "sha": "EB546AF1768273F63FC514BDA9E7D1B35615674C197A7C7F7198289A714EB6C3",
-    "bytes": 31436,
-    "mtime": "09-22 22:30",
+    "sha": "753F4B5F06643FD6E14660094A8FA821A642CE9E7EA39B53B1383E5A06FCDF7C",
+    "bytes": 31874,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-social"
    },
    "user-agents": {
-    "sha": "EB546AF1768273F63FC514BDA9E7D1B35615674C197A7C7F7198289A714EB6C3",
-    "bytes": 31436,
-    "mtime": "09-22 22:30",
+    "sha": "6F25C484F61C92BCD23A86E2B001CBBC61493B59DBD264587E9E9BCD5B96253D",
+    "bytes": 31870,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-social"
    }
   },
   "gbt-system": {
    "ws-source": {
-    "sha": "77D54C964DA54D29FE5962623F9D921BE66E212147F60EF337B5B3EEFA83031F",
-    "bytes": 43721,
-    "mtime": "09-27 07:05",
+    "sha": "06C567C3731C14344FD02602B63A6640050F893E9F5B74667B241218DF612478",
+    "bytes": 59179,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-system"
    },
    "openclaw-managed": {
-    "sha": "77D54C964DA54D29FE5962623F9D921BE66E212147F60EF337B5B3EEFA83031F",
-    "bytes": 43721,
-    "mtime": "09-27 07:05",
+    "sha": "70A2260A54C1C87025525BA980BD57C71C7402E4462E354B7FB125AE500D3A76",
+    "bytes": 59234,
+    "mtime": "09-28 20:56",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-system"
    },
    "dsh-project": {
-    "sha": "B97CA3D52EBB0971FD4D79CE0BAF4A2CA42E8F7EEE67BB694AA02FF4C02D9BED",
-    "bytes": 37820,
-    "mtime": "09-22 22:13",
+    "sha": "70A2260A54C1C87025525BA980BD57C71C7402E4462E354B7FB125AE500D3A76",
+    "bytes": 59234,
+    "mtime": "09-28 20:57",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-system"
    },
    "user-agents": {
-    "sha": "77D54C964DA54D29FE5962623F9D921BE66E212147F60EF337B5B3EEFA83031F",
-    "bytes": 43721,
-    "mtime": "09-27 07:05",
+    "sha": "06C567C3731C14344FD02602B63A6640050F893E9F5B74667B241218DF612478",
+    "bytes": 59179,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-system"
+   }
+  },
+  "gbt-talktrack": {
+   "ws-source": {
+    "sha": "7A20E8EE4230ACAA300916FB138C1F4C69CCDAFB989BED7A41775FD3275711BF",
+    "bytes": 3635,
+    "mtime": "09-27 17:37",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-talktrack"
+   },
+   "openclaw-managed": {
+    "sha": "7A20E8EE4230ACAA300916FB138C1F4C69CCDAFB989BED7A41775FD3275711BF",
+    "bytes": 3635,
+    "mtime": "09-27 17:37",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-talktrack"
+   },
+   "dsh-project": {
+    "sha": "7A20E8EE4230ACAA300916FB138C1F4C69CCDAFB989BED7A41775FD3275711BF",
+    "bytes": 3635,
+    "mtime": "09-28 20:30",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-talktrack"
+   },
+   "user-agents": {
+    "sha": "7A20E8EE4230ACAA300916FB138C1F4C69CCDAFB989BED7A41775FD3275711BF",
+    "bytes": 3635,
+    "mtime": "09-27 17:37",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-talktrack"
    }
   },
   "gbt-tentacle": {
    "ws-source": {
-    "sha": "CD3AA2CFB290E682CDE65EF5B3E1C973B5AF8DE1A9F6507C60D3094275A912C3",
-    "bytes": 12998,
-    "mtime": "09-22 22:10",
+    "sha": "32006586468FB469CD410CFA69BDD3DAEB8177F78002AB7C3414A5AE6F7F7BF0",
+    "bytes": 18466,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-tentacle"
    },
    "openclaw-managed": {
-    "sha": "CD3AA2CFB290E682CDE65EF5B3E1C973B5AF8DE1A9F6507C60D3094275A912C3",
-    "bytes": 12998,
-    "mtime": "09-22 22:10",
+    "sha": "29E16E1C44ED64896225F94E932FB06806FA0BA518E97EFE530457D6E5EE8ED0",
+    "bytes": 18506,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-tentacle"
    },
    "dsh-project": {
-    "sha": "CD3AA2CFB290E682CDE65EF5B3E1C973B5AF8DE1A9F6507C60D3094275A912C3",
-    "bytes": 12998,
-    "mtime": "09-22 22:10",
+    "sha": "29E16E1C44ED64896225F94E932FB06806FA0BA518E97EFE530457D6E5EE8ED0",
+    "bytes": 18506,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-tentacle"
    },
    "user-agents": {
-    "sha": "CD3AA2CFB290E682CDE65EF5B3E1C973B5AF8DE1A9F6507C60D3094275A912C3",
-    "bytes": 12998,
-    "mtime": "09-22 23:23",
+    "sha": "32006586468FB469CD410CFA69BDD3DAEB8177F78002AB7C3414A5AE6F7F7BF0",
+    "bytes": 18466,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-tentacle"
+   }
+  },
+  "gbt-terminology": {
+   "ws-source": {
+    "sha": "92BD64E998FAC167DFB0E7E576C3E909C53990689F20960FBF349CA691D21271",
+    "bytes": 5073,
+    "mtime": "09-27 17:37",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-terminology"
+   },
+   "openclaw-managed": {
+    "sha": "92BD64E998FAC167DFB0E7E576C3E909C53990689F20960FBF349CA691D21271",
+    "bytes": 5073,
+    "mtime": "09-27 17:37",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-terminology"
+   },
+   "dsh-project": {
+    "sha": "92BD64E998FAC167DFB0E7E576C3E909C53990689F20960FBF349CA691D21271",
+    "bytes": 5073,
+    "mtime": "09-28 20:30",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-terminology"
+   },
+   "user-agents": {
+    "sha": "92BD64E998FAC167DFB0E7E576C3E909C53990689F20960FBF349CA691D21271",
+    "bytes": 5073,
+    "mtime": "09-27 17:37",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-terminology"
    }
   },
   "gbt-tools": {
    "ws-source": {
-    "sha": "2DFF5E2E29A685D8477C03533B3F6902FC2658B14679EACF29863E042D492125",
-    "bytes": 45483,
-    "mtime": "09-23 12:28",
+    "sha": "F53388AFAD19F258B088A03559231986B886E384EF5FBF5491F61B6251921BAC",
+    "bytes": 49025,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-tools"
    },
    "openclaw-managed": {
-    "sha": "2DFF5E2E29A685D8477C03533B3F6902FC2658B14679EACF29863E042D492125",
-    "bytes": 45483,
-    "mtime": "09-23 12:28",
+    "sha": "03A20A84DD05ED8A178402443346B4104B0C3B761AB6D87D09A37594671D3786",
+    "bytes": 49060,
+    "mtime": "09-28 20:56",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-tools"
    },
    "dsh-project": {
-    "sha": "2DFF5E2E29A685D8477C03533B3F6902FC2658B14679EACF29863E042D492125",
-    "bytes": 45483,
-    "mtime": "09-23 12:28",
+    "sha": "03A20A84DD05ED8A178402443346B4104B0C3B761AB6D87D09A37594671D3786",
+    "bytes": 49060,
+    "mtime": "09-28 20:57",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-tools"
    },
    "user-agents": {
-    "sha": "2DFF5E2E29A685D8477C03533B3F6902FC2658B14679EACF29863E042D492125",
-    "bytes": 45483,
-    "mtime": "09-23 12:28",
+    "sha": "F53388AFAD19F258B088A03559231986B886E384EF5FBF5491F61B6251921BAC",
+    "bytes": 49025,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-tools"
    }
   },
   "gbt-vendor-intake": {
    "ws-source": {
-    "sha": "B70119DF56B74E008E88C2924B5204AA8FBA6AD596C76C7D0BD458288FDA1017",
-    "bytes": 11468,
-    "mtime": "09-27 07:51",
+    "sha": "3637785E01EAC8B48D40F3FB2F43D4CAE34EF70EAFF42ADE6238D05BD89E908B",
+    "bytes": 11667,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-vendor-intake"
    },
    "openclaw-managed": {
-    "sha": "B70119DF56B74E008E88C2924B5204AA8FBA6AD596C76C7D0BD458288FDA1017",
-    "bytes": 11468,
-    "mtime": "09-27 07:51",
+    "sha": "F8F8BED0A74B03F0DC1CF9AAFDF0E35BACB8A26B62DEBED87000163D85A135E0",
+    "bytes": 11673,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-vendor-intake"
    },
+   "dsh-project": {
+    "sha": "F8F8BED0A74B03F0DC1CF9AAFDF0E35BACB8A26B62DEBED87000163D85A135E0",
+    "bytes": 11673,
+    "mtime": "09-28 20:30",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-vendor-intake"
+   },
    "user-agents": {
-    "sha": "B70119DF56B74E008E88C2924B5204AA8FBA6AD596C76C7D0BD458288FDA1017",
-    "bytes": 11468,
-    "mtime": "09-27 07:51",
+    "sha": "3637785E01EAC8B48D40F3FB2F43D4CAE34EF70EAFF42ADE6238D05BD89E908B",
+    "bytes": 11667,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-vendor-intake"
    }
   },
@@ -1556,53 +1860,53 @@
   },
   "gbt-video": {
    "ws-source": {
-    "sha": "FC21F12D71FEE68D6FD3FA398586A8448E839E44BCE001888CC0AD7AF2D91653",
-    "bytes": 57571,
-    "mtime": "09-27 09:45",
+    "sha": "BE55F8CE30581FFA01A26C928F633BEF208AF05111697C70EA7CEE4FA249F68D",
+    "bytes": 58319,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-video"
    },
    "openclaw-managed": {
-    "sha": "FC21F12D71FEE68D6FD3FA398586A8448E839E44BCE001888CC0AD7AF2D91653",
-    "bytes": 57571,
-    "mtime": "09-27 09:46",
+    "sha": "88BA899ADBA50353F0F4B830F0FF8DF2A2B75CFB63558754951AC29249F968A2",
+    "bytes": 58329,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-video"
    },
    "dsh-project": {
-    "sha": "1E6B4836D0ABCFBA78DD10528CA730E7E486A681C754D7728216490CA735743A",
-    "bytes": 45153,
-    "mtime": "09-24 07:36",
+    "sha": "88BA899ADBA50353F0F4B830F0FF8DF2A2B75CFB63558754951AC29249F968A2",
+    "bytes": 58329,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-video"
    },
    "user-agents": {
-    "sha": "FC21F12D71FEE68D6FD3FA398586A8448E839E44BCE001888CC0AD7AF2D91653",
-    "bytes": 57571,
-    "mtime": "09-27 09:45",
+    "sha": "BE55F8CE30581FFA01A26C928F633BEF208AF05111697C70EA7CEE4FA249F68D",
+    "bytes": 58319,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-video"
    }
   },
   "gbt-video-tools": {
    "ws-source": {
-    "sha": "DAA70AEE6F3FE644E5E5AAAE6EE3A89CB17D55CC1E1A04CE2A517C324BA64655",
-    "bytes": 37358,
-    "mtime": "09-22 22:47",
+    "sha": "F11C2FC441ADF98310E5A7253A8307241CB77035239C3BDB7DE395AAAB7ECAAC",
+    "bytes": 37914,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-video-tools"
    },
    "openclaw-managed": {
-    "sha": "DAA70AEE6F3FE644E5E5AAAE6EE3A89CB17D55CC1E1A04CE2A517C324BA64655",
-    "bytes": 37358,
-    "mtime": "09-22 22:47",
+    "sha": "71FFA196B24227B432B47BABDE88BE04749D56E80ACBBC5A8D027820B0B06B90",
+    "bytes": 37920,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-video-tools"
    },
    "dsh-project": {
-    "sha": "DAA70AEE6F3FE644E5E5AAAE6EE3A89CB17D55CC1E1A04CE2A517C324BA64655",
-    "bytes": 37358,
-    "mtime": "09-22 23:17",
+    "sha": "71FFA196B24227B432B47BABDE88BE04749D56E80ACBBC5A8D027820B0B06B90",
+    "bytes": 37920,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-video-tools"
    },
    "user-agents": {
-    "sha": "DAA70AEE6F3FE644E5E5AAAE6EE3A89CB17D55CC1E1A04CE2A517C324BA64655",
-    "bytes": 37358,
-    "mtime": "09-22 22:47",
+    "sha": "F11C2FC441ADF98310E5A7253A8307241CB77035239C3BDB7DE395AAAB7ECAAC",
+    "bytes": 37914,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-video-tools"
    }
   },
@@ -1634,27 +1938,27 @@
   },
   "gbt-voice": {
    "ws-source": {
-    "sha": "0ECE0D8245C75AB37D638120C8C788EDF068B3DDAC14EFE0E3B0A3848ACB4A95",
-    "bytes": 27521,
-    "mtime": "09-22 22:10",
+    "sha": "69E229B34686E9CD15A10FE5BD85148B929C11229DF624F6937297E02DE72E72",
+    "bytes": 27929,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-voice"
    },
    "openclaw-managed": {
-    "sha": "0ECE0D8245C75AB37D638120C8C788EDF068B3DDAC14EFE0E3B0A3848ACB4A95",
-    "bytes": 27521,
-    "mtime": "09-22 22:10",
+    "sha": "84F0353C163272C793CB31B09934A805EA03541A85C5AB65FEF7A414DED735C9",
+    "bytes": 27933,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-voice"
    },
    "dsh-project": {
-    "sha": "0ECE0D8245C75AB37D638120C8C788EDF068B3DDAC14EFE0E3B0A3848ACB4A95",
-    "bytes": 27521,
-    "mtime": "09-22 22:10",
+    "sha": "84F0353C163272C793CB31B09934A805EA03541A85C5AB65FEF7A414DED735C9",
+    "bytes": 27933,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-voice"
    },
    "user-agents": {
-    "sha": "0ECE0D8245C75AB37D638120C8C788EDF068B3DDAC14EFE0E3B0A3848ACB4A95",
-    "bytes": 27521,
-    "mtime": "09-22 22:10",
+    "sha": "69E229B34686E9CD15A10FE5BD85148B929C11229DF624F6937297E02DE72E72",
+    "bytes": 27929,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-voice"
    }
   },
@@ -1686,27 +1990,27 @@
   },
   "gbt-youtube": {
    "ws-source": {
-    "sha": "0553D7D098088D54DC598967DD51AFC5388BF9CB44E8057A848B5EFF31E924F3",
-    "bytes": 31304,
-    "mtime": "09-22 22:33",
+    "sha": "0669CC7A3BB303CF5E8108CFA6A9240F841B5D17A063EE78B92173D69B3F3031",
+    "bytes": 31823,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills\\gbt-youtube"
    },
    "openclaw-managed": {
-    "sha": "0553D7D098088D54DC598967DD51AFC5388BF9CB44E8057A848B5EFF31E924F3",
-    "bytes": 31304,
-    "mtime": "09-22 22:33",
+    "sha": "4B53509889090A626F51C087555684785C452A186159565B2812E5778C9816C3",
+    "bytes": 31829,
+    "mtime": "09-28 19:35",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-youtube"
    },
    "dsh-project": {
-    "sha": "0553D7D098088D54DC598967DD51AFC5388BF9CB44E8057A848B5EFF31E924F3",
-    "bytes": 31304,
-    "mtime": "09-22 22:33",
+    "sha": "4B53509889090A626F51C087555684785C452A186159565B2812E5778C9816C3",
+    "bytes": 31829,
+    "mtime": "09-28 20:29",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-youtube"
    },
    "user-agents": {
-    "sha": "0553D7D098088D54DC598967DD51AFC5388BF9CB44E8057A848B5EFF31E924F3",
-    "bytes": 31304,
-    "mtime": "09-22 22:33",
+    "sha": "0669CC7A3BB303CF5E8108CFA6A9240F841B5D17A063EE78B92173D69B3F3031",
+    "bytes": 31823,
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gbt-youtube"
    }
   },
@@ -2024,12 +2328,6 @@
     "bytes": 18540,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-agent"
-   },
-   "user-openclaw": {
-    "sha": "AC239D29A2B88AEED9458BF1B91DD02A19B3560B7E5E9EDDFF8410EB236ACB34",
-    "bytes": 18540,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-agent"
    }
   },
   "arkcli-api-explorer": {
@@ -2050,12 +2348,6 @@
     "bytes": 7382,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-api-explorer"
-   },
-   "user-openclaw": {
-    "sha": "F98C55D64C6537E9D685DDB3F2CBA8693E6F4A616E04350A0E94BB075FBF2F07",
-    "bytes": 7382,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-api-explorer"
    }
   },
   "arkcli-auth": {
@@ -2076,12 +2368,6 @@
     "bytes": 7896,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-auth"
-   },
-   "user-openclaw": {
-    "sha": "2B40A0A7A56290F6A3612F0EDE497BC7C29702A9022EBCC5DA1764CBFEEDB892",
-    "bytes": 7896,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-auth"
    }
   },
   "arkcli-billing": {
@@ -2102,12 +2388,6 @@
     "bytes": 11495,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-billing"
-   },
-   "user-openclaw": {
-    "sha": "2B217075E1F5DFBFD05301B887E9F5D3FF23F4E018D10CDC9517DCFAD789D567",
-    "bytes": 11495,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-billing"
    }
   },
   "arkcli-chat": {
@@ -2128,12 +2408,6 @@
     "bytes": 12356,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-chat"
-   },
-   "user-openclaw": {
-    "sha": "FA5BEEC996E05BD0392AF7B5BF4769B71413E14CC284D02B6EC36AE5F11FC4F7",
-    "bytes": 12356,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-chat"
    }
   },
   "arkcli-config": {
@@ -2154,12 +2428,6 @@
     "bytes": 11239,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-config"
-   },
-   "user-openclaw": {
-    "sha": "BFB8BF2091C13C2DB16EEA8A6562F751C776B52809501A0660D220BCA34D18C7",
-    "bytes": 11239,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-config"
    }
   },
   "arkcli-connect": {
@@ -2180,12 +2448,6 @@
     "bytes": 8625,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-connect"
-   },
-   "user-openclaw": {
-    "sha": "FC22CC62593486E43FD5AD668EE82220A579A065151DB2EC451B917BED3310F7",
-    "bytes": 8625,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-connect"
    }
   },
   "arkcli-custommodel": {
@@ -2206,12 +2468,6 @@
     "bytes": 14930,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-custommodel"
-   },
-   "user-openclaw": {
-    "sha": "A3BC4BAAE305022E278467FAE8C981959A8EE3BB9F674318FD0CEF91E9514DEB",
-    "bytes": 14930,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-custommodel"
    }
   },
   "arkcli-datasets": {
@@ -2232,12 +2488,6 @@
     "bytes": 3650,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-datasets"
-   },
-   "user-openclaw": {
-    "sha": "E26A6E0436177EC39C0A7A566723F7C8955027CAF430E84BA56677FBCA958CE9",
-    "bytes": 3650,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-datasets"
    }
   },
   "arkcli-deploy": {
@@ -2258,12 +2508,6 @@
     "bytes": 9603,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-deploy"
-   },
-   "user-openclaw": {
-    "sha": "EF03FDECB773FC9514798BEF0FE5FDE7ECCC907C8B3D655FF96015FFC32A994A",
-    "bytes": 9603,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-deploy"
    }
   },
   "arkcli-doctor": {
@@ -2284,12 +2528,6 @@
     "bytes": 19086,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-doctor"
-   },
-   "user-openclaw": {
-    "sha": "3ED1B518572E8B8D81E85DA3C7907967FAE305D835A1EEFF496AE0BC19203947",
-    "bytes": 19086,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-doctor"
    }
   },
   "arkcli-gen": {
@@ -2310,12 +2548,6 @@
     "bytes": 16245,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-gen"
-   },
-   "user-openclaw": {
-    "sha": "7289C636E853DDFA4FCAB508375CDB3FA85EEBCA0E26913BC4B676AC316EB596",
-    "bytes": 16245,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-gen"
    }
   },
   "arkcli-helper": {
@@ -2336,12 +2568,6 @@
     "bytes": 8468,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-helper"
-   },
-   "user-openclaw": {
-    "sha": "836D7B66B7DD5D73CA36D8B45E5916A2AECC2F634CF9477B331C8E2FC100FD47",
-    "bytes": 8468,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-helper"
    }
   },
   "arkcli-iam": {
@@ -2362,12 +2588,6 @@
     "bytes": 2544,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-iam"
-   },
-   "user-openclaw": {
-    "sha": "ED15BC290BD35C3DD5EF6495A2F5C7B1FE50515B420847772F175042CD7F8DBE",
-    "bytes": 2544,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-iam"
    }
   },
   "arkcli-infer-endpoint": {
@@ -2388,12 +2608,6 @@
     "bytes": 7047,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-infer-endpoint"
-   },
-   "user-openclaw": {
-    "sha": "A42376322E5693EE1C926D9210B685AB75D97B1678474415C1E6956D2E3BD326",
-    "bytes": 7047,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-infer-endpoint"
    }
   },
   "arkcli-models": {
@@ -2414,12 +2628,6 @@
     "bytes": 24681,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-models"
-   },
-   "user-openclaw": {
-    "sha": "7BE0CC07866680108343C534FD97AC22027DF095B9700E1A0923A8BE6F909714",
-    "bytes": 24681,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-models"
    }
   },
   "arkcli-onboard": {
@@ -2440,12 +2648,6 @@
     "bytes": 6795,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-onboard"
-   },
-   "user-openclaw": {
-    "sha": "EC065AEE469D6EADB19629D891646DD6C8A11AE2056E912ABDE9A5F1B4730115",
-    "bytes": 6795,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-onboard"
    }
   },
   "arkcli-plans": {
@@ -2466,12 +2668,6 @@
     "bytes": 12752,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-plans"
-   },
-   "user-openclaw": {
-    "sha": "FEAFB57F9AACEFC5AAB98E311F22A36CFA86122379C7D3424A4DEAC4D7A614ED",
-    "bytes": 12752,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-plans"
    }
   },
   "arkcli-pricing": {
@@ -2492,12 +2688,6 @@
     "bytes": 10777,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-pricing"
-   },
-   "user-openclaw": {
-    "sha": "D1277394760CBE9D0D0DCA55EA7A348B4705C89BF75AA5AA8DCD1D54607C77BB",
-    "bytes": 10777,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-pricing"
    }
   },
   "arkcli-profile": {
@@ -2518,12 +2708,6 @@
     "bytes": 6420,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-profile"
-   },
-   "user-openclaw": {
-    "sha": "DE72774DCA91C30CB9798B8A090E367ABE8649FFE446E6E30ABEA3D45BE89740",
-    "bytes": 6420,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-profile"
    }
   },
   "arkcli-resources": {
@@ -2544,12 +2728,6 @@
     "bytes": 9949,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-resources"
-   },
-   "user-openclaw": {
-    "sha": "667E4B591638EE5A267B3E63E8A62A4C06344937E6B7AA58BABBEFA294D4BE58",
-    "bytes": 9949,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-resources"
    }
   },
   "arkcli-shared": {
@@ -2570,12 +2748,6 @@
     "bytes": 8410,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-shared"
-   },
-   "user-openclaw": {
-    "sha": "DE4B74C46FEEDBD2C15908357BC034FF920B42FCE95A87DA8A566552D9E1A45C",
-    "bytes": 8410,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-shared"
    }
   },
   "arkcli-train-finetune": {
@@ -2596,12 +2768,6 @@
     "bytes": 10582,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-train-finetune"
-   },
-   "user-openclaw": {
-    "sha": "564C5FD0577E1E8F92AF21895E5AAF6D6B58DE32883BF3300C671CB43A7C5E4C",
-    "bytes": 10582,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-train-finetune"
    }
   },
   "arkcli-understand": {
@@ -2622,12 +2788,6 @@
     "bytes": 10317,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-understand"
-   },
-   "user-openclaw": {
-    "sha": "BFDD2F1AEA38096421E82B71B4CEA42E591B315F0675EEDCF755768CDD046EA1",
-    "bytes": 10317,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-understand"
    }
   },
   "arkcli-usage": {
@@ -2648,12 +2808,6 @@
     "bytes": 12999,
     "mtime": "09-22 20:25",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\arkcli-usage"
-   },
-   "user-openclaw": {
-    "sha": "5C4C07EDB74E6ADE5B5005AA3DB6376E11D86AE845D7C8A729C0B9DF463F0A06",
-    "bytes": 12999,
-    "mtime": "09-22 20:25",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\arkcli-usage"
    }
   },
   "autoclaw-design-capability": {
@@ -2944,6 +3098,20 @@
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\frontend-slides"
    }
   },
+  "gbt-adhd-mode": {
+   "openclaw-managed": {
+    "sha": "C7DF0DFD08520BE4A118FF86C272CA90C92241A29CF5E5766C195020594405FC",
+    "bytes": 9447,
+    "mtime": "09-28 11:19",
+    "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\gbt-adhd-mode"
+   },
+   "dsh-project": {
+    "sha": "C7DF0DFD08520BE4A118FF86C272CA90C92241A29CF5E5766C195020594405FC",
+    "bytes": 9447,
+    "mtime": "09-28 20:30",
+    "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.dsh\\skills\\gbt-adhd-mode"
+   }
+  },
   "gemini": {
    "openclaw-managed": {
     "sha": "BD1A39D637571C70C3C5E6DEEEC4D2CE9A8E612AD8DF1EF178B4BC24F2EEA8E5",
@@ -2959,10 +3127,16 @@
     "mtime": "09-26 13:44",
     "dir": "C:\\Users\\ADMIN\\.openclaw-autoclaw\\skills\\genoffice"
    },
+   "user-agents": {
+    "sha": "B2A8953D6AC53C960281B27D17DCF7BC8E8B4680976AE4D4FD3BA79EA1BA6EB7",
+    "bytes": 77798,
+    "mtime": "09-28 16:54",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\genoffice"
+   },
    "user-claude": {
-    "sha": "F8AAAE07C76ADB6CF5F13329F6985B5A0D37AD0B0CC3C41D07FFF9212C6BC0CE",
-    "bytes": 72162,
-    "mtime": "09-26 14:03",
+    "sha": "B2A8953D6AC53C960281B27D17DCF7BC8E8B4680976AE4D4FD3BA79EA1BA6EB7",
+    "bytes": 77798,
+    "mtime": "09-28 14:26",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\genoffice"
    }
   },
@@ -3346,13 +3520,13 @@
    "proj-agents": {
     "sha": "E2CE334C4C3275DEA7E91B2AF1325679E3ABE09000452A54D7D62F2C27C19C89",
     "bytes": 8423,
-    "mtime": "09-25 11:41",
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\better-auth-best-practices"
    },
    "proj-claude": {
     "sha": "E2CE334C4C3275DEA7E91B2AF1325679E3ABE09000452A54D7D62F2C27C19C89",
     "bytes": 8423,
-    "mtime": "09-25 11:41",
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\better-auth-best-practices"
    }
   },
@@ -3374,13 +3548,13 @@
    "proj-agents": {
     "sha": "B3D9D92D667C13D7FFBF2212D60499DE9440F842F5862FFB1205F7F014104424",
     "bytes": 14758,
-    "mtime": "09-25 11:41",
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills\\create-auth"
    },
    "proj-claude": {
     "sha": "B3D9D92D667C13D7FFBF2212D60499DE9440F842F5862FFB1205F7F014104424",
     "bytes": 14758,
-    "mtime": "09-25 11:41",
+    "mtime": "10-03 12:45",
     "dir": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.claude\\skills\\create-auth"
    }
   },
@@ -3610,6 +3784,86 @@
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\allium"
    }
   },
+  "bambu-labs": {
+   "user-agents": {
+    "sha": "D57960D0A267A900EEA37E110AC3D008A2E6610A1A8DE257185E56EEA3A37B48",
+    "bytes": 3512,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\bambu-labs"
+   },
+   "user-claude": {
+    "sha": "D57960D0A267A900EEA37E110AC3D008A2E6610A1A8DE257185E56EEA3A37B48",
+    "bytes": 3512,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\bambu-labs"
+   },
+   "user-openclaw": {
+    "sha": "D57960D0A267A900EEA37E110AC3D008A2E6610A1A8DE257185E56EEA3A37B48",
+    "bytes": 3512,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\bambu-labs"
+   }
+  },
+  "cad": {
+   "user-agents": {
+    "sha": "F8C9B64EC65A0098DF5A887F8037DB80B03B33BBC72707146397545DCD8B1679",
+    "bytes": 11268,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\cad"
+   },
+   "user-claude": {
+    "sha": "F8C9B64EC65A0098DF5A887F8037DB80B03B33BBC72707146397545DCD8B1679",
+    "bytes": 11268,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\cad"
+   },
+   "user-openclaw": {
+    "sha": "F8C9B64EC65A0098DF5A887F8037DB80B03B33BBC72707146397545DCD8B1679",
+    "bytes": 11268,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\cad"
+   }
+  },
+  "dfam-check": {
+   "user-agents": {
+    "sha": "70FCBD647B5E875671FB692BEDF914DAB93BC39127D3EEF457C252E66445E798",
+    "bytes": 6086,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dfam-check"
+   },
+   "user-claude": {
+    "sha": "70FCBD647B5E875671FB692BEDF914DAB93BC39127D3EEF457C252E66445E798",
+    "bytes": 6086,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dfam-check"
+   },
+   "user-openclaw": {
+    "sha": "70FCBD647B5E875671FB692BEDF914DAB93BC39127D3EEF457C252E66445E798",
+    "bytes": 6086,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dfam-check"
+   }
+  },
+  "dfm": {
+   "user-agents": {
+    "sha": "FBED01FAB92368D884048EB8BD79669D57BDE931D0B1CB935229662B68CE7A81",
+    "bytes": 5843,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dfm"
+   },
+   "user-claude": {
+    "sha": "FBED01FAB92368D884048EB8BD79669D57BDE931D0B1CB935229662B68CE7A81",
+    "bytes": 5843,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dfm"
+   },
+   "user-openclaw": {
+    "sha": "FBED01FAB92368D884048EB8BD79669D57BDE931D0B1CB935229662B68CE7A81",
+    "bytes": 5843,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dfm"
+   }
+  },
   "dingtalk-aisearch": {
    "user-agents": {
     "sha": "3579619F9AD2E8B32EAADD130B7CDC443CF3D4445CE6D3BDDD64160834E0FA2A",
@@ -3622,12 +3876,6 @@
     "bytes": 8997,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-aisearch"
-   },
-   "user-openclaw": {
-    "sha": "3579619F9AD2E8B32EAADD130B7CDC443CF3D4445CE6D3BDDD64160834E0FA2A",
-    "bytes": 8997,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-aisearch"
    }
   },
   "dingtalk-aitable": {
@@ -3642,12 +3890,6 @@
     "bytes": 26704,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-aitable"
-   },
-   "user-openclaw": {
-    "sha": "9C0D486A86F13FBAF9BEA9685D142C06184474C0C08F497B4439A9FD0479B741",
-    "bytes": 26704,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-aitable"
    }
   },
   "dingtalk-calendar": {
@@ -3662,12 +3904,6 @@
     "bytes": 13263,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-calendar"
-   },
-   "user-openclaw": {
-    "sha": "F42F6FE6433656A1AE3DD5FF3F040BFC44E2D6B1BD0CE760AEB2D151B900DD1C",
-    "bytes": 13263,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-calendar"
    }
   },
   "dingtalk-chat": {
@@ -3682,12 +3918,6 @@
     "bytes": 9490,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-chat"
-   },
-   "user-openclaw": {
-    "sha": "8911F4C15E697515B53370CEA3022A41DBB4E3473B6F3146CC11E6DE481D71D5",
-    "bytes": 9490,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-chat"
    }
   },
   "dingtalk-contact": {
@@ -3702,12 +3932,6 @@
     "bytes": 9386,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-contact"
-   },
-   "user-openclaw": {
-    "sha": "15FA86C738339F7557D054748FFE43073136F045AC610842BAB941A94014D48F",
-    "bytes": 9386,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-contact"
    }
   },
   "dingtalk-doc": {
@@ -3722,12 +3946,6 @@
     "bytes": 11975,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-doc"
-   },
-   "user-openclaw": {
-    "sha": "07C4C918FA40242C4F96AADFCAED71073252F94A36F16804DE3D254C6F50AF9A",
-    "bytes": 11975,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-doc"
    }
   },
   "dingtalk-drive": {
@@ -3742,12 +3960,6 @@
     "bytes": 15362,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-drive"
-   },
-   "user-openclaw": {
-    "sha": "9E4F870389C9093A1C931B2AA6D2EF790B0B937150269A46A8284EFF6FE11396",
-    "bytes": 15362,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-drive"
    }
   },
   "dingtalk-event": {
@@ -3762,12 +3974,6 @@
     "bytes": 9995,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-event"
-   },
-   "user-openclaw": {
-    "sha": "7D524470F73EF1FBDF12539DE0B34569203DC3CE55B55B5F50B4E80AC2F0A086",
-    "bytes": 9995,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-event"
    }
   },
   "dingtalk-mail": {
@@ -3782,12 +3988,6 @@
     "bytes": 9341,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-mail"
-   },
-   "user-openclaw": {
-    "sha": "664F31A00F46245C270049129DA4D25475CCC561B04D9897E7CD634B2C4A6F18",
-    "bytes": 9341,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-mail"
    }
   },
   "dingtalk-minutes": {
@@ -3802,12 +4002,6 @@
     "bytes": 16499,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-minutes"
-   },
-   "user-openclaw": {
-    "sha": "153CF6E6BCAF3C8AF045E001B10457B02D69F7BFD13A3DA782189A6E5D952C87",
-    "bytes": 16499,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-minutes"
    }
   },
   "dingtalk-misc": {
@@ -3822,12 +4016,6 @@
     "bytes": 15175,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-misc"
-   },
-   "user-openclaw": {
-    "sha": "975C8D63F5AD6F171AA2760C76CEFEE57C8E9006772A9863B9939CEC7798A5F2",
-    "bytes": 15175,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-misc"
    }
   },
   "dingtalk-shared": {
@@ -3842,12 +4030,6 @@
     "bytes": 6914,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-shared"
-   },
-   "user-openclaw": {
-    "sha": "7C3F6231072CD0E038B69A94B94957E99A1B1B82B961882413E08A1CF56336FB",
-    "bytes": 6914,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-shared"
    }
   },
   "dingtalk-todo": {
@@ -3862,12 +4044,6 @@
     "bytes": 11661,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-todo"
-   },
-   "user-openclaw": {
-    "sha": "F3A83A0C821CDEA73D3FE242E90BA13735B88ABE05570B7554B0BDCDAC602126",
-    "bytes": 11661,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-todo"
    }
   },
   "dingtalk-wiki": {
@@ -3882,12 +4058,26 @@
     "bytes": 13473,
     "mtime": "01-01 00:00",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dingtalk-wiki"
+   }
+  },
+  "dxf": {
+   "user-agents": {
+    "sha": "EF018D4E8D1D05523F6ECA8615251FE467AC3FD3C0A629FF67DC30368724D306",
+    "bytes": 17593,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\dxf"
+   },
+   "user-claude": {
+    "sha": "EF018D4E8D1D05523F6ECA8615251FE467AC3FD3C0A629FF67DC30368724D306",
+    "bytes": 17593,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\dxf"
    },
    "user-openclaw": {
-    "sha": "ADF71EE015D465518666E95ABECC9B84DA74B148A7330EDA9738B1AF847164BF",
-    "bytes": 13473,
-    "mtime": "01-01 00:00",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dingtalk-wiki"
+    "sha": "EF018D4E8D1D05523F6ECA8615251FE467AC3FD3C0A629FF67DC30368724D306",
+    "bytes": 17593,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\dxf"
    }
   },
   "ef-broadcast": {
@@ -3914,6 +4104,46 @@
     "dir": "C:\\Users\\ADMIN\\.agents\\skills\\ef-profile"
    }
   },
+  "engineering-drawing": {
+   "user-agents": {
+    "sha": "06A6492B94CCE4EA7B46439E0ECAE72D026920055F11FF322E6D966C4671F045",
+    "bytes": 7939,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\engineering-drawing"
+   },
+   "user-claude": {
+    "sha": "06A6492B94CCE4EA7B46439E0ECAE72D026920055F11FF322E6D966C4671F045",
+    "bytes": 7939,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\engineering-drawing"
+   },
+   "user-openclaw": {
+    "sha": "06A6492B94CCE4EA7B46439E0ECAE72D026920055F11FF322E6D966C4671F045",
+    "bytes": 7939,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\engineering-drawing"
+   }
+  },
+  "gcode": {
+   "user-agents": {
+    "sha": "DA63118CC19A229431E3463918E9781767DAA51AAB43B06F1128BE86249A6923",
+    "bytes": 4046,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\gcode"
+   },
+   "user-claude": {
+    "sha": "DA63118CC19A229431E3463918E9781767DAA51AAB43B06F1128BE86249A6923",
+    "bytes": 4046,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\gcode"
+   },
+   "user-openclaw": {
+    "sha": "DA63118CC19A229431E3463918E9781767DAA51AAB43B06F1128BE86249A6923",
+    "bytes": 4046,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\gcode"
+   }
+  },
   "hyperframes": {
    "user-agents": {
     "sha": "49E0854D6142EDB8B067C56BDEDB711ECA4FB828E944918B5A3F8422B74EC7AD",
@@ -3926,12 +4156,6 @@
     "bytes": 16760,
     "mtime": "09-22 22:30",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\hyperframes"
-   },
-   "user-openclaw": {
-    "sha": "49E0854D6142EDB8B067C56BDEDB711ECA4FB828E944918B5A3F8422B74EC7AD",
-    "bytes": 16760,
-    "mtime": "09-22 22:30",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\hyperframes"
    }
   },
   "hyperframes-animation": {
@@ -3946,12 +4170,6 @@
     "bytes": 7924,
     "mtime": "09-22 22:30",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\hyperframes-animation"
-   },
-   "user-openclaw": {
-    "sha": "653F1C48643B115DFB97C993AD2B31AABC35AC53B6033DFFF33C35B0BB03A779",
-    "bytes": 7924,
-    "mtime": "09-22 22:30",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\hyperframes-animation"
    }
   },
   "hyperframes-audio": {
@@ -3966,12 +4184,6 @@
     "bytes": 25578,
     "mtime": "09-22 22:30",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\hyperframes-audio"
-   },
-   "user-openclaw": {
-    "sha": "02BA8082A3654B7F8D8FC6D2D322B2828ABB1E6DD455FB1FF14728E6E6C89A1E",
-    "bytes": 25578,
-    "mtime": "09-22 22:30",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\hyperframes-audio"
    }
   },
   "hyperframes-cli": {
@@ -3986,12 +4198,6 @@
     "bytes": 19253,
     "mtime": "09-22 22:30",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\hyperframes-cli"
-   },
-   "user-openclaw": {
-    "sha": "97C97B1607150CC55BF265ECF0BA068AD21A17B015841FAD0748E1A73D5C878C",
-    "bytes": 19253,
-    "mtime": "09-22 22:30",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\hyperframes-cli"
    }
   },
   "hyperframes-core": {
@@ -4006,12 +4212,6 @@
     "bytes": 12153,
     "mtime": "09-22 22:30",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\hyperframes-core"
-   },
-   "user-openclaw": {
-    "sha": "2B2893D5916A7B976F7B398C8EFBC54BFF0839F3460EB3A55E60D283A9E40A3D",
-    "bytes": 12153,
-    "mtime": "09-22 22:30",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\hyperframes-core"
    }
   },
   "hyperframes-creative": {
@@ -4026,12 +4226,6 @@
     "bytes": 6354,
     "mtime": "09-22 22:30",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\hyperframes-creative"
-   },
-   "user-openclaw": {
-    "sha": "488782FC741A43E002B5C6AC0DA69CC2B12ABAA42B6C0056DF2AA53BEA553C16",
-    "bytes": 6354,
-    "mtime": "09-22 22:30",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\hyperframes-creative"
    }
   },
   "hyperframes-keyframes": {
@@ -4046,12 +4240,6 @@
     "bytes": 15901,
     "mtime": "09-22 22:30",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\hyperframes-keyframes"
-   },
-   "user-openclaw": {
-    "sha": "BF1C44010E4F1BD2E5DF75C57ABCD765EAA635D4EE8B39B41EF6707F130D73DE",
-    "bytes": 15901,
-    "mtime": "09-22 22:30",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\hyperframes-keyframes"
    }
   },
   "hyperframes-registry": {
@@ -4066,12 +4254,6 @@
     "bytes": 9643,
     "mtime": "09-22 22:30",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\hyperframes-registry"
-   },
-   "user-openclaw": {
-    "sha": "0694F970B3613B9F0A63DC44C06404EA4F6506819F4AFDBC9DA3323B420CB9AE",
-    "bytes": 9643,
-    "mtime": "09-22 22:30",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\hyperframes-registry"
    }
   },
   "hyperframes-studio": {
@@ -4086,12 +4268,6 @@
     "bytes": 3661,
     "mtime": "09-22 22:30",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\hyperframes-studio"
-   },
-   "user-openclaw": {
-    "sha": "A3925932D2F38CBF3423CA7232003423C171F607C2E105084E0B3FFF61189103",
-    "bytes": 3661,
-    "mtime": "09-22 22:30",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\hyperframes-studio"
    }
   },
   "lark-approval": {
@@ -4106,12 +4282,6 @@
     "bytes": 7532,
     "mtime": "09-18 09:54",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-approval"
-   },
-   "user-openclaw": {
-    "sha": "A2F10F910F9CCA802969A23CB23A5722BA0F4BBAD0A4912734A274B543D232D8",
-    "bytes": 7532,
-    "mtime": "09-18 09:54",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-approval"
    }
   },
   "lark-apps": {
@@ -4126,12 +4296,6 @@
     "bytes": 25530,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-apps"
-   },
-   "user-openclaw": {
-    "sha": "F5E905214B792361E6EAFE440AB318F61A944CF060D620E334D6DAD14664AA44",
-    "bytes": 25530,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-apps"
    }
   },
   "lark-attendance": {
@@ -4146,12 +4310,6 @@
     "bytes": 1620,
     "mtime": "09-15 12:42",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-attendance"
-   },
-   "user-openclaw": {
-    "sha": "A0EA5F3FA176496DDA31D912F7E55AD7CFED5243B30567D16E7F9DC96EEBBE8B",
-    "bytes": 1620,
-    "mtime": "09-15 12:42",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-attendance"
    }
   },
   "lark-base": {
@@ -4166,12 +4324,6 @@
     "bytes": 24773,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-base"
-   },
-   "user-openclaw": {
-    "sha": "22ADBBBD4B372844D3A97B7E6E0BED92A83AE249349E5E7A4BA053B06E88966F",
-    "bytes": 24773,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-base"
    }
   },
   "lark-calendar": {
@@ -4186,12 +4338,6 @@
     "bytes": 18387,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-calendar"
-   },
-   "user-openclaw": {
-    "sha": "F197A21F628481CC498AF1C2167D5752F19C261464686FD2B494C7BF3698B655",
-    "bytes": 18387,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-calendar"
    }
   },
   "lark-contact": {
@@ -4206,12 +4352,6 @@
     "bytes": 4176,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-contact"
-   },
-   "user-openclaw": {
-    "sha": "E5646186A33C530E574A10EC63D2BBE1E8BBE0941E652EA83DF318AE23C84C32",
-    "bytes": 4176,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-contact"
    }
   },
   "lark-doc": {
@@ -4226,12 +4366,6 @@
     "bytes": 4601,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-doc"
-   },
-   "user-openclaw": {
-    "sha": "884EACA76DCE46BCF09B134DABD948225DBAC8CDBDFE6B3245D54E074A25CD10",
-    "bytes": 4601,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-doc"
    }
   },
   "lark-drive": {
@@ -4246,12 +4380,6 @@
     "bytes": 25735,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-drive"
-   },
-   "user-openclaw": {
-    "sha": "8DB3185C5BFB69AC1574CFFFA5E4269202B94EC2CE40B22C2F2DA36B06EC616B",
-    "bytes": 25735,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-drive"
    }
   },
   "lark-event": {
@@ -4266,12 +4394,6 @@
     "bytes": 11856,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-event"
-   },
-   "user-openclaw": {
-    "sha": "8BAB1D1324C60CE32AD50536CE7066116F6B89451E54462ADA7687A11B65D15A",
-    "bytes": 11856,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-event"
    }
   },
   "lark-im": {
@@ -4286,12 +4408,6 @@
     "bytes": 25849,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-im"
-   },
-   "user-openclaw": {
-    "sha": "64C6A626418B2522A34865037FBC441379D55B908E20A4B7BFEDE4DA6D14AD13",
-    "bytes": 25849,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-im"
    }
   },
   "lark-mail": {
@@ -4306,12 +4422,6 @@
     "bytes": 26431,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-mail"
-   },
-   "user-openclaw": {
-    "sha": "9BF144794C754037466CBD35BDE3A2C197D7BAEEF5365F73FD114CCB3B2E3F0A",
-    "bytes": 26431,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-mail"
    }
   },
   "lark-markdown": {
@@ -4326,12 +4436,6 @@
     "bytes": 5436,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-markdown"
-   },
-   "user-openclaw": {
-    "sha": "AA935F55DBB5622AE598C9824A89264B3CC874AD852F3E5833F2FAB38D62076F",
-    "bytes": 5436,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-markdown"
    }
   },
   "lark-meeting": {
@@ -4346,12 +4450,6 @@
     "bytes": 12680,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-meeting"
-   },
-   "user-openclaw": {
-    "sha": "F9040E893415CF47C49C13EFDDAC28E45D892796B7512D33A9574744333E18FA",
-    "bytes": 12680,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-meeting"
    }
   },
   "lark-minutes": {
@@ -4366,12 +4464,6 @@
     "bytes": 464,
     "mtime": "09-15 12:42",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-minutes"
-   },
-   "user-openclaw": {
-    "sha": "1058E122BB7D3F8D857FA9AF7470082C2CE59673455BDAF5305F912DD3B9920F",
-    "bytes": 464,
-    "mtime": "09-15 12:42",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-minutes"
    }
   },
   "lark-note": {
@@ -4386,12 +4478,6 @@
     "bytes": 458,
     "mtime": "09-15 12:42",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-note"
-   },
-   "user-openclaw": {
-    "sha": "4D55AD009F7475E55240AD9F6BE7B25B73F2974553325BE84DB372DD3C08248B",
-    "bytes": 458,
-    "mtime": "09-15 12:42",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-note"
    }
   },
   "lark-okr": {
@@ -4406,12 +4492,6 @@
     "bytes": 15684,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-okr"
-   },
-   "user-openclaw": {
-    "sha": "662EC3C5434C4AA38F149F371BAAA80AB76E561DF60FD69C73F2FDE54CCF4A82",
-    "bytes": 15684,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-okr"
    }
   },
   "lark-openapi-explorer": {
@@ -4426,12 +4506,6 @@
     "bytes": 5306,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-openapi-explorer"
-   },
-   "user-openclaw": {
-    "sha": "420C7CA38FC06CE539CE6205015E8E7C8EAA8CE2F94821FDCA5EC146F0A295CE",
-    "bytes": 5306,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-openapi-explorer"
    }
   },
   "lark-shared": {
@@ -4446,12 +4520,6 @@
     "bytes": 4636,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-shared"
-   },
-   "user-openclaw": {
-    "sha": "7DC4D82D06CB0BFCA7F75117C2943CEBBBCCD00495EDC54D1AC68A2FDCF12D3D",
-    "bytes": 4636,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-shared"
    }
   },
   "lark-sheets": {
@@ -4466,12 +4534,6 @@
     "bytes": 46897,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-sheets"
-   },
-   "user-openclaw": {
-    "sha": "F31F7A4A2B25EF4FFC443D42DDC755CB7C7B59B26AE4A822A27678126321540E",
-    "bytes": 46897,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-sheets"
    }
   },
   "lark-skill-maker": {
@@ -4486,12 +4548,6 @@
     "bytes": 2460,
     "mtime": "09-15 12:42",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-skill-maker"
-   },
-   "user-openclaw": {
-    "sha": "8591158289A3CB003C7AC18001CE6B42837C780D2567492CEA87BF98982B3678",
-    "bytes": 2460,
-    "mtime": "09-15 12:42",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-skill-maker"
    }
   },
   "lark-slides": {
@@ -4506,12 +4562,6 @@
     "bytes": 28999,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-slides"
-   },
-   "user-openclaw": {
-    "sha": "74027211ABB62391783A8519094BE340A39CDD360E753AB779A51731CCA9E13F",
-    "bytes": 28999,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-slides"
    }
   },
   "lark-task": {
@@ -4526,12 +4576,6 @@
     "bytes": 14132,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-task"
-   },
-   "user-openclaw": {
-    "sha": "429B2D8054B2BA3AC2A8D21F662646418F40EEAC7C7ED8B503DCFA968940698F",
-    "bytes": 14132,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-task"
    }
   },
   "lark-vc": {
@@ -4546,12 +4590,6 @@
     "bytes": 454,
     "mtime": "09-15 12:42",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-vc"
-   },
-   "user-openclaw": {
-    "sha": "46B56963508D7A89CE291020993F9C22FB46F52DB2632443F9E81495A5469123",
-    "bytes": 454,
-    "mtime": "09-15 12:42",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-vc"
    }
   },
   "lark-vc-agent": {
@@ -4566,12 +4604,6 @@
     "bytes": 466,
     "mtime": "09-15 12:42",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-vc-agent"
-   },
-   "user-openclaw": {
-    "sha": "CA7478C596F989999562099CF9C56650F3C2B4F13AEAD4817D18974BA861AB01",
-    "bytes": 466,
-    "mtime": "09-15 12:42",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-vc-agent"
    }
   },
   "lark-whiteboard": {
@@ -4586,12 +4618,6 @@
     "bytes": 3635,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-whiteboard"
-   },
-   "user-openclaw": {
-    "sha": "192B9C695DB117AD9E97B89D265DAEF836636515139A01FA5600F980F635412D",
-    "bytes": 3635,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-whiteboard"
    }
   },
   "lark-wiki": {
@@ -4606,12 +4632,6 @@
     "bytes": 12989,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-wiki"
-   },
-   "user-openclaw": {
-    "sha": "AC36C8AE3B8299DBBD6FDACD505AB68D6C7525A0D8CB8D89BFD0A5E7B9E094FC",
-    "bytes": 12989,
-    "mtime": "09-18 09:52",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-wiki"
    }
   },
   "lark-workflow-meeting-summary": {
@@ -4626,12 +4646,6 @@
     "bytes": 7150,
     "mtime": "09-15 12:42",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-workflow-meeting-summary"
-   },
-   "user-openclaw": {
-    "sha": "2CC95A5DB67B9CB73BC4D3F3D38F49B348E56F99CADCA5CD998ED8C443F6E166",
-    "bytes": 7150,
-    "mtime": "09-15 12:42",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-workflow-meeting-summary"
    }
   },
   "lark-workflow-standup-report": {
@@ -4646,12 +4660,6 @@
     "bytes": 4626,
     "mtime": "09-15 12:42",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\lark-workflow-standup-report"
-   },
-   "user-openclaw": {
-    "sha": "A283DE746E65F97D7D25C3B9E351C2E5C16702BE81C0F004D5BE718C50994690",
-    "bytes": 4626,
-    "mtime": "09-15 12:42",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\lark-workflow-standup-report"
    }
   },
   "media-use": {
@@ -4666,12 +4674,6 @@
     "bytes": 7976,
     "mtime": "09-22 22:30",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\media-use"
-   },
-   "user-openclaw": {
-    "sha": "AF377BB914D0EE9B76760E8A041D890DE4176F70649E0448DF84B1ED02916E45",
-    "bytes": 7976,
-    "mtime": "09-22 22:30",
-    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\media-use"
    }
   },
   "opensea": {
@@ -4686,6 +4688,106 @@
     "bytes": 12930,
     "mtime": "09-18 09:52",
     "dir": "C:\\Users\\ADMIN\\.claude\\skills\\opensea"
+   }
+  },
+  "sdf": {
+   "user-agents": {
+    "sha": "1A9CE6430FEABCC3F549DF2DF6A40B9F22054A7D91371283B998536B1BC98DD2",
+    "bytes": 10463,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\sdf"
+   },
+   "user-claude": {
+    "sha": "1A9CE6430FEABCC3F549DF2DF6A40B9F22054A7D91371283B998536B1BC98DD2",
+    "bytes": 10463,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\sdf"
+   },
+   "user-openclaw": {
+    "sha": "1A9CE6430FEABCC3F549DF2DF6A40B9F22054A7D91371283B998536B1BC98DD2",
+    "bytes": 10463,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\sdf"
+   }
+  },
+  "sendcutsend": {
+   "user-agents": {
+    "sha": "C134D40697A07DDA3DDE85D51A3C7343514167734120C6C8E6580A401B4AED42",
+    "bytes": 12971,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\sendcutsend"
+   },
+   "user-claude": {
+    "sha": "C134D40697A07DDA3DDE85D51A3C7343514167734120C6C8E6580A401B4AED42",
+    "bytes": 12971,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\sendcutsend"
+   },
+   "user-openclaw": {
+    "sha": "C134D40697A07DDA3DDE85D51A3C7343514167734120C6C8E6580A401B4AED42",
+    "bytes": 12971,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\sendcutsend"
+   }
+  },
+  "srdf": {
+   "user-agents": {
+    "sha": "D5D46526A3246139FD5FB84B5FFE3726406EE195FE46A24E55FFF68CF662FFF4",
+    "bytes": 11500,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\srdf"
+   },
+   "user-claude": {
+    "sha": "D5D46526A3246139FD5FB84B5FFE3726406EE195FE46A24E55FFF68CF662FFF4",
+    "bytes": 11500,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\srdf"
+   },
+   "user-openclaw": {
+    "sha": "D5D46526A3246139FD5FB84B5FFE3726406EE195FE46A24E55FFF68CF662FFF4",
+    "bytes": 11500,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\srdf"
+   }
+  },
+  "step-parts": {
+   "user-agents": {
+    "sha": "62E4E1F406A30B0053904E648966E075A63913A198E16FC857D92D779CEC2A52",
+    "bytes": 6106,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\step-parts"
+   },
+   "user-claude": {
+    "sha": "62E4E1F406A30B0053904E648966E075A63913A198E16FC857D92D779CEC2A52",
+    "bytes": 6106,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\step-parts"
+   },
+   "user-openclaw": {
+    "sha": "62E4E1F406A30B0053904E648966E075A63913A198E16FC857D92D779CEC2A52",
+    "bytes": 6106,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\step-parts"
+   }
+  },
+  "urdf": {
+   "user-agents": {
+    "sha": "0D42EB47BA69FF3B2E7C53BE63ECAC91F60B5DCD732C8417F59BE6DF63A37A48",
+    "bytes": 9495,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.agents\\skills\\urdf"
+   },
+   "user-claude": {
+    "sha": "0D42EB47BA69FF3B2E7C53BE63ECAC91F60B5DCD732C8417F59BE6DF63A37A48",
+    "bytes": 9495,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.claude\\skills\\urdf"
+   },
+   "user-openclaw": {
+    "sha": "0D42EB47BA69FF3B2E7C53BE63ECAC91F60B5DCD732C8417F59BE6DF63A37A48",
+    "bytes": 9495,
+    "mtime": "10-08 02:00",
+    "dir": "C:\\Users\\ADMIN\\.openclaw\\skills\\urdf"
    }
   },
   "agents-sdk": {
@@ -4795,83 +4897,1103 @@
  },
  "gbt_drift": [
   {
-   "name": "gbt-automation",
+   "name": "gbt-aesthetic",
    "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "1D146BD8C441D03EBB2B6C8E57E9DE5C8A6B1BF9D70CFB34958FBB5506DF986A",
+    "openclaw-managed": "072DC3164E969B8273DC4D0B7386E8D18843A3C9C83FF8A36EB26877A7BC2AA3",
+    "dsh-project": "072DC3164E969B8273DC4D0B7386E8D18843A3C9C83FF8A36EB26877A7BC2AA3",
+    "user-agents": "1D146BD8C441D03EBB2B6C8E57E9DE5C8A6B1BF9D70CFB34958FBB5506DF986A"
+   }
+  },
+  {
+   "name": "gbt-aesthetic",
+   "stale_roots": [
+    "openclaw-managed",
     "dsh-project"
    ],
    "loaded": [
     "dsh-project"
    ],
    "roots": {
-    "ws-source": "C8BEE3FF68380C2C8E470641E57B9D49F0DB7C7EA236F686647F33B17CEA208B",
-    "openclaw-managed": "C8BEE3FF68380C2C8E470641E57B9D49F0DB7C7EA236F686647F33B17CEA208B",
-    "dsh-project": "EE3C282BF66D9EE38142875850B272FCBE30B49FF2BE6AAC813DC75AFA0767FE",
-    "user-agents": "C8BEE3FF68380C2C8E470641E57B9D49F0DB7C7EA236F686647F33B17CEA208B"
+    "ws-source": "1D146BD8C441D03EBB2B6C8E57E9DE5C8A6B1BF9D70CFB34958FBB5506DF986A",
+    "openclaw-managed": "072DC3164E969B8273DC4D0B7386E8D18843A3C9C83FF8A36EB26877A7BC2AA3",
+    "dsh-project": "072DC3164E969B8273DC4D0B7386E8D18843A3C9C83FF8A36EB26877A7BC2AA3",
+    "user-agents": "1D146BD8C441D03EBB2B6C8E57E9DE5C8A6B1BF9D70CFB34958FBB5506DF986A"
+   }
+  },
+  {
+   "name": "gbt-ai-101",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "0ABB8598E671211D726FB34911422A5AFA287A46346FA258E7F807D61A976329",
+    "openclaw-managed": "2D3FB5827A105013E349D26C76CE3429A072B645CEA374721F4E10ABDAF8823D",
+    "dsh-project": "2D3FB5827A105013E349D26C76CE3429A072B645CEA374721F4E10ABDAF8823D",
+    "user-agents": "0ABB8598E671211D726FB34911422A5AFA287A46346FA258E7F807D61A976329"
+   }
+  },
+  {
+   "name": "gbt-ai-101",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "0ABB8598E671211D726FB34911422A5AFA287A46346FA258E7F807D61A976329",
+    "openclaw-managed": "2D3FB5827A105013E349D26C76CE3429A072B645CEA374721F4E10ABDAF8823D",
+    "dsh-project": "2D3FB5827A105013E349D26C76CE3429A072B645CEA374721F4E10ABDAF8823D",
+    "user-agents": "0ABB8598E671211D726FB34911422A5AFA287A46346FA258E7F807D61A976329"
+   }
+  },
+  {
+   "name": "gbt-ai-anything",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "A04CD0E025E57A4323DF8A295F9CDDD03B2E750DC115ADC5CC9ABBAE54C249DE",
+    "openclaw-managed": "C8C24F8271F06ECAE26D5F828F43C76D96E2EAD4F16730A2A069367A60207C89",
+    "dsh-project": "C8C24F8271F06ECAE26D5F828F43C76D96E2EAD4F16730A2A069367A60207C89",
+    "user-agents": "A04CD0E025E57A4323DF8A295F9CDDD03B2E750DC115ADC5CC9ABBAE54C249DE"
+   }
+  },
+  {
+   "name": "gbt-ai-anything",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "A04CD0E025E57A4323DF8A295F9CDDD03B2E750DC115ADC5CC9ABBAE54C249DE",
+    "openclaw-managed": "C8C24F8271F06ECAE26D5F828F43C76D96E2EAD4F16730A2A069367A60207C89",
+    "dsh-project": "C8C24F8271F06ECAE26D5F828F43C76D96E2EAD4F16730A2A069367A60207C89",
+    "user-agents": "A04CD0E025E57A4323DF8A295F9CDDD03B2E750DC115ADC5CC9ABBAE54C249DE"
+   }
+  },
+  {
+   "name": "gbt-arkcli",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "90D05611E645B3A40E623C85EEF53D030C2CE0ABE176D12610EC572BD34B4E90",
+    "openclaw-managed": "86BAC54E616AEAD8C41E53E513D70AEE652FAA3D0529579FD510D173E11A8230",
+    "dsh-project": "86BAC54E616AEAD8C41E53E513D70AEE652FAA3D0529579FD510D173E11A8230",
+    "user-agents": "90D05611E645B3A40E623C85EEF53D030C2CE0ABE176D12610EC572BD34B4E90"
+   }
+  },
+  {
+   "name": "gbt-arkcli",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "90D05611E645B3A40E623C85EEF53D030C2CE0ABE176D12610EC572BD34B4E90",
+    "openclaw-managed": "86BAC54E616AEAD8C41E53E513D70AEE652FAA3D0529579FD510D173E11A8230",
+    "dsh-project": "86BAC54E616AEAD8C41E53E513D70AEE652FAA3D0529579FD510D173E11A8230",
+    "user-agents": "90D05611E645B3A40E623C85EEF53D030C2CE0ABE176D12610EC572BD34B4E90"
+   }
+  },
+  {
+   "name": "gbt-automation",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "C7816DD23983A849A6548EE70163CC2ED8CF623C240469B70CA4FCD91893808E",
+    "openclaw-managed": "D107EC722B55FE477F4EDFD8B0251F37E52CFFE497F04FE9446A111A71FE9CC7",
+    "dsh-project": "D107EC722B55FE477F4EDFD8B0251F37E52CFFE497F04FE9446A111A71FE9CC7",
+    "user-agents": "C7816DD23983A849A6548EE70163CC2ED8CF623C240469B70CA4FCD91893808E"
+   }
+  },
+  {
+   "name": "gbt-automation",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "C7816DD23983A849A6548EE70163CC2ED8CF623C240469B70CA4FCD91893808E",
+    "openclaw-managed": "D107EC722B55FE477F4EDFD8B0251F37E52CFFE497F04FE9446A111A71FE9CC7",
+    "dsh-project": "D107EC722B55FE477F4EDFD8B0251F37E52CFFE497F04FE9446A111A71FE9CC7",
+    "user-agents": "C7816DD23983A849A6548EE70163CC2ED8CF623C240469B70CA4FCD91893808E"
+   }
+  },
+  {
+   "name": "gbt-brain",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "A6762F5207721E0B56F8CFD093AA07F9D94A1D87A4D7B594846F7DB9D81EF864",
+    "openclaw-managed": "79FCC32DC2E178439D4F0F32013134D6A32C0C94BBE1AB4897EF4512187D79EB",
+    "dsh-project": "79FCC32DC2E178439D4F0F32013134D6A32C0C94BBE1AB4897EF4512187D79EB",
+    "user-agents": "A6762F5207721E0B56F8CFD093AA07F9D94A1D87A4D7B594846F7DB9D81EF864"
+   }
+  },
+  {
+   "name": "gbt-brain",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "A6762F5207721E0B56F8CFD093AA07F9D94A1D87A4D7B594846F7DB9D81EF864",
+    "openclaw-managed": "79FCC32DC2E178439D4F0F32013134D6A32C0C94BBE1AB4897EF4512187D79EB",
+    "dsh-project": "79FCC32DC2E178439D4F0F32013134D6A32C0C94BBE1AB4897EF4512187D79EB",
+    "user-agents": "A6762F5207721E0B56F8CFD093AA07F9D94A1D87A4D7B594846F7DB9D81EF864"
+   }
+  },
+  {
+   "name": "gbt-chengfeng",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "36232DEAF47A52C7618047C3518A8DA4E055FCB7D511E58BDAD3436B988ED30D",
+    "openclaw-managed": "C468E5A1998594CF94CE8B306B6456D0CF3278A7A38F5B235F41E2714703AAA6",
+    "dsh-project": "C468E5A1998594CF94CE8B306B6456D0CF3278A7A38F5B235F41E2714703AAA6",
+    "user-agents": "36232DEAF47A52C7618047C3518A8DA4E055FCB7D511E58BDAD3436B988ED30D"
+   }
+  },
+  {
+   "name": "gbt-chengfeng",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "36232DEAF47A52C7618047C3518A8DA4E055FCB7D511E58BDAD3436B988ED30D",
+    "openclaw-managed": "C468E5A1998594CF94CE8B306B6456D0CF3278A7A38F5B235F41E2714703AAA6",
+    "dsh-project": "C468E5A1998594CF94CE8B306B6456D0CF3278A7A38F5B235F41E2714703AAA6",
+    "user-agents": "36232DEAF47A52C7618047C3518A8DA4E055FCB7D511E58BDAD3436B988ED30D"
+   }
+  },
+  {
+   "name": "gbt-code-taste",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "5D957E762CCF1106CC9986AD0B0351F99221BC0D56F997E8B3F34E3A581F76D0",
+    "openclaw-managed": "62169CB6A8B17800B85252E6C415FED9030226DF2538BBC3204A5760F41171F0",
+    "dsh-project": "62169CB6A8B17800B85252E6C415FED9030226DF2538BBC3204A5760F41171F0",
+    "user-agents": "5D957E762CCF1106CC9986AD0B0351F99221BC0D56F997E8B3F34E3A581F76D0"
+   }
+  },
+  {
+   "name": "gbt-code-taste",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "5D957E762CCF1106CC9986AD0B0351F99221BC0D56F997E8B3F34E3A581F76D0",
+    "openclaw-managed": "62169CB6A8B17800B85252E6C415FED9030226DF2538BBC3204A5760F41171F0",
+    "dsh-project": "62169CB6A8B17800B85252E6C415FED9030226DF2538BBC3204A5760F41171F0",
+    "user-agents": "5D957E762CCF1106CC9986AD0B0351F99221BC0D56F997E8B3F34E3A581F76D0"
+   }
+  },
+  {
+   "name": "gbt-collab",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "B0833CEC5FB6858E012839398D483D4316B51C45AFCC1E619B5CA376FBC1DD32",
+    "openclaw-managed": "28A3CFDF6D0800763BE95052BFD9E80C8C53D85C7B739D73382F09A40F3E9514",
+    "dsh-project": "28A3CFDF6D0800763BE95052BFD9E80C8C53D85C7B739D73382F09A40F3E9514",
+    "user-agents": "B0833CEC5FB6858E012839398D483D4316B51C45AFCC1E619B5CA376FBC1DD32"
+   }
+  },
+  {
+   "name": "gbt-collab",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "B0833CEC5FB6858E012839398D483D4316B51C45AFCC1E619B5CA376FBC1DD32",
+    "openclaw-managed": "28A3CFDF6D0800763BE95052BFD9E80C8C53D85C7B739D73382F09A40F3E9514",
+    "dsh-project": "28A3CFDF6D0800763BE95052BFD9E80C8C53D85C7B739D73382F09A40F3E9514",
+    "user-agents": "B0833CEC5FB6858E012839398D483D4316B51C45AFCC1E619B5CA376FBC1DD32"
+   }
+  },
+  {
+   "name": "gbt-comms",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "A76A4F1403F96183536AAF2786C3F7D7F581D1EB1CC0C1DD8CE013CC3EFF5F68",
+    "openclaw-managed": "C4DD08908168CD12E49B6C26A25F7145A181F4D5898C2D01E8998F3367F8A573",
+    "dsh-project": "C4DD08908168CD12E49B6C26A25F7145A181F4D5898C2D01E8998F3367F8A573",
+    "user-agents": "A76A4F1403F96183536AAF2786C3F7D7F581D1EB1CC0C1DD8CE013CC3EFF5F68"
+   }
+  },
+  {
+   "name": "gbt-comms",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "A76A4F1403F96183536AAF2786C3F7D7F581D1EB1CC0C1DD8CE013CC3EFF5F68",
+    "openclaw-managed": "C4DD08908168CD12E49B6C26A25F7145A181F4D5898C2D01E8998F3367F8A573",
+    "dsh-project": "C4DD08908168CD12E49B6C26A25F7145A181F4D5898C2D01E8998F3367F8A573",
+    "user-agents": "A76A4F1403F96183536AAF2786C3F7D7F581D1EB1CC0C1DD8CE013CC3EFF5F68"
+   }
+  },
+  {
+   "name": "gbt-console",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "1FA3DC863A8AD5D69FF9E7FCADCB04C0B20DBCDEFB2ACB784561F23E6251601E",
+    "openclaw-managed": "CE1EC71720BD51254029F9436B2C80AE22FE2904CA22BB3A4C0DBB06445FAF32",
+    "dsh-project": "CE1EC71720BD51254029F9436B2C80AE22FE2904CA22BB3A4C0DBB06445FAF32",
+    "user-agents": "1FA3DC863A8AD5D69FF9E7FCADCB04C0B20DBCDEFB2ACB784561F23E6251601E"
+   }
+  },
+  {
+   "name": "gbt-console",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "1FA3DC863A8AD5D69FF9E7FCADCB04C0B20DBCDEFB2ACB784561F23E6251601E",
+    "openclaw-managed": "CE1EC71720BD51254029F9436B2C80AE22FE2904CA22BB3A4C0DBB06445FAF32",
+    "dsh-project": "CE1EC71720BD51254029F9436B2C80AE22FE2904CA22BB3A4C0DBB06445FAF32",
+    "user-agents": "1FA3DC863A8AD5D69FF9E7FCADCB04C0B20DBCDEFB2ACB784561F23E6251601E"
+   }
+  },
+  {
+   "name": "gbt-control-loop",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "C3341B5C3E5EBE8D43CF9013007384E3E34B4E02E2B2CC09EEBADD8D4B36ED47",
+    "openclaw-managed": "9F9AA0E2BB6F36DAB56D6C453874C59747FEE4617F18ACEBA362F1F75B90FD7B",
+    "dsh-project": "9F9AA0E2BB6F36DAB56D6C453874C59747FEE4617F18ACEBA362F1F75B90FD7B",
+    "user-agents": "C3341B5C3E5EBE8D43CF9013007384E3E34B4E02E2B2CC09EEBADD8D4B36ED47"
+   }
+  },
+  {
+   "name": "gbt-control-loop",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "C3341B5C3E5EBE8D43CF9013007384E3E34B4E02E2B2CC09EEBADD8D4B36ED47",
+    "openclaw-managed": "9F9AA0E2BB6F36DAB56D6C453874C59747FEE4617F18ACEBA362F1F75B90FD7B",
+    "dsh-project": "9F9AA0E2BB6F36DAB56D6C453874C59747FEE4617F18ACEBA362F1F75B90FD7B",
+    "user-agents": "C3341B5C3E5EBE8D43CF9013007384E3E34B4E02E2B2CC09EEBADD8D4B36ED47"
    }
   },
   {
    "name": "gbt-creation",
    "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "CF736AE7529F0A06633C9AE76FB75A94B2C26052F1889D52F2EC84C2FC4215C9",
+    "openclaw-managed": "AA8206BC20B0B5AB35535658CA0B94D2FA294429D7E2CE298E01E23BB9C92EA0",
+    "dsh-project": "AA8206BC20B0B5AB35535658CA0B94D2FA294429D7E2CE298E01E23BB9C92EA0",
+    "user-agents": "CF736AE7529F0A06633C9AE76FB75A94B2C26052F1889D52F2EC84C2FC4215C9"
+   }
+  },
+  {
+   "name": "gbt-creation",
+   "stale_roots": [
+    "openclaw-managed",
     "dsh-project"
    ],
    "loaded": [
     "dsh-project"
    ],
    "roots": {
-    "ws-source": "2B30611F90F682D3BAE5D7EF4061F6A2D712C2DFF7BE5FE5C2C26DA6EF8A6C6A",
-    "openclaw-managed": "2B30611F90F682D3BAE5D7EF4061F6A2D712C2DFF7BE5FE5C2C26DA6EF8A6C6A",
-    "dsh-project": "6C120A1F78FBAF604C809440A4EEC6738E1F458CE9331CA96D48442C59140290",
-    "user-agents": "2B30611F90F682D3BAE5D7EF4061F6A2D712C2DFF7BE5FE5C2C26DA6EF8A6C6A"
+    "ws-source": "CF736AE7529F0A06633C9AE76FB75A94B2C26052F1889D52F2EC84C2FC4215C9",
+    "openclaw-managed": "AA8206BC20B0B5AB35535658CA0B94D2FA294429D7E2CE298E01E23BB9C92EA0",
+    "dsh-project": "AA8206BC20B0B5AB35535658CA0B94D2FA294429D7E2CE298E01E23BB9C92EA0",
+    "user-agents": "CF736AE7529F0A06633C9AE76FB75A94B2C26052F1889D52F2EC84C2FC4215C9"
+   }
+  },
+  {
+   "name": "gbt-dangerous",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "AF68F17C3E6275CB7B7313EED828FFB3305A1B99726A4867DF05C087BD974E6A",
+    "openclaw-managed": "A50A3937777D8796644B62F23D2DA42558F1377A17D6E2457F4BADE346E9DA24",
+    "dsh-project": "A50A3937777D8796644B62F23D2DA42558F1377A17D6E2457F4BADE346E9DA24",
+    "user-agents": "AF68F17C3E6275CB7B7313EED828FFB3305A1B99726A4867DF05C087BD974E6A"
+   }
+  },
+  {
+   "name": "gbt-dangerous",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "AF68F17C3E6275CB7B7313EED828FFB3305A1B99726A4867DF05C087BD974E6A",
+    "openclaw-managed": "A50A3937777D8796644B62F23D2DA42558F1377A17D6E2457F4BADE346E9DA24",
+    "dsh-project": "A50A3937777D8796644B62F23D2DA42558F1377A17D6E2457F4BADE346E9DA24",
+    "user-agents": "AF68F17C3E6275CB7B7313EED828FFB3305A1B99726A4867DF05C087BD974E6A"
    }
   },
   {
    "name": "gbt-data",
    "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "AEF6EB31688A4B192BD430C482F06C087EBE96931F74D47634FE1B965FCA911D",
+    "openclaw-managed": "DEC145720C14443D66A78DE92B8A5F2980FDDBD22292902D682887732437C3F3",
+    "dsh-project": "DEC145720C14443D66A78DE92B8A5F2980FDDBD22292902D682887732437C3F3",
+    "user-agents": "AEF6EB31688A4B192BD430C482F06C087EBE96931F74D47634FE1B965FCA911D"
+   }
+  },
+  {
+   "name": "gbt-data",
+   "stale_roots": [
+    "openclaw-managed",
     "dsh-project"
    ],
    "loaded": [
     "dsh-project"
    ],
    "roots": {
-    "ws-source": "E4AC8EB68C3331BEAEAA18D4BEE6055A7E16A8459E1A2AD9071E425975180AD6",
-    "openclaw-managed": "E4AC8EB68C3331BEAEAA18D4BEE6055A7E16A8459E1A2AD9071E425975180AD6",
-    "dsh-project": "FB4C2E0851F100D79F2B9DA4CECE4C16004F666CF33968A86DFD380A11403976",
-    "user-agents": "E4AC8EB68C3331BEAEAA18D4BEE6055A7E16A8459E1A2AD9071E425975180AD6"
+    "ws-source": "AEF6EB31688A4B192BD430C482F06C087EBE96931F74D47634FE1B965FCA911D",
+    "openclaw-managed": "DEC145720C14443D66A78DE92B8A5F2980FDDBD22292902D682887732437C3F3",
+    "dsh-project": "DEC145720C14443D66A78DE92B8A5F2980FDDBD22292902D682887732437C3F3",
+    "user-agents": "AEF6EB31688A4B192BD430C482F06C087EBE96931F74D47634FE1B965FCA911D"
+   }
+  },
+  {
+   "name": "gbt-desktop",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "7A215FFA3A5A49DD2E200BFEAAFA18199689253AED141BDC30399FA03F4AC26F",
+    "openclaw-managed": "6094479C807474A224CF0B17E718AFB57ACB3F3FBF0B7D6D390176ACA06D3C75",
+    "dsh-project": "6094479C807474A224CF0B17E718AFB57ACB3F3FBF0B7D6D390176ACA06D3C75",
+    "user-agents": "7A215FFA3A5A49DD2E200BFEAAFA18199689253AED141BDC30399FA03F4AC26F"
+   }
+  },
+  {
+   "name": "gbt-desktop",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "7A215FFA3A5A49DD2E200BFEAAFA18199689253AED141BDC30399FA03F4AC26F",
+    "openclaw-managed": "6094479C807474A224CF0B17E718AFB57ACB3F3FBF0B7D6D390176ACA06D3C75",
+    "dsh-project": "6094479C807474A224CF0B17E718AFB57ACB3F3FBF0B7D6D390176ACA06D3C75",
+    "user-agents": "7A215FFA3A5A49DD2E200BFEAAFA18199689253AED141BDC30399FA03F4AC26F"
+   }
+  },
+  {
+   "name": "gbt-device",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "3C81B773924183D3F91CDEEF10E1F1CCFFBA8F6CA4AFB211F34969A0A0D3AA0F",
+    "openclaw-managed": "14C161BB03E21A3AC529A92FFA6B7D59CE16239FD0D4E549D98278722E0144F0",
+    "dsh-project": "14C161BB03E21A3AC529A92FFA6B7D59CE16239FD0D4E549D98278722E0144F0",
+    "user-agents": "3C81B773924183D3F91CDEEF10E1F1CCFFBA8F6CA4AFB211F34969A0A0D3AA0F"
+   }
+  },
+  {
+   "name": "gbt-device",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "3C81B773924183D3F91CDEEF10E1F1CCFFBA8F6CA4AFB211F34969A0A0D3AA0F",
+    "openclaw-managed": "14C161BB03E21A3AC529A92FFA6B7D59CE16239FD0D4E549D98278722E0144F0",
+    "dsh-project": "14C161BB03E21A3AC529A92FFA6B7D59CE16239FD0D4E549D98278722E0144F0",
+    "user-agents": "3C81B773924183D3F91CDEEF10E1F1CCFFBA8F6CA4AFB211F34969A0A0D3AA0F"
+   }
+  },
+  {
+   "name": "gbt-devour",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "B5504AC0F2ACCD86093F3984FA31AEF0EE8EB4FB06E0CCB36C15A133794D4F74",
+    "openclaw-managed": "7481FCF4D0590EF9D9200BC78509AAC345A8895E38E5CF971408A559DB24F448",
+    "dsh-project": "7481FCF4D0590EF9D9200BC78509AAC345A8895E38E5CF971408A559DB24F448",
+    "user-agents": "B5504AC0F2ACCD86093F3984FA31AEF0EE8EB4FB06E0CCB36C15A133794D4F74"
+   }
+  },
+  {
+   "name": "gbt-devour",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "B5504AC0F2ACCD86093F3984FA31AEF0EE8EB4FB06E0CCB36C15A133794D4F74",
+    "openclaw-managed": "7481FCF4D0590EF9D9200BC78509AAC345A8895E38E5CF971408A559DB24F448",
+    "dsh-project": "7481FCF4D0590EF9D9200BC78509AAC345A8895E38E5CF971408A559DB24F448",
+    "user-agents": "B5504AC0F2ACCD86093F3984FA31AEF0EE8EB4FB06E0CCB36C15A133794D4F74"
+   }
+  },
+  {
+   "name": "gbt-dl-101",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "4B5CA4C476101BF104D9822F1734ED09AD8FACC7F34BD3322AA043015F243CEB",
+    "openclaw-managed": "FE42F34EB9AEA14F188A99EF19F19D5BCF5ADAF0653F25E77648DA0FAF5BD76A",
+    "dsh-project": "FE42F34EB9AEA14F188A99EF19F19D5BCF5ADAF0653F25E77648DA0FAF5BD76A",
+    "user-agents": "4B5CA4C476101BF104D9822F1734ED09AD8FACC7F34BD3322AA043015F243CEB"
+   }
+  },
+  {
+   "name": "gbt-dl-101",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "4B5CA4C476101BF104D9822F1734ED09AD8FACC7F34BD3322AA043015F243CEB",
+    "openclaw-managed": "FE42F34EB9AEA14F188A99EF19F19D5BCF5ADAF0653F25E77648DA0FAF5BD76A",
+    "dsh-project": "FE42F34EB9AEA14F188A99EF19F19D5BCF5ADAF0653F25E77648DA0FAF5BD76A",
+    "user-agents": "4B5CA4C476101BF104D9822F1734ED09AD8FACC7F34BD3322AA043015F243CEB"
+   }
+  },
+  {
+   "name": "gbt-engine",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "9DB59508F58DADEC16B7B4BF14EA60F4EA9524898CD83EBA1AD57C398B25B5CC",
+    "openclaw-managed": "894F7AA6C95074D96ACC53D446AA5C892C0D116506D40714C763B39D5BF1358B",
+    "dsh-project": "894F7AA6C95074D96ACC53D446AA5C892C0D116506D40714C763B39D5BF1358B",
+    "user-agents": "9DB59508F58DADEC16B7B4BF14EA60F4EA9524898CD83EBA1AD57C398B25B5CC"
+   }
+  },
+  {
+   "name": "gbt-engine",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "9DB59508F58DADEC16B7B4BF14EA60F4EA9524898CD83EBA1AD57C398B25B5CC",
+    "openclaw-managed": "894F7AA6C95074D96ACC53D446AA5C892C0D116506D40714C763B39D5BF1358B",
+    "dsh-project": "894F7AA6C95074D96ACC53D446AA5C892C0D116506D40714C763B39D5BF1358B",
+    "user-agents": "9DB59508F58DADEC16B7B4BF14EA60F4EA9524898CD83EBA1AD57C398B25B5CC"
+   }
+  },
+  {
+   "name": "gbt-finance",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "CABF80EA1D34946DEDBE43B3B88FCA0F95F20F0ADA6800F38B061988F98187BF",
+    "openclaw-managed": "81C60D06B93062D35A1AF9C4A24EA1D8BBC894DDD0A81537D430C643009BEE29",
+    "dsh-project": "81C60D06B93062D35A1AF9C4A24EA1D8BBC894DDD0A81537D430C643009BEE29",
+    "user-agents": "CABF80EA1D34946DEDBE43B3B88FCA0F95F20F0ADA6800F38B061988F98187BF"
+   }
+  },
+  {
+   "name": "gbt-finance",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "CABF80EA1D34946DEDBE43B3B88FCA0F95F20F0ADA6800F38B061988F98187BF",
+    "openclaw-managed": "81C60D06B93062D35A1AF9C4A24EA1D8BBC894DDD0A81537D430C643009BEE29",
+    "dsh-project": "81C60D06B93062D35A1AF9C4A24EA1D8BBC894DDD0A81537D430C643009BEE29",
+    "user-agents": "CABF80EA1D34946DEDBE43B3B88FCA0F95F20F0ADA6800F38B061988F98187BF"
+   }
+  },
+  {
+   "name": "gbt-infra",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "DD27328532809468A3BE47FACEAE3860828BAEE62B89E23A5A61F5DDDD0C72A4",
+    "openclaw-managed": "1F8557707627A17911A6221F06F5420B86C9A622FFCF961C848C28A9938F1A6E",
+    "dsh-project": "1F8557707627A17911A6221F06F5420B86C9A622FFCF961C848C28A9938F1A6E",
+    "user-agents": "DD27328532809468A3BE47FACEAE3860828BAEE62B89E23A5A61F5DDDD0C72A4"
+   }
+  },
+  {
+   "name": "gbt-infra",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "DD27328532809468A3BE47FACEAE3860828BAEE62B89E23A5A61F5DDDD0C72A4",
+    "openclaw-managed": "1F8557707627A17911A6221F06F5420B86C9A622FFCF961C848C28A9938F1A6E",
+    "dsh-project": "1F8557707627A17911A6221F06F5420B86C9A622FFCF961C848C28A9938F1A6E",
+    "user-agents": "DD27328532809468A3BE47FACEAE3860828BAEE62B89E23A5A61F5DDDD0C72A4"
+   }
+  },
+  {
+   "name": "gbt-integration",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "179E6A9EF25E4AAC3D3978E1D112F56F6C95C8078D8A47BFF437788BFF1A5F59",
+    "openclaw-managed": "C7F9F159D9649110377A645596D17269601B13D909F6563BC573D33D04F986C8",
+    "dsh-project": "C7F9F159D9649110377A645596D17269601B13D909F6563BC573D33D04F986C8",
+    "user-agents": "179E6A9EF25E4AAC3D3978E1D112F56F6C95C8078D8A47BFF437788BFF1A5F59"
+   }
+  },
+  {
+   "name": "gbt-integration",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "179E6A9EF25E4AAC3D3978E1D112F56F6C95C8078D8A47BFF437788BFF1A5F59",
+    "openclaw-managed": "C7F9F159D9649110377A645596D17269601B13D909F6563BC573D33D04F986C8",
+    "dsh-project": "C7F9F159D9649110377A645596D17269601B13D909F6563BC573D33D04F986C8",
+    "user-agents": "179E6A9EF25E4AAC3D3978E1D112F56F6C95C8078D8A47BFF437788BFF1A5F59"
+   }
+  },
+  {
+   "name": "gbt-lark",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "F4963F0DED96974C7AB2593E75EC3D66F96BC5189106F9D08A00C466D34E4B27",
+    "openclaw-managed": "974D401FE177B88C0360E01F4FEE8B39238B741EF0345D908B45CEBE2596DBA6",
+    "dsh-project": "974D401FE177B88C0360E01F4FEE8B39238B741EF0345D908B45CEBE2596DBA6",
+    "user-agents": "F4963F0DED96974C7AB2593E75EC3D66F96BC5189106F9D08A00C466D34E4B27"
+   }
+  },
+  {
+   "name": "gbt-lark",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "F4963F0DED96974C7AB2593E75EC3D66F96BC5189106F9D08A00C466D34E4B27",
+    "openclaw-managed": "974D401FE177B88C0360E01F4FEE8B39238B741EF0345D908B45CEBE2596DBA6",
+    "dsh-project": "974D401FE177B88C0360E01F4FEE8B39238B741EF0345D908B45CEBE2596DBA6",
+    "user-agents": "F4963F0DED96974C7AB2593E75EC3D66F96BC5189106F9D08A00C466D34E4B27"
+   }
+  },
+  {
+   "name": "gbt-life",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "F7B9DC46B7758C922D805442ABC9E624A75DEA13637EA4E2B6A44A268019A4BF",
+    "openclaw-managed": "6FDF9EC10F57A2E51A709C22C26ED795EC3463A05E8B966914CA5F1CE18459CC",
+    "dsh-project": "6FDF9EC10F57A2E51A709C22C26ED795EC3463A05E8B966914CA5F1CE18459CC",
+    "user-agents": "F7B9DC46B7758C922D805442ABC9E624A75DEA13637EA4E2B6A44A268019A4BF"
+   }
+  },
+  {
+   "name": "gbt-life",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "F7B9DC46B7758C922D805442ABC9E624A75DEA13637EA4E2B6A44A268019A4BF",
+    "openclaw-managed": "6FDF9EC10F57A2E51A709C22C26ED795EC3463A05E8B966914CA5F1CE18459CC",
+    "dsh-project": "6FDF9EC10F57A2E51A709C22C26ED795EC3463A05E8B966914CA5F1CE18459CC",
+    "user-agents": "F7B9DC46B7758C922D805442ABC9E624A75DEA13637EA4E2B6A44A268019A4BF"
    }
   },
   {
    "name": "gbt-llm",
    "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "1507576D22D80304471DADEE50D7AFA24C64A38AC8408FF842B1DF2B17D165D5",
+    "openclaw-managed": "B88E8C93025ED8441193D9ED20B76F5E0F56AF7C2BF16EE2945E1CD845FA8F8C",
+    "dsh-project": "B88E8C93025ED8441193D9ED20B76F5E0F56AF7C2BF16EE2945E1CD845FA8F8C",
+    "user-agents": "1507576D22D80304471DADEE50D7AFA24C64A38AC8408FF842B1DF2B17D165D5"
+   }
+  },
+  {
+   "name": "gbt-llm",
+   "stale_roots": [
+    "openclaw-managed",
     "dsh-project"
    ],
    "loaded": [
     "dsh-project"
    ],
    "roots": {
-    "ws-source": "EE394B000BEC1A5C4B64925F0F49D0E8ADF65F28480315ECE47595B6DB6B35F7",
-    "openclaw-managed": "EE394B000BEC1A5C4B64925F0F49D0E8ADF65F28480315ECE47595B6DB6B35F7",
-    "dsh-project": "9E1B90C2CBDE6FF1EC6CDE2DE8764234F61085128C6AE3830C6A0141D61B0314",
-    "user-agents": "EE394B000BEC1A5C4B64925F0F49D0E8ADF65F28480315ECE47595B6DB6B35F7"
+    "ws-source": "1507576D22D80304471DADEE50D7AFA24C64A38AC8408FF842B1DF2B17D165D5",
+    "openclaw-managed": "B88E8C93025ED8441193D9ED20B76F5E0F56AF7C2BF16EE2945E1CD845FA8F8C",
+    "dsh-project": "B88E8C93025ED8441193D9ED20B76F5E0F56AF7C2BF16EE2945E1CD845FA8F8C",
+    "user-agents": "1507576D22D80304471DADEE50D7AFA24C64A38AC8408FF842B1DF2B17D165D5"
+   }
+  },
+  {
+   "name": "gbt-longrun",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "16E5F54EB86D0AF6011BAF1AFF85A9602B6CAA8E0B58EFC4D5F8FC1721A5E4BC",
+    "openclaw-managed": "D735D866B0AEB6CC58431A16DD3AA689CFA3BA9A7580E072B14A308A403BB539",
+    "dsh-project": "D735D866B0AEB6CC58431A16DD3AA689CFA3BA9A7580E072B14A308A403BB539",
+    "user-agents": "16E5F54EB86D0AF6011BAF1AFF85A9602B6CAA8E0B58EFC4D5F8FC1721A5E4BC"
+   }
+  },
+  {
+   "name": "gbt-longrun",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "16E5F54EB86D0AF6011BAF1AFF85A9602B6CAA8E0B58EFC4D5F8FC1721A5E4BC",
+    "openclaw-managed": "D735D866B0AEB6CC58431A16DD3AA689CFA3BA9A7580E072B14A308A403BB539",
+    "dsh-project": "D735D866B0AEB6CC58431A16DD3AA689CFA3BA9A7580E072B14A308A403BB539",
+    "user-agents": "16E5F54EB86D0AF6011BAF1AFF85A9602B6CAA8E0B58EFC4D5F8FC1721A5E4BC"
+   }
+  },
+  {
+   "name": "gbt-mind",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "A7CC112152AC6A5705E8B4AFB5E19898038A20735B5A0FE6CA28C966CCFF4D2C",
+    "openclaw-managed": "BA56E941FC6C6D7E4409B9B9D9983FFBB62140F0B79FDA5632CC362744908885",
+    "dsh-project": "BA56E941FC6C6D7E4409B9B9D9983FFBB62140F0B79FDA5632CC362744908885",
+    "user-agents": "A7CC112152AC6A5705E8B4AFB5E19898038A20735B5A0FE6CA28C966CCFF4D2C"
+   }
+  },
+  {
+   "name": "gbt-mind",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "A7CC112152AC6A5705E8B4AFB5E19898038A20735B5A0FE6CA28C966CCFF4D2C",
+    "openclaw-managed": "BA56E941FC6C6D7E4409B9B9D9983FFBB62140F0B79FDA5632CC362744908885",
+    "dsh-project": "BA56E941FC6C6D7E4409B9B9D9983FFBB62140F0B79FDA5632CC362744908885",
+    "user-agents": "A7CC112152AC6A5705E8B4AFB5E19898038A20735B5A0FE6CA28C966CCFF4D2C"
+   }
+  },
+  {
+   "name": "gbt-native-growth",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "93E4AD2A6FDAD7E9AFB68CE95B2E8AA9391E0114C7CC327EC1FC24001AD57E01",
+    "openclaw-managed": "984E57F12A226DA658C5EBCB9D57829A822C3E10BF21D42C5463E8811DB8F110",
+    "dsh-project": "984E57F12A226DA658C5EBCB9D57829A822C3E10BF21D42C5463E8811DB8F110",
+    "user-agents": "93E4AD2A6FDAD7E9AFB68CE95B2E8AA9391E0114C7CC327EC1FC24001AD57E01"
+   }
+  },
+  {
+   "name": "gbt-native-growth",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "93E4AD2A6FDAD7E9AFB68CE95B2E8AA9391E0114C7CC327EC1FC24001AD57E01",
+    "openclaw-managed": "984E57F12A226DA658C5EBCB9D57829A822C3E10BF21D42C5463E8811DB8F110",
+    "dsh-project": "984E57F12A226DA658C5EBCB9D57829A822C3E10BF21D42C5463E8811DB8F110",
+    "user-agents": "93E4AD2A6FDAD7E9AFB68CE95B2E8AA9391E0114C7CC327EC1FC24001AD57E01"
+   }
+  },
+  {
+   "name": "gbt-omni",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "471B9C907AA0DF26C41D807E08239E7B4EDA7B11DED9B3832444285362089EE4",
+    "openclaw-managed": "EF9E259B8C0DC72EFED0EF6CCE177138E17B3CA7D2E84E3FEEE6CF3388328CA7",
+    "dsh-project": "EF9E259B8C0DC72EFED0EF6CCE177138E17B3CA7D2E84E3FEEE6CF3388328CA7",
+    "user-agents": "471B9C907AA0DF26C41D807E08239E7B4EDA7B11DED9B3832444285362089EE4"
+   }
+  },
+  {
+   "name": "gbt-omni",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "471B9C907AA0DF26C41D807E08239E7B4EDA7B11DED9B3832444285362089EE4",
+    "openclaw-managed": "EF9E259B8C0DC72EFED0EF6CCE177138E17B3CA7D2E84E3FEEE6CF3388328CA7",
+    "dsh-project": "EF9E259B8C0DC72EFED0EF6CCE177138E17B3CA7D2E84E3FEEE6CF3388328CA7",
+    "user-agents": "471B9C907AA0DF26C41D807E08239E7B4EDA7B11DED9B3832444285362089EE4"
+   }
+  },
+  {
+   "name": "gbt-pipeline",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "CACA1AAE57411439368B4C321C0601AC5DFCC5331B8938522BE582419321C9C8",
+    "openclaw-managed": "80D36506E1B6567361A62647183B16320852E69A22B825E3C25ED7C5E81AF0B1",
+    "dsh-project": "80D36506E1B6567361A62647183B16320852E69A22B825E3C25ED7C5E81AF0B1",
+    "user-agents": "CACA1AAE57411439368B4C321C0601AC5DFCC5331B8938522BE582419321C9C8"
+   }
+  },
+  {
+   "name": "gbt-pipeline",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "CACA1AAE57411439368B4C321C0601AC5DFCC5331B8938522BE582419321C9C8",
+    "openclaw-managed": "80D36506E1B6567361A62647183B16320852E69A22B825E3C25ED7C5E81AF0B1",
+    "dsh-project": "80D36506E1B6567361A62647183B16320852E69A22B825E3C25ED7C5E81AF0B1",
+    "user-agents": "CACA1AAE57411439368B4C321C0601AC5DFCC5331B8938522BE582419321C9C8"
+   }
+  },
+  {
+   "name": "gbt-pptx",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "BA7EB84BCA9FECA24810A8F5CCDD15AC7639A04788087058B0B753BBC5E6B14D",
+    "openclaw-managed": "C1D9953087CAD715E64DD6472F5EFF27454F1F8958723761667AE1419AC232CA",
+    "dsh-project": "C1D9953087CAD715E64DD6472F5EFF27454F1F8958723761667AE1419AC232CA",
+    "user-agents": "BA7EB84BCA9FECA24810A8F5CCDD15AC7639A04788087058B0B753BBC5E6B14D"
+   }
+  },
+  {
+   "name": "gbt-pptx",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "BA7EB84BCA9FECA24810A8F5CCDD15AC7639A04788087058B0B753BBC5E6B14D",
+    "openclaw-managed": "C1D9953087CAD715E64DD6472F5EFF27454F1F8958723761667AE1419AC232CA",
+    "dsh-project": "C1D9953087CAD715E64DD6472F5EFF27454F1F8958723761667AE1419AC232CA",
+    "user-agents": "BA7EB84BCA9FECA24810A8F5CCDD15AC7639A04788087058B0B753BBC5E6B14D"
+   }
+  },
+  {
+   "name": "gbt-producer",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "05D766B4567C3D070F1F8E620A1900CA740ED7E67099F2ACC989A53B107FB948",
+    "openclaw-managed": "50D826CC801D2147E129B8B65A88E9CA559B33CADE696561F16F37C05A7866B4",
+    "dsh-project": "50D826CC801D2147E129B8B65A88E9CA559B33CADE696561F16F37C05A7866B4",
+    "user-agents": "05D766B4567C3D070F1F8E620A1900CA740ED7E67099F2ACC989A53B107FB948"
+   }
+  },
+  {
+   "name": "gbt-producer",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "05D766B4567C3D070F1F8E620A1900CA740ED7E67099F2ACC989A53B107FB948",
+    "openclaw-managed": "50D826CC801D2147E129B8B65A88E9CA559B33CADE696561F16F37C05A7866B4",
+    "dsh-project": "50D826CC801D2147E129B8B65A88E9CA559B33CADE696561F16F37C05A7866B4",
+    "user-agents": "05D766B4567C3D070F1F8E620A1900CA740ED7E67099F2ACC989A53B107FB948"
+   }
+  },
+  {
+   "name": "gbt-project",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "841EEF5EAB07D8D3072C560C981D8B728552DC8F403427ECC36C0ED53D5A5C3C",
+    "openclaw-managed": "470F597EFE12264318FE72236E04B7987A8CE2A54AB8B6D572A78B54397FC514",
+    "dsh-project": "470F597EFE12264318FE72236E04B7987A8CE2A54AB8B6D572A78B54397FC514",
+    "user-agents": "841EEF5EAB07D8D3072C560C981D8B728552DC8F403427ECC36C0ED53D5A5C3C"
+   }
+  },
+  {
+   "name": "gbt-project",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "841EEF5EAB07D8D3072C560C981D8B728552DC8F403427ECC36C0ED53D5A5C3C",
+    "openclaw-managed": "470F597EFE12264318FE72236E04B7987A8CE2A54AB8B6D572A78B54397FC514",
+    "dsh-project": "470F597EFE12264318FE72236E04B7987A8CE2A54AB8B6D572A78B54397FC514",
+    "user-agents": "841EEF5EAB07D8D3072C560C981D8B728552DC8F403427ECC36C0ED53D5A5C3C"
+   }
+  },
+  {
+   "name": "gbt-quickscan",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "1D41BC34DCFF93F7A8A359CA9A9AD46CFA17A69F194682E8FB5E4D92231443D0",
+    "openclaw-managed": "17E88917CF0DF57B5C40BB2B20EE00291528E77138E65E9F7ABF76FF84159058",
+    "dsh-project": "17E88917CF0DF57B5C40BB2B20EE00291528E77138E65E9F7ABF76FF84159058",
+    "user-agents": "1D41BC34DCFF93F7A8A359CA9A9AD46CFA17A69F194682E8FB5E4D92231443D0"
+   }
+  },
+  {
+   "name": "gbt-quickscan",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "1D41BC34DCFF93F7A8A359CA9A9AD46CFA17A69F194682E8FB5E4D92231443D0",
+    "openclaw-managed": "17E88917CF0DF57B5C40BB2B20EE00291528E77138E65E9F7ABF76FF84159058",
+    "dsh-project": "17E88917CF0DF57B5C40BB2B20EE00291528E77138E65E9F7ABF76FF84159058",
+    "user-agents": "1D41BC34DCFF93F7A8A359CA9A9AD46CFA17A69F194682E8FB5E4D92231443D0"
    }
   },
   {
    "name": "gbt-recon",
    "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "C02D4BFCEA75DD51367F711ADA922DCEDD71DFEACA13918DBE7C6E0FA22E4047",
+    "openclaw-managed": "18FB780F48A101F8DE59E82408471F17FFF0FE445BD0228E3582855374732DB7",
+    "dsh-project": "18FB780F48A101F8DE59E82408471F17FFF0FE445BD0228E3582855374732DB7",
+    "user-agents": "C02D4BFCEA75DD51367F711ADA922DCEDD71DFEACA13918DBE7C6E0FA22E4047"
+   }
+  },
+  {
+   "name": "gbt-recon",
+   "stale_roots": [
+    "openclaw-managed",
     "dsh-project"
    ],
    "loaded": [
     "dsh-project"
    ],
    "roots": {
-    "ws-source": "8A1C773A0EE092AA80D745A0D39DE2065CF37FDEB83D1A8B58C1A72364FE9059",
-    "openclaw-managed": "8A1C773A0EE092AA80D745A0D39DE2065CF37FDEB83D1A8B58C1A72364FE9059",
-    "dsh-project": "D6CA72CA4A2EDB6F5BAF0B4F36BA2AAD7A14F3A50F093CA59EBCF6C3925BFB97",
-    "user-agents": "8A1C773A0EE092AA80D745A0D39DE2065CF37FDEB83D1A8B58C1A72364FE9059"
+    "ws-source": "C02D4BFCEA75DD51367F711ADA922DCEDD71DFEACA13918DBE7C6E0FA22E4047",
+    "openclaw-managed": "18FB780F48A101F8DE59E82408471F17FFF0FE445BD0228E3582855374732DB7",
+    "dsh-project": "18FB780F48A101F8DE59E82408471F17FFF0FE445BD0228E3582855374732DB7",
+    "user-agents": "C02D4BFCEA75DD51367F711ADA922DCEDD71DFEACA13918DBE7C6E0FA22E4047"
    }
   },
   {
    "name": "gbt-security",
    "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260",
+    "openclaw-managed": "0DDE1C9D263F9594DF4081BB02700D1CE7A00CDEDF5EB4831845E9351FDF8FF3",
+    "dsh-project": "0DDE1C9D263F9594DF4081BB02700D1CE7A00CDEDF5EB4831845E9351FDF8FF3",
+    "user-agents": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260"
+   }
+  },
+  {
+   "name": "gbt-security",
+   "stale_roots": [
+    "openclaw-managed",
     "dsh-project"
    ],
    "loaded": [
@@ -4879,44 +6001,316 @@
    ],
    "roots": {
     "ws-source": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260",
-    "openclaw-managed": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260",
-    "dsh-project": "D25EECE415A4CD70F7D47B9EC0B78B71EA28C490F99FE2D8D2C33393FB2A4440",
+    "openclaw-managed": "0DDE1C9D263F9594DF4081BB02700D1CE7A00CDEDF5EB4831845E9351FDF8FF3",
+    "dsh-project": "0DDE1C9D263F9594DF4081BB02700D1CE7A00CDEDF5EB4831845E9351FDF8FF3",
     "user-agents": "5E76FC96CE29774C8B92F3833BA0A6EEBC749661E26FCC1958B6BBEAB598F260"
+   }
+  },
+  {
+   "name": "gbt-selfgrowth",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "056AC2D53BF4E1F36F6C13E9CC68F5052C10DE9CD88BAF6FAB47ADEB7A765E35",
+    "openclaw-managed": "E26AC8FCBB2B5F357AE703404127E770B2EB706CAE1C6FA8B134E5D5DBE6024A",
+    "dsh-project": "E26AC8FCBB2B5F357AE703404127E770B2EB706CAE1C6FA8B134E5D5DBE6024A",
+    "user-agents": "056AC2D53BF4E1F36F6C13E9CC68F5052C10DE9CD88BAF6FAB47ADEB7A765E35"
+   }
+  },
+  {
+   "name": "gbt-selfgrowth",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "056AC2D53BF4E1F36F6C13E9CC68F5052C10DE9CD88BAF6FAB47ADEB7A765E35",
+    "openclaw-managed": "E26AC8FCBB2B5F357AE703404127E770B2EB706CAE1C6FA8B134E5D5DBE6024A",
+    "dsh-project": "E26AC8FCBB2B5F357AE703404127E770B2EB706CAE1C6FA8B134E5D5DBE6024A",
+    "user-agents": "056AC2D53BF4E1F36F6C13E9CC68F5052C10DE9CD88BAF6FAB47ADEB7A765E35"
+   }
+  },
+  {
+   "name": "gbt-social",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "6F25C484F61C92BCD23A86E2B001CBBC61493B59DBD264587E9E9BCD5B96253D",
+    "openclaw-managed": "753F4B5F06643FD6E14660094A8FA821A642CE9E7EA39B53B1383E5A06FCDF7C",
+    "dsh-project": "753F4B5F06643FD6E14660094A8FA821A642CE9E7EA39B53B1383E5A06FCDF7C",
+    "user-agents": "6F25C484F61C92BCD23A86E2B001CBBC61493B59DBD264587E9E9BCD5B96253D"
+   }
+  },
+  {
+   "name": "gbt-social",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "6F25C484F61C92BCD23A86E2B001CBBC61493B59DBD264587E9E9BCD5B96253D",
+    "openclaw-managed": "753F4B5F06643FD6E14660094A8FA821A642CE9E7EA39B53B1383E5A06FCDF7C",
+    "dsh-project": "753F4B5F06643FD6E14660094A8FA821A642CE9E7EA39B53B1383E5A06FCDF7C",
+    "user-agents": "6F25C484F61C92BCD23A86E2B001CBBC61493B59DBD264587E9E9BCD5B96253D"
    }
   },
   {
    "name": "gbt-system",
    "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "06C567C3731C14344FD02602B63A6640050F893E9F5B74667B241218DF612478",
+    "openclaw-managed": "70A2260A54C1C87025525BA980BD57C71C7402E4462E354B7FB125AE500D3A76",
+    "dsh-project": "70A2260A54C1C87025525BA980BD57C71C7402E4462E354B7FB125AE500D3A76",
+    "user-agents": "06C567C3731C14344FD02602B63A6640050F893E9F5B74667B241218DF612478"
+   }
+  },
+  {
+   "name": "gbt-system",
+   "stale_roots": [
+    "openclaw-managed",
     "dsh-project"
    ],
    "loaded": [
     "dsh-project"
    ],
    "roots": {
-    "ws-source": "77D54C964DA54D29FE5962623F9D921BE66E212147F60EF337B5B3EEFA83031F",
-    "openclaw-managed": "77D54C964DA54D29FE5962623F9D921BE66E212147F60EF337B5B3EEFA83031F",
-    "dsh-project": "B97CA3D52EBB0971FD4D79CE0BAF4A2CA42E8F7EEE67BB694AA02FF4C02D9BED",
-    "user-agents": "77D54C964DA54D29FE5962623F9D921BE66E212147F60EF337B5B3EEFA83031F"
+    "ws-source": "06C567C3731C14344FD02602B63A6640050F893E9F5B74667B241218DF612478",
+    "openclaw-managed": "70A2260A54C1C87025525BA980BD57C71C7402E4462E354B7FB125AE500D3A76",
+    "dsh-project": "70A2260A54C1C87025525BA980BD57C71C7402E4462E354B7FB125AE500D3A76",
+    "user-agents": "06C567C3731C14344FD02602B63A6640050F893E9F5B74667B241218DF612478"
+   }
+  },
+  {
+   "name": "gbt-tentacle",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "32006586468FB469CD410CFA69BDD3DAEB8177F78002AB7C3414A5AE6F7F7BF0",
+    "openclaw-managed": "29E16E1C44ED64896225F94E932FB06806FA0BA518E97EFE530457D6E5EE8ED0",
+    "dsh-project": "29E16E1C44ED64896225F94E932FB06806FA0BA518E97EFE530457D6E5EE8ED0",
+    "user-agents": "32006586468FB469CD410CFA69BDD3DAEB8177F78002AB7C3414A5AE6F7F7BF0"
+   }
+  },
+  {
+   "name": "gbt-tentacle",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "32006586468FB469CD410CFA69BDD3DAEB8177F78002AB7C3414A5AE6F7F7BF0",
+    "openclaw-managed": "29E16E1C44ED64896225F94E932FB06806FA0BA518E97EFE530457D6E5EE8ED0",
+    "dsh-project": "29E16E1C44ED64896225F94E932FB06806FA0BA518E97EFE530457D6E5EE8ED0",
+    "user-agents": "32006586468FB469CD410CFA69BDD3DAEB8177F78002AB7C3414A5AE6F7F7BF0"
+   }
+  },
+  {
+   "name": "gbt-tools",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "F53388AFAD19F258B088A03559231986B886E384EF5FBF5491F61B6251921BAC",
+    "openclaw-managed": "03A20A84DD05ED8A178402443346B4104B0C3B761AB6D87D09A37594671D3786",
+    "dsh-project": "03A20A84DD05ED8A178402443346B4104B0C3B761AB6D87D09A37594671D3786",
+    "user-agents": "F53388AFAD19F258B088A03559231986B886E384EF5FBF5491F61B6251921BAC"
+   }
+  },
+  {
+   "name": "gbt-tools",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "F53388AFAD19F258B088A03559231986B886E384EF5FBF5491F61B6251921BAC",
+    "openclaw-managed": "03A20A84DD05ED8A178402443346B4104B0C3B761AB6D87D09A37594671D3786",
+    "dsh-project": "03A20A84DD05ED8A178402443346B4104B0C3B761AB6D87D09A37594671D3786",
+    "user-agents": "F53388AFAD19F258B088A03559231986B886E384EF5FBF5491F61B6251921BAC"
+   }
+  },
+  {
+   "name": "gbt-vendor-intake",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "3637785E01EAC8B48D40F3FB2F43D4CAE34EF70EAFF42ADE6238D05BD89E908B",
+    "openclaw-managed": "F8F8BED0A74B03F0DC1CF9AAFDF0E35BACB8A26B62DEBED87000163D85A135E0",
+    "dsh-project": "F8F8BED0A74B03F0DC1CF9AAFDF0E35BACB8A26B62DEBED87000163D85A135E0",
+    "user-agents": "3637785E01EAC8B48D40F3FB2F43D4CAE34EF70EAFF42ADE6238D05BD89E908B"
+   }
+  },
+  {
+   "name": "gbt-vendor-intake",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "3637785E01EAC8B48D40F3FB2F43D4CAE34EF70EAFF42ADE6238D05BD89E908B",
+    "openclaw-managed": "F8F8BED0A74B03F0DC1CF9AAFDF0E35BACB8A26B62DEBED87000163D85A135E0",
+    "dsh-project": "F8F8BED0A74B03F0DC1CF9AAFDF0E35BACB8A26B62DEBED87000163D85A135E0",
+    "user-agents": "3637785E01EAC8B48D40F3FB2F43D4CAE34EF70EAFF42ADE6238D05BD89E908B"
    }
   },
   {
    "name": "gbt-video",
    "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "BE55F8CE30581FFA01A26C928F633BEF208AF05111697C70EA7CEE4FA249F68D",
+    "openclaw-managed": "88BA899ADBA50353F0F4B830F0FF8DF2A2B75CFB63558754951AC29249F968A2",
+    "dsh-project": "88BA899ADBA50353F0F4B830F0FF8DF2A2B75CFB63558754951AC29249F968A2",
+    "user-agents": "BE55F8CE30581FFA01A26C928F633BEF208AF05111697C70EA7CEE4FA249F68D"
+   }
+  },
+  {
+   "name": "gbt-video",
+   "stale_roots": [
+    "openclaw-managed",
     "dsh-project"
    ],
    "loaded": [
     "dsh-project"
    ],
    "roots": {
-    "ws-source": "FC21F12D71FEE68D6FD3FA398586A8448E839E44BCE001888CC0AD7AF2D91653",
-    "openclaw-managed": "FC21F12D71FEE68D6FD3FA398586A8448E839E44BCE001888CC0AD7AF2D91653",
-    "dsh-project": "1E6B4836D0ABCFBA78DD10528CA730E7E486A681C754D7728216490CA735743A",
-    "user-agents": "FC21F12D71FEE68D6FD3FA398586A8448E839E44BCE001888CC0AD7AF2D91653"
+    "ws-source": "BE55F8CE30581FFA01A26C928F633BEF208AF05111697C70EA7CEE4FA249F68D",
+    "openclaw-managed": "88BA899ADBA50353F0F4B830F0FF8DF2A2B75CFB63558754951AC29249F968A2",
+    "dsh-project": "88BA899ADBA50353F0F4B830F0FF8DF2A2B75CFB63558754951AC29249F968A2",
+    "user-agents": "BE55F8CE30581FFA01A26C928F633BEF208AF05111697C70EA7CEE4FA249F68D"
+   }
+  },
+  {
+   "name": "gbt-video-tools",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "F11C2FC441ADF98310E5A7253A8307241CB77035239C3BDB7DE395AAAB7ECAAC",
+    "openclaw-managed": "71FFA196B24227B432B47BABDE88BE04749D56E80ACBBC5A8D027820B0B06B90",
+    "dsh-project": "71FFA196B24227B432B47BABDE88BE04749D56E80ACBBC5A8D027820B0B06B90",
+    "user-agents": "F11C2FC441ADF98310E5A7253A8307241CB77035239C3BDB7DE395AAAB7ECAAC"
+   }
+  },
+  {
+   "name": "gbt-video-tools",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "F11C2FC441ADF98310E5A7253A8307241CB77035239C3BDB7DE395AAAB7ECAAC",
+    "openclaw-managed": "71FFA196B24227B432B47BABDE88BE04749D56E80ACBBC5A8D027820B0B06B90",
+    "dsh-project": "71FFA196B24227B432B47BABDE88BE04749D56E80ACBBC5A8D027820B0B06B90",
+    "user-agents": "F11C2FC441ADF98310E5A7253A8307241CB77035239C3BDB7DE395AAAB7ECAAC"
+   }
+  },
+  {
+   "name": "gbt-voice",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "69E229B34686E9CD15A10FE5BD85148B929C11229DF624F6937297E02DE72E72",
+    "openclaw-managed": "84F0353C163272C793CB31B09934A805EA03541A85C5AB65FEF7A414DED735C9",
+    "dsh-project": "84F0353C163272C793CB31B09934A805EA03541A85C5AB65FEF7A414DED735C9",
+    "user-agents": "69E229B34686E9CD15A10FE5BD85148B929C11229DF624F6937297E02DE72E72"
+   }
+  },
+  {
+   "name": "gbt-voice",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "69E229B34686E9CD15A10FE5BD85148B929C11229DF624F6937297E02DE72E72",
+    "openclaw-managed": "84F0353C163272C793CB31B09934A805EA03541A85C5AB65FEF7A414DED735C9",
+    "dsh-project": "84F0353C163272C793CB31B09934A805EA03541A85C5AB65FEF7A414DED735C9",
+    "user-agents": "69E229B34686E9CD15A10FE5BD85148B929C11229DF624F6937297E02DE72E72"
+   }
+  },
+  {
+   "name": "gbt-youtube",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [],
+   "roots": {
+    "ws-source": "0669CC7A3BB303CF5E8108CFA6A9240F841B5D17A063EE78B92173D69B3F3031",
+    "openclaw-managed": "4B53509889090A626F51C087555684785C452A186159565B2812E5778C9816C3",
+    "dsh-project": "4B53509889090A626F51C087555684785C452A186159565B2812E5778C9816C3",
+    "user-agents": "0669CC7A3BB303CF5E8108CFA6A9240F841B5D17A063EE78B92173D69B3F3031"
+   }
+  },
+  {
+   "name": "gbt-youtube",
+   "stale_roots": [
+    "openclaw-managed",
+    "dsh-project"
+   ],
+   "loaded": [
+    "dsh-project"
+   ],
+   "roots": {
+    "ws-source": "0669CC7A3BB303CF5E8108CFA6A9240F841B5D17A063EE78B92173D69B3F3031",
+    "openclaw-managed": "4B53509889090A626F51C087555684785C452A186159565B2812E5778C9816C3",
+    "dsh-project": "4B53509889090A626F51C087555684785C452A186159565B2812E5778C9816C3",
+    "user-agents": "0669CC7A3BB303CF5E8108CFA6A9240F841B5D17A063EE78B92173D69B3F3031"
    }
   }
  ],
  "refreshed": [],
- "orphans_managed_only": [],
+ "orphans_managed_only": [
+  "gbt-adhd-mode"
+ ],
  "unregistered": [
   "gbt-aesthetic",
   "gbt-ai-101",
@@ -4924,21 +6318,49 @@
   "gbt-ai-edu",
   "gbt-brain-vault",
   "gbt-code-taste",
+  "gbt-command",
+  "gbt-console",
+  "gbt-control-loop",
   "gbt-design-mastery",
   "gbt-desktop",
+  "gbt-distilled-ops",
   "gbt-dl-101",
+  "gbt-genoffice",
+  "gbt-native-growth",
   "gbt-omni",
   "gbt-potato",
+  "gbt-producer",
   "gbt-provenance-discipline",
   "gbt-quickscan",
+  "gbt-selfgrowth",
+  "gbt-showreel",
+  "gbt-talktrack",
+  "gbt-terminology",
   "gbt-vendor-intake"
  ],
- "third_party_divergent": [],
+ "third_party_divergent": [
+  {
+   "name": "digihuman-pipeline",
+   "roots": {
+    "ws-source": "DF56080E8C",
+    "openclaw-managed": "CF5CE318CE",
+    "user-agents": "DF56080E8C"
+   }
+  },
+  {
+   "name": "genoffice",
+   "roots": {
+    "openclaw-managed": "F8AAAE07C7",
+    "user-agents": "B2A8953D6A",
+    "user-claude": "B2A8953D6A"
+   }
+  }
+ ],
  "ours_single_copy": [],
  "ours_uninstalled": [],
  "atlas": {
-  "built_at": "2026-09-27T09:46:36",
-  "skills": 363
+  "built_at": "2026-10-13T17:20:01",
+  "skills": 387
  },
  "atlas_missing": [],
  "atlas_ghosts": []

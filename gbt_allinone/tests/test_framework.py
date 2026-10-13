@@ -422,6 +422,10 @@ class TestFramework(unittest.TestCase):
 
         钉两件事：① 名单本身（owner_control 是总控钥匙，绝不能变成时段）；
         ② 行为（用一次即从账本删行，第二次即拒）。
+
+        🔴 2026-10-13 加一项（主人令「直接改成终端YES才能使用就好了」）：新增
+        `deploy_force` = **放行被门卡住的动作**的专用钥匙（未全绿晋升 / 未声明落点 / 公网中继），
+        它必须也是**一次性** —— 每放一次要主人**单独**发一次，不能变成"开一次管十分钟"。
         """
         import json as _j
         import time as _t
@@ -430,7 +434,8 @@ class TestFramework(unittest.TestCase):
         from gbt_allinone.security import policy as _Pol
 
         self.assertEqual(sorted(_AG.ONE_SHOT_SCOPES),
-                         ["data_export", "deploy_publish", "owner_control", "remote_device"])
+                         ["data_export", "deploy_force", "deploy_publish",
+                          "owner_control", "remote_device"])
         for s in _AG.ONE_SHOT_SCOPES:
             self.assertEqual(_AG.grant_mode(s), "one_shot", s)
         # 日常类必须是 window —— 否则这次改动等于没做
@@ -1441,6 +1446,10 @@ class TestFramework(unittest.TestCase):
         `rehearsal_name` 两个关键字，而 `mirror_space.ascend(purpose)` 只收一个形参
         ⇒ `mirror_release` 每次必抛 TypeError，**生产发布这条路从未开过**
         （宪章第 18 条：一道从未开过的门，等于没有门）。
+
+        2026-10-13：`ascend` 真身多了两个形参（`owner_override` / `override_reason`，放行口）。
+        判据**不放空、改成对着真身签名判**：传过去的关键字必须**逐个都在真身份上**，
+        位置参数仍须恰好一个 —— 旧病（传了真身不认的关键字）照样会被咬住。
         """
         from gbt_allinone import deployment_rehearsal as DR
         from gbt_allinone import mirror_space as MS
@@ -1454,8 +1463,13 @@ class TestFramework(unittest.TestCase):
         with mock.patch.object(DR, "rehearse", return_value={"ok": True, "report_id": "r"}):
             with mock.patch.object(MS, "ascend", side_effect=fake_ascend):
                 out = DR.release("default", "回归：发布链路契约")
-        self.assertEqual(seen.get("kwargs"), {}, "ascend 只收 purpose 一个形参，不许传关键字")
-        self.assertEqual(len(seen.get("args") or ()), 1, "ascend 必须恰好收到一个位置参数")
+        import inspect as _inspect
+        _params = set(_inspect.signature(MS.ascend).parameters)
+        _bad = [k for k in (seen.get("kwargs") or {}) if k not in _params]
+        self.assertEqual(_bad, [],
+                         "ascend 收到的关键字里有**真身不认**的形参：%s（真身形参 %s）"
+                         % (_bad, sorted(_params)))
+        self.assertEqual(len(seen.get("args") or ()), 1, "ascend 必须恰好收到一个位置参数（purpose）")
         self.assertTrue(out["ok"])
 
     def test_inventory_dual_view(self):

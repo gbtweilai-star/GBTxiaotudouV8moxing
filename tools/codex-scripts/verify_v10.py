@@ -12,22 +12,25 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 CANVAS = BASE / "V10 GBT小土豆V8-无限画布.html"
 PROTO = BASE / "V10 GBT小土豆V8-可交互原型.html"
 fails, warns, oks = [], [], []
 
 
 def ok(m):
-    oks.append(m); print("  PASS  " + m)
+    oks.append(m)
+    print("  PASS  " + m)
 
 
 def bad(m):
-    fails.append(m); print("  FAIL  " + m)
+    fails.append(m)
+    print("  FAIL  " + m)
 
 
 def warn(m):
-    warns.append(m); print("  WARN  " + m)
+    warns.append(m)
+    print("  WARN  " + m)
 
 
 print("=" * 78)
@@ -77,6 +80,7 @@ if TR:
     (ok if T["truncated"] else bad)("根层标 truncated=%s（应 True）" % T["truncated"])
     (ok if len(TR["preexpanded"]) >= 3 else bad)("预展开目录 %d 个" % len(TR["preexpanded"]))
     kinds = set()
+
     def walk(es):
         for e in es:
             kinds.add(e["kind"])

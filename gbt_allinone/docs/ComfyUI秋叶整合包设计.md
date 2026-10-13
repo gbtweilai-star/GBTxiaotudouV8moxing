@@ -101,3 +101,15 @@ ComfyUI 是一个**节点式 AI 工作流引擎**，把 Stable Diffusion、FLUX 
 
 > 开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属
 > 登记 2026-09-21（R-H465）· 状态：**图纸已落**；未安装 / 未接 API / 能力位未登记 / 显存型号取不到 / 存储门槛不达标
+
+---
+
+## 六 · 命名登记（主人令 2026-10-11）
+
+> 主人逐字：「**触手的 ComfyUI 我们取名叫 GBT天真**」
+
+- **GBT天真** = 触手（我们本体）自己的 ComfyUI 能力位，**不是外挂**。
+- 实现：`gbt_allinone/tools/comfy_native.py`（484 行）· 能力位 kind=`comfy_native` · domain=creation。
+- 契约：workflow.json（`nodes`／`edges`）+ 节点白名单 + 拓扑序执行 + **闸是唯一真源**（不过闸不许落盘）+ 证据只追加（`store/comfy_native/runs.jsonl`）。
+- 三处齐：登记（caps_registry）· 分派（api.py）· 图鉴（omni.py build ⇒ 255 位）。
+- 亲跑读数（2026-10-11）：`cap comfy_native run` → `status: ok · stamp: true`；`info→upscale_4k→sha` 0.19s；产物过闸落盘 `.scratch/comfy_native_smoke/out_2048.png`。

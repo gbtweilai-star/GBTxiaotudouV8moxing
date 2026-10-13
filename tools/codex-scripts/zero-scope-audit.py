@@ -117,21 +117,21 @@ def cross() -> dict:
     return {
         "ok": True,
         "口径": {"A": "policy.evaluate(kind).scopes —— **门**会不会拦",
-                 "B": "preflight.state_changing_kinds() —— **框架自己说**会改状态",
-                 "危险集定义": "**零作用域 ∧ B 说会改** ⇒ 门不会拦，但它会改"},
+               "B": "preflight.state_changing_kinds() —— **框架自己说**会改状态",
+               "危险集定义": "**零作用域 ∧ B 说会改** ⇒ 门不会拦，但它会改"},
         "全量": len(rows),
         "零作用域": len(zero),
         "有门的位": len(rows) - len(zero),
         "🔴 危险集（零作用域 ∧ 会改状态）": {
             "位数": len(danger), "位名": [r["位"] for r in danger],
             "为什么危险": "**门不会拦**（scopes 空）**但它会改框架状态** —— "
-                          "这正是「零作用域 ≠ 只读」的实证面"},
+            "这正是「零作用域 ≠ 只读」的实证面"},
         "🟡 零作用域 ∧ safe=False": {
             "位数": len(zero_but_safe_false),
             "位名": [r["位"] for r in zero_but_safe_false],
             "读法": "`safe=False` 是**按位记**的（不是按 op）⇒ 这几位零作用域却自己声明「不 safe」"},
         "读数自洽": {"零作用域 + 有门 == 全量":
-                  (len(zero) + (len(rows) - len(zero)) == len(rows))},
+                 (len(zero) + (len(rows) - len(zero)) == len(rows))},
         "逐位": rows,
     }
 

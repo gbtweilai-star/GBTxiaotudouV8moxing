@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>GBT小土豆V8 · 动效（子合成版）</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      /* 🔴 hyperframes lint 抓过：中文字体**必须声明 @font-face**，否则渲染器供不上 => 中文掉兜底字体 */
+      @font-face { font-family: "GBT YaHei"; src: local("Microsoft YaHei"); }
+      @font-face { font-family: "GBT Noto"; src: local("Noto Sans SC"); }
+      html, body { margin: 0; width: 1920px; height: 1080px; background: #070c18; }
+      body { color: #fff; font-family: "GBT YaHei", "GBT Noto", system-ui, sans-serif; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+      /* 宿主里的每个子合成就是一个 clip；位置/尺寸由宿主给 */
+      .clip { position: absolute; inset: 0; }
+      .glow { position: absolute; width: 900px; height: 900px; border-radius: 50%;
+              background: radial-gradient(circle, rgba(245,176,65,.16), rgba(245,176,65,0) 62%);
+              left: 510px; top: 90px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="motion" data-start="0"
+         data-width="1920" data-height="1080" data-duration="10">
+
+      <div class="glow" id="glow"></div>
+
+      <!-- 契约：宿主 clip 要带自己的 data-start / data-duration / data-track-index / 宽高，
+           且 data-composition-id 必须与子文件里的那个一致 -->
+      <!-- 🔴 check 的 Layout 域抓过真问题：s1(0-4s) 与 s2(3.4s起) **有 0.6 秒重叠** =>
+           t=3.75s 时「GBTPOTATO」压在「小土豆 V8」上，两块文字看不清。
+           ⇒ 时间轴改成**首尾相接、互不重叠**：s1 0~3.4 · s2 3.4~7.0 · s3 7.0~10。 -->
+      <div id="h1" class="clip"
+           data-composition-id="scene-s1" data-composition-src="scenes/s1.html"
+           data-start="0" data-duration="3.4" data-track-index="1"
+           data-width="1920" data-height="1080"></div>
+
+      <div id="h2" class="clip"
+           data-composition-id="scene-s2" data-composition-src="scenes/s2.html"
+           data-start="3.4" data-duration="3.6" data-track-index="2"
+           data-width="1920" data-height="1080"></div>
+
+      <div id="h3" class="clip"
+           data-composition-id="scene-s3" data-composition-src="scenes/s3.html"
+           data-start="7" data-duration="3" data-track-index="3"
+           data-width="1920" data-height="1080"></div>
+    </div>
+
+    <script>
+      // 宿主自己的 timeline：只管根级的元素（光晕呼吸），给全片兜一层连续运动
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#glow", { scale: 0.9, opacity: 0.5 },
+                        { scale: 1.15, opacity: 1, duration: 10, ease: "none" }, 0);
+      window.__timelines["motion"] = tl;
+    </script>
+  </body>
+</html>

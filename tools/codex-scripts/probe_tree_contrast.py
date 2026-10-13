@@ -36,9 +36,9 @@ BRIDGE = "(() => { const P=%s; const call=(n)=>Promise.resolve(P[n]||{ok:false,e
          "selfcheck:()=>call('w3:selfcheck'),introspect:()=>call('w3:introspect'),tools:()=>call('w3:tools')," \
          "h1:()=>call('w3:h1'),pets:()=>call('w3:pets'),summon:()=>call('w3:summon')," \
          "eigenflux:()=>call('w3:eigenflux'),onEvent:()=>{},onStreamState:()=>{}};})();" % json.dumps(
-    {k: payload(k) for k in ("w3:config", "w3:state", "w3:tasks", "w3:env", "w3:ledger", "w3:health",
-                             "w3:matrix", "w3:mindmap", "w3:selfcheck", "w3:introspect", "w3:tools",
-                             "w3:h1", "w3:pets", "w3:summon", "w3:eigenflux")}, ensure_ascii=False)
+             {k: payload(k) for k in ("w3:config", "w3:state", "w3:tasks", "w3:env", "w3:ledger", "w3:health",
+                                      "w3:matrix", "w3:mindmap", "w3:selfcheck", "w3:introspect", "w3:tools",
+                                      "w3:h1", "w3:pets", "w3:summon", "w3:eigenflux")}, ensure_ascii=False)
 
 with sync_playwright() as p:
     b = p.chromium.launch(executable_path=CHROME, args=["--allow-file-access-from-files"])

@@ -80,7 +80,7 @@ try:
           "$s.GetInstalledVoices()|ForEach-Object{$_.VoiceInfo.Name+'|'+$_.VoiceInfo.Culture}")
     out = subprocess.run(["powershell", "-NoProfile", "-Command", ps],
                          capture_output=True, text=True, timeout=40)
-    vs = [l.strip() for l in (out.stdout or "").splitlines() if l.strip()]
+    vs = [ln.strip() for ln in (out.stdout or "").splitlines() if ln.strip()]
     for v in vs:
         print("     ", v)
     print("      SAPI 声音数:", len(vs))

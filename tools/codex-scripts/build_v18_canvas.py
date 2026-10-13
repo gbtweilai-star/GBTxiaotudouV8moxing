@@ -10,7 +10,7 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 SRC = BASE / "archive" / "V17 GBT小土豆V8-无限画布.html"
 OUT = BASE / "V18 GBT小土豆V8-无限画布.html"
@@ -63,7 +63,7 @@ pagejs = "\n".join(
     for n, zh, en, rws, note in PAGES)
 scene += "\n\n" + pagejs + "\n"
 
-import re as _re
+import re as _re  # noqa: E402
 t = t.replace("无限画布 V17", "无限画布 V18")
 t = _re.sub(r"\bV17\b", "V18", t)
 t = t.replace("V18 · 50 面板 / 58 画布页 · 原生浏览器与云电脑已补",

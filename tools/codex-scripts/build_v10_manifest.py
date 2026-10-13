@@ -19,10 +19,14 @@ print("写出 v10_manifest.json · %d B" % (S / "v10_manifest.json").stat().st_s
 print("树根 %s · 根层 %d/%d 项 · 截断 %s · 预展开 %s" % (
     t["path"], len(t["entries"]), t["count"], t["truncated"], ",".join(TR["preexpanded"])))
 kinds = {}
+
+
 def walk(es):
     for e in es:
         kinds[e["kind"]] = kinds.get(e["kind"], 0) + 1
         if e.get("entries"):
             walk(e["entries"])
+
+
 walk(t["entries"])
 print("树内条目类型分布：", kinds)

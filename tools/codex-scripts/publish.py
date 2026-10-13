@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 import argparse
-import importlib.util
 import json
 import os
 import pathlib
@@ -72,7 +71,7 @@ def auth_read(inject: bool = False) -> dict:
             "desc": sc.get("desc"), "ai_can_grant": res.get("ai_can_grant"),
             "grant_sources": res.get("grant_sources"),
             "有授权的其他作用域": [k for k, v in (res.get("scopes") or {}).items()
-                                  if isinstance(v, dict) and v.get("grants_available")],
+                          if isinstance(v, dict) and v.get("grants_available")],
             "来源": "five-dim.py cap auth_gate_status --full（现读）"}
 
 
@@ -90,10 +89,10 @@ def cmd_check(a) -> int:
     print(json.dumps({
         "授权现状": auth,
         "判决": "**门是关的**：没有 deploy_publish 授权 ⇒ 任何发布请求都拒" if not n else
-                "门是开的：有 %s 次授权（一次性消耗，用完即关）" % n,
+        "门是开的：有 %s 次授权（一次性消耗，用完即关）" % n,
         "AI 能不能自己发授权": "**不能**（ai_can_grant=%s）" % auth.get("ai_can_grant"),
         "主人怎么开": "python -m gbt_allinone auth grant --scope deploy_publish --ttl 600"
-                      "（或主人手写 store/auth_grants.jsonl）",
+        "（或主人手写 store/auth_grants.jsonl）",
         "本模块是什么": "**发布门卫，不是发布器**；真发布走唯一门 run_task",
     }, ensure_ascii=False, indent=1))
     return 0
@@ -115,7 +114,7 @@ def cmd_send(a) -> int:
         print(json.dumps({
             "ok": False, "拒单": "**落点闸拦住**：必须显式声明落点（本仓红线）",
             "两条路": {"只写房间（生产分毫不动）": '--room "<房间名>"',
-                       "写全局生产（必须人工授权）": "--into-global-production"},
+                    "写全局生产（必须人工授权）": "--into-global-production"},
         }, ensure_ascii=False, indent=1))
         return 4
     # 闸③ 唯一门：只打印，不执行
@@ -186,7 +185,7 @@ def cmd_selftest(a) -> int:
     print(json.dumps({"自检": {"条数": len(lines), "通过": len(lines) - bad, "不通过": bad},
                       "逐条": lines,
                       "口径": "注入只改『授权读数』这一格，闸的代码路径完全一样；"
-                              "注入值在读数里会明确标出是注入"},
+                      "注入值在读数里会明确标出是注入"},
                      ensure_ascii=False, indent=1))
     return 0 if bad == 0 else 1
 

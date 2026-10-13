@@ -1,0 +1,15 @@
+{
+ "cap": "look_grade",
+ "domain": "video",
+ "desc": "外观库触手（词即指令）：一处定义 7 种味道（filmic/做旧/潮湿阴冷/热血橙青/褪色胶片/黑白纪实/赛博霓虹）+ 人话取味（pick：说「潮湿阴冷」「热血一点」「像老照片」即取到对应味，认不出如实标回落）+ 单帧试看（preview 定了再上全片）+ 生产审计（qc 黑帧/卡帧/亮度）；actioncam 与 filmkit 同款引用",
+ "safe": false,
+ "ops": [],
+ "ops_method": "handler 文件未找到",
+ "handler_file": "",
+ "params": [],
+ "params_hint": "",
+ "handler": "look_grade",
+ "slot": "g2-16",
+ "group": 2,
+ "role": "调色/外观库（词即指令）"
+}

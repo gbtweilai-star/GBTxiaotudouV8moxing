@@ -1,0 +1,16 @@
+{
+ "id": "20261007-232227",
+ "at": "2026-10-07T23:22:28",
+ "item": "artifact.logbook-digest",
+ "action": "重跑生成器：py -3.14 tools/codex-scripts/logbook.py render",
+ "kind": "artifact",
+ "files": [
+  {
+   "path": "state/logbook-digest.md",
+   "backup": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\state\\_heal_backup\\20261007-232227\\logbook-digest.md",
+   "size": 3594
+  }
+ ],
+ "process": null,
+ "note": "只复制、不删除；回滚 = 复制回原件（文件类）/ 只停**本次 spawn** 的 pid（进程类）"
+}

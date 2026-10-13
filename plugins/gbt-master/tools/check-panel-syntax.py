@@ -147,7 +147,7 @@ def negctl() -> int:
         got_red = check(p, tmp) > 0
         mark = "✅" if got_red == want_red else "🔴"
         print("   %s 负控 %-18s 期望%s · 实得%s" % (mark, name, "红" if want_red else "绿",
-                                                "红" if got_red else "绿"))
+                                              "红" if got_red else "绿"))
         if got_red != want_red:
             wrong.append(name)
     if wrong:

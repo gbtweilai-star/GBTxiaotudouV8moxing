@@ -67,7 +67,7 @@ print(f"所测 primitive 高 {y_top - y_bot:.3f} · **整体**身高 {H:.3f}（y
 print(f"网格 {len(P)} 顶点 · 身高 {H:.3f} · Head 关节槽位 {HEAD}")
 
 # 贴图采样：底色图按**该 primitive 自己的材质**取（缝合件里身/头各一套，按尺寸猜会取错）
-import io as _io
+import io as _io  # noqa: E402
 UVall = acc(pr["attributes"]["TEXCOORD_0"], 2).astype(np.float64)
 _mat = J["materials"][pr["material"]] if "material" in pr else J["materials"][0]
 _bci = J["textures"][_mat["pbrMetallicRoughness"]["baseColorTexture"]["index"]]["source"]

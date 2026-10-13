@@ -1,10 +1,12 @@
 """逐个面板真渲染审计：走 /gbt-master 路由，抓状态码 / 控制台错 / 失败请求 / 实际内容。"""
-import json, pathlib, sys, urllib.request
+import json
+import pathlib
 from playwright.sync_api import sync_playwright
 
 BASE = "http://127.0.0.1:3080"
 CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 OUT = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8\.scratch\_panel_audit.json")
+
 
 def get_json(url):
     """目录 JSON 由 pwsh/Invoke-WebRequest 先落盘（urllib 走这条路由会被截断，浏览器与 IWR 均正常）。"""

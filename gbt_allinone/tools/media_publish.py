@@ -166,7 +166,7 @@ def _prepare(kind: str, product: str, title: str, desc: str, tags: list, cover: 
                 r"^\d{8}-(?:short-video|film|music)-.+-(?:\d{2}[a-z]+|rehearsal)(?:-v\d+)?\.[A-Za-z0-9]+$",
                 ap.name)),
             "rehearsal": "-rehearsal" in ap.name,
-            "note": "**彩排件不要发布** —— 这一栏是给主人看的，不替你判；正式件请去掉 -rehearsal。",
+            "note": "**彩排件不要发布**；正式件的文件名不带 -rehearsal（本栏只报事实，不替你判）。",
         },
         "gate": {"required_scope": "deploy_publish",
                  "how": "python -m gbt_allinone auth grant --scope deploy_publish --ttl 600",

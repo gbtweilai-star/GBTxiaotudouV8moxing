@@ -199,13 +199,13 @@ def cmd_run(sel: list[str]) -> int:
     specs = _specs(sel)
     if not specs:
         print(json.dumps({"突变证明": {"通过": False,
-                                       "为什么": "**一份规格都没有 = 不合格**（空表不许念成合格）",
-                                       "规格目录": str(SPEC_DIR)}}, ensure_ascii=False, indent=1))
+                                   "为什么": "**一份规格都没有 = 不合格**（空表不许念成合格）",
+                                   "规格目录": str(SPEC_DIR)}}, ensure_ascii=False, indent=1))
         return 2
     rows = [run_spec(p) for p in specs]
     ok = all(r.get("通过") for r in rows)
     print(json.dumps({"突变证明": {"通过": ok, "规格数": len(rows),
-                                   "口径": "**原件不动**；锚点必须唯一；点名要红的必须红"},
+                               "口径": "**原件不动**；锚点必须唯一；点名要红的必须红"},
                       "逐份": rows}, ensure_ascii=False, indent=1))
     return 0 if ok else 1
 
@@ -297,7 +297,7 @@ def selftest() -> int:
            and "别处" in str(row.get("为什么"))
            and str(row.get("读数", "")).startswith("「不通过」"),
            "%s ｜ %s ｜ %s" % (row["判决"], str(row.get("读数"))[:24],
-                              str(row.get("为什么"))[:44]))
+                             str(row.get("为什么"))[:44]))
         # ⑥ **改崩（语法错）= 红 ≠ 咬住**：没有「不通过」字段一律不许当咬住
         row = _one_mutant(tgt, CRASH, ["--selftest"])
         ck("**改崩 ⇒ 不许当咬住**（fail-closed：红 ≠ 咬住）",

@@ -111,7 +111,7 @@ def cmd_status():
                                    "how_to_grant": env2.get("how_to_grant")}
     else:
         out["legs"]["tts_gate"] = {"denied": False,
-                                  "note": "授权在位（本次探针真的发出了声音）"}
+                                   "note": "授权在位（本次探针真的发出了声音）"}
     print(json.dumps(out, ensure_ascii=False, indent=1))
     return 0
 

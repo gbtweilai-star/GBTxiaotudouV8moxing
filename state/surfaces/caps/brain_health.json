@@ -1,0 +1,15 @@
+{
+ "cap": "brain_health",
+ "domain": "llm",
+ "desc": "大脑执行层·健康维：五维自检评分（路由/执行/触手/视觉/审计）",
+ "safe": true,
+ "ops": [],
+ "ops_method": "handler 文件未找到",
+ "handler_file": "",
+ "params": [],
+ "params_hint": "",
+ "handler": "brain_health",
+ "slot": "g1-06",
+ "group": 1,
+ "role": "模型评测台（基准与回归）"
+}

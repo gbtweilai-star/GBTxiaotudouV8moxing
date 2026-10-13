@@ -213,10 +213,10 @@ def _layout_body() -> dict:
     cloud_n = sum(1 for p in PLUGIN_SLOTS if "CLOUD" in p[3])
     body = {
         "触手根数": {"根数": n or None, "出处": src,
-                     "代理读数_CPU线程": os.cpu_count(),
-                     "代理读数说明": "⚠️ CPU 线程数只是调度放大尺，**不是触手根数**，不许当触手数念"},
+                 "代理读数_CPU线程": os.cpu_count(),
+                 "代理读数说明": "⚠️ CPU 线程数只是调度放大尺，**不是触手根数**，不许当触手数念"},
         "两个数别混": {"触手根数": "%s（主人声明，只有主人能改）" % (n or "未声明"),
-                       "终端并发上限": "T01~T%02d 共 %d（主人给的 30~50）" % (TERMINAL_SLOTS, TERMINAL_SLOTS)},
+                  "终端并发上限": "T01~T%02d 共 %d（主人给的 30~50）" % (TERMINAL_SLOTS, TERMINAL_SLOTS)},
         "插件独立部署表": plugins,
         "合计": {"插件": len(plugins), "其中落云": cloud_n, "落本地": len(plugins) - cloud_n},
         "触手排班": _schedule(n) if n else [],
@@ -253,7 +253,7 @@ def _invariants(n: int) -> dict:
             "✅" if not twice else "✗ 被挂了两次：%s" % twice,
             "②没有漏挂": "✅" if not unassigned else "✗ 漏：%s" % unassigned,
             "③排数 = 触手根数": ("✅ %d = %d" % (len(rows), n)) if ok_count else
-                            "✗ %d ≠ %d" % (len(rows), n),
+            "✗ %d ≠ %d" % (len(rows), n),
             "④槽位编号唯一（**真数据判据**）": "✅" if not dup_id else "✗ 重号：%s" % dup_id,
             "⑤挂的件不重复注册（**真数据判据**）": "✅" if not dup_name else "✗ 重复：%s" % dup_name,
             "结论": "五条都 ✅ 才算排班像计算机一样不出错"
@@ -291,11 +291,11 @@ def _fusion_brief() -> list:
         sys.modules["_sm"] = m                      # dataclass 需要先注册
         spec.loader.exec_module(m)
         w = m.whoami()
-        C, A, M, I, G = (w["自身能力面"], w["授权面（缺什么、卡在哪）"],
-                         w["可操控的模型面"], w["推演（周易决策内核）"], w["自律（门与闸）"])
+        C, A, M, ii, G = (w["自身能力面"], w["授权面（缺什么、卡在哪）"],
+                          w["可操控的模型面"], w["推演（周易决策内核）"], w["自律（门与闸）"])
         scopes = A.get("缺授权·按作用域（发一次覆盖多位）") or {}
         top = " · ".join("%s(%d)" % (s, v["位数"])
-                        for s, v in sorted(scopes.items(), key=lambda kv: -kv[1]["位数"])[:4])
+                         for s, v in sorted(scopes.items(), key=lambda kv: -kv[1]["位数"])[:4])
         two = A.get("两个口径（**别混念**）") or {}
         aft = two.get("给参后（合并）") or {}
         return [
@@ -317,7 +317,7 @@ def _fusion_brief() -> list:
             ("自身融合（模型面）", "%s provider ｜ **可路由 %s 条** ｜ 该接缝门 %s 条 ｜ ⚠️ 不是「亿万」"
              % (M.get("provider 数"), M.get("可路由 (provider,model) 配对数"),
                 (M.get("该接缝的门") or {}).get("条数"))),
-            ("自身融合（推演）", "卦名 %s ｜ 卦义 %s" % (I.get("卦名覆盖"), I.get("卦义覆盖"))),
+            ("自身融合（推演）", "卦名 %s ｜ 卦义 %s" % (ii.get("卦名覆盖"), ii.get("卦义覆盖"))),
             ("自身融合（自律）", "%s ｜ 闸 %s 道 ｜ 未过 %s ｜ 🔴 授权只能主人在终端发"
              % (G.get("判决"), G.get("闸数"), G.get("未过的闸"))),
             ("影像生产面（能不能产片看这里）",
@@ -368,9 +368,9 @@ def _failover_section() -> dict:
     rows = fo.table()
     return {"内存闸": fo.guard(),
             "覆盖": {"能力数": len(rows), "有备用位": sum(1 for r in rows if r["备用位"]),
-                     "真接线": sum(1 for r in rows if r["真接线"])},
+                   "真接线": sum(1 for r in rows if r["真接线"])},
             "备用位表": [{"编号": r["编号"], "主": r["主"], "备用位": r["备用位"],
-                          "类型": r["类型"], "触发条件": r["触发条件"]} for r in rows],
+                      "类型": r["类型"], "触发条件": r["触发条件"]} for r in rows],
             "三条真接线的备用路": [
                 "★ 内存不够 ⇒ 渲染改低并发（--concurrency=1，内存 ÷6）",
                 "★ wrangler 云通路失败 ⇒ 换 r2-move.py（另一条已验通路）",
@@ -399,14 +399,14 @@ def _social_section() -> dict:
         "ok": True, "插件格数": ap.get("插件格数"), "触手根数": ap.get("触手根数"),
         "触手出处": ap.get("触手出处"), "一 AI 一号": ap.get("一 AI 一号"),
         "触手负载": {t: sum(1 for r in reg if r["归属触手"] == t)
-                     for t in sorted({r["归属触手"] for r in reg})},
+                 for t in sorted({r["归属触手"] for r in reg})},
         "格": [{"格": r["插件格"], "平台": r["平台"], "平台名": r["平台名"], "触手": r["归属触手"],
-                "凭据": r["凭据"], "接线": r["接线状态"]} for r in reg],
+               "凭据": r["凭据"], "接线": r["接线状态"]} for r in reg],
         "三动作闸（拿第一家平台现读当样）": {
             v: sl.act(sample, v) for v in ("feed", "claim", "send")} if sample else {},
         "边界": "**零接线**（一个平台都没连）· 凭据全未配 · "
-                "内容审核闸**已有机械面**（`tools/content_review.py`，假冒人类/内部构造/隐私·联系方式"
-                "硬拦，第三方身份弱提示）· **未取证的面 = 违规内容词表**（待主人给，不编）",
+        "内容审核闸**已有机械面**（`tools/content_review.py`，假冒人类/内部构造/隐私·联系方式"
+        "硬拦，第三方身份弱提示）· **未取证的面 = 违规内容词表**（待主人给，不编）",
         "发消息三道闸": "人审 → 敏感过滤 → **内容审核**（缺一即拒；三道齐才给判决，且仍不执行）",
     }
 
@@ -415,7 +415,7 @@ def _drift_brief() -> dict:
     """能力位**健康漂移**（与基线比）——共用 `nerve.caps_drift()` 一份判据，不复制。"""
     try:
         spec = importlib.util.spec_from_file_location("_nv_for_drift",
-                                                     ROOT / "tools" / "codex-scripts" / "nerve.py")
+                                                      ROOT / "tools" / "codex-scripts" / "nerve.py")
         m = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(m)
         d = m.caps_drift()
@@ -439,7 +439,7 @@ def _beyond_brief() -> dict:
         return {"解析失败": str(e)}
     un = d.get("未实现·真调验证") or {}
     return {"未实现": "%d 位 · **真调验证 %d/%d 如实报 unknown**"
-                    % (len(un), sum(1 for v in un.values() if v.get("如实报 unknown")), len(un)),
+            % (len(un), sum(1 for v in un.values() if v.get("如实报 unknown")), len(un)),
             "safe=False": "%d 位 · 静态核（**会落盘/会改**，不是「危险」）" % len(d.get("safe=False·静态核") or {}),
             "改状态": "%d 位 · **绝不调用**（红线）" % len(d.get("改状态·不探（红线）") or {}),
             "口径": "可探针集 138 + 未实现 11 + safe=False 8 + 改状态 11 = **168 位，每位都有账**"}
@@ -449,7 +449,7 @@ def _caps_brief() -> dict:
     """能力位覆盖层现算（把 nerve 的 caps 层接进面板）——**不写死条数**。"""
     try:
         spec = importlib.util.spec_from_file_location("_nv_for_caps",
-                                                     ROOT / "tools" / "codex-scripts" / "nerve.py")
+                                                      ROOT / "tools" / "codex-scripts" / "nerve.py")
         m = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(m)
         cs = m.caps_scan()
@@ -478,7 +478,7 @@ def _caps_brief() -> dict:
                     "at": snap.get("at"), "本次探位数": snap.get("本次探位数"),
                     "合计": snap.get("合计"),
                     "已探针率": "%s / %s（可探针）" % (snap.get("本次探位数"),
-                                                     cs["分类计数"]["可探针"])
+                                              cs["分类计数"]["可探针"])
                     if snap else "**尚未真探**（跑 nerve.py caps --run）",
                     "口径": "**可探针率 ≠ 已探针率**：覆盖率说的是「能不能探」",
                     "待核": "注册表 requires_params 实测**不可信**：只标 2 位，"
@@ -486,7 +486,7 @@ def _caps_brief() -> dict:
                 },
                 # 可探针集**之外**那 30 位（全 168 位的另一半账）
                 "全 168 位合计": _beyond_brief(),
-                "能力位漂移": _drift_brief(),}
+                "能力位漂移": _drift_brief(), }
     except Exception as e:  # noqa: BLE001
         return {"ok": False, "why": "能力位层加载失败：%s" % e}
 
@@ -545,7 +545,7 @@ def cmd_html(a) -> int:
                 % (cls, esc(num), esc(name), esc(where), esc(st), esc(alt)))
 
     nodes = "".join(mod_node(num, name, where, deps, i)
-                    for i, (num, name, where, deps) in enumerate(_module_pairs())) 
+                    for i, (num, name, where, deps) in enumerate(_module_pairs()))
     prows = "".join(
         "<tr><td class=mono>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>"
         "<td class=alt>%s</td></tr>"
@@ -785,8 +785,8 @@ def cmd_layout(a) -> int:
                                  ensure_ascii=False, indent=1), encoding="utf-8")
         iok, _ = ra._put(ip, "%s/plugins/index.json" % PREFIX)
         body["登记"] = {"已写": ok_n, "共": len(body["插件独立部署表"]),
-                        "索引": bool(iok), "云前缀": "%s/plugins/" % PREFIX,
-                        "边界": "契约登记 ≠ 函数部署"}
+                      "索引": bool(iok), "云前缀": "%s/plugins/" % PREFIX,
+                      "边界": "契约登记 ≠ 函数部署"}
     print(json.dumps(body, ensure_ascii=False, indent=1))
     return 0
 
@@ -905,7 +905,7 @@ def cmd_plan(a) -> int:
     """只打印**声明好的顺序**，不读云。"""
     print(json.dumps({
         "编排": [{"编号": n, "模块": m, "运行地": w, "依赖": d or "无",
-                  "未部署原因": GAPS.get(n)} for n, m, w, d in _module_pairs()],
+                "未部署原因": GAPS.get(n)} for n, m, w, d in _module_pairs()],
         "顺序规则": "登记某模块前，其依赖必须**已在云上有 current.json**；缺一个就拒（fail-closed）",
         "终端编制": "T01~T%02d 共 %d 个槽位（主人定：30~50 个终端并发）" % (TERMINAL_SLOTS, TERMINAL_SLOTS),
         "本地边界": "本地只有 06 render 一格；其余全在插件云按模块分布",
@@ -1058,17 +1058,17 @@ def cmd_board(a) -> int:
             "插件表见": "py -3.14 tools/codex-scripts/deploy-panel.py layout",
         },
         "三·终端编号": {"编制": TERMINAL_SLOTS, "现役": len(workers),
-                        "还没动的槽位": TERMINAL_SLOTS - len(workers), "名册": fleet},
+                   "还没动的槽位": TERMINAL_SLOTS - len(workers), "名册": fleet},
         "四·作业编号": jobs,
         "五·紧急扩容": _failover_section(),
         "六·神经末梢（痛觉）": dict(_nerve_section(), **{"能力位覆盖层": _caps_brief()}),
         "七·社交托管格": _social_section(),
         "合计": {"模块": {"已登记": len(cur), "声明总数": len(DEPLOY_ORDER),
-                          "已验": dep_ok_n},
-                 "作业": {"总数": len(idx),
-                          "已完成": sum(1 for j in jobs if "已完成" in j["状态"]),
-                          "在做": sum(1 for j in jobs if "在做" in j["状态"]),
-                          "待领单": sum(1 for j in jobs if "待领单" in j["状态"])}},
+                      "已验": dep_ok_n},
+               "作业": {"总数": len(idx),
+                      "已完成": sum(1 for j in jobs if "已完成" in j["状态"]),
+                      "在做": sum(1 for j in jobs if "在做" in j["状态"]),
+                      "待领单": sum(1 for j in jobs if "待领单" in j["状态"])}},
         "下一步唯一合法动作": _next_name(cur),
         "现在就可做（依赖已齐，按编号）": _legal_now(cur),
         "口径": "模块状态是**登记声明**（证据字段可重跑复核）；--verify 只重跑便宜的 3 条探针，其余如实标「无便宜探针」",
@@ -1104,7 +1104,7 @@ def cmd_selftest(a) -> int:
     mine = {m for _, m, _, _ in _module_pairs()}
     ck("模块集合一致", ra_mods == mine,
        "render-agent %d 个 · 本表 %d 个 · 差 %s" % (len(ra_mods), len(mine),
-                                                sorted(ra_mods ^ mine) or "无"))
+                                               sorted(ra_mods ^ mine) or "无"))
     # ② 编号唯一且连续
     nums = [n for n, _, _, _ in _module_pairs()]
     ck("编号连续唯一", nums == ["%02d" % (i + 1) for i in range(len(nums))], " · ".join(nums))
@@ -1117,19 +1117,24 @@ def cmd_selftest(a) -> int:
     keep = LOCAL_CLOUD
     with tempfile.TemporaryDirectory() as td:
         LOCAL_CLOUD = td
+
         class A:  # noqa: N801 — 极简命名空间，喂给 cmd_mark 当参数
             module, state, evidence, version = "spec-store", "已验", "自检 => 01 已登记", "selftest"
         rc1 = cmd_mark(A())                      # 01 无依赖 ⇒ 应放行
+
         class B:
             module, state, evidence, version = "assemble", "已验", "自检 => 依赖门", "selftest"
         rc2 = cmd_mark(B())                      # 07 依赖 06 ⇒ 应被拒（3）
+
         class C:
             module, state, evidence, version = "render", "已验", "自检 => 06", "selftest"
         rc3 = cmd_mark(C())                      # 06 依赖 01（已登记）⇒ 应放行
         rc4 = cmd_mark(B())                      # 再试 07（06 已登记）⇒ 应放行
+
         class D:
             module, state, evidence, version = "不存在的模块", "已验", "自检 => x", "selftest"
         rc5 = cmd_mark(D())                      # 编号表外的模块 ⇒ 应被拒（2）
+
         class E:
             module, state, evidence, version = "vault", "已验", "没有箭头", "selftest"
         rc6 = cmd_mark(E())                      # 证据串不合格 ⇒ 应被拒（2）

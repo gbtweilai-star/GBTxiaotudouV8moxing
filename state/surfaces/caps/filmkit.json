@@ -1,0 +1,15 @@
+{
+ "cap": "filmkit",
+ "domain": "creation",
+ "desc": "柔性影片产线（清单制·任意场/镜增删重制·主人令 2026-09-26）：manifest.json 为唯一真相（场=音频+3镜prompt，镜=图+运镜）；list/gen/seg/build/add/rm 六命令；产出自动绑触手（asset_bindings 台账）；跳过/指定场装配支持做预告与片段",
+ "safe": false,
+ "ops": [],
+ "ops_method": "handler 文件未找到",
+ "handler_file": "",
+ "params": [],
+ "params_hint": "",
+ "handler": "filmkit",
+ "slot": "g2-17",
+ "group": 2,
+ "role": "影片装配线（清单制·任意增删重制）"
+}

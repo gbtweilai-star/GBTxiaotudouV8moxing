@@ -155,13 +155,13 @@ def preflight(port: int, model_id: str, keep: bool = False) -> int:
             "假端点": "%s:%d" % (HOST, port), "模型 id": model_id,
             "① /v1/models": {"过": ok_models, "读到的 id": ids},
             "② /v1/chat/completions": {"过": ok_chat,
-                                      "有 content": ok_chat, "有 reasoning_content":
-                                      "reasoning_content" in msg},
+                                       "有 content": ok_chat, "有 reasoning_content":
+                                       "reasoning_content" in msg},
             "③ 身份自述": str(msg.get("content"))[:70],
             "④ 404 分支": (lambda: (lambda: (urllib.request.urlopen(
                 base.rsplit("/v1", 1)[0] + "/nope", timeout=3)))() and False)() if False else "见 selftest",
             "口径": "**假端点**：只验「接线通不通/形状对不对」，**不代表模型能力**；"
-                    "换真地址 = 把 baseURL 指到 GPU 机器上的 vLLM",
+            "换真地址 = 把 baseURL 指到 GPU 机器上的 vLLM",
             "判决": "✅ 接线形状验收通过（可以接真端点）" if (ok_models and ok_chat) else "🔴 形状不对",
         }, ensure_ascii=False, indent=1))
         if keep:

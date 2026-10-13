@@ -253,7 +253,7 @@ class OmniWindowMixin:
         # ⛔ 2026-08-13 打磨: 全量走镜像出品 — v5.5 gatekeeper 全局写保护拦截一切非
         #    publish 写入(含项目外), 旧"项目外直写"分支已死且裸抛 PermissionError。
         _fp_export = Path(filepath)
-        import brain.gatekeeper as _gk_exp
+        from .brain import gatekeeper as _gk_exp
         _content_exp = json.dumps(data, ensure_ascii=False, indent=2)
         if format == "csv":
             import csv, io

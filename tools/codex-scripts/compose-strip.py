@@ -3,7 +3,8 @@
 用法: python tools/codex-scripts/compose-strip.py <角色/动作名> <时间列表逗号分隔> <输出名>
 例:   python tools/codex-scripts/compose-strip.py walk "0.00,0.28,0.55,0.83" 动画条-walk.png
 读的是 render/帧-<名>-<时间>.png（由 shot-glb.py 逐帧渲染产生）"""
-import pathlib, sys
+import pathlib
+import sys
 from PIL import Image, ImageDraw
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")

@@ -1,0 +1,268 @@
+{
+ "at": "2026-10-10T02:45:50",
+ "总条": 40,
+ "分源": {
+  "SAPI": 3,
+  "VoiceStudio·人设": 2,
+  "VoiceStudio·可造": 35
+ },
+ "vs_up": true,
+ "逐条": [
+  {
+   "源": "SAPI",
+   "名": "TTS_MS_EN-US_DAVID_11.0",
+   "语言码": "409",
+   "怎么用": "cap voice（SAPI 那个口）"
+  },
+  {
+   "源": "SAPI",
+   "名": "TTS_MS_EN-US_ZIRA_11.0",
+   "语言码": "409",
+   "怎么用": "cap voice（SAPI 那个口）"
+  },
+  {
+   "源": "SAPI",
+   "名": "TTS_MS_ZH-CN_HUIHUI_11.0",
+   "语言码": "804",
+   "怎么用": "cap voice（SAPI 那个口）"
+  },
+  {
+   "源": "VoiceStudio·人设",
+   "名": "GBT冒烟-可删",
+   "id": "10c42c17",
+   "怎么用": "voicestudio.py speak --profile 10c42c17"
+  },
+  {
+   "源": "VoiceStudio·人设",
+   "名": "VoiceStudio Demo Voice",
+   "id": "demo0001",
+   "怎么用": "voicestudio.py speak --profile demo0001"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "gender",
+   "名": "male",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "gender",
+   "名": "female",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "age",
+   "名": "child",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "age",
+   "名": "teenager",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "age",
+   "名": "young adult",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "age",
+   "名": "middle-aged",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "age",
+   "名": "elderly",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "pitch",
+   "名": "very low pitch",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "pitch",
+   "名": "low pitch",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "pitch",
+   "名": "moderate pitch",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "pitch",
+   "名": "high pitch",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "pitch",
+   "名": "very high pitch",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "whisper",
+   "名": "whisper",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "accents",
+   "名": "chinese accent",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "accents",
+   "名": "korean accent",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "accents",
+   "名": "russian accent",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "accents",
+   "名": "british accent",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "accents",
+   "名": "portuguese accent",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "accents",
+   "名": "canadian accent",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "accents",
+   "名": "japanese accent",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "accents",
+   "名": "australian accent",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "accents",
+   "名": "indian accent",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "accents",
+   "名": "american accent",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "dialects",
+   "名": "桂林话",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "dialects",
+   "名": "河南话",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "dialects",
+   "名": "贵州话",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "dialects",
+   "名": "东北话",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "dialects",
+   "名": "宁夏话",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "dialects",
+   "名": "四川话",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "dialects",
+   "名": "济南话",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "dialects",
+   "名": "甘肃话",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "dialects",
+   "名": "青岛话",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "dialects",
+   "名": "云南话",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "dialects",
+   "名": "陕西话",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  },
+  {
+   "源": "VoiceStudio·可造",
+   "类": "dialects",
+   "名": "石家庄话",
+   "怎么用": "voicestudio.py speak --instruct 逗号拼 token（必须全在白名单里）"
+  }
+ ],
+ "台湾腔": {
+  "有无 token": false,
+  "出处": "core/archetypes._VD._INSTRUCT_ALL_VALID（48 个 token 里没有台湾）",
+  "实测": "HTTP 400: taiwanese mandarin accent -> unsupported",
+  "两条路": [
+   "克隆：给一段台湾腔女声样音 => voicestudio.py clone",
+   "换通道：找引擎外能造台湾腔的语音通道"
+  ]
+ },
+ "已出土试样": {
+  "文件": "outputs\\语音试样\\女声-年轻-中文口音.wav",
+  "instruct": "female, young adult, high pitch, chinese accent",
+  "秒": 2.36,
+  "生成秒": 327,
+  "注": "这不是台湾腔 —— 台湾腔引擎词表里没有，见 台湾腔 字段"
+ }
+}

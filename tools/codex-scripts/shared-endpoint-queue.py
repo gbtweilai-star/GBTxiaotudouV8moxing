@@ -82,8 +82,8 @@ def schedule(n_tasks: int, concurrency: int, worker) -> dict:
     stat["ok"] = True
     stat["并发上限"] = concurrency
     stat["判决"] = ("✅ 全部成功（并发 %d 上限守住：峰值在飞 %d）"
-                   % (concurrency, stat["峰值在飞"]) if not stat["**未读到**"]
-                   else "🔴 **有 %d 发未读到**（端点/超时问题，如实记）" % stat["**未读到**"])
+                  % (concurrency, stat["峰值在飞"]) if not stat["**未读到**"]
+                  else "🔴 **有 %d 发未读到**（端点/超时问题，如实记）" % stat["**未读到**"])
     return stat
 
 

@@ -34,6 +34,16 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+# 🔴 2026-10-09 根因修复（与 five-dim.py:44-47 同一处病根，本引擎漏了这一步）：
+#   GBK 控制台下本引擎**一跑就崩**：scan 走完全程、结果里含 "⇒"（U+21D2），
+#   最后 `print(json.dumps(...))` 抛 UnicodeEncodeError ⇒ **扫描结论整份丢失**，
+#   读的人只会以为「引擎坏了 / 扫不出东西」。不是引擎坏了，是打不出来。
+#   修法照抄本仓既有口径：出口一律 utf-8 + errors=replace。
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
 TRACE = ROOT / "state" / "cross_scan_trace.jsonl"
 MAX_WORKERS = 8

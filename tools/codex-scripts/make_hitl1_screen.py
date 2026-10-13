@@ -197,6 +197,7 @@ def chain_html(chain) -> str:
     <p class="chain-b"><span class="k">全局阻塞</span>{esc(blk)}</p>
   </section>"""
 
+
 # 独立质量审计回执（由独立审计触手产出，作者看不到、也改不了它的判定）
 IREVIEW = ROOT / ".scratch" / "_independent_review_receipt.json"
 
@@ -245,7 +246,6 @@ def ack_html(receipt: dict) -> str:
   </section>"""
 
 
-
 def ireview_html(receipt: dict, direction: str) -> str:
     """独立质量审计官的判定。**作者无权改这份判定**，只能照做或申辩。"""
     if not receipt.get("available"):
@@ -262,7 +262,7 @@ def ireview_html(receipt: dict, direction: str) -> str:
         f'<span class="badge badge-{_SEV_TONE.get(f.get("severity"), "off")}">'
         f'{_SEV_LABEL.get(f.get("severity"), f.get("severity"))}</span>'
         f'<span class="fnd-body"><b>{plain(f.get("contract", ""))}</b> —— {plain(f.get("claim", ""))}'
-        f'<span class="ev">{plain(f.get("evidence", ""))}</span></span></li>'        for f in (w.get("top_findings") or []))
+        f'<span class="ev">{plain(f.get("evidence", ""))}</span></span></li>' for f in (w.get("top_findings") or []))
     credits = "".join(f"<li>{plain(x)}</li>" for x in (w.get("auditor_credits") or []))
     fix = w.get("self_correction") or ""
     return f"""
@@ -278,7 +278,6 @@ def ireview_html(receipt: dict, direction: str) -> str:
         <details class="irv-credit"><summary>审计官认可的地方（{len(w.get("auditor_credits") or [])} 条）</summary>
           <ul>{credits}</ul></details>
       </div>"""
-
 
 
 def gate_rows(text: str, src_label: str) -> list[dict]:
@@ -297,7 +296,6 @@ def gate_rows(text: str, src_label: str) -> list[dict]:
         out.append({"item": m.group(1), "state": m.group(2), "why": m.group(3),
                     "src": src_label, "sec": sec})
     return out
-
 
 
 def parse_timed(text: str) -> dict:
@@ -483,8 +481,8 @@ def render(rows, facts) -> str:
         <span class="chip chip-{prio}">{'待填 ' + str(len(r['shots'])*3) + ' 格' if r['shots'] else '走歌词闸'}</span>
       </header>
       <dl class="files">
-        <dt>源稿</dt><dd>{'<code>' + esc(r['script']) + '</code> · ' + str(r['s_meta'].get('bytes','—')) + ' B' if r['s_meta']['exists'] else '<span class="miss">缺失</span>'}</dd>
-        <dt>分镜</dt><dd>{'<code>' + esc(r['board']) + '</code> · ' + str(r['b_meta'].get('bytes','—')) + ' B' if r['b_meta']['exists'] else '<span class="dim">无（本方向不走切镜）</span>'}</dd>
+        <dt>源稿</dt><dd>{'<code>' + esc(r['script']) + '</code> · ' + str(r['s_meta'].get('bytes', '—')) + ' B' if r['s_meta']['exists'] else '<span class="miss">缺失</span>'}</dd>
+        <dt>分镜</dt><dd>{'<code>' + esc(r['board']) + '</code> · ' + str(r['b_meta'].get('bytes', '—')) + ' B' if r['b_meta']['exists'] else '<span class="dim">无（本方向不走切镜）</span>'}</dd>
         <dt>闸口</dt><dd><code>{esc(r['gate'])}</code></dd>
       </dl>
       {shots_html}
@@ -765,7 +763,7 @@ def main() -> int:
     print("\n  盘上真数据读数:")
     for w in facts["works"]:
         print(f"    {w['name']:10} 切镜={w.get('shots')} source={w.get('source')} "
-              f"ok={w.get('ok')} {w.get('note','')}")
+              f"ok={w.get('ok')} {w.get('note', '')}")
     # 自检：反 slop
     # 三次误报的教训，逐条收窄判据范围：
     #  · 「裸圆角」只算**非 0 的数字** —— `border-radius:0` 是刻意写明的方形批注条；

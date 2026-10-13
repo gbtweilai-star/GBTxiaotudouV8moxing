@@ -1,0 +1,17 @@
+{
+ "ok": true,
+ "工程哈希": "c2b55466f27f32632b4963ad22b7d6d499f5a7f891d8cc477e72919c9d5aca90",
+ "文件数": 4,
+ "耗时s": 91.6,
+ "逐域": {
+  "Lint": "0 errors, 0 warnings",
+  "Runtime": "0 errors, 0 warnings",
+  "Layout": "0 issues across 54 sample(s)",
+  "Motion": "0 errors, 0 warnings",
+  "Contrast": "7/7 text checks pass WCAG AA",
+  "Snapshots": "disabled"
+ },
+ "rc": 0,
+ "at": "2026-10-10 15:23:41",
+ "口径": "**六域门是声明后端自己的**（hyperframes check）；本件只负责跑它、录它、绑哈希"
+}

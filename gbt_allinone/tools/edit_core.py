@@ -558,6 +558,31 @@ def probe(path) -> dict:
             "streams": len(streams)}
 
 
+def _jy_template() -> dict:
+    """**外部模板**（vendored）：剪映草稿的 `draft_content` 骨架（28 个顶层键）。
+
+    出处与哈希见 `gbt_allinone/assets/jianying/README.md`（`GuanYixuan/pyJianYingDraft@main`，
+    3 316 B，sha256 前 16 位 `F3B9036DA3A0BCE6`）。**运行时不联网**。
+
+    🔴 为什么要它（2026-10-13 实测）：我们自己手拼的那份只有 **11** 个顶层键，
+    而外部模板有 **28** —— 缺 16 个 ⇒ 那份草稿**只够结构自检，离"别家能读"差得远**。
+    现在改成「**模板起手 + 只 update 我们算得出的键**」，这样键集与别家一致。
+    ⚠️ 边界：**补齐字段 ≠ 剪映能打开**（本机没装剪映，那条仍未验）。
+    """
+    global _JY_TEMPLATE_CACHE
+    if _JY_TEMPLATE_CACHE is not None:
+        return _JY_TEMPLATE_CACHE
+    p = Path(__file__).resolve().parents[1] / "assets" / "jianying" / "draft_content.template.json"
+    try:
+        _JY_TEMPLATE_CACHE = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:                                        # noqa: BLE001
+        _JY_TEMPLATE_CACHE = {}          # 模板不在 ⇒ 回空（自检里那条会如实报红，不假装过）
+    return _JY_TEMPLATE_CACHE
+
+
+_JY_TEMPLATE_CACHE: dict | None = None
+
+
 def _fps_of(meta: dict) -> float:
     try:
         num, den = str((meta.get("video") or {}).get("fps") or "0/1").split("/")
@@ -567,11 +592,32 @@ def _fps_of(meta: dict) -> float:
 
 
 def render(tl: dict, out, workdir=None, mode: str = "", timeout: int = 1800) -> dict:
-    """真跑。返回值里**每次都带**：命令原文 · 返回码 · 真回读读数。"""
+    """真跑。返回值里**每次都带**：命令原文 · 返回码 · 真回读读数。
+
+    🔴 2026-10-13 两处补（都来自实测事故）：
+    ① **失败不许留半成品**：encode 非零时，盘上那个文件**能播但短了**（实测：1080×1920 那次
+       ENOMEM 之后留下一个 1.767s 的 mp4，而片子应是 2.8s）——那正是"假绿的物证形态"。
+       现在失败一律把产物挪成 `*.partial`（留现场供诊断，但**不许它冒充成片**）。
+    ② **渲前内存预算闸**：先按画幅估内存，**明显不够就先拒**并给出降规格建议，
+       而不是让 ffmpeg 崩在半路留个半成品。系数按**两个实测数据点**定：
+       640×360/cover/2.8s ⇒ 过（当时可用约 500MB）；1080×1920/blur/2.8s ⇒ ENOMEM ⇒ 拦。
+    """
     out = Path(out)
     wd = Path(workdir) if workdir else out.parent / "_work"
     wd.mkdir(parents=True, exist_ok=True)
     out.parent.mkdir(parents=True, exist_ok=True)
+    cv = tl.get("canvas") or {}
+    est_mb = memory_estimate_mb(int(cv.get("w") or 1080), int(cv.get("h") or 1920),
+                                float(cv.get("fps") or DEFAULT_FPS), float(layout(tl)["duration"]))
+    avail_mb = _avail_mb()
+    if avail_mb > 0 and est_mb * 4.0 > avail_mb:
+        return {"ok": False, "stage": "budget", "blocked": True,
+                "est_mb": round(est_mb, 1), "avail_mb": round(avail_mb, 1),
+                "error": "渲前预算闸：这张图**粗估**要 %.0f MB（×4 冗余 = %.0f MB），"
+                         "而现读可用内存只有 %.0f MB ⇒ **先拒**（免得 ffmpeg 崩在半路留半成品）"
+                         % (est_mb, est_mb * 4, avail_mb),
+                "怎么改": "降画幅（如 640×360）· 关掉 fit=blur · 缩短时长 · 或先关别的吃内存的大件",
+                "口径": "**粗估**：w×h×4B×阶段6×帧缓冲3；系数按两个实测点定（640×360 过 / 1080×1920+blur 崩）"}
     c = compile_cmd(tl, str(out), wd, mode=mode)
     runs = []
     if c["mode"] == "copy":
@@ -580,15 +626,67 @@ def render(tl: dict, out, workdir=None, mode: str = "", timeout: int = 1800) -> 
                                errors="replace", timeout=timeout)
             runs.append({"cmd": cmd_text(sub), "rc": r.returncode, "err": (r.stderr or "")[-400:]})
             if r.returncode != 0:
-                return {"ok": False, "stage": "extract", "runs": runs, "mode": c["mode"]}
+                return {"ok": False, "stage": "extract", "runs": runs, "mode": c["mode"],
+                        "partial": _quarantine(out), "why_failed": _rc_hint(r.returncode)}
     r = subprocess.run(c["argv"], capture_output=True, text=True, encoding="utf-8",
                        errors="replace", timeout=timeout)
     runs.append({"cmd": cmd_text(c["argv"]), "rc": r.returncode, "err": (r.stderr or "")[-800:]})
     if r.returncode != 0:
-        return {"ok": False, "stage": "encode", "runs": runs, "mode": c["mode"]}
+        return {"ok": False, "stage": "encode", "runs": runs, "mode": c["mode"],
+                "partial": _quarantine(out), "why_failed": _rc_hint(r.returncode)}
     pr = probe(out)
     return {"ok": bool(pr.get("ok")), "mode": c["mode"], "why": c["why"], "notes": c["notes"],
             "runs": runs, "readback": pr, "ass": c.get("ass")}
+
+
+def _rc_hint(rc: int) -> str:
+    """把裸返回码翻成人话（至少把最常见的那个翻了）。"""
+    if rc in (-12, 4294967284):
+        return "rc=-12（ENOMEM：**内存不足**）⇒ 降画幅 / 关 blur / 缩短时长"
+    if rc in (-9, 4294967287):
+        return "rc=-9（SIGKILL：多半是**被系统 OOM 杀掉**）"
+    return "rc=%s" % rc
+
+
+def _quarantine(out: Path) -> str:
+    """把**没成的**产物从当眼处挪开：改名 `*.partial`（留现场，但不许冒充成片）。"""
+    try:
+        if out.is_file():
+            p = out.with_name(out.name + ".partial")
+            if p.exists():
+                p.unlink()
+            out.rename(p)
+            return str(p)
+    except Exception:                                        # noqa: BLE001
+        pass
+    return ""
+
+
+def memory_estimate_mb(w: int, h: int, fps: float, dur: float, stages: int = 6) -> float:
+    """**粗估**渲这张图的内存（MB）：w×h×4B × 阶段数 × 帧缓冲 3。**是估算不是实测** ——
+    所以闸门只在"明显不够"时拦（另乘 4 倍冗余），并如实标"估算"。"""
+    return (max(1, int(w)) * max(1, int(h)) * 4 * max(1, int(stages)) * 3) / (1024 * 1024)
+
+
+def _avail_mb() -> float:
+    """现读可用物理内存（MB）。**读不到就回 -1 ⇒ 闸门不拦**（拿不到读数不许瞎拦）。"""
+    try:
+        import ctypes
+
+        class _M(ctypes.Structure):
+            _fields_ = [("dwLength", ctypes.c_ulong), ("dwMemoryLoad", ctypes.c_ulong),
+                        ("ullTotalPhys", ctypes.c_ulonglong), ("ullAvailPhys", ctypes.c_ulonglong),
+                        ("ullTotalPageFile", ctypes.c_ulonglong),
+                        ("ullAvailPageFile", ctypes.c_ulonglong),
+                        ("ullTotalVirtual", ctypes.c_ulonglong),
+                        ("ullAvailVirtual", ctypes.c_ulonglong),
+                        ("ullAvailExtendedVirtual", ctypes.c_ulonglong)]
+        m = _M()
+        m.dwLength = ctypes.sizeof(_M)
+        ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(m))
+        return m.ullAvailPhys / (1024 * 1024)
+    except Exception:                                        # noqa: BLE001
+        return -1.0
 
 
 # ═══════════════════════════ ⑤ 出口二：剪映草稿（未验） ═══════════════════════════
@@ -654,7 +752,9 @@ def to_jianying_draft(tl: dict, root, name: str) -> dict:
                          "scale": {"x": 1.0, "y": 1.0}, "rotation": 0.0},
                 "visible": True, "render_index": 10 + i,
             })
-    content = {
+    # 模板起手（28 键，外部证据）→ 只 update **我们算得出的**那些键
+    content = dict(_jy_template())
+    content.update({
         "canvas_config": {"width": int(cv.get("w") or 1080), "height": int(cv.get("h") or 1920),
                           "ratio": "original"},
         "fps": float(cv.get("fps") or DEFAULT_FPS),
@@ -667,7 +767,7 @@ def to_jianying_draft(tl: dict, root, name: str) -> dict:
         "last_modified_platform": {"app_id": 3704, "app_source": "lv",
                                    "app_version": "5.9.0", "os": "windows"},
         "id": _guid(99), "name": name,
-    }
+    })
     meta = {"draft_id": _guid(7), "draft_name": "", "draft_fold_path": "", "draft_root_path": "",
             "draft_new_version": "", "tm_duration": 0, "draft_removable_storage_device": "",
             "draft_cloud_last_action_download": False, "draft_type": ""}
@@ -675,13 +775,77 @@ def to_jianying_draft(tl: dict, root, name: str) -> dict:
                                          encoding="utf-8")
     (d / "draft_meta_info.json").write_text(json.dumps(meta, ensure_ascii=False, indent=4),
                                            encoding="utf-8")
+    # 🔴 2026-10-13：**产物自检**（fail-closed）—— 写出去不等于写对了。
+    #    但**边界要如实**：本机没装剪映 ⇒ 只能证"结构自洽"，**证不了"剪映能打开"**。
+    sc = _draft_selfcheck(d, tl, content, meta)
+    if not sc["ok"]:
+        return {"ok": False, "dir": str(d), "stage": "draft_selfcheck", "selfcheck": sc,
+                "error": "草稿产物**没过结构自检** ⇒ 不认账", "verified": False}
     return {"ok": True, "dir": str(d), "files": ["draft_content.json", "draft_meta_info.json"],
             "tracks": [t["type"] for t in tracks],
             "segments": sum(len(t["segments"]) for t in tracks),
             "duration_us": content["duration"], "duration_s": content["duration"] / us,
-            "verified": False,
-            "note": ("**未验**：本机没有剪映，这条路没被真打开过。结构契约来自 pyJianYingDraft "
-                     "的资产模板（外部证据），本机实测的是渲染那一路。")}
+            "verified": "structure_only", "selfcheck": sc,
+            "note": ("**结构自检已过**（2026-10-13 加：文件在/JSON 可解析/canvas·fps·duration 与时间线对得上/"
+                     "时间是整数微秒/素材路径逐个在盘）。**仍然未验的一件事**：本机没有剪映 ⇒ "
+                     "「剪映能不能真打开它」**没被验过**；结构契约来自 pyJianYingDraft 的资产模板（外部证据）。")}
+
+
+def _draft_selfcheck(d: Path, tl: dict, content: dict, meta: dict) -> dict:
+    """草稿产物的**结构自检**（只证"结构自洽"；证不了"剪映能打开"）。"""
+    checks, bad = [], []
+    def chk(name, ok, detail=""):
+        checks.append({"check": name, "ok": bool(ok), "detail": str(detail)[:160]})
+        if not ok:
+            bad.append(name)
+    f1, f2 = d / "draft_content.json", d / "draft_meta_info.json"
+    chk("两个文件都在", f1.is_file() and f2.is_file(), "%s · %s" % (f1.name, f2.name))
+    chk("两份 JSON 都可解析", bool(content) and bool(meta), "已解析")
+    cv = tl.get("canvas") or {}
+    chk("canvas 与时间线一致",
+        content.get("canvas_config", {}).get("width") == int(cv.get("w") or 1080)
+        and content.get("canvas_config", {}).get("height") == int(cv.get("h") or 1920),
+        str(content.get("canvas_config")))
+    chk("fps 与时间线一致", float(content.get("fps") or 0) == float(cv.get("fps") or DEFAULT_FPS),
+        str(content.get("fps")))
+    want_us = int(layout(tl)["duration"] * 1000000)
+    chk("duration = layout 单源算出的总时长（微秒）",
+        int(content.get("duration") or -1) == want_us, "%s vs %s" % (content.get("duration"), want_us))
+    seg_times_ok, seg_n = True, 0
+    for t in content.get("tracks") or []:
+        kind = t.get("type")
+        for s in t.get("segments") or []:
+            seg_n += 1
+            tr = s.get("target_timerange") or {}
+            if not isinstance(tr.get("start"), int) or not isinstance(tr.get("duration"), int):
+                seg_times_ok = False
+            # ⚠️ `source_timerange` **只对"有源媒体"的轨才要求**（video/audio）——
+            #    **文字轨本来就没有源区间**。判据第一版把这条写成"每段都要有"，
+            #    结果把**对的产物**判红（尺子错了，不是对象错）。2026-10-13 修正。
+            if kind in ("video", "audio"):
+                sr = s.get("source_timerange") or {}
+                if not isinstance(sr.get("start"), int) or not isinstance(sr.get("duration"), int):
+                    seg_times_ok = False
+    chk("每段都有整数微秒的 target 区间（video/audio 另需 source 区间；文字轨没有源）",
+        seg_times_ok, "%d 段" % seg_n)
+    mats = content.get("materials") or {}
+    media = [m for k in ("videos", "audios") for m in (mats.get(k) or [])]
+    missing = [m.get("path") for m in media if not Path(str(m.get("path") or "")).is_file()]
+    chk("素材路径逐个在盘", not missing, "缺 %s" % missing[:2] if missing else "%d 个素材" % len(media))
+    need_meta = ("draft_id", "draft_name", "draft_type")
+    chk("meta 必需键齐", all(k in meta for k in need_meta), str([k for k in need_meta if k not in meta]))
+    # 🔴 **外部尺子**（2026-10-13 加）：产物顶层键集必须**⊇ 外部模板的键集** ——
+    #    这条尺子不是我们自己画的：模板 vendored 自 `GuanYixuan/pyJianYingDraft@main`
+    #    （见 `gbt_allinone/assets/jianying/README.md`，sha256 前 16 位 `F3B9036DA3A0BCE6`）。
+    #    ⚠️ 补键 ≠ 剪映能打开（本机没装），两件事仍分开。
+    tpl = _jy_template()
+    if not tpl:
+        chk("产物键集 ⊇ 外部模板键集", False, "模板不在盘（vendored 资产丢了？）—— 如实报红，不假装过")
+    else:
+        miss = sorted(k for k in tpl if k not in content)
+        chk("产物键集 ⊇ 外部模板键集（模板 %d 键）" % len(tpl), not miss, "缺 %s" % miss[:6] if miss else "齐")
+    return {"ok": not bad, "checks": checks, "failed": bad,
+            "scope": "structure_only（本机没装剪映 ⇒ 「剪映能不能打开」未验）"}
 
 
 def _guid(n: int) -> str:
@@ -737,7 +901,9 @@ def run(op: str = "status", **kw) -> dict:
                 "distilled_from": ["剪映时间线语义（轨道→片段→目标/源时间区间→变速/音量/转场/文本）",
                                    "本仓 edit_rules.py 的 GBST-ED 硬规则（字幕顺序 / 接缝淡变 / overlay 对齐）"],
                 "note": "渲染那一路**已实测跑通**（真出 1080x1920 mp4 + ffprobe 回读）；"
-                        "剪映草稿出口**未验**（本机没装剪映）。"}
+                        "剪映草稿出口：**结构自检已过**（2026-10-13：文件在 / JSON 可解析 / "
+                        "canvas·fps·duration 与 layout 单源对得上 / 时间是整数微秒 / 素材路径逐个在盘），"
+                        "**但「剪映能不能真打开它」仍未验**（本机没装剪映）—— 两件事别混着念。"}
     if op == "schema":
         return {"ok": True, "schema": schema()}
     tl = kw.get("timeline")

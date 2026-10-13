@@ -44,7 +44,7 @@ def sha(p: Path) -> str:
 def names_from_master() -> list[str]:
     """从总规程 §7 的「各簇用法规程」行现读解析 16 个名字（不手抄）。"""
     body = MASTER.read_text(encoding="utf-8")
-    row = [l for l in body.splitlines() if l.startswith("| 各簇用法规程")]
+    row = [ln for ln in body.splitlines() if ln.startswith("| 各簇用法规程")]
     if not row:
         return []
     # ⚠️ 那一行里**第一条**写成 `skills/gbt-aesthetic`，其余写成 `gbt-figma` ——

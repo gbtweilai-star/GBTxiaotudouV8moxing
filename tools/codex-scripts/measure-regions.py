@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """量出低模全身件的**裙摆区域**与**头发区域**（弹簧骨要按区域加权，不能猜）。
 输出：y 范围、每层横截半径分布、候选骨位（裙：4 向；发：后+两侧）。"""
-import json, pathlib, struct
+import json
+import pathlib
+import struct
 import numpy as np
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
@@ -36,8 +38,11 @@ for i, n in enumerate(J["nodes"]):
         continue
     chain, cur, g = [], i, 0
     while cur is not None and cur not in world:
-        chain.append(cur); cur = parent_of.get(cur); g += 1
-        if g > 200: raise SystemExit("环")
+        chain.append(cur)
+        cur = parent_of.get(cur)
+        g += 1
+        if g > 200:
+            raise SystemExit("环")
     w = world[cur] if cur is not None else np.zeros(3)
     for nd in reversed(chain):
         w = w + np.array(J["nodes"][nd].get("translation", [0, 0, 0]), np.float64)

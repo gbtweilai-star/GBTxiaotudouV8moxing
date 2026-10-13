@@ -17,7 +17,6 @@
 import json
 import pathlib
 import socket
-import subprocess
 import sys
 import time
 import urllib.error
@@ -543,7 +542,7 @@ def main():
     print("    只读连不上: %s" % ([a["path"] for a in api_bad] or "无"))
     print("    静态缺处理: %s" % (static_missing or "无"))
     print("  事件流SSE : %s" % ("✅ 通（200 text/event-stream）" if sse and sse[0].get("channel_ok")
-                                else "🔴 断"))
+                             else "🔴 断"))
     print("  请求体转发: %s" % (
         "✅ POST body 到达上游" if post_probe.get("ok") else
         ("🔴 POST body 丢了（反代没转 content-length）" if post_probe.get("ok") is False

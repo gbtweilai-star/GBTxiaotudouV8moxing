@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 """轻量级门限检查（只看节点/层级，不遍历顶点，秒级）——大网格（76 万顶点）用这个。
 含**环保护**：层级坏掉时报错而不是死循环。"""
-import json, math, pathlib, struct, sys
+import json
+import math
+import pathlib
+import struct
+import sys
 import numpy as np
 
 p = pathlib.Path(sys.argv[1])
@@ -25,6 +29,8 @@ for k, n in enumerate(J["nodes"]):
         parent_of[c] = k
 
 world = {}
+
+
 def wpos(i):
     chain, cur, guard = [], i, 0
     while cur is not None and cur not in world:
@@ -39,15 +45,18 @@ def wpos(i):
         world[node] = w
     return world[i]
 
+
 idx = {n: j for n, j in zip(names, joints)}
 for n in names:
     wpos(idx[n])
 print(f"  [1b] 父链无环 ✓ · 根 = {names[0]}")
 
+
 def angle(a, b):
     va, vb = world[idx[a]], world[idx[b]]
     d = vb - va
     return math.degrees(math.atan2(abs(d[1]), math.hypot(d[0], d[2])))
+
 
 sem = ["Shoulder", "Arm", "ForeArm", "Hand", "UpLeg", "Leg", "Foot", "ToeBase", "Hips", "Spine", "Neck", "Head"]
 hit = sum(1 for s in sem if any(s in n for n in names))

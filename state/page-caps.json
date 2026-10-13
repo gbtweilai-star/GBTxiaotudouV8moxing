@@ -1,0 +1,33 @@
+{
+ "_doc": "页 → 背后能力位 的**显式申报**（GBT 神经系统部署法）。判据优先读本表；没申报才退回关键词匹配。每页必须给 why（可复核）。",
+ "plugins-mesh": {
+  "caps": [
+   "cloud_pc"
+  ],
+  "why": "云插件互绑拓扑页，真源 deploy/cloud-10/mesh.json；云侧那一层的能力位是 cloud_pc"
+ },
+ "gallery": {
+  "caps": [
+   "console_pages"
+  ],
+  "why": "页面总目录（画廊），由 console_pages 统一登记与生成"
+ },
+ "activity": {
+  "caps": [
+   "event_ledger"
+  ],
+  "why": "活动流页，读的是事件账本 event_ledger"
+ },
+ "logbook": {
+  "caps": [
+   "ledger_note"
+  ],
+  "why": "记录本页，背后就是台账登记那一档（ledger_note）"
+ },
+ "h1": {
+  "caps": [
+   "auto_publish"
+  ],
+  "why": "赏金台（赏金与草稿），收入侧的能力位是 auto_publish"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "id": "20261007-232139",
+ "at": "2026-10-07T23:21:39",
+ "item": "artifact.brain-data",
+ "action": "重跑生成器：py -3.14 tools/codex-scripts/brain-feed.py --out holo_pet_w3/brain/brain-data.js",
+ "kind": "artifact",
+ "files": [
+  {
+   "path": "holo_pet_w3/brain/brain-data.js",
+   "backup": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\state\\_heal_backup\\20261007-232139\\brain-data.js",
+   "size": 0
+  }
+ ],
+ "process": null,
+ "note": "只复制、不删除；回滚 = 复制回原件（文件类）/ 只停**本次 spawn** 的 pid（进程类）"
+}

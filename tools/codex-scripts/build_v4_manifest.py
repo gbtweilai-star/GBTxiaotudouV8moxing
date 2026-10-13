@@ -11,7 +11,7 @@ from collections import defaultdict
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 sys.path.insert(0, str(BASE))
 HUD = BASE / ".scratch" / "hud_manifest.json"
 OUT = BASE / ".scratch" / "v4_manifest.json"
@@ -20,6 +20,8 @@ AUDIT = BASE / "gbt_allinone" / "store" / "audit.jsonl"
 M = json.loads(HUD.read_text(encoding="utf-8"))
 
 # ── git（真实） ──
+
+
 def sh(args):
     try:
         r = subprocess.run(args, cwd=str(BASE), capture_output=True, text=True, timeout=25)
@@ -27,9 +29,10 @@ def sh(args):
     except Exception:  # noqa: BLE001
         return ""
 
+
 branch = sh(["git", "rev-parse", "--abbrev-ref", "HEAD"]) or "unknown"
 porcelain = sh(["git", "status", "--porcelain"])
-changed = len([l for l in porcelain.splitlines() if l.strip()])
+changed = len([ln for ln in porcelain.splitlines() if ln.strip()])
 
 # ── 模型 / 权限（真实） ──
 dsh_home = Path.home() / ".dsh" / "settings.yaml"

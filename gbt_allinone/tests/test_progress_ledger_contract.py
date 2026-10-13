@@ -107,6 +107,33 @@ class InjectionIsWiredTest(unittest.TestCase):
             self.assertIn(field, src, "渲染器不再读 %s ⇒ 本用例守的字段该同步改" % field)
 
 
+class RootCausePatternTableTest(unittest.TestCase):
+    """Owner 令 2026-09-28：「知道故障每次都是这么出的，固化登记到记录里面在**大模型必读名单**里面」。
+
+    2026-10-04 查实（本轮一对一追踪发现的真缺陷）：表曾在台账里，但 `host.js` 的
+    `renderLedger` **从不读它**（连同基线版也从不读）⇒ 表躺在文件里、**模型永远看不到**
+    = P8 型「修复件没接上驱动」的"假必读"。所以这里两条都要咬住：
+      ① 台账里表在、条目够、无空条目（防再被换代带走）；
+      ② 渲染器必须真读它（接线判据——驱动不读，写了等于没写）。
+    """
+
+    def test_table_exists_with_enough_entries(self) -> None:
+        pm = _load().get("根因模式表")
+        self.assertIsInstance(pm, dict, "台账缺 `根因模式表` 节（又被换代带走？见根因追踪-2026-10-04）")
+        entries = [k for k in pm if not str(k).startswith("_")]
+        self.assertGreaterEqual(len(entries), 20,
+                                "根因模式表条目太少（现 %d 条）—— 该表只许增不许丢" % len(entries))
+        empty = [k for k in entries if not str(pm[k]).strip()]
+        self.assertEqual([], empty, "有空条目的模式：%s" % empty)
+
+    def test_renderer_really_reads_the_table(self) -> None:
+        src = HOST_JS.read_text(encoding="utf-8", errors="replace")
+        self.assertIn("function renderLedger", src, "渲染器不在了？")
+        body = src.split("function renderLedger", 1)[1]
+        self.assertIn("根因模式表", body,
+                      "`renderLedger` 体内没读 `根因模式表` ⇒ 必读名单只是愿望（P8 型假必读）")
+
+
 def _as_aware(t: str):
     """把台账里的时间点**统一成 aware** 再比 —— 因为历史条目里两制混着（第 48 轮 F15 的副产物）。
 

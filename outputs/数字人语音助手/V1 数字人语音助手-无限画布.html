@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>数字人语音助手 · 无限画布 V1</title>
+<!--
+  Discovery
+    deliverable : 数字人语音助手 App · 无限画布（三层：项目介绍 / 设计系统 / 设计稿）
+    audience    : 产品决策 + 开发 handoff
+    direction   : 深空指挥舱 / Deep Space Command Deck（暗色 · 琥珀 + 青）
+  font-stack: Inter + JetBrains Mono
+    （依据 design-systems/mission-control/DESIGN.md §3 明示，按 OUTPUT_RULES §三·补·补 仲裁取 design-system 优先）
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script id="auto-designer-preview-contract" type="application/json">
+{ "artifactRole": "infinite-canvas", "authoringViewport": "desktop", "projectType": "app" }
+</script>
+<style>
+:root{
+  /* ─── mission-control tokens（与可交互原型同源） ─── */
+  --bg:#0B1120;
+  --surface:#111827;
+  --surface-hover:#1A2535;
+  --surface-active:#1E3A5F;
+  --border:#1E3A5F;
+  --border-subtle:#162035;
+  --data-primary:#FFB800;
+  --data-secondary:#00D4FF;
+  --alert:#FF4757;
+  --warn:#FF9F43;
+  --ok:#26DE81;
+  --fg:#E8F0FE;
+  --fg-2:#8BA3C7;
+  --fg-3:#4A6080;
+  --page:#05070d;
+
+  --font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Noto Sans SC",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r:4px; --r-sm:2px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--page);
+  color:var(--fg);
+  font-family:var(--font-sans);
+  font-size:14px;
+  line-height:1.5;
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ══════════ 视口 / 画布 ══════════ */
+.viewport{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  cursor:grab;
+  background:
+    linear-gradient(var(--border-subtle) 1px, transparent 1px) 0 0/56px 56px,
+    linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px) 0 0/56px 56px,
+    var(--page);
+}
+.viewport.is-dragging{cursor:grabbing}
+.canvas{
+  position:absolute;
+  top:0;left:0;
+  width:2600px;
+  padding:64px 80px 120px;
+  transform-origin:0 0;
+  will-change:transform;
+}
+
+/* ══════════ 控制条 ══════════ */
+.hud{
+  position:fixed;
+  top:16px;left:16px;
+  z-index:60;
+  display:flex;align-items:center;gap:8px;
+  background:rgba(11,17,32,.92);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:8px 10px;
+  backdrop-filter:blur(8px);
+}
+.hud__brand{
+  display:flex;flex-direction:column;gap:1px;
+  padding-right:10px;
+  margin-right:2px;
+  border-right:1px solid var(--border-subtle);
+}
+.hud__brand b{font-size:12px;font-weight:600;letter-spacing:.02em}
+.hud__brand span{font-family:var(--font-mono);font-size:9px;color:var(--fg-3);letter-spacing:.08em;text-transform:uppercase}
+.hud button{
+  font-family:var(--font-sans);
+  font-size:11px;font-weight:500;
+  color:var(--fg-2);
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:6px 10px;
+  cursor:pointer;
+  transition:color .1s,background .1s,border-color .1s;
+  white-space:nowrap;
+}
+.hud button:hover{color:var(--fg);background:var(--surface-hover);border-color:var(--surface-active)}
+.hud button:active{background:var(--surface-active)}
+.hud button:focus-visible{outline:2px solid var(--data-secondary);outline-offset:2px}
+.hud__zoom{font-family:var(--font-mono);font-size:11px;color:var(--data-secondary);min-width:46px;text-align:center}
+.hud__sep{width:1px;height:22px;background:var(--border-subtle)}
+
+.legend{
+  position:fixed;
+  right:16px;bottom:16px;
+  z-index:60;
+  background:rgba(11,17,32,.92);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:10px 12px;
+  font-size:11px;
+  color:var(--fg-3);
+  line-height:1.7;
+  backdrop-filter:blur(8px);
+  max-width:240px;
+}
+.legend b{color:var(--fg-2);font-weight:500}
+
+/* ══════════ 通用排版 ══════════ */
+.micro{
+  font-family:var(--font-mono);
+  font-size:10px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fg-3);
+}
+.kicker{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);
+  font-size:11px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--data-primary);
+  margin-bottom:14px;
+}
+.kicker::before{content:"";width:22px;height:1px;background:var(--data-primary)}
+h1.rowtitle{
+  font-size:34px;font-weight:600;line-height:1.16;letter-spacing:-.02em;
+  margin-bottom:10px;
+  max-width:1120px;
+}
+h1.rowtitle em{
+  display:block;font-style:normal;font-weight:400;font-size:15px;
+  color:var(--fg-2);letter-spacing:0;margin-top:8px;line-height:1.6;max-width:62ch;
+}
+.row{padding:56px 0 96px;border-top:1px solid var(--border-subtle)}
+.row:first-child{border-top:0;padding-top:8px}
+.rowhead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:38px}
+
+.panel{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:20px;
+}
+.panel__label{
+  font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--fg-2);margin-bottom:12px;display:block;
+}
+
+/* ══════════ ROW 1 · 项目介绍 ══════════ */
+.r1{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1560px}
+.qa h3{font-size:17px;font-weight:600;margin-bottom:10px;letter-spacing:-.01em}
+.qa p{font-size:13px;line-height:1.72;color:var(--fg-2)}
+.qa ul{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.qa li{
+  list-style:none;font-size:12.5px;line-height:1.6;color:var(--fg-2);
+  padding-left:16px;position:relative;
+}
+.qa li::before{
+  content:"";position:absolute;left:0;top:8px;
+  width:6px;height:1px;background:var(--data-secondary);
+}
+.r1-note{
+  margin-top:20px;
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;
+  max-width:1560px;
+}
+.note{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:16px;
+}
+.note b{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px}
+.note p{font-size:12px;line-height:1.65;color:var(--fg-3)}
+.note code{
+  font-family:var(--font-mono);font-size:11px;color:var(--data-secondary);
+  background:rgba(0,212,255,.08);padding:1px 5px;border-radius:var(--r-sm);
+}
+
+/* ══════════ ROW 2 · 设计系统 ══════════ */
+.r2{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.35fr) minmax(0,1.1fr);gap:20px;align-items:start;max-width:1560px}
+.swatches{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sw{
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;
+  background:var(--bg);
+}
+.sw__chip{height:44px}
+.sw__meta{padding:9px 10px}
+.sw__meta b{display:block;font-family:var(--font-mono);font-size:10px;color:var(--fg-2);letter-spacing:.04em}
+.sw__meta span{display:block;font-family:var(--font-mono);font-size:10px;color:var(--fg-3);margin-top:2px}
+.sw__meta em{display:block;font-style:normal;font-size:10.5px;color:var(--fg-3);margin-top:4px;line-height:1.45}
+
+.type-spec{display:flex;flex-direction:column;gap:16px}
+.ts{border-bottom:1px dashed var(--border-subtle);padding-bottom:14px}
+.ts:last-child{border-bottom:0;padding-bottom:0}
+.ts .sample{color:var(--fg)}
+.ts .meta{font-family:var(--font-mono);font-size:10px;color:var(--fg-3);margin-top:6px;letter-spacing:.03em}
+.ts--display .sample{font-family:var(--font-mono);font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.ts--h1 .sample{font-size:20px;font-weight:600;letter-spacing:-.01em}
+.ts--label .sample{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-2)}
+.ts--body .sample{font-size:14px;line-height:1.6;color:var(--fg-2)}
+.ts--micro .sample{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3)}
+
+.tokenlist{display:flex;flex-direction:column;gap:8px}
+.token{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:9px 11px;
+  background:var(--bg);
+  border:1px solid var(--border-subtle);
+  border-radius:var(--r-sm);
+  font-family:var(--font-mono);font-size:11px;
+}
+.token span{color:var(--fg-2)}
+.token em{font-style:normal;color:var(--fg-3)}
+
+.compgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:1560px}
+.compbox{background:var(--bg);border:1px solid var(--border-subtle);border-radius:var(--r);padding:14px}
+.compbox > .micro{margin-bottom:10px;display:block;text-transform:none;letter-spacing:.04em}
+.demo-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;min-height:42px;border-radius:var(--r);
+  font-size:13px;font-weight:600;border:1px solid transparent;margin-bottom:8px;
+}
+.demo-btn--primary{background:var(--data-primary);color:#12100a}
+.demo-btn--ghost{border-color:var(--border);color:var(--fg-2)}
+.demo-btn--disabled{border-color:var(--border);color:var(--fg-3)}
+.demo-badges{display:flex;flex-wrap:wrap;gap:6px}
+.bdg{
+  font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:.06em;
+  text-transform:uppercase;padding:3px 7px;border-radius:var(--r-sm);border:1px solid currentColor;
+}
+.bdg--ok{color:var(--ok);background:rgba(38,222,129,.12)}
+.bdg--live{color:var(--data-secondary);background:rgba(0,212,255,.1)}
+.bdg--warn{color:var(--warn);background:rgba(255,159,67,.12)}
+.bdg--crit{color:var(--alert);background:rgba(255,71,87,.12)}
+
+.motionlist{display:flex;flex-direction:column;gap:10px}
+.mrow{display:flex;align-items:baseline;gap:12px;font-size:12px;color:var(--fg-2)}
+.mrow code{font-family:var(--font-mono);font-size:11px;color:var(--data-secondary);min-width:112px}
+.mrow em{font-style:normal;color:var(--fg-3);font-size:11px}
+
+/* ══════════ ROW 3 · 设计稿 ══════════ */
+.flow{display:flex;align-items:flex-start;gap:0;padding-top:8px;width:max-content}
+.stepwrap{display:flex;align-items:flex-start;gap:0}
+.arrow{
+  width:76px;flex-shrink:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding-top:250px;
+}
+.arrow__line{
+  width:100%;height:1px;background:linear-gradient(90deg,var(--border),var(--data-secondary),var(--border));
+  position:relative;
+}
+.arrow__line::after{
+  content:"";position:absolute;right:-1px;top:-3px;
+  border-left:6px solid var(--data-secondary);
+  border-top:3.5px solid transparent;border-bottom:3.5px solid transparent;
+}
+.arrow__cap{
+  font-family:var(--font-mono);font-size:9px;color:var(--fg-3);
+  letter-spacing:.04em;margin-top:8px;text-align:center;line-height:1.5;width:78px;
+}
+
+.frame{flex-shrink:0;width:234px}
+.frame__cap{
+  margin-top:12px;
+  display:flex;flex-direction:column;gap:3px;
+}
+.frame__cap b{
+  font-family:var(--font-mono);font-size:10px;font-weight:500;
+  letter-spacing:.08em;color:var(--data-secondary);text-transform:uppercase;
+}
+.frame__cap span{font-size:11.5px;color:var(--fg-3);line-height:1.5}
+.frame__body{
+  width:390px;height:844px;
+  transform:scale(.6);
+  transform-origin:top left;
+  border-radius:var(--r);
+  overflow:hidden;
+  background:var(--bg);
+  border:1px solid var(--border);
+  position:relative;
+}
+.frame__clip{width:234px;height:506.4px;position:relative;overflow:hidden;border-radius:var(--r)}
+
+/* ─── 迷你屏内部零件（画布内共用） ─── */
+.m{position:absolute;inset:0;display:flex;flex-direction:column;font-family:var(--font-sans)}
+.m__bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:44px 20px 12px;border-bottom:1px solid var(--border-subtle);flex-shrink:0;
+}
+.m__micro{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3)}
+.m__body{flex:1;padding:24px 20px;display:flex;flex-direction:column;gap:18px;overflow:hidden}
+.m__body > *{flex-shrink:0}
+.m__label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-2)}
+.m__h1{font-size:22px;font-weight:600;line-height:1.28;letter-spacing:-.01em}
+.m__h1 em{display:block;font-style:normal;font-weight:400;font-size:13px;color:var(--fg-2);margin-top:6px}
+.m__input{
+  display:flex;align-items:center;min-height:48px;padding:0 12px;
+  background:#0d1526;border:1px solid var(--border);border-radius:var(--r);
+  font-family:var(--font-mono);font-size:13px;color:var(--fg-3);
+}
+.m__input--err{border-color:var(--alert)}
+.m__input--focus{border-color:var(--data-secondary);background:#0f1a2e;color:var(--fg)}
+.m__hint{font-size:11px;color:var(--fg-3)}
+.m__err{font-size:11px;color:var(--alert);display:flex;gap:6px;align-items:flex-start;line-height:1.5}
+.m__btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;min-height:48px;border-radius:var(--r);
+  font-size:14px;font-weight:600;
+}
+.m__btn--primary{background:var(--data-primary);color:#12100a}
+.m__btn--ghost{border:1px solid var(--border);color:var(--fg-2)}
+.m__btn--disabled{border:1px solid var(--border);color:var(--fg-3)}
+.m__foot{flex-shrink:0;padding:16px 20px 24px;border-top:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:8px}
+.m__badge{
+  font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:.06em;
+  text-transform:uppercase;padding:3px 7px;border-radius:var(--r-sm);border:1px solid currentColor;
+}
+.m--void{background:#000}
+
+/* 迷你全息 */
+.mholo{position:relative;width:140px;height:210px;margin:0 auto}
+.mholo--sm{width:104px;height:156px}
+.mholo svg{width:100%;height:100%}
+
+/* 迷你台面零件 */
+.mcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.mhero{
+  position:relative;border:1px solid var(--border);border-radius:var(--r);
+  background:radial-gradient(circle at 78% 12%, rgba(255,184,0,.1), transparent 58%), var(--surface);
+  padding:20px 16px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.mstate{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--data-secondary)}
+.mmic{
+  width:104px;height:104px;border-radius:50%;
+  border:1px solid var(--border);
+  background:linear-gradient(180deg,var(--surface-hover),var(--surface));
+  display:grid;place-items:center;color:var(--data-primary);
+}
+.mmic--listen{border-color:var(--data-secondary);color:var(--data-secondary);box-shadow:0 0 0 6px rgba(0,212,255,.1),0 0 32px rgba(0,212,255,.2)}
+.mmic--speak{border-color:var(--ok);color:var(--ok)}
+.mtiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mtile{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px}
+.mtile__n{font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--data-primary);line-height:1;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.mtile p{font-size:11px;color:var(--fg-2)}
+.mchips{display:flex;flex-wrap:wrap;gap:8px}
+.mchip{font-size:12px;color:var(--fg-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 10px}
+.msuggest{
+  display:flex;align-items:center;gap:10px;border:1px solid rgba(255,184,0,.35);
+  background:rgba(255,184,0,.08);border-radius:var(--r);padding:12px 14px;font-size:12.5px;color:var(--fg);
+}
+.mthread{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--border-subtle)}
+.mthread:first-child{border-top:0}
+.mavatar{width:28px;height:28px;border-radius:var(--r-sm);background:var(--surface-active);display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;color:var(--fg-2);flex-shrink:0}
+.mbubble{max-width:86%;padding:10px 12px;border-radius:var(--r);font-size:12.5px;line-height:1.55}
+.mbubble--u{align-self:flex-end;background:var(--surface-active)}
+.mbubble--a{align-self:flex-start;background:var(--surface);border:1px solid var(--border);color:var(--fg-2)}
+.msub{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px;font-size:14px;line-height:1.6;min-height:74px;
+}
+.mwave{display:flex;align-items:center;gap:3px;height:22px;justify-content:center}
+.mwave i{display:block;width:3px;background:var(--data-secondary);border-radius:2px}
+.morb{
+  position:absolute;right:14px;bottom:88px;width:56px;height:56px;border-radius:50%;
+  border:1px solid var(--data-secondary);
+  background:radial-gradient(circle at 50% 34%,rgba(0,212,255,.35),rgba(17,24,39,.96) 68%);
+  display:grid;place-items:center;
+}
+.morb::after{content:"";position:absolute;right:3px;bottom:3px;width:9px;height:9px;border-radius:50%;background:var(--ok);border:2px solid var(--bg)}
+.morbpanel{
+  position:absolute;left:14px;right:14px;bottom:154px;
+  background:var(--surface);border:1px solid var(--data-secondary);border-radius:var(--r);
+  padding:16px;font-size:13px;line-height:1.6;box-shadow:0 18px 44px rgba(0,0,0,.6);
+}
+.morbpanel b{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-2);margin-bottom:6px}
+.mdock{
+  position:absolute;left:0;right:0;bottom:0;display:flex;
+  border-top:1px solid var(--border-subtle);background:rgba(11,17,32,.94);
+  padding:12px 16px 22px;
+}
+.mdock div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;color:var(--fg-3)}
+.mdock div.on{color:var(--data-primary)}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mset{border:1px solid var(--border);border-radius:var(--r);background:var(--surface)}
+.msetrow{display:flex;align-items:center;gap:12px;padding:16px;border-top:1px solid var(--border-subtle)}
+.msetrow:first-child{border-top:0}
+.mseg{display:flex;border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;flex-shrink:0}
+.mseg span{font-size:11px;padding:6px 9px;color:var(--fg-3);border-left:1px solid var(--border)}
+.mseg span:first-child{border-left:0}
+.mseg span.on{background:var(--surface-active);color:var(--fg)}
+.mswitch{width:42px;height:24px;border-radius:12px;border:1px solid var(--data-secondary);background:var(--surface-active);position:relative;flex-shrink:0}
+.mswitch::after{content:"";position:absolute;top:2px;left:20px;width:16px;height:16px;border-radius:50%;background:var(--data-secondary)}
+
+@media (max-width:760px){
+  .hud{max-width:calc(100vw - 32px);overflow-x:auto}
+  .legend{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="hud">
+  <div class="hud__brand">
+    <b>数字人语音助手</b>
+    <span>Infinite Canvas · V1</span>
+  </div>
+  <button type="button" data-jump="row1">① 项目</button>
+  <button type="button" data-jump="row2">② 设计系统</button>
+  <button type="button" data-jump="row3">③ 设计稿</button>
+  <span class="hud__sep" aria-hidden="true"></span>
+  <button type="button" id="zoom-out" aria-label="缩小">−</button>
+  <span class="hud__zoom" id="zoom-label">60%</span>
+  <button type="button" id="zoom-in" aria-label="放大">＋</button>
+  <button type="button" id="zoom-reset">复位</button>
+</div>
+
+<div class="legend">
+  <b>怎么用这张画布</b><br>
+  拖动空白处平移 · 滚轮缩放 · 左上角三颗按钮跳到对应层。<br>
+  第三层从左到右就是用户的真实路径，箭头上的字是跳转动作。
+</div>
+
+<div class="viewport" id="viewport">
+  <div class="canvas" id="canvas">
+
+    <!-- ══════════════════ ROW 1 · 项目介绍 ══════════════════ -->
+    <section class="row" id="row1">
+      <span class="kicker">Row 1 · Brief</span>
+      <h1 class="rowtitle">
+        数字人语音助手
+        <em>一个装在手机里的数字人。她不是一个输入框，是一个会走出来、会讲话、会跟着你走的「人」。</em>
+      </h1>
+
+      <div class="r1">
+        <div class="qa panel">
+          <span class="panel__label">是什么</span>
+          <h3>语音优先的数字人助手</h3>
+          <p>用户下载后先填一次自己的服务密钥，接通之后，数字人从一整块黑屏里走出来，做一段自我介绍，然后住在你的手机里。</p>
+          <ul>
+            <li>主交互是「按住说话」，不是打字</li>
+            <li>她有自己的形象、声音和名字</li>
+            <li>她不属于某一个页面，属于整个 App</li>
+          </ul>
+        </div>
+
+        <div class="qa panel">
+          <span class="panel__label">给谁用</span>
+          <h3>带自己密钥的普通用户</h3>
+          <p>不是开发者，也不是企业采购。他自己有模型服务的密钥，或者别人给了他一份配置，他要的是「填一次，然后有个懂事的搭子」。</p>
+          <ul>
+            <li>第一次打开需要有人牵着手走完配置</li>
+            <li>对「我的密钥安不安全」高度敏感</li>
+            <li>对「她能不能一直陪着我」有情绪期待</li>
+          </ul>
+        </div>
+
+        <div class="qa panel">
+          <span class="panel__label">解决什么问题</span>
+          <h3>把「配置」变成「见面」</h3>
+          <p>同类产品的第一次使用都是一张表单加一行小字，用户填完就进入一个冷冰冰的聊天框。我们把这一步改造成一次出场。</p>
+          <ul>
+            <li>配置不是门槛，是数字人登场前的后台准备</li>
+            <li>让用户第一次就记住她的样子和声音</li>
+            <li>把「她在哪」这件事从页面里解放出来</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="r1-note">
+        <div class="note">
+          <b>关键决策 · 密钥是一道闸</b>
+          <p>没接通就不放行。所有的等待、错误、重试都发生在<a>同一张卡片</a>里，用户不会在流程外迷路。</p>
+        </div>
+        <div class="note">
+          <b>关键决策 · 先黑屏，再出场</b>
+          <p>校验成功不直接跳首页，先进一段约 4.5 秒的出场：整块黑 → 一道裂缝 → 光扩散 → 她走出来。这是整支 App 唯一一段「浪费」的时间。</p>
+        </div>
+        <div class="note">
+          <b>关键决策 · 她不属于任何页面</b>
+          <p>对话页、设置页、以后任何新页面，右下角都有她的常驻位。点一下就展开说话。<code>跟随页面出现</code> 可以关掉。</p>
+        </div>
+        <div class="note">
+          <b>关键决策 · 声音是主角</b>
+          <p>台湾腔女声，温柔亲和，语速 1.0×。声音在她的自我介绍里第一次出现，在设置里可换，换完她会当场说一句话给你听。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ ROW 2 · 设计系统 ══════════════════ -->
+    <section class="row" id="row2">
+      <span class="kicker">Row 2 · Design System</span>
+      <h1 class="rowtitle">
+        深空指挥舱
+        <em>近黑底 + 琥珀读数 + 青色信号。深海一样的暗，只用两种亮色说话：琥珀代表人，青代表链路。</em>
+      </h1>
+
+      <div class="r2">
+        <div class="panel">
+          <span class="panel__label">色板 · 每个 hex 都有岗位</span>
+          <div class="swatches">
+            <div class="sw">
+              <div class="sw__chip" style="background:#0B1120"></div>
+              <div class="sw__meta"><b>--bg</b><span>#0B1120</span><em>深空底 · 全屏画布</em></div>
+            </div>
+            <div class="sw">
+              <div class="sw__chip" style="background:#111827;border-bottom:1px solid #1E3A5F"></div>
+              <div class="sw__meta"><b>--surface</b><span>#111827</span><em>卡片 / 面板</em></div>
+            </div>
+            <div class="sw">
+              <div class="sw__chip" style="background:#FFB800"></div>
+              <div class="sw__meta"><b>--data-primary</b><span>#FFB800</span><em>主读数 · 唯一主行动</em></div>
+            </div>
+            <div class="sw">
+              <div class="sw__chip" style="background:#00D4FF"></div>
+              <div class="sw__meta"><b>--data-secondary</b><span>#00D4FF</span><em>链路 / 在线 / 聚焦</em></div>
+            </div>
+            <div class="sw">
+              <div class="sw__chip" style="background:#1E3A5F"></div>
+              <div class="sw__meta"><b>--border</b><span>#1E3A5F</span><em>描边 · 结构线</em></div>
+            </div>
+            <div class="sw">
+              <div class="sw__chip" style="background:#E8F0FE"></div>
+              <div class="sw__meta"><b>--fg</b><span>#E8F0FE</span><em>正文 · 高对比</em></div>
+            </div>
+            <div class="sw">
+              <div class="sw__chip" style="background:#8BA3C7"></div>
+              <div class="sw__meta"><b>--fg-2</b><span>#8BA3C7</span><em>次级说明</em></div>
+            </div>
+            <div class="sw">
+              <div class="sw__chip" style="background:#4A6080"></div>
+              <div class="sw__meta"><b>--fg-3</b><span>#4A6080</span><em>时间戳 / 元信息</em></div>
+            </div>
+            <div class="sw">
+              <div class="sw__chip" style="background:#26DE81"></div>
+              <div class="sw__meta"><b>--ok</b><span>#26DE81</span><em>接通 / 完成</em></div>
+            </div>
+            <div class="sw">
+              <div class="sw__chip" style="background:#FF4757"></div>
+              <div class="sw__meta"><b>--alert</b><span>#FF4757</span><em>校验失败 / 阻断</em></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <span class="panel__label">字体排版 · 两族，三级层次</span>
+          <div class="type-spec">
+            <div class="ts ts--display">
+              <div class="sample">09:41</div>
+              <div class="meta">JetBrains Mono 700 · 34px · 数字一律等宽 tabular-nums</div>
+            </div>
+            <div class="ts ts--h1">
+              <div class="sample">接通你自己的服务</div>
+              <div class="meta">Inter 600 · 22px · 字距 -0.01em · 行高 1.28</div>
+            </div>
+            <div class="ts ts--label">
+              <div class="sample">访问密钥</div>
+              <div class="meta">Inter 600 · 11px · 大写 · 字距 0.08em</div>
+            </div>
+            <div class="ts ts--body">
+              <div class="sample">密钥只留在这台设备上，不会上传、不会外发。</div>
+              <div class="meta">Inter 400 · 14px · 行高 1.6 · 行宽 ≤ 65ch</div>
+            </div>
+            <div class="ts ts--micro">
+              <div class="sample">Establishing link</div>
+              <div class="meta">JetBrains Mono 500 · 10px · 字距 0.1em</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <span class="panel__label">间距 · 形状 · 圆角</span>
+          <div class="tokenlist">
+            <div class="token"><span>--sp1 → --sp8</span><em>4 / 8 / 12 / 16 / 24 / 32</em></div>
+            <div class="token"><span>--r 卡片圆角</span><em>4px</em></div>
+            <div class="token"><span>--r-sm 徽标圆角</span><em>2px</em></div>
+            <div class="token"><span>触控目标下限</span><em>48 × 48</em></div>
+            <div class="token"><span>页边距</span><em>20px</em></div>
+            <div class="token"><span>安全区顶部</span><em>44px</em></div>
+            <div class="token"><span>手机设计尺寸</span><em>390 × 844</em></div>
+          </div>
+          <div class="motionlist" style="margin-top:18px">
+            <span class="panel__label" style="margin-bottom:10px">动效</span>
+            <div class="mrow"><code>100ms ease-in</code><span>按下 / 悬停</span></div>
+            <div class="mrow"><code>150ms ease-out</code><span>状态确认</span></div>
+            <div class="mrow"><code>300ms ease-out</code><span>面板展开</span></div>
+            <div class="mrow"><code>2.1s + 1.5s</code><span>出场：裂光 → 走出</span><em>整支 App 唯一的长动效</em></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="compgrid" style="margin-top:20px">
+        <div class="compbox">
+          <span class="panel__label" style="margin-bottom:10px">按钮三态</span>
+          <span class="micro" style="display:block;margin-bottom:6px">默认 / 悬停 / 按下</span>
+          <div class="demo-btn demo-btn--primary">验证并接入</div>
+          <span class="micro" style="display:block;margin-bottom:6px">次级</span>
+          <div class="demo-btn demo-btn--ghost">扫码导入配置</div>
+          <span class="micro" style="display:block;margin-bottom:6px">禁用（未填完）</span>
+          <div class="demo-btn demo-btn--disabled" style="margin-bottom:0">验证并接入</div>
+        </div>
+        <div class="compbox">
+          <span class="panel__label" style="margin-bottom:10px">状态徽标</span>
+          <div class="demo-badges">
+            <span class="bdg bdg--ok">链路正常</span>
+            <span class="bdg bdg--live">台湾腔女声</span>
+            <span class="bdg bdg--warn">校验中</span>
+            <span class="bdg bdg--crit">密钥无效</span>
+          </div>
+          <span class="panel__label" style="display:block;margin:18px 0 10px">全息数字人</span>
+          <div style="display:flex;gap:18px;align-items:flex-end">
+            <div class="mholo mholo--sm" aria-hidden="true">
+              <svg viewBox="0 0 200 300"><use href="#holoFigure"/></svg>
+            </div>
+            <p style="font-size:11.5px;color:var(--fg-3);line-height:1.6">
+              纯 SVG 剪影 + 横向扫描线遮罩 + 呼吸光晕。<br>
+              不依赖任何外部图片，缩到多小都不糊。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ ROW 3 · 设计稿 ══════════════════ -->
+    <section class="row" id="row3">
+      <span class="kicker">Row 3 · Screens</span>
+      <h1 class="rowtitle">
+        从填密钥到她在你身边
+        <em>八个画面就是一条完整路径。箭头上的字是用户的动作，方框下面是这一刻的界面状态。</em>
+      </h1>
+
+      <div class="flow">
+
+        <!-- 01 密钥 · 未填 -->
+        <div class="stepwrap">
+          <div class="frame">
+            <div class="frame__clip">
+              <div class="frame__body">
+                <div class="m">
+                  <div class="m__bar">
+                    <span class="m__micro">接入 · Setup 01/03</span>
+                    <span style="display:flex;gap:4px">
+                      <i style="display:block;width:26px;height:2px;background:var(--data-primary)"></i>
+                      <i style="display:block;width:26px;height:2px;background:var(--border)"></i>
+                      <i style="display:block;width:26px;height:2px;background:var(--border)"></i>
+                    </span>
+                  </div>
+                  <div class="m__body">
+                    <div class="m__h1">接通你自己的服务<em>密钥只留在这台设备上，不会上传、不会外发。</em></div>
+                    <div>
+                      <div class="m__label" style="margin-bottom:6px">服务地址</div>
+                      <div class="m__input">https://api.your-service.com/v1</div>
+                      <div class="m__hint" style="margin-top:6px">填你平时调模型用的那个地址。</div>
+                    </div>
+                    <div>
+                      <div class="m__label" style="margin-bottom:6px">访问密钥</div>
+                      <div class="m__input">sk-••••••••••••</div>
+                      <div class="m__hint" style="margin-top:6px">以 sk- 开头。</div>
+                    </div>
+                  </div>
+                  <div class="m__foot">
+                    <div class="m__btn m__btn--disabled">验证并接入</div>
+                    <div class="m__btn m__btn--ghost">扫码导入配置</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="frame__cap">
+              <b>01 · 密钥接入</b>
+              <span>两个输入框都空着时，主按钮是禁用态，点不动。</span>
+            </div>
+          </div>
+
+          <div class="arrow">
+            <span class="arrow__line"></span>
+            <span class="arrow__cap">开始输入</span>
+          </div>
+        </div>
+
+        <!-- 02 密钥 · 错误 -->
+        <div class="stepwrap">
+          <div class="frame">
+            <div class="frame__clip">
+              <div class="frame__body">
+                <div class="m">
+                  <div class="m__bar">
+                    <span class="m__micro">接入 · Setup 01/03</span>
+                    <span class="m__badge" style="color:var(--alert);background:rgba(255,71,87,.12)">校验失败</span>
+                  </div>
+                  <div class="m__body">
+                    <div class="m__h1">接通你自己的服务<em>把密钥补全，其他都不用动。</em></div>
+                    <div>
+                      <div class="m__label" style="margin-bottom:6px">服务地址</div>
+                      <div class="m__input">https://api.your-service.com/v1</div>
+                    </div>
+                    <div>
+                      <div class="m__label" style="margin-bottom:6px">访问密钥</div>
+                      <div class="m__input m__input--err">sk-482</div>
+                      <div class="m__err" style="margin-top:8px">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></svg>
+                        <span>服务返回 401：密钥无效或已过期。请回控制台重新签发一支。</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="m__foot">
+                    <div class="m__btn m__btn--primary">验证并接入</div>
+                    <div class="m__hint" style="text-align:center">你填的内容都还在，改一个字符就能重试。</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="frame__cap">
+              <b>02 · 校验失败</b>
+              <span>错误说清三件事：发生了什么、为什么、接下来做什么。输入不回滚。</span>
+            </div>
+          </div>
+
+          <div class="arrow">
+            <span class="arrow__line"></span>
+            <span class="arrow__cap">校验通过</span>
+          </div>
+        </div>
+
+        <!-- 03 黑屏 -->
+        <div class="stepwrap">
+          <div class="frame">
+            <div class="frame__clip">
+              <div class="frame__body m--void">
+                <div class="m" style="align-items:center;justify-content:center;gap:20px">
+                  <span style="display:block;width:74%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,.5),transparent)"></span>
+                  <span class="m__micro" style="color:#243447">Establishing link</span>
+                </div>
+              </div>
+            </div>
+            <div class="frame__cap">
+              <b>03 · 整块黑屏</b>
+              <span>约 1.1 秒。没有任何图标、没有进度条，屏幕先安静下来。</span>
+            </div>
+          </div>
+
+          <div class="arrow">
+            <span class="arrow__line"></span>
+            <span class="arrow__cap">裂缝出现</span>
+          </div>
+        </div>
+
+        <!-- 04 裂光出场 -->
+        <div class="stepwrap">
+          <div class="frame">
+            <div class="frame__clip">
+              <div class="frame__body m--void">
+                <div class="m" style="align-items:center;justify-content:center">
+                  <span aria-hidden="true" style="position:absolute;top:0;bottom:0;left:50%;width:58px;transform:translateX(-50%);border-radius:2px;background:linear-gradient(180deg,transparent,#fff 12%,#00D4FF 50%,#fff 88%,transparent);box-shadow:0 0 16px 2px rgba(0,212,255,.55),0 0 44px 8px rgba(0,212,255,.16)"></span>
+                  <span aria-hidden="true" style="position:absolute;left:50%;top:50%;width:220px;height:220px;margin:-110px 0 0 -110px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.34),rgba(255,184,0,.13) 40%,transparent 68%)"></span>
+                  <div class="mholo" aria-hidden="true" style="position:relative;z-index:2">
+                    <svg viewBox="0 0 200 300"><use href="#holoFigure"/></svg>
+                  </div>
+                  <p style="position:absolute;bottom:112px;left:0;right:0;text-align:center;font-size:14px;color:var(--fg-2)">我是小土豆。</p>
+                </div>
+              </div>
+            </div>
+            <div class="frame__cap">
+              <b>04 · 裂光出场</b>
+              <span>一道光缝垂直撕开黑屏 → 光团扩张 → 全息剪影从光里往前走一步。2.1s + 1.5s。</span>
+            </div>
+          </div>
+
+          <div class="arrow">
+            <span class="arrow__line"></span>
+            <span class="arrow__cap">她开始说话</span>
+          </div>
+        </div>
+
+        <!-- 05 自我介绍 -->
+        <div class="stepwrap">
+          <div class="frame">
+            <div class="frame__clip">
+              <div class="frame__body">
+                <div class="m">
+                  <div class="m__body" style="justify-content:center;align-items:center;gap:20px">
+                    <div class="mholo mholo--sm" aria-hidden="true">
+                      <svg viewBox="0 0 200 300"><use href="#holoFigure"/></svg>
+                    </div>
+                    <div class="mwave" aria-hidden="true">
+                      <i style="height:6px"></i><i style="height:14px"></i><i style="height:20px"></i><i style="height:10px"></i><i style="height:18px"></i><i style="height:8px"></i><i style="height:14px"></i>
+                    </div>
+                    <div class="msub" style="width:100%">
+                      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                        <span class="m__label" style="margin:0">小土豆 · 正在说话</span>
+                        <span class="m__badge" style="color:var(--data-secondary);background:rgba(0,212,255,.1)">台湾腔女声</span>
+                      </div>
+                      你可以按着下面那颗键跟我讲话，中文、英文我都听得懂。<span style="display:inline-block;width:7px;height:15px;background:var(--data-primary);vertical-align:-2px"></span>
+                    </div>
+                  </div>
+                  <div class="m__foot">
+                    <div class="m__btn m__btn--primary">知道了，开始用</div>
+                    <div class="m__btn m__btn--ghost">再听一次</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="frame__cap">
+              <b>05 · 自我介绍</b>
+              <span>四句话讲完「我是谁、怎么用、我在哪、要不要开始」。逐字出现，声音同步。</span>
+            </div>
+          </div>
+
+          <div class="arrow">
+            <span class="arrow__line"></span>
+            <span class="arrow__cap">开始用</span>
+          </div>
+        </div>
+
+        <!-- 06 首页 · 待机 -->
+        <div class="stepwrap">
+          <div class="frame">
+            <div class="frame__clip">
+              <div class="frame__body">
+                <div class="m">
+                  <div class="m__bar">
+                    <span class="m__micro">周一 09:41</span>
+                    <span class="m__badge" style="color:var(--ok);background:rgba(38,222,129,.12)">链路正常</span>
+                  </div>
+                  <div class="m__body" style="gap:14px">
+                    <div class="mhero">
+                      <span class="mstate">Standby · 待机</span>
+                      <div class="mholo mholo--sm" aria-hidden="true">
+                        <svg viewBox="0 0 200 300"><use href="#holoFigure"/></svg>
+                      </div>
+                      <p style="font-size:13px;color:var(--fg-2);text-align:center">按着下面那颗键跟我讲话就好。</p>
+                      <div class="mmic">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5M8.5 21.5h7"/></svg>
+                      </div>
+                      <span class="m__hint">按住说话 · 松开发送</span>
+                    </div>
+                    <div class="mchips">
+                      <span class="mchip">记个会议</span><span class="mchip">念待办</span><span class="mchip">陪我聊聊</span>
+                    </div>
+                    <div class="mtiles">
+                      <div class="mtile"><span class="m__label">今日对话</span><div class="mtile__n">12</div><p>平均 8 秒回一次</p></div>
+                      <div class="mtile"><span class="m__label">在线时长</span><div class="mtile__n">3.4</div><p>她一直在待命</p></div>
+                    </div>
+                  </div>
+                  <div class="mdock"><div class="on">对话</div><div>设置</div></div>
+                  <div class="morb"></div>
+                </div>
+              </div>
+            </div>
+            <div class="frame__cap">
+              <b>06 · 对话首页 · 待机</b>
+              <span>麦克风摆在拇指够得到的位置。右下角那颗球是她跨页常驻的入口。</span>
+            </div>
+          </div>
+
+          <div class="arrow">
+            <span class="arrow__line"></span>
+            <span class="arrow__cap">按住说话</span>
+          </div>
+        </div>
+
+        <!-- 07 首页 · 回应 -->
+        <div class="stepwrap">
+          <div class="frame">
+            <div class="frame__clip">
+              <div class="frame__body">
+                <div class="m">
+                  <div class="m__bar">
+                    <span class="m__micro">周一 09:42</span>
+                    <span class="m__badge" style="color:var(--ok);background:rgba(38,222,129,.12)">链路正常</span>
+                  </div>
+                  <div class="m__body" style="gap:14px">
+                    <div class="mhero">
+                      <span class="mstate" style="color:var(--ok)">Speaking · 回应中</span>
+                      <div class="mholo mholo--sm" aria-hidden="true">
+                        <svg viewBox="0 0 200 300"><use href="#holoFigure"/></svg>
+                      </div>
+                      <p style="font-size:13px;color:var(--fg-2);text-align:center">记好啦，明天十点的会，我提前十五分钟喊你。</p>
+                      <div class="mmic mmic--speak">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5M8.5 21.5h7"/></svg>
+                      </div>
+                      <span class="m__hint">点一下可以打断我</span>
+                    </div>
+                    <div class="mcard" style="display:flex;flex-direction:column;gap:10px">
+                      <span class="m__label">对话流</span>
+                      <div class="mbubble mbubble--u" style="margin-left:auto">帮我看一下明天有哪些安排。</div>
+                      <div class="mbubble mbubble--a">明天有三件事：十点开会、下午两点复诊、晚上七点半接人。要我把最早那件提前十五分钟提醒你吗？</div>
+                    </div>
+                    <div class="msuggest">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFB800" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/></svg>
+                      <span style="flex:1">帮你把「明天 10 点开会」记进日程</span>
+                    </div>
+                  </div>
+                  <div class="mdock"><div class="on">对话</div><div>设置</div></div>
+                  <div class="morb"></div>
+                </div>
+              </div>
+            </div>
+            <div class="frame__cap">
+              <b>07 · 对话首页 · 回应</b>
+              <span>青色光环变成绿色，麦克风换成「可打断」形态。四态：待机 / 聆听 / 处理 / 回应。</span>
+            </div>
+          </div>
+
+          <div class="arrow">
+            <span class="arrow__line"></span>
+            <span class="arrow__cap">换到设置页</span>
+          </div>
+        </div>
+
+        <!-- 08 设置页 + 悬浮展开 -->
+        <div class="stepwrap">
+          <div class="frame">
+            <div class="frame__clip">
+              <div class="frame__body">
+                <div class="m">
+                  <div class="m__bar">
+                    <span class="m__micro">设置 · Settings</span>
+                    <span class="m__badge" style="color:var(--data-secondary);background:rgba(0,212,255,.1)">密钥已接通</span>
+                  </div>
+                  <div class="m__body" style="gap:16px">
+                    <div>
+                      <span class="m__label">声音</span>
+                      <div class="mset" style="margin-top:8px">
+                        <div class="msetrow">
+                          <div style="flex:1">
+                            <div style="font-size:13px">音色</div>
+                            <div class="m__hint" style="margin-top:2px">台湾腔女声 · 温柔亲和</div>
+                          </div>
+                          <div class="mseg"><span class="on">台湾女声</span><span>普通话</span><span>男声</span></div>
+                        </div>
+                        <div class="msetrow">
+                          <div style="flex:1">
+                            <div style="font-size:13px">跟随页面出现</div>
+                            <div class="m__hint" style="margin-top:2px">任何页面右下角常驻</div>
+                          </div>
+                          <div class="mswitch"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <span class="m__label">连接</span>
+                      <div class="mset" style="margin-top:8px">
+                        <div class="msetrow">
+                          <div style="flex:1">
+                            <div style="font-size:13px">服务地址</div>
+                            <div class="m__hint" style="margin-top:2px">https://api.your-service.com/v1</div>
+                          </div>
+                          <span class="m__badge" style="color:var(--ok);background:rgba(38,222,129,.12)">已接通</span>
+                        </div>
+                        <div class="msetrow">
+                          <div style="flex:1">
+                            <div style="font-size:13px">访问密钥</div>
+                            <div class="m__hint" style="margin-top:2px">sk-4f2a••••••8c1d</div>
+                          </div>
+                          <span class="m__badge" style="color:var(--fg-2)">重新配置</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="morbpanel">
+                    <b>小土豆</b>
+                    我在设置页这边呢。你直接说，我听着。
+                  </div>
+                  <div class="morb"></div>
+                  <div class="mdock"><div>对话</div><div class="on">设置</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="frame__cap">
+              <b>08 · 设置页 · 她跟过来了</b>
+              <span>换了页面她还在，点一下右下角的球就展开说话。这就是「任意页面出现」。</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- 共用渐变定义 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="hf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#9BE8FF" stop-opacity=".92"/>
+      <stop offset="30%"  stop-color="#00D4FF" stop-opacity=".66"/>
+      <stop offset="58%"  stop-color="#FFB800" stop-opacity=".48"/>
+      <stop offset="86%"  stop-color="#00D4FF" stop-opacity=".14"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="he" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#EAF8FF" stop-opacity=".95"/>
+      <stop offset="60%"  stop-color="#00D4FF" stop-opacity=".7"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="holoFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#fff" stop-opacity="1"/>
+      <stop offset="62%"  stop-color="#fff" stop-opacity=".72"/>
+      <stop offset="88%"  stop-color="#fff" stop-opacity=".26"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <mask id="holoMask">
+      <rect x="0" y="0" width="200" height="300" fill="url(#holoFade)"/>
+    </mask>
+    <g id="holoFigure" mask="url(#holoMask)">
+      <ellipse cx="100" cy="50" rx="22" ry="26" fill="url(#hf)" stroke="url(#he)" stroke-width="1.3"/>
+      <path d="M100 72
+               C 94 72 90 75 89 82
+               L 88 96
+               C 77 100 67 105 58 114
+               C 47 125 40 141 37 161
+               C 34 183 33 207 33 231
+               L 33 300
+               L 167 300
+               L 167 231
+               C 167 207 166 183 163 161
+               C 160 141 153 125 142 114
+               C 133 105 123 100 112 96
+               L 111 82
+               C 110 75 106 72 100 72 Z"
+            fill="url(#hf)" stroke="url(#he)" stroke-width="1.3"/>
+      <path d="M63 133 C 80 143 120 143 137 133" fill="none" stroke="rgba(0,212,255,.5)" stroke-width="1"/>
+      <path d="M53 182 C 78 192 122 192 147 182" fill="none" stroke="rgba(0,212,255,.3)" stroke-width="1"/>
+      <path d="M44 246 C 76 256 124 256 156 246" fill="none" stroke="rgba(0,212,255,.14)" stroke-width="1"/>
+      <!-- 扫描线：只落在本体上 -->
+      <ellipse cx="100" cy="50" rx="22" ry="26" fill="url(#holoScan)" stroke="none"/>
+      <path d="M100 72
+               C 94 72 90 75 89 82
+               L 88 96
+               C 77 100 67 105 58 114
+               C 47 125 40 141 37 161
+               C 34 183 33 207 33 231
+               L 33 300
+               L 167 300
+               L 167 231
+               C 167 207 166 183 163 161
+               C 160 141 153 125 142 114
+               C 133 105 123 100 112 96
+               L 111 82
+               C 110 75 106 72 100 72 Z"
+            fill="url(#holoScan)" stroke="none"/>
+    </g>
+    <pattern id="holoScan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="4" height="1.3" fill="rgba(5,7,13,.62)"/>
+    </pattern>
+  </defs>
+</svg>
+
+<script>
+(function(){
+  "use strict";
+
+  var viewport = document.getElementById("viewport");
+  var canvas   = document.getElementById("canvas");
+  var zoomLbl  = document.getElementById("zoom-label");
+
+  var MIN = 0.28, MAX = 1.4;
+  var s = 0.6, x = 60, y = 40;
+  var dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
+
+  function apply(){
+    canvas.style.transform = "translate(" + x + "px," + y + "px) scale(" + s + ")";
+    zoomLbl.textContent = Math.round(s * 100) + "%";
+  }
+
+  function clamp(v, a, b){ return Math.min(b, Math.max(a, v)); }
+
+  /* 拖拽平移 */
+  viewport.addEventListener("pointerdown", function(e){
+    if (e.target.closest(".hud")) return;
+    dragging = true;
+    viewport.classList.add("is-dragging");
+    sx = e.clientX; sy = e.clientY; ox = x; oy = y;
+    viewport.setPointerCapture(e.pointerId);
+  });
+  viewport.addEventListener("pointermove", function(e){
+    if (!dragging) return;
+    x = ox + (e.clientX - sx);
+    y = oy + (e.clientY - sy);
+    apply();
+  });
+  viewport.addEventListener("pointerup", function(e){
+    dragging = false;
+    viewport.classList.remove("is-dragging");
+    try{ viewport.releasePointerCapture(e.pointerId); }catch(err){}
+  });
+  viewport.addEventListener("pointercancel", function(){
+    dragging = false;
+    viewport.classList.remove("is-dragging");
+  });
+
+  /* 滚轮缩放（以指针为锚点） */
+  viewport.addEventListener("wheel", function(e){
+    e.preventDefault();
+    var rect = viewport.getBoundingClientRect();
+    var px = e.clientX - rect.left;
+    var py = e.clientY - rect.top;
+    var next = clamp(s * Math.pow(0.9988, e.deltaY), MIN, MAX);
+    var k = next / s;
+    x = px - (px - x) * k;
+    y = py - (py - y) * k;
+    s = next;
+    apply();
+  }, { passive:false });
+
+  document.getElementById("zoom-in").addEventListener("click", function(){
+    s = clamp(s * 1.12, MIN, MAX); apply();
+  });
+  document.getElementById("zoom-out").addEventListener("click", function(){
+    s = clamp(s / 1.12, MIN, MAX); apply();
+  });
+  document.getElementById("zoom-reset").addEventListener("click", function(){
+    s = 0.6; x = 60; y = 40; apply();
+  });
+
+  /* 跳到某一层 */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-jump]"), function(b){
+    b.addEventListener("click", function(){
+      var target = document.getElementById(b.getAttribute("data-jump"));
+      if (!target) return;
+      var top = target.offsetTop;
+      y = 40 - top * s;
+      x = 60;
+      apply();
+    });
+  });
+
+  /* 键盘 */
+  window.addEventListener("keydown", function(e){
+    if (e.target.closest("input, textarea")) return;
+    if (e.key === "+" || e.key === "=") { s = clamp(s * 1.12, MIN, MAX); apply(); }
+    if (e.key === "-" || e.key === "_") { s = clamp(s / 1.12, MIN, MAX); apply(); }
+    if (e.key === "0") { s = 0.6; x = 60; y = 40; apply(); }
+  });
+
+  apply();
+})();
+</script>
+
+<footer class="gbt-signature" data-developer="自由的风">开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属</footer>
+</body>
+</html>

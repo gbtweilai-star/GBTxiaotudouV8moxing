@@ -3,13 +3,12 @@
 页面宽 375，截 1680 视口只会得到一张几乎全黑的大图。"""
 import json
 import re
-import sys
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 OUT = BASE / ".scratch" / "render" / "canvas"
 OUT.mkdir(parents=True, exist_ok=True)
 CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"

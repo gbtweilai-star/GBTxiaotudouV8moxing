@@ -398,7 +398,7 @@ def scan_plane1_prod(prod):
             fp_mods.add(p.stem)
             fp_dirs.add(p.parent.name)
     py_n = py_ok = bare = todos = checked = 0
-    syn_err, unresolved, rel_broken, escapes = [], [], [], []
+    syn_err, unresolved, _, escapes = [], [], [], []
     bom, nonutf8, mojibake, mixed_eol, nul = [], [], [], [], []
     json_bad, yaml_bad, toml_bad = [], [], []
     MOJI = re.compile(r"(â€|Ã[\x80-\xbf]|ï¿½|锟斤拷|\ufffd)")
@@ -1165,8 +1165,8 @@ def scan_git(tree):
     #      `审美相关skill` 索引里实际 **890** 条、`delivery` **170** 条，却被报成「入库 0」；
     #      而 `projects`/`.dsh`/`plugins` 在两种口径下都是 0 ⇒ **那三条是真的**。
     #    ⚠️ L1153 的 `??` 那一支**早就 `.strip('"')` 了** —— 只有这一支漏了去引号。
-    tracked = [l for l in run(["git", "-c", "core.quotepath=false", "ls-files"])[1].splitlines()
-               if l.strip()]
+    tracked = [li for li in run(["git", "-c", "core.quotepath=false", "ls-files"])[1].splitlines()
+               if li.strip()]
     out["tracked_n"] = len(tracked)
     junk_pat = re.compile(r"^(\.scratch/|\.trash/|\.backups/|\.shadow-repo/|_upstream/|vendor/)"
                           r"|/node_modules/")
@@ -1201,11 +1201,11 @@ def scan_git(tree):
     #    ⇒ 关掉 quotepath：计数不变（实测 `??` 两种口径都是 44460 条），
     #      但路径变回可读、且不再依赖巧合。
     rc, so, _ = run(["git", "-c", "core.quotepath=false", "status", "--porcelain=v1", "-uall"])
-    lines = [l for l in so.splitlines() if l.strip()]
+    lines = [li for li in so.splitlines() if li.strip()]
     out["porcelain_n"] = len(lines)
-    out["porcelain_cats"] = dict(Counter(l[:2] for l in lines))
+    out["porcelain_cats"] = dict(Counter(li[:2] for li in lines))
     rc, so, _ = run(["git", "ls-files", "-o", "--exclude-standard", "plugins"])
-    out["plugins_untracked_n"] = len([l for l in so.splitlines() if l.strip()])
+    out["plugins_untracked_n"] = len([li for li in so.splitlines() if li.strip()])
     rc, so, _ = run(["git", "check-ignore", "-q", "plugins/gbt-master"])
     out["plugins_ignored"] = (rc == 0)
     # 🔴 2026-09-23 自查补：原版只查 plugins/，漏掉了 skills/ 与 tools/ 同样未入库。
@@ -1225,7 +1225,7 @@ def scan_git(tree):
          if n >= 20 and tracked_by_top.get(t, 0) == 0),
         key=lambda t: -prod_by_top[t])
     # 生产面"未入库也未被忽略"的散件（含根级交付物 —— 这类单文件不会被上面的顶层判据抓到）
-    untr = [l[3:].strip().strip('"') for l in lines if l.startswith("?? ")]
+    untr = [li[3:].strip().strip('"') for li in lines if li.startswith("?? ")]
     prod_untr = [f for f in untr
                  if f.split("/")[0] in PROD_TOPS or "/" not in f]
     out["untracked_prod_n"] = len(prod_untr)
@@ -1237,8 +1237,8 @@ def scan_git(tree):
     base = ["git", "grep", "--cached", "-I", "-n", "-E", GIT_SECRET_ERE, "--"] + TEXT_PATHSPEC
     rc, so, _ = run(base, timeout=150)
     cred, fixture = [], []
-    for l in so.splitlines():
-        parts = l.split(":", 2)
+    for li in so.splitlines():
+        parts = li.split(":", 2)
         if len(parts) != 3:
             continue
         f, ln, content = parts
@@ -1358,11 +1358,11 @@ def caliber_mismatch(p5):
         out.update(fire=True, why="声明口径读不出 major.minor（未知不许当通过）")
     elif run_mm != dec_mm:
         out.update(fire=True, why="%s ≠ %s（换了解释器）"
-                                % (".".join(run_mm), ".".join(dec_mm)))
+                   % (".".join(run_mm), ".".join(dec_mm)))
     elif run != dec_raw.split("/")[0].strip():
         # 同 major.minor、只差补丁号或后缀 ⇒ 不算不符，但要让调用方把这件事写出去
         out.update(patch_only=True, why="同 %s 族、仅补丁号/后缀不同（仍按可比口径处理）"
-                                       % ".".join(run_mm))
+                   % ".".join(run_mm))
     return out
 
 
@@ -1456,7 +1456,7 @@ def judge(tree, p1, deps, p234, p5, git, gates, extra=None):
         if v:
             add("P1" if len(v) > 3 else "P2", "P1", code, what,
                 "%d 个：%s" % (len(v), "; ".join("%s %s" % (x["path"], x["msg"])
-                                                 for x in v[:3])),
+                                               for x in v[:3])),
                 "逐个修；BOM 前缀的 JSON 要用 utf-8-sig 读")
     if p1.get("invalid_escapes"):
         add("P2", "P1", "INVALID_ESCAPE",
@@ -1469,8 +1469,8 @@ def judge(tree, p1, deps, p234, p5, git, gates, extra=None):
     if deps.get("relative_broken_n"):
         add("P1", "P1", "REL_IMPORT_BROKEN", "相对导入断链（包内引用不到真身）",
             "%d 处，例：%s" % (deps["relative_broken_n"],
-                              "; ".join("%s %s" % (x["file"], x["import"])
-                                        for x in deps["relative_broken"][:3])),
+                           "; ".join("%s %s" % (x["file"], x["import"])
+                                     for x in deps["relative_broken"][:3])),
             "补文件或改导入层级")
     # ── 文档断链
     dl = extra.get("doclinks") or {}
@@ -1478,7 +1478,7 @@ def judge(tree, p1, deps, p234, p5, git, gates, extra=None):
         add("P1" if dl["broken_n"] > 20 else "P2", "P1", "DOC_LINKS_BROKEN",
             "生产面文档相对链接断链",
             "%d/%d 条；例：%s" % (dl["broken_n"], dl.get("links_total"),
-                                  "; ".join(dl["broken"][:3])),
+                              "; ".join(dl["broken"][:3])),
             "补文件或改链接")
     # ── 第二真相
     sh = extra.get("shadow") or {}
@@ -1603,7 +1603,7 @@ def judge(tree, p1, deps, p234, p5, git, gates, extra=None):
         add("P1", "P1", "DEP_MISSING",
             "生产代码导入的第三方包在本机不可用（该路径是死的）",
             "缺：%s" % ", ".join("%s×%d" % (k, v) for k, v in
-                                sorted(deps["missing_third_party"].items(), key=lambda x: -x[1])[:10]),
+                               sorted(deps["missing_third_party"].items(), key=lambda x: -x[1])[:10]),
             "装，或标成优雅降级并写进 requirements")
     if deps.get("used_but_not_declared"):
         add("P1", "P1", "DEP_UNDECLARED",
@@ -1643,7 +1643,7 @@ def judge(tree, p1, deps, p234, p5, git, gates, extra=None):
     if tree["residue"]:
         add("P2", "P3", "TEMP_RESIDUE", "临时残骸文件名",
             "%d 个，例：%s" % (len(tree["residue"]),
-                              ", ".join(x["path"] for x in tree["residue"][:3])),
+                           ", ".join(x["path"] for x in tree["residue"][:3])),
             "归档或清；注意 _*.py 是本仓历史作业脚本命名")
     if tree["empty_files"]:
         add("P2", "P3", "EMPTY_FILES", "空文件",
@@ -1724,7 +1724,7 @@ def judge(tree, p1, deps, p234, p5, git, gates, extra=None):
     if _cm["fire"]:
         add("P2", "P5", "CALIBER_MISMATCH", "解释器口径与声明不符",
             "运行 %s · 声明 %s —— %s" % (_cm["running"] or "(空)", _cm["declared"] or "(空)",
-                                       _cm["why"]),
+                                     _cm["why"]),
             "统一口径；跨口径读数打 not_comparable")
 
 
@@ -1801,15 +1801,21 @@ def main():
         stages[name] = round(now - marks["last"], 1)
         marks["last"] = now
 
-    tree = walk_tree(); stage("walk")
-    p1 = scan_plane1_prod(tree["prod"]); stage("plane1_prod")
+    tree = walk_tree()
+    stage("walk")
+    p1 = scan_plane1_prod(tree["prod"])
+    stage("plane1_prod")
     imports = p1.pop("_imports", [])
     fp_mods = p1.pop("_fp_mods", set())
     fp_dirs = p1.pop("_fp_dirs", set())
-    deps = check_deps(imports, fp_mods, fp_dirs); stage("deps")
-    p234 = scan_plane234(tree["junk"], tree["name_size"]); stage("plane234")
-    p5 = scan_plane5(); stage("plane5_machine")
-    git = scan_git(tree); stage("git_index")
+    deps = check_deps(imports, fp_mods, fp_dirs)
+    stage("deps")
+    p234 = scan_plane234(tree["junk"], tree["name_size"])
+    stage("plane234")
+    p5 = scan_plane5()
+    stage("plane5_machine")
+    git = scan_git(tree)
+    stage("git_index")
     extra = {
         "test_caliber": scan_test_caliber(deep=a.with_tests),
         "doclinks": scan_doclinks_prod(tree["prod"]),
@@ -1846,7 +1852,8 @@ def main():
     stage("security_face")
     gates = scan_framework_gates() if a.with_gates else {}
     stage("framework_gates")
-    judge(tree, p1, deps, p234, p5, git, gates, extra); stage("judge")
+    judge(tree, p1, deps, p234, p5, git, gates, extra)
+    stage("judge")
 
     rep = {
         "schema": SCHEMA,

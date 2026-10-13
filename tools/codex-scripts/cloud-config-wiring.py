@@ -36,8 +36,22 @@ import argparse
 import json
 import re
 import sys
-import tomllib
 from pathlib import Path
+
+# 🔴 2026-10-10 修（**同族缺陷，第二次撞上**）：本件在 **GBK 控制台**上不带 -X utf8 调用时**当场崩**。
+#    实测真因（不是猜）：gbt_allinone/tests/test_cloud_config_wiring.py 第 34 行调本件用的是
+#        subprocess.run([sys.executable, str(TOOL), "--root", root, "--json"], ...)
+#    —— **没带 -X utf8**；本件 ensure_ascii=False 印到 U+21D2（⇒）时抛
+#        UnicodeEncodeError: 'gbk' codec can't encode character U+21D2
+#    ⇒ **stdout 是空的** ⇒ 测试的 _rep() 解析成 {} ⇒ 它那 5 条"检查器有没有牙"的自测**全红**。
+#    ⇒ 这是**工具不够硬**，不是测试的错：任何不带 -X utf8 的调用者都会踩。
+#    同类先例：tools/codex-scripts/audit-dead-judgments.py（2026-10-10 同一修法）。
+#    全仓扫描：tools/codex-scripts 下会印非 ASCII 的 .py 里，**已有 307 件带守门、143 件还没带**。
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8")   # type: ignore[attr-defined]
+    except Exception:
+        pass
 
 ROOT = Path(__file__).resolve().parents[2]
 ALIAS_DECL = re.compile(r"\b(?:const|let|var)\s+(e|env2|envAlias)\s*=\s*[^;\n]*\benv\b")

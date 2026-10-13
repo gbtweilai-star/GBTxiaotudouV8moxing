@@ -82,7 +82,7 @@ class OmniVisionMixin:
         # ⛔ 2026-08-04 触手→大脑: 截屏摘要穿透传输
         if cap.get("ok"):
             try:
-                from brain.tentacle_transmission import transmit as _tx
+                from .brain.tentacle_transmission import transmit as _tx
                 _tx({"size": cap.get("size", [0, 0]), "ok": True,
                      "channel": "screen", "format": cap.get("format", "PNG")},
                     source="omni_tentacle.see", channel="visual", priority="normal")
@@ -145,7 +145,7 @@ class OmniVisionMixin:
             return {"ok": True, "size": cap["size"], "kb": cap["image_kb"],
                     "image_base64": cap["image_base64"], "channel": "memory"}
         try:
-            import brain.gatekeeper as _gk_shot
+            from .brain import gatekeeper as _gk_shot
             _res = _gk_shot.publish(str(filepath), cap["image_base64"], "omni_tentacle_screenshot")
         except Exception as e:
             return {"ok": False, "error": f"截图写盘被管线拒绝: {str(e)[:100]}"}

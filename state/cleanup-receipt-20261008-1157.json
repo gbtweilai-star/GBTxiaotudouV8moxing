@@ -1,0 +1,189 @@
+{
+ "at": "2026-10-08T11:57:46",
+ "actor": "codex-cli/zcode·清理作业（主人令 2026-10-08：垃圾清理只进回收站）",
+ "mechanism": "Microsoft.VisualBasic.FileIO.FileSystem（SendToRecycleBin）—— 可还原",
+ "quantifier": "tools/codex-scripts/clean_residue.py（只读报告：852 项/160.77 MB 提议，其中 830+ 项落在 gbt_allinone/_upstream/.scratch —— 按主人令『不碰别人的件』剔除）",
+ "judged_zones": "tools/ plugins/ holo_pet_w3/ holo_pet/assets/ 仓根（含 .backups）",
+ "skipped_zones": [
+  "gbt_allinone/**（主人令：不碰）",
+  "_upstream/**（上游语料/第三方 venv）",
+  ".scratch/**（主人令：别人放读数的地方）",
+  "state/ docs/ projects/ outputs/（保护面）",
+  ".mimosa/**（工具状态 95k 文件）",
+  "_legacy_sources/**（他人归档）"
+ ],
+ "items": [
+  {
+   "path": "tools/codex-scripts/__pycache__",
+   "kind": "dir",
+   "bytes": 7070529,
+   "criterion": "纯构建产物（clean_residue build 档：__pycache__ 目录）",
+   "why_not_in_use": "Python 编译缓存：由 .py 自动再生；全仓文本面无任何件按此路径读写；del 后下次运行即重建",
+   "judged_by": "本作业（读 clean_residue 档定义 + 引用守卫报告）",
+   "to_recycle_bin": true,
+   "rc": 0,
+   "err": null
+  },
+  {
+   "path": "tools/__pycache__",
+   "kind": "dir",
+   "bytes": 494691,
+   "criterion": "纯构建产物（clean_residue build 档）",
+   "why_not_in_use": "同上",
+   "judged_by": "本作业（读 clean_residue 档定义 + 引用守卫报告）",
+   "to_recycle_bin": true,
+   "rc": 0,
+   "err": null
+  },
+  {
+   "path": "__pycache__",
+   "kind": "dir",
+   "bytes": 25098,
+   "criterion": "纯构建产物（clean_residue build 档）",
+   "why_not_in_use": "同上（仓根散落件编译缓存）",
+   "judged_by": "本作业（读 clean_residue 档定义 + 引用守卫报告）",
+   "to_recycle_bin": true,
+   "rc": 0,
+   "err": null
+  },
+  {
+   "path": "tools/model-route/__pycache__",
+   "kind": "dir",
+   "bytes": 10769,
+   "criterion": "纯构建产物（clean_residue build 档）",
+   "why_not_in_use": "同上",
+   "judged_by": "本作业（读 clean_residue 档定义 + 引用守卫报告）",
+   "to_recycle_bin": true,
+   "rc": 0,
+   "err": null
+  },
+  {
+   "path": "plugins/gbt-master/tools/__pycache__",
+   "kind": "dir",
+   "bytes": 223931,
+   "criterion": "纯构建产物（clean_residue build 档）",
+   "why_not_in_use": "同上",
+   "judged_by": "本作业（读 clean_residue 档定义 + 引用守卫报告）",
+   "to_recycle_bin": true,
+   "rc": 0,
+   "err": null
+  },
+  {
+   "path": ".backups/single-window-20261002",
+   "kind": "dir",
+   "bytes": 20235801,
+   "criterion": "旧备份快照（clean_residue backups 档；tree-registry .backups 条把其孩子委托给该档）",
+   "why_not_in_use": "10-02 的单窗改造前快照（最新文件 mtime=10-03 21:27，已冷 5 天），已被现行 holo_pet_w3 超越；引用守卫全仓文本面零命中（clean_residue 报告『留下 0 项』）",
+   "judged_by": "本作业（读 clean_residue 档定义 + 引用守卫报告）",
+   "to_recycle_bin": true,
+   "rc": 0,
+   "err": null
+  },
+  {
+   "path": ".ruff_cache",
+   "kind": "dir",
+   "bytes": 3277751,
+   "criterion": "纯工具缓存（ruff 扫本仓时自建）",
+   "why_not_in_use": "**本次作业自己的副产物**：首轮 ruff 扫描未加 --no-cache 生成；后续全部 --no-cache。本轮自查发现即清",
+   "judged_by": "本作业（自查）",
+   "to_recycle_bin": true,
+   "files": 10
+  },
+  {
+   "path": "tools/__pycache__",
+   "kind": "dir",
+   "bytes": 59199,
+   "criterion": "纯构建产物（clean_residue build 档）·终扫",
+   "why_not_in_use": "复核/门禁运行期间由 python 导入再生；机器产物",
+   "judged_by": "本作业（终扫）",
+   "to_recycle_bin": true
+  },
+  {
+   "path": "holo_pet/assets/digital-human/__pycache__",
+   "kind": "dir",
+   "bytes": 12834,
+   "criterion": "纯构建产物（clean_residue build 档）·终扫",
+   "why_not_in_use": "复核/门禁运行期间由 python 导入再生；机器产物",
+   "judged_by": "本作业（终扫）",
+   "to_recycle_bin": true
+  },
+  {
+   "path": "holo_pet_w3/ledger/__pycache__",
+   "kind": "dir",
+   "bytes": 10000,
+   "criterion": "纯构建产物（clean_residue build 档）",
+   "why_not_in_use": "机器编译缓存，随下次导入再生；全仓文本面零引用",
+   "judged_by": "本作业（误搬窗口一并入站；本区，合法）",
+   "to_recycle_bin": true
+  },
+  {
+   "path": "holo_pet_w3/tests/__pycache__",
+   "kind": "dir",
+   "bytes": 10000,
+   "criterion": "纯构建产物（clean_residue build 档）",
+   "why_not_in_use": "机器编译缓存，随下次导入再生；全仓文本面零引用",
+   "judged_by": "本作业（误搬窗口一并入站；本区，合法）",
+   "to_recycle_bin": true
+  }
+ ],
+ "waits_owner": [
+  {
+   "path": "config.toml.bak",
+   "bytes": 3540,
+   "why": "Codex CLI 配置的备份；**现行 config.toml 已不在** ⇒ 可能是唯一一份；且 state/codex-drive 台账点过名"
+  },
+  {
+   "path": "tmpwebapp-node-modulesprepare.log",
+   "bytes": 152,
+   "why": "tmp 形态，但 state/asset_bindings.jsonl 台账出现过该文件名（守卫口径=有引用不动）"
+  },
+  {
+   "path": "tools/codex-scripts/generate-ai-pipeline-doc.py",
+   "bytes": 0,
+   "why": "0 字节，但 (a) 属『不许删 tools/codex-scripts/*.py』保护面 (b) memory/防忘清单.md 点名——疑似计划件占位"
+  },
+  {
+   "path": "tools/codex-scripts/ninfer_verify.ps1",
+   "bytes": 0,
+   "why": "0 字节；memory/2026-10-04.md 点名（可能在途计划件）"
+  },
+  {
+   "path": ".backups/排查台账-pre-restore-20261004-192741.json",
+   "bytes": 135000,
+   "why": "10-04 restore 前应急副本（restore 邻件，宁留）"
+  },
+  {
+   "path": ".backups/gods_eye-pre-restore-20261004-191543.py",
+   "bytes": 41000,
+   "why": "同一 restore 的应急副本（restore 邻件，宁留）"
+  },
+  {
+   "path": ".backups/skills-hub",
+   "bytes": 1540000,
+   "why": "🔴 现场核查发现里面有 **20261008-095349**（今天 09:53 写入，tmp 文件 .tmp.12768 还在）—— 并行任务在用，撤出清理清单"
+  }
+ ],
+ "incident": {
+  "what": "12:17-12:24 的一个『终扫』脚本（本作业自己写的）漏配禁区排除集，多走了整仓：把 gbt_allinone/_upstream/vendor/.scratch/holo_pet(非 assets) 等禁区的 __pycache__ 约 224 件也搬进了回收站。TaskStop 后自查发现。",
+  "how_found": "对比回收站条目来源时才看见禁区路径；立即停止并盘点。",
+  "repair": {
+   "物理还原": "133 件（盘上仍缺的）用 $R/$I 对直接还原 —— 全部成功（0 失败）；样本核验：gbt_allinone/adapters/__pycache__、_upstream fastapi/__pycache__、holo_pet/tests/__pycache__ 均已回位。",
+   "无法还原/无需还原": "84 件盘上路径已被再生的新缓存覆盖（旧副本冗余，留在回收站无碍）。",
+   "非本作业可动件（未触碰）": "5 条仓外/前缀同名误配（GBT小土豆V8 0.1.0.exe 于桌面、GBT小土豆V8-旧版本\\…exe）+ projects/film/05-edit/_work（既往件）—— 均未动。"
+  },
+  "lesson": "『全仓走』的脚本必须复用与清理同一份排除集（本作业第一版清理脚本有，这个终扫脚本漏了）—— 已在此留档，下轮检查点：任何 os.walk 起手先挂 EXCLUDE。",
+  "material_impact": "零：被搬的全是 __pycache__（100% 派生缓存，随导入再生）；无源码/台账/文档受影响。"
+ },
+ "final_bin_state": {
+  "at": "2026-10-08T13:08:25",
+  "我们区在回收站（合法）": 9,
+  "禁区已还原": 133,
+  "禁区冗余旧副本（盘上已再生）": 84,
+  "非本作业件（未触碰）": [
+   "桌面 exe ×4",
+   "GBT小土豆V8-旧版本 exe ×1",
+   "projects/film/05-edit/_work",
+   "本作业自己的 _dbg_autorig_skin.py（该在回收站）"
+  ]
+ }
+}

@@ -24,19 +24,62 @@ const { execFile, spawn } = require("child_process");
 const layout = require("./layout.cjs");
 const features = require("./features.cjs");
 const chrome = require("./chrome.cjs");
+/* 对话面自主回路（主人令 2026-10-04）：读她的回复 → 过桥执行 → 自动回喂。
+   注入只允许收口在本模块（守卫 B4 的判据已据此改写）。 */
+const deepseekLoop = require("./deepseek_loop.cjs");
 const os = require("os");
 
 const HERE = __dirname;
 const PANEL = process.env.GBT_PANEL_URL || "http://127.0.0.1:8765";
 const READONLY_NOTE = "只读态：自检结果仅 UI 显示，不落盘";
 
+/* 🔴 2026-10-10 根因修复（主人截图：上帝视角「看任务/看账本」全 ENOENT，
+   读的是 userData\gbt_allinone\store）：**打包态 ROOT=null**。
+   便携版运行时解包到 %TEMP%\<hash>\resources\app\shell ⇒ 从那儿往上走 12 层
+   **永远走不到桌面** ⇒ ROOT=null ⇒ STORE=null ⇒ 路径回落到 userData（那里当然没有真账本）。
+
+   修法 = **三级兜底**（顺序即优先级），任一级命中即用：
+     ① 环境变量 **GBT_REPO_ROOT**（显式指定，装机/调试最稳）
+     ② **指针文件** %LOCALAPPDATA%\gbt_allinone\repo-root.txt（**仓这边自己写**，
+        见 tools/codex-scripts/repo-root-pin.py；打包态靠它认家）
+     ③ 常见位置（桌面\GBT小土豆V8 与当前工作目录）
+   判据：认到的根**必须**含 gbt_allinone/caps_registry.py（不许认一个空目录当根）。 */
+function _isRepo(p) {
+  try {
+    return !!p && fs.existsSync(path.join(p, "gbt_allinone", "caps_registry.py"));
+  } catch (err) { return false; }
+}
+
 function findRepoRoot(start) {
+  // ① 往上走（开发态：源码树里直接命中）
   let cur = start;
   for (let i = 0; i < 12; i++) {
-    if (fs.existsSync(path.join(cur, "gbt_allinone"))) return cur;
+    if (_isRepo(cur)) return cur;
     const up = path.dirname(cur);
     if (up === cur) break;
     cur = up;
+  }
+  // ② 环境变量
+  if (_isRepo(process.env.GBT_REPO_ROOT)) return process.env.GBT_REPO_ROOT;
+  // ③ 指针文件（仓这边写的；打包态靠它认家）
+  try {
+    const pin = path.join(app.getPath("userData"), "repo-root.txt");
+    if (fs.existsSync(pin)) {
+      const p = fs.readFileSync(pin, "utf8").trim();
+      if (_isRepo(p)) return p;
+    }
+    // 打包态的 userData 是 ...\gbt_allinone，仓写在同一处
+    const alt = path.join(app.getPath("appData"), "gbt_allinone", "repo-root.txt");
+    if (fs.existsSync(alt)) {
+      const p2 = fs.readFileSync(alt, "utf8").trim();
+      if (_isRepo(p2)) return p2;
+    }
+  } catch (err) { /* 读不到就继续往下兜 */ }
+  // ④ 常见位置
+  for (const cand of [path.join(app.getPath("home"), "Desktop", "GBT小土豆V8"),
+                      path.join(app.getPath("home"), "桌面", "GBT小土豆V8"),
+                      process.cwd()]) {
+    if (_isRepo(cand)) return cand;
   }
   return null;
 }
@@ -572,7 +615,7 @@ function startSse(broadcast) {
 const TOOLS_CAPS = [
   {
     cap: "prompt_bridge",
-    registered: "caps_registry.py:622",
+    registered: "caps_registry.py:641",
     actions: [
       { name: "status", state: "live", reason: "只读纯函数：先问当前态再决定发不发车（零副作用）" },
       { name: "compile", state: "live", reason: "只读纯本地：四段模板 + 原意保真自检（丢词即 intent_loss）" },
@@ -589,7 +632,7 @@ const TOOLS_CAPS = [
   },
   {
     cap: "coze_mail",
-    registered: "caps_registry.py:529",
+    registered: "caps_registry.py:548",
     actions: [
       { name: "status", state: "live", reason: "只读探针：读 state.json 与通道行数，不调能力层" },
       { name: "search", state: "pending", reason: "后端未接线 backend_not_wired（coze_mail_cap.py:69 _UnwiredTransport）" },
@@ -599,7 +642,7 @@ const TOOLS_CAPS = [
   },
   {
     cap: "create",
-    registered: "caps_registry.py:535",
+    registered: "caps_registry.py:554",
     actions: [
       { name: "status", state: "live", reason: "只读探针：读 state.json 与写根存在性，零字节零目录" },
       { name: "intent", state: "pending", reason: "本地登记（不发网络）；本轮不开放点击" },
@@ -978,7 +1021,14 @@ async function w3Summon(payload) {
     return no("载体未就绪，拒绝起进程：" + ((row && row.reason) || "没有这一条载体"),
               { carrier: carrier, ready: false });
   }
-  if (!fs.existsSync(plan.exe)) {
+  /* 🔴 2026-10-10 修一处**同族的判据病**：拿「文件存在性」去判一个 **PATH 命令**。
+     plan.exe 可能是**裸命令名**（PETS_PY_EXE 默认就是 "py"，见上方常量），
+     而 fs.existsSync("py") **永远是 false** ⇒ 所有 python 载体被**错杀在门口**。
+     实测撞到：给面板桥加载体后，召唤直接报「可执行文件不在位：py」，而 py 明明可用。
+     （live2d-pet 同病 —— 一直没暴露，只因为没人召唤过它。）
+     ⇒ 含路径分隔符的**绝对/相对路径**才要求存在；**裸命令名**交给 spawn 按 PATH 解析。 */
+  const isPathLike = /[\\/]/.test(plan.exe);
+  if (isPathLike && !fs.existsSync(plan.exe)) {
     return no("可执行文件不在位：" + path.basename(plan.exe), { carrier: carrier });
   }
   try {
@@ -993,6 +1043,29 @@ async function w3Summon(payload) {
   } catch (err) {
     return no("起不来：" + String((err && err.message) || err), { carrier: carrier });
   }
+}
+
+/* 🔴 2026-10-10（主人令）**建窗之前**确保面板桥在跑。
+   主人实测：「打开 APP 里面还是一大堆没连接没配置」—— 真探后真因不是一堆配置，
+   而是**面板桥 :8765 没在跑**（capability-audit 那两条断连其实是同一件事）。
+   壳自己早就写好了一句「本地面板 :8765 未就绪 —— 数字人壳没有可加载的页面」，
+   却**什么都不做**；而 windows.json 又写着「它正在 8765 跑」⇒ 假定有人拉，其实没人拉。
+   （open-full-panel.bat 会自己探+拉，所以走那个入口看不到 —— **走的入口不同，结果不同**。）
+   做法：复用既有的 panelPing() + w3Summon()，**不另写一条起进程的路**。
+   失败一律只打日志、不牵连壳启动（与 R-H295「展示面不许拖垮数据面」同向）。 */
+async function ensurePanelBridge() {
+  if (!ROOT) return { ok: false, reason: "找不到仓库根（上层没有 gbt_allinone）" };
+  if (await panelPing()) return { ok: true, already: true };
+  const out = await w3Summon({ carrier: "panel-bridge" });
+  if (!out || out.ok !== true) {
+    return { ok: false, reason: String((out && (out.error || out.reason)) || "召唤被拒") };
+  }
+  /* 幂等起进程后给桥一点时间听端口；最多约 10s，不无限等。 */
+  for (let i = 0; i < 20; i += 1) {
+    await new Promise((r) => setTimeout(r, 500));
+    if (await panelPing()) return { ok: true, already: false, waited_ms: (i + 1) * 500 };
+  }
+  return { ok: false, reason: "进程起了但 :8765 一直没接管（可能端口被占，launch_panel 会顺延）" };
 }
 
 /* ── §13b AI 朋友圈（W9）· 本机只读 ──
@@ -1153,6 +1226,16 @@ function saveWindowState() {
      带 token 的 URL 只能由**主人在运行时**提供 —— 见 windows.json 里 `dsh-chat` 的 `needs_url`。 */
 const urlPolicy = require("./url-policy.cjs");
 const loopbackUrlOnly = urlPolicy.loopbackUrlOnly;
+/* DeepSeek Harness 自接入（2026-10-07）：壳自己拉起 `dsh web`，读它就绪那一行，
+   再交给下面**同一个**口子 `w3ConnectDsh`（过回环白名单 · URL 只在内存 · 只回 host）。
+   本模块不监听、不注入、不代理对话协议 —— 口径见它的模块头。 */
+const dshLaunch = require("./dsh-launch.cjs");
+/* 每扇窗各自的自接入句柄（窗关掉就收走子进程，别在托盘里留一个孤儿 dsh）。 */
+const dshAutoHandles = new Map();
+
+/* 启动期标志：只有**第一批**建窗（启动那一次）受下面「唯一可见窗」规则约束；
+   启动之后按需唤醒（托盘/菜单/面板入口）的窗照常走各自声明。 */
+let STARTUP_DONE = false;
 
 function createWindow(entry) {
   const stored = layout.loadLayout(LAYOUT_FILE).windows[entry.id];
@@ -1166,6 +1249,13 @@ function createWindow(entry) {
      托盘图标构造失败会让 startSse 永远不跑（本文件上面记着这条实测），
      那种缺陷只有走真链才抓得到。**只改两个字段，不设这个变量时行为一个字节不动。** */
   const PROBE = process.env.GBT_W3_STARTUP_PROBE === "1";
+  /* 🔴 主人令 2026-10-08（照白龙马口径）：「打开 APP 直接就是数字人语音交互页」。
+     启动唯一可见窗 = digital-human：第一批建窗时其余窗一律不显（位置/尺寸照旧走
+     持久化布局，只收可见位——避免持久化里的旧可见位把它顶出来）；digital-human
+     强制显，并由启动段 focus。PROBE（真启动预演）不受影响；启动之后按需唤醒不受约束。 */
+  if (!PROBE && !STARTUP_DONE) placed.visible = (entry.id === "digital-human");
+  /* 🔴 品牌统一（主人令 2026-10-04）：任务栏/窗口用自家图标，不再露 Electron 默认脸。 */
+  const iconPath = path.join(HERE, "..", "build", "icon.ico");
   const win = new BrowserWindow({
     x: PROBE ? -20000 : placed.x, y: PROBE ? -20000 : placed.y,
     width: placed.w, height: placed.h,
@@ -1178,23 +1268,152 @@ function createWindow(entry) {
     backgroundColor: "#00000000",
     show: placed.visible !== false,   /* 可见性来自注册表 / 持久化布局（W7）——声明了就要生效 */
     title: entry.title || entry.id,
+    icon: fs.existsSync(iconPath) ? iconPath : undefined,
     webPreferences: {
       preload: path.join(HERE, "preload.cjs"),
       contextIsolation: true,
       nodeIntegration: false,
+      /* 面板窗需要 <webview>（页面在面板内容区里切换，主人令 2026-10-04）：
+         只有注册表里显式声明 webviewTag 的窗才开，别处一律不开（安全面收窄）。 */
+      webviewTag: entry.webviewTag === true,
+      /* 外部对话窗用**标准 Chrome UA**（2026-10-04 实测）：chat.deepseek.com 的
+         CloudFront 边缘会把 Electron 默认 UA 判成机器人（403 / configuration error），
+         换成常规浏览器 UA 是嵌入式浏览器的标准兼容措施（不改任何站点内容与凭据）。 */
+      userAgent: entry.id === "dsh-chat"
+        ? "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+          + "Chrome/136.0.0.0 Safari/537.36"
+        : undefined,
+      /* 🔴 音频自动播放（2026-10-08 加 · 主人令「数字人以语音交互做」落地时那条坑）：
+         Chromium 默认**要用户手势才允许出声**（Electron 继承）。数字人若只在主人点过之后
+         才敢开口，那"它有话要说时主动播报"这件事就永远做不到；反过来，一律放开又会让
+         任何页面都能在没人点的情况下出声 —— 所以**做成注册表开关、默认关**：
+           `audio_autoplay: true`   ⇒ no-user-gesture-required（适合数字人窗）
+           不写 / false             ⇒ user-gesture-required（安全默认：不点不出声）
+         ⚠️ 与 memory 里那条「服务端别出声」不冲突：那条说的是**面板服务进程**别喇叭，
+         这里是**渲染层页面**的出声许可，两回事。
+         ✅ 现状（2026-10-08）：这一格**早就是按窗开的**，数字人窗（windows.json: digital-human）
+         已登记 `audio_autoplay: true` ⇒ 它的 autoplayPolicy 现为 no-user-gesture-required
+         （其余窗不写 = user-gesture-required）。出声面已办；**采集面（麦克风）在下面单独开**，
+         见本函数里 media_capture 那段。 */
+      autoplayPolicy: entry.audio_autoplay === true
+        ? "no-user-gesture-required"
+        : "user-gesture-required",
     },
   });
   if (entry.alwaysOnTop !== false) win.setAlwaysOnTop(true, "screen-saver");
 
+  /* 🔴 **麦克风采集权限**（2026-10-08 加 · 口径照白龙马 BaiLongma 的 electron/main.cjs）：
+     病根（白龙马那边与我们都实测到）：Chromium 默认**不把麦克风交给页面** ——
+     `enumerateDevices()` 数不到 audioinput（标签也拿不到）、`getUserMedia` 直接落
+     `NotFoundError`。白龙马的解法是给**那一扇窗**的 session 装两个处理器：
+       `setPermissionRequestHandler`（异步请求：放 media）
+       `setPermissionCheckHandler`（同步检查：放 media）
+     本壳照抄这套，但**口径收得比它更窄**（窄口径，不许全局放开）：
+       ① **只有注册表显式声明 `media_capture: true` 的窗才装**（或 id 恒为 digital-human）——
+          现读只有数字人一扇（windows.json 里并列在 audio_autoplay 旁）；别的窗**一个字节不加**；
+       ② 处理器内部再核对**请求方必须就是这一扇窗自己的 webContents** —— 即使将来别的窗
+          与它共用 default session，media 也只对这一扇生效；
+       ③ 除 media 外**一律 callback(false)**：不是"放开一切"，是不认识的一概拒。
+     ⚠️ 权限处理器是**每 session 一份**（Electron 语义）：本壳各窗共用 default session，
+        所以处理器对其它窗的权限请求也会被叫到 —— 而这里的应答是「非本窗 ⇒ 全拒」，
+        方向只收不放；哪个窗将来要 media，就在注册表里明确登记它，别在代码里顺手放宽。
+     ⚠️ 装上这两个处理器**只解决"许可"层**：设备层（WASAPI 没有活动录音端点）不归它管 ——
+        2026-10-08 现读：活动录音端点 0 ⇒ getUserMedia 仍会如实落 NotFoundError（页面照贴原文）。 */
+  if (entry.id === "digital-human" || entry.media_capture === true) {
+    const ses = win.webContents.session;
+    const isThisWindow = function (wc) {
+      try { return !!wc && wc.id === win.webContents.id; } catch (err) { return false; }
+    };
+    ses.setPermissionRequestHandler((wc, permission, callback) => {
+      if (permission === "media" && isThisWindow(wc)) return callback(true);
+      callback(false);
+    });
+    ses.setPermissionCheckHandler((wc, permission) => {
+      if (permission === "media" && isThisWindow(wc)) return true;
+      return false;
+    });
+  }
+
+  /* 🔴 品牌统一（主人令 2026-10-04）：页面自带的 <title> 不许盖掉壳的品牌名。
+     实测：对话窗载 chat.deepseek.com 后标题被改成「展示AI能力 - DeepSeek」，
+     主人眼里品牌就断了 —— 现在标题恒为注册表里的「GBT小土豆V8 · …」。
+     这是壳在管自己的窗口框，**不碰页面内容一个字节**（B4 不注入判据不受影响）。 */
+  win.on("page-title-updated", (event) => {
+    event.preventDefault();
+  });
+
+  /* 🔴 页面固定（主人令 2026-10-04：「全部点下就自动跳转，全部给我固定住」）：
+     壳的每一扇窗都锁在自己的原页 —— 点页面里的链接**不许把当前窗带走**。
+     同文档（query/hash 变）放行；跨文档拦下，且若目标正好是**另一扇注册窗的原页**，
+     就把那扇窗开出来（跳转 = 开窗），否则记一行日志（页面纹丝不动）。
+     决策在 urlPolicy.shouldBlockNavigate（单一决策点，可单测）。 */
+  win.webContents.on("will-navigate", (event, url) => {
+    let cur = "";
+    try { cur = win.webContents.getURL(); } catch (err) { cur = ""; }
+    const verdict = urlPolicy.shouldBlockNavigate(cur, url);
+    if (!verdict.block) return;
+    event.preventDefault();
+    const hit = (() => {
+      let target = "";
+      try { target = path.normalize(decodeURIComponent(new URL(url).pathname).replace(/^\//, "")); }
+      catch (err) { return null; }
+      const found = registry.windows.filter((e) => {
+        const f = e.file ? path.normalize(path.join(HERE, String(e.file))) : "";
+        return f && (f === target || path.normalize(path.join(HERE, String(e.file))).replace(/\\/g, "/") === target.replace(/\\/g, "/"));
+      })[0];
+      return found || null;
+    })();
+    if (hit) {
+      const w = wins.get(hit.id);
+      if (!w || w.isDestroyed()) createWindow(hit);
+      else { w.show(); w.focus(); }
+      console.log("[w3] 跳转改为开窗：" + hit.id);
+    } else {
+      console.log("[w3] 已拦窗内跳转（页面固定）：" + String(url).slice(0, 120));
+    }
+  });
+  /* 外链/新窗一律不开新 Electron 窗（壳不做通用浏览器；要开走「在浏览器打开」动作口）。 */
+  win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+
   /* 一体式 App 铬（2026-09-23 第 32 轮）：**壳这一层注入**，不改那 8 个页面一行。
      `chrome.attach` 内部自己排除 `dsh-chat`（DSH 的窗，内容不是我们的）。 */
   try { chrome.attach(win, entry, registry); } catch (err) { console.error("[w3] 铬挂载失败:", err); }
+
+  /* 对话面自主回路（主人令 2026-10-04）：只挂**直载外部对话页**的那扇窗。
+     2026-10-04 定性改道后 dsh-chat 载本地 GBT 对话面（connect.html）⇒ 不挂回路
+     （无 DeepSeek DOM 可读，挂了只会刷「页面不可读」）。外部页回来时（url/file 更改）自动生效。 */
+  if (entry.id === "dsh-chat" && entry.url) {
+    try { deepseekLoop.register(win, { userData: app.getPath("userData") }); }
+    catch (err) { console.error("[w3] 自主回路挂载失败:", err); }
+  }
 
   /* 加载什么 —— 决策在 url-policy.windowSource（**单一决策点**，可单测）。
      四种结果：url / blocked（不合法→拒绝页，理由写清）/ connect（要主人运行时给 URL）/ file。 */
   const src = urlPolicy.windowSource(entry);
   if (src.kind === "url") {
     win.loadURL(src.url);
+    /* 🔴 2026-10-10（主人令）**加载失败要说明白是什么** —— 这治的是"一大堆"的观感。
+       桥不在时 Electron 丢的是**通用错误页**，主人只看得出"打不开"，看不出"为什么"。
+       现在：若失败的是**面板地址**，改载 blocked.html（壳已有的"拒绝加载"页）并写明一句话 ——
+       桥没在服务、怎么起。**建窗前已有 ensurePanelBridge 兜底**，这里是它没兜住时的如实告知
+       （例如 launch_panel.py 顺延到了别的端口，或桥随后挂了）。
+       注意：只在**面板地址**上这么做 —— 别的窗（对话面等）故障各有各的语义，不套同一句话。 */
+    win.webContents.on("did-fail-load", (_ev, code, desc, failedUrl) => {
+      if (win.isDestroyed() || !failedUrl || failedUrl.indexOf(PANEL) !== 0) return;
+      console.error("[w3] 面板加载失败（%s %s）：%s", code, desc, failedUrl);
+      try {
+        win.loadFile(path.join(HERE, "blocked.html"), {
+          query: {
+            id: String(entry.id),
+            why: "本地面板桥没在服务（" + PANEL + "）—— 数字人壳没有可加载的页面。" +
+                 "壳会在建窗前自动拉起它；手动起法：py -3.14 holo_pet/launch_panel.py " +
+                 "--host 127.0.0.1 --port 8765 --no-browser",
+          },
+        });
+      } catch (err) {
+        console.error("[w3] 面板失败页也载不出来:", err);
+      }
+    });
   } else if (src.kind === "connect") {
     win.loadFile(path.join(HERE, "connect.html"),
                  { query: { id: String(src.id || entry.id), port: String(src.port || 0) } });
@@ -1204,6 +1423,41 @@ function createWindow(entry) {
     console.error("[gbt-shell] 拒绝加载（%s）：%s", entry.id, src.why);
     win.loadFile(path.join(HERE, "blocked.html"),
                  { query: { why: src.why, id: String(entry.id) } });
+  }
+
+  /* ── DeepSeek Harness 自接入（主人令 2026-10-07）──────────────────────────────
+     以前这一步要主人**手动**：去看 `dsh web` 的终端、复制那条带 token 的 URL、贴进引导页。
+     现在壳自己把它拉起来（`--no-open`：不在主人系统浏览器里再开一份），读它就绪时
+     打印的那一行，走**同一个** `w3ConnectDsh` 载进本窗。
+
+     为什么不去另写一条捷径：那个口子上钉着三件事（过回环白名单 / URL 只进内存 / 只回 host）。
+     复制一份 = 迟早漂移，而守卫 B7 判的正是这三条 —— 所以这里只是**调用**它，一个字节不改。
+
+     三条兜底（都不静默，各有一行日志，且**都不挡主路**）：
+       ① 3080 上已经有人在听 ⇒ 不自起（两个实例会抢同一份会话状态），停在引导页原路照旧；
+       ② `dsh` 不在 PATH / 起不来 ⇒ 同上，主人仍可手贴带 token 的 URL；
+       ③ 窗关掉 ⇒ 子进程收走（别在托盘里留一个孤儿）。
+     本窗的导航不受影响：就绪 URL 与引导页不同源，但那是**壳自己** loadURL，
+     不经过 will-navigate（那条只管页面内部发起的跳转）。 */
+  if (entry.id === "dsh-chat"
+      && (src.kind === "connect"
+          || (src.kind === "file" && /connect\.html$/i.test(String(src.file || ""))))
+      && entry.auto_dsh && entry.auto_dsh.enabled === true) {
+    const handle = dshLaunch.startDsh({
+      port: Number(entry.auto_dsh.port) || 3080,
+      onUrl: (url) => {
+        if (win.isDestroyed()) return;      /* 窗已关：URL 直接丢掉 —— 不落盘、不重开窗 */
+        const res = w3ConnectDsh({ url: url });
+        if (res && res.ok) console.log("[w3] DSH 自接入已接上 host=" + res.host);
+        else console.error("[w3] DSH 自接入被拒：" + ((res && res.error) || "(未知)"));
+      },
+      onLog: (msg) => console.log("[w3] dsh：「" + msg + "」"),
+    });
+    dshAutoHandles.set(win.id, handle);
+    win.once("closed", () => {
+      const cur = dshAutoHandles.get(win.id);
+      if (cur) { cur.stop(); dshAutoHandles.delete(win.id); }
+    });
   }
   /* 🔴 **2026-09-23 第 43 轮修的「迟到订阅者」缺陷**（一条只有真跑才照得到的死角）。
 
@@ -1229,6 +1483,10 @@ function createWindow(entry) {
   win.webContents.on("did-finish-load", () => {
     if (!lastStreamState) return;
     try {
+      /* 🔴 销毁竞态护栏（2026-10-04 真启动预演抓到）：探针/快速关闭的窗在事件
+         回调落地前就可能已销毁 —— 对已销毁 WebContents send 会抛
+         "Object has been destroyed"。外部对话窗的载入尤其慢（网络），竞态面更大。 */
+      if (win.isDestroyed() || win.webContents.isDestroyed()) return;
       win.webContents.send("w3:stream", lastStreamState);
     } catch (err) {
       console.error("[w3] 补发实时流状态失败 id=" + entry.id + ":", err);
@@ -1267,6 +1525,38 @@ function createWindow(entry) {
   return win;
 }
 
+/* ── 数字人页的受理口本体（契约见上面 ipcMain.handle("w3:message") 那段的注释）───
+   目标**写死**：只可能打到本机面板桥这一条路；页面给什么都改不了它。 */
+const W3_MSG_TARGET = { host: "127.0.0.1", port: 8765, path: "/api/message", timeout: 30000, maxChars: 4000 };
+
+function w3Message(payload) {
+  return new Promise((resolve) => {
+    const raw = String((payload && payload.text) || "");
+    const text = raw.trim().slice(0, W3_MSG_TARGET.maxChars);
+    if (!text) return resolve({ ok: false, error: "空文本：没有要送出的内容" });
+    const body = JSON.stringify({ text: text });
+    const req = http.request({
+      host: W3_MSG_TARGET.host, port: W3_MSG_TARGET.port, path: W3_MSG_TARGET.path,
+      method: "POST", timeout: W3_MSG_TARGET.timeout,
+      headers: { "content-type": "application/json", "content-length": Buffer.byteLength(body) },
+    }, (res) => {
+      let buf = "";
+      res.on("data", (c) => { if (buf.length < 400000) buf += c; });
+      res.on("end", () => {
+        const okk = res.statusCode >= 200 && res.statusCode < 300;
+        resolve({ ok: okk, status: res.statusCode,
+                  reply: buf.slice(0, W3_MSG_TARGET.maxChars),
+                  error: okk ? undefined : ("桥回 HTTP " + res.statusCode + "：" + buf.slice(0, 200)) });
+      });
+    });
+    req.on("timeout", () => { try { req.destroy(); } catch (err) { /* 已在销毁路上 */ }
+                              resolve({ ok: false, error: "桥没在 30 秒内回话（超时）" }); });
+    req.on("error", (err) => resolve({ ok: false, error: "桥连不上：" + String(err && err.message ? err.message : err).slice(0, 160) }));
+    req.write(body);
+    req.end();
+  });
+}
+
 /* ── W9 · 窗 A：把对话面接上（**主人在运行时给 URL**）─────────────────────────
    背景：对话面裸 URL 回 401，要 `dsh web` 打印的**带 token 的 URL**。
    纪律（三条，写在这儿免得以后有人"顺手优化"掉）：
@@ -1274,6 +1564,9 @@ function createWindow(entry) {
      ② **不回显**：返回值只给 `host`（`127.0.0.1:3080`），**绝不把整条 URL 回给渲染进程**
         —— 它带 token，一回显就会进界面/日志；
      ③ **不白名单外**：仍然过 `loopbackUrlOnly()`，只放行本机回环。 */
+/* 最近一次接上的对话入口（**只在内存**：不落盘、不写日志；只为把引擎嵌进我们的框架页）。 */
+let lastDshEntry = null;
+
 function w3ConnectDsh(payload) {
   const raw = String((payload && payload.url) || "").trim();
   if (!raw) return { ok: false, error: "没有给 URL" };
@@ -1283,28 +1576,112 @@ function w3ConnectDsh(payload) {
   if (!win || win.isDestroyed()) return { ok: false, error: "对话面的窗不在（先从托盘菜单把它开起来）" };
   let host = "";
   try { host = new URL(chk.url).host; } catch (err) { host = "(无法解析)"; }
-  win.loadURL(chk.url);
-  /* 落一张**不含 token** 的回执：这是"真接上过一次"的机器证据（守卫 B1e 读它）。
-     回执里只有 host 与时间 —— **绝不写 URL、绝不写 token**。 */
+  /* 🔴 2026-10-09 主人令「必须镶嵌进去……统一品牌和Logo，我们是把她集成进我们，而不是还是使用她本身」：
+     原来这里 **win.loadURL(chk.url)** 把她的官方界面**整窗盖满** ⇒ 我们自己的门面（品牌/Logo）全没了。
+     改成**我们的壳包住她的引擎**：
+       ① 载**我们自己的**品牌框架页 shell/dsh-embed.html（顶部 GBT 星环 Logo + 名称）；
+       ② 再把入口 URL **注入内层 webview**（executeJavaScript，URL 只进内存，
+          **不成为窗口 URL、不进历史**——比原来的整窗 loadURL 更收敛）。
+     dshEntry 只给**本应用自己的本地页**（wrapper / 面板内嵌页）取用，仍是回环白名单校验过的。 */
+  lastDshEntry = { url: chk.url, host: host, at: new Date().toISOString() };
   try {
-    const dir = path.join(ROOT, "state");
-    fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(path.join(dir, "desktop-dsh-connect-receipt.json"),
-      JSON.stringify({ host: host, at: new Date().toISOString(),
-                       note: "由桌面壳 w3ConnectDsh 落盘：只记 host 与时间，不含 URL/token" }, null, 1),
-      "utf8");
+    win.loadFile(path.join(HERE, "dsh-embed.html"));
+    win.webContents.once("did-finish-load", () => {
+      if (win.isDestroyed()) return;
+      win.webContents.executeJavaScript(
+        "window.__gbtMountDsh && window.__gbtMountDsh(" + JSON.stringify(chk.url) + ")")
+        .catch((err) => console.error("[w3] 把引擎注入内层 webview 失败：" + err));
+    });
   } catch (err) {
-    /* 回执写不了不影响接上；但也不静默 —— 记一行给排查 */
-    console.error("[gbt-shell] 回执写不了：%s", String(err).slice(0, 120));
+    console.error("[w3] 载品牌框架页失败，回退整窗载入：" + err);
+    win.loadURL(chk.url);
   }
+  /* 落一张**不含 token** 的回执：这是"真接上过一次"的机器证据（守卫 B1e 读它）。
+     回执里只有 host 与时间 —— **绝不写 URL、绝不写 token**。
+
+     🔴 2026-10-07 实测补的两条（那天主人真开着成品，我从外面看得清清楚楚）：
+       ① **打包版里 `ROOT` 是 null**：portable 包运行时会解包到临时目录，`findRepoRoot`
+          从那儿往上走 12 层也找不到 `gbt_allinone` ⇒ 原来那句 `path.join(ROOT, "state")`
+          直接抛、被 catch 吞掉 ⇒ **合成品里回执永远不落盘**，而那正是最该有证据的时候
+          （我实测：APP 进程与它自己拉起的 `dsh web` 之间两条 established 连接在，
+          可盘上就是没有回执）。
+       ② ⇒ 改成**写多个落点**：仓里那份（开发态 · 守卫 B1e 读它）**加** userData 那份
+          （打包态一定可写）。写成功几处就报几处，一处都写不成就把原因原样打出来。 */
+  const receipt = JSON.stringify({ host: host, at: new Date().toISOString(),
+                                   note: "由桌面壳 w3ConnectDsh 落盘：只记 host 与时间，不落 URL 与凭据" }, null, 1);
+  const spots = [];
+  if (ROOT) spots.push(path.join(ROOT, "state"));
+  try { spots.push(app.getPath("userData")); } catch (err) { /* userData 取不到就只写仓里那份 */ }
+  const wrote = [];
+  for (const dir of spots) {
+    try {
+      fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(path.join(dir, "desktop-dsh-connect-receipt.json"), receipt, "utf8");
+      wrote.push(dir);
+    } catch (err) {
+      /* 回执写不了不影响接上；但也不静默 —— 记一行给排查 */
+      console.error("[gbt-shell] 回执写不了（%s）：%s", dir, String(err).slice(0, 120));
+    }
+  }
+  if (!wrote.length) console.error("[gbt-shell] 回执一处都没写成（接上没受影响，但这次的机器证据缺了）");
   return { ok: true, host: host, note: "已交给对话框加载；URL 只在内存，未落盘、未回显" };
 }
 
 function buildTray() {
-  tray = new Tray(trayIcon(16, [0xf5, 0xb0, 0x41], [0x00, 0xe5, 0xff]));
-  tray.setToolTip("GBT小土豆V8 · 上帝视角（W3）");
+  /* 🔴 托盘图标 = **品牌真图**（主人令 2026-10-07：「这里的 Logo」）。
+     以前这一行是 `trayIcon(16, 金, 青)` —— **代码现画的方块**：任务栏那一格里就是一块色块，
+     品牌在托盘上断了。现在直接读品牌资产：`build/tray-logo-32.png` 是
+     `assets/brand/logo-potato-32.png` 的**逐字节复制**（sha256 由 `tests/test_tray_logo.cjs`
+     钉住 —— 不重画、不换色、不丢署名；品牌只走这一份真资产）。
+     读不到就退回原来那个方块，并**把原因打出来** —— 不静默变成空白托盘。 */
+  const logoFile = path.join(HERE, "..", "build", "tray-logo-32.png");
+  let image = null;
+  try { if (fs.existsSync(logoFile)) image = nativeImage.createFromPath(logoFile); } catch (err) { image = null; }
+  if (!image || image.isEmpty()) {
+    console.warn("[w3] 托盘品牌图读不到（%s）—— 退回内置方块图（任务栏品牌会缺）", logoFile);
+    image = trayIcon(16, [0xf5, 0xb0, 0x41], [0x00, 0xe5, 0xff]);
+  }
+  tray = new Tray(image);
+  tray.setToolTip("GBT小土豆V8 · 点一下显示/隐藏全部窗（右键出菜单）");
   tray.on("click", () => { wins.forEach((w) => { if (!w.isDestroyed()) w.isVisible() ? w.hide() : w.show(); }); });
   return tray;
+}
+
+/**
+ * 自建应用菜单（2026-10-04 主人令）：**换掉 Electron 的英文默认菜单**。
+ *
+ * 为什么换：默认那排（File/Edit/View/Window）是给开发调试的，主人问「这些拿来干嘛的、
+ * 返回在哪里」——壳窗没有浏览器返回键，页面内部一跳就没有退路（实测踩过）。
+ * 本菜单把主人真需要的东西放前面：**← 返回**（有历史回退、没历史重载 ⇒ 永远出得去）、
+ * 重载、窗口跳转、退出。Ctrl+C/V 由 Chromium 原生处理，不依赖 Edit 菜单。
+ */
+function refreshAppMenu() {
+  const focused = () => BrowserWindow.getFocusedWindow();
+  const nav = (fn) => { const w = focused(); if (w && !w.isDestroyed()) fn(w); };
+  const winItems = registry.windows.map((entry) => ({
+    label: (wins.has(entry.id) && !wins.get(entry.id).isDestroyed()
+            && wins.get(entry.id).isVisible() ? "隐藏 · " : "打开 · ") + (entry.title || entry.id),
+    click: () => {
+      const w = wins.get(entry.id);
+      if (!w || w.isDestroyed()) createWindow(entry);
+      else if (w.isVisible()) w.hide();
+      else { w.show(); w.focus(); }
+      refreshAppMenu();
+      refreshTrayMenu();
+    },
+  }));
+  const template = [
+    { label: "← 返回", accelerator: "Alt+Left", click: () => nav((w) => {
+        if (w.webContents.canGoBack && w.webContents.canGoBack()) w.webContents.goBack();
+        else w.reload();                                   /* 没有历史 ⇒ 重载回这扇窗的原页 */
+      }) },
+    { label: "⟳ 重载", accelerator: "CmdOrCtrl+R", click: () => nav((w) => w.reload()) },
+    { type: "separator" },
+    { label: "窗口", submenu: winItems },
+    { type: "separator" },
+    { label: "退出", click: () => { app.isQuitting = true; app.quit(); } },
+  ];
+  try { Menu.setApplicationMenu(Menu.buildFromTemplate(template)); } catch (err) { /* 菜单坏不许弄崩壳 */ }
 }
 
 function refreshTrayMenu() {
@@ -1320,6 +1697,15 @@ function refreshTrayMenu() {
     },
   }));
   items.push({ type: "separator" });
+  /* 自主回路开关（主人令 2026-10-04）：状态现读，点了即切（PAUSE 文件仍是最高否决）。 */
+  try {
+    const ds = deepseekLoop.status();
+    items.push({
+      label: (ds.enabled ? "✅ " : "⬜ ") + "触手自主执行（她自己的双手）"
+             + (ds.configured ? "" : " · 未配置"),
+      click: () => { deepseekLoop.setEnabled(!deepseekLoop.status().enabled); refreshTrayMenu(); },
+    });
+  } catch (err) { /* 回路模块坏掉不许弄崩托盘 */ }
   items.push({ label: "重载当前窗口", click: () => wins.forEach((w) => { if (!w.isDestroyed()) w.reload(); }) });
   items.push({
     label: "重置布局",
@@ -1365,10 +1751,161 @@ function registerIpc() {
   ipcMain.handle("w3:coverage", () => w3Coverage());
   ipcMain.handle("w3:orphans", () => w3Orphans());
   ipcMain.handle("w3:gene", () => w3Gene());
+  /* ── 数字人页的「文本→桥」受理口（2026-10-08）─────────────────────────────
+     背景（实测，不是推演）：数字人页是**离线自包含**的（CSP `connect-src 'none'`），
+     任何网络取数原语都被浏览器当场拒 ⇒ "说话→拿回复"这条链在**页面侧**永远接不上。
+     而行长按本仓既有做法（`/api/capability` 同款先例）：**壳替页面跑这一趟**。
+     🔴 三条纪律（与 `w3ConnectDsh` 同源）：
+       ① **目标由壳钉死**：页面只能给文本，URL/host/port 写死在壳里 ⇒ 页面无法把这一口
+          变成"任意 URL 代理"（防 SSRF：连回环之外的地址都构造不出来）；
+       ② **文本限额** `MSG_MAX`：超长截断，别让 IPC 变成大数据通道；
+       ③ 回包**截断后再回**渲染层；失败**带原文**返回 —— 不静默、不假绿。
+     为什么不干脆放开页面的 CSP：那等于把这个窗的网络面从"零"放开到"能到处发请求"。
+     壳跑一趟，页面的网络面**仍然是零**。 */
+  ipcMain.handle("w3:message", async (ev, payload) => w3Message(payload));
   /* W9 · 窗 A 的动作口：把主人粘进来的 URL 交给对话框。
      它**不是数据写口**（不写文件、不写配置），但**是动作口** ——
      preload 里 `non_readonly_capability` 那一行必须同步登记它，不许悄悄放宽。 */
+  /* 触手视野**活体取帧**（主人令 2026-10-04：「触手视觉从来都不会传回触手视野画面，
+     我需要的是这个视野画面」）：走面板桥真调 `tentacle see`（DXGI 直读整帧，门内 policy 不变），
+     把帧**只在内存**回传给页面渲染 —— 壳不落盘、不回显路径、不缓存。 */
+  ipcMain.handle("w3:cap-frame", async () => {
+    const t0 = Date.now();
+    const r = await callCapability("tentacle",
+      { action: "see", kwargs: { incremental: false } }, 25000);
+    const ms = Date.now() - t0;
+    if (!r || !r.ok) return { ok: false, error: (r && r.error) || "取帧调用失败", ms: ms };
+    const outer = (r.data && r.data.result) || {};
+    const inner = (outer && outer.result) || outer || {};
+    const b64 = inner.image_base64 || "";
+    if (!b64) return { ok: false, error: "信封里没有帧字节", keys: Object.keys(inner).slice(0, 8), ms: ms };
+    return { ok: true, b64: b64, size: inner.size || null, fmt: inner.fmt || "jpeg", ms: ms };
+  });
+
+  /* 触手**活动流**（主人令 2026-10-04：「触手她都不活动的吗？」）：
+     读**真账本**（gbt_allinone/store/audit.jsonl）尾部：谁在动、动了几次、成没成 —— 只读，不改盘。 */
+  const repoRootForLedger = () => {
+    /* 打包态壳里没有 gbt_allinone，仓根靠**回路配置**（桥的绝对路径）反推；读不到才退回相对路径。 */
+    try {
+      const cfg = JSON.parse(fs.readFileSync(
+        path.join(app.getPath("userData"), "gbt-deepseek-loop.json"), "utf8"));
+      if (cfg && cfg.bridge) return path.resolve(path.dirname(cfg.bridge), "..", "..");
+    } catch (err) { /* 没配置：退回相对 */ }
+    return path.resolve(HERE, "..", "..");
+  };
+  ipcMain.handle("w3:cap-activity", () => {
+    const ledger = path.join(repoRootForLedger(), "gbt_allinone", "store", "audit.jsonl");
+    const out = { ok: true, ledger: "gbt_allinone/store/audit.jsonl", total: null, tail: [], counts: [], at: new Date().toISOString() };
+    try {
+      const raw = fs.readFileSync(ledger, "utf8");
+      const lines = raw.split("\n").filter((l) => l.trim());
+      out.total = lines.length;
+      const rows = [];
+      for (let i = Math.max(0, lines.length - 400); i < lines.length; i++) {
+        try { rows.push(JSON.parse(lines[i])); } catch (e) { /* 坏行跳过 */ }
+      }
+      const cnt = {};
+      rows.forEach((r) => {
+        const m = r && r.meta;
+        const kind = m && typeof m === "object" ? m.kind : null;
+        if (kind) cnt[kind] = (cnt[kind] || 0) + 1;
+      });
+      out.counts = Object.keys(cnt).map((k) => ({ kind: k, n: cnt[k] }))
+        .sort((a, b) => b.n - a.n).slice(0, 12);
+      out.tail = rows.slice(-24).map((r) => {
+        const m = r && r.meta;
+        return { iso: r && r.iso, event: r && r.event,
+                 kind: m && typeof m === "object" ? m.kind : null,
+                 ok: m && typeof m === "object" ? (m.ok === undefined ? null : !!m.ok) : null };
+      }).reverse();
+    } catch (err) {
+      out.ok = false;
+      out.error = String(err && err.message || err).slice(0, 200);
+    }
+    return out;
+  });
+
+  /* 触手**心跳派活**（主人令：让触手真动起来）：按轮换给**只读**能力位派活（全在册、零作用域），
+     每轮如实记账（账本自己会写）。开/关由主人；关掉即停。只派只读 —— 写类永不自动（要票的活不自动跑）。 */
+  let heartbeatTimer = null;
+  let heartbeatState = { on: false, round: 0, last: null, lastAt: null };
+  const HEARTBEAT_CAPS = [
+    { kind: "health", payload: {} },
+    { kind: "llm_status", payload: {} },
+    { kind: "tentacle", payload: { action: "see", kwargs: { incremental: false } } },
+    { kind: "task_manager", payload: { op: "list" } },
+    { kind: "selfscan", payload: {} },
+  ];
+  ipcMain.handle("w3:heartbeat", async (ev, payload) => {
+    const want = payload && payload.on === true;
+    if (!want) {
+      if (heartbeatTimer) { clearInterval(heartbeatTimer); heartbeatTimer = null; }
+      heartbeatState.on = false;
+      return { ok: true, on: false, round: heartbeatState.round, last: heartbeatState.last };
+    }
+    if (heartbeatTimer) return { ok: true, on: true, note: "已在跑", round: heartbeatState.round };
+    heartbeatState.on = true;
+    const tickBeat = async () => {
+      const spec = HEARTBEAT_CAPS[heartbeatState.round % HEARTBEAT_CAPS.length];
+      heartbeatState.round += 1;
+      const t0 = Date.now();
+      const r = await callCapability(spec.kind, spec.payload, 25000);
+      heartbeatState.last = { kind: spec.kind, ok: !!(r && r.ok), ms: Date.now() - t0 };
+      heartbeatState.lastAt = new Date().toISOString();
+      console.log("[w3] 心跳派活 #" + heartbeatState.round + "：" + spec.kind
+                  + (r && r.ok ? " ok " : " 失败 ") + heartbeatState.last.ms + "ms");
+    };
+    tickBeat();
+    heartbeatTimer = setInterval(tickBeat, 6000);
+    return { ok: true, on: true, round: heartbeatState.round, caps: HEARTBEAT_CAPS.map((c) => c.kind) };
+  });
+
   ipcMain.handle("w3:connect-dsh", (ev, payload) => w3ConnectDsh(payload));
+/* 把入口交给**本应用自己的本地页**（品牌框架页 / 面板内嵌页）→ 引擎嵌在我们门面里跑。
+   仍过回环白名单；没有就如实说"还没接上"，不假装。 */
+ipcMain.handle("w3:dsh-entry", () => {
+  if (!lastDshEntry || !lastDshEntry.url) {
+    return { ok: false, error: "还没接上：壳尚未拉起 dsh web（或它没打印就绪 URL）" };
+  }
+  const chk = loopbackUrlOnly(lastDshEntry.url);
+  if (!chk.ok) return { ok: false, error: chk.why };
+  return { ok: true, url: chk.url, host: lastDshEntry.host };
+});
+  /* 面板内跳页（主人令 2026-10-04「要固定在 APP 面板上」）：只认注册表里的窗 id，
+     把该窗的页面路径发给**面板窗**，由它在内容区里切换 —— **不开任何新窗**。
+     面板不在（被关）时如实回 {ok:false}，调用方回落开窗。 */
+  ipcMain.handle("w3:panel-goto", (ev, payload) => {
+    const id = payload && payload.id ? String(payload.id) : "";
+    const entry = registry.windows.filter((e) => e.id === id)[0];
+    if (!entry) return { ok: false, error: "没有这扇窗：" + id.slice(0, 40) };
+    const panelWin = wins.get("panel");
+    if (!panelWin || panelWin.isDestroyed()) return { ok: false, error: "面板窗还没建起来" };
+    if (entry.id === "panel") return { ok: true, note: "面板自己不用切" };
+    try {
+      panelWin.webContents.send("panel:goto", { id: entry.id, title: entry.title || entry.id });
+      if (!panelWin.isVisible()) panelWin.show();
+      panelWin.focus();
+      return { ok: true, id: entry.id };
+    } catch (err) {
+      return { ok: false, error: String(err && err.message || err).slice(0, 200) };
+    }
+  });
+  /* 在系统浏览器里打开一个**本机回环**页面（页面固定的配套动作口，2026-10-04）。
+     为什么需要：窗已上锁（点链接不带走窗），但「进工作空间」这类**显式**意图要能达成 ——
+     走浏览器开，不动壳的窗。只放行回环（loopbackUrlOnly），不落盘、不回显 URL、只回 host。 */
+  ipcMain.handle("w3:open-external", (ev, payload) => {
+    const raw = payload && payload.url ? String(payload.url) : "";
+    const chk = urlPolicy.loopbackUrlOnly(raw);
+    if (!chk.ok) return { ok: false, error: "只放行本机回环地址：" + chk.why };
+    try {
+      shell.openExternal(chk.url);
+      let host = "";
+      try { host = new URL(chk.url).host; } catch (err) { host = ""; }
+      return { ok: true, host: host };
+    } catch (err) {
+      return { ok: false, error: String(err && err.message || err).slice(0, 200) };
+    }
+  });
   /* W13 · 一体式 App 铬的跨窗跳转口（2026-09-23 第 32 轮加）。
      它**不是数据写口**，但是**动作口**（会改窗口可见性/焦点）⇒：
        · 只认注册表里**已有的 id**（白名单，不认任意字符串）；
@@ -1533,7 +2070,7 @@ if (WIRE_ONLY) {
       w.focus();
     });
   });
-  app.whenReady().then(() => {
+  app.whenReady().then(async () => {
     /* R-H295 · 数据面先立，展示面后立，且展示面不许拖垮数据面。
      * 病根：这里原来是一条不断的链
      *     registerIpc → createWindow → buildTray → refreshTrayMenu → startSse
@@ -1546,14 +2083,36 @@ if (WIRE_ONLY) {
     registerIpc();
     startSse(broadcast);
 
+    /* 🔴 2026-10-10（主人令）：**建窗之前**确保面板桥在跑 ——
+       否则数字人壳没有可加载的页面，主人看到的是一片「未连接/未配置」。
+       （真因见 ensurePanelBridge 处的说明：桥没人拉，而 windows.json 假定有人在拉。）
+       失败只打日志、不牵连启动（与 R-H295 同向：展示面不许拖垮数据面）。 */
+    try {
+      const br = await ensurePanelBridge();
+      if (br.ok !== true) {
+        console.error("[w3] 面板桥未就绪（不牵连壳启动）:", br.reason);
+      } else if (br.already !== true) {
+        console.error("[w3] 面板桥已拉起（等了 " + br.waited_ms + " ms）");
+      }
+    } catch (err) {
+      console.error("[w3] 面板桥确保失败（不牵连壳启动）:", err);
+    }
+
     try {
       registry.windows.forEach((entry) => createWindow(entry));
+      STARTUP_DONE = true;      /* 启动批次结束：此后按需唤醒不再受「唯一可见窗」约束 */
+      /* 主人令 2026-10-08：打开 APP 直接进入数字人语音交互页 —— 把它顶到最前。 */
+      if (process.env.GBT_W3_STARTUP_PROBE !== "1") {
+        const dh = wins.get("digital-human");
+        if (dh && !dh.isDestroyed()) { dh.show(); dh.focus(); }
+      }
     } catch (err) {
       console.error("[w3] 建窗失败（数据面不受影响）:", err);
     }
     try {
       buildTray();
       refreshTrayMenu();
+      refreshAppMenu();          /* 换掉 Electron 英文默认菜单（主人令 2026-10-04） */
     } catch (err) {
       console.error("[w3] 托盘失败（数据面不受影响，实时流照常）:", err);
     }
@@ -1579,6 +2138,12 @@ if (WIRE_ONLY) {
     const hasMain = registry.windows.some((e) => e.role === "main");
     if (hasMain) app.quit();
     /* W3 只登记子窗口：全关 ≠ 退出，退到托盘常驻（§2.2） */
+  });
+  /* 壳真退出时把自接入拉起的 `dsh web` 一并收走 —— 否则托盘里退出后，
+     那条子进程会变成孤儿继续占着端口（下次自接入就会撞上"已有实例在听"而拒起）。 */
+  app.on("will-quit", () => {
+    dshAutoHandles.forEach((h) => { try { h.stop(); } catch (err) { /* 收不掉不拖垮退出 */ } });
+    dshAutoHandles.clear();
   });
 }
 

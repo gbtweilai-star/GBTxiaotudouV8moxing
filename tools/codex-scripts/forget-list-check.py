@@ -96,7 +96,7 @@ def _rows_out_of_order(text: str) -> list:
     **行首编号锚点** ⇒ 会把上一行的编号与标题**吞掉**（两行粘成一行，编号出现缺口或错序）。
     路径/§/行数三类判据都看不见这种坏法 —— 只有"编号必须递增"看得见。
     """
-    bad, prev, prev_no = [], None, None
+    bad, _, prev_no = [], None, None
     for i, ln in enumerate(text.splitlines(), 1):
         m = ROW.match(ln)
         no = int(m.group(1)) if m else None
@@ -212,7 +212,7 @@ def cmd_selftest(a) -> int:
        str(check(fake2)["**行号超出**（引了出处但那行不在）"])[:60])
     # ③ 负控：**不存在的 § 必须被抓**
     fake3 = "见 §二百五"
-    ck("**负控：不存在的 § 必须被抓**", bool(check(fake3)["**§ 不在证据账里**"]),str(check(fake3)["**§ 不在证据账里**"])[:40])
+    ck("**负控：不存在的 § 必须被抓**", bool(check(fake3)["**§ 不在证据账里**"]), str(check(fake3)["**§ 不在证据账里**"])[:40])
     # ④ 负控：**超长必须报**（防它又变回流水账）
     fake4 = "x\n" * (MAX_LINES + 5)
     ck("**负控：超过 %d 行必须报**（防又变流水账）" % MAX_LINES, check(fake4)["行数"] > MAX_LINES,

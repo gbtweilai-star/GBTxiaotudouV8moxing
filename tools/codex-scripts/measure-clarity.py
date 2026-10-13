@@ -5,11 +5,13 @@
   · 脸部 ROI 高光：>240 亮度像素占比 + 最大亮度（眼神光应使其上升）
   · 梯度方差（信息项，不是主判据）
 用法: python tools/codex-scripts/measure-clarity.py <图...>  （纯 PIL/numpy，无浏览器）"""
-import pathlib, sys
+import pathlib
+import sys
 import numpy as np
 from PIL import Image
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
+
 
 def analyze(p):
     im = Image.open(p).convert("RGB")
@@ -35,11 +37,14 @@ def analyze(p):
     gx, gy = np.gradient(g)
     mag = np.hypot(gx, gy)
     strong = float(mag[mag >= np.percentile(mag, 95)].mean())
-    head_h = max(40, int((y1 - y0) * 0.22)); cx = (x0 + x1) // 2; half = max(30, int((x1 - x0) * 0.28))
+    head_h = max(40, int((y1 - y0) * 0.22))
+    cx = (x0 + x1) // 2
+    half = max(30, int((x1 - x0) * 0.28))
     roi = g[max(0, y0):y0 + head_h, max(0, cx - half):min(g.shape[1], cx + half)]
     hi = float((roi > 240).mean() * 100) if roi.size else 0.0
     return dict(size=im.size, roi=(roi.shape[1], roi.shape[0]), jag=jag, strong=strong,
                 hi=hi, maxlum=float(roi.max()) if roi.size else 0.0, gvar=float(np.var(gx) + np.var(gy)))
+
 
 for arg in sys.argv[1:]:
     p = pathlib.Path(arg)

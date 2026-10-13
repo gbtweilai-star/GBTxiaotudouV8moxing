@@ -2,11 +2,9 @@
 """生成 V12 数据层：v11_manifest.json + 新增 workspace 键（工作区源码全量清点真相）。
 所有数字都来自本目录里已跑出的扫描 JSON，或在此现场重算，无一条手写。
 """
-import ast
 import json
-import re
 import sys
-from collections import Counter, defaultdict
+from collections import defaultdict
 from pathlib import Path
 
 try:

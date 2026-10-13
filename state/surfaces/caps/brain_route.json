@@ -1,0 +1,17 @@
+{
+ "cap": "brain_route",
+ "domain": "llm",
+ "desc": "大脑执行层·路由维：意图→能力动态路由（语义匹配+备选建议）",
+ "safe": true,
+ "ops": [],
+ "ops_method": "handler 文件未找到",
+ "handler_file": "",
+ "params": [
+  "intent"
+ ],
+ "params_hint": "",
+ "handler": "brain_route",
+ "slot": "g1-05",
+ "group": 1,
+ "role": "推理路由（本地→云→CLI 车道）"
+}

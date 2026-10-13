@@ -57,8 +57,8 @@ def live() -> dict:
     from gbt_allinone import auth_gate as G
     r = compare(set(P.SCOPE_DESCRIPTIONS), set(getattr(G, "SCOPES", {}) or {}))
     r["口径"] = ("只比两侧集合、不改任何授权 —— **AI 永远不发授权**；"
-                 "`owner_control` 一条顶掉该次动作所需的全部未授权作用域（一次性消耗），"
-                 "它的语义由框架契约测试作证，不是本工具")
+               "`owner_control` 一条顶掉该次动作所需的全部未授权作用域（一次性消耗），"
+               "它的语义由框架契约测试作证，不是本工具")
     return r
 
 

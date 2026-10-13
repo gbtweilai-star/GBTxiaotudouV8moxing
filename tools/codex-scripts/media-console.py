@@ -101,7 +101,7 @@ def _audition() -> dict:
         chk["量得格式"] = fmt.get("format_name")
         chk["量得时长_s"] = round(float(fmt.get("duration") or 0), 3)
         chk["一致"] = (chk["量得格式"] == "ogg"
-                       and abs(chk["量得时长_s"] - float(d.get("时长_s") or 0)) < 0.05)
+                     and abs(chk["量得时长_s"] - float(d.get("时长_s") or 0)) < 0.05)
     except Exception as e:                                            # noqa: BLE001
         chk["复核"] = "ffprobe 复核失败：%s" % str(e)[:60]
     d["复核"] = chk
@@ -550,7 +550,7 @@ def build(d: dict) -> str:
     sk = d.get("scaffolds") or []
     if sk:
         _n_skel = sum(1 for x in sk if x["how"] == "skeleton")
-        _n_pass = sum(1 for x in sk if x["passes"] is True)
+        _ = sum(1 for x in sk if x["passes"] is True)   # 未被引用（保留计算原样）
         parts.append("<h2>输入口 · 怎么填才进得去</h2>")
         parts.append('<p class="dim">人写步共 <b>%d</b> 个：<span class="ok">有可填骨架 %d</span> · '
                      '<span class="warn">只能给清单 %d</span>。骨架是**当场拿自己的判据自检过**的 —— '
@@ -686,8 +686,8 @@ def main() -> int:
             states[r["state"]] = states.get(r["state"], 0) + 1
     print("  18 格：%s" % json.dumps(states, ensure_ascii=False))
     print("  三条链：%s" % ", ".join("%s %d 步（可跑 %d）"
-                                     % (k, len(v), sum(1 for s in v if s["runnable"]))
-                                     for k, v in d["chains"].items()))
+                                 % (k, len(v), sum(1 for s in v if s["runnable"]))
+                                 for k, v in d["chains"].items()))
     print("  许可账 %s 条 · 发布包 %d 份" % (d["license"].get("entries"), len(d["pubs"])))
     print("  重生成：%s" % REGEN)
     # ── 自检：正文里不许有 markdown 字面量（第 116 轮加）────────────────────

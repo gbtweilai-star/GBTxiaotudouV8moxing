@@ -127,7 +127,7 @@ def build() -> dict:
         count[r["档"]] = count.get(r["档"], 0) + 1
     return {"名单条数": len(rows), "逐条": rows, "统计": count,
             "口径": "**有真件 ≠ 该插件装上了**：插件名与职责是两件事；"
-                    "`🟡` 一律写清为什么本脚本验不了，不冒充通过"}
+            "`🟡` 一律写清为什么本脚本验不了，不冒充通过"}
 
 
 def check(as_json: bool) -> int:

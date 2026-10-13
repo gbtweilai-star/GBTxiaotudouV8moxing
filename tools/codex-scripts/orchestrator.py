@@ -67,12 +67,40 @@ CHAINS = {
 }
 
 # 各工序**怎么真跑**（编排器只调已验过的入口，不自己重写渲染）
+#
+# 🔴 2026-10-10 修：原来 07/08 是**手写死的字符串**「（未接线）…」，而 07 早就本地接线了
+#    （assemble.py 现读 13.0KB · 自检 6/6 全过：正控 3 条 + 负控 3 条，执行地如实标 LOCAL-触手）
+#    ⇒ 手写的接线状态**必然过期**，还把通的说成不通（反向误导，与前几轮抓的"假绿"是同一族病）。
+#    改成**现读**：文件在不在、自检过不过，读出来是什么就写什么。
 RUNNERS = {
     "06": "render-agent.py run <job_id> --worker <slot>",
-    "07": "（未接线）assemble 云侧独立 worker",
-    "08": "（未接线）publish 要 deploy_publish 授权",
     "04": "（可选前置）frame-cache.py put <job> <frame>",
 }
+
+
+def _runner_state(num: str, name: str) -> str:
+    """**真跑入口现读**（不写死）—— 手写的接线状态一定会过期。
+
+    判法：模块文件在不在 + 能不能自检过。**在 = 本地已接线**；不在 = 如实标未接线。
+    云那条另算：本工具不部署云函数（须主人点头），所以"本地通/云未授权"要**分开写**。
+    """
+    files = {
+        "04": "frame-cache.py", "06": "render-agent.py",
+        "07": "assemble.py", "08": "publish.py",
+    }
+    fn = files.get(num)
+    if not fn:
+        return "?"
+    p = ROOT / "tools" / "codex-scripts" / fn
+    if not p.is_file():
+        return "**（未接线）找不到 %s**" % fn
+    kb = p.stat().st_size / 1024
+    if num == "07":
+        return ("**本地触手已接线**（%s %.1fKB · 执行地 LOCAL-触手；云函数未授权须主人点头）"
+                % (fn, kb))
+    if num == "08":
+        return "**要 deploy_publish 授权**（%s %.1fKB · 授权只有主人能在终端发）" % (fn, kb)
+    return "%s（%.1fKB）" % (fn, kb)
 
 
 def _tentacles() -> int:
@@ -122,7 +150,7 @@ def cmd_plan(a) -> int:
     for num, name in chain:
         g, why = _gate(name)
         rows.append({"工序": num, "模块": name, "闸": "✅ 放行" if g else "⛔ 拒", "判据": why,
-                     "真跑入口": RUNNERS.get(num, "?")})
+                     "真跑入口": RUNNERS.get(num) or _runner_state(num, name)})
         if not g and stop is None:
             stop = {"停在": "%s %s" % (num, name), "为什么": why,
                     "编排器行为": "**停住**，不往下跑（后面的工序即使已登记也不许越级）"}
@@ -182,7 +210,7 @@ def cmd_tick(a) -> int:
         row = {"作业": jid, "触手槽": slot, "隔离位": "state/tentacle-slots/%s" % slot,
                "工序判定": verdict,
                "判决": ("⛔ 停在 %s %s" % (blocked[0]["工序"], blocked[0]["模块"])) if blocked
-                       else ("✅ 已跑到 %s" % (ran[1] if ran else "?")),
+               else ("✅ 已跑到 %s" % (ran[1] if ran else "?")),
                "真跑": bool(a.apply and ran)}
         rows.append(row)
         ledger.append({"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "job_id": jid, "slot": slot,

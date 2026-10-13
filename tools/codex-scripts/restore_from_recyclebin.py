@@ -19,7 +19,6 @@
     py -3.14 tools/codex-scripts/restore_from_recyclebin.py --match <子串> --go
 """
 import argparse
-import os
 import struct
 import sys
 from pathlib import Path

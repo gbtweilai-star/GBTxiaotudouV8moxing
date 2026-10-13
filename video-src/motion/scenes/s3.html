@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- head 只是源文件的元数据；运行时**只克隆 <template> 里的东西**，其余（含整个 head）丢弃 -->
+  </head>
+  <body>
+    <template>
+      <style>
+        /* 契约：子合成的根一律用 #root 选择器（lint: subcomposition_root_styled_by_class） */
+        #root { position: absolute; inset: 0; display: grid; place-items: center; }
+        .who { font-size: 52px; color: #9fb3c8; letter-spacing: 0.14em; margin-bottom: 42px; text-align: center; }
+        .bar { width: 1320px; height: 10px; background: #1f2a44; border-radius: 6px; overflow: hidden; }
+        .barfill { height: 100%; width: 0%; background: #f5b041; }
+      </style>
+      <div id="root" data-composition-id="scene-s3" data-width="1920" data-height="1080">
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="who" id="w">开发者：自由的风</div>
+          <div class="bar"><div class="barfill" id="f"></div></div>
+        </div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        tl.from("#w", { opacity: 0, y: 30, duration: 0.7, ease: "power2.out" }, 0.1);
+        tl.to("#f",  { width: "100%", duration: 2.6, ease: "none" }, 0.1);
+        window.__timelines["scene-s3"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+ "cap": "omni_web",
+ "domain": "tentacle",
+ "desc": "万能触手·Web六态：看结构/读源码/读讲解/改文件/交给AI/跑项目；git+github+stackblitz一键触达",
+ "safe": false,
+ "ops": [],
+ "ops_method": "none",
+ "handler_file": "gbt_allinone\\omni_web.py",
+ "params": [
+  "op"
+ ],
+ "params_hint": "op=看结构|读源码|读讲解|改文件|gitingest|跑项目；repo=GitHub URL或本地路径；files=[…]（read_source）；path/content/mode（edit_file，mode=write|append|replace）；max_files/max_chars（gitingest）",
+ "handler": "omni_web",
+ "slot": "g3-29",
+ "group": 3,
+ "role": "仓库读写面（万能触手·Web 六态）"
+}

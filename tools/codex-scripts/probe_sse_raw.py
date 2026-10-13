@@ -44,7 +44,7 @@ time.sleep(3.0)
 
 body = json.dumps({"kind": "caps_called_audit", "payload": {}, "confirm": True}).encode()
 req = urllib.request.Request("http://127.0.0.1:8765/api/capability", data=body,
-                            headers={"Content-Type": "application/json"}, method="POST")
+                             headers={"Content-Type": "application/json"}, method="POST")
 with urllib.request.urlopen(req, timeout=20) as r:
     posted = json.loads(r.read().decode())
 print("POST:", json.dumps(posted, ensure_ascii=False))

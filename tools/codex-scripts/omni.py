@@ -378,7 +378,7 @@ DISTILLED_DOMAINS = {
     #   ⇒ 现状：`verify-distill --all` 对它判红（这是**正确的红**，不是误报）。
     #   处置权在主人（并进 `gbt-security` 的规程 / 还是留 `gbt-dangerous` 另给一个域）；
     #   在那之前**保留这条红当待办**，不删键、不改判据。
-    "unimplemented": "gbt-dangerous", # ⚠️ 现读：该域已空（11 位已实现并改挂 security）—— 见上方注释
+    "unimplemented": "gbt-dangerous",  # ⚠️ 现读：该域已空（11 位已实现并改挂 security）—— 见上方注释
     "tools": "gbt-tools",             # 6 位：前 3 位零作用域只读（投影卡/穿透网 payload 被 api.py 丢掉）；
                                       #        后 3 位是改代码链（code_patch/git_read/git_write），
                                       #        门是 **fail-closed**：非 dry_run 一律挂 filesystem_write
@@ -386,7 +386,7 @@ DISTILLED_DOMAINS = {
     # ── 六个单能力位小域（2026-09-22 收尾，至此 **30/30 全交付**）──
     "automation": "gbt-automation",   # browser：默认 op=open 缺 url 必败；只读路是 op=native+action=status
     "life": "gbt-life",               # life：空参就是 status；`action` 会被当 `op`（api.py:141）
-    "integration": "gbt-integration", # feishu_embed：三条 check_* 内层 denied 却 exit 0
+    "integration": "gbt-integration",  # feishu_embed：三条 check_* 内层 denied 却 exit 0
     "infra": "gbt-infra",             # cloud_pc：PROVISION 花钱+不可逆、RELEASE 不可逆，零作用域
     "social": "gbt-social",           # auto_publish：发布/提现/改价要人；零作用域、门在模块里
     "collab": "gbt-collab",           # stigmergy：唯一写 op=deposit 真写盘；零作用域
@@ -412,7 +412,7 @@ DISTILLED_CLUSTERS = {
     "ef": "gbt-ef",                   # 3 条：EigenFlux 网络（广播/私信/身份）
     "glmv": "gbt-glmv",               # 3 条：GLM 视觉系
     "remotion": "gbt-remotion",       # 12 条：React 造视频（⚠️ 裸名 `remotion` 是另一条簇，不在本簇口径内）
-    "hyperframes": "gbt-hyperframes", # 8 条：HTML 合成做视频（上游技能在 `~/.agents/skills/` 共享目录）
+    "hyperframes": "gbt-hyperframes",  # 8 条：HTML 合成做视频（上游技能在 `~/.agents/skills/` 共享目录）
     "chengfeng": "gbt-chengfeng",     # 7 条：中文口播工具链；⚠️ Runtime 与 Studio 现读**未装**，脚本被平铺丢了插件外壳
 }
 # 我们自己的技能簇 —— 它们**就是**蒸馏件，不该被列成"待蒸的外来技能"
@@ -617,7 +617,16 @@ def collect_skills() -> tuple[list[dict], list[dict]]:
             row = {
                 "name": fx.get("name") or d.name,
                 "displayName": fx.get("displayName") or "",
-                "desc": (fx.get("description") or "")[:400],
+                # 🔴 2026-10-13：技能侧**同一个坑**（实测 **97/386** 条描述超 400 字被静默截断
+                #    ⇒ 尾部触发词进不了路由）。与能力位同法修：截断只影响显示，
+                #    被切掉的那段另存 `desc_tail`，打分时接回去（见 `rank()`）。
+                #    标记**追加**在 400 字之后，不替换末尾 —— 免得再挖一次"两头都不覆盖"的洞。
+                "desc": ((fx.get("description") or "")[:400]
+                         + ("…【图鉴截断：原文 %d 字（尾部见 desc_tail，打分已接回）】"
+                            % len(fx.get("description") or "")
+                            if len(fx.get("description") or "") > 400 else "")),
+                "desc_tail": (fx.get("description") or "")[400:],
+                "desc_truncated": len(fx.get("description") or "") > 400,
                 "triggers": fx.get("triggers") or [],
                 "version": fx.get("version") or "",
                 "channel": channel,
@@ -652,10 +661,31 @@ def collect_caps() -> tuple[list[dict], str]:
         kind = str(row.get("name") or "")
         spec = BENIGN_CAPS.get(kind) or {}
         need = CR.required_params(kind) if hasattr(CR, "required_params") else []
+        # 🔴 2026-10-13 修（实测教训）：`desc` 截到 300 字是**静默**的 —— `cadgen` 的 desc 正好被切在
+        #    300 字，写在**尾部**的"常用说法/触发词"于是**根本没进路由**（实测：同一句人话
+        #    「把这个宝箱模型渲染一张图看看」，词在尾部时 **零命中**；挪到前 300 字内 ⇒ 命中 3 词、
+        #    排到第一）。静默截断是假绿的近亲：作者以为加了触发词，路由里根本没有。
+        #    修法两条：① 截断时补一个**看得见**的标记（谁被切了一眼就知道）② 记下原长，供自检对账。
+        _full_desc = str(row.get("desc") or "")
+        # 🔴 2026-10-13 二次修：标记**追加**在 300 字之后，不再替换掉第 280–300 那 20 个字 ——
+        #    上一版把标记塞进前 300（`[:280] + 标记`），于是**第 280–300 这 20 字既不在 desc
+        #    也不在 desc_tail 里**（一个我自己挖的洞）。现在：desc = 前 300 字原文 + 标记；
+        #    desc_tail = 第 300 字之后 ⇒ 无洞、无重叠。
+        desc_shown = _full_desc[:300]
+        if len(_full_desc) > 300:
+            desc_shown = desc_shown + "…【图鉴截断：原文 %d 字（尾部见 desc_tail，打分已接回）】" % len(_full_desc)
         out.append({
             "kind": kind,
             "domain": str(row.get("domain") or ""),
-            "desc": str(row.get("desc") or "")[:300],
+            "desc": desc_shown,
+            # 🔴 2026-10-13 修**根**：截断从此**只影响显示、不影响路由** ——
+            #    被切掉的那一段另存 `desc_tail`，打分时接回去用（见 `score_cap`）。
+            #    为什么要这么修：原来截断是**静默**的 ⇒ 把触发词写在 300 字之后的位
+            #    **根本进不了路由**（已经害过两个位：cadgen、comfy_native）。
+            #    逐位改写 desc 是治表；这里把"截断"与"路由"解耦，71 位**自动**恢复可路由。
+            "desc_tail": (_full_desc[300:] if len(_full_desc) > 300 else ""),
+            "desc_full_chars": len(_full_desc),
+            "desc_truncated": len(_full_desc) > 300,
             "enabled": row.get("status") == "enabled",
             "reason": str(row.get("reason") or ""),
             "safe": bool(spec.get("safe")),
@@ -793,7 +823,9 @@ def score_cap(intent_g: set, cap: dict) -> tuple[float, list[str]]:
     """
     why = []
     name_g = grams(cap["kind"].replace("_", ""))
-    desc_g = grams(cap["desc"])
+    # 打分语料 = 显示用 desc **＋** 被截断的那一段（`desc_tail`）——
+    # 截断只影响显示、不影响路由（2026-10-13 修；详见 build 里 desc_tail 的注释）。
+    desc_g = grams(cap["desc"] + (cap.get("desc_tail") or ""))
     dom_g = _hint_grams(cap["domain"])
     s = 0.0
     hit_name = intent_g & name_g
@@ -919,8 +951,10 @@ def rank(intent: str, domain: str | None = None, top: int = 8) -> dict:
             caps.append({**cap, "score": round(s, 2), "why": why})
     caps.sort(key=lambda r: -r["score"])
     for sk in atlas["skills"]:
-        blob = "%s %s %s %s" % (sk["name"], sk["displayName"], sk["desc"],
-                                " ".join(sk["triggers"]))
+        # 技能侧同款：打分语料 = 显示用 desc **＋** 被截断的那段（`desc_tail`）——
+        # 截断只影响显示、不影响路由（2026-10-13；实测 97/386 条技能描述超 400 字）。
+        blob = "%s %s %s %s %s" % (sk["name"], sk["displayName"], sk["desc"],
+                                   sk.get("desc_tail") or "", " ".join(sk["triggers"]))
         hit = ig & grams(blob)
         if hit:
             skills.append({**sk, "score": round(len(hit) * 1.2, 2),
@@ -1104,7 +1138,6 @@ def cmd_caliber() -> int:
     三个数说的是同一件事，却谁也不对账 ⇒ 读的人不知道信哪个。
     这条命令把**每种口径的定义与现算值并排列出**，并指定哪一个才是权威。
     """
-    from collections import Counter
     # 🔴 2026-09-23 补 import：A 行的说明改成"现算"之后用到了 `UNIMPLEMENTED_CAPS`，
     #    而当时只改了文案没补 import ⇒ `omni caliber` 直接 NameError 崩掉（本轮实测抓到）。
     #    教训：**"把写死的数字改成现算"不是改文案，是改依赖** —— 补了算式就得补 import。
@@ -1196,7 +1229,7 @@ def cmd_caliber() -> int:
     sk_ok = [s["name"] for s in a["skills"] if skill_reachable(s)[0]]
     print("\n  技能落点可达性：图鉴 %d 条中，**本会话可加载 %d 条**"
           "（只看 %s）" % (len(a["skills"]), len(sk_ok),
-                          " ∪ ".join(str(r) for r, _ in SESSION_SKILL_ROOTS)))
+                       " ∪ ".join(str(r) for r, _ in SESSION_SKILL_ROOTS)))
     return 0
 
 

@@ -2,7 +2,9 @@
 """头发弹簧骨 3 根（后/左/右），父骨=Head；区域**剔除面部**（脸在 +X）。
 口径沿用已验证结论：① joins 下标（joints 下标≠节点号）② 根部与父骨混权 ③ 参数写进 extras。
 输入 raw/rig/model-springs-both.glb（已有 4 根裙摆弹簧骨）→ 输出 raw/rig/model-springs-hair.glb"""
-import json, pathlib, struct
+import json
+import pathlib
+import struct
 import numpy as np
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
@@ -20,7 +22,8 @@ pr = J["meshes"][0]["primitives"][0]
 
 
 def acc(i, comps, dt=np.float64):
-    a = J["accessors"][i]; bv = J["bufferViews"][a["bufferView"]]
+    a = J["accessors"][i]
+    bv = J["bufferViews"][a["bufferView"]]
     t = {5126: np.float32, 5125: np.uint32, 5123: np.uint16}[a["componentType"]]
     return np.frombuffer(bytes(BIN), t, a["count"] * comps, bv.get("byteOffset", 0)).reshape(a["count"], comps).astype(dt)
 
@@ -39,8 +42,11 @@ for i, n in enumerate(J["nodes"]):
         continue
     chain, cur, g = [], i, 0
     while cur is not None and cur not in world:
-        chain.append(cur); cur = parent_of.get(cur); g += 1
-        if g > 200: raise SystemExit("环")
+        chain.append(cur)
+        cur = parent_of.get(cur)
+        g += 1
+        if g > 200:
+            raise SystemExit("环")
     w = world[cur] if cur is not None else np.zeros(3)
     for nd in reversed(chain):
         w = w + np.array(J["nodes"][nd].get("translation", [0, 0, 0]), np.float64)
@@ -48,7 +54,7 @@ for i, n in enumerate(J["nodes"]):
 head_i = names.index("mixamorig:Head")
 neck_y = world[names.index("mixamorig:Neck")][1]
 hc = world[head_i]
-print(f"Head 世界位 {np.round(hc,3)} · 颈 y={neck_y:.3f}")
+print(f"Head 世界位 {np.round(hc, 3)} · 颈 y={neck_y:.3f}")
 
 HAIR = {  # 方向 → (head 偏移, tail 偏移)
     "HairB": (np.array([-0.045, 0.030, 0.0]), np.array([-0.080, -0.055, 0.0])),
@@ -60,7 +66,8 @@ JMAP = {n: i for i, n in enumerate(J["skins"][0]["joints"])}
 new = []
 base = len(J["nodes"])
 for k, (nm, (ho, to)) in enumerate(HAIR.items()):
-    head = hc + ho; tail = hc + to
+    head = hc + ho
+    tail = hc + to
     J["nodes"].append({"name": "mixamorig:" + nm, "translation": [float(x) for x in head],
                        "extras": {"springBone": {"stiffness": 0.25, "dragForce": 0.45,
                                                  "gravityPower": 0.35, "hitRadius": 0.01,
@@ -70,7 +77,8 @@ for k, (nm, (ho, to)) in enumerate(HAIR.items()):
 
 
 def seg_d(V, a, b):
-    ab = b - a; t = np.clip(((V - a) @ ab) / max(1e-12, ab @ ab), 0, 1)
+    ab = b - a
+    t = np.clip(((V - a) @ ab) / max(1e-12, ab @ ab), 0, 1)
     return np.linalg.norm(V - (a + t[:, None] * ab), axis=1)
 
 
@@ -96,13 +104,17 @@ print(f"改权顶点 {changed}")
 def add_view(arr, target=None):
     while len(BIN) % 4:
         BIN.append(0)
-    o = len(BIN); BIN.extend(arr.tobytes())
+    o = len(BIN)
+    BIN.extend(arr.tobytes())
     v = {"buffer": 0, "byteOffset": o, "byteLength": arr.nbytes}
-    if target: v["target"] = target
-    J["bufferViews"].append(v); return len(J["bufferViews"]) - 1
+    if target:
+        v["target"] = target
+    J["bufferViews"].append(v)
+    return len(J["bufferViews"]) - 1
 
 
-jv = add_view(JT2.astype(np.uint16), 34962); wv = add_view(WT2.astype(np.float32), 34962)
+jv = add_view(JT2.astype(np.uint16), 34962)
+wv = add_view(WT2.astype(np.float32), 34962)
 J["accessors"].append({"bufferView": jv, "componentType": 5123, "count": len(JT2), "type": "VEC4"})
 J["accessors"].append({"bufferView": wv, "componentType": 5126, "count": len(WT2), "type": "VEC4"})
 pr["attributes"]["JOINTS_0"] = len(J["accessors"]) - 2
@@ -112,7 +124,8 @@ a = J["accessors"][J["skins"][0]["inverseBindMatrices"]]
 bv = J["bufferViews"][a["bufferView"]]
 ibm = np.frombuffer(bytes(BIN), np.float32, a["count"] * 16, bv.get("byteOffset", 0)).reshape(-1, 16).copy()
 for b in new:
-    m = np.eye(4, dtype=np.float32); m[:3, 3] = -b["head"]
+    m = np.eye(4, dtype=np.float32)
+    m[:3, 3] = -b["head"]
     ibm = np.vstack([ibm, m.T.flatten()])
 iv = add_view(ibm)
 J["accessors"].append({"bufferView": iv, "componentType": 5126, "count": len(ibm), "type": "MAT4"})

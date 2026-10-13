@@ -72,6 +72,43 @@ _PROFILES: dict[str, dict] = {
         # 来也 ADP 的 key 是纯十六进制长串，不带 sk-/ak- 前缀 ⇒ 这条只保证"是单行长串"
         "pattern": r"^[A-Za-z0-9_\-]{20,}$",
     },
+    # ── 2026-10-04 迁移清单配套（主人点名「2」：明文令牌迁进 DPAPI 箱）────────────
+    # 这四档是"落脚点"：把用户环境里的明文令牌迁进箱（`store/secrets/<档>_api.dpapi`），
+    # 环境变量只留引用名。**形状不写死**——它们是不透明的第三方令牌/口令（非 sk-/ak- 前缀），
+    # 只保证"单行、8–256 字符、无空白"；写死形状会把没见过的合法值拒之门外（adp 那条的同类教训）。
+    # 清单与命令：`state/secret_migration_plan.md`。
+    "potato": {
+        "entropy": b"GBTxiaotudouV8:potato:v1",
+        "file": "potato_api.dpapi",
+        "env": "GBT_POTATO_API_KEY",
+        "proxy": "",
+        "file_env": "GBT_POTATO_SECRET_FILE",
+        "pattern": r"^\S{8,256}$",
+    },
+    "custom": {
+        "entropy": b"GBTxiaotudouV8:custom:v1",
+        "file": "custom_api.dpapi",
+        "env": "GBT_LLM_API_KEY",
+        "proxy": "",
+        "file_env": "GBT_CUSTOM_SECRET_FILE",
+        "pattern": r"^\S{8,256}$",
+    },
+    "imap": {
+        "entropy": b"GBTxiaotudouV8:imap:v1",
+        "file": "imap_api.dpapi",
+        "env": "GBT_IMAP_PASS",
+        "proxy": "",
+        "file_env": "GBT_IMAP_SECRET_FILE",
+        "pattern": r"^\S{8,256}$",
+    },
+    "gateway": {
+        "entropy": b"GBTxiaotudouV8:gateway:v1",
+        "file": "gateway_api.dpapi",
+        "env": "GBT_GATEWAY_TOKEN",
+        "proxy": "",
+        "file_env": "GBT_GATEWAY_SECRET_FILE",
+        "pattern": r"^\S{8,256}$",
+    },
     # ── 2026-09-25 第二批（主人令「密钥**全部**部署跟双向插件一样、可以自动读取」）────────
     #    背景：这些密钥**只配在 Windows 的 User 作用域**，而本机进程是在那些变量写入**之前**
     #    起的 ⇒ `os.environ` 里一个都没有（F2 就是这条）。收进保险箱后，
@@ -335,6 +372,16 @@ def load_from_vault(profile: str | None = None) -> tuple[str, str]:
 
     给"必须以保险箱为准"的调用方用（例如看门狗拉起中继时）：
     环境里来路不明的一份 key 不应该悄悄顶掉保险箱里的那一份。
+
+    🔴 2026-10-08 修的真缺陷（蓝图 §9.1 · Q2 登记在案）：**「解不开」不许伪装成「没有」**。
+      原来这一句是 `except Exception: return "", "unreadable"` —— DPAPI 解不开时调用方
+      收到一个空 key，往下走就变成「上游 401」，人去追 401 追到天亮，真正的原因
+      （保险箱读不出来）一个字都没露。这就是《静默失效律》的教科书形态。
+      ⇒ 现在分两种：**文件不在**（真的没有）照旧 `("", "missing")`——那是合法状态不是故障；
+        **有文件但解不开**（DPAPI 坏了 / 换了机器 / 换了用户）**抛 DeepseekKeyError**，
+        报错里带 profile 与文件路径。让故障当场像故障。
+      调用方口径：要降级的必须**显式** catch（本仓四处调用方本来就都包在 try 里，
+      所以改这行不会让任何链崩），但至少记一行原因，不许静默吞。
     """
     name, _spec = _profile(profile)
     target = _secret_file(name)
@@ -342,8 +389,12 @@ def load_from_vault(profile: str | None = None) -> tuple[str, str]:
         return "", "missing"
     try:
         key = _unprotect_dpapi(target.read_bytes(), name).decode("utf-8").strip()
-    except Exception:  # noqa: BLE001
-        return "", "unreadable"
+    except Exception as exc:  # noqa: BLE001
+        raise DeepseekKeyError(
+            "DPAPI 保险箱**解不开**（profile=%s · 文件=%s）：%s —— 这不是「没有密钥」，"
+            "是「有密钥但读不出来」（DPAPI 换了用户/机器，或文件被改过）。"
+            "别当上游 401 去追：先修保险箱，或重新写入这份密钥。" % (name, target, str(exc)[:160])
+        ) from exc
     return (key, "dpapi") if key else ("", "missing")
 
 

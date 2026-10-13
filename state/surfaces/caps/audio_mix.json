@@ -1,0 +1,36 @@
+{
+ "cap": "audio_mix",
+ "domain": "video",
+ "desc": "混音与母带（本机 ffmpeg，**零出网**）：`mix` 多轨合成（amix，逐路音量，显式 normalize=0）；`master` 响度归一（**两遍法 loudnorm**：先量后施加，第一遍的四个测量值随结果返回）。响度标准表 streaming -14 / podcast -16 / broadcast -23 / cinema -27 LUFS + 曲风动态预算（**与托管技能 music-production 的 -14 LUFS 口径对齐**，不另立第二套）。填的是 media_flow 的 music/04-mix、music/05-master、film/04-assets 三格。写面自收窄到 projects/·outputs/·.scratch/（policy 无该 kind ⇒ 门内零作用域，故自钉）；复用 audio_extract 的写面守卫与验证器（**不重写**）。",
+ "safe": false,
+ "ops": [
+  {
+   "op": "loudness_targets",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "master",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "mix",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "qc",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "status",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "static-heuristic",
+ "handler_file": "gbt_allinone\\tools\\audio_mix.py",
+ "params": [],
+ "params_hint": "",
+ "handler": "audio_mix",
+ "slot": "g2-13",
+ "group": 2,
+ "role": "AI 音乐工作流（词→编曲→音频→母带→发行）"
+}

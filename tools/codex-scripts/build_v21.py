@@ -3,7 +3,6 @@
 修法一行：.chat-body>*,.god-body>*{flex:0 0 auto} —— 已进 refine.css，
 本脚本把它补进 V20 两个交付件并重建为 V21。
 """
-import collections
 import re
 import shutil
 import sys

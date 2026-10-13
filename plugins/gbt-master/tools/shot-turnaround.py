@@ -82,7 +82,7 @@ def negctl() -> int:
             err = pg.evaluate("() => window.__err || ''")
             shot = pg.evaluate("() => window.__shot === true")
             shown = pg.evaluate("() => { const e=document.getElementById('err');"
-                               "return {shown:getComputedStyle(e).display!=='none', text:e.textContent}}")
+                                "return {shown:getComputedStyle(e).display!=='none', text:e.textContent}}")
             b.close()
     finally:
         shutdown()
@@ -104,11 +104,14 @@ def parse_args(argv):
         if a.startswith("--"):
             key = a[2:]
             if i + 1 < len(argv) and not argv[i + 1].startswith("--"):
-                opts[key] = argv[i + 1]; i += 2
+                opts[key] = argv[i + 1]
+                i += 2
             else:
-                opts[key] = True; i += 1
+                opts[key] = True
+                i += 1
         else:
-            pos.append(a); i += 1
+            pos.append(a)
+            i += 1
     return opts, pos
 
 

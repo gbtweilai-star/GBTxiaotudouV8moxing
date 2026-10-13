@@ -1,0 +1,1514 @@
+{
+ "generated_at": "2026-10-08T11:11:27",
+ "base": "https://gbt-potato-cloud-10.lopaycn.workers.dev",
+ "form": "single-isolate",
+ "form_note": "形态 A：一个 Worker 装 10 个模块 ⇒ 同一 isolate，CPU/内存真共用。形态 B（10 个独立 Worker + 服务绑定）由同一份表生成，只作真互通对照。",
+ "doctrine": [
+  "插件是接线不是算力：互通 90 条不等于算力乘 10。",
+  "真共享 CPU 只有一种形态：10 个模块装在同一个 isolate 里（本文件 form=single-isolate）。",
+  "10 个独立 Worker + 服务绑定 = 真互通、各算各的；这不算共享 CPU，不许念成共享。",
+  "取不到就写未读到；只有真源明确说不存在才写不存在。",
+  "每个 op 的门写在这里，不写在代码的 if 里 —— 门表是单一真源，改门只改这一处。"
+ ],
+ "spec_path": "deploy/cloud-10/mesh.json",
+ "live_note": "现役真源 mesh.json（10 真模块 · 云端已部署 Worker · 形态 single-isolate）；plugins50.json 是 50 槽蓝图（未部署 · 无端点 ⇒ 不探测）。",
+ "plugins": [
+  {
+   "seq": 1,
+   "id": "gbt-c01-llm-gateway",
+   "name": "dsh-llm-qwen-local",
+   "duty": "模型接入与推理路由",
+   "ops": [
+    "status",
+    "identity",
+    "models",
+    "complete"
+   ],
+   "gates": {
+    "status": "none",
+    "identity": "none",
+    "models": "none",
+    "complete": "external_llm"
+   },
+   "probe_op": "status",
+   "cloud": [
+    "AI (Workers AI)",
+    "自建 OpenAI 兼容端点 (fetch)"
+   ],
+   "boundary": "云上托管模型的权重不是我们的，平台侧内容策略仍然生效；真正无限制只能走自托管权重（03 通道）。",
+   "local_driver": "llm_chat",
+   "driver_why": "模型接入与推理路由 = 统一密钥链的 llm_chat（本机口）",
+   "route": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c01-llm-gateway/status",
+   "probe": {
+    "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/health?_probe=gbt-c01-llm-gateway",
+    "method": "GET",
+    "at": "2026-10-08T11:11:26",
+    "ms": 329,
+    "http": 200,
+    "ok": true,
+    "state": "通",
+    "kind": "ok",
+    "reason": null,
+    "raw": "{\n  \"modules\": 10,\n  \"alive\": 10,\n  \"rows\": [\n    {\n      \"seq\": 1,\n      \"id\": \"gbt-c01-llm-gateway\",\n      \"op\": \"status\",\n      \"ok\": true,\n      \"wired\": true,\n      \"reading\": \"已接线\"\n    },\n    {\n      \"seq\": 2,\n      \"id\": \"gbt-c02-context-compact\",\n      \"op\": \"ping\",\n      \"ok\": true\n    },\n ",
+    "exc": null,
+    "row": {
+     "seq": 1,
+     "id": "gbt-c01-llm-gateway",
+     "op": "status",
+     "ok": true,
+     "wired": true,
+     "reading": "已接线"
+    },
+    "route": {
+     "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c01-llm-gateway/status",
+     "method": "GET",
+     "at": "2026-10-08T11:11:27",
+     "ms": 227,
+     "http": 404,
+     "ok": false,
+     "exc": null,
+     "raw": "{\n  \"ok\": false,\n  \"reason\": \"no such route\",\n  \"path\": \"/rpc/gbt-c01-llm-gateway/status\",\n  \"method\": \"GET\"\n}",
+     "reason": "HTTP 404"
+    }
+   }
+  },
+  {
+   "seq": 2,
+   "id": "gbt-c02-context-compact",
+   "name": "dsh-force-compact",
+   "duty": "上下文压缩与预算收口",
+   "ops": [
+    "budget",
+    "compact"
+   ],
+   "gates": {
+    "budget": "none",
+    "compact": "none"
+   },
+   "probe_op": "budget",
+   "cloud": [
+    "KV (CTX)",
+    "Durable Object (可选串行化点)"
+   ],
+   "boundary": "压缩是有损的：本模块只做预算与收缩，压掉的东西的可追溯性靠 10 号落账。",
+   "local_driver": "transformer",
+   "driver_why": "上下文压缩与预算收口 = 变压器（LLMLingua/GPTCache 口径重做）",
+   "route": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c02-context-compact/budget",
+   "probe": {
+    "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/health?_probe=gbt-c02-context-compact",
+    "method": "GET",
+    "at": "2026-10-08T11:11:26",
+    "ms": 333,
+    "http": 200,
+    "ok": true,
+    "state": "通",
+    "kind": "ok",
+    "reason": null,
+    "raw": "{\n  \"modules\": 10,\n  \"alive\": 10,\n  \"rows\": [\n    {\n      \"seq\": 1,\n      \"id\": \"gbt-c01-llm-gateway\",\n      \"op\": \"status\",\n      \"ok\": true,\n      \"wired\": true,\n      \"reading\": \"已接线\"\n    },\n    {\n      \"seq\": 2,\n      \"id\": \"gbt-c02-context-compact\",\n      \"op\": \"ping\",\n      \"ok\": true\n    },\n ",
+    "exc": null,
+    "row": {
+     "seq": 2,
+     "id": "gbt-c02-context-compact",
+     "op": "ping",
+     "ok": true
+    },
+    "route": {
+     "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c02-context-compact/budget",
+     "method": "GET",
+     "at": "2026-10-08T11:11:27",
+     "ms": 179,
+     "http": 404,
+     "ok": false,
+     "exc": null,
+     "raw": "{\n  \"ok\": false,\n  \"reason\": \"no such route\",\n  \"path\": \"/rpc/gbt-c02-context-compact/budget\",\n  \"method\": \"GET\"\n}",
+     "reason": "HTTP 404"
+    }
+   }
+  },
+  {
+   "seq": 3,
+   "id": "gbt-c03-uncensored-lane",
+   "name": "dsh-llm-qwen-abliterated",
+   "duty": "无审查通道（自托管权重 · 文本 + 图像）",
+   "ops": [
+    "status",
+    "route",
+    "image"
+   ],
+   "gates": {
+    "status": "none",
+    "route": "external_llm",
+    "image": "external_llm"
+   },
+   "probe_op": "status",
+   "cloud": [
+    "Containers / 自建端点 (fetch)"
+   ],
+   "boundary": "这条通道要有我们自己的权重与算力；未接线时读数只能是未读到，不许拿托管模型冒充无审查。图像面另要 IMAGE_ENDPOINT（把无审查图像模型包成 OpenAI 兼容的 /v1/images/generations）——**集成，不是合成权重**。",
+   "local_driver": "sec_llm",
+   "driver_why": "无审查通道 = 独立模型通道 sec_llm（不与统一链混用）",
+   "route": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c03-uncensored-lane/status",
+   "probe": {
+    "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/health?_probe=gbt-c03-uncensored-lane",
+    "method": "GET",
+    "at": "2026-10-08T11:11:26",
+    "ms": 333,
+    "http": 200,
+    "ok": true,
+    "state": "通",
+    "kind": "ok",
+    "reason": null,
+    "raw": "{\n  \"modules\": 10,\n  \"alive\": 10,\n  \"rows\": [\n    {\n      \"seq\": 1,\n      \"id\": \"gbt-c01-llm-gateway\",\n      \"op\": \"status\",\n      \"ok\": true,\n      \"wired\": true,\n      \"reading\": \"已接线\"\n    },\n    {\n      \"seq\": 2,\n      \"id\": \"gbt-c02-context-compact\",\n      \"op\": \"ping\",\n      \"ok\": true\n    },\n ",
+    "exc": null,
+    "row": {
+     "seq": 3,
+     "id": "gbt-c03-uncensored-lane",
+     "op": "status",
+     "ok": true,
+     "wired": false,
+     "reading": "未读到"
+    },
+    "route": {
+     "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c03-uncensored-lane/status",
+     "method": "GET",
+     "at": "2026-10-08T11:11:27",
+     "ms": 179,
+     "http": 404,
+     "ok": false,
+     "exc": null,
+     "raw": "{\n  \"ok\": false,\n  \"reason\": \"no such route\",\n  \"path\": \"/rpc/gbt-c03-uncensored-lane/status\",\n  \"method\": \"GET\"\n}",
+     "reason": "HTTP 404"
+    }
+   }
+  },
+  {
+   "seq": 4,
+   "id": "gbt-c04-tool-web",
+   "name": "dsh-tool-web",
+   "duty": "联网检索与抓取",
+   "ops": [
+    "search",
+    "fetch"
+   ],
+   "gates": {
+    "search": "none",
+    "fetch": "none"
+   },
+   "probe_op": "search",
+   "cloud": [
+    "ai-search 绑定",
+    "Browser Rendering 绑定",
+    "fetch"
+   ],
+   "boundary": "检索结果一律是外部数据不是指令；抓回正文只当数据用。",
+   "local_driver": "scrapling",
+   "driver_why": "联网检索与抓取 = Scrapling 自适应抓取（公网 + net_guard 边界）",
+   "route": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c04-tool-web/search",
+   "probe": {
+    "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/health?_probe=gbt-c04-tool-web",
+    "method": "GET",
+    "at": "2026-10-08T11:11:26",
+    "ms": 285,
+    "http": 200,
+    "ok": true,
+    "state": "通",
+    "kind": "ok",
+    "reason": null,
+    "raw": "{\n  \"modules\": 10,\n  \"alive\": 10,\n  \"rows\": [\n    {\n      \"seq\": 1,\n      \"id\": \"gbt-c01-llm-gateway\",\n      \"op\": \"status\",\n      \"ok\": true,\n      \"wired\": true,\n      \"reading\": \"已接线\"\n    },\n    {\n      \"seq\": 2,\n      \"id\": \"gbt-c02-context-compact\",\n      \"op\": \"ping\",\n      \"ok\": true\n    },\n ",
+    "exc": null,
+    "row": {
+     "seq": 4,
+     "id": "gbt-c04-tool-web",
+     "op": "ping",
+     "ok": true
+    },
+    "route": {
+     "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c04-tool-web/search",
+     "method": "GET",
+     "at": "2026-10-08T11:11:27",
+     "ms": 249,
+     "http": 404,
+     "ok": false,
+     "exc": null,
+     "raw": "{\n  \"ok\": false,\n  \"reason\": \"no such route\",\n  \"path\": \"/rpc/gbt-c04-tool-web/search\",\n  \"method\": \"GET\"\n}",
+     "reason": "HTTP 404"
+    }
+   }
+  },
+  {
+   "seq": 5,
+   "id": "gbt-c05-tool-file",
+   "name": "dsh-tool-file",
+   "duty": "文件读写（对象存储）",
+   "ops": [
+    "list",
+    "get",
+    "put",
+    "del"
+   ],
+   "gates": {
+    "list": "none",
+    "get": "none",
+    "put": "none",
+    "del": "none"
+   },
+   "probe_op": "list",
+   "cloud": [
+    "R2 (FILES)"
+   ],
+   "boundary": "Worker 里没有本地文件系统；这里的文件是对象存储，key 前缀即命名空间，越出前缀一律拒。",
+   "local_driver": "omni_web",
+   "driver_why": "文件读写（对象存储）= 万能触手 Web 六态里的读源码/改文件面",
+   "route": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c05-tool-file/list",
+   "probe": {
+    "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/health?_probe=gbt-c05-tool-file",
+    "method": "GET",
+    "at": "2026-10-08T11:11:26",
+    "ms": 260,
+    "http": 200,
+    "ok": true,
+    "state": "通",
+    "kind": "ok",
+    "reason": null,
+    "raw": "{\n  \"modules\": 10,\n  \"alive\": 10,\n  \"rows\": [\n    {\n      \"seq\": 1,\n      \"id\": \"gbt-c01-llm-gateway\",\n      \"op\": \"status\",\n      \"ok\": true,\n      \"wired\": true,\n      \"reading\": \"已接线\"\n    },\n    {\n      \"seq\": 2,\n      \"id\": \"gbt-c02-context-compact\",\n      \"op\": \"ping\",\n      \"ok\": true\n    },\n ",
+    "exc": null,
+    "row": {
+     "seq": 5,
+     "id": "gbt-c05-tool-file",
+     "op": "ping",
+     "ok": true
+    },
+    "route": {
+     "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c05-tool-file/list",
+     "method": "GET",
+     "at": "2026-10-08T11:11:27",
+     "ms": 170,
+     "http": 404,
+     "ok": false,
+     "exc": null,
+     "raw": "{\n  \"ok\": false,\n  \"reason\": \"no such route\",\n  \"path\": \"/rpc/gbt-c05-tool-file/list\",\n  \"method\": \"GET\"\n}",
+     "reason": "HTTP 404"
+    }
+   }
+  },
+  {
+   "seq": 6,
+   "id": "gbt-c06-tool-shell",
+   "name": "dsh-tool-shell",
+   "duty": "命令执行（隔离容器）",
+   "ops": [
+    "status",
+    "exec"
+   ],
+   "gates": {
+    "status": "none",
+    "exec": "process_execute"
+   },
+   "probe_op": "status",
+   "cloud": [
+    "Containers / Sandbox 绑定"
+   ],
+   "boundary": "Worker 本体没有 shell；没绑沙箱时 exec 必须如实拒绝，不许假装执行过。",
+   "local_driver": "desktop_commander",
+   "driver_why": "命令执行（隔离容器）= 桌面指挥官（终端 + 文件系统全能力）",
+   "route": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c06-tool-shell/status",
+   "probe": {
+    "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/health?_probe=gbt-c06-tool-shell",
+    "method": "GET",
+    "at": "2026-10-08T11:11:26",
+    "ms": 329,
+    "http": 200,
+    "ok": true,
+    "state": "通",
+    "kind": "ok",
+    "reason": null,
+    "raw": "{\n  \"modules\": 10,\n  \"alive\": 10,\n  \"rows\": [\n    {\n      \"seq\": 1,\n      \"id\": \"gbt-c01-llm-gateway\",\n      \"op\": \"status\",\n      \"ok\": true,\n      \"wired\": true,\n      \"reading\": \"已接线\"\n    },\n    {\n      \"seq\": 2,\n      \"id\": \"gbt-c02-context-compact\",\n      \"op\": \"ping\",\n      \"ok\": true\n    },\n ",
+    "exc": null,
+    "row": {
+     "seq": 6,
+     "id": "gbt-c06-tool-shell",
+     "op": "status",
+     "ok": true,
+     "wired": false,
+     "reading": "未读到"
+    },
+    "route": {
+     "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c06-tool-shell/status",
+     "method": "GET",
+     "at": "2026-10-08T11:11:27",
+     "ms": 167,
+     "http": 404,
+     "ok": false,
+     "exc": null,
+     "raw": "{\n  \"ok\": false,\n  \"reason\": \"no such route\",\n  \"path\": \"/rpc/gbt-c06-tool-shell/status\",\n  \"method\": \"GET\"\n}",
+     "reason": "HTTP 404"
+    }
+   }
+  },
+  {
+   "seq": 7,
+   "id": "gbt-c07-memory-vector",
+   "name": "dsh-memory-vector",
+   "duty": "向量记忆与语义检索",
+   "ops": [
+    "index",
+    "query",
+    "stats"
+   ],
+   "gates": {
+    "index": "none",
+    "query": "none",
+    "stats": "none"
+   },
+   "probe_op": "stats",
+   "cloud": [
+    "Vectorize (作用域未授权)",
+    "D1 + 内积 (降级落点)",
+    "agent-memory 绑定"
+   ],
+   "boundary": "落点是内存还是 D1 要如实报：两种落点的读数不许念成一句。",
+   "local_driver": "memory_manager",
+   "driver_why": "记忆向量 = 记忆管理（FTS5 万能秒搜 + 能力位端出）",
+   "route": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c07-memory-vector/stats",
+   "probe": {
+    "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/health?_probe=gbt-c07-memory-vector",
+    "method": "GET",
+    "at": "2026-10-08T11:11:26",
+    "ms": 286,
+    "http": 200,
+    "ok": true,
+    "state": "通",
+    "kind": "ok",
+    "reason": null,
+    "raw": "{\n  \"modules\": 10,\n  \"alive\": 10,\n  \"rows\": [\n    {\n      \"seq\": 1,\n      \"id\": \"gbt-c01-llm-gateway\",\n      \"op\": \"status\",\n      \"ok\": true,\n      \"wired\": true,\n      \"reading\": \"已接线\"\n    },\n    {\n      \"seq\": 2,\n      \"id\": \"gbt-c02-context-compact\",\n      \"op\": \"ping\",\n      \"ok\": true\n    },\n ",
+    "exc": null,
+    "row": {
+     "seq": 7,
+     "id": "gbt-c07-memory-vector",
+     "op": "ping",
+     "ok": true
+    },
+    "route": {
+     "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c07-memory-vector/stats",
+     "method": "GET",
+     "at": "2026-10-08T11:11:27",
+     "ms": 172,
+     "http": 404,
+     "ok": false,
+     "exc": null,
+     "raw": "{\n  \"ok\": false,\n  \"reason\": \"no such route\",\n  \"path\": \"/rpc/gbt-c07-memory-vector/stats\",\n  \"method\": \"GET\"\n}",
+     "reason": "HTTP 404"
+    }
+   }
+  },
+  {
+   "seq": 8,
+   "id": "gbt-c08-memory-local",
+   "name": "dsh-memory-local",
+   "duty": "键值持久化",
+   "ops": [
+    "remember",
+    "recall",
+    "list",
+    "forget"
+   ],
+   "gates": {
+    "remember": "none",
+    "recall": "none",
+    "list": "none",
+    "forget": "none"
+   },
+   "probe_op": "recall",
+   "cloud": [
+    "KV (MEM)"
+   ],
+   "boundary": "KV 最终一致：写完立刻读可能还是旧值，读数要带落点。D1 是 07 号的落点，不是本位的。",
+   "local_driver": "obsidian_vault",
+   "driver_why": "本地记忆 = Obsidian 永久记忆层（只追加、无删除路径）",
+   "route": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c08-memory-local/recall",
+   "probe": {
+    "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/health?_probe=gbt-c08-memory-local",
+    "method": "GET",
+    "at": "2026-10-08T11:11:26",
+    "ms": 325,
+    "http": 200,
+    "ok": true,
+    "state": "通",
+    "kind": "ok",
+    "reason": null,
+    "raw": "{\n  \"modules\": 10,\n  \"alive\": 10,\n  \"rows\": [\n    {\n      \"seq\": 1,\n      \"id\": \"gbt-c01-llm-gateway\",\n      \"op\": \"status\",\n      \"ok\": true,\n      \"wired\": true,\n      \"reading\": \"已接线\"\n    },\n    {\n      \"seq\": 2,\n      \"id\": \"gbt-c02-context-compact\",\n      \"op\": \"ping\",\n      \"ok\": true\n    },\n ",
+    "exc": null,
+    "row": {
+     "seq": 8,
+     "id": "gbt-c08-memory-local",
+     "op": "ping",
+     "ok": true
+    },
+    "route": {
+     "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c08-memory-local/recall",
+     "method": "GET",
+     "at": "2026-10-08T11:11:27",
+     "ms": 195,
+     "http": 404,
+     "ok": false,
+     "exc": null,
+     "raw": "{\n  \"ok\": false,\n  \"reason\": \"no such route\",\n  \"path\": \"/rpc/gbt-c08-memory-local/recall\",\n  \"method\": \"GET\"\n}",
+     "reason": "HTTP 404"
+    }
+   }
+  },
+  {
+   "seq": 9,
+   "id": "gbt-c09-policy-guard",
+   "name": "dsh-policy-guard",
+   "duty": "权限与安全策略门",
+   "ops": [
+    "scopes",
+    "grants",
+    "evaluate"
+   ],
+   "gates": {
+    "scopes": "none",
+    "grants": "none",
+    "evaluate": "none"
+   },
+   "probe_op": "scopes",
+   "cloud": [
+    "本模块自带（不依赖云服务）"
+   ],
+   "boundary": "门只做一件事：没有授权就不放行；AI 一律不许给自己发授权。",
+   "local_driver": "action_gate",
+   "driver_why": "策略护栏 = 先看→动脑→执行前置闸（证据必须真在盘上）",
+   "route": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c09-policy-guard/scopes",
+   "probe": {
+    "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/health?_probe=gbt-c09-policy-guard",
+    "method": "GET",
+    "at": "2026-10-08T11:11:26",
+    "ms": 170,
+    "http": 200,
+    "ok": true,
+    "state": "通",
+    "kind": "ok",
+    "reason": null,
+    "raw": "{\n  \"modules\": 10,\n  \"alive\": 10,\n  \"rows\": [\n    {\n      \"seq\": 1,\n      \"id\": \"gbt-c01-llm-gateway\",\n      \"op\": \"status\",\n      \"ok\": true,\n      \"wired\": true,\n      \"reading\": \"已接线\"\n    },\n    {\n      \"seq\": 2,\n      \"id\": \"gbt-c02-context-compact\",\n      \"op\": \"ping\",\n      \"ok\": true\n    },\n ",
+    "exc": null,
+    "row": {
+     "seq": 9,
+     "id": "gbt-c09-policy-guard",
+     "op": "ping",
+     "ok": true
+    },
+    "route": {
+     "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c09-policy-guard/scopes",
+     "method": "GET",
+     "at": "2026-10-08T11:11:27",
+     "ms": 285,
+     "http": 404,
+     "ok": false,
+     "exc": null,
+     "raw": "{\n  \"ok\": false,\n  \"reason\": \"no such route\",\n  \"path\": \"/rpc/gbt-c09-policy-guard/scopes\",\n  \"method\": \"GET\"\n}",
+     "reason": "HTTP 404"
+    }
+   }
+  },
+  {
+   "seq": 10,
+   "id": "gbt-c10-observability",
+   "name": "dsh-observability",
+   "duty": "可观测与审计落账",
+   "ops": [
+    "emit",
+    "tail",
+    "report"
+   ],
+   "gates": {
+    "emit": "none",
+    "tail": "none",
+    "report": "none"
+   },
+   "probe_op": "report",
+   "cloud": [
+    "Workers Logs / tail (workers_tail:read)",
+    "R2 落账 (降级落点)"
+   ],
+   "boundary": "账面条数是读数不是结论；未读到要写未读到，不许写 0。",
+   "local_driver": "alerts",
+   "driver_why": "可观测 = 框架声带（近期异常摘要 + 根源线索）",
+   "route": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c10-observability/report",
+   "probe": {
+    "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/health?_probe=gbt-c10-observability",
+    "method": "GET",
+    "at": "2026-10-08T11:11:27",
+    "ms": 160,
+    "http": 200,
+    "ok": true,
+    "state": "通",
+    "kind": "ok",
+    "reason": null,
+    "raw": "{\n  \"modules\": 10,\n  \"alive\": 10,\n  \"rows\": [\n    {\n      \"seq\": 1,\n      \"id\": \"gbt-c01-llm-gateway\",\n      \"op\": \"status\",\n      \"ok\": true,\n      \"wired\": true,\n      \"reading\": \"已接线\"\n    },\n    {\n      \"seq\": 2,\n      \"id\": \"gbt-c02-context-compact\",\n      \"op\": \"ping\",\n      \"ok\": true\n    },\n ",
+    "exc": null,
+    "row": {
+     "seq": 10,
+     "id": "gbt-c10-observability",
+     "op": "ping",
+     "ok": true
+    },
+    "route": {
+     "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/rpc/gbt-c10-observability/report",
+     "method": "GET",
+     "at": "2026-10-08T11:11:27",
+     "ms": 161,
+     "http": 404,
+     "ok": false,
+     "exc": null,
+     "raw": "{\n  \"ok\": false,\n  \"reason\": \"no such route\",\n  \"path\": \"/rpc/gbt-c10-observability/report\",\n  \"method\": \"GET\"\n}",
+     "reason": "HTTP 404"
+    }
+   }
+  }
+ ],
+ "edges": [
+  {
+   "a": 1,
+   "b": 2,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c02-context-compact",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 1,
+   "b": 3,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c03-uncensored-lane",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 1,
+   "b": 4,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c04-tool-web",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 1,
+   "b": 5,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c05-tool-file",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 1,
+   "b": 6,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c06-tool-shell",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 1,
+   "b": 7,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c07-memory-vector",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 1,
+   "b": 8,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c08-memory-local",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 1,
+   "b": 9,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c09-policy-guard",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 1,
+   "b": 10,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c10-observability",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 2,
+   "b": 1,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c01-llm-gateway",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 2,
+   "b": 3,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c03-uncensored-lane",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 2,
+   "b": 4,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c04-tool-web",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 2,
+   "b": 5,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c05-tool-file",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 2,
+   "b": 6,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c06-tool-shell",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 2,
+   "b": 7,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c07-memory-vector",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 2,
+   "b": 8,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c08-memory-local",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 2,
+   "b": 9,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c09-policy-guard",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 2,
+   "b": 10,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c10-observability",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 3,
+   "b": 1,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c01-llm-gateway",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 3,
+   "b": 2,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c02-context-compact",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 3,
+   "b": 4,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c04-tool-web",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 3,
+   "b": 5,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c05-tool-file",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 3,
+   "b": 6,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c06-tool-shell",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 3,
+   "b": 7,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c07-memory-vector",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 3,
+   "b": 8,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c08-memory-local",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 3,
+   "b": 9,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c09-policy-guard",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 3,
+   "b": 10,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c10-observability",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 4,
+   "b": 1,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c01-llm-gateway",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 4,
+   "b": 2,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c02-context-compact",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 4,
+   "b": 3,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c03-uncensored-lane",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 4,
+   "b": 5,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c05-tool-file",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 285,
+   "reason": null
+  },
+  {
+   "a": 4,
+   "b": 6,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c06-tool-shell",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 4,
+   "b": 7,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c07-memory-vector",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 286,
+   "reason": null
+  },
+  {
+   "a": 4,
+   "b": 8,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c08-memory-local",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 325,
+   "reason": null
+  },
+  {
+   "a": 4,
+   "b": 9,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c09-policy-guard",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 285,
+   "reason": null
+  },
+  {
+   "a": 4,
+   "b": 10,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c10-observability",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 285,
+   "reason": null
+  },
+  {
+   "a": 5,
+   "b": 1,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c01-llm-gateway",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 5,
+   "b": 2,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c02-context-compact",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 5,
+   "b": 3,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c03-uncensored-lane",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 5,
+   "b": 4,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c04-tool-web",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 285,
+   "reason": null
+  },
+  {
+   "a": 5,
+   "b": 6,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c06-tool-shell",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 5,
+   "b": 7,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c07-memory-vector",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 286,
+   "reason": null
+  },
+  {
+   "a": 5,
+   "b": 8,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c08-memory-local",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 325,
+   "reason": null
+  },
+  {
+   "a": 5,
+   "b": 9,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c09-policy-guard",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 260,
+   "reason": null
+  },
+  {
+   "a": 5,
+   "b": 10,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c10-observability",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 260,
+   "reason": null
+  },
+  {
+   "a": 6,
+   "b": 1,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c01-llm-gateway",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 6,
+   "b": 2,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c02-context-compact",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 6,
+   "b": 3,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c03-uncensored-lane",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 6,
+   "b": 4,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c04-tool-web",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 6,
+   "b": 5,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c05-tool-file",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 6,
+   "b": 7,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c07-memory-vector",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 6,
+   "b": 8,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c08-memory-local",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 6,
+   "b": 9,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c09-policy-guard",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 6,
+   "b": 10,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c10-observability",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 7,
+   "b": 1,
+   "a_id": "gbt-c07-memory-vector",
+   "b_id": "gbt-c01-llm-gateway",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 7,
+   "b": 2,
+   "a_id": "gbt-c07-memory-vector",
+   "b_id": "gbt-c02-context-compact",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 7,
+   "b": 3,
+   "a_id": "gbt-c07-memory-vector",
+   "b_id": "gbt-c03-uncensored-lane",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 7,
+   "b": 4,
+   "a_id": "gbt-c07-memory-vector",
+   "b_id": "gbt-c04-tool-web",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 286,
+   "reason": null
+  },
+  {
+   "a": 7,
+   "b": 5,
+   "a_id": "gbt-c07-memory-vector",
+   "b_id": "gbt-c05-tool-file",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 286,
+   "reason": null
+  },
+  {
+   "a": 7,
+   "b": 6,
+   "a_id": "gbt-c07-memory-vector",
+   "b_id": "gbt-c06-tool-shell",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 7,
+   "b": 8,
+   "a_id": "gbt-c07-memory-vector",
+   "b_id": "gbt-c08-memory-local",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 325,
+   "reason": null
+  },
+  {
+   "a": 7,
+   "b": 9,
+   "a_id": "gbt-c07-memory-vector",
+   "b_id": "gbt-c09-policy-guard",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 286,
+   "reason": null
+  },
+  {
+   "a": 7,
+   "b": 10,
+   "a_id": "gbt-c07-memory-vector",
+   "b_id": "gbt-c10-observability",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 286,
+   "reason": null
+  },
+  {
+   "a": 8,
+   "b": 1,
+   "a_id": "gbt-c08-memory-local",
+   "b_id": "gbt-c01-llm-gateway",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 8,
+   "b": 2,
+   "a_id": "gbt-c08-memory-local",
+   "b_id": "gbt-c02-context-compact",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 8,
+   "b": 3,
+   "a_id": "gbt-c08-memory-local",
+   "b_id": "gbt-c03-uncensored-lane",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 8,
+   "b": 4,
+   "a_id": "gbt-c08-memory-local",
+   "b_id": "gbt-c04-tool-web",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 325,
+   "reason": null
+  },
+  {
+   "a": 8,
+   "b": 5,
+   "a_id": "gbt-c08-memory-local",
+   "b_id": "gbt-c05-tool-file",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 325,
+   "reason": null
+  },
+  {
+   "a": 8,
+   "b": 6,
+   "a_id": "gbt-c08-memory-local",
+   "b_id": "gbt-c06-tool-shell",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 8,
+   "b": 7,
+   "a_id": "gbt-c08-memory-local",
+   "b_id": "gbt-c07-memory-vector",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 325,
+   "reason": null
+  },
+  {
+   "a": 8,
+   "b": 9,
+   "a_id": "gbt-c08-memory-local",
+   "b_id": "gbt-c09-policy-guard",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 325,
+   "reason": null
+  },
+  {
+   "a": 8,
+   "b": 10,
+   "a_id": "gbt-c08-memory-local",
+   "b_id": "gbt-c10-observability",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 325,
+   "reason": null
+  },
+  {
+   "a": 9,
+   "b": 1,
+   "a_id": "gbt-c09-policy-guard",
+   "b_id": "gbt-c01-llm-gateway",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 9,
+   "b": 2,
+   "a_id": "gbt-c09-policy-guard",
+   "b_id": "gbt-c02-context-compact",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 9,
+   "b": 3,
+   "a_id": "gbt-c09-policy-guard",
+   "b_id": "gbt-c03-uncensored-lane",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 9,
+   "b": 4,
+   "a_id": "gbt-c09-policy-guard",
+   "b_id": "gbt-c04-tool-web",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 285,
+   "reason": null
+  },
+  {
+   "a": 9,
+   "b": 5,
+   "a_id": "gbt-c09-policy-guard",
+   "b_id": "gbt-c05-tool-file",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 260,
+   "reason": null
+  },
+  {
+   "a": 9,
+   "b": 6,
+   "a_id": "gbt-c09-policy-guard",
+   "b_id": "gbt-c06-tool-shell",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 9,
+   "b": 7,
+   "a_id": "gbt-c09-policy-guard",
+   "b_id": "gbt-c07-memory-vector",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 286,
+   "reason": null
+  },
+  {
+   "a": 9,
+   "b": 8,
+   "a_id": "gbt-c09-policy-guard",
+   "b_id": "gbt-c08-memory-local",
+   "state": "通",
+   "at": "2026-10-08T11:11:26",
+   "ms": 325,
+   "reason": null
+  },
+  {
+   "a": 9,
+   "b": 10,
+   "a_id": "gbt-c09-policy-guard",
+   "b_id": "gbt-c10-observability",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 170,
+   "reason": null
+  },
+  {
+   "a": 10,
+   "b": 1,
+   "a_id": "gbt-c10-observability",
+   "b_id": "gbt-c01-llm-gateway",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 10,
+   "b": 2,
+   "a_id": "gbt-c10-observability",
+   "b_id": "gbt-c02-context-compact",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 10,
+   "b": 3,
+   "a_id": "gbt-c10-observability",
+   "b_id": "gbt-c03-uncensored-lane",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 333,
+   "reason": null
+  },
+  {
+   "a": 10,
+   "b": 4,
+   "a_id": "gbt-c10-observability",
+   "b_id": "gbt-c04-tool-web",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 285,
+   "reason": null
+  },
+  {
+   "a": 10,
+   "b": 5,
+   "a_id": "gbt-c10-observability",
+   "b_id": "gbt-c05-tool-file",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 260,
+   "reason": null
+  },
+  {
+   "a": 10,
+   "b": 6,
+   "a_id": "gbt-c10-observability",
+   "b_id": "gbt-c06-tool-shell",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 329,
+   "reason": null
+  },
+  {
+   "a": 10,
+   "b": 7,
+   "a_id": "gbt-c10-observability",
+   "b_id": "gbt-c07-memory-vector",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 286,
+   "reason": null
+  },
+  {
+   "a": 10,
+   "b": 8,
+   "a_id": "gbt-c10-observability",
+   "b_id": "gbt-c08-memory-local",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 325,
+   "reason": null
+  },
+  {
+   "a": 10,
+   "b": 9,
+   "a_id": "gbt-c10-observability",
+   "b_id": "gbt-c09-policy-guard",
+   "state": "通",
+   "at": "2026-10-08T11:11:27",
+   "ms": 170,
+   "reason": null
+  }
+ ],
+ "gateway": {
+  "url": "https://gbt-potato-cloud-10.lopaycn.workers.dev/",
+  "method": "GET",
+  "at": "2026-10-08T11:11:26",
+  "ms": 826,
+  "http": 200,
+  "ok": true,
+  "reason": null
+ },
+ "blueprint": {
+  "present": true,
+  "path": "deploy/cloud-10/plugins50.json",
+  "slots": 50,
+  "wired": 30,
+  "reserve": 20,
+  "groups": [
+   "自研模型组",
+   "工作流组",
+   "本机资产组",
+   "备用组 A",
+   "备用组 B"
+  ],
+  "ops": 0,
+  "note": "50 槽蓝图（30 指派 + 20 备用）· 未部署 · 无 ops · 无端点 ⇒ **不探测**"
+ },
+ "counts": {
+  "plugins": 10,
+  "directed": 90,
+  "undirected": 45,
+  "matrix_cells": 100,
+  "ok": 10,
+  "bad": 0,
+  "unknown": 0,
+  "timeout": 0,
+  "blocked": 0
+ },
+ "commands": {
+  "probe": "py -3.14 tools/codex-scripts/cloud-status.py probe",
+  "render": "py -3.14 tools/codex-scripts/cloud-status.py render",
+  "check": "py -3.14 tools/codex-scripts/cloud-status.py --check"
+ },
+ "probed": true
+}

@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 """V21 全量真渲染：面板（截满，不再被压扁）+ 画布 + 视口 + 总览。"""
-import json
-import re
 import subprocess
 import sys
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 
 for f in ("render_full.py", "render_canvas.py", "render_v20.py"):
     p = BASE / ".scratch" / f

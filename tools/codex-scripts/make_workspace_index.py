@@ -387,9 +387,9 @@ def build() -> tuple[str, dict]:
     <div class="grid">{tiles}</div>
   </section>""")
 
-    live = sum(1 for p in facts["panels"] if p["exists"])
-    payload = sum(p["bytes"] for p in facts["panels"] if p["exists"])
-    total_imgs = sum(facts["gallery"].values())
+    sum(1 for p in facts["panels"] if p["exists"])
+    sum(p["bytes"] for p in facts["panels"] if p["exists"])
+    sum(facts["gallery"].values())
 
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -537,7 +537,7 @@ def main() -> int:
     for p in facts["panels"]:
         print(f"    [{'在' if p['exists'] else '缺'}] {p['name']:22} {kb(p['bytes']):>9}"
               f" · {'有图' if p['thumb'] else '无图'}")
-    print(f"  图库：" + " · ".join(f"{k} {v} 张" for k, v in facts["gallery"].items()))
+    print("  图库：" + " · ".join(f"{k} {v} 张" for k, v in facts["gallery"].items()))
     # 判据有牙自检（扰动法）：往**真渲染区**植入一处 markdown 泄漏与一个 emoji，
     # 两条判据**必须报红**。不植扰动就声称"判据活着"，等于没量过。
     leak_probe = rendered.replace("<b>", "<b>**打点**", 1)

@@ -233,7 +233,7 @@ def main() -> int:
     print("  禁用·AI 指纹 %d 色（gbt-aesthetic §3.1 P0-1/P0-2）" % len(ban_ai))
     print("-" * 78)
     print("  扫了 %d 个文件：%s" % (len(files), ", ".join(str(f.relative_to(ROOT)) for f in files[:6])
-                                   + (" …" if len(files) > 6 else "")))
+                              + (" …" if len(files) > 6 else "")))
 
     bad = scan(files, allow_hex)
     total = sum(len(b["hits"]) for b in bad)

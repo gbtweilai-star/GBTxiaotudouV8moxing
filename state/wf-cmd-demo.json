@@ -1,0 +1,26 @@
+{
+  "name": "cmd-demo-dispatch-accept",
+  "nodes": [
+    {
+      "id": "deliver",
+      "kind": "create",
+      "params": {
+        "op": "write",
+        "path": "agency-demo/deliver-20261008-094654.txt",
+        "content": "GBT小土豆V8 指挥演示 · 派活产物 · run=20261008-094654"
+      }
+    },
+    {
+      "id": "readback",
+      "kind": "create",
+      "depends_on": [
+        "deliver"
+      ],
+      "params": {
+        "op": "write",
+        "path": "agency-demo/deliver-20261008-094654.txt",
+        "content": "GBT小土豆V8 指挥演示 · 派活产物 · run=20261008-094654"
+      }
+    }
+  ]
+}

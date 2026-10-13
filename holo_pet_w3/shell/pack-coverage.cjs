@@ -112,11 +112,41 @@ const SHAME = [
   [/\.(jpe?g|png)$/i, "位图资源 —— 逐张确认是不是主人的东西（本壳的图都是生成的，别把截图带出去）"],
 ];
 
+/**
+ * 已**逐张判过**「这是我方资产」的位图 —— 每一条都要写清：是什么、哪来的、怎么复核。
+ *
+ * 为什么要有这个名单，而不是把上面那条位图规则放宽：那条规则挡的是「主人的截图随包分发」
+ * （2026-09-23 第 35 轮的真事故）。放宽一次，下次塞进来的截图就没人问了。
+ * ⇒ 于是改成**点名制**：进来的位图必须在这里有一行，且带可复核的出处。
+ */
+const KNOWN_BITMAPS = {
+  "build/tray-logo-32.png":
+    "托盘/任务栏的品牌图 —— `assets/brand/logo-potato-32.png` 的**逐字节复制**"
+    + "（主人令 2026-10-07「这里的 Logo」：原来托盘是 `trayIcon()` 现画的方块）。"
+    + "同字节由 `tests/test_tray_logo.cjs` 钉住（含「随便换一张就报红」的负对照）。",
+  "digital-human/reference-02.jpg":
+    "数字人的**形象参考副本** —— 主人 2026-10-08 给的全身站立参考（736×1248 · 58,648 字节）"
+    + "在页面同目录里的**逐字节复制**，页面用它做**1:1 叠加对照**（骨架照它复刻，不是另画一张）。"
+    + "登记理由：`*.jpg` 是本仓 SHAME 名单拦的一类（防「主人的截图随包分发」），"
+    + "这一张是**主人自己交办的形象件**、且只进数字人窗，故逐张登记放行。"
+    + "负对照：任何**未登记**的位图仍会被 `K:packsrc` 判红。",
+  "digital-human/digital-human-hero-front.jpg":
+    "数字人 **HD 英雄静帧（正面）** —— 本仓生成物（不是截图）：绑骨线 `tools/codex-scripts/blender/dh_rig.py`"
+    + "把主人的形象参考网格（`projects/digital-human/out/dh_rigged.glb`）渲染出的 1536×1920 静帧，"
+    + "2026-10-08 12:29 落盘（183KB，页面用小件）。复核：同批 190 张帧在 `projects/digital-human/out/frames/`，"
+    + "判据 `py -3.14 tools/codex-scripts/dh-rig-check-rig.py --check` C13（英雄静帧 3 张高 1920）。",
+  "digital-human/digital-human-hero-3q.jpg":
+    "数字人 **HD 英雄静帧（三分之四侧）** —— 同上生成物（168KB）；出处/复核同 front 一条（同一渲染批次）。",
+  "digital-human/digital-human-hero-face.jpg":
+    "数字人 **HD 英雄静帧（面部特写）** —— 同上生成物（270KB）；出处/复核同 front 一条（同一渲染批次）。",
+};
+
 /** 返回 `[{path, why}]`；空数组 = 干净。 */
 function auditPack(included) {
   const out = [];
   for (const f of (included || [])) {
     const p = String(f).replace(/\\/g, "/");
+    if (KNOWN_BITMAPS[p]) continue;          // 已逐张判过的我方资产（出处写在名单里）
     for (const [re, why] of SHAME) {
       if (re.test(p)) { out.push({ path: p, why: why }); break; }
     }
@@ -124,4 +154,4 @@ function auditPack(included) {
   return out;
 }
 
-module.exports = { rx, windowFiles, uncoveredWindows, includedIn, resolvePack, auditPack, SHAME };
+module.exports = { rx, windowFiles, uncoveredWindows, includedIn, resolvePack, auditPack, SHAME, KNOWN_BITMAPS };

@@ -1,0 +1,40 @@
+{
+ "cap": "datakit",
+ "domain": "data",
+ "desc": "本地数据工具（**只读**）：html→markdown · html→表格结构 · xlsx 字节→JSON · JSON 美化/排序 · 多段 CSV 合并（`op` 分派，见 `tools/datakit.py` 的 OPS）。🔴 **结果从返回里给、不落盘** ⇒ 作用域天然为空，**不需要也不该改 `policy.py`**。**为什么不给落盘版**：一个会写盘的新能力位若 policy 里没有分支，就是**绕过门**；`policy.py` 是安全文件，只有主人能改 —— 要落盘请他加分支。",
+ "safe": true,
+ "ops": [
+  {
+   "op": "csvmerge",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "html2md",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "html2xlsx",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "jsonfmt",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "tools",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "xlsx2json",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "static-heuristic",
+ "handler_file": "gbt_allinone\\tools\\datakit.py",
+ "params": [],
+ "params_hint": "",
+ "handler": "datakit",
+ "slot": "g3-21",
+ "group": 3,
+ "role": "本机文档/表格/文本资产分类入云"
+}

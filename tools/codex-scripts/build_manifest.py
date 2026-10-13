@@ -11,7 +11,7 @@ from collections import defaultdict
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 sys.path.insert(0, str(BASE))
 OUT = BASE / ".scratch" / "caps_manifest.json"
 

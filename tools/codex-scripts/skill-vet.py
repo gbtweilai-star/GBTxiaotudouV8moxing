@@ -109,7 +109,7 @@ RED_FLAGS = [
     ("外网抓取/下载", r"\b(curl|wget|Invoke-WebRequest|iwr)\b", "Step2: curl/wget to unknown URLs"),
     ("疑似外传数据", r"(requests\.(post|put)|urllib\.request\.urlopen|fetch\(|axios\.(post|put)|Invoke-RestMethod)",
      "Step2: sends data to external servers"),
-    ("索要凭据/密钥", r"(API[_-]?KEY|TOKEN|SECRET|PASSWORD|PASSWD|凭据|密钥|私钥)\s*[:=]", 
+    ("索要凭据/密钥", r"(API[_-]?KEY|TOKEN|SECRET|PASSWORD|PASSWD|凭据|密钥|私钥)\s*[:=]",
      "Step2: requests credentials/tokens/API keys"),
     ("读敏感家目录", r"(\.ssh|\.aws|[\\/]\.config[\\/]|\.gnupg|\.kube|id_rsa|\.netrc)",
      "Step2: reads ~/.ssh ~/.aws ~/.config without clear reason"),
@@ -292,7 +292,9 @@ def main(argv=None) -> int:
             for c in census:
                 L.append("  %-52s 目录 %3d · SKILL.md %3d · 可执行件 %4d"
                          % (c["root"], c["dirs"], c["skill_md"], c["exec_files"]))
-                tot_d += c["dirs"]; tot_md += c["skill_md"]; tot_e += c["exec_files"]
+                tot_d += c["dirs"]
+                tot_md += c["skill_md"]
+                tot_e += c["exec_files"]
             L.append("  " + "─" * 86)
             L.append("  合计：根 %d 个 · 技能目录 %d · 带 SKILL.md %d · 可执行件 %d"
                      % (len(census), tot_d, tot_md, tot_e))
@@ -409,8 +411,8 @@ def main(argv=None) -> int:
             L.append("技能：%s" % r["skill"])
             L.append("来源：%s" % r["source"])
             L.append("读过：%d 个文件 / %d 字节%s" % (r["files_reviewed"], r.get("bytes_reviewed", 0),
-                                                " ｜ frontmatter: %s" % r.get("frontmatter")
-                                                if r["files_reviewed"] else ""))
+                                              " ｜ frontmatter: %s" % r.get("frontmatter")
+                                              if r["files_reviewed"] else ""))
             L.append("风险：%s" % r["risk"])
             L.append("结论：%s" % r["verdict"])
             if r["flags"]:

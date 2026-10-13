@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 M = json.loads((S / "v6_manifest.json").read_text(encoding="utf-8"))
 P = json.loads((S / "plug_tentacle_probe.json").read_text(encoding="utf-8"))
@@ -108,4 +108,4 @@ print("   覆盖: %s/%s = %s%% · 未覆盖 %s · 幽灵 %s"
       % (te["coverage"]["covered"], te["coverage"]["denominator"], te["coverage"]["pct"],
          te["coverage"]["uncovered"], te["coverage"]["ghosts"]))
 print("   八短板: %s" % " | ".join("%s %s/%s" % (r["key"], r["reportable_modules"], r["expected_modules"])
-                                   for r in te["audit"]["matrix"]))
+                                for r in te["audit"]["matrix"]))

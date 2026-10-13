@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """按**内容**识别图片格式并规范化输出（Tripo 的产物常把 JPEG 写成 .png，读取前先规范化）。
 用法: python tools/codex-scripts/normalize-image.py <输入> [输出.png]"""
-import pathlib, sys
+import pathlib
+import sys
 from PIL import Image
 
 src = pathlib.Path(sys.argv[1])

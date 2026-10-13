@@ -33,7 +33,6 @@
 import argparse
 import difflib
 import io
-import os
 import re
 import sys
 import time
@@ -49,7 +48,10 @@ PAGES = {
     "form": (T / "20260921-三方向-HITL1-分镜契约填写页.html", None),
     "deploy": (ROOT / "deploy" / "index.html", ROOT / "V22 GBT小土豆V8-可交互原型.html"),
 }
-TS = lambda p: time.strftime("%Y-%m-%d %H:%M", time.localtime(p.stat().st_mtime))
+
+
+def TS(p):
+    return time.strftime("%Y-%m-%d %H:%M", time.localtime(p.stat().st_mtime))
 
 
 def crit3(text: str, page: Path) -> tuple:

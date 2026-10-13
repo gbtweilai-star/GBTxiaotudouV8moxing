@@ -1,0 +1,36 @@
+{
+ "cap": "audio_extract",
+ "domain": "video",
+ "desc": "从视频里取出声音（本机 ffmpeg，**零出网**）：probe/tracks 读流与音轨（只读）；extract 真出音频件（mp3/aac/m4a/wav/flac/ogg/opus/wma 八种，可切段/调音量/响度归一）。**产出即验证**：落盘后 ffprobe 回读产物，把真读数一并返回。写面自收窄到 projects/·outputs/·.scratch/（policy 无该 kind ⇒ 门内零作用域，故自钉）。格式知识来自 online-audio-converter.com/blog/audio-formats（容器≠编解码器 / 有损与无损两族）。",
+ "safe": false,
+ "ops": [
+  {
+   "op": "extract",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "formats",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "probe",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "status",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "tracks",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "static-heuristic",
+ "handler_file": "gbt_allinone\\tools\\audio_extract.py",
+ "params": [],
+ "params_hint": "",
+ "handler": "audio_extract",
+ "slot": "g2-18",
+ "group": 2,
+ "role": "音轨抽取/音频件（8 格式）"
+}

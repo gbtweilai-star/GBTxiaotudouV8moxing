@@ -1,6 +1,10 @@
-import json, os, sys
+import json
+import os
+import sys
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ws = r"C:\Users\ADMIN\Desktop\GBT小土豆V8"
+
+
 def rows(p):
     p = os.path.join(ws, p)
     out = []
@@ -10,6 +14,8 @@ def rows(p):
             if ln:
                 out.append(json.loads(ln))
     return out
+
+
 panel = rows(r".scratch\codex_v2_panel_ledger.jsonl")
 mock = rows(r".scratch\codex_v2_panel_probe.mock.jsonl")
 print("panel ledger rows:", len(panel))

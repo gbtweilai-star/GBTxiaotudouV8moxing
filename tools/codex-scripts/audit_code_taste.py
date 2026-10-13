@@ -1381,9 +1381,9 @@ def cmd_selftest() -> int:
                     schema_bad.append("hit.line/text 类型不对")
     print("-" * 84)
     print("JSON 结构自检：%s" % ("✅ 逐字段类型都对" if not schema_bad
-                                 else "🔴 " + "；".join(sorted(set(schema_bad)))))
+                            else "🔴 " + "；".join(sorted(set(schema_bad)))))
     print("结论：%s（不达预期的夹具 %d 个）" % ("✅ 判据与 JSON 结构都过" if not bad and not schema_bad
-                                               else "🔴 不过", bad))
+                                   else "🔴 不过", bad))
     return 1 if (bad or schema_bad) else 0
 
 
@@ -1442,6 +1442,7 @@ def main(argv: list[str]) -> int:
     print("代码审美审计 · %d 个文件（Python 走 AST · JS/TS 走块匹配 · 多语言只做行级）" % len(files))
     print("=" * 84)
     cross = build_repo_index(files)
+    results = [audit_file(f, cross) for f in files]
     total_p0, total_p1, total_p2 = _print_report(results)
 
     if json_out:

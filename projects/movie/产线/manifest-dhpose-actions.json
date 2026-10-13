@@ -1,0 +1,29 @@
+{
+  "_口径": "数字人动作 × 运镜 拍子表（短剧专业化规程 第 2 步）。每拍 = 她的**可控动作**（走 dh_pose 能力位）+ 运镜语法（走 actioncam）+ 机位角 + 时长。",
+  "_与 demo 的区别": "demo 每拍靠 prompt 生成图像；本表每拍是**我们自己数字人的动作**——`动作` 字段是 dh_pose 语义表里的词，出的是 3D 骨骼动画，不是抽卡图。",
+  "_铁律": "① ffmpeg 表达式零逗号 ② 种子锁定可复现 ③ 动作名必须在 state/dh-pose/semantics.json 里（认不出就 fail-closed，不瞎编）",
+  "_口径校验": "动作名现读 state/dh-pose/semantics.json（42 条）；运镜名现读 actioncam status（9 种）",
+  "title": "数字人动作拍 · 八拍（起身→转身→指向→挥手→点头→敬礼→比心→鼓掌）",
+  "quality": "fhd",
+  "work_dir": "projects/movie/生成/dhpose-actions",
+  "out_dir": "projects/movie/成片",
+  "output": "dhpose-actions-拍子表-1080p.mp4",
+  "beats": [
+    {"id": "A1", "动作": "站直", "move": "dolly_in",    "angle": "eye",   "dur": 1.2, "seed": 20261013,
+     "prompt": "digital human standing up straight, full body, studio light"},
+    {"id": "A2", "动作": "转身", "move": "arc_lr",      "angle": "eye",   "dur": 1.6, "seed": 20261014,
+     "prompt": "digital human turning around, full body, studio light"},
+    {"id": "A3", "动作": "指向前方", "move": "push_out", "angle": "low",  "dur": 1.0, "seed": 20261015,
+     "prompt": "digital human pointing forward, low angle, studio light"},
+    {"id": "A4", "动作": "挥手", "move": "pov_bob",     "angle": "eye",   "dur": 1.0, "seed": 20261016,
+     "prompt": "digital human waving hand, studio light"},
+    {"id": "A5", "动作": "点头", "move": "whip_lr",     "angle": "eye",   "dur": 0.6, "seed": 20261017,
+     "prompt": "digital human nodding, studio light"},
+    {"id": "A6", "动作": "敬礼", "move": "crash_zoom",  "angle": "high",  "dur": 0.6, "seed": 20261018,
+     "prompt": "digital human saluting, high angle, studio light"},
+    {"id": "A7", "动作": "比心", "move": "dolly_in",    "angle": "eye",   "dur": 1.2, "seed": 20261019,
+     "prompt": "digital human making a heart gesture with both hands, studio light"},
+    {"id": "A8", "动作": "鼓掌", "move": "shake",       "angle": "eye",   "dur": 1.0, "seed": 20261020,
+     "prompt": "digital human clapping hands, studio light"}
+  ]
+}

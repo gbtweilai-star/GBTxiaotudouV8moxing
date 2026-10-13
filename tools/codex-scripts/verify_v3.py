@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 CANVAS = BASE / "V3 GBT小土豆V8-无限画布.html"
 PROTO = BASE / "V3 GBT小土豆V8-可交互原型.html"
 TMP = BASE / ".scratch"
@@ -15,15 +15,18 @@ fails, warns, oks = [], [], []
 
 
 def ok(m):
-    oks.append(m); print("  PASS  " + m)
+    oks.append(m)
+    print("  PASS  " + m)
 
 
 def bad(m):
-    fails.append(m); print("  FAIL  " + m)
+    fails.append(m)
+    print("  FAIL  " + m)
 
 
 def warn(m):
-    warns.append(m); print("  WARN  " + m)
+    warns.append(m)
+    print("  WARN  " + m)
 
 
 def script_of(t):
@@ -70,7 +73,7 @@ else:
         doms |= set(r["domains"])
     (ok if len(doms) == M["domains"] else bad)("六维划分域 %d 个（应 == %d，不重不漏）" % (len(doms), M["domains"]))
     ok("通道 %d 条：%s" % (len(H["channels"]),
-                          " / ".join("%s %s/%s" % (c["name"], c["num"], c["den"]) for c in H["channels"])))
+                       " / ".join("%s %s/%s" % (c["name"], c["num"], c["den"]) for c in H["channels"])))
     ok("真实故障 %d 条 · 缺口 %d 项" % (len(H["faults"]), M["gap_count"]))
     rt = H["runtime"]
     ok("本机实时读数：内存 %d%% · CPU %d%% · 存储 %d 文件" % (rt["mem_load"], rt["cpu_pct"], rt["store_json"]))

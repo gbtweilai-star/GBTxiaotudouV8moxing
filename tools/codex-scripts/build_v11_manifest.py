@@ -3,7 +3,6 @@
 dsh 段全部来自 .scratch/dsh_surface_scan.json 与 dsh_register_scan.json，无一条手写。
 """
 import json
-import re
 from collections import defaultdict
 from pathlib import Path
 

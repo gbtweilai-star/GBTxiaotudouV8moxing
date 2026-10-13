@@ -6,7 +6,7 @@ Owner 定位（2026-09-11）：触手是连接大脑执行层的金钥匙——�
 架构（V8 复活版，从归档区 brain/tentacle_bridge.py + omni_tentacle.py 迁移重写）：
   tentacle/           硬件层（10 个 omni_* 文件，原样迁移，不改一行逻辑）
   tentacle/bridge.py  金钥匙（本文件）：全框架唯一一只眼睛一双手的单例管理
-                      + 66 项能力清单 + 10 邻域覆盖映射 + 六铁律
+                      + 能力清单（**条目数现算，不手写**）+ 10 邻域覆盖映射 + 六铁律
 
 依赖（已装入 .pylibs，缺哪层哪层如实降级）——实测 DXGI 热路径 28-34ms/帧：
   ctypes（键鼠/窗口，标准库）→ 0 依赖可用
@@ -555,7 +555,7 @@ def intent_coverage() -> dict:
 
 
 def get_manifest() -> str:
-    """触手能力总纲——85 项能力 + 三通道感官 + 六铁律。"""
+    """触手能力总纲——**条目数运行时现算，不手写**（手写数会腐烂）+ 三通道感官 + 六铁律。"""
     global _manifest
     if not _manifest:
         try:

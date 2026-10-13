@@ -53,6 +53,8 @@ TEXTISH = re.compile(r"^(src|txt|text|blob|body|out|s|raw|content|source)$")
 # 🔴 **单一来源**：检测器只在这里列一次。
 #    原来 `DETECTORS` / `scan_file` / `selftest` 各列一遍 —— **加一个检测器忘了改一处
 #    就会静默漏检**（维护隐患）。现在全部从这张表派生，并有一条自检咬「两处是否一致」。
+
+
 def d7_position_as_existence(tree) -> list:
     """D7 **位置型存在性判据**：拿「**某个位置**」当「**有没有**」用。
 
@@ -301,10 +303,10 @@ def d5_self_compare(tree) -> list:
     for n in ast.walk(tree):
         if not isinstance(n, ast.Compare) or len(n.ops) != 1:
             continue
-        l, r = n.left, n.comparators[0]
-        if isinstance(l, ast.Name) and isinstance(r, ast.Name) and l.id == r.id:
+        lft, r = n.left, n.comparators[0]
+        if isinstance(lft, ast.Name) and isinstance(r, ast.Name) and lft.id == r.id:
             if isinstance(n.ops[0], (ast.Eq, ast.NotEq, ast.Lt, ast.Gt, ast.LtE, ast.GtE)):
-                out.append((n.lineno, "`%s %s %s` —— 与自己比" % (l.id, ast.unparse(n.ops[0]),
+                out.append((n.lineno, "`%s %s %s` —— 与自己比" % (lft.id, ast.unparse(n.ops[0]),
                                                               r.id)))
     return out
 
@@ -583,7 +585,7 @@ def cmd_scan(a) -> int:
     f = scan(roots)
     print(json.dumps({"扫的根": list(roots), "逐条": f, "合计": tally(f),
                       "读法": "这些是**待人工确认**的嫌疑，不是判决 —— "
-                              "台架只负责把可疑形状指出来（含行号），判不判由人/后续复核定"},
+                      "台架只负责把可疑形状指出来（含行号），判不判由人/后续复核定"},
                      ensure_ascii=False, indent=1))
     return 0
 
@@ -683,10 +685,10 @@ PLANT = {
          "    src = Path(__file__).read_text()\n"
          "    return not any(t in src for t in (\"write_bytes(\", \"mkdir(\"))\n"),
     "D3 用0冒充": ("def f(p):\n"
-                 "    d = json.loads(p.read_text())\n"
-                 "    a = d.get('x', {})\n"
-                 "    b = len(a)\n"
-                 "    return b\n"),
+                "    d = json.loads(p.read_text())\n"
+                "    a = d.get('x', {})\n"
+                "    b = len(a)\n"
+                "    return b\n"),
     "D4 死代码": "def f():\n    if False:\n        return 1\n    return 2\n",
     "D5 判据与自己比": "def f(y):\n    return y == y\n",
     # 🔴 2026-09-25：这条负控是**被自检逼出来的** ——
@@ -695,7 +697,7 @@ PLANT = {
     # 🔴 负控必须与判据**同宽**：我一度把 `lines[0]` 也写进来，但判据**收窄后不收 `[0]`**
     #    ⇒ 那行是**永远咬不到的死重量**，还会让人以为 `[0]` 被覆盖了。**删掉它。**
     "D7 位置型存在性判据": ('def f(lines):\n'
-                       '    return "本署名不可删除" in lines[-1]\n'),
+                    '    return "本署名不可删除" in lines[-1]\n'),
 }
 CLEAN = ("def f(d):\n"
          "    if d is None:\n"
@@ -791,7 +793,7 @@ def _checks(pre_scan=None):
     ck("**每个检测器都有负控**（加了检测器却忘了加负控 ⇒ 这里红）",
        set(PLANT) == set(DETECTORS),
        "检测器 %d 个 ｜ 负控 %d 个 ｜ 缺负控: %s" % (len(DETECTORS), len(PLANT),
-                                              sorted(set(DETECTORS) - set(PLANT)) or "无"))
+                                         sorted(set(DETECTORS) - set(PLANT)) or "无"))
     # ①c 🔴 **负控必须与判据同宽**（2026-09-25 我手工犯过、现在机检）：
     #     我把 D7 的判据收窄成"只认尾部负下标"，**负控里却还留着 `lines[0]`** ——
     #     那行**永远咬不到**，还会让人以为 `[0]` 被覆盖了。

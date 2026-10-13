@@ -217,7 +217,7 @@ def selftest(quick_scan_mod, outdir: Path) -> dict:
     if p1["invalid_escapes"]:
         got.add("INVALID_ESCAPE")
     rec("平面① 内容判据", ["PY_SYNTAX", "BOM_PRESENT", "NON_UTF8", "MIXED_EOL",
-                      "NUL_BYTES", "JSON_BAD", "INVALID_ESCAPE"], got,
+                     "NUL_BYTES", "JSON_BAD", "INVALID_ESCAPE"], got,
         "夹具 %d 个文件" % len(prod))
 
     # 残骸/空文件（走 walk：直接对夹具树调用 walk_tree 需要替换 ROOT，故手工判）

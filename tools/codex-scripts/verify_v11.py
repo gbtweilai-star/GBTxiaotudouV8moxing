@@ -11,7 +11,7 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 PROTO = BASE / "V11 GBT小土豆V8-可交互原型.html"
 CANVAS = BASE / "V11 GBT小土豆V8-无限画布.html"
@@ -55,10 +55,14 @@ emoji = re.findall(r"[\U0001F300-\U0001FAFF\u2600-\u27BF]", p)
 chk("无 emoji 作 UI 元素", not emoji, "命中 " + "".join(sorted(set(emoji))[:8]) if emoji else "")
 
 # ── 4. 对比度（WCAG 2.2 AA ≥ 4.5:1） ──
+
+
 def lum(hexc):
     hexc = hexc.lstrip("#")
     r, g, b = (int(hexc[i:i + 2], 16) / 255 for i in (0, 2, 4))
-    f = lambda v: v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
+
+    def f(v):
+        return v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
     return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
 
 

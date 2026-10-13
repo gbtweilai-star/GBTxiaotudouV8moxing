@@ -1,0 +1,5 @@
+{"at":"2026-10-11T09:05:00+07:00","said_wrong":"云上没有任何 Worker / 部署","corrected":"gbt-potato-cloud-10 实际部署过约 10 次（2026-10-03→10-04），是我 wrangler deployments list 没带 --name 查到了另一个不存在的 gbt-xiaotudou-v8"}
+{"at":"2026-10-11T09:05:00+07:00","said_wrong":"内存空闲 1 MB（几乎耗尽）","corrected":"实为约 1 GB —— CIM 的 TotalVisibleMemorySize/FreePhysicalMemory 单位是 KB，我除错了单位"}
+{"at":"2026-10-11T09:05:00+07:00","said_wrong":"铁律判据报 15 条交付声明缺读数形状","corrected":"声明字段写死是 cmd+expect_contains，根本没有 evidence 字段 —— 我误查了不存在的字段"}
+{"at":"2026-10-11T09:05:00+07:00","said_wrong":"铁律判据报 85 处 wrangler 调用没带 --name","corrected":"多数在 _legacy_sources（历史源）与 docstring/print 里的字面量，非真调用；判据自己也没跳过它们"}
+{"at":"2026-10-11T09:45:00+07:00","said_wrong":"本地大模型已清干净（11.35GB）","corrected":"后台扫描跑完翻出第三处：AppData\\Local\\OmniVoice\\hf_cache 约 7 GB TTS 语音模型（k2-fsa OmniVoice，2026-10-05 装的），被 voicestudio.py 引用（V8 的「嘴」），无进程在跑 —— 与 LLM 不同类，待主人定夺"}

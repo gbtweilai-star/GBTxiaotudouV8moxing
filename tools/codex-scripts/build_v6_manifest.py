@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 OUT = BASE / ".scratch" / "v6_manifest.json"
 
 M = json.loads((BASE / ".scratch" / "v5_manifest.json").read_text(encoding="utf-8"))

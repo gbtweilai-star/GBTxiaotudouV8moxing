@@ -193,7 +193,7 @@ def main(argv=None) -> int:
     for k in sorted(buckets, key=lambda x: -len(buckets[x])):
         names = buckets[k]
         print("  %-22s %3d 条  %s" % (k, len(names), ", ".join(names[:8])
-                                      + (" …" if len(names) > 8 else "")))
+                                     + (" …" if len(names) > 8 else "")))
     print("-" * 78)
     # ── 真正值得看的三类：挂死 / 崩溃 / 门拦（门拦是**正确行为**，但要能自证）──
     for key, title in (("timeout", "⏱ 超时未返回（**不一定挂死**：先看旁边「已知实测耗时」）"),

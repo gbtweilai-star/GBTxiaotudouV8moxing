@@ -64,7 +64,12 @@ HEURISTICS = [
 ]
 # 不进绑定系统的路径（插件内部/缓存/版本库——不是我们的资产）
 # 任意位置命中即跳过（工具/缓存目录——这些名字在任何层级都是"不是资产"的意思）
-SKIP_PARTS = ("/.mimosa/", "/.git/", "/__pycache__/", "/.scratch/", "/node_modules/", "/.vscode/")
+# 🔴 2026-10-05 补 `/.venv/` 与 `/site-packages/`：与 `/node_modules/` **同族**（第三方依赖树，
+#    不是资产）。实测：`_upstream/VoiceStudio` 带一整个 .venv ⇒ 漏绑巡检一次报 **1306 条**，
+#    其中 **950 条**是 litellm/scipy/matplotlib 的图标与测试数据（依赖件）——不跳的话，它们
+#    会被 `sweep` 当"产出"绑进台账（纯噪声，且把真缺口淹在 1306 条里看不见）。
+SKIP_PARTS = ("/.mimosa/", "/.git/", "/__pycache__/", "/.scratch/", "/node_modules/",
+              "/.vscode/", "/.venv/", "/site-packages/")
 # **只在仓根**命中才跳过（框架自己的内部树；`store`/`config`/`state` 这类通用名
 # 在第三方仓内部是正常源码目录 —— 2026-09-26 实测误伤过
 # `_upstream/openhuman/crates/.../src/config/*.rs`，故改成根锚定）
@@ -148,7 +153,27 @@ def _save(d: dict, tries: int = 6) -> None:
       · 写**临时文件**再 `os.replace` **原子替换** ⇒ 任何时刻都不会留下半份坏账；
       · 失败**退避重试**（0.2s 起，逐次加倍）⇒ 扛过瞬时占用；
       · 仍失败就**如实抛出**（不吞），但原件仍是上一份完好的。
+
+    🔴 2026-10-08 加**回退闸**（当天实测事故）：物化视图被某次重建写花 ——
+      盘上从 **7,245** 个资产掉到 **415**（事件账 `asset_bindings.jsonl` 完好，重放即 7,939 对），
+      连带全仓报出 **3,923 条假"漏绑"**（`gaps` 读数被人当真的看）⇒ 已按事件账重放恢复。
+      闸的形状：**新账资产数 < 盘上 60% 且净少 > 200 个 ⇒ 拒写**并给出恢复办法；
+      真要做大批量清理（如整树删除后的 prune）就显式设 `GBT_BIND_ALLOW_SHRINK=1`。
+      —— 与"临时文件原子替换"同属一条纪律：**坏账宁可写不进去，也不许悄悄写进去**。
     """
+    if os.environ.get("GBT_BIND_ALLOW_SHRINK") != "1" and BINDINGS.is_file():
+        try:
+            old_n = len(json.loads(BINDINGS.read_text(encoding="utf-8")) or {})
+        except Exception:  # noqa: BLE001
+            old_n = 0
+        new_n = len(d)
+        if old_n > 200 and new_n < old_n * 0.6 and (old_n - new_n) > 200:
+            raise RuntimeError(
+                "绑定账回退闸：本次要写 %d 个资产，盘上现有 %d 个（掉 %.0f%%）——拒写。\n"
+                "  · 若你**真的**在整批清理：设 GBT_BIND_ALLOW_SHRINK=1 再跑（并说明理由）。\n"
+                "  · 若是意外缩水：事件账 state/asset_bindings.jsonl 是追加式、没丢 ——\n"
+                "    按事件顺序重放（bind 建 / unbind 删 / prune 移出 / reset 清空）即可恢复。"
+                % (new_n, old_n, 100.0 * (old_n - new_n) / max(1, old_n)))
     STATE.mkdir(parents=True, exist_ok=True)
     blob = json.dumps(d, ensure_ascii=False, indent=1)
     tmp = BINDINGS.with_name(BINDINGS.name + ".tmp")
@@ -615,7 +640,7 @@ def gaps(verbose: bool = False, sample: int = 20) -> dict:
     没标签可挂的（代码/配置/第三方）**不算缺口**，如实分列。
     """
     d = _load()
-    missing, no_kind, scanned = [], 0, 0
+    missing, no_kind, scanned, third_party = [], 0, 0, []
     for root in SCAN_ROOTS:
         p = ROOT / root
         if not p.is_dir():
@@ -627,21 +652,36 @@ def gaps(verbose: bool = False, sample: int = 20) -> dict:
                 scanned += 1
                 if rel in d:
                     continue
-                if suggest(rel):
-                    missing.append(rel)
-                else:
+                if not suggest(rel):
                     no_kind += 1
+                    continue
+                # 🔴 2026-10-11 修（**判据与设计自相矛盾，实测暴露**）：
+                #    本文件 L466/L472 的设计口径写着：「_upstream（第三方仓，9800+ 文件）
+                #    **不进自动绑定**，只在巡检里数」—— 而这里却把它算进 missing（真缺口）。
+                #    后果实测：克隆一个外部件进 _upstream/ 就**凭空多出十几条真缺口**，
+                #    把**真正的**缺口淹掉（2026-10-11 克隆 VLX-Flow 后 gaps 从 1 条真缺口
+                #    变成 18 条，其中 17 条全是那个第三方仓的 README/assets）。
+                #    ⇒ 第三方仓的命中**单独分列**：**如实可见（不静默），但不计缺口**。
+                if rel.startswith("_upstream/"):
+                    third_party.append(rel)
+                    continue
+                missing.append(rel)
             except OSError:
                 continue
-    _log("gaps", missing=len(missing), no_kind=no_kind, scanned=scanned)
+    _log("gaps", missing=len(missing), no_kind=no_kind, scanned=scanned,
+         third_party=len(third_party))
     if verbose:
-        print(f"漏绑巡检：真缺口 {len(missing)} 个（有标签可挂却没绑）· 无标签 {no_kind} 个（代码/配置，不算缺口）")
+        print(f"漏绑巡检：真缺口 {len(missing)} 个（有标签可挂却没绑）· 无标签 {no_kind} 个"
+              f"（代码/配置，不算缺口）· 第三方仓命中 {len(third_party)} 个（**不计缺口**，见下）")
         for m in missing[:sample]:
             print(f"  🔴 该绑未绑: {m}")
+        for m in third_party[:5]:
+            print(f"  · 第三方仓（**设计上不自动绑**，只列出）: {m}")
         if not missing:
             print("  ✅ 无漏绑")
     return {"ok": not missing, "missing": len(missing), "no_kind": no_kind,
-            "scanned": scanned, "sample": missing[:sample]}
+            "third_party": len(third_party), "scanned": scanned,
+            "sample": missing[:sample], "third_party_sample": third_party[:sample]}
 
 
 def coverage(dirp: str, verbose: bool = False) -> dict:

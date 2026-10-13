@@ -75,7 +75,7 @@ for i, nm in HAIR.items():
         print(f"🔴 {nm} 缺 springBone.tail ⇒ 停止")
         raise SystemExit(2)
     chain_roots[i] = np.array(tail, np.float64)
-print("链尖（世界坐标）：" + " · ".join(f"{HAIR[i]}={np.round(v,3).tolist()}" for i, v in chain_roots.items()))
+print("链尖（世界坐标）：" + " · ".join(f"{HAIR[i]}={np.round(v, 3).tolist()}" for i, v in chain_roots.items()))
 
 # 认头发：头部这片里，主导骨 = Head 且低于头关节（与 spring-hair.py 同判据）
 slot = np.argmax(WT, axis=1)

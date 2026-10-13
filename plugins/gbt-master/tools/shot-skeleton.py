@@ -109,7 +109,7 @@ def negctl() -> int:
             err = pg.evaluate("() => window.__err || ''")
             shot = pg.evaluate("() => window.__shot === true")
             shown = pg.evaluate("() => { const e = document.getElementById('err');"
-                               "return {shown: getComputedStyle(e).display !== 'none', text: e.textContent}; }")
+                                "return {shown: getComputedStyle(e).display !== 'none', text: e.textContent}; }")
             b.close()
     finally:
         shutdown()
@@ -156,7 +156,7 @@ def main() -> int:
                 pg.wait_for_timeout(800)
                 joints = pg.evaluate("() => document.getElementById('j').textContent")
                 verts = pg.evaluate("() => document.getElementById('v').textContent")
-                springs = pg.evaluate("() => document.getElementById('s').textContent")
+                pg.evaluate("() => document.getElementById('s').textContent")
                 err = pg.evaluate("() => window.__err || ''")
                 dbg = pg.evaluate("() => window.__dbg || null")
                 pg.screenshot(path=str(OUT / name))

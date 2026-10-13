@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """由镜像探针生成"落生产后"探针：只把目标路径从镜像2 改成生产，逻辑一字不动。"""
 from __future__ import annotations
-import difflib, hashlib, sys
+import difflib
+import hashlib
+import sys
 from pathlib import Path
 sys.stdout.reconfigure(encoding="utf-8")
 ROOT = Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
@@ -11,10 +13,10 @@ for src_rel, dst_rel in PAIRS:
     src = (ROOT / src_rel).read_text(encoding="utf-8")
     lines = src.split("\n")
     hits = 0
-    for i, l in enumerate(lines):
-        s = l.strip()
-        if s.startswith("MIRROR = ") and "panel_server_mirror2.py" in l:
-            indent = l[: len(l) - len(l.lstrip())]
+    for i, ln in enumerate(lines):
+        s = ln.strip()
+        if s.startswith("MIRROR = ") and "panel_server_mirror2.py" in ln:
+            indent = ln[: len(ln) - len(ln.lstrip())]
             lines[i] = indent + 'MIRROR = ROOT / "holo_pet" / "panel_server.py"  # postland: 目标=生产'
             hits += 1
     assert hits == 1, (src_rel, hits)

@@ -26,6 +26,7 @@ SCOPE_DESCRIPTIONS = {
     "filesystem_write": "写入、移动、删除或自动整理文件",
     "remote_device": "启动/停止远程设备中继或外部接管通道",
     "deploy_publish": "部署、晋升、回滚或写入生产交付区",
+    "deploy_force": "放行被门卡住的动作（未全绿晋升 / 未声明落点 / 公网中继）；专用一次性钥匙，每放一次要主人发一次",
     "network_private": "访问本机、内网、保留地址或非标准端口",
     "browser_control": "操控系统浏览器或自动化浏览器执行点击/输入",
     "desktop_control": "调用桌面触手的输入、鼠标、键盘与窗口控制能力",
@@ -170,10 +171,17 @@ def evaluate(kind: str, payload: dict | None = None) -> PolicyDecision:
             elif tool in _DC_PROCESS_TOOLS:
                 add("process_execute")
             elif tool not in _READ_ONLY_DC_TOOLS:
-                add("desktop_control")
+                # 同上（主人令 2026-10-09）：桌面触手凡落点动作，**看**与**动**必须同时具备。
+                add("desktop_control", "privacy_read")
     elif kind == "tentacle":
         if op not in _READ_ONLY_TENTACLE:
-            add("desktop_control")
+            # 🔴 2026-10-09 主人令「为什么她的视觉每次都要**跟手分开**去使用传统的**瞎子操作**？
+            #    把视觉这么使用给她**钉死在上面**，别再使用传统瞎子操作」：
+            #    原来这里**只加 desktop_control**（手），不加 privacy_read（眼）⇒
+            #    **看不到也能动手** = 瞎子操作。这是本仓唯一还留着的这类缝。
+            #    钉死：凡落点动作（要动键鼠/窗口）**必须同时**具备"看"的票 ——
+            #    **没有眼睛就没有手**（与 omni_plug 的 app 插座口径一致）。
+            add("desktop_control", "privacy_read")
     elif kind == "browser":
         op = op or "open"
         if op in ("native", "deep", "controller", "cdp"):
@@ -222,9 +230,25 @@ def evaluate(kind: str, payload: dict | None = None) -> PolicyDecision:
     elif kind == "signature_guard":
         if bool(p.get("restore")):
             add("filesystem_write")
+    elif kind in ("llm_watch", "task_graph", "replan_loop", "duty_board",
+                  "wiki_graph", "doc_intake"):
+        # 🔴 大脑执行层·监督环（主人令 2026-10-13）：**整位零作用域** —— 它只动**我们自己的账**
+        #    （主脑注意力队列 / 任务图 / 回流账，落 `store/brain_supervisor/`），与 `wf_*` / `lr_*` 同口径：
+        #    任务图与长程账是本仓自己的账本，不是外面的世界。它**描述**的动作各自带自己的门
+        #    （真执行时由那条链自己过门）。
+        #    这里**显式写出来**，不是靠下方 fail-open —— 新增位必须有人交代它是什么（room_space 那块教训）。
+        pass
     elif kind in ("pipeline_submit", "pipeline_rollback", "mirror_ascend", "mirror_rewind",
                   "one_key_deploy", "mirror_release"):
-        add("deploy_publish")
+        # 🔴 2026-10-13（主人令逐字：「**技术层面不能给她有限制只保留人工授权护栏即可**」·
+        #    「**直接改成终端YES才能使用就好了有时候我需要用到的啊**」）：
+        #    带 `owner_override` 是走**专用钥匙**那条路 —— 门外要的是 `deploy_force`（另发一张一次性），
+        #    而不是 `deploy_publish`。⇒ 主人可以只发"正常发布"的钥匙、**不发"强制放行"的钥匙**；
+        #    旗标本身不带任何授权（没钥匙 ⇒ 门外就拒），所以**模型无法自我解锁**。
+        if p.get("owner_override") and kind in ("mirror_ascend", "mirror_release", "one_key_deploy"):
+            add("deploy_force")
+        else:
+            add("deploy_publish")
         if kind in ("one_key_deploy", "mirror_release"):
             add("process_execute", "filesystem_write")
     elif kind == "mirror_plan":
@@ -239,11 +263,144 @@ def evaluate(kind: str, payload: dict | None = None) -> PolicyDecision:
     elif kind == "mirror_shape":
         if p.get("path"):
             add("filesystem_write")
+    elif kind == "remote_confinement":
+        # 🔴 这一位**会起探针**（whoami / tasklist / docker version / wsl node -v）⇒ 读类也挂 process_execute，
+        #    别把"只是看看"念成"零作用域"（本仓有"零作用域≠只读"的现成教训）。
+        #    ttl / grant 是纯读文件（不起进程）⇒ 零作用域。
+        _rop = str(p.get("op") or "verdict").lower()
+        if _rop in ("ttl", "grant"):
+            pass
+        else:
+            add("process_execute")
+    elif kind == "god_view":
+        # 只读：读注册表 + state/ 账本，不起进程/不写盘/不出网 ⇒ 零作用域
+        pass
+    elif kind == "ux_doctrine":
+        # 纯函数判据（不起进程、不写盘、不出网）⇒ 零作用域；未知 op 也零（它只会返回 error，不改状态）
+        pass
+    elif kind == "vision_loop":
+        # 与内层真调用**同口径**（不许比它松）：眼=privacy_read · 耳=privacy_read ·
+        # 嘴=audio_output · 手=desktop_control+privacy_read · status/think/verify=纯算零作用域。
+        _vop = str(p.get("op") or "status").lower()
+        if _vop == "look":
+            add("privacy_read")
+        elif _vop == "hear":
+            add("privacy_read")
+        elif _vop == "speak":
+            add("audio_output")
+        elif _vop == "act":
+            add("desktop_control", "privacy_read")
+        elif _vop == "loop":
+            add("desktop_control", "privacy_read")
+            if not bool(p.get("dry", True)):
+                add("audio_output")
+        elif _vop not in ("status", "think", "verify"):
+            add("desktop_control", "privacy_read")     # 未知 op fail-closed
+    elif kind == "delivery_gate":
+        # status/gate 是纯读账（零作用域）；check/audit 会**起子进程**现跑扫，挂 process_execute。
+        _dop = str(p.get("op") or "status").lower()
+        if _dop in ("check", "audit"):
+            add("process_execute")
+        elif _dop not in ("status", "gate"):
+            add("process_execute")            # 未知 op fail-closed
+    elif kind == "tentacle_equip":
+        # 🔴 职业 → 装备/账号：读类零作用域；equip 是写类（落账），默认要动装备 ⇒ 再挂 process_execute。
+        #    具体装备自己的作用域（screen→privacy_read · ui_tree→desktop_control）由 tool_bay 内部
+        #    **再过一道 auth_gate.check_and_consume** —— 两层门都在 V8 这边，谁也不绕。
+        _eop = str(p.get("op") or "status").lower()
+        if _eop == "equip":
+            add("filesystem_write")
+            if str(p.get("tools", True)).lower() not in ("false", "0"):
+                add("process_execute")
+        elif _eop == "assign":
+            add("filesystem_write")            # 立职业 = 写 state/tentacle_professions.json
+        elif _eop not in ("status", "professions", "plan", "report", "assigned", "roster"):
+            add("filesystem_write")
+    elif kind == "tool_bay":
+        _top = str(p.get("op") or "state").lower()
+        if _top == "install":
+            add("filesystem_write")            # 落账 + 真接装备时内层自会再过一道门
+        elif _top != "state":
+            add("filesystem_write")            # 未知 op fail-closed
+    elif kind == "omni_plug":
+        # 🔴 2026-10-09（主人：把 V9 那种「插座」能力在自己这边补齐）：
+        #   读类三 op 零作用域；plug 只做存在性探测（不动手）也不挂；
+        #   **run 是真执行** ⇒ 按**插座类型**挂门；判不出来一律 fail-closed 按最重处理。
+        #   这正是 V9 那套最缺的一环：V9 的 run_plugged 里 process 直接 subprocess、file 直接写盘，
+        #   门只在 api 那条（net_guard）。门留在 V8 这边，能力才敢放出去。
+        _pop = str(p.get("op") or p.get("action") or "status").lower()
+        _sock = str(p.get("socket") or "").lower()
+        if _pop == "run":
+            if _sock == "process":
+                add("process_execute")
+            elif _sock == "file":
+                if str(p.get("do") or "").lower() in ("write", "append"):
+                    add("filesystem_write")
+            elif _sock == "api":
+                add("external_llm", "data_export")
+            elif _sock == "web":
+                add("desktop_control", "privacy_read")
+            elif _sock == "app":
+                # 插任意 APP 并操控 = 她的眼+手（看屏幕=隐私载体；点键鼠=桌面控制）
+                add("desktop_control", "privacy_read")
+                if str(p.get("do") or "").lower() == "launch":
+                    add("process_execute")
+            else:
+                add("process_execute", "filesystem_write")   # 插座类型判不出 ⇒ 按最重收口
+        elif _pop == "plug" and _sock == "app":
+            add("privacy_read")           # 列窗口/读标题本身就是隐私载体
+        elif _pop not in ("status", "sockets", "snapshot", "energy", "selftest", "plug"):
+            add("filesystem_write")                          # 未知 op fail-closed
+    elif kind == "media_stamp":
+        # 🔴 2026-10-09（主人问「元数据接入了吗」后补齐）：
+        #   status/tags/verify 是**读类**（只读容器标签）⇒ 零作用域；
+        #   stamp 真写盘（重写容器）⇒ filesystem_write；未列出的 op **fail-closed**。
+        #   （旁边的 media_run / media_publish 靠 write_guard 自钉写面、门内零作用域；
+        #    新接的这一位不走那条老路，直接在门上声明。）
+        _sop = str(p.get("op") or p.get("action") or "status").lower()
+        if _sop == "stamp":
+            add("filesystem_write")
+        elif _sop not in ("status", "tags", "verify"):
+            add("filesystem_write")                 # 未知 op 一律按写类
+    elif kind == "obsidian_vault":
+        # 🔴 2026-10-09 根因修复（第二处 fail-open 写盘口，护照 fc-20261009T051306-0ztd）：
+        #   obsidian_vault 的 provision/sync_page **真写盘**（实测 provision 报 vaults=273，
+        #   root=<仓>/vaults），但本函数没有它的分支 ⇒ 零作用域 fail-open。
+        #   后果两层：① 写盘免授权；② api 的「preflight 故障 ⇒ 有副作用的调用 fail-closed」
+        #   判据是按**作用域**分流的 —— 零作用域 ⇒ 感知层坏了也照跑。
+        #   实测红：test_preflight_fail_closed::test_a（喂坏 preflight 后 provision 仍 ok=True）。
+        #   口径：读类 op 零作用域；写类 op filesystem_write；未知 op fail-closed。
+        _vop = (p.get("op") or p.get("action") or "status").lower()
+        if _vop not in ("status", "read", "list", "pages", "tags"):
+            add("filesystem_write")
+    elif kind == "room_space":
+        # 🔴 2026-10-09 根因修复（门盲区 = 生产面红线的唯一漏洞，护照 fc-20261009T051306-0ztd）：
+        #   注册表里**房间只有一个能力位** `room_space`（op 在 payload 里分派，api.py:540），
+        #   而本函数下方的分支写的是 `room_create` / `room_shape` / `room_release` … ——
+        #   这些 kind **从来没有任何能力位携带**，全是死分支。
+        #   本函数对未列出的 kind 又是 **fail-open**（scopes=() ⇒ restricted=False）⇒ 实测：
+        #     `policy.evaluate("room_space", {"op":"release"})` → scopes=[] restricted=False
+        #     `cap room_space op=create` → 真写盘、**未消耗任何授权**（无 auth_consumed）
+        #   即「写镜像/房间」这条生产面红线在**唯一可调用入口**上是失守的。
+        #   口径按 AGENTS.md 生产面红线：写房间一律 filesystem_write；发布加 deploy_publish；
+        #   演练加 process_execute；只读取数免卡；**未知 op fail-closed**（同 key_gateway 口径）。
+        _rop = (p.get("op") or "status")
+        if _rop in ("get_plan", "frame", "status"):
+            pass                                        # 只读取数，免卡
+        elif _rop == "release":
+            add("deploy_publish", "filesystem_write")
+        elif _rop == "rehearse":
+            add("process_execute", "filesystem_write")
+        else:
+            add("filesystem_write")                     # create/enter/define_plan/gate/namespace/
+                                                        # shape/snapshot/observe/plan/simulate/parity
+                                                        # 以及**未知 op**（fail-closed）
     elif kind in ("room_create", "room_enter", "room_shape", "room_snapshot",
                   "room_observe", "room_gate", "room_namespace"):
         add("filesystem_write")
     elif kind == "room_release":
-        add("deploy_publish", "filesystem_write")
+        # 同上：放行那条路走专用钥匙 `deploy_force`（单独一次性）
+        add("deploy_force" if p.get("owner_override") else "deploy_publish", "filesystem_write")
     elif kind in ("room_plan", "room_simulate", "room_parity"):
         if kind != "room_plan" or p.get("plan"):
             add("filesystem_write")
@@ -345,6 +502,11 @@ def evaluate(kind: str, payload: dict | None = None) -> PolicyDecision:
         if (op or "tts") in ("tts", "speak", None):
             # 风哥 2026-09-18 拍板：把「本机发声」这条隐式规则**显式化**（进注册表）。
             add("audio_output")
+        if op in ("listen", "asr", "record"):
+            # 🔴 2026-10-09 主人令「还有耳，嘴」补的缝：原来 **listen（耳）一条门都没有** ——
+            #    麦克风可以不开票就开。而"听"与"看屏幕"同类：**采的是房间，也是隐私载体**
+            #    ⇒ 挂 privacy_read（与 vision 的读屏同一档，不许比它松）。
+            add("privacy_read")
     elif kind == "audit_query":
         add("audit_read")
     elif kind == "notion":
@@ -459,7 +621,11 @@ def evaluate(kind: str, payload: dict | None = None) -> PolicyDecision:
             add("device_control")
     elif kind == "remote_domain":
         if op in ("add", "revoke"):
-            add("remote_device", "filesystem_write")
+            # 公网 endpoint 那条放行走专用钥匙（内网/记录类照旧 remote_device）
+            if op == "add" and p.get("owner_override"):
+                add("deploy_force", "filesystem_write")
+            else:
+                add("remote_device", "filesystem_write")
     elif kind == "credential_steal":
         add("privacy_read")
     elif kind == "data_hijack":
@@ -519,6 +685,202 @@ def evaluate(kind: str, payload: dict | None = None) -> PolicyDecision:
     #    🔴 fail-closed 保留：将来给脑会加任何写/出网动作，必须回这里显式挂作用域。
     if kind == "brain_council":
         pass
+
+    # ── 2026-10-08 补：独立终审位（C-15「验收方 ≠ 产出方」· 2026-10-08 新在册的能力位 review_gate）──
+    # 为什么**必须**在这里补：本函数对**未列出的 kind 是 fail-open**（scopes=() ⇒ authorize 直接放行，
+    # 同上方 key_gateway 段的注释）⇒ 只登记名字不声明作用域，等于带着写面裸奔。
+    # 判据按它**实际做什么**定（读接线件 tools/codex-scripts/terminal-review.py 定档，不是拍脑袋）：
+    #   · review / escalate / status / where 是**纯读盘判定**（现算 sha256/字节/空否/BOM/关键词 +
+    #     读任务真读数，只打印不落盘；件头明文「本件默认零写盘」）⇒ 零作用域（读类直连）；
+    #   · reflow 只在 **submit=true**（落任务账，走既有 lr_submit 位）或 **tick=true**（推进任务，
+    #     走既有 lr_tick 位）时才产生写 ⇒ 那时挂 filesystem_write（更深的执行由被推进任务各自的
+    #     能力位**自己**过门，双层门，这里不越权代判）；
+    #   · retro 只在 **handoff=true**（写跨体接续包，走既有 handoff 位）时才写盘 ⇒ 那时挂 filesystem_write。
+    # 🔴 fail-closed：**未列出的 op**（含将来新增的写动作）一律挂 filesystem_write ——
+    #    免得将来加了别的写动作被静默放行（同族坑：作用域未注册）。
+    if kind == "review_gate":
+        op = op or "status"
+        if op == "reflow" and (bool(p.get("submit")) or bool(p.get("tick"))):
+            add("filesystem_write")
+        elif op == "retro" and bool(p.get("handoff")):
+            add("filesystem_write")
+        elif op not in ("review", "escalate", "retro", "reflow", "status", "where"):
+            add("filesystem_write")
+
+    # ── 2026-10-13 补：视觉打印（新在册的能力位 vision_print · 主人令「给我补齐」）──
+    # 为什么**必须**在这里补：本函数对**未列出的 kind 是 fail-open**（scopes=() ⇒ authorize 直接放行）。
+    # 判据按它**实际做什么**定（读件定档，不是拍脑袋）：
+    #   · status / where = 纯契约读数（只 import 模块 + 读落点路径）⇒ 零作用域；
+    #   · see / print / diff / loop 里的取帧段 —— 读屏幕是**隐私载体**，与 vision / voice listen
+    #     同一档（口径：不许比 vision 松）；
+    #   · print / loop —— 写真代码 + 真截图产物（outputs/vision-print/）⇒ filesystem_write；
+    #     且**真起浏览器进程**渲页（Chromium/Edge headless）⇒ process_execute；
+    #   · ask_model —— 把**图**发给外部视觉模型 ⇒ external_llm（数据出境，同 vision cloud 那条）。
+    # 🔴 fail-closed：**未列出的 op** 一律按"要取屏 + 要渲"挂满（privacy_read +
+    #    filesystem_write + process_execute）—— 免得将来加了别的动作被静默放行
+    #    （同族坑：作用域未注册）。
+    if kind == "vision_print":
+        # 🔴 空 op 也归 status 档 —— 判据**跟着实现走**：`tools/vision_print.py::run()`
+        #    的默认就是 `op or "status"`（api.py 那条分派分支同款），裸调只会读契约、
+        #    不会偷偷去截屏/起浏览器。若将来把默认 op 改成会动的东西，**这里必须同步改**，
+        #    否则就是一个 fail-open 洞。
+        if op in ("", "status", "where"):
+            pass
+        elif op in ("see", "diff"):
+            add("privacy_read")
+        elif op == "ask_model":
+            add("privacy_read", "external_llm")
+        elif op in ("print", "loop"):
+            add("process_execute", "filesystem_write")
+            if op == "loop":
+                add("privacy_read")               # loop 一定先取帧
+                if p.get("use_model"):
+                    add("external_llm")           # 看图回码那条可选腿
+        elif op == "polish":
+            # 2026-10-13 加：调优那一步**真跑两条腿**（天真放大写图 · 外观库 ffmpeg 上味道）
+            # ⇒ 起进程 + 写产物。两条腿都是**嵌套走唯一门**（run_task）去调既有位，不绕门。
+            add("process_execute", "filesystem_write")
+        else:
+            add("privacy_read", "filesystem_write", "process_execute")
+
+    # ── 2026-10-13 补：本机 CAD 链的口（新在册的能力位 cadgen）──
+    # 判据按它**实际做什么**定（读件定档，不是拍脑袋）：
+    #   · status / where（含空 op）**连 `--version` 都不跑** ⇒ 纯探、零作用域
+    #     （判据跟着实现走：`tools/cadgen_cap.py::run()` 的默认就是 `status`）；
+    #   · version / doctor / help ⇒ 会**起进程**跑真件 ⇒ process_execute；
+    #   · snapshot ⇒ 起进程 **且写产物**（PNG/SVG/MP4，写在哪由调用方给）⇒ 另加 filesystem_write。
+    # 🔴 fail-closed：**未列出的 op** 一律按「要起进程 + 要写盘」挂满（同族坑：作用域未注册）。
+    if kind == "cadgen":
+        if op in ("", "status", "where"):
+            pass
+        elif op in ("version", "doctor", "help"):
+            add("process_execute")
+        elif op == "snapshot":
+            add("process_execute", "filesystem_write")
+        else:
+            add("process_execute", "filesystem_write")
+
+    # ── 2026-10-13 补：UI 组件库的口（新在册能力位 ui_kit）──
+    # 判据按它**实际做什么**定：
+    #   · status / where / find = 只读索引（读 jsonl 打分）⇒ **零作用域**；
+    #   · build = 扫 `_upstream/galaxy` 并**写自己的 store**（`store/ui_kit/index.jsonl`）⇒ filesystem_write；
+    #   · take = 把件**拷到 `outputs/ui-kit/`** ⇒ filesystem_write。
+    # 🔴 fail-closed：未列出的 op 一律按"要写盘"挂（同族坑：作用域未注册）。
+    if kind == "ui_kit":
+        if op in ("", "status", "where", "find"):
+            pass
+        else:
+            add("filesystem_write")
+
+    # ── 2026-10-13 补：设计与审美图鉴的口（新在册能力位 design_atlas）──
+    # 判据按它**实际做什么**定：status/where/find = 只读索引 ⇒ **零作用域**；
+    # build = 扫上游手册并**写自己的 store** ⇒ filesystem_write。**未列出的 op fail-closed**。
+    if kind == "design_atlas":
+        if op in ("", "status", "where", "find"):
+            pass
+        else:
+            add("filesystem_write")
+
+    # ── 2026-10-13 补：作品链（新在册能力位 art_chain）──
+    # 判据按它**实际做什么**定：status/where = 只读契约 ⇒ **零作用域**；
+    # run = 跑四步链：真渲（**起子进程**跑 render_page.py）+ 取件/调优**写产物** + 嵌套调 ui_kit/vision_print
+    # ⇒ process_execute + filesystem_write。**未列出的 op fail-closed**。
+    if kind == "art_chain":
+        if op in ("", "status", "where"):
+            pass
+        else:
+            add("process_execute", "filesystem_write")
+
+    # ── 2026-10-13 补：动效引擎的口（新在册能力位 motion_kit）──
+    # 判据按它**实际做什么**定：status/where/find/api = 只读索引（读 jsonl 打分）⇒ **零作用域**；
+    # build = 扫 `_upstream/anime/dist/modules` 并**写自己的 store** ⇒ filesystem_write；
+    # prove = **起 Node 子进程**原生真跑引擎算纯函数 ⇒ process_execute。
+    # 🔴 fail-closed：未列出的 op 一律按"要起进程 + 要写盘"挂满（同族坑：作用域未注册）。
+    if kind == "motion_kit":
+        if op in ("", "status", "where", "find", "api"):
+            pass
+        elif op == "build":
+            add("filesystem_write")
+        elif op == "prove":
+            add("process_execute")
+        else:
+            add("process_execute", "filesystem_write")
+
+    # ── 2026-10-13 补：动效组件图鉴的口（新在册能力位 bits_kit）──
+    # 判据按它**实际做什么**定：status/where/find/api = 只读索引（读 jsonl 打分）⇒ **零作用域**；
+    # build = 扫 `_upstream/react-bits/src/content` 并**写自己的 store** ⇒ filesystem_write。
+    # 本位**不起任何进程**（零执行），所以 fail-closed 只挂写盘，不硬加 process_execute。
+    if kind == "bits_kit":
+        if op in ("", "status", "where", "find", "api"):
+            pass
+        else:
+            add("filesystem_write")
+
+    # ── 2026-10-13 补：作品策划位（新在册能力位 art_brief）──
+    # 判据按它**实际做什么**定：status/where/plan = 只读编排（四路 `find` 全是零作用域的读）⇒ **零作用域**；
+    # run = 把整条链交给 art_chain：真渲（**起子进程**）+ 写产物 ⇒ process_execute + filesystem_write。
+    # 🔴 fail-closed：未列出的 op 一律按"要起进程 + 要写盘"挂满（同族坑：作用域未注册）。
+    if kind == "art_brief":
+        if op in ("", "status", "where", "plan"):
+            pass
+        else:
+            add("process_execute", "filesystem_write")
+
+    # ── 2026-10-13 补：外部件接入图鉴（新在册能力位 intake_kit）──
+    # 判据按它**实际做什么**定：status/where/find/api = 只读索引（读 jsonl 打分）⇒ **零作用域**；
+    # build = 扫 `_upstream/` 下六件的知识面并**写自己的 store** ⇒ filesystem_write。
+    # 本位**不起任何进程、不出网、不执行外部件** ⇒ fail-closed 只挂写盘。
+    if kind == "intake_kit":
+        if op in ("", "status", "where", "find", "api"):
+            pass
+        else:
+            add("filesystem_write")
+
+    # ── 2026-10-13 补：内存墙蒸馏件（新在册能力位 offload_distill）──
+    # 判据按它**实际做什么**定：五个 op **全是只读**（读本文件常量 + 只读系统 API；
+    # **无 subprocess、无 urllib、无写盘**）⇒ **整位零作用域**。
+    # 未知名由**处理器自己** fail-closed（回 `{ok:false, fail_closed:true}` 并列出可用 op）——
+    # 同族先例 `recon_distill`（注册表里明写"零作用域"）。这里显式写出来，是为了让"零作用域"**可见**，
+    # 不是靠"没写分支所以放行"。
+    if kind == "offload_distill":
+        pass
+
+    # ── 2026-10-13 补：云卡触手（新在册能力位 pod_link）──
+    # 判据按它**实际做什么**定（同族口径：公网读=零；把数据发出去=data_export；跑东西=process_execute）：
+    #   · status/ls/down/where = 公网**读**（拉卡清单、列目录、取回文件）⇒ **零作用域**；
+    #   · up   = **把本机数据送出去**（上传到卡）+ 读本机文件 ⇒ data_export + filesystem_write；
+    #   · run  = **在远端跑代码** ⇒ process_execute。
+    # 🔴 fail-closed：未列出的 op 一律挂满三项。
+    if kind == "pod_link":
+        if op in ("", "status", "ls", "down", "where"):
+            pass
+        elif op == "up":
+            add("data_export", "filesystem_write")
+        elif op == "run":
+            # 🔴 2026-10-13 自纠（口径一致性，不是给自己开方便）：`run` = **在远端跑代码**，
+            #    同族先例（mcp_call / cadgen / codex_chat / browser 的 automate）都**只挂
+            #    process_execute** —— 没有谁因为"它也能顺带发数据"就再叠一道出境闸。
+            #    **`up` 不动**：那才是字面意义上的「把数据发送到外部服务」⇒ 仍挂 data_export。
+            add("process_execute")
+        else:
+            add("process_execute", "data_export", "filesystem_write")
+
+    # ── 2026-10-13 补：云卡 ComfyUI 触手（新在册能力位 comfy_cloud）──
+    # 判据按它**实际做什么**定（同族口径：跑东西=process_execute；落本机产物=filesystem_write）：
+    #   · status/nodes/models/queue/history = 每一步运输都要**在远端跑代码**（经 pod_link run）
+    #     ⇒ 读类也挂 process_execute —— 这不是多余，是如实：本机到 8188 没有路，读也得在卡里读。
+    #   · submit/video/free = 在远端跑 + （video 还会 down 产物到本机 outputs/cloud）⇒ 再叠 filesystem_write。
+    #   · fetch = 卡→本机落盘 ⇒ 只挂 filesystem_write（down 本身零作用域）。
+    # 🔴 fail-closed：未列出的 op 一律挂满三项。
+    if kind == "comfy_cloud":
+        if op in ("", "status", "nodes", "models", "queue", "history"):
+            add("process_execute")
+        elif op == "fetch":
+            add("filesystem_write")
+        elif op in ("submit", "video", "free"):
+            add("process_execute", "filesystem_write")
+        else:
+            add("process_execute", "data_export", "filesystem_write")
 
     return PolicyDecision(kind=kind, risk=risk, scopes=tuple(scopes),
                           action=action, allow_private=allow_private, details=details)

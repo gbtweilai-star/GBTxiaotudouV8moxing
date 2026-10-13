@@ -1,0 +1,4 @@
+GBT小土豆V8 · C-15 独立终审演示产物
+token=C15-TERMINAL-REVIEW-20261008-1130
+produced_by=wf_run(c15-producer-20261008-1130)
+口径=产出方只负责产出并自报 status；终审由另一条独立路径读盘判

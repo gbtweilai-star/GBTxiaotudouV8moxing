@@ -40,14 +40,14 @@ print(f"  删前快照 : {snap['count']} 项（{snap['taken_at']}）")
 print(f"  重盘清单 : {len(items)} 项 · 覆盖 {inv['counts']['scanned_dirs']} 个目录"
       f" · {'未穷尽' if inv['partial'] else '已穷尽'}")
 
-print(f"\n  ① 目标是否真的消失")
+print("\n  ① 目标是否真的消失")
 print(f"      快照 token {len(snap_tokens)} 个")
 print(f"      仍在云端   {len(alive)} 个  {'✓ 全部清除' if not alive else '✗ 有残留'}")
 for i in snap["items"]:
     if i["token"] in alive:
         print(f"        残留：{i['path']}  ({i['token']})")
 
-print(f"\n  ② 残留缓存普查（可能有更深处漏网的）")
+print("\n  ② 残留缓存普查（可能有更深处漏网的）")
 left = [i for i in items if PYCACHE.search(i["path"]) or WRANGLER.search(i["path"])]
 print(f"      仍含 __pycache__/.wrangler 的项：{len(left)}")
 for i in left[:10]:
@@ -58,7 +58,7 @@ if left:
     print("      说明：本次盘点深度≤3，清单只覆盖到 depth3；")
     print("            这些是更深处（或本次盘点未达）的同类缓存，属**已知未清**，不是遗漏执行。")
 
-print(f"\n  ③ 前后对比")
+print("\n  ③ 前后对比")
 print(f"      总项数 1592 → {len(items)}  （差 {1592 - len(items)}）")
 print(f"{'='*84}")
 verdict = "PASS" if not alive else "FAIL"

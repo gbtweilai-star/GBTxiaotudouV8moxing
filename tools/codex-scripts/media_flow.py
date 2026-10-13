@@ -388,11 +388,11 @@ def cmd_status(kinds: list[str]) -> int:
                     extra = "  许可 —（空格，无需许可）"
                 elif r.get("license_ok"):
                     extra = "  许可 ✅ %d/%d 已登记" % (r.get("license_registered", 0),
-                                                       r.get("license_need", 0))
+                                                  r.get("license_need", 0))
                 else:
                     extra = "  许可 ❌ %d/%d（缺 %s）" % (r.get("license_registered", 0),
-                                                        r.get("license_need", 0),
-                                                        "、".join(r.get("license_missing") or []) or "全部")
+                                                    r.get("license_need", 0),
+                                                    "、".join(r.get("license_missing") or []) or "全部")
             print("  %s %-14s ↔ %-14s %s  成品 %d / 彩排 %d%s"
                   % (mark, st["drawer"], mpname, r["state"],
                      r["deliverables"], r["rehearsals"], extra))

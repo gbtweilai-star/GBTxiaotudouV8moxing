@@ -19,7 +19,6 @@ from __future__ import annotations
 import argparse
 import json
 import re
-import shutil
 import sys
 from pathlib import Path
 
@@ -175,8 +174,8 @@ def render_filled(direction: str, work: dict, expected: set[str], pr: dict) -> s
         s = shots.get(idx, {})
         m = shot_meta.get(idx, {})
         rows.append(
-            f"| {idx} | {m.get('t0')}–{m.get('t1')}s ({m.get('dur')}s) | {m.get('title','')} | "
-            f"{s.get('render','')} | {s.get('eyeline','')} | {s.get('depth','')} | {s.get('reason','')} |")
+            f"| {idx} | {m.get('t0')}–{m.get('t1')}s ({m.get('dur')}s) | {m.get('title', '')} | "
+            f"{s.get('render', '')} | {s.get('eyeline', '')} | {s.get('depth', '')} | {s.get('reason', '')} |")
 
     share = ""
     if str(g.get("share_shot", "")).strip():
@@ -219,7 +218,7 @@ def render_filled(direction: str, work: dict, expected: set[str], pr: dict) -> s
 
 ## 一、全片预设风格（契约 §1：没有风格的分镜板一律打回）
 
-> {g.get('style','')}
+> {g.get('style', '')}
 
 ## 二、镜头三契约（逐镜 · 已填）
 
@@ -296,7 +295,7 @@ def main() -> int:
     print(f"\n{'='*78}")
     for d, n, k in no_target:
         print(f"  注意：{n} ({d}) 填了 {k} 项，但**本脚本还没有它的合并目标** ——")
-        print(f"        音乐不走分镜件，它的 §3 生成前闸要落到哪一件，尚未定夺。")
+        print("        音乐不走分镜件，它的 §3 生成前闸要落到哪一件，尚未定夺。")
         print("        这不是「已处理」，是「没处理」，填的内容目前只在导出件里。")
     if total_missing:
         print(f"有 {total_missing} 项缺，拒绝部分合并 —— 半份分镜比没有更坏：它看起来像填完了。")

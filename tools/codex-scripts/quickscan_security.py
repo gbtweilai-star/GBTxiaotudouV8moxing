@@ -262,7 +262,7 @@ def judge_persistence(p: dict) -> list:
         f.append(_fault("P2", "PERSIST_STARTUP_FILE",
                         "启动文件夹里有条目（每次登录都会执行）",
                         "%d 个：%s" % (len(p["startup"]),
-                                      "; ".join(Path(s).name for s in p["startup"][:6])),
+                                     "; ".join(Path(s).name for s in p["startup"][:6])),
                         "确认每一条是你放的；不用的删掉"))
     # WMI 过滤器：Windows 自带的几个（SCM Event Log Filter / BVTFilter）是系统件，别误报
     BUILTIN_WMI = {"scm event log filter", "bvtfilter", "tslogonfilter",
@@ -323,8 +323,8 @@ def judge_iocs(io: dict) -> list:
         f.append(_fault("P2", "IOC_IN_SECURITY_TOOLING",
                         "安全研究/测试目录里含同类手法（属预期，但要让读的人知道）",
                         "%d 处，例：%s" % (io["security_tooling_n"],
-                                          "; ".join("%s:%s %s" % (h["file"], h["line"], h["rule"])
-                                                    for h in io["security_tooling"][:3])),
+                                       "; ".join("%s:%s %s" % (h["file"], h["line"], h["rule"])
+                                                 for h in io["security_tooling"][:3])),
                         "保留但标注；本仓确有安全研究模块，不当作后门"))
     return f
 
@@ -360,15 +360,15 @@ def judge_npm(n: dict) -> list:
         f.append(_fault("P1", "NPM_POSTINSTALL_REMOTE",
                         "npm 生命周期脚本里含**联网下载/内联执行**（供应链投毒面）",
                         "%d 处，例：%s" % (len(risky),
-                                          "; ".join("%s[%s] %s" % (h["file"], h["field"], h["cmd"][:60])
-                                                    for h in risky[:2])),
+                                       "; ".join("%s[%s] %s" % (h["file"], h["field"], h["cmd"][:60])
+                                                 for h in risky[:2])),
                         "核对是不是自己写的构建脚本；第三方包的 postinstall 联网要格外警觉"))
     elif n.get("hooks"):
         f.append(_fault("P2", "NPM_LIFECYCLE_HOOKS",
                         "存在 npm 生命周期脚本（安装即会执行）",
                         "%d 处，例：%s" % (len(n["hooks"]),
-                                          "; ".join("%s[%s]" % (h["file"], h["field"])
-                                                    for h in n["hooks"][:3])),
+                                       "; ".join("%s[%s]" % (h["file"], h["field"])
+                                                 for h in n["hooks"][:3])),
                         "知悉即可；联网类见上一条"))
     return f
 
@@ -389,8 +389,8 @@ def scan_dns_proxy() -> dict:
         try:
             # 🔴 BOM：hosts 首行是 `\ufeff# Copyright ...`，`strip()` **不会**去掉 \ufeff，
             # 于是注释行被当成"非默认映射"报成 HOSTS_TAMPERED（2026-09-23 实测抓到的误报）。
-            live = [l.strip() for l in hp.read_text(encoding="utf-8-sig", errors="replace").splitlines()
-                    if l.strip() and not l.strip().lstrip("\ufeff").startswith("#")]
+            live = [line.strip() for line in hp.read_text(encoding="utf-8-sig", errors="replace").splitlines()
+                    if line.strip() and not line.strip().lstrip("\ufeff").startswith("#")]
             out["hosts"] = {"path": str(hp), "active": live}
         except OSError as e:
             out["unavailable"].append("hosts 读失败: %s" % type(e).__name__)
@@ -406,8 +406,8 @@ def judge_dns(d: dict) -> list:
     f = []
     h = d.get("hosts")
     if h:
-        odd = [l for l in h["active"]
-               if not BENIGN_HOSTS.match(l) and not DOCKER_HOSTS.search(l)]
+        odd = [line for line in h["active"]
+               if not BENIGN_HOSTS.match(line) and not DOCKER_HOSTS.search(line)]
         if odd:
             f.append(_fault("P1", "HOSTS_TAMPERED",
                             "hosts 文件有非默认映射（可能被劫持或用于屏蔽）",
@@ -475,8 +475,8 @@ def judge_ext_mismatch(e: dict) -> list:
     return [_fault("P1", "EXT_MISMATCH_PE",
                    "扩展名与真实文件头不符（**伪装**：后缀说不是可执行，头是 PE/ELF；或反之）",
                    "%d 个（共查 %d）：%s" % (len(d), e.get("checked"),
-                                            "; ".join("%s [%s→%s]" % (x["file"], x["ext"], x["real"])
-                                                      for x in d[:3])),
+                                       "; ".join("%s [%s→%s]" % (x["file"], x["ext"], x["real"])
+                                                 for x in d[:3])),
                    "逐个核；正常软件很少把 PE 藏在 .png/.txt/.json 下。"
                    "**只报不判**：先看是不是测试样本或打包产物")]
 
@@ -521,7 +521,7 @@ def judge_av_ondemand(a: dict) -> list:
                        "手工跑：MpCmdRun.exe -Scan -ScanType 3 -File <本仓> -DisableRemediation")]
     rc = a.get("rc")
     txt = (a.get("stdout") or "") + (a.get("stderr") or "")
-    found = re.search(r"(?i)(found\s+\d+\s+threat|threat\s+detected|no threats)", txt)
+    re.search(r"(?i)(found\s+\d+\s+threat|threat\s+detected|no threats)", txt)
     if rc not in (0, 1, 2):
         return [_fault("P2", "AV_ONDEMAND_SCAN",
                        "按需扫描返回异常退出码",

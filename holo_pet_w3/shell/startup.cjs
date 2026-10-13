@@ -114,16 +114,44 @@ app.whenReady().then(() => {
     say("S:windows", wins.length === want ? "PASS" : "FAIL",
         "建了 " + wins.length + " / 注册表 " + want + " 扇窗");
 
-    /* ③ 每扇窗载到东西了吗 */
+    /* ③ 每扇窗载到东西了吗
+       2026-10-04 起两类判据（主人令：窗 A 直载原生 DeepSeek 网页后，probe 抓到
+       「外部窗仍在载入」的假红）：
+         · 本地窗（file://）照旧钉死：必须载完且停止载入；
+         · 外部白名单对话窗（url-policy.EXTERNAL_ALLOWED_HOSTS）：外部载入受
+           网络/登录态影响、没有完成时限 ⇒ 只要求「已真的发起 https 导航」。 */
+    const urlPolicy = require("./url-policy.cjs");
     const bad = [];
+    let externalCount = 0;
+    /* 本地窗的「载完」判据配 **15s 有界等待**（2026-10-04 补）：brain 窗带 three.js
+       大快照，单拍检查会因机器负载偶发「仍在载入」假红 —— 判据不变（仍必须载完），
+       等待有时限，判决不随负载漂（P3：同型拒绝同形状）。 */
+    const waitStart = Date.now();
+    while (Date.now() - waitStart < 15000) {
+      const stillLoading = wins.filter((w) => {
+        try { return w.webContents.isLoading(); } catch (_) { return false; }
+      }).length;
+      if (stillLoading === 0) break;
+      await new Promise((r) => setTimeout(r, 250));
+    }
     wins.forEach((w, i) => {
       let u = "", loading = true;
       try { u = w.webContents.getURL(); loading = w.webContents.isLoading(); } catch (_) {}
+      let host = "";
+      try { host = new URL(u).hostname; } catch (_) {}
+      if (urlPolicy.EXTERNAL_ALLOWED_HOSTS.has(host)) {
+        externalCount += 1;
+        if (!/^https:\/\//.test(u)) {
+          bad.push("#" + i + " 外部对话窗没发起导航 url=" + (u || "(空)"));
+        }
+        return;
+      }
       if (!/^file:\/\//.test(u) || loading) bad.push("#" + i + " url=" + (u || "(空)") + (loading ? " 仍在载入" : ""));
     });
     say("S:loaded", bad.length ? "FAIL" : "PASS",
         bad.length ? ("有窗没载成 file:// 或仍在载入：" + bad.slice(0, 3).join(" · "))
-                   : (wins.length + " 扇窗都载到 file:// 且已停止载入"));
+                   : (wins.length + " 扇窗全过（本地窗载到 file:// 且停止载入；外部对话窗 "
+                      + externalCount + " 扇已发起导航，完成与否不设时限）"));
 
     /* ④ 托盘图标**真构造一次**（这条是重点：它失败会让 startSse 永远不跑且无声）
        ⚠️ 参数必须与 `buildTray()` **一致**：真实调用是
@@ -148,6 +176,22 @@ app.whenReady().then(() => {
       tray = "FAIL";
       say("S:tray", "FAIL", "托盘图标构造抛了：" + String((err && err.message) || err).slice(0, 120));
     }
+
+    /* ④c 自建应用菜单（主人令 2026-10-04「这些是拿来干嘛的？返回在哪里？」）：
+       应用菜单必须是我们自己的中文菜单（含 ← 返回 / ⟳ 重载），不许再是 Electron 默认英文排。 */
+    try {
+      const menu = require("electron").Menu.getApplicationMenu();
+      const labels = menu ? menu.items.map((i) => i.label || "") : [];
+      const hasBack = labels.some((l) => /返回/.test(l));
+      const hasReload = labels.some((l) => /重载/.test(l));
+      say("S:menu", hasBack && hasReload ? "PASS" : "FAIL",
+          "应用菜单：" + JSON.stringify(labels.filter((l) => l).slice(0, 6))
+          + (hasBack && hasReload ? "（自建中文菜单就位）" : "（**不是**自建菜单：返回/重载缺）"));
+    } catch (err) {
+      say("S:menu", "FAIL", "读应用菜单失败：" + String((err && err.message) || err).slice(0, 120));
+    }
+
+
 
     /* ④b 🔴 实时流到底接上没有（2026-09-23 第 43 轮加）。
 

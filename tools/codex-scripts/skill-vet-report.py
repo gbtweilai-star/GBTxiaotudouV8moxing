@@ -32,7 +32,7 @@ def main(argv=None) -> int:
     rep = json.loads(src.read_text(encoding="utf-8"))
     rows = rep.get("rows") or []
     roots = rep.get("roots") or []
-    scanned = rep.get("roots_scanned") or []
+    rep.get("roots_scanned") or []
 
     if a.topup:
         # 技能系统会在会话中途继续装技能（本轮实测：实审完 1268 之后又冒出 5 个）。
@@ -100,7 +100,7 @@ def main(argv=None) -> int:
     L.append("| 根里**在场**的技能（按 SKILL.md 计） | **%d** |" % present_total)
     L.append("| 本次**实审**的技能 | **%d** |" % audited)
     L.append("| 未审 | **%d**（%.1f%%） |" % (present_total - audited,
-                                             100.0 * max(0, present_total - audited) / max(1, present_total)))
+                                          100.0 * max(0, present_total - audited) / max(1, present_total)))
     L.append("")
     L.append("⚠️ 之前那版报告只审了 **13** 件（当时的根列表是**手写**的，漏了 20 个根 / 约 750 个技能）。")
     L.append("本报告的根由 `skill-vet.py` 的 `discover_roots()` **自动扫出**：家目录与仓根各下一层找 `*/skills`，")

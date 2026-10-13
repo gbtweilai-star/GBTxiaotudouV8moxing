@@ -12,7 +12,7 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 SRC = BASE / "archive" / "V14 GBT小土豆V8-无限画布.html"
 OUT = BASE / "V15 GBT小土豆V8-无限画布.html"

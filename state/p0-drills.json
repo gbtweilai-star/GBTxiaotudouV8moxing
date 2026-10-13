@@ -1,0 +1,608 @@
+{
+  "tool": "tools/codex-scripts/p0-drills.py",
+  "note": "本文件是 P0 演练台账，**只由 p0-drills.py 写**（单一真源）。手改会被下次运行覆盖。",
+  "generated_at": "2026-10-08T06:58:12+07:00",
+  "run_id": "p0drill-1791417491",
+  "sandbox": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_",
+  "binding": {
+    "store_dir": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\store",
+    "in_sandbox": true,
+    "is_prod": false,
+    "env": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\store"
+  },
+  "isolation": {
+    "prod_store": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\store",
+    "prod_store_before": {
+      "audit.jsonl": {
+        "size": 70023107,
+        "mtime_ns": 1791417491473360500
+      },
+      "auth_grants.jsonl": {
+        "size": 1223,
+        "mtime_ns": 1791417387117650600
+      },
+      "run_id_in_prod_audit_tail": false
+    },
+    "prod_store_after": {
+      "audit.jsonl": {
+        "size": 70023107,
+        "mtime_ns": 1791417491473360500
+      },
+      "auth_grants.jsonl": {
+        "size": 1223,
+        "mtime_ns": 1791417387117650600
+      },
+      "run_id_in_prod_audit_tail": false
+    },
+    "claim": "演练全部在沙箱 store 上造故障与落账；生产树（含 CHARTER.md/SOUL.md、holo_pet_w3/、gbt_allinone/store/）一字未改。"
+  },
+  "drills": {
+    "f2.4": {
+      "id": "F2.4",
+      "name": "宪法被污染",
+      "source": {
+        "doc": "gbt_allinone/docs/GBT全故障点设计.md",
+        "line": 87,
+        "verbatim": "| F2.4 | 宪法被污染 | `CHARTER.md`/`SOUL.md` 被非授权改写 | 检：宪法文件指纹与基线比对<br>诊：定位改动行 + 改动者<br>恢：从 `.backups/` 还原，并落 `P0`<br>降：拒绝执行任何依赖被污染条款的动作<br>审：`fault_open{severity:\"P0\", who:\"signature_guard\"}` | ⬜未测 | N10/N20 |",
+        "event_table_line": 817,
+        "event_table_verbatim": "| F2.4 宪法污染 | `fault_open{severity:P0}` | `file` · `base_sha` · `now_sha` | **独立**（防篡改者改账） |"
+      },
+      "isolation": "污染 / 还原全部发生在沙箱副本 C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\F2.4\\live 上；真件 ['C:\\\\Users\\\\ADMIN\\\\Desktop\\\\GBT小土豆V8\\\\CHARTER.md', 'C:\\\\Users\\\\ADMIN\\\\Desktop\\\\GBT小土豆V8\\\\SOUL.md'] 只被 read/copy2（源不改）",
+      "injection": "向副本 CHARTER.md 末尾追加一章非法条款（副本可逆）",
+      "readings": {
+        "检": {
+          "pos_detected": true,
+          "polluted": [
+            {
+              "file": "CHARTER.md",
+              "why": "sha_mismatch",
+              "base_sha": "07f70b4fa6531b6cf21e5e68fe48838b82aca5959fef7a7386b8c5a1866e28d0",
+              "now_sha": "c74d8646adb8ee950f30687cf930565cb3d92aac826f8a7bc56795997b7279ea",
+              "first_diff_line": 875,
+              "base_line": "<EOF>",
+              "now_line": "",
+              "appended_lines": 2,
+              "appended_sample": "## 第十九章（非法注入 · p0-drills/2.4 演练）",
+              "mtime": "2026-10-08T06:58:12"
+            }
+          ],
+          "checked_files": 2
+        },
+        "诊": {
+          "first_diff_line": 875,
+          "appended_lines": 2,
+          "appended_sample": "## 第十九章（非法注入 · p0-drills/2.4 演练）",
+          "base_line": "<EOF>",
+          "now_line": "",
+          "who_guess": "mtime=2026-10-08T06:58:12 · 演练注入标记在正文里",
+          "who_note": "真实篡改者身份不可知（无写者取证）；演练只能报注入痕迹与 mtime"
+        },
+        "恢": {
+          "restored_from": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\F2.4\\backup\\CHARTER.md",
+          "healed_ok": true,
+          "reversible": true
+        },
+        "降": {
+          "gate_before_restore": false,
+          "gate_after_restore": true,
+          "policy": "指纹不符 ⇒ 拒绝执行依赖被污染条款的动作（fail-closed）"
+        },
+        "审": {
+          "event": "fault_open{severity:P0, who:signature_guard}",
+          "audit_written_to": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\store\\audit.jsonl",
+          "faults_written_to": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\store\\faults.jsonl"
+        }
+      },
+      "controls": {
+        "pos": {
+          "what": "被污染副本喂检测器",
+          "must": "报红（检出）",
+          "got": "报红",
+          "ok": true
+        },
+        "neg": {
+          "what": "干净副本喂检测器",
+          "must": "报净",
+          "got": "报净",
+          "ok": true
+        }
+      },
+      "rollback": {
+        "done": true,
+        "detail": "冷备还原后指纹回基线、降级闸复开 = True"
+      },
+      "unverified": [
+        "「改动者」真身份（需写者取证/文件审计链，本仓无）⇒ 未验证",
+        "生产 `.backups/` 还原路径未真跑（真件未动、生产无该冷备）⇒ 未验证（沙箱冷备替代）"
+      ]
+    },
+    "f5.3": {
+      "id": "F5.3",
+      "name": "门禁被绕过",
+      "source": {
+        "doc": "gbt_allinone/docs/GBT全故障点设计.md",
+        "line": 113,
+        "verbatim": "| F5.3 | 门禁被绕过 | 策略判定路径被短路（同 F10.2，此处记保障层后果面） | 检：`denied` 事件与 `call` 事件比例异常<br>诊：逐跳核对 policy 判定点<br>恢：回滚到上一个判定版本<br>降：默认拒绝（fail-closed）<br>审：`fault_open{severity:\"P0\", who:\"security_brain\"}` | ⬜未测（需专门红队演练） | N21 |",
+        "pair_probe_line": 954,
+        "pair_probe_verbatim": "#### 15.2.3 F5.3 → 门禁成对实时探针"
+      },
+      "isolation": "真绕过被红线禁止 ⇒ 未真绕过；绕过以**沙箱合成事件流**表达。而真门的 fail-closed 语义用 `auth_gate.check_and_consume_many` 在隔离 store（C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\store）上**实测**。",
+      "injection": "合成流里让 decision_id=dec-003 只落 gate_pre、不落 gate_post（有 pre 无 post）",
+      "real_gate_readings": {
+        "policy_hops": {
+          "file_hygiene.fix": {
+            "scopes": [
+              "filesystem_write"
+            ],
+            "risk": "high"
+          },
+          "mcp_connect": {
+            "scopes": [
+              "process_execute"
+            ],
+            "risk": "high"
+          },
+          "tentacle.see(只读)": {
+            "scopes": [],
+            "risk": "low"
+          },
+          "tentacle.click": {
+            "scopes": [
+              "desktop_control"
+            ],
+            "risk": "high"
+          }
+        },
+        "fail_closed_real": {
+          "ok": false,
+          "denied": true,
+          "missing": [
+            "filesystem_write"
+          ],
+          "error": "需要人工授权（filesystem_write）：写入、移动、删除或自动整理文件"
+        }
+      },
+      "readings": {
+        "检": {
+          "pos_missing_post": [
+            "dec-003"
+          ],
+          "pre": 8,
+          "post": 7,
+          "denied_ratio_bad": {
+            "calls": 8,
+            "denied": 0,
+            "ratio": 0.0
+          },
+          "denied_ratio_baseline": 0.25,
+          "ratio_anomaly": true
+        },
+        "诊": {
+          "decision_id": "dec-003",
+          "hop": "file_hygiene",
+          "policy_at_hop": {
+            "scopes": [
+              "filesystem_write"
+            ],
+            "risk": "high"
+          },
+          "note": "该跳 policy 判定点仍在册（作用域非空）⇒ 被短路的是**执行路径**，不是策略本身"
+        },
+        "恢": {
+          "restored_pairs_ok": true,
+          "reversible": true,
+          "note": "真实「回滚到上一个判定版本」= 人工（设计 §12 人工恢复 11 处之一），演练用恢复成对事件流替代"
+        },
+        "降": {
+          "fail_closed_real_denied": true,
+          "policy": "默认拒绝：无授权 ⇒ 冻结越权动作"
+        },
+        "审": {
+          "events": [
+            "gate_pre",
+            "gate_post",
+            "fault_open{severity:P0, who:security_brain}"
+          ],
+          "audit_written_to": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\store\\audit.jsonl"
+        }
+      },
+      "controls": {
+        "pos": {
+          "what": "缺 gate_post 的流喂成对探针",
+          "must": "报红（有 pre 无 post）",
+          "got": "报红 missing=['dec-003']",
+          "ok": true
+        },
+        "neg": {
+          "what": "完整成对流喂探针",
+          "must": "报净",
+          "got": "报净",
+          "ok": true
+        }
+      },
+      "rollback": {
+        "done": true,
+        "detail": "恢复成对事件流后 missing_post 清空 = True"
+      },
+      "unverified": [
+        "真绕过门禁（真短路判定路径）被红线禁止 ⇒ **未真造**，只以合成流验证检测器",
+        "「回滚到上一个判定版本」真动作需 Owner 批策略变更 ⇒ 未验证（标注人工）"
+      ]
+    },
+    "f5.6": {
+      "id": "F5.6",
+      "name": "快照 hash 不一致",
+      "source": {
+        "doc": "gbt_allinone/docs/GBT全故障点设计.md",
+        "line": 116,
+        "verbatim": "| F5.6 | **快照 hash 不一致** | 土豆公主与克劳德拿到的 hash 不同 | 检：两侧回写的 `snapshot_hash` 比对<br>诊：**立刻停手**，起双路探针（两条独立取数路径）定性是\"取数漂移\"还是\"通道中间被改\"<br>恢：以**慢路径重取**的那一份为准，另一方强制刷新<br>降：本次会诊作废，落 `P0`<br>审：`fault_escalate{to:\"owner\", severity:\"P0\"}` | ⬜未测（机制未成形） | N2/N29 |",
+        "event_table_line": 832,
+        "event_table_verbatim": "| F5.6 hash 不一致 | `fault_open{severity:P0}` | `hash_a` · `hash_b` · `canonical_rule` | **独立** |"
+      },
+      "isolation": "两侧快照与真实源全在沙箱 C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\F5.6；不触碰生产",
+      "injection": "①让快路径读到真实的旧版本（漂移）②让快路径载荷被改写（通道被改）",
+      "canonical_rule": "sha256(json.dumps(sort_keys=True,ensure_ascii=False,separators=(\",\",\":\")))",
+      "readings": {
+        "检": {
+          "clean_match": true,
+          "drift_mismatch": true,
+          "tamper_mismatch": true,
+          "hash_a_drift": "974ff5a2d35f6498",
+          "hash_b": "e7fbb6dc3b4fc032"
+        },
+        "诊": {
+          "drift_classified": {
+            "kind": "取数漂移",
+            "why": "偏离侧的值**曾是真实源的一个版本** ⇒ 源在两次取数之间变了，不是被改",
+            "off": [
+              "A"
+            ]
+          },
+          "tamper_classified": {
+            "kind": "通道中间被改",
+            "why": "偏离侧的值**不等于任何真实源版本** ⇒ 传输途中被改写",
+            "off": [
+              "A"
+            ]
+          },
+          "ground_hash": "e7fbb6dc3b4fc032"
+        },
+        "恢": {
+          "trust_slow_path": true,
+          "healed_match": true,
+          "reversible": true
+        },
+        "降": {
+          "policy": "本次会诊作废 + 落 P0（土豆公主独裁，显式标注）",
+          "consultation": "invalid"
+        },
+        "审": {
+          "events": [
+            "fault_open{P0, hash_a, hash_b, canonical_rule}",
+            "fault_escalate{to:owner, severity:P0}"
+          ],
+          "audit_written_to": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\store\\audit.jsonl"
+        }
+      },
+      "controls": {
+        "pos": {
+          "what": "hash 不一致（漂移）喂双路探针",
+          "must": "检出 + 定性",
+          "got": "检出，定性=取数漂移",
+          "ok": true
+        },
+        "pos2": {
+          "what": "hash 不一致（通道被改）",
+          "must": "定性=通道中间被改",
+          "got": "通道中间被改",
+          "ok": true
+        },
+        "neg": {
+          "what": "两侧都读当前真实源",
+          "must": "报净（一致）",
+          "got": "报净",
+          "ok": true
+        }
+      },
+      "rollback": {
+        "done": true,
+        "detail": "按慢路径重取后两侧一致 = True"
+      },
+      "unverified": [
+        "设计与克劳德侧的真实「回写 snapshot_hash」通道尚未成形（蓝图 §9.1 / 设计标注「机制未成形」）⇒ 真实两方比对未验证，演练用沙箱双侧载荷替代"
+      ]
+    },
+    "f7.4": {
+      "id": "F7.4",
+      "name": "store/life_vault 损坏",
+      "source": {
+        "doc": "gbt_allinone/docs/GBT全故障点设计.md",
+        "line": 135,
+        "verbatim": "| F7.4 | `store/life_vault` 损坏 | 目录被删 / 文件半截 | 检：目录存在性 + 可解析率<br>诊：逐文件校验<br>恢：从冷备还原<br>降：**只读**，拒绝新写入并显式告警<br>审：`fault_open{severity:\"P0\"}` | ⬜未测 | N8 |",
+        "event_table_line": 846,
+        "event_table_verbatim": "| F7.4 `life_vault` 损坏 | `fault_open` + 逐文件 hash | `file` · `sha_ok` | faults |"
+      },
+      "isolation": "演练的 vault = 隔离 store 的 C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\store\\life_vault（真件 gbt_allinone/store/life_vault 未动）；冷备 C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\F7.4\\cold_backup\\life_vault 也在沙箱内",
+      "injection": "①删目录（rename）②把 Events/a.json 截成半截 —— 两次都在沙箱 vault 上、都可逆",
+      "readings": {
+        "检": {
+          "clean_rate": 1.0,
+          "gone_exists": false,
+          "half_rate": 0.8333,
+          "half_bad": [
+            {
+              "file": "Events\\a.json",
+              "why": "parse_fail: Expecting value: line 1 column 18 (char 17)",
+              "head": "{\"i\": 1, \"note\": ",
+              "bytes": 17
+            }
+          ]
+        },
+        "诊": {
+          "gone_bad": [
+            {
+              "file": "<dir>",
+              "why": "目录不存在"
+            }
+          ],
+          "half_bad": [
+            {
+              "file": "Events\\a.json",
+              "why": "parse_fail: Expecting value: line 1 column 18 (char 17)",
+              "head": "{\"i\": 1, \"note\": ",
+              "bytes": 17
+            }
+          ],
+          "by_file": 6
+        },
+        "恢": {
+          "restore_a_ok": true,
+          "restore_b_ok": true,
+          "from": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\F7.4\\cold_backup\\life_vault",
+          "reversible": true
+        },
+        "降": {
+          "guard_when_gone": "只读（拒绝新写入 + 显式告警）",
+          "guard_when_half": "只读（拒绝新写入 + 显式告警）",
+          "guard_after_heal": "可写"
+        },
+        "审": {
+          "event": "fault_open{severity:P0} + 逐文件 hash",
+          "audit_written_to": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\store\\audit.jsonl"
+        }
+      },
+      "controls": {
+        "pos": {
+          "what": "目录被删 / 文件半截 喂逐文件校验",
+          "must": "两次都报红",
+          "got": "删目录=红 · 半截=红",
+          "ok": true
+        },
+        "neg": {
+          "what": "完好 vault 喂逐文件校验",
+          "must": "报净（可解析率 100%）",
+          "got": "报净 rate=1.0",
+          "ok": true
+        }
+      },
+      "rollback": {
+        "done": true,
+        "detail": "冷备还原后两次都复原、只读闸复开 = True"
+      },
+      "unverified": [
+        "真删/真截断**生产** life_vault 被红线禁止 ⇒ 未真造（在隔离 store 的 vault 上真删/真截断）",
+        "生产冷备不存在（gbt_allinone/store/life_vault 无 `.backups/` 冷备）⇒ 「从冷备还原」的真路径未验证，演练用沙箱冷备替代",
+        "`life_archive` 目前**没有**只读模式开关 ⇒ 「只读、拒绝新写入」的降级闸由本演练提供判据、产品侧未落地 ⇒ 未验证"
+      ]
+    },
+    "f8.4": {
+      "id": "F8.4",
+      "name": "多窗口同时崩",
+      "source": {
+        "doc": "gbt_allinone/docs/GBT全故障点设计.md",
+        "line": 145,
+        "verbatim": "| F8.4 | 多窗口同时崩 | 显存耗尽 / 主进程被杀 | 检：全部窗口心跳同时断<br>诊：区分\"全崩\"与\"主进程崩\"<br>恢：按注册表逐窗重建<br>降：单窗口模式（只保主控台）<br>审：`fault_open{severity:\"P0\"}` | ⬜未测 | N5 |",
+        "heartbeat_line": 446,
+        "heartbeat_verbatim": "| F8.4 多窗口同时崩 | ✗ | ✓ | ✗ | ✓ | 心跳为主 |",
+        "event_table_line": 851,
+        "event_table_verbatim": "| F8.4 多窗口同时崩 | `window_gone` × N | `N` · `parent_alive` | **独立** |"
+      },
+      "isolation": "真杀 APP 窗口被红线禁止 ⇒ 未真杀。演练用**只读注册表 C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet_w3\\shell\\windows.json** + 心跳/存活**模型**推演；重建走注册表逐窗（对齐 main.cjs createWindow 的注册表走法）",
+      "injection": "把注册表全部窗口的心跳置为同时静止 + 两种父进程态（在、不在）",
+      "registry": {
+        "file": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet_w3\\shell\\windows.json",
+        "count": 17,
+        "ids": [
+          "panel",
+          "godview",
+          "eigenflux",
+          "h1",
+          "dsh-chat",
+          "plugins-mesh",
+          "exec-deck",
+          "code-deck",
+          "brain",
+          "eye",
+          "logbook",
+          "blueprint",
+          "cloud-plugins",
+          "cloud-status",
+          "db-fleet",
+          "capabilities",
+          "energy"
+        ],
+        "main_console": "panel",
+        "main_console_rule": "role=='main' 的窗；无则取唯一默认可见窗（panel）"
+      },
+      "readings": {
+        "检": {
+          "all_silent_alarm": true,
+          "silent_n": 17,
+          "total": 17
+        },
+        "诊": {
+          "variant_全崩": "全崩（父进程在、渲染窗全没）",
+          "variant_主进程崩": "主进程崩（parent_alive=False）"
+        },
+        "恢": {
+          "rebuilt_windows": 17,
+          "alarm_cleared": true,
+          "reversible": true
+        },
+        "降": {
+          "mode": "单窗口模式（只保主控台）",
+          "kept": [
+            "panel"
+          ],
+          "dropped": [
+            "godview",
+            "eigenflux",
+            "h1",
+            "dsh-chat",
+            "plugins-mesh",
+            "exec-deck",
+            "code-deck",
+            "brain",
+            "eye",
+            "logbook",
+            "blueprint",
+            "cloud-plugins",
+            "cloud-status",
+            "db-fleet",
+            "capabilities",
+            "energy"
+          ],
+          "scan": {
+            "total": 1,
+            "silent": [],
+            "all_silent": false,
+            "parent_alive": true,
+            "diagnosis": null
+          }
+        },
+        "审": {
+          "events": [
+            "fault_open{severity:P0, N, parent_alive}",
+            "window_gone × N"
+          ],
+          "audit_written_to": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\store\\audit.jsonl"
+        }
+      },
+      "controls": {
+        "pos": {
+          "what": "全窗心跳同时断喂检测器",
+          "must": "报红 + 定性",
+          "got": "报红，定性=全崩（父进程在、渲染窗全没）",
+          "ok": true
+        },
+        "pos2": {
+          "what": "父进程不存活态",
+          "must": "定性=主进程崩",
+          "got": "主进程崩（parent_alive=False）",
+          "ok": true
+        },
+        "neg": {
+          "what": "健康模型喂检测器",
+          "must": "不告警",
+          "got": "不告警",
+          "ok": true
+        }
+      },
+      "rollback": {
+        "done": true,
+        "detail": "按注册表逐窗重建后告警清除 = True"
+      },
+      "unverified": [
+        "真杀窗口/真耗尽显存被红线禁止 ⇒ 未真造（模型推演）",
+        "生产壳当前**无窗口心跳上报**（设计 §14.2 `window_gone × N` 通道未落地）⇒ 真心跳未验证，演练用注册表 + 心跳模型替代"
+      ]
+    }
+  },
+  "check_summary": {
+    "total": 16,
+    "passed": 16,
+    "failed": 0
+  },
+  "criteria": [
+    {
+      "id": "C1 F2.4 检阳性·污染副本必检出",
+      "ok": true,
+      "detail": "污染副本 => 报红"
+    },
+    {
+      "id": "C2 F2.4 检阴性·干净副本必报净",
+      "ok": true,
+      "detail": "干净副本 => 报净"
+    },
+    {
+      "id": "C3 F2.4 诊·定位到改动行+双 hash",
+      "ok": true,
+      "detail": "first_diff_line=875"
+    },
+    {
+      "id": "C4 F2.4 恢+降·冷备还原后指纹回基线且闸复开",
+      "ok": true,
+      "detail": "gate_before=False gate_after=True"
+    },
+    {
+      "id": "C5 F5.3 检阳性·缺 gate_post 必告警",
+      "ok": true,
+      "detail": "缺 post 流 => 报红 missing=['dec-003']"
+    },
+    {
+      "id": "C6 F5.3 检阴性·完整成对流必报净",
+      "ok": true,
+      "detail": "完整流 => 报净"
+    },
+    {
+      "id": "C7 F5.3 真实门 fail-closed（隔离 store 无授权必拒）",
+      "ok": true,
+      "detail": "真实 check_and_consume_many => denied=True missing=['filesystem_write']"
+    },
+    {
+      "id": "C8 F5.3 判定点齐·policy.evaluate 逐跳给出预期作用域",
+      "ok": true,
+      "detail": "file_hygiene.fix=['filesystem_write'] · tentacle.click=['desktop_control'] · tentacle.see=[]"
+    },
+    {
+      "id": "C9 F5.6 检阳性·hash 不一致必检出",
+      "ok": true,
+      "detail": "漂移 => 检出，定性=取数漂移"
+    },
+    {
+      "id": "C10 F5.6 诊·定性出「取数漂移」与「通道中间被改」",
+      "ok": true,
+      "detail": "漂移=取数漂移 · 通道被改=通道中间被改"
+    },
+    {
+      "id": "C11 F5.6 检阴性+恢·干净报净且慢路径重取后一致",
+      "ok": true,
+      "detail": "干净=报净 · 恢=True"
+    },
+    {
+      "id": "C12 F7.4 检阳性·目录被删与文件半截都必检出",
+      "ok": true,
+      "detail": "=> 删目录=红 · 半截=红"
+    },
+    {
+      "id": "C13 F7.4 检阴性+恢+降·完好率100%且冷备还原且只读闸复开",
+      "ok": true,
+      "detail": "干净率=1.0 · 复原=True · 闸=可写"
+    },
+    {
+      "id": "C14 F8.4 检阳性·全窗同断必告警且区分全崩/主进程崩",
+      "ok": true,
+      "detail": "全崩=全崩（父进程在、渲染窗全没） · 主进程崩=主进程崩（parent_alive=False）"
+    },
+    {
+      "id": "C15 F8.4 检阴性+恢+降·健康不告警且逐窗重建且单窗模式",
+      "ok": true,
+      "detail": "健康=不告警 · 重建清警=True · 单窗只保=['panel']"
+    },
+    {
+      "id": "C16 隔离·STORE_DIR 绑沙箱内且生产 store 未被本工具写",
+      "ok": true,
+      "detail": "store=C:\\Users\\ADMIN\\AppData\\Local\\Temp\\gbt-p0-drills-3uzk4lb_\\store · in_sandbox=True · 生产审计尾部含本 run_id=False"
+    }
+  ]
+}

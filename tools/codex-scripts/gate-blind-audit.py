@@ -143,6 +143,7 @@ def _dispatch_modules() -> dict:
                 break
     return out
 
+
 def _modules_for(kind: str) -> list:
     """提到这个位名的**实现模块**（**排除脚手架**；只读源码找，不猜路径）。
 
@@ -308,12 +309,12 @@ def _op_writes(p: Path) -> dict:
         if not (isinstance(t, ast.Compare) and len(t.ops) == 1
                 and isinstance(t.ops[0], ast.Eq)):
             continue
-        l, r = t.left, t.comparators[0]
+        lft, r = t.left, t.comparators[0]
         name = None
-        if isinstance(l, ast.Name) and l.id == "op" and isinstance(r, ast.Constant):
+        if isinstance(lft, ast.Name) and lft.id == "op" and isinstance(r, ast.Constant):
             name = r.value
-        elif isinstance(r, ast.Name) and r.id == "op" and isinstance(l, ast.Constant):
-            name = l.value
+        elif isinstance(r, ast.Name) and r.id == "op" and isinstance(lft, ast.Constant):
+            name = lft.value
         if not isinstance(name, str):
             continue
         w, d, paths = [], [], set()
@@ -353,7 +354,7 @@ def ops() -> dict:
                      "哪些 op 会删": [k for k, v in cache[p.name].items() if v["删除类"]]})
     return {"ok": True, "位数": len(rows), "逐位": rows,
             "口径": "**op 级静态切片**（只算该 `if op == …` 分支自己的语句）；"
-                    "**运行时拼的路径仍看不见**；位与 op 的对应靠「该位分派到这个模块」推定"}
+            "**运行时拼的路径仍看不见**；位与 op 的对应靠「该位分派到这个模块」推定"}
 
 
 def cmd_ops(a) -> int:
@@ -391,7 +392,7 @@ def cmd_selftest(a) -> int:
        r["🟢 门看不见 · 但**模块有自我约束**"]["位数"]
        + r["🔴 门看不见 · **静态没读到约束标记**（需人看）"]["位数"] == r["位数"],
        "%d + %d = %d" % (r["🟢 门看不见 · 但**模块有自我约束**"]["位数"],
-                        r["🔴 门看不见 · **静态没读到约束标记**（需人看）"]["位数"], r["位数"]))
+                         r["🔴 门看不见 · **静态没读到约束标记**（需人看）"]["位数"], r["位数"]))
     # 🔴 **措辞判据**：判决里**不许**出现"无约束"（没读到标记 ≠ 没有约束）
     # 🔴 判据必须允许**必需的措辞**：我们要它写「≠ 无约束」，就不能把「无约束」一律判违规
     bad_words = [x["位"] for x in r["逐位"]

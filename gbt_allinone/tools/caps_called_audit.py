@@ -50,6 +50,20 @@ CAP_TYPES = {
     # `sec_chain` = 安全面 HackerBrain 的**入口**（`api.py:196` 直接调 build_exploit_chain），
     # 它是"人调的安全分析入口"，不是"给别的模块调的内部件" ⇒ 归 external。
     "sec_chain": "external",
+    # 2026-10-13（主人令「发现问题必须追根因修」）：**蒸馏件家族**同 `sec_chain` 一类 ——
+    # 它们是「人/agent 经门调的判据件」（`cap <kind>`），**不是给别的模块 import 的内部件**
+    # ⇒ 按本文件自己的口径归 external；此前落默认 internal ⇒ 被当孤儿（假红）。
+    "recon_distill": "external",
+    "cad_distill": "external",
+    "bi_distill": "external",
+    # 2026-10-13 同上：这 6 位都暴露 status/plan/push/semantics 这类**给人/agent 调的 op**；
+    # 按本文件判据「零调用点的内调型＝不存在」⇒ 零调用点的位只可能是入口型。
+    "dh_pose": "external",
+    "express_direct": "external",
+    "pulse_direct": "external",
+    "repo_publish": "external",
+    "ring_context": "external",
+    "warm_switch": "external",
     # R-H 入口型：api.py _run_benign 路由的入口能力，与 pipeline_versions 同族
     "agency_tentacles": "external",
     "media_pipeline": "external",
@@ -65,7 +79,34 @@ CAP_TYPES = {
     # 证：不补分型时审计自己的读数就是 `orphan_count: 0 → 1`（我刚接上它时实测到的），
     # 补完应回 0。**分型不是洗白**：判据是"它是不是门"，不是"想不想让它绿"。
     "datakit": "external",
-    "tentacle_pipeline": "external"
+    "tentacle_pipeline": "external",
+    # 🔴 2026-10-05 补 11 位（第七腿「分型」漏项 · P2 同族）：下面 11 位全是**蒸馏出来的工具位**
+    # （agent_control / answer_shaper / belief_forge / cli_chat / creation_camp / db_probe /
+    #  llm_redteam / policy_delta / slim_profile / spend_guard / thebrain_bridge）——
+    # 每位都有 `api.py` 官方入口（=官方门），且**没有任何模块该调它们**：调用者就是经
+    # `run_task` 的人/AI。与 `datakit` / `media_run` / `agency_tentacles` **同族**（那三条
+    # 就是按同一判据补的）。**判据不是"想让它绿"**：逐位现读 docstring，无一位声明
+    # "供内部模块调用"；审计当时的读数就是 `orphans: [这 11 位]`（orphan_count 0→11）。
+    "agent_control": "external",
+    "answer_shaper": "external",
+    "belief_forge": "external",
+    "cli_chat": "external",
+    "creation_camp": "external",
+    "db_probe": "external",
+    "llm_redteam": "external",
+    "policy_delta": "external",
+    "slim_profile": "external",
+    "spend_guard": "external",
+    "thebrain_bridge": "external",
+    # 2026-10-08 补 1 位（同族漏项 · review_gate 在册后）：它是**入口型** ——
+    # 只经 `api.py` 的 `review_gate` 分支（run_task 唯一门）进入，框架内部无模块该调它。
+    # 判据同 thebrain_bridge/media_run：不补分型时审计会按默认 internal 把它报成孤儿（假红）。
+    "review_gate": "external",
+    # 2026-10-08 补 1 位（同族漏项 · dh_brain 在册后）：数字人本体**只读门面** ——
+    # 有 `api.py` 分派（run_task 唯一门）、零写面、**框架内部无模块该调它**
+    # （它的读者是人与面板，不是别的模块）⇒ 入口型。实测：不补分型时审计报
+    # `orphans: ['dh_brain']`（假红）。
+    "dh_brain": "external"
 }
 DEFAULT_TYPE = "internal"
 CAP_TYPE_CN = {"internal": "内调型（给别的模块用）", "external": "入口型（给人/API 用）"}

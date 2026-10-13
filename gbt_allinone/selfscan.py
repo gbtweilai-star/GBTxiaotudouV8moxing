@@ -365,11 +365,32 @@ def alerts(last=500):
                                  + int(x[1].get("trace", 0) or 0)
                                  + int(x[1].get("legacy", 0) or 0)))[:5]
     runtime_faults = a["runtime_faults"]
+    # 🔴 2026-10-13 修（框架禁红黄 · 追到的根因就在这一行）：
+    #    原来 `needs_a_look` **无条件 True** —— 只要"异常事件数≠0"就置位，于是
+    #    **测试足迹**（实测：`_def_probe.txt`，磁盘上没有这个文件、**也不是在册能力位**）
+    #    把这条点亮 ⇒ alerts 飘红 ⇒ 深扫报红。真口径只有两条：
+    #      ① 有**现行故障**（runtime/guard）⇒ 必须人看；
+    #      ② 异常落在**在册能力位**上 ⇒ 必须人看；
+    #      只剩"不在册名字上的 trace 足迹" ⇒ 那是测试残留，**不置位**，只如实列出。
+    try:
+        from .caps_registry import BENIGN_CAPS as _REG
+        _names = set(_REG.keys())
+    except Exception:                                        # noqa: BLE001
+        _names = set()
+    _reg_hits, _stray = {}, {}
+    for _k, _v in (a.get("errors_by_kind") or {}).items():
+        (_reg_hits if _k in _names else _stray)[_k] = _v
+    _guard = int((a.get("by_signal") or {}).get("guard", 0) or 0)
+    _look = bool(runtime_faults or _guard or _reg_hits)
     return {"quiet": runtime_faults == 0,
             "quiet_means": ("窗口内没有**现行故障**（runtime_faults=0）；"
                             "但异常事件数不为 0 ⇒ 仍需人逐条看一眼"),
             "any_signal": True,
-            "needs_a_look": True,
+            "needs_a_look": _look,
+            "needs_a_look_means": ("真故障(runtime/guard) 或 在册能力位异常 ⇒ True；"
+                                   "只有不在册名字上的测试足迹 ⇒ False"),
+            "registered_anomalies": len(_reg_hits),
+            "unregistered_footprints": sorted(_stray)[:8],
             "anomalies": a["anomalies"],
             "runtime_faults": runtime_faults,
             "by_signal": a["by_signal"],

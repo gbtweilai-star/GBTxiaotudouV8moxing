@@ -49,7 +49,7 @@ RULES = [
      re.compile(r"lorem|待填|敬请期待|coming soon|placeholder text|TBD|占位符", re.I)),
     # ⚠️ 自纠（同上）：原来含 `return\s+null\s*;`，把 `if (!isAuthenticated) return null;`
     #    这种**正当守卫**报成"空实现"。⇒ 去掉裸 `return null`，只留真正空的函数体。
-    ("U3", "空实现", re.compile(r"=>\s*\{\s*\}|onClick=\{\(\)\s*=>\s*\{\s*\}\}|function\s+\w+\s*\([^)]*\)\s*\{\s*\}" )),
+    ("U3", "空实现", re.compile(r"=>\s*\{\s*\}|onClick=\{\(\)\s*=>\s*\{\s*\}\}|function\s+\w+\s*\([^)]*\)\s*\{\s*\}")),
     ("U4", "死链 href=\"#\"", re.compile(r'href\s*=\s*"#"')),
     ("U6", "硬编码样例数据", re.compile(r"^const\s+\w+\s*=\s*\[", re.M)),
     ("U7", "注释掉的内容缺口", re.compile(r"\{\s*/\*\s*(Other|TODO|Add|更多|其余)", re.I)),
@@ -100,7 +100,7 @@ def scan_file(name: str, code: str, imported_by: set) -> list:
         re.findall(r"import\s+([^;]+?)\s+from", code))
     for pk in _NOT_GLOBAL_PKGS:
         if re.search(r"\b" + re.escape(pk) + r"\b", code) and pk not in imports_all:
-            ln = next((i for i, l in enumerate(lines, 1) if re.search(r"\b" + re.escape(pk) + r"\b", l)), 0)
+            ln = next((i for i, line in enumerate(lines, 1) if re.search(r"\b" + re.escape(pk) + r"\b", line)), 0)
             hits.append({"rule": "U10", "why": "用到未 import 的外部符号（会抛 ReferenceError）",
                          "line": ln, "text": pk})
     return hits

@@ -36,6 +36,50 @@ for _s in (sys.stdout, sys.stderr):
     except Exception:
         pass
 
+# 🔴 2026-10-13 修（**坏尺子**二连 · 现读实测，不是推演）：
+#   ① **量错了面**：本件要钉的是「**未授权**路径的行为」，可它原先量在**活 store** 上 ——
+#      实测：store 里一张 2026-10-08 发的 `filesystem_write` **时段授权**还活着（TTL 到 2027）
+#      ⇒ `file_operation._authorized()` 短路生效 ⇒ 三态校验被跳过 ⇒ 6 条读数与基线不一致，
+#      看着像"改坏了"，量的其实是「**已授权**那条路」。（本仓纪律：坏判据比坏对象更危险。）
+#      **精准修法**：只隔离"授权"这一个变量 —— 把本进程的**授权账本**指到一个空的临时文件
+#      （真 store 一个字不动）⇒ 未授权路径才是被测面，且 `_write_root_checked` 那类
+#      「是否被隔离」的判断**不受牵连**（第一版改 `GBT_STORE_DIR` 时它就被牵连了，现读抓出来的）。
+#      子进程（经门探走 `five-dim.py`）另给它一份空 store（它只跑"设计上必被拒"的输入）。
+#   ② **读数带随机**：经门探里"超长路径"那条的错误文本里带随机 `.tmp` 后缀
+#      ⇒ `diff(measure(), measure())` 实测 = **1 条**（自己跟自己都对不上），长期红会被训练成忽略红。
+#      修法：比对前把随机后缀归一成 `<rand>`。
+#   ③ **尺子没钉住自己量的环境**：`_write_root_checked()` 的读数**随"进程是否隔离 store"变**
+#      （隔离时不许写生产 `outputs/`）—— 于是它在 `regression_stamp --store fresh` 下**必然**与基线不一致
+#      （实测：原生 rc=1，且拒句里还带随机临时 store 路径）。修法：本件**一律在「未隔离 store」下量**
+#      （进来就把 `GBT_STORE_DIR` 清掉再 import）；"隔离态"是**另一把尺子**的事，不混在这一把里。
+import os as _os
+import re as _re
+import tempfile as _tf
+
+_os.environ.pop("GBT_STORE_DIR", None)          # ⇒ 本进程按"未隔离 store"量（见文件头 ③）
+
+_RAND_SUFFIX = _re.compile(r"\.[A-Za-z0-9_-]{6,12}\.tmp")
+# 子进程那条（经门探）用的空 store：它只跑"设计上必被拒"的输入，故给个干净的房子
+_CHILD_STORE = _tf.mkdtemp(prefix="gbt_refusal_probe_child_store_")
+
+
+def _norm(text) -> str:
+    """把**天生随机**的那一段（临时文件后缀）归一 —— 归一的只有随机，语义一个字不动。"""
+    return _RAND_SUFFIX.sub(".<rand>.tmp", str(text or ""))
+
+
+def _isolate_grants() -> str:
+    """把**本进程**读的授权账本换成一个空文件（真账本一个字不动）⇒ 量到的是未授权路径。
+
+    为什么打这里而不打 `GBT_STORE_DIR`：实测（2026-10-13）—— 改 store 会把
+    `file_operation._write_root_checked` 也一起改了（"进程已隔离 store 就不许写生产 outputs/"），
+    于是尺子自己造出一条假差异。授权是**唯一**要隔离的变量。
+    """
+    from gbt_allinone import auth_gate as _AG
+    empty = Path(_tf.mkdtemp(prefix="gbt_refusal_probe_grants_")) / "auth_grants.jsonl"
+    _AG._GRANTS = empty
+    return str(empty)
+
 # **不可直探**（会改状态）—— 如实列出，不许静默跳过
 NOT_PROBED = {
     "file_operation._op_write": "写入口：直探会真落盘（备份+覆盖），只许走门",
@@ -89,12 +133,13 @@ def _outcome(fn) -> str:
     try:
         v = fn()
     except Exception as exc:                            # 拒 = 异常；把类名与首句钉下来
-        head = str(exc).splitlines()[0][:60] if str(exc) else ""
+        head = _norm(str(exc).splitlines()[0][:60]) if str(exc) else ""
         return "拒:%s:%s" % (type(exc).__name__, head)
     return "过:%s:%s" % (type(v).__name__, (str(v)[:60] if v is not None else ""))
 
 
 def measure() -> dict:
+    grants_to = _isolate_grants()          # 只隔离"授权"这一个变量（见文件头 ①）
     rows, fails = {}, {}
     for cid, why, fn in _cases():
         try:
@@ -104,8 +149,12 @@ def measure() -> dict:
     return {"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "逐条": rows,
             "**造不出用例的**": fails, "**不可直探（会改状态）**": NOT_PROBED,
             "经门探": measure_door(),
+            "授权隔离": "本进程授权账本已指向空文件（%s）⇒ 量到的就是**未授权**路径；"
+                    "子进程另给空 store（%s）；本进程**已清 `GBT_STORE_DIR`** ⇒ 一律按"
+                    "「未隔离 store」量（`_write_root_checked` 那条不再随环境漂）"
+                    % (grants_to, _CHILD_STORE),
             "口径": "只探纯校验函数；有副作用的入口如实列进不可直探、**再经唯一门探它的未授权现状**，"
-                   "**不静默跳过**"}
+            "**不静默跳过**"}
 
 
 def _res(row: dict) -> str:
@@ -159,7 +208,8 @@ def measure_door() -> dict:
                "cap", kind, payload]
         try:
             p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8",
-                               errors="replace", cwd=str(ROOT))
+                               errors="replace", cwd=str(ROOT),
+                               env={**_os.environ, "GBT_STORE_DIR": _CHILD_STORE})
             env = json.loads(p.stdout)
         except Exception as exc:
             out[cid] = {"说明": why, "类别": "**未读到**",
@@ -173,22 +223,31 @@ def measure_door() -> dict:
             out[cid] = {"说明": why, "类别": "门先挡",
                         "结果": "门先挡（denied）｜缺作用域 %s" % (miss or "**未读到**")}
         elif str(body.get("status")) in ("error", "needs_dependency", "needs_browser_debug",
-                                        "not_wired") or str(env.get("status")) == "error":
+                                         "not_wired") or str(env.get("status")) == "error":
             out[cid] = {"说明": why, "类别": "本体拒",
                         "结果": "门没挡（该 kind 零作用域）· 本体拒（%s）⇒ 零副作用"
-                                % (body.get("message") or body.get("error") or cls)}
+                        % _norm(body.get("message") or body.get("error") or cls)}
         else:
             out[cid] = {"说明": why, "类别": "没挡住",
                         "结果": "🔴 **没挡住**（status=%s）⇒ 有东西可能真跑起来了"
-                                % (env.get("status"),)}
+                        % (env.get("status"),)}
     return out
 
 
-def snapshot() -> int:
+def snapshot(reason: str = "") -> int:
+    """钉基线。🔴 **必须写原因**：每一处读数变化都要有人认领 ——
+    没写原因直接拒（rc=2），不许"默默重钉"把红洗成绿（同族：`refusal-census settle`）。"""
+    if not (reason or "").strip():
+        print(json.dumps({"类别": "未写原因",
+                          "拒绝": "**重钉基线必须写原因**（`--reason`）：这次读数为什么变、谁认的"},
+                         ensure_ascii=False, indent=1))
+        return 2
     m = measure()
+    m["重钉原因"] = reason.strip()
     BASE.parent.mkdir(parents=True, exist_ok=True)
     BASE.write_text(json.dumps(m, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps({"钉基线": {"逐条": len(m["逐条"]), "不可直探": len(NOT_PROBED)},
+                      "重钉原因": m["重钉原因"],
                       "落盘": str(BASE.relative_to(ROOT)), "at": m["at"]},
                      ensure_ascii=False, indent=1))
     return 0
@@ -209,6 +268,7 @@ def check_report(base: Path | None = None) -> tuple[int, dict]:
     return (0 if not d else 1), {
         "类别": "一致" if not d else "有差异",
         "基线": base_at, "现逐条": len(new["逐条"]), "差异条数": len(d), "差异": d[:12],
+        "基线重钉原因": old.get("重钉原因") or "**未读到（基线是旧口径钉的，没写原因）**",
         "**不可直探（会改状态）**": new["**不可直探（会改状态）**"],
         "经门探": new["经门探"],
         "判决": ("✅ 与基线**逐条一致**（未授权路径的行为没变 ⇒ 回滚面成立）" if not d else
@@ -243,7 +303,7 @@ def selftest() -> int:
        any(v["结果"].startswith("拒:") for v in m["逐条"].values())
        and any(v["结果"].startswith("过:") for v in m["逐条"].values()),
        "拒 %d ｜ 过 %d" % (sum(1 for v in m["逐条"].values() if v["结果"].startswith("拒:")),
-                          sum(1 for v in m["逐条"].values() if v["结果"].startswith("过:"))))
+                        sum(1 for v in m["逐条"].values() if v["结果"].startswith("过:"))))
     ck("**不可直探的必须被如实列出**（不许静默跳过）",
        len(m["**不可直探（会改状态）**"]) >= 2, "列出 %d 条" % len(m["**不可直探（会改状态）**"]))
     # ⑨ 经门探：两条"不可直探"的，走唯一门也要有未授权现状读数 —— 且**必须门先挡**
@@ -293,8 +353,10 @@ def selftest() -> int:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["snapshot", "check", "selftest"])
+    ap.add_argument("--reason", default="", help="snapshot 专用：这次为什么重钉（**必写**）")
     a = ap.parse_args()
-    return {"snapshot": snapshot, "check": check, "selftest": selftest}[a.cmd]()
+    return {"snapshot": lambda: snapshot(a.reason), "check": check,
+            "selftest": selftest}[a.cmd]()
 
 
 if __name__ == "__main__":

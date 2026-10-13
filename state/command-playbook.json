@@ -1,0 +1,566 @@
+{
+  "_note": "GBT小土豆V8 指挥手册 · 机器可读台账。每条 = 四元组（指挥谁/说什么话/拿什么验收/失败怎么走），缺一不算一条。验收一律为非 LLM 可判。指挥范式来源 msitarzewski/agency-agents（现查 158292 星）；我们仓接的是 paysssk-creator/agency-agents（现查 0 星）——两个仓分开列，不混引。",
+  "_developer": "自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属",
+  "_generated": "2026-10-08",
+  "_sources": {
+    "agency_agents_read": "msitarzewski/agency-agents (158292 stars) · 只读 gh api + raw，未 clone",
+    "replica_skill": "Jakenshchicarol/replica-skill → 404（用户名亦 404）；近似名 Jakeschincariol/replica-skill (886 星) 仅供辨认，不并入",
+    "books": "四本书本机 0 命中；公开面 6 条通道（清华社/电子工业社/豆瓣/当当/DDG/Bing）全未取到 ⇒ 书内容 0 条",
+    "pipelines_48": "四线各‘48 步’出处 holo_pet_w3/panel/index.html:82-85；物理结构核到每线 6 工序（projects/README.md 18 格）"
+  },
+  "demo_evidence": {
+    "派活口": "wf_define + wf_run 均已跑通（原文见 docs/AI指挥手册-蒸馏.md §6.1）",
+    "wf_define_result": {
+      "ok": true,
+      "name": "cmd-demo-dispatch-accept",
+      "nodes": 2,
+      "_source_file": "state/wf-cmd-demo.json"
+    },
+    "wf_run_result": {
+      "run_id": "cmd-demo-dispatch-accept-1791427634706",
+      "status": "ok",
+      "elapsed_s": 0.404,
+      "nodes": {
+        "deliver": "ok",
+        "readback": "ok"
+      },
+      "deliver": {
+        "bytes": 66,
+        "sha256": "e7d790bf9f083f7f4ed63b28f6a26fd1b093501b0fd567e8eb5ccbf0920be1fc",
+        "wrote": true,
+        "verify_new_sha": true,
+        "auth_consumed": "grant-1791425395752"
+      },
+      "readback": {
+        "wrote": false,
+        "idempotent": true,
+        "verify_new_sha": true
+      }
+    },
+    "验收口_正例": {
+      "task_id": "T0059",
+      "status": "done",
+      "attempts": 1,
+      "why": "全部验收标准满足"
+    },
+    "验收口_负对照1": {
+      "task_id": "T0060",
+      "status": "failed",
+      "attempts": 3,
+      "why": "文件不存在: C:/Users/ADMIN/Desktop/GBT小土豆V8/outputs/agency-demo/NO-SUCH-FILE.txt"
+    },
+    "验收口_负对照2": {
+      "task_id": "T0061",
+      "status": "stalled",
+      "attempts": 3,
+      "why": "未知验收标准: some_unknown_criterion"
+    },
+    "lr_progress_原文": {
+      "total": 61,
+      "done": 34,
+      "failed": 26,
+      "stalled": 1,
+      "pending": 0
+    },
+    "口径": "派活口已跑通 · 验收口正例已跑通 · 负对照两条已跑通（含 fail-closed 与 stalled 单列）。failed:26 是 store/tasks.json 累计历史，非本次三条。"
+  },
+  "counts": {
+    "已有": 20,
+    "部分": 6,
+    "缺": 5,
+    "total": 32,
+    "就绪状态原始分布": {
+      "部分": 5,
+      "已有": 16,
+      "已有（③④缺）": 1,
+      "已有（④缺）": 1,
+      "缺": 5,
+      "部分（②已有 / ①缺）": 1,
+      "已有（不在 6 格内，另立链）": 1,
+      "潜在（未执行）": 1,
+      "已有（但源不同）": 1
+    }
+  },
+  "rows": [
+    {
+      "id": "C-01",
+      "category": "切活",
+      "name": "单一真相源",
+      "四元组": {
+        "指挥谁": "全体工人（含谋划层）",
+        "说什么话": "One canonical spec, one task list, one architecture doc（规格/任务表/架构各只留一份正本）",
+        "拿什么验收": "非LLM：三份正本存在且指纹唯一（同一时刻不存在第二份‘最新版’）",
+        "失败怎么走": "出现第二份正本 ⇒ 停手，交人裁定（不合并、不挑一个信）"
+      },
+      "出处": "msitarzewski/agency-agents · strategy/nexus-strategy.md:55",
+      "我们对应能力位": "wf_define（同名幂等覆盖 store/workflows.json）· lr_submit（store/tasks.json 单一）",
+      "就绪状态": "部分",
+      "证据": "workflows.json 反复覆盖为‘最后定义者胜’，非‘唯一正本 + 唯一性校验’"
+    },
+    {
+      "id": "C-02",
+      "category": "切活",
+      "name": "一个任务=一个交付物=一条可勾选判据",
+      "四元组": {
+        "指挥谁": "接活的开发者工人",
+        "说什么话": "派单的 Acceptance criteria 必须是可勾选、可测项（- [ ] [Criterion — measurable]）",
+        "拿什么验收": "非LLM：勾选项能被不长嘴的东西算出来（文件存在/字段齐/阈值达标）",
+        "失败怎么走": "判据写不出机检形式 ⇒ 不派活，退回重切（判据先行再拆动作）"
+      },
+      "出处": "msitarzewski/agency-agents · strategy/coordination/handoff-templates.md:35-38；strategy/nexus-strategy.md:50",
+      "我们对应能力位": "wf_define（节点=一步一产物）· lr_submit（acceptance 列表即判据）",
+      "就绪状态": "已有",
+      "证据": "本轮实测 T0059 acceptance=['status_ok','file_exists:…','contains:python'] attempts=1 done"
+    },
+    {
+      "id": "C-03",
+      "category": "切活",
+      "name": "切错的样子：任务大到判据兜不住",
+      "四元组": {
+        "指挥谁": "派活人自己（自检）",
+        "说什么话": "任务跨阶段、或验收标准要靠人重新解释 ⇒ 就是切错了",
+        "拿什么验收": "非LLM：同因重复计数（同一原因连挂即判‘切错了’，不是‘手不行’）",
+        "失败怎么走": "分解（Escalation 的 b 选项），不是‘再试一次’"
+      },
+      "出处": "msitarzewski/agency-agents · nexus-strategy.md:723-724；playbooks/phase-3-build.md:211-215",
+      "我们对应能力位": "lr_tick（attempts + why 逐次可读）· wf_run（fail_fast 即停）",
+      "就绪状态": "部分",
+      "证据": "本轮 T0060 三次 why 逐字相同 ⇒ 已有‘同因可读’，缺‘同因自动判切错’"
+    },
+    {
+      "id": "C-04",
+      "category": "派活",
+      "name": "派单六件套（上下文最小充分）",
+      "四元组": {
+        "指挥谁": "任一工人（跨部门）",
+        "说什么话": "From/To · Phase与任务号 · Context（现状 + 相关文件清单，每个文件注明里面是什么）· Dependencies · Constraints · Deliverable Request",
+        "拿什么验收": "非LLM：派单必需字段齐（结构校验）+ 接活方能只凭派单复述‘要什么产物、什么算合格’",
+        "失败怎么走": "字段缺 ⇒ 拒收（不许接活方自己去猜）"
+      },
+      "出处": "msitarzewski/agency-agents · strategy/coordination/handoff-templates.md:11-45（相关文件清单在 :27-29）",
+      "我们对应能力位": "wf_define（params + 模板注入）· lr_submit(description/kind/params/priority/acceptance)",
+      "就绪状态": "已有",
+      "证据": "wf_define 原文返回 {'ok': True, 'name': 'cmd-demo-dispatch-accept', 'nodes': 2}"
+    },
+    {
+      "id": "C-05",
+      "category": "派活",
+      "name": "绝不冷启动",
+      "四元组": {
+        "指挥谁": "接活方（下游）",
+        "说什么话": "Context Continuity — every handoff carries full context — no agent starts cold",
+        "拿什么验收": "非LLM：下游输入不含‘待补’占位；派单字段非空率 100%",
+        "失败怎么走": "上游没给全 ⇒ 上游返工（责任在上游）"
+      },
+      "出处": "msitarzewski/agency-agents · nexus-strategy.md:51；handoff-templates.md:3",
+      "我们对应能力位": "wf_* 的 {{node.field}} 模板注入 + {{*}} 扇入聚合 · lr_submit(depends_on)",
+      "就绪状态": "已有（③④缺）",
+      "证据": "wf_run 实测 readback 节点吃到 deliver 的路径与 sha（同 run 记录 results 互见）"
+    },
+    {
+      "id": "C-06",
+      "category": "派活",
+      "name": "派单里绝对不写的东西（禁语/不写复合动作）",
+      "四元组": {
+        "指挥谁": "派活人自己（禁令）",
+        "说什么话": "不写‘尽量/大约/看着办’；不写复合动作；不写‘顺便’",
+        "拿什么验收": "非LLM：派单无模糊量词、判据是数字阈值",
+        "失败怎么走": "发现模糊词 ⇒ 打回改写，不许边干边澄清"
+      },
+      "出处": "本仓 · docs/新人类操作系统-控AI干活的四段法与能源账.md §2.2（NEXUS 侧无此条，如实标：核不到）",
+      "我们对应能力位": "lr_submit（acceptance 词表封闭：四种判据，未知即失败）",
+      "就绪状态": "已有",
+      "证据": "longrun.py:105-127 四种判据 + else 分支 fail-closed"
+    },
+    {
+      "id": "C-07",
+      "category": "派活",
+      "name": "并行只给无依赖的活",
+      "四元组": {
+        "指挥谁": "多条工人线",
+        "说什么话": "无依赖 ⇒ 同批并行各自跑‘干↔验’环；有依赖 ⇒ 等上游过验再派，并把上游上下文带进派单",
+        "拿什么验收": "非LLM：依赖拓扑无环 + 同批任务之间无共享可变状态",
+        "失败怎么走": "依赖未过验就派下游 ⇒ 判违规，下游结果不算数"
+      },
+      "出处": "msitarzewski/agency-agents · strategy/playbooks/phase-3-build.md:219-233",
+      "我们对应能力位": "wf_run（分层并行 + _topo_levels 环检测）",
+      "就绪状态": "已有",
+      "证据": "engine.py:_topo_levels 有环直接抛 EngineError；wf_run elapsed_s 0.404（2 节点）"
+    },
+    {
+      "id": "C-08",
+      "category": "交接",
+      "name": "交接用标准件，不用自由文本",
+      "四元组": {
+        "指挥谁": "上游 → 下游",
+        "说什么话": "7 类模板照表填：标准派单 / QA判过 / QA判不过 / 升级报告 / 阶段闸交接 / 冲刺交接 / 事故交接",
+        "拿什么验收": "非LLM：模板结构齐；判过或判不过都必带证据位（截图路径/测试输出/文件路径）",
+        "失败怎么走": "模板不齐 ⇒ 交接无效，退回补齐"
+      },
+      "出处": "msitarzewski/agency-agents · strategy/coordination/handoff-templates.md:1-357（用法索引 :349-357）",
+      "我们对应能力位": "wf_* 节点标准件 · lr_* 任务 dict 结构固定",
+      "就绪状态": "已有",
+      "证据": "handoff-templates.md 7 类模板逐节现读（357 行）"
+    },
+    {
+      "id": "C-09",
+      "category": "交接",
+      "name": "交接必须带‘下一棒要什么格式’",
+      "四元组": {
+        "指挥谁": "上游",
+        "说什么话": "交接件必写 Handoff to next: [谁接、需要什么格式]",
+        "拿什么验收": "非LLM：下游真能消费该格式（解析成功，不需转换）",
+        "失败怎么走": "格式不符 ⇒ 上游改格式（不是下游写转换器）"
+      },
+      "出处": "msitarzewski/agency-agents · strategy/coordination/handoff-templates.md:44",
+      "我们对应能力位": "wf_* 节点返回值即下一棒输入（模板注入零转换）",
+      "就绪状态": "已有",
+      "证据": "wf_run 内 {{node.field}} 直接吃上游字段"
+    },
+    {
+      "id": "C-10",
+      "category": "交接",
+      "name": "交接要留‘改了什么、还剩什么’",
+      "四元组": {
+        "指挥谁": "上游（判不过时）",
+        "说什么话": "逐条写 Fix instruction + File(s) to modify；并明写 Fix ONLY the issues listed / Do NOT introduce new features",
+        "拿什么验收": "非LLM：改动文件集 ⊆ 指定文件集（修复范围没扩大）",
+        "失败怎么走": "超范围改动 ⇒ 判违规返工"
+      },
+      "出处": "msitarzewski/agency-agents · handoff-templates.md:118-119, :137-141",
+      "我们对应能力位": "lr_tick(why) · wf_resume（复用已完成节点）",
+      "就绪状态": "已有（④缺）",
+      "证据": "longrun.py 判不过逐次落 why；autopilot 假修复见 C-20"
+    },
+    {
+      "id": "C-11",
+      "category": "交接",
+      "name": "交接要带‘下一阶段的关键约束与风险’",
+      "四元组": {
+        "指挥谁": "闸门看门人 → 下一阶段",
+        "说什么话": "必带 Documents Carried Forward + Key Constraints + Risks Carried Forward（风险带 P0–P3 与 owner）",
+        "拿什么验收": "非LLM：每条风险有责任人与等级（字段非空）",
+        "失败怎么走": "无主风险不许过闸"
+      },
+      "出处": "msitarzewski/agency-agents · strategy/coordination/handoff-templates.md:230-249",
+      "我们对应能力位": "全线无此字段",
+      "就绪状态": "缺",
+      "证据": "wf/lr/control_loop/autopilot 均无 risk→owner+severity 字段"
+    },
+    {
+      "id": "C-12",
+      "category": "交接",
+      "name": "交接的记账面（只追加，可自链校验）",
+      "四元组": {
+        "指挥谁": "框架自身",
+        "说什么话": "每次交接落一行审计（谁→谁、产物指纹、判据、结果）",
+        "拿什么验收": "非LLM：台账只追加、可自链哈希校验；行数只增不删",
+        "失败怎么走": "台账断链 ⇒ 停手查因"
+      },
+      "出处": "本仓：store/audit.jsonl + state/logbook.jsonl（工具 tools/codex-scripts/logbook.py）",
+      "我们对应能力位": "audit.jsonl · logbook.jsonl · control_loop 的 state/control_loop.jsonl",
+      "就绪状态": "已有",
+      "证据": "audit.jsonl 74461319 B / 487012 行；logbook.jsonl 98836 B / 77 行"
+    },
+    {
+      "id": "C-13",
+      "category": "验收",
+      "name": "判据必须非 LLM 可算",
+      "四元组": {
+        "指挥谁": "验收方（与干活方分离）",
+        "说什么话": "只认能用不长嘴的东西算出来的：文件存在/非空/哈希一致/读数一致/谓词返回真",
+        "拿什么验收": "非LLM：判据自证有牙——故意造一处缺陷，判据必须报红",
+        "失败怎么走": "判据在‘老样子’下不报红 ⇒ 判据作废重写"
+      },
+      "出处": "本仓 longrun.py:97-98 + :105-127（NEXUS 对照 nexus-strategy.md:53 Evidence Over Claims，方向一致但非可执行词表）",
+      "我们对应能力位": "lr_submit(acceptance) · lr_tick(_judge)",
+      "就绪状态": "已有",
+      "证据": "docstring 原文「非LLM验收：唯一“完成”判定」；四种判据逐行现读"
+    },
+    {
+      "id": "C-14",
+      "category": "验收",
+      "name": "验收默认不通过",
+      "四元组": {
+        "指挥谁": "终审方",
+        "说什么话": "Reality Checker defaults to NEEDS WORK — 必须用压倒性证据证明可上线",
+        "拿什么验收": "非LLM：证据不足即判不过（默认否决，而非默许）",
+        "失败怎么走": "补证据或降级/砍范围，不许先上线再说"
+      },
+      "出处": "msitarzewski/agency-agents · nexus-strategy.md:380, :386；strategy/QUICKSTART.md:149",
+      "我们对应能力位": "lr_submit（acceptance 缺省 ['status_ok']，未识别判据直接判失败）",
+      "就绪状态": "部分（②已有 / ①缺）",
+      "证据": "longrun.py:103-104, :126-127 fail-closed；wf_run 无‘默认否决’语义"
+    },
+    {
+      "id": "C-15",
+      "category": "验收",
+      "name": "终审权要独立（验收方 ≠ 产出方）",
+      "四元组": {
+        "指挥谁": "终审位",
+        "说什么话": "Gate Keeper: Reality Checker (sole authority) —— 生产闸终审只有一个权威，且它不是干活的那个",
+        "拿什么验收": "非LLM：判过记录里的验收方 ≠ 产出方",
+        "失败怎么走": "验收方与产出方相同 ⇒ 该次验收无效"
+      },
+      "出处": "msitarzewski/agency-agents · nexus-strategy.md:420, :713",
+      "我们对应能力位": "全线无独立终审位（lr_tick 在同一能力位内跑完自判）",
+      "就绪状态": "缺",
+      "证据": "longrun.tick 内 run_task 后直接 _judge，无第二执行体"
+    },
+    {
+      "id": "C-16",
+      "category": "验收",
+      "name": "判过留证据位，判不过留修复指令",
+      "四元组": {
+        "指挥谁": "验收方",
+        "说什么话": "判过 ⇒ 列证据（分档截图/逐条勾选/品牌·可达性·性能读数）；判不过 ⇒ 逐条 问题+期望+实际+证据+修复指令+要改哪些文件",
+        "拿什么验收": "非LLM：判不过条目可逐条核销（条目数 == 证据数）",
+        "失败怎么走": "无证据的判过 ⇒ 视为未验"
+      },
+      "出处": "msitarzewski/agency-agents · handoff-templates.md:66-88（PASS）, :109-144（FAIL）",
+      "我们对应能力位": "lr_tick(why) · wf_run 节点结果如实落盘 store/wf_runs/<id>.json",
+      "就绪状态": "已有",
+      "证据": "wf_runs 记录含每节点 status/results/耗时"
+    },
+    {
+      "id": "C-17",
+      "category": "验收",
+      "name": "判据要能区分‘这次真做了’与‘上次的还在’",
+      "四元组": {
+        "指挥谁": "判据设计者",
+        "说什么话": "判据必须排除陈旧产物冒充新产物（带本次时间戳/本次指纹）",
+        "拿什么验收": "非LLM：判据含新鲜度维度",
+        "失败怎么走": "出现假绿 ⇒ 立即停线，判据重写"
+      },
+      "出处": "本仓血账 · docs/新人类操作系统-控AI干活的四段法与能源账.md §2.1（NEXUS 对照 EXECUTIVE-BRIEF.md:15 fantasy approvals）",
+      "我们对应能力位": "create 位的 verify_new_sha / idempotent（写后读回逐字节自证）",
+      "就绪状态": "部分",
+      "证据": "本轮实测 deliver.verify_new_sha=True + readback.idempotent=True"
+    },
+    {
+      "id": "C-18",
+      "category": "升级",
+      "name": "重试有硬上限：3 次",
+      "四元组": {
+        "指挥谁": "编排方",
+        "说什么话": "Maximum 3 retries per task before escalation（闸面：Maximum 3 gate re-attempts）",
+        "拿什么验收": "非LLM：attempts 计数可机读，到 3 必停",
+        "失败怎么走": "到顶 ⇒ 升级（不是继续重试）"
+      },
+      "出处": "msitarzewski/agency-agents · nexus-strategy.md:54, :723；handoff-templates.md:141",
+      "我们对应能力位": "lr_submit(max_attempts 缺省 3) · wf_run(max_node_retries 缺省 0)",
+      "就绪状态": "已有",
+      "证据": "本轮 T0060 attempts 1→2→3 后 failed；T0061 同"
+    },
+    {
+      "id": "C-19",
+      "category": "升级",
+      "name": "升级＝带一套选项 + 要人拍一个",
+      "四元组": {
+        "指挥谁": "升级提交方 → 决策人",
+        "说什么话": "必带：失败史（逐次 发现/改了什么/为何还挂）· 根因 · 五选项（换手/分解/改路线/带限制接受/延期）· 影响面 · 决策人与期限",
+        "拿什么验收": "非LLM：五选项逐条可勾 + 决策人有名 + 期限有日期",
+        "失败怎么走": "人不拍 ⇒ 停手等（不许自行‘选一个’）"
+      },
+      "出处": "msitarzewski/agency-agents · handoff-templates.md:148-203（选项表 :188-193，决策位 :200-203）；nexus-strategy.md:723-724",
+      "我们对应能力位": "无升级件结构（只会报 why）",
+      "就绪状态": "缺",
+      "证据": "lr_tick 返回 {task_id,status,attempts,why}，无 options/decider/deadline"
+    },
+    {
+      "id": "C-20",
+      "category": "升级",
+      "name": "重试要有差异化，不做同因复读",
+      "四元组": {
+        "指挥谁": "编排方",
+        "说什么话": "第 1 次给具体反馈、第 2 次累积反馈并质疑‘是不是这个手不对’、第 3 次升级",
+        "拿什么验收": "非LLM：第 N 次派单输入与第 N-1 次不同（必须多带了信息）",
+        "失败怎么走": "连续同因且输入相同 ⇒ 判假修复，直接升级"
+      },
+      "出处": "msitarzewski/agency-agents · playbooks/phase-3-build.md:193-217（我侧缺陷已自检在案 docs/架构调研汇总 · GBT小土豆V8 设计稿.md:240, :289）",
+      "我们对应能力位": "lr_tick 重试输入相同（未见数据回流）",
+      "就绪状态": "缺",
+      "证据": "本轮实测 T0060/T0061 三次 why 逐字相同；autopilot.py:126 只给 goal 加后缀"
+    },
+    {
+      "id": "C-21",
+      "category": "升级",
+      "name": "停滞要单独一态",
+      "四元组": {
+        "指挥谁": "长程执行器",
+        "说什么话": "重试耗尽分两态：failed（判据明确不成立）vs stalled（同因空转无新信息）；停滞走升级语义",
+        "拿什么验收": "非LLM：两态字段可分且分开计数",
+        "失败怎么走": "停滞 ⇒ 升级给人（不续烧）"
+      },
+      "出处": "本仓 longrun（NEXUS 侧有 BLOCKED→Escalate：nexus-strategy.md:299-315，未读到独立停滞计数）",
+      "我们对应能力位": "lr_tick（lr_status progress）",
+      "就绪状态": "已有",
+      "证据": "本轮 progress 原文 {'total':61,'done':34,'failed':26,'stalled':1,'pending':0}"
+    },
+    {
+      "id": "C-22",
+      "category": "停手",
+      "name": "不可逆动作必须过人的门",
+      "四元组": {
+        "指挥谁": "任何工人（无一例外）",
+        "说什么话": "发布/上线这类不可逆外部动作，自动化的终点站是人的门",
+        "拿什么验收": "非LLM：该动作返回不可能是‘已完成’（恒 blocked，除非有一次性授权记录）",
+        "失败怎么走": "无授权 ⇒ 停（不降级、不自造授权）"
+      },
+      "出处": "本仓 media_publish 能力位 desc（NEXUS 对照 nexus-strategy.md:763-765 决策权威分级）",
+      "我们对应能力位": "授权门（filesystem_write / deploy_publish）+ media_publish.submit 恒 blocked",
+      "就绪状态": "已有",
+      "证据": "本轮 auth status 原文：filesystem_write grants_available 1 / used_total 4"
+    },
+    {
+      "id": "C-23",
+      "category": "停手",
+      "name": "要凭据的一律不由机器人代持",
+      "四元组": {
+        "指挥谁": "框架",
+        "说什么话": "密钥只从环境变量/密钥服务读；源码与文档零明文；输出打码前 4 位",
+        "拿什么验收": "非LLM：仓库不存在明文凭据（可机检扫描）+ 台账只回掩码/指纹",
+        "失败怎么走": "发现明文 ⇒ 停手 + 轮换（交人）"
+      },
+      "出处": "本仓 · docs/新人类操作系统-控AI干活的四段法与能源账.md §六（NEXUS 侧核不到）",
+      "我们对应能力位": "key_gateway · multimodal_port（返回值永不含明文）",
+      "就绪状态": "已有",
+      "证据": "能力位 desc 原文「返回值永不含明文（只 key_id/掩码/指纹）」"
+    },
+    {
+      "id": "C-24",
+      "category": "停手",
+      "name": "碰生产面必须先镜像",
+      "四元组": {
+        "指挥谁": "全体",
+        "说什么话": "所有假设在镜像里跑；生产零修改、一次性晋升；改动生产要主人点头",
+        "拿什么验收": "非LLM：晋升一次性且可回滚 + 排练全绿才放行（前置指纹绑定）",
+        "失败怎么走": "排练不全绿 ⇒ 阻断（不是告警后继续）"
+      },
+      "出处": "本仓 mirror_* / pipeline_submit（NEXUS 侧只有评审门，无镜像层）",
+      "我们对应能力位": "mirror_rehearse · mirror_ascend · mirror_release · pipeline_rollback",
+      "就绪状态": "已有（不在 6 格内，另立链）",
+      "证据": "desc 原文「排练全绿后一次性全量晋升生产（树/计划指纹绑定，失败即阻断）」「现实零修改」"
+    },
+    {
+      "id": "C-25",
+      "category": "停手",
+      "name": "超预算/超时立即停",
+      "四元组": {
+        "指挥谁": "无人值守链路",
+        "说什么话": "硬限时、到点自动停；每阶段一个原子单元、不跨阶段批量落刀",
+        "拿什么验收": "非LLM：限时器独立于被限时的执行体（超时后进程真停）",
+        "失败怎么走": "超时 ⇒ 停在检查点（不‘再跑一会儿’）"
+      },
+      "出处": "本仓 · docs/架构调研汇总 · GBT小土豆V8 设计稿.md:295（NEXUS 对照 nexus-strategy.md:759-765 是人的响应窗，非机器自停阀）",
+      "我们对应能力位": "wf 节点 timeout · lr max_attempts",
+      "就绪状态": "部分",
+      "证据": "缺总预算/总时限阀（只有单节点超时与单任务次数上限）"
+    },
+    {
+      "id": "C-26",
+      "category": "复盘",
+      "name": "每次冲刺收工必做复盘（三问）",
+      "四元组": {
+        "指挥谁": "编排方/看门人",
+        "说什么话": "收工必答：What went well / What to improve / Action items（具体改动）",
+        "拿什么验收": "非LLM：每条 Action items 有承接处（条目→承接处映射非空）",
+        "失败怎么走": "无承接处的复盘条目 ⇒ 视为没写"
+      },
+      "出处": "msitarzewski/agency-agents · handoff-templates.md:286-289",
+      "我们对应能力位": "logbook 逐条追加（无‘三问→Action items’结构）",
+      "就绪状态": "缺",
+      "证据": "logbook.jsonl 77 行逐条 append，未见冲刺级三问落点"
+    },
+    {
+      "id": "C-27",
+      "category": "复盘",
+      "name": "度量要落到下一轮能比的数",
+      "四元组": {
+        "指挥谁": "复盘方",
+        "说什么话": "必记：首次判过率 / 平均重试次数 / 完成比 / 阶段闸首过率",
+        "拿什么验收": "非LLM：数字来自台账且可重算",
+        "失败怎么走": "数不可复算 ⇒ 该度量作废"
+      },
+      "出处": "msitarzewski/agency-agents · nexus-strategy.md:786-794；handoff-templates.md:275-280",
+      "我们对应能力位": "wf_status（run 记录）· lr_status（progress）",
+      "就绪状态": "已有",
+      "证据": "本轮 lr_status progress 原文可直接重算 done/failed/stalled"
+    },
+    {
+      "id": "C-28",
+      "category": "复盘",
+      "name": "经验要固化成‘下次不用再指挥’",
+      "四元组": {
+        "指挥谁": "框架",
+        "说什么话": "一次经验 ⇒ 固化成技能或常设判据（一坑不踩两次）",
+        "拿什么验收": "非LLM：该固化件下次真被复用（调用/命中计数 > 0）+ 新判据在坑重演时必须报红",
+        "失败怎么走": "复现同一坑 ⇒ 判固化无效，重做判据"
+      },
+      "出处": "本仓 · docs/新人类操作系统-控AI干活的四段法与能源账.md §四 路径B + 操作清单第 10 条（NEXUS 对照 README.md:685 Learning Memory，意图有、机制核不到）",
+      "我们对应能力位": "wf_define 同名幂等覆盖（工作流可复用）· logbook.jsonl（append-only 记忆）",
+      "就绪状态": "部分",
+      "证据": "工作流可复用；未见‘新判据必须在该坑重演时报红’的强校验"
+    },
+    {
+      "id": "C-29",
+      "category": "复盘",
+      "name": "度量口径必须带印章，跨口径不许直接比",
+      "四元组": {
+        "指挥谁": "复盘方/审计方",
+        "说什么话": "读数带四元组印章（解释器版本·store·身份·命令）；口径不同打 not_comparable",
+        "拿什么验收": "非LLM：每条读数印章字段非空",
+        "失败怎么走": "跨口径差异不得直接判‘代码坏了’（换解释器/store/身份都会变红）"
+      },
+      "出处": "本仓 · docs/新人类操作系统-控AI干活的四段法与能源账.md §2.4（NEXUS 侧核不到）",
+      "我们对应能力位": "每次能力位返回带 gbt_stamp",
+      "就绪状态": "已有",
+      "证据": "本轮所有读数均带 gbt_stamp（framework/version/mark/developer/ownership）"
+    },
+    {
+      "id": "H-01",
+      "category": "宿主入口（单列）",
+      "name": "它的安装目标指向我们的宿主根 —— 潜在，未执行",
+      "四元组": {
+        "指挥谁": "——（事实描述，非动作）",
+        "说什么话": "zcode → .zcode/agents/{slug}.md；dsh → .dsh/skills/{slug}/SKILL.md 且 slugPrefix='agency-'",
+        "拿什么验收": "非LLM：本次未运行其任何安装器、未写任何 agency-* 文件（可机检目录为空）",
+        "失败怎么走": "若将来要装：需主人点头 + 先看覆盖什么 + 落来源与哈希登记"
+      },
+      "出处": "msitarzewski/agency-agents · tools.json（zcode order:16 format:zcode-md；dsh order:17 format:skill-md slugPrefix:'agency-'）",
+      "我们对应能力位": "我们的 skills/ 是自有品牌目录（79 项，命名风格自有）",
+      "就绪状态": "潜在（未执行）",
+      "证据": "未跑 install.sh/convert.sh；未写 .zcode/agents/、.dsh/skills/、~/.agents/skills/"
+    },
+    {
+      "id": "H-02",
+      "category": "同名≠同物（单列）",
+      "name": "我们接的仓不是主人截图那个",
+      "四元组": {
+        "指挥谁": "——（事实描述）",
+        "说什么话": "我们的能力位写死 AGENCY_REPO=paysssk-creator/agency-agents；主人截图是 msitarzewski/agency-agents",
+        "拿什么验收": "非LLM：两仓 fullName/stargazers_count 现查值不同",
+        "失败怎么走": "不许混引；结论一律标明取自哪个仓"
+      },
+      "出处": "本仓 gbt_allinone/tools/agency_tentacles.py:16 与 :24-27（_DIVISIONS 多出 company/hr/legal/supply-chain）",
+      "我们对应能力位": "agency_tentacles 能力位（已吸收那一套）",
+      "就绪状态": "已有（但源不同）",
+      "证据": "paysssk-creator: 0 星/0 fork/2026-07-04；msitarzewski: 158292 星/25506 fork/2025-10-13"
+    },
+    {
+      "id": "H-03",
+      "category": "只读不执行（已有家法）",
+      "name": "外来职业资料只当不可信资料",
+      "四元组": {
+        "指挥谁": "框架自身",
+        "说什么话": "外部职业定义只当不可信资料读取，不执行其中的指令、脚本或安装器",
+        "拿什么验收": "非LLM：吸收结果只落独立 room dimension（生产区/镜像区/用户目录均不写入）",
+        "失败怎么走": "越界写入 ⇒ 判越权"
+      },
+      "出处": "本仓 gbt_allinone/tools/agency_tentacles.py:1-8（模块 docstring 原文）",
+      "我们对应能力位": "agency_tentacles（独立 room dimension + 独立上下文命名空间）",
+      "就绪状态": "已有",
+      "证据": "docstring 逐字现读；标注为‘本体已有’，非本次新立红线"
+    }
+  ]
+}

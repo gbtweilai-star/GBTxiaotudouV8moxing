@@ -207,7 +207,8 @@ def search(query: str, limit: int = 8) -> dict:
     """Rank approved local documents without building a persistent index."""
     query = str(query or "").strip()
     if not query:
-        raise ValueError("缺少 query：请提供要检索的项目问题")
+        # 同上（主人令 2026-10-09）：陈述缺什么 + 给可直接照抄的示例，不要叫用户"提供"。
+        raise ValueError("缺少 query（要检索的项目问题）。例：{\"query\": \"发布链在哪\"}")
     limit = max(1, min(int(limit or 8), _MAX_SEARCH_LIMIT))
     terms = _terms(query)
     if not terms:

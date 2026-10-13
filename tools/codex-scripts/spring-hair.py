@@ -65,7 +65,7 @@ HIPS, HEAD = node_of("mixamorig:Hips"), node_of("mixamorig:Head")
 a = J["accessors"][skin["inverseBindMatrices"]]
 bv = J["bufferViews"][a["bufferView"]]
 ibm = np.frombuffer(bytes(BIN), np.float32, a["count"] * 16,
-                   bv.get("byteOffset", 0)).reshape(-1, 4, 4)
+                    bv.get("byteOffset", 0)).reshape(-1, 4, 4)
 # 🔴 glTF 的矩阵访问器是**列主序**：rig 写出时把 row-major 的 m.T 直接铺开，
 #    所以按 (4,4) 读回来得到的是 m.T，平移落在 **[3, :3]**（实测读 [:3,3] 会得到全 0，
 #    于是头关节 y 读成 0.000、头发候选 0 个 —— 这个坑先踩为敬）。
@@ -94,7 +94,7 @@ if hair.sum() < 50:
     raise SystemExit(1)
 Hp = P[hair]
 y_low = np.percentile(Hp[:, 1], 2)
-print(f"  头发 y 范围 {Hp[:,1].min():+.3f} .. {Hp[:,1].max():+.3f}（2 分位 {y_low:+.3f}）")
+print(f"  头发 y 范围 {Hp[:, 1].min():+.3f} .. {Hp[:, 1].max():+.3f}（2 分位 {y_low:+.3f}）")
 
 # ② 按**绕头竖轴的方位角**分链（方位角从数据算，不用"前后左右"这种写死标签）
 ang = np.arctan2(Hp[:, 0] - head_pos[0], Hp[:, 2] - head_pos[2])

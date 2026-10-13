@@ -1,0 +1,1 @@
+{"ok": false, "op": "loop", "goal": "点一下确定", "停在第": "①眼", "为什么": "看不到 ⇒ **绝不下发动作**（原生视觉）：看不了：缺少 action：给触手能力名（tentacle_manifest）、给 intent 走自动路由、或 op=caps 看全部能力", "步骤": [{"步": "①眼", "ok": false, "读数": "看不了：缺少 action：给触手能力名（tentacle_manifest）、给 intent 走自动路由、或 op=caps 看全部能力"}]}

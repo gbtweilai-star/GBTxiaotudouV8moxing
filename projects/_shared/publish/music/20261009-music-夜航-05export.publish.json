@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "kind": "music",
+  "label": "AI音乐",
+  "product": {
+    "file": "projects/music/06-release/20261009-music-夜航-05export.flac",
+    "sha256": "1d3468cf25093b8331c38163131400ede07bf0fc63549177dd36613320c07258",
+    "bytes": 1850241
+  },
+  "license": {
+    "file": "projects/music/06-release/20261009-music-夜航-05export.flac",
+    "sha256": "1d3468cf25093b8331c38163131400ede07bf0fc63549177dd36613320c07258",
+    "source": "本仓 ffmpeg 自产：三方向工作流自检（music 步 export）",
+    "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）"
+  },
+  "metadata": {
+    "title": "夜航",
+    "desc": "三方向工作流自检件（彩排件；正式发布前请去掉 -rehearsal）",
+    "tags": [
+      "selftest",
+      "music"
+    ],
+    "cover": null,
+    "note": "标题/简介/标签先落模板；平台侧字段各平台不同，提交时再按平台整形"
+  },
+  "targets": [
+    {
+      "class": "generation",
+      "cn": "生成端",
+      "ring": "内环",
+      "role": "灵感/歌词 → 歌曲 + 封面 + 元数据",
+      "count": 4,
+      "items": [
+        {
+          "name": "MusicFlow",
+          "channel": "平台",
+          "note": "生成端候选",
+          "verified": false,
+          "status": "未核实"
+        },
+        {
+          "name": "Miuse",
+          "channel": "平台",
+          "note": "生成端候选",
+          "verified": false,
+          "status": "未核实"
+        },
+        {
+          "name": "bZ Music",
+          "channel": "平台",
+          "note": "生成端候选",
+          "verified": false,
+          "status": "未核实"
+        },
+        {
+          "name": "Moltify",
+          "channel": "平台",
+          "note": "生成端候选",
+          "verified": false,
+          "status": "未核实"
+        }
+      ]
+    },
+    {
+      "class": "agent_native",
+      "cn": "Agent 原生端",
+      "ring": "中环",
+      "role": "Agent 注册身份 → 提交歌曲 → 赚版税/打赏",
+      "count": 4,
+      "items": [
+        {
+          "name": "moltdj",
+          "channel": "REST · Bearer",
+          "note": "Agent First；优先集成第 1 位",
+          "verified": false,
+          "status": "未核实"
+        },
+        {
+          "name": "noumi-mcp",
+          "channel": "npx noumi-mcp",
+          "note": "MCP 形态；优先集成第 2 位",
+          "verified": false,
+          "status": "未核实"
+        },
+        {
+          "name": "Claw.fm",
+          "channel": "平台",
+          "note": "Agent 原生候选",
+          "verified": false,
+          "status": "未核实"
+        },
+        {
+          "name": "PerpRadio",
+          "channel": "平台",
+          "note": "Agent 原生候选",
+          "verified": false,
+          "status": "未核实"
+        }
+      ]
+    },
+    {
+      "class": "distribution",
+      "cn": "分发端",
+      "ring": "外环",
+      "role": "提交到 DSP（Spotify / Apple Music …）",
+      "count": 5,
+      "items": [
+        {
+          "name": "JewelMusic SDK",
+          "channel": "SDK",
+          "note": "分发候选",
+          "verified": false,
+          "status": "未核实"
+        },
+        {
+          "name": "distro-mcp",
+          "channel": "MCP（Ditto）",
+          "note": "优先集成第 3 位",
+          "verified": false,
+          "status": "未核实"
+        },
+        {
+          "name": "epsilon.fm",
+          "channel": "平台",
+          "note": "分发候选",
+          "verified": false,
+          "status": "未核实"
+        },
+        {
+          "name": "Resonate",
+          "channel": "平台",
+          "note": "分发候选",
+          "verified": false,
+          "status": "未核实"
+        },
+        {
+          "name": "AudioKit.ai",
+          "channel": "SDK",
+          "note": "分发候选",
+          "verified": false,
+          "status": "未核实"
+        }
+      ]
+    }
+  ],
+  "preflight": {
+    "license_registered": true,
+    "naming_compliant": true,
+    "rehearsal": false,
+    "note": "**彩排件不要发布** —— 这一栏是给主人看的，不替你判；正式件请去掉 -rehearsal。"
+  },
+  "gate": {
+    "required_scope": "deploy_publish",
+    "how": "python -m gbt_allinone auth grant --scope deploy_publish --ttl 600",
+    "why": "发布不可逆 + 零凭据 ⇒ 必须主人一次性授权"
+  },
+  "at": "2026-10-09T11:01:10"
+}

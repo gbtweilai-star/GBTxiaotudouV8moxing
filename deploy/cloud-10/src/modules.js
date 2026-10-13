@@ -105,6 +105,11 @@ export function describeEndpoint(url) {
 
 // 真打一次 OpenAI 兼容端点（`POST <base>/chat/completions`）。
 // 没有端点、超时、非 2xx、回包不是 JSON —— 每种都**如实分开报**，不合并成一句「失败」。
+// 🔴 2026-10-12 超时默认值 30s → **180s**（实测根因）：
+//    上游是我们的 RunPod Serverless（闲时缩 0），**冷启动要从网络卷加载权重**，
+//    实测首答 60~120s。原来默认 30s ⇒ Worker 先 abort ⇒ 调用方只看到
+//    `502 The operation was aborted`（实测恰好 31s），把「上游正在起来」误报成「上游坏了」。
+//    调用方仍可用 `timeout_ms` 覆盖（不写死）；此处只放宽**默认值**。
 export async function callOpenAI(env, baseUrl, keyName, payload, timeoutMs) {
   const base = String(baseUrl == null ? "" : baseUrl).replace(/\/+$/, "");
   if (!base) return { ok: false, reason: NOT_READ, reading: NOT_READ };
@@ -113,7 +118,7 @@ export async function callOpenAI(env, baseUrl, keyName, payload, timeoutMs) {
   if (key) headers["authorization"] = "Bearer " + key;   // 密钥只进请求头，**永不进读数**
   const t0 = Date.now();
   const ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
-  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs || 30000) : null;
+  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs || 180000) : null;
   try {
     const r = await fetch(base + "/chat/completions", {
       method: "POST",
@@ -356,7 +361,7 @@ export const MODULES = {
           payload.tools = args.tools;
           if (args.tool_choice) payload.tool_choice = args.tool_choice;
         }
-        const r = await callOpenAI(ctx.env, ctx.env.LLM_ENDPOINT, "LLM_API_KEY", payload, (args && args.timeout_ms) || 30000);
+        const r = await callOpenAI(ctx.env, ctx.env.LLM_ENDPOINT, "LLM_API_KEY", payload, (args && args.timeout_ms) || 180000);
         await ctx.call("gbt-c10-observability", "emit", { kind: "llm-call", detail: { ok: r.ok, http: r.http, ms: r.ms } });
         return { op: "complete", endpoint: self.where, via: "self-hosted-openai", weights_ours: true, identity_injected: idz.injected, identity_why: idz.why, prompt_tokens_est: approxTokens(JSON.stringify(messages)), ...r };
       },
@@ -419,7 +424,7 @@ export const MODULES = {
           ctx.env.UNCENSORED_ENDPOINT,
           "UNCENSORED_API_KEY",
           { model: (args && args.model) || ctx.env.UNCENSORED_MODEL || "gbt-potato-v8-uncensored", messages, max_tokens: (args && args.max_tokens) || 256 },
-          (args && args.timeout_ms) || 30000,
+          (args && args.timeout_ms) || 180000,
         );
         await ctx.call("gbt-c10-observability", "emit", { kind: "uncensored-call", detail: { ok: r.ok, http: r.http, ms: r.ms } });
         return { op: "route", endpoint: self.where, weights_ours: true, ...r };

@@ -29,7 +29,6 @@ import struct
 import subprocess
 import sys
 import time
-import wave
 from pathlib import Path
 
 import numpy as np
@@ -190,14 +189,14 @@ def write_wav_f32(path: Path, x: np.ndarray) -> None:
 
 def main() -> int:
     t0 = time.time()
-    n = int(DUR * SR)
+    int(DUR * SR)
     print("=" * 74)
     print("试听曲渲染 · 排练垫乐（自产 · 出处无歧义）")
     print("=" * 74)
     print("  段落（照《夜航》件里那条情绪线）：")
     for cn, chord, tones, mel, lv in SECTIONS:
         print("    %-12s %-6s %s%s" % (cn, chord, " ".join(tones),
-                                      ("  + 旋律 " + " ".join(mel)) if mel else ""))
+                                       ("  + 旋律 " + " ".join(mel)) if mel else ""))
     x = master_chain(render())
     peak = float(np.abs(x).max())
     rms = float(np.sqrt((x ** 2).mean()))
@@ -253,21 +252,21 @@ def main() -> int:
         "产出器": "tools/codex-scripts/audition-render.py",
         "这是": "本机 numpy 加法合成的**排练垫乐**，走《夜航》件里那条情绪线",
         "这不是": ["不是 Suno 或任何生成端的产物（框架自报 external_generators_connected=False）",
-                   "不是《夜航》的编曲 —— 旋律/编曲仍标**未做**",
-                   "不是成品歌曲，是**试听用排练件**"],
+                "不是《夜航》的编曲 —— 旋律/编曲仍标**未做**",
+                "不是成品歌曲，是**试听用排练件**"],
         "段落": [{"情绪": cn, "和弦": chord, "声部": tones, "旋律": mel or []}
-                 for cn, chord, tones, mel, _lv in SECTIONS],
+               for cn, chord, tones, mel, _lv in SECTIONS],
         "许可": {"source": "本机自产（numpy 加法合成 + 仓内 audio_mix 母带）", "license": "自有"},
         "采样率": SR, "时长_s": round(float(prod.get("duration_s") or DUR), 3),
         "声道": int(prod.get("channels") or 2),
         "母带格式": prod.get("codec"),
         "母带字节": prod.get("bytes"),
         "响度": {"目标": r.get("target"), "目标I": (r.get("target_spec") or {}).get("I"),
-                 "目标TP": (r.get("target_spec") or {}).get("TP"),
-                 "施加前LUFS": before.get("input_i"), "施加前TP": before.get("input_tp"),
-                 "施加后LUFS": after.get("input_i"), "施加后TP": after.get("input_tp"),
-                 "差LU": r.get("delta_lu"), "命中": r.get("hit_target"),
-                 "曲风LRA": r.get("genre_lra")},
+               "目标TP": (r.get("target_spec") or {}).get("TP"),
+               "施加前LUFS": before.get("input_i"), "施加前TP": before.get("input_tp"),
+               "施加后LUFS": after.get("input_i"), "施加后TP": after.get("input_tp"),
+               "差LU": r.get("delta_lu"), "命中": r.get("hit_target"),
+               "曲风LRA": r.get("genre_lra")},
         "试听件字节": opus.stat().st_size,
         "试听件sha256": hashlib.sha256(opus.read_bytes()).hexdigest()[:16],
         "母带sha256": hashlib.sha256((ROOT / MASTER_REL).read_bytes()).hexdigest()[:16],

@@ -1,0 +1,32 @@
+{
+ "cap": "asset_index",
+ "domain": "system",
+ "desc": "资产索引：**整棵树都连上 + 连上即可秒查**（主人令 2026-09-27）。build 把全树扫进 state/asset_index.db（键=跟随软链的物理真身，与绑定系统同口径，软链别名去重）；wire 给每个资产补触手标签（启发式优先，认不出用回退标签 project_context —— 诚实标注归属，不假装认出了专门触手）；find 查索引**不扫盘**（实测 17-22ms）。op=build/wire/find/stats",
+ "safe": true,
+ "ops": [
+  {
+   "op": "build",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "find",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "stats",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "wire",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "desc 兜底（分派代码非静态可提取形态）",
+ "handler_file": "",
+ "params": [],
+ "params_hint": "",
+ "handler": "asset_index",
+ "slot": "g3-22",
+ "group": 3,
+ "role": "全树资产索引（软链真身去重）"
+}

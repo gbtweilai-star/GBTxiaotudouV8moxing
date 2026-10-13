@@ -137,9 +137,13 @@ _STATUS_MAP = {
 # ══════════════════════════════════════════════════════════════════════
 PROVIDERS = [
     # ── 主路（Owner 指定契约，顺序不许动）───────────────────────────
+    # 🔴 2026-10-04 优化：agnes-2.5 是**思考型** —— 实测 max_tokens=512 时 token 全烧在
+    #    reasoning_content 上、content 返回空（"ok 但空答"）。给下限 1024（调用方给更小值时抬到它），
+    #    与 nvidia 两条深推理道同款口径（那两条是 512）。
     dict(name="agnes",     vault="agnes",    envs=["AGNES_API_KEY"],
          url="https://apihub.agnes-ai.com/v1", model="agnes-2.5-flash",
-         wire="openai", tier="primary", quota_tokens=0, weight=1.00),
+         wire="openai", tier="primary", quota_tokens=0, weight=1.00,
+         min_max_tokens=1024),
     dict(name="deepseek",  vault="deepseek", envs=["DEEPSEEK_API_KEY"],
          url="https://api.deepseek.com/v1", model="deepseek-flash",
          wire="openai", tier="primary", quota_tokens=0, weight=0.95),
@@ -186,7 +190,7 @@ PROVIDERS = [
     dict(name="freellmapi", vault="freellmapi", envs=["FREELLMAPI_API_KEY"],
          url="", model="", wire="openai", tier="standard",
          quota_tokens=0, weight=0.55, url_from="freellmapi"),
-    dict(name="custom",    vault="", envs=["GBT_LLM_API_KEY"],
+    dict(name="custom",    vault="custom", envs=["GBT_LLM_API_KEY"],
          url=os.environ.get("GBT_LLM_BASE_URL", ""),
          model=os.environ.get("GBT_LLM_MODEL", ""),
          wire="openai", tier="standard", quota_tokens=0, weight=0.58),
@@ -197,11 +201,29 @@ PROVIDERS = [
          url="https://generativelanguage.googleapis.com/v1beta",
          model="gemini-2.0-flash", wire="gemini", tier="standard",
          quota_tokens=0, weight=0.62),
+    # ── 统一模型路由（CLIProxyAPI · 主人令 2026-10-04「做双向绑定，不逐条填钥」）──────
+    # 一条 base-url 用全部车道（自家模型 / 本机免费池 / 各 CLI 账户，见 deploy/cliproxy/README.md）。
+    # 钥匙 = **统一密钥**：key_gateway 铸一把，路由器 access.api-keys（我们→路由器）与云端 GW_AUTH
+    # （路由器→云端）用**同一个值**（明文只落应用数据区，库里只存摘要）⇒ 双向绑定、不逐条填。
+    # ⚠️ 与 `cloud_llm._KEY_CHAIN` 的同名项**两处都要有**（那两张表是两处口径，历史遗留；本表带 tier/权重）。
+    # ── 本机模型车道（组1 · 本机 Ollama，权重在本地）──────
+    dict(name="gbt-local", vault="", envs=["GBT_LOCAL_LLM_API_KEY"],
+         url=os.environ.get("GBT_LOCAL_LLM_BASE_URL", "http://127.0.0.1:11434/v1"),
+         model=os.environ.get("GBT_LOCAL_LLM_MODEL", "qwen3:latest"),
+         wire="openai", tier="standard", quota_tokens=0, weight=0.55),
+    dict(name="cliproxy", vault="", envs=["GBT_CLIPROXY_KEY"],
+         url=os.environ.get("GBT_CLIPROXY_BASE_URL", "http://127.0.0.1:8317/v1"),
+         model=os.environ.get("GBT_CLIPROXY_MODEL", "gbt-potato-v8"),
+         wire="openai", tier="standard", quota_tokens=0, weight=0.60),
     # ── 本地兜底（本机原生端点；tier=local 权重最低，不抢云端主路）──────
-    dict(name="potato",    vault="", envs=["GBT_POTATO_API_KEY"],
+    # 🔴 2026-10-11（实测教训）：她走的是 **Serverless（闲时缩到 0）** ⇒ 冷启动/排队会超过
+    #    框架默认 60s；一超时就被记失败 ⇒ `plan` 自动换道到 agnes，于是**托管模型顶着她的
+    #    提示词替她说话**（实测：问"请自我介绍"答"我是 Agnes-2.5-Flash"）——这犯「不许拿托管
+    #    模型冒充」的规矩。⇒ 给她一条**长超时**兜住冷启动（点名时更不许静默换道，见 cloud_llm）。
+    dict(name="potato",    vault="potato", envs=["GBT_POTATO_API_KEY"],
          url=os.environ.get("GBT_POTATO_BASE_URL", "http://127.0.0.1:8111/v1"),
          model=os.environ.get("GBT_POTATO_MODEL", "gbt-potato-v8"),
-         wire="openai", tier="local", quota_tokens=0, weight=0.20),
+         wire="openai", tier="local", quota_tokens=0, weight=0.20, timeout_s=300, retries=6),
 ]
 _BY_NAME = {p["name"]: p for p in PROVIDERS}
 _ORDER = [p["name"] for p in PROVIDERS]

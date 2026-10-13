@@ -1,9 +1,9 @@
 {
- "at": "2026-10-03T19:08:26",
+ "at": "2026-10-12T18:27:12",
  "quick": false,
- "耗时s": 83.3,
- "顶层树": 67,
- "已扫": 57,
+ "耗时s": 185.3,
+ "顶层树": 70,
+ "已扫": 60,
  "排除": 10,
  "扫的树": [
   {
@@ -217,11 +217,21 @@
    "sec_needs_human": 0
   },
   {
-   "tree": ".wrangler",
-   "units": 10,
+   "tree": ".workbuddy-ai",
+   "units": 5,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 10,
+   "agree": 5,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": ".wrangler",
+   "units": 14,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 14,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -237,23 +247,23 @@
    "sec_needs_human": 0
   },
   {
-   "tree": "_gbt_webcap",
-   "units": 6350,
+   "tree": "_legacy_sources",
+   "units": 11075,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 6350,
+   "agree": 11075,
    "arbitrated": 0,
-   "sec_flagged": 2,
-   "sec_needs_human": 2
+   "sec_flagged": 209,
+   "sec_needs_human": 267
   },
   {
    "tree": "_upstream",
-   "units": 10059,
+   "units": 16616,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 10059,
+   "agree": 16616,
    "arbitrated": 0,
-   "sec_flagged": 322,
+   "sec_flagged": 567,
    "sec_needs_human": 0
   },
   {
@@ -328,20 +338,20 @@
   },
   {
    "tree": "delivery",
-   "units": 90,
+   "units": 91,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 90,
+   "agree": 91,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
   },
   {
    "tree": "deploy",
-   "units": 91,
+   "units": 100,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 91,
+   "agree": 100,
    "arbitrated": 0,
    "sec_flagged": 3,
    "sec_needs_human": 0
@@ -358,22 +368,22 @@
   },
   {
    "tree": "docs",
-   "units": 29,
+   "units": 48,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 29,
+   "agree": 48,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
   },
   {
    "tree": "gbt_allinone",
-   "units": 915,
+   "units": 1004,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 915,
+   "agree": 1004,
    "arbitrated": 0,
-   "sec_flagged": 22,
+   "sec_flagged": 23,
    "sec_needs_human": 1
   },
   {
@@ -388,23 +398,23 @@
   },
   {
    "tree": "holo_pet",
-   "units": 89,
+   "units": 108,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 89,
+   "agree": 108,
    "arbitrated": 0,
    "sec_flagged": 1,
    "sec_needs_human": 0
   },
   {
    "tree": "holo_pet_w3",
-   "units": 252,
+   "units": 376,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 252,
+   "agree": 376,
    "arbitrated": 0,
-   "sec_flagged": 3,
-   "sec_needs_human": 0
+   "sec_flagged": 6,
+   "sec_needs_human": 3
   },
   {
    "tree": "infinite-canvas-output",
@@ -418,10 +428,10 @@
   },
   {
    "tree": "memory",
-   "units": 60,
+   "units": 67,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 60,
+   "agree": 67,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -448,20 +458,20 @@
   },
   {
    "tree": "outputs",
-   "units": 25,
+   "units": 93,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 25,
+   "agree": 93,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
   },
   {
    "tree": "plugins",
-   "units": 42,
+   "units": 53,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 42,
+   "agree": 53,
    "arbitrated": 0,
    "sec_flagged": 1,
    "sec_needs_human": 0
@@ -488,10 +498,20 @@
   },
   {
    "tree": "projects",
-   "units": 415,
+   "units": 833,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 415,
+   "agree": 833,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "quant_workspace",
+   "units": 45,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 45,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -508,10 +528,10 @@
   },
   {
    "tree": "skills",
-   "units": 364,
+   "units": 365,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 364,
+   "agree": 365,
    "arbitrated": 0,
    "sec_flagged": 1,
    "sec_needs_human": 0
@@ -538,20 +558,20 @@
   },
   {
    "tree": "tools",
-   "units": 499,
+   "units": 594,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 499,
+   "agree": 594,
    "arbitrated": 0,
-   "sec_flagged": 30,
-   "sec_needs_human": 0
+   "sec_flagged": 43,
+   "sec_needs_human": 15
   },
   {
    "tree": "vaults",
-   "units": 729,
+   "units": 1316,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 729,
+   "agree": 1316,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -568,10 +588,20 @@
   },
   {
    "tree": "video-out",
-   "units": 2,
+   "units": 5,
    "coverage": 1.0,
    "missing": 0,
-   "agree": 2,
+   "agree": 5,
+   "arbitrated": 0,
+   "sec_flagged": 0,
+   "sec_needs_human": 0
+  },
+  {
+   "tree": "video-src",
+   "units": 12,
+   "coverage": 1.0,
+   "missing": 0,
+   "agree": 12,
    "arbitrated": 0,
    "sec_flagged": 0,
    "sec_needs_human": 0
@@ -634,13 +664,13 @@
  "面B_C": {
   "caps": {
    "ok": true,
-   "units": 216,
+   "units": 267,
    "coverage": 1.0,
    "missing": 0
   },
   "bindings": {
    "ok": true,
-   "units": 6471,
+   "units": 7520,
    "coverage": 1.0,
    "missing": 0
   },
@@ -670,12 +700,27 @@
     "dispatched": true,
     "domain": "vision"
    },
+   "vision_grounding": {
+    "in_registry": true,
+    "dispatched": true,
+    "domain": "vision"
+   },
+   "vision_loop": {
+    "in_registry": true,
+    "dispatched": true,
+    "domain": "vision"
+   },
+   "vlx_flow": {
+    "in_registry": true,
+    "dispatched": true,
+    "domain": "vision"
+   },
    "zimage_rewash": {
     "in_registry": true,
     "dispatched": true,
     "domain": "creation"
    },
-   "_count": 4
+   "_count": 7
   },
   "eye_frames": {
    "exist": true,
@@ -707,5 +752,5 @@
  },
  "全绿": true,
  "_口径": "没被扫到的面必须显式列出并给理由；隐式跳过=盲区。文件面覆盖必须 1.0；B/C 面断连必须 0；E 面三闸必须全 True。",
- "单元总数": 23072
+ "单元总数": 35871
 }

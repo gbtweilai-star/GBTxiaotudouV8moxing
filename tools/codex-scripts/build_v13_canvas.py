@@ -5,7 +5,6 @@
 - 设计系统行新增「品牌 · App Logo」规范卡（尺寸档 / 净空 / 底色适配 / 禁止项）
 """
 import json
-import shutil
 import sys
 from pathlib import Path
 
@@ -15,7 +14,7 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 SRC = BASE / "archive" / "V12 GBT小土豆V8-无限画布.html"
 OUT = BASE / "V13 GBT小土豆V8-无限画布.html"

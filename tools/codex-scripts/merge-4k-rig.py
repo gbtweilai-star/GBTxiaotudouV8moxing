@@ -3,7 +3,9 @@
 来源：raw/rig/model-rigged-hi.glb（含 bones + skin + JOINTS_0/WEIGHTS_0）
 底子：4K 重贴后的 model.glb（4096² PNG 贴图）
 输出：raw/rig/model-rigged-4k.glb（4K 贴图 + 22 骨 + 蒙皮）"""
-import json, pathlib, struct
+import json
+import pathlib
+import struct
 import numpy as np
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
@@ -29,7 +31,8 @@ pr_b = JB["meshes"][0]["primitives"][0]
 
 
 def acc(J, BIN, i, comps):
-    a = J["accessors"][i]; bv = J["bufferViews"][a["bufferView"]]
+    a = J["accessors"][i]
+    bv = J["bufferViews"][a["bufferView"]]
     dt = {5126: np.float32, 5125: np.uint32, 5123: np.uint16}[a["componentType"]]
     return np.frombuffer(bytes(BIN), dt, a["count"] * comps, bv.get("byteOffset", 0)).reshape(a["count"], comps)
 
@@ -54,7 +57,8 @@ WT = acc(JR, BR, pr_r["attributes"]["WEIGHTS_0"], 4).astype(np.float32)
 def add_view(BIN, arr, target=None):
     while len(BIN) % 4:
         BIN.append(0)
-    o = len(BIN); BIN.extend(arr.tobytes())
+    o = len(BIN)
+    BIN.extend(arr.tobytes())
     v = {"buffer": 0, "byteOffset": o, "byteLength": arr.nbytes}
     if target:
         v["target"] = target
@@ -62,7 +66,8 @@ def add_view(BIN, arr, target=None):
     return len(JB["bufferViews"]) - 1
 
 
-jv = add_view(BB, JT, 34962); wv = add_view(BB, WT, 34962)
+jv = add_view(BB, JT, 34962)
+wv = add_view(BB, WT, 34962)
 JB["accessors"].append({"bufferView": jv, "componentType": 5123, "count": len(JT), "type": "VEC4"})
 JB["accessors"].append({"bufferView": wv, "componentType": 5126, "count": len(WT), "type": "VEC4"})
 pr_b["attributes"]["JOINTS_0"] = len(JB["accessors"]) - 2
@@ -75,8 +80,10 @@ name2new = {}
 for i in bone_src:
     src = JR["nodes"][i]
     new = {"name": src["name"], "translation": src["translation"]}
-    if "rotation" in src: new["rotation"] = src["rotation"]
-    if "scale" in src: new["scale"] = src["scale"]
+    if "rotation" in src:
+        new["rotation"] = src["rotation"]
+    if "scale" in src:
+        new["scale"] = src["scale"]
     JB["nodes"].append(new)
     name2new[src["name"]] = base + len(name2new)
 for i in bone_src:

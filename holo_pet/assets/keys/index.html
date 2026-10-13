@@ -17,12 +17,14 @@ code{background:var(--gbt-deep-2);color:var(--gbt-gold);border:1px solid var(--g
 <tr><td><b>llm_endpoint</b></td><td>我们自己的权重端点（千问原生）</td><td>**空**（现在跑托管上游 ⇒ weights_ours:false）<br><code>deploy/cloud-10/wrangler.toml [vars] LLM_ENDPOINT / LLM_MODEL</code></td><td>—</td><td><code>把权重包成 OpenAI 兼容 /v1 → 填 LLM_ENDPOINT 与 LLM_MODEL → npx wrangler deploy（代码不动）</code></td></tr>
 <tr><td><b>image_endpoint</b></td><td>图像面自建端点（真无审查那一档）</td><td>**空**（现有两档：自建端点+免费上游 · Workers AI 兜底）<br><code>deploy/cloud-10/wrangler.toml [vars] IMAGE_ENDPOINT / IMAGE_MODEL / IMAGE_API_KEY</code></td><td>—</td><td><code>上游包成 /v1/images/generations → 填三个值 → npx wrangler deploy（代码不动）</code></td></tr>
 <tr><td><b>owner_token</b></td><td>云端 /admin/grant 的主人令牌（发云端运行时授权）</td><td>**未配**（fail-closed：没它云端没有自发授权的口子）<br><code>Cloudflare secret OWNER_TOKEN</code></td><td>—</td><td><code>npx wrangler secret put OWNER_TOKEN（它与云端 GRANTED_SCOPES 是两件事）</code></td></tr>
-<tr><td><b>GBT_LLM_API_KEY</b></td><td>环境变量（本机 · 用户级）</td><td>在<br><code>setx GBT_LLM_API_KEY（用户注册表）</code></td><td>—</td><td><code>setx GBT_LLM_API_KEY "<值>"（设完**重启对话面/App**才生效）</code></td></tr>
-<tr><td><b>GBT_POTATO_API_KEY</b></td><td>环境变量（本机 · 用户级）</td><td>在<br><code>setx GBT_POTATO_API_KEY（用户注册表）</code></td><td>—</td><td><code>setx GBT_POTATO_API_KEY "<值>"（设完**重启对话面/App**才生效）</code></td></tr>
+<tr><td><b>GBT_LLM_API_KEY</b></td><td>环境变量（本机 · 用户级）</td><td>未设<br><code>setx GBT_LLM_API_KEY（用户注册表）</code></td><td>—</td><td><code>setx GBT_LLM_API_KEY "<值>"（设完**重启对话面/App**才生效）</code></td></tr>
+<tr><td><b>GBT_POTATO_API_KEY</b></td><td>环境变量（本机 · 用户级）</td><td>未设<br><code>setx GBT_POTATO_API_KEY（用户注册表）</code></td><td>—</td><td><code>setx GBT_POTATO_API_KEY "<值>"（设完**重启对话面/App**才生效）</code></td></tr>
 <tr><td><b>GBT_POTATO_BASE_URL</b></td><td>环境变量（本机 · 用户级）</td><td>在<br><code>setx GBT_POTATO_BASE_URL（用户注册表）</code></td><td>—</td><td><code>setx GBT_POTATO_BASE_URL "<值>"（设完**重启对话面/App**才生效）</code></td></tr>
 <tr><td><b>GBT_POTATO_MODEL</b></td><td>环境变量（本机 · 用户级）</td><td>在<br><code>setx GBT_POTATO_MODEL（用户注册表）</code></td><td>—</td><td><code>setx GBT_POTATO_MODEL "<值>"（设完**重启对话面/App**才生效）</code></td></tr>
 <tr><td><b>GBT_LLM_PROVIDER</b></td><td>环境变量（本机 · 用户级）</td><td>在<br><code>setx GBT_LLM_PROVIDER（用户注册表）</code></td><td>—</td><td><code>setx GBT_LLM_PROVIDER "<值>"（设完**重启对话面/App**才生效）</code></td></tr>
 <tr><td><b>UNIFIED_API_KEY</b></td><td>环境变量（本机 · 用户级）</td><td>在<br><code>setx UNIFIED_API_KEY（用户注册表）</code></td><td>—</td><td><code>setx UNIFIED_API_KEY "<值>"（设完**重启对话面/App**才生效）</code></td></tr>
 </table>
 <div class="note">口径：凭据<b>只从环境变量/密钥服务读</b>；页面与源码里<b>不许出现明文</b>（安全钩子会拦）。换钥三步：① 生新值 → ② <code>wrangler secret put</code>（+ 本机 <code>.dev.vars</code>）→ ③ <code>setx</code> 灌进环境（对话面要重启）。</div>
+
+<footer class="gbt-signature" data-developer="自由的风">开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属</footer>
 </body></html>

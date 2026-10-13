@@ -4,12 +4,10 @@
 2) 把真实能力清单（caps_manifest.json）注入两个 HTML
 不覆盖旧版：V1 已在 archive/。
 """
-import json
-import re
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 TPL = BASE / "infinite-canvas-output" / "assets" / "infinite-canvas-template.html"
 STRINGS = BASE / ".scratch" / "canvas_strings.js"
 SCENE = BASE / ".scratch" / "canvas_scene.js"

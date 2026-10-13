@@ -1,21 +1,16 @@
 {
- "at": "2026-09-23T06:15:57",
+ "at": "2026-10-08T13:30:42",
  "dsh_config_hashes": {
-  "settings.yaml": "89484d2d54ba74c2d421d336744ea36388be67a5390bd05dac9b9e03eccd7227",
+  "settings.yaml": "726bc6a10c1195ae65a220927e50bd6c7e2c94cea75cabeac4af2d82dabf696c",
   "settings.yaml.bak": "<absent>",
   "agent-presets": "<absent>",
-  ".agent-presets": "85a69baa418c43e2ebbf68c945e2b5e0e7e73c3d53ba004d8b0f17a7a49ac4f9"
+  ".agent-presets": "eed873f9fbbde647e20596cdf15872bf670827fcde86cc0e9c867d2abc5873ee"
  },
- "ports": {
-  "dsh": 3080,
-  "panel": 8765
- },
- "note": "只记哈希与端口，不记内容/密钥。B2/B3 拿它比。",
  "dsh_structure": {
   "settings.yaml": {
-   "keys_sha256": "a53884351a6785b3",
-   "keys_n": 328,
-   "lines_n": 475,
+   "keys_sha256": "353315a1e53fc792",
+   "keys_n": 684,
+   "lines_n": 858,
    "defaultPreset": "danger-full-access"
   },
   "settings.yaml.bak": {
@@ -28,5 +23,9 @@
    "keys_sha256": "<unreadable>"
   }
  },
- "structure_backfilled_at": "2026-09-23T07:16:10"
+ "ports": {
+  "dsh": 3080,
+  "panel": 8765
+ },
+ "note": "只记哈希 + 结构指纹 + 安全相关键（defaultPreset 等），**不记内容/凭据**。B2/B3 拿它比。"
 }

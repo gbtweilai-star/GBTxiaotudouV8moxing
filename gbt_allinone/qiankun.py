@@ -143,8 +143,13 @@ def _stage_project(root: Path, write_text, write_bytes) -> int:
     return n
 
 
-def _deploy_into_room(room_id: str, target: str, purpose: str, label: str) -> dict:
-    """把项目搬进**房间维度**（镜像多维度里的隔离空间）—— 全局生产面分毫不动。"""
+def _deploy_into_room(room_id: str, target: str, purpose: str, label: str,
+                      owner_override: bool = False, override_reason: str = "") -> dict:
+    """把项目搬进**房间维度**（镜像多维度里的隔离空间）—— 全局生产面分毫不动。
+
+    `owner_override` / `override_reason` 一路透传给 `room_space.release` 的
+    「排练/门禁未过」那一关（同一条主人授权、同一个理由，不在中间吞掉）。
+    """
     from . import room_space as RS
     t0 = time.time()
     p = Path(target)
@@ -219,7 +224,8 @@ def _deploy_into_room(room_id: str, target: str, purpose: str, label: str) -> di
     rl = {"ok": False, "blocked": True}
     if rh.get("ok"):
         try:
-            rl = RS.release(room_id, purpose or f"一次性部署 {label}")
+            rl = RS.release(room_id, purpose or f"一次性部署 {label}",
+                            owner_override=owner_override, override_reason=override_reason)
         except Exception as exc:  # noqa: BLE001
             rl = {"ok": False, "error": f"{type(exc).__name__}: {exc}"[:200]}
     steps["release"] = {"ok": rl.get("ok"), "blocked": rl.get("blocked"), "error": rl.get("error")}
@@ -232,7 +238,8 @@ def _deploy_into_room(room_id: str, target: str, purpose: str, label: str) -> di
 
 
 def one_key_deploy(target: str, purpose: str = "", plan=None, name: str = "",
-                   room: str = "", into_global_production: bool = False) -> dict:
+                   room: str = "", into_global_production: bool = False,
+                   owner_override: bool = False, override_reason: str = "") -> dict:
     """一指定江山乾坤换位：抓取→镜像→验证→晋升，一条命令一步到位。
 
     target: GitHub 仓库/子目录 URL（也可为本地路径——本地模式直接镜像入 stage）
@@ -247,6 +254,17 @@ def one_key_deploy(target: str, purpose: str = "", plan=None, name: str = "",
         （幂等，与 GitHub 模式的"署名注入"一致）；**其余一律逐字节**走 `shape_bytes`。
       ③ 验证矩阵（`mirror_space.scan()`）读的是**镜像维度**本身 —— 也就是"测试跑在镜像里"。
       ④ `name` 只用于口令与审计留痕，不改变部署语义。
+
+    🔴 2026-10-13（主人令：「**技术层面不能给她有限制只保留人工授权护栏即可**」·
+       「**直接改成终端YES才能使用就好了有时候我需要用到的啊**」）：
+      「未声明落点」**不再是死路**。默认照旧卡住并给出怎么放行；
+      主人在终端发**专用一次性钥匙** `deploy_force`（提示符 YES）+ 调用方显式
+      `owner_override=true` ⇒ 按"全局生产"放行，
+      且**大声落审计** `one_key_deploy_landing_overridden`（含目标与理由）。
+      钥匙由**门外那道门**认（`policy.evaluate` 见 `owner_override` 就改要 `deploy_force`）⇒
+      旗标不带授权，模型无法自我解锁。
+      ⚠️ 这一条放行 = 不声明落点也写**全局生产**：它就是本仓唯一的生产落点保护，
+      放行前请看清 `steps.landing_override.route`。
     """
     from . import mirror_space as DG
     if plan is not None:
@@ -262,16 +280,32 @@ def one_key_deploy(target: str, purpose: str = "", plan=None, name: str = "",
     # 0) 落点必须**显式声明**（Owner 2026-09-19：假设/模拟/测试全在镜像多维度里跑，
     #    只有过了镜像的成品才进生产）—— 不许默认把任何项目堆进全局生产面。
     if not room and not into_global_production:
-        return {
-            "ok": False, "blocked": True, "cap": "one_key_deploy",
-            "target": str(target)[:80], "name": label,
-            "reason": "未声明落点：不许默认把项目堆进全局生产面（否则什么代码都会被送到生产）",
-            "how_to": ("隔离试验走 room=\"<房间名>\" —— 只写房间维度，全局生产分毫不动；"
-                       "确要写全局生产，显式传 into_global_production=true"
-                       "（经 run_task 会另要 deploy_publish 人工授权）。"),
+        if not owner_override:
+            return {
+                "ok": False, "blocked": True, "cap": "one_key_deploy",
+                "target": str(target)[:80], "name": label,
+                "reason": "未声明落点：不许默认把项目堆进全局生产面（否则什么代码都会被送到生产）",
+                "how_to": ("隔离试验走 room=\"<房间名>\" —— 只写房间维度，全局生产分毫不动；"
+                           "确要写全局生产，显式传 into_global_production=true"
+                           "（经 run_task 会另要 deploy_publish 人工授权）。"),
+                "如何放行": ("要**不声明落点**也跑：主人在终端发**专用一次性钥匙** `deploy_force`"
+                          "（python -m gbt_allinone auth grant --scope deploy_force --ttl 600，提示符敲 YES），"
+                          "再带 owner_override=true 重调 —— 那会按'全局生产'放行并写审计；"
+                          "但这等于绕开落点声明这一步，推荐仍用 into_global_production=true 明写。")}
+        _reason = str(override_reason or purpose or "(未写理由)")[:200]
+        _audit("one_key_deploy_landing_overridden",
+               {"target": str(target)[:60], "reason": _reason})
+        into_global_production = True
+        steps["landing_override"] = {
+            "ok": True, "route": "global_production",
+            "reason": _reason,
+            "依据": "主人终端授权（deploy_force · 专用一次性钥匙 · 提示符 YES）+ 调用方显式 owner_override",
+            "note": "未声明落点被人工放行 ⇒ 目标直接写全局生产面",
         }
     if room:
-        return _deploy_into_room(str(room), target, purpose, label)
+        return _deploy_into_room(str(room), target, purpose, label,
+                                 owner_override=owner_override,
+                                 override_reason=override_reason)
 
     # 1) 吞噬抓取 → 镜像区
     try:

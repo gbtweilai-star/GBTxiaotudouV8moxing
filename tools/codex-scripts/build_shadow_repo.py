@@ -207,14 +207,14 @@ def main() -> int:
         f_mb = sum((ROOT / f).stat().st_size for f in forced
                    if (ROOT / f).is_file()) / 1024 / 1024
         tops = Counter(f.split("/")[0] for f in forced)
-        print(f"           强制纳入明细（.gitignore 挡了、规则书要求留）: "
+        print("           强制纳入明细（.gitignore 挡了、规则书要求留）: "
               + " · ".join(f"{k} {v}" for k, v in tops.most_common(5))
               + f" · {f_mb:,.1f} MB —— 依据 OUTPUT_RULES.md L115/L334")
     if ignored:
         ig_mb = sum((ROOT / f).stat().st_size for f in ignored
                     if (ROOT / f).is_file()) / 1024 / 1024
         tops = Counter(f.replace("\\", "/").split("/")[0] for f in ignored)
-        print(f"           剔除明细（被 .gitignore 挡住、却曾漏进索引的）: "
+        print("           剔除明细（被 .gitignore 挡住、却曾漏进索引的）: "
               + " · ".join(f"{k} {v}" for k, v in tops.most_common(5))
               + f" · 共 {ig_mb:,.1f} MB（可再生，不入任何仓）")
     print(f"           清单 -> {LISTF.relative_to(ROOT)}")
@@ -229,7 +229,8 @@ def main() -> int:
         src, dst = ROOT / f, SHADOW / f
         try:
             if not src.is_file():
-                absent.append(f); continue
+                absent.append(f)
+                continue
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, dst)
             copied += 1
@@ -326,7 +327,7 @@ def main() -> int:
         {"count": len(rows), "total_bytes": sum(r["size"] for r in rows), "files": rows},
         ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"          ⑥ sha256 清单 {len(rows):,} 条 · "
-          f"{sum(r['size'] for r in rows)/1048576:,.1f} MB · {round(time.time()-t,1)}s"
+          f"{sum(r['size'] for r in rows)/1048576:,.1f} MB · {round(time.time()-t, 1)}s"
           f" -> {MANIFEST.relative_to(ROOT)}")
 
     # ── 步骤 5d：**产物在场断言** ──
@@ -358,11 +359,11 @@ def main() -> int:
           + (f"  缺: {miss_f + miss_d}" if not presence_ok else ""))
     ok = ok and presence_ok
     print("─" * 76)
-    print(f"  步骤 6  推送: **本脚本不推** —— 推哪儿由你定（我建议新分支 clean-block）")
+    print("  步骤 6  推送: **本脚本不推** —— 推哪儿由你定（我建议新分支 clean-block）")
     print()
     print(f"  影子仓位置: {SHADOW.relative_to(ROOT)}")
-    print(f"  耗时 {round(time.time()-t0,1)}s")
-    print(f"  **当前仓一个字没动** —— 索引、锁、那个 add -A 循环，全没碰")
+    print(f"  耗时 {round(time.time()-t0, 1)}s")
+    print("  **当前仓一个字没动** —— 索引、锁、那个 add -A 循环，全没碰")
     if failed:
         print(f"  ⚠ 复制失败 {len(failed)}: {failed[:3]}")
         return 1

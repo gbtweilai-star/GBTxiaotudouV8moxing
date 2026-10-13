@@ -1,0 +1,124 @@
+{
+  "goal": "甲方案：把 gbt_allinone.run_task 唯一门桥成官方 APP 的第一等 MCP 工具（仓内件在镜像维度成形并排练；本次不晋升）",
+  "plan_version": 1,
+  "assumptions": [
+    {
+      "id": "A1",
+      "statement": "沙盒与本次生产目标为同一主机、同一运行时（桥要 spawn 本机 py -3.14）",
+      "verify": "environment.production.mode=same_host"
+    },
+    {
+      "id": "A2",
+      "statement": "桥的服务端仓内件已进镜像维度（镜内面覆盖此件才谈得上排练）",
+      "verify": "file:plugins/dsh-mcp-bridge/server.py"
+    },
+    {
+      "id": "A3",
+      "statement": "桥的最小自证命令已在计划里声明为验收命令",
+      "verify": "command:bridge-selfcheck"
+    },
+    {
+      "id": "A4",
+      "statement": "桥的边界与接法写在同一目录的 README 里（配置行以文本给出、不代改 ~/.dsh）",
+      "verify": "file:plugins/dsh-mcp-bridge/README.md"
+    },
+    {
+      "id": "A5",
+      "statement": "本计划不是纯静态产物：有可执行的闭环命令（selfcheck 真起服务器真调工具）",
+      "verify": "rehearsal.static_only=false"
+    },
+    {
+      "id": "A6",
+      "statement": "桥的写类工具默认不暴露（读类优先）——由自证里的 C/H 两条机器判据钉住",
+      "verify": "command:bridge-selfcheck"
+    },
+    {
+      "id": "A7",
+      "statement": "官方同款 SDK 的互操作判据（node + @modelcontextprotocol/sdk）已在计划里声明",
+      "verify": "command:bridge-interop"
+    }
+  ],
+  "architecture": {
+    "components": [
+      {
+        "id": "mcp-server",
+        "responsibility": "stdio · 换行分隔 JSON-RPC 2.0 的最小 MCP 服务；只读白名单 + 框架策略层双闸；stdout 让给协议帧",
+        "depends_on": []
+      },
+      {
+        "id": "gate-run-task",
+        "responsibility": "唯一门 gbt_allinone.run_task（读类子集）；写类 kind 不进此门，桥直接拒",
+        "depends_on": ["mcp-server"]
+      },
+      {
+        "id": "selfcheck",
+        "responsibility": "最小自证：真起服务器、真发 MCP 帧、8 条判据（含写类默认不出现的负对照）",
+        "depends_on": ["mcp-server"]
+      },
+      {
+        "id": "handoff-doc",
+        "responsibility": "README + 实施与排练文档：配置行（文本）、攻击面、晋升清单（含回滚与复验）",
+        "depends_on": ["selfcheck"]
+      }
+    ],
+    "entrypoints": ["plugins/dsh-mcp-bridge/server.py"],
+    "data_flow": [
+      {"from": "selfcheck", "to": "mcp-server"},
+      {"from": "mcp-server", "to": "gate-run-task"},
+      {"from": "handoff-doc", "to": "selfcheck"}
+    ]
+  },
+  "steps": [
+    {"id": "S1", "action": "mirror_shape：把 plugins/dsh-mcp-bridge/* 成形进镜像维度（现实无感知）", "depends_on": []},
+    {"id": "S2", "action": "镜像体检 + 静态推演 + 环境一致性：mirror_scan / mirror_simulate / mirror_parity", "depends_on": ["S1"]},
+    {"id": "S3", "action": "沙盒闭环：mirror_rehearse 在镜像维度里真跑 selfcheck（SELFCHECK OK 才算过）", "depends_on": ["S2"]},
+    {"id": "S4", "action": "留档待晋升：本次不跑 mirror_ascend / mirror_release（要 deploy_publish 一次性票，票在主人手上）", "depends_on": ["S3"]}
+  ],
+  "services": [],
+  "files": [
+    "plugins/dsh-mcp-bridge/server.py",
+    "plugins/dsh-mcp-bridge/selfcheck.py",
+    "plugins/dsh-mcp-bridge/interop-check.mjs",
+    "plugins/dsh-mcp-bridge/rehearsal-plan.json",
+    "plugins/dsh-mcp-bridge/rehearse.py",
+    "plugins/dsh-mcp-bridge/README.md"
+  ],
+  "environment": {
+    "required": [],
+    "dependencies": [],
+    "tools": ["python"],
+    "required_files": [],
+    "production": {
+      "mode": "same_host",
+      "note": "桥与 DSH 同机：官方 APP 的 mcp-client 以 stdio spawn 本机 py -3.14；跨机部署要改这个声明"
+    }
+  },
+  "rehearsal": {
+    "commands": [
+      {
+        "id": "bridge-selfcheck",
+        "argv": ["python", "plugins/dsh-mcp-bridge/selfcheck.py", "--timeout", "300"],
+        "timeout": 420,
+        "expect": {
+          "exit_code": 0,
+          "stdout_contains": "SELFCHECK OK"
+        }
+      },
+      {
+        "id": "bridge-interop",
+        "argv": ["node", "plugins/dsh-mcp-bridge/interop-check.mjs"],
+        "timeout": 300,
+        "expect": {
+          "exit_code": 0,
+          "stdout_contains": "INTEROP OK"
+        }
+      }
+    ],
+    "acceptance": ["bridge-selfcheck", "bridge-interop"],
+    "static_only": false
+  },
+  "rollback": {
+    "strategy": "镜像侧：mirror_shape delete 撤件（不跑晋升就没有现实可回滚）；现实侧：本件未进 reality，无需回滚",
+    "note": "若要撤掉已进镜像维度的这几件：对每个 path 调 mirror_shape{path, delete:true}；回滚后 dimension_sha 变化会使本报告失效（这是设计，不是故障）"
+  }
+}

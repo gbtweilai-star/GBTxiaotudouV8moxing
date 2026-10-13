@@ -182,7 +182,9 @@ def main():
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     try:
         with wave.open(a.out, "wb") as w:
-            w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR)
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(SR)
             w.writeframes(np.clip(x, -32768, 32767).astype("<i2").tobytes())
     except Exception as e:                                               # noqa: BLE001
         return emit(False, "write_failed", "写 WAV 失败：%s" % e, out=a.out)

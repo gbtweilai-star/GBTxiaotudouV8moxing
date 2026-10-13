@@ -1,0 +1,36 @@
+{
+ "cap": "control_loop",
+ "domain": "desktop",
+ "desc": "快慢双脑控制回路（蒸馏自 Jev/TypeSafe System One + browser-use/jev-ultrafast）：动作是**枚举**（CLICK/TYPE_TEXT/SELECT/SCROLL_*/WAIT/DONE/BLOCKED，枚举外不存在）· 一次观测出「操作+目标」两个头 · 只为 TYPE_TEXT 调生成模型 · **执行前两查（新鲜+遮挡）+ DONE 必须独立验证** · 低置信度才升级慢脑（无慢脑如实 BLOCKED）· 预算闸（单次时延+每分钟次数）· 每次决策写 state/control_loop.jsonl 审计链。**它只决策不动手**：动作仍走 desktop_control 等门。op=decide/observe/act/demo/selftest",
+ "safe": true,
+ "ops": [
+  {
+   "op": "act",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "decide",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "demo",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "observe",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "selftest",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "desc 兜底（分派代码非静态可提取形态）",
+ "handler_file": "",
+ "params": [],
+ "params_hint": "",
+ "handler": "control_loop",
+ "slot": "g1-02",
+ "group": 1,
+ "role": "决策引擎 Laya（图6 · 33ms 非自回归 · RL 训出）"
+}

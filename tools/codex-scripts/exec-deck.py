@@ -162,9 +162,9 @@ def block_D_gaps() -> dict:
            "要动手": "py -3.14 tools/codex-scripts/unimplemented_scan.py"}
     tmp = Path(os.environ.get("TEMP", "/tmp")) / "gbt-unimpl-execdeck.json"
     try:
-        p = subprocess.run([sys.executable, str(UNIMPL), "--json", str(tmp)],
-                           capture_output=True, text=True, encoding="utf-8",
-                           errors="replace", timeout=300)
+        subprocess.run([sys.executable, str(UNIMPL), "--json", str(tmp)],
+                       capture_output=True, text=True, encoding="utf-8",
+                       errors="replace", timeout=300)
         j = json.loads(tmp.read_text(encoding="utf-8"))
         out["registered_only"] = len(j.get("registered_only") or [])
         out["stub_flagged"] = len(j.get("stub_flagged") or [])
@@ -340,7 +340,7 @@ def main() -> int:
     # 🔴 判据用**改动后窗口**：拿 since_hook 整段算会把改动前的旧账算进来（本轮实测误导过）。
     if isinstance(tg_rate, (int, float)) and tg_n >= 10 and tg_rate < 0.5:
         attention.append("**改动后**信封覆盖仅 %.0f%%（%d/%d）" % (tg_rate * 100,
-                        tagged["inside"], tg_n))
+                                                         tagged["inside"], tg_n))
     sh = ((A.get("data") or {}).get("since_hook") or {}) if A.get("data") else {}
 
     print("=" * 78)

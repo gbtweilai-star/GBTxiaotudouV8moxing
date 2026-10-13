@@ -10,7 +10,7 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 SRC = BASE / "archive" / "V16 GBT小土豆V8-无限画布.html"
 OUT = BASE / "V17 GBT小土豆V8-无限画布.html"
@@ -20,8 +20,10 @@ man = json.loads((S / "v17_manifest.json").read_text(encoding="utf-8"))
 N = man["v17"]
 BRW, CPC, TLS, KRN, SA = N["browser"], N["cloudpc"], N["tools"], N["kernel"], N["strict_audit"]
 
+
 def n17(x):
     return "{:,}".format(x)
+
 
 PAGES = [
     (54, '原生浏览器 · CDP', 'NATIVE BROWSER', [
@@ -112,7 +114,7 @@ pagejs = "\n".join(
 scene += "\n\n" + pagejs + "\n"
 
 t = t.replace("无限画布 V16", "无限画布 V17")
-import re as _re
+import re as _re  # noqa: E402
 t = _re.sub(r"\bV16\b", "V17", t)
 t = t.replace("V17 · 50 面板 / 53 画布页 · 排版与节奏已打磨",
               "V17 · 55 面板 / 58 画布页 · 原生浏览器与云电脑已补")

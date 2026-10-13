@@ -24,6 +24,7 @@ def _latest_proto(base):
     实测跑的却是两版之前的文件，报告也没有任何东西会因此变红。
     """
     cands = [f for f in base.glob("V*.html") if "可交互原型" in f.name]
+
     def _ver(f):
         m = re.match(r"V(\d+) ", f.name)
         return int(m.group(1)) if m else -1

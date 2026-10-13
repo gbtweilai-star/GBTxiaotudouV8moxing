@@ -69,8 +69,8 @@ dom = np.take_along_axis(JT, slot[:, None], axis=1).ravel()
 hair = np.isin(dom, [IDX_HEAD, IDX_NECK]) & (P[:, 1] > Y_CUT + 0.004)
 Hp = P[hair]
 print(f"头部 primitive #{hi} · 判据=主导骨∈{{Head,Neck}} 且 y>{Y_CUT + 0.004:.3f}")
-print(f"头发顶点 {len(Hp)}（旧判据只有 41457）· y 范围 {Hp[:,1].min():+.4f} .. {Hp[:,1].max():+.4f}"
-      f"（跨度 {Hp[:,1].max()-Hp[:,1].min():.4f}）")
+print(f"头发顶点 {len(Hp)}（旧判据只有 41457）· y 范围 {Hp[:, 1].min():+.4f} .. {Hp[:, 1].max():+.4f}"
+      f"（跨度 {Hp[:, 1].max()-Hp[:, 1].min():.4f}）")
 if len(Hp) < 200 or (Hp[:, 1].max() - Hp[:, 1].min()) < 0.05:
     print("🔴 头发顶点太少或纵向跨度过小 ⇒ 停止")
     raise SystemExit(2)
@@ -110,7 +110,7 @@ for i in HAIR:
 
 for nm, n, oy, ny in report:
     print(f"  {nm:22s} 扇区 n={n:6d} · 链尖 y {oy:+.4f} → {ny:+.4f}")
-print(f"改权顶点：{changed} · 头发最低 y {Hp[:,1].min():+.4f}")
+print(f"改权顶点：{changed} · 头发最低 y {Hp[:, 1].min():+.4f}")
 
 jv_off = len(BIN)
 
@@ -185,11 +185,11 @@ driven = hair & (P[:, 1] <= y_head - 0.004) & (depth_all >= 0.16)
 cov = float(np.isin(np.where(driven)[0],
                     np.where((WT2[:, 0] > 0.02) & (JT2[:, 0] != IDX_HEAD))[0]).mean())
 print(f"挂链覆盖率（**只算该被驱动的垂发**：y≤{y_head - 0.004:.3f} 且深度≥0.16）：{cov*100:.1f}%")
-print(f"  分母 {int(driven.sum())} · 头皮 {int((hair & (P[:,1] > y_head - 0.004)).sum())} 与"
-      f" 根部带 {int((hair & (P[:,1] <= y_head - 0.004) & (depth_all < 0.16)).sum())} 留在 Head，属正确")
+print(f"  分母 {int(driven.sum())} · 头皮 {int((hair & (P[:, 1] > y_head - 0.004)).sum())} 与"
+      f" 根部带 {int((hair & (P[:, 1] <= y_head - 0.004) & (depth_all < 0.16)).sum())} 留在 Head，属正确")
 if cov < 0.8:
     bad.append(f"覆盖率仅 {cov*100:.1f}%")
-print(f"输出 {OUT} · {OUT.stat().st_size/1024/1024:.2f} MB · 链尖 {[round(t,4) for t in tips]}")
+print(f"输出 {OUT} · {OUT.stat().st_size/1024/1024:.2f} MB · 链尖 {[round(t, 4) for t in tips]}")
 if bad:
     print("🔴 自检不过：" + "；".join(bad))
     raise SystemExit(1)

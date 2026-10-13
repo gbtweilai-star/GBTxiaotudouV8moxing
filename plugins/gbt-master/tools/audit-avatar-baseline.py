@@ -9,7 +9,11 @@
   5 自然度缺口           —— 有无头发/裙摆弹簧骨链
   6 资产体量             —— 顶点数 / 贴图字节
 """
-import json, math, struct, pathlib, sys
+import json
+import math
+import struct
+import pathlib
+import sys
 
 # ⚠️ 必须 reconfigure：本机控制台是 GBK，脚本里任何非 GBK 字符（🔴 等）都会
 #    在**错误处理路径**上抛 UnicodeEncodeError —— 那会把"如实报错"变成"二次崩"（本轮实测踩到）。
@@ -40,7 +44,8 @@ magic, ver, total = struct.unpack_from("<4sII", raw, 0)
 off, chunks = 12, []
 while off < len(raw):
     clen, ctype = struct.unpack_from("<I4s", raw, off)
-    chunks.append((ctype, off + 8, clen)); off += 8 + clen
+    chunks.append((ctype, off + 8, clen))
+    off += 8 + clen
 j = json.loads(next(raw[s:s + n] for t, s, n in chunks if t == b"JSON").decode("utf-8"))
 BIN = next((raw[s:s + n] for t, s, n in chunks if t == b"BIN\x00"), b"")
 
@@ -60,8 +65,11 @@ for i, nm in enumerate(names):
     print(f"      - {nm}" + (f"  → 子: {', '.join(chn)}" if chn else "  （叶）"))
 
 # ── 2 绑定姿势：由静止 TRS 组合出世界位置，量 肩→手 夹角 ───────────────────
+
+
 def mat_mul(a, b):
     return [sum(a[r * 4 + k] * b[k * 4 + c] for k in range(4)) for r in range(4) for c in range(4)]
+
 
 def trs(node):
     t = node.get("translation") or [0, 0, 0]
@@ -76,10 +84,12 @@ def trs(node):
     ]
     return m
 
+
 parent = {}
 for i, n in enumerate(nodes):
     for c in (n.get("children") or []):
         parent[c] = i
+
 
 def world(i):
     m = trs(nodes[i])
@@ -89,6 +99,7 @@ def world(i):
         p = parent.get(p)
     return m
 
+
 def find(keys):
     for i, n in enumerate(nodes):
         nm = (n.get("name") or "").lower()
@@ -96,12 +107,14 @@ def find(keys):
             return i, n.get("name")
     return None, None
 
+
 # Tripo/Blender 常见命名：shoulder/upperarm/forearm/hand
 pairs = [(["shoulder", "upperarm", "upper_arm", "arm"], ["hand"]),
          (["upperarm", "upper_arm", "arm"], ["forearm", "lowerarm", "lower_arm"])]
 print("[2] 绑定姿势推断（由静止变换算世界向量夹角；T≈0°，A≈35–45°）")
 for akeys, bkeys in pairs:
-    ai, an = find(akeys); bi, bn = find(bkeys)
+    ai, an = find(akeys)
+    bi, bn = find(bkeys)
     if ai is None or bi is None:
         print(f"    {akeys[0]} → {bkeys[0]}：骨名没匹配上，跳过")
         continue

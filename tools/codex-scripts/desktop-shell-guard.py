@@ -17,8 +17,8 @@ Owner 的硬约束是「**不能破坏 DeepSeek Harness（我们现在对话的�
 
 ## 判据（逐条对应 §2）
 
-    B1a DSH 在听：3080 有监听               （DSH 活着 —— 这是底线）
-    B1b 窗 A 已建：壳的窗注册表里有一个指向 3080 的窗   （P1 期产物；现读应为 PENDING）
+    B1a DSH web 在听：3080 有监听           （2026-10-04 起为旧路：没跑=PENDING 不是破坏）
+    B1b 窗 A 真载对话面：现读=直载白名单外部 DeepSeek 网页（主人令 2026-10-04）
     B1c 不代理：壳里没有实现/转发对话协议的代码（不许在壳里重做 DSH）
     B2  不动 DSH 配置：~/.dsh 下关键文件的哈希与基线一致
     B3  不占 DSH 端口：壳自身不新增监听；面板服务仍是 8765
@@ -50,7 +50,12 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 SHELL_DIR = ROOT / "holo_pet_w3"
 SHELL_SOURCES = [SHELL_DIR / "shell" / n for n in
                  ("main.cjs", "layout.cjs", "features.cjs", "preload.cjs",
-                  "url-policy.cjs", "windows.json", "connect.html", "blocked.html")]
+                  "url-policy.cjs", "windows.json", "connect.html", "blocked.html",
+                  "deepseek_loop.cjs",
+                  # 2026-10-07 加：DSH 自接入（壳自己拉起 `dsh web` 读就绪行）。
+                  # **必须进这个名单** —— 它会 spawn 一条外部命令，正是 B1c「不重做对话协议」
+                  # 与 B5「不依赖 DSH 内部」最该盯的新面；不进名单 = 让它绕过守卫。
+                  "dsh-launch.cjs")]
 SHELL_SOURCES += [SHELL_DIR / n for n in ("index.html", "window.js", "window.css")]
 
 # B8 的取证面：快照页 + 立体层（2026-09-23 风哥令「3D 立体视觉感要做出来」后新加）。
@@ -62,6 +67,10 @@ INERT_SOURCES += [SHELL_DIR / "deck3d.css"]
 
 DSH_PORT = 3080
 PANEL_PORT = 8765
+# 外部点名白名单（2026-10-04 · 主人令：对话窗直载原生 DeepSeek 网页）。
+# 🔴 与 holo_pet_w3/shell/url-policy.cjs 的 EXTERNAL_ALLOWED_HOSTS **同名单互绑**：
+#    改任何一边必须同步另一边，两边不一致 = 守卫假红/假绿。
+ALLOWED_EXTERNAL_HOSTS = frozenset({"chat.deepseek.com"})
 BASELINE = ROOT / "state" / "desktop-shell-baseline.json"
 
 # B2：DSH 的配置面（**只取哈希**，绝不读内容进报告）
@@ -171,6 +180,7 @@ def _source_checks(srcs: dict, dsh_port: int) -> list:
 
     单独抽出来是为了**能被负对照喂假输入** —— 一个只会说 PASS 的守卫等于没有守卫。
     """
+    import urllib.parse as _up
     out = []
 
     def add(cid, state, detail):
@@ -180,6 +190,9 @@ def _source_checks(srcs: dict, dsh_port: int) -> list:
     # 🔴 自查：第一版判据是 `str(3080) in 源码` —— 于是 windows.json 里一句 `"port": 3080`
     # 就让它报"对话面已嵌入"。**那是假的**：那个窗打开的是本地引导页（connect.html），
     # 真页面要带 token 的 URL 才载得进来。判据必须看 **`url` 实参**与 `needs_url` 声明。
+    # 2026-10-04 起窗 A 改载**原生 DeepSeek 网页**（主人令，旧 DSH 链 :3080 留档）——
+    # 判据跟进：窗 A 的 url 必须是**白名单内**的外部主机（否则任何人都可能把对话窗
+    # 指到任意站点还让 B1b 报绿）。
     wreg, said = None, None
     for k, v in srcs.items():
         if k.endswith("windows.json"):
@@ -188,10 +201,26 @@ def _source_checks(srcs: dict, dsh_port: int) -> list:
             except Exception:                                       # noqa: BLE001
                 pass
     if wreg is not None:
-        real = [w for w in (wreg.get("windows") or [])
+        wins = wreg.get("windows") or []
+        real = [w for w in wins
                 if (w.get("url") or "") and str(dsh_port) in str(w.get("url"))]
-        needs = [w for w in (wreg.get("windows") or []) if w.get("needs_url")]
-        if real:
+        needs = [w for w in wins if w.get("needs_url")]
+        chat = [w for w in wins if w.get("id") == "dsh-chat"]
+        chat_url = str((chat[0].get("url") or "")) if chat else ""
+        chat_file = str((chat[0].get("file") or "")) if chat else ""
+        chat_host = (_up.urlparse(chat_url).hostname if chat_url else "") or ""
+        if chat_url and chat_host in ALLOWED_EXTERNAL_HOSTS:
+            said = ("PASS", "窗 A(dsh-chat) 已直载白名单外部对话面 https://%s（主人令 2026-10-04）"
+                    % chat_host)
+        elif not chat_url and chat_file:
+            # 2026-10-04 定性改道：DeepSeek 风控判 Electron 环境异常（无痕/持久档同弹，
+            # 对照见 shell/chat-probe.cjs）⇒ 窗 A 改载**本地 GBT 对话面**，外部对话移主人 Chrome。
+            said = ("PASS", "窗 A(dsh-chat) 载**本地 GBT 对话面** %s（DeepSeek 判 Electron 环境异常后改道；"
+                            "外部对话在主人 Chrome + Nanobrowser）" % chat_file)
+        elif chat_url and chat_host:
+            said = ("FAIL", "窗 A(dsh-chat) 的 url 指向白名单外的主机 %s —— 外部点名制不许这么指"
+                    % chat_host)
+        elif real:
             said = ("PASS", "注册表里已有指向 %d 的**真 URL** 窗：%s"
                     % (dsh_port, [w.get("id") for w in real]))
         elif needs:
@@ -218,8 +247,19 @@ def _source_checks(srcs: dict, dsh_port: int) -> list:
 
     inject = [k for k, v in srcs.items()
               if re.search(r"executeJavaScript|insertCSS|webRequest\.onBeforeRequest", v)]
-    add("B4", "FAIL" if inject else "PASS",
-        "%s注入/改写在 %d 那个窗上" % ("**有**" + str(inject) if inject else "没有", dsh_port))
+    # 2026-10-04 主人令「她能直接操控触手能力来实现自主运行」⇒ 判据从「一律不许注入」
+    # 改为**注入收口到一个模块**：只允许 deepseek_loop.cjs（只读她的正文回复 +
+    # 写回输入框；执行腿全在 Python 桥的唯一门里）。别的文件出现注入一律 FAIL ——
+    # 尤其防「顺手往别的窗也塞脚本」这种扩散。
+    allowed = [k for k in inject if k.endswith("deepseek_loop.cjs")]
+    bad_inject = [k for k in inject if k not in allowed]
+    if bad_inject:
+        add("B4", "FAIL",
+            "**注入越界**（允许名单外）：%s —— 只许收口在 deepseek_loop.cjs" % bad_inject)
+    elif allowed:
+        add("B4", "PASS", "注入收口：只出现在自主回路模块 deepseek_loop.cjs（主人令授权的自主运行件）")
+    else:
+        add("B4", "PASS", "壳里没有任何注入（自主回路模块未装或已摘）")
 
     hits = [k for k, v in srcs.items() if any(t in v for t in DSH_INTERNAL)]
     add("B5", "FAIL" if hits else "PASS",
@@ -227,8 +267,8 @@ def _source_checks(srcs: dict, dsh_port: int) -> list:
 
     # ── B6：URL 白名单 —— 壳不许变成"通用浏览器" ──
     # `loadURL` 一旦不限域，这个常驻托盘壳就能打开任意网页（不同安全面）。
-    # 规则：唯一的例外是**本机回环**；注册表里任何非回环 url 都判 FAIL。
-    import urllib.parse as _up
+    # 规则（2026-10-04 起）：**回环 ∪ 点名外部白名单（仅 https）**；注册表里任何
+    # 白名单外的 url 都判 FAIL。白名单 = ALLOWED_EXTERNAL_HOSTS（与 url-policy.cjs 互绑）。
     off_loop = []
     for k, v in srcs.items():
         if not k.endswith("windows.json"):
@@ -244,14 +284,20 @@ def _source_checks(srcs: dict, dsh_port: int) -> list:
                 continue
             try:
                 host = _up.urlparse(u).hostname or ""
+                scheme = _up.urlparse(u).scheme or ""
             except Exception:                                       # noqa: BLE001
-                host = ""
-            if host not in ("127.0.0.1", "localhost", "::1"):
-                off_loop.append("%s -> %s" % (w.get("id"), u))
+                host, scheme = "", ""
+            if host in ("127.0.0.1", "localhost", "::1"):
+                continue
+            if host in ALLOWED_EXTERNAL_HOSTS:
+                if scheme != "https":
+                    off_loop.append("%s -> %s（白名单外部主机必须 https）" % (w.get("id"), u))
+                continue
+            off_loop.append("%s -> %s" % (w.get("id"), u))
     guard_present = any("LOOPBACK_HOSTS" in v and "loopbackUrlOnly" in v for v in srcs.values())
     add("B6", "FAIL" if off_loop else ("PASS" if guard_present else "PENDING"),
-        ("注册表里**有非回环 url**：" + str(off_loop)) if off_loop
-        else ("唯一的 url 白名单（只放行回环）在壳里" if guard_present
+        ("注册表里**有白名单外的 url**：" + str(off_loop)) if off_loop
+        else ("url 白名单在壳里（回环 ∪ 点名外部主机）" if guard_present
               else "窗里还没有 url，白名单也还没装（PENDING）"))
 
     # ── B7：**带 token 的 URL 不许回显**（凭据卫生）──
@@ -401,6 +447,12 @@ def _selftest() -> int:
         ("代理对话协议", {"a.cjs": "const dshProxy = proxyTo(3080)"}, {"B1c": "FAIL"}),
         ("自己监听 DSH 端口", {"a.cjs": "srv.listen(3080)"}, {"B3x": "FAIL"}),
         ("往对话窗注入脚本", {"a.cjs": "win.webContents.executeJavaScript('x')"}, {"B4": "FAIL"}),
+        # 2026-10-04 收口制：注入只许在 deepseek_loop.cjs；同一行代码换个文件就红/绿
+        ("注入收口在自主回路模块", {"deepseek_loop.cjs":
+            "win.webContents.executeJavaScript(READ_JS, true)"}, {"B4": "PASS"}),
+        ("注入扩散到别的文件", {"deepseek_loop.cjs":
+            "win.webContents.executeJavaScript(READ_JS, true)",
+            "features.cjs": "win.webContents.executeJavaScript('偷看')"}, {"B4": "FAIL"}),
         ("依赖 DSH 内部包", {"a.cjs": 'require("@deepseek-ai/dsh-compaction")'}, {"B5": "FAIL"}),
         ("没建对话窗", {"a.cjs": "loadFile('x.html')"}, {"B1b": "PENDING"}),
         # B6：壳不许变成通用浏览器
@@ -409,6 +461,22 @@ def _selftest() -> int:
         ("只注册回环站点", {"a.cjs": "const LOOPBACK_HOSTS=new Set();function loopbackUrlOnly(u){}",
                        "windows.json": json.dumps(
                            {"windows": [{"id": "ok", "url": "http://127.0.0.1:3080/"}]})}, {"B6": "PASS"}),
+        # 2026-10-04 白名单点名制：白名单内 https 外部主机合法；http 或白名单外主机都红
+        ("注册白名单内 DeepSeek", {"a.cjs": "const LOOPBACK_HOSTS=new Set();function loopbackUrlOnly(u){}",
+                           "windows.json": json.dumps(
+                               {"windows": [{"id": "dsh-chat",
+                                             "url": "https://chat.deepseek.com/"}]})},
+         {"B1b": "PASS", "B6": "PASS"}),
+        ("白名单主机走了 http", {"a.cjs": "const LOOPBACK_HOSTS=new Set();function loopbackUrlOnly(u){}",
+                          "windows.json": json.dumps(
+                              {"windows": [{"id": "dsh-chat",
+                                            "url": "http://chat.deepseek.com/"}]})},
+         {"B6": "FAIL"}),
+        ("对话窗指向白名单外", {"a.cjs": "const LOOPBACK_HOSTS=new Set();function loopbackUrlOnly(u){}",
+                         "windows.json": json.dumps(
+                             {"windows": [{"id": "dsh-chat",
+                                           "url": "https://evil.example.net/"}]})},
+         {"B1b": "FAIL", "B6": "FAIL"}),
         # B7：带 token 的 URL 不许回显
         ("回显了带 token 的 URL", {"main.cjs":
             "function w3ConnectDsh(p){const chk=loopbackUrlOnly(p.url);"
@@ -507,9 +575,16 @@ def main() -> int:
         res.append({"id": cid, "state": state, "detail": detail})
 
     # ── B1a DSH 在听 ──
+    # 2026-10-04 起窗 A 直载原生 DeepSeek 网页，DSH web 是**旧路**（保留、非必需）：
+    # 它没跑 = 环境态（PENDING），不再判"壳破坏"；它在跑 = 照旧确认没被壳弄坏。
     dsh_pids = _listening(DSH_PORT)
-    add("B1a", "PASS" if dsh_pids else "FAIL",
-        "DSH（对话面）在 %d 听，pid=%s" % (DSH_PORT, ",".join(dsh_pids) or "无"))
+    if dsh_pids:
+        add("B1a", "PASS",
+            "DSH web 在 %d 听，pid=%s —— 旧路活着，没被壳弄坏" % (DSH_PORT, ",".join(dsh_pids)))
+    else:
+        add("B1a", "PENDING",
+            "DSH web 未启动（%d 无监听）—— 环境态，不是壳破坏。窗 A 已改载原生 DeepSeek 网页"
+            "（2026-10-04 主人令），DSH 旧路保留、要用时由主人 `dsh web` 起它" % DSH_PORT)
 
     # ── 只依赖壳源码的那几条（B1b/B1c/B3x/B4/B5）──
     res.extend(_source_checks(srcs, DSH_PORT))
@@ -573,7 +648,9 @@ def main() -> int:
 
     # ── B1d 对话面**可载性**（这一条是 2026-09-23 实测抓出来的硬约束）──
     # 裸 URL 回 401 ⇒ 窗 A 不是"loadURL 就完事"，它要 `dsh web` 打印的**带 token URL**。
-    # 判据：200=PASS；401=PENDING（**要主人运行时给 URL，本守卫绝不替他去取凭据**）；其它=FAIL。
+    # 判据（2026-10-04 环境感知化）：200=PASS；401=PENDING（**要主人运行时给 URL，
+    # 本守卫绝不替他去取凭据**）；DSH 没在跑=PENDING（无可探，窗 A 已改载原生 DeepSeek）；
+    # 只有「DSH 在跑却回怪状态码」才判 FAIL。
     st = _http_status("http://127.0.0.1:%d/" % DSH_PORT)
     if st == 200:
         add("B1d", "PASS", "对话面裸 URL 就回 200 —— 可以直接嵌")
@@ -582,20 +659,35 @@ def main() -> int:
             "对话面回 **401**（`dsh web authentication required`）⇒ 要 **`dsh web` 打印的带 token URL**；"
             "**运行时粘贴入口已就位**（`w3ConnectDsh` + `connect.html` + preload 动作口）。"
             "守卫**不碰凭据**，所以这一格永远只能由「主人真接上一次」来关 —— 那是 B1e 的事")
+    elif dsh_pids:
+        add("B1d", "FAIL", "DSH web 在跑但状态码异常：%s（既不是 200 也不是 401）" % st)
     else:
-        add("B1d", "FAIL", "对话面状态码异常：%s（既不是 200 也不是 401）" % st)
+        add("B1d", "PENDING",
+            "DSH web 没在跑（连接被拒，状态=%s）—— 无可探；窗 A 已改载原生 DeepSeek 网页，"
+            "这一格只在主人起 `dsh web` 时才有意义" % st)
 
-    # ── B1e 真接上过一次没有（读**不含 token** 的回执）──
+    # ── B1e 真接上过一次没有（读**不含凭据**的回执）──
+    # 2026-10-08 修两处误判（实测 127.0.0.1:60463 被读成 FAIL）：
+    #   ① 回执 host 只要**回环地址 + 数字端口**即算接上 —— 自动接龙在 3080 被占时
+    #      按设计回退到动态口；旧口径「必须含 3080」会把它误判成 FAIL。
+    #      「3080 老路活没活」另有 B1a 专盯，不必在回执里再要求一次。
+    #   ② 「疑似含 URL/token」旧判据把回执**脚注里的字**当凭据（脚注写「不含 URL/token」
+    #      ⇒ 命中 'token' ⇒ 自证式假红）。改成只认真凭据形状：[?&]token=<值>。
+    import re as _re_b1e
     rc = ROOT / "state" / "desktop-dsh-connect-receipt.json"
     if rc.is_file():
         try:
-            j = json.loads(rc.read_text(encoding="utf-8"))
+            txt = rc.read_text(encoding="utf-8")
+            j = json.loads(txt)
             h = str(j.get("host") or "")
-            ok = str(DSH_PORT) in h
-            add("B1e", "PASS" if ok else "FAIL",
-                "接上过：host=%s at=%s（回执%s含 URL/token）"
-                % (h, j.get("at"), "**疑似**" if ("token" in json.dumps(j).lower()
-                                                  or "http" in h and "?" in h) else "不"))
+            ok = bool(_re_b1e.match(r"^(127\.0\.0\.1|localhost|\[::1\]):\d{2,5}$", h))
+            tok_like = bool(_re_b1e.search(r"[?&]token=[^\s&#\"']+", txt))
+            add("B1e", "PASS" if (ok and not tok_like) else "FAIL",
+                "接上过：host=%s at=%s（回环口 %s · %s；回执%s凭据参数）"
+                % (h, j.get("at"),
+                   "✓" if ok else "✗（不是回环 host:port）",
+                   "3080 正路" if str(DSH_PORT) in h else "回退动态口",
+                   "**疑似含**" if tok_like else "不含"))
         except Exception as e:                                      # noqa: BLE001
             add("B1e", "FAIL", "回执存在但读不动：%s" % str(e)[:80])
     else:

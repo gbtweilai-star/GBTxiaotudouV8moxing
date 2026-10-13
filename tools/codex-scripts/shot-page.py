@@ -2,7 +2,9 @@
 """通用页面截图 + 读数（Playwright）。用于验证"可在面板里看的成品页"。
 用法: python tools/codex-scripts/shot-page.py <url> <输出名.png> [等待JS] [点击选择器] [点击后等待秒]
 例:   python tools/codex-scripts/shot-page.py "http://127.0.0.1:3080/xxx.html" 形象页.png "window.__ready" "#bWalk" 2.5"""
-import json, pathlib, sys
+import json
+import pathlib
+import sys
 from playwright.sync_api import sync_playwright
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")

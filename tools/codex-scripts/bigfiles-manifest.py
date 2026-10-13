@@ -126,14 +126,14 @@ def main():
            "合计字节": total, "合计GB": round(total / 1e9, 3), "合计GiB": round(total / (1 << 30), 3),
            "按类别": by_kind, "文件": files,
            "_口径": ("sha256 为**流式**全文件哈希（不整file读内存）；「来源」是被搬走之后**怎么再拿回来**；"
-                     "「可再下载」与「丢了就没」必须分开看 —— 前者搬走是省地方，后者搬走才是备份。")}
+                   "「可再下载」与「丢了就没」必须分开看 —— 前者搬走是省地方，后者搬走才是备份。")}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(man, ensure_ascii=False, indent=1), "utf-8")
     print(json.dumps({"ok": True, "status": "manifest", "落点": str(OUT),
                       "合计": "%s B = %.2f GB (%.2f GiB)" % (total, total / 1e9, total / (1 << 30)),
                       "按类别": by_kind,
                       "逐件": [{"MB": f.get("MB"), "在盘": f.get("在盘"),
-                               "类别": f.get("类别"), "文件": Path(f["路径"]).name} for f in files]},
+                              "类别": f.get("类别"), "文件": Path(f["路径"]).name} for f in files]},
                      ensure_ascii=False, indent=1))
     return 0
 

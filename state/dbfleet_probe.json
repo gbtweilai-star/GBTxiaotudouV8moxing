@@ -1,0 +1,799 @@
+{
+ "spec": "dbfleet-probe",
+ "at": "2026-10-11",
+ "note": "**不接受口述**：每条编队逐条现读环境变量；没有就是「未开通」，不许念成已开通（照抄 db-fleet.json 的 honesty）。",
+ "honesty": [
+  "🔴 **这些库一个都还没开通**：status 一律是 `未开通`，页面与文档都明写。本文件是**设计 + 指向 + 开通清单**，不是部署凭证。",
+  "额度与稳定性**逐条带出处**（sources[] 里有 url 与取证日期 2026-10-07），措辞与官方页一致；官方没写的字段写 null 并说明「官网未列」——不许拿印象补数。",
+  "「最稳」是**相对**的：免费档普遍无 SLA。因此本文件把「谁当主库」订成两条硬标准：① 按量计费、不因闲置被暂停 ② 有版本化/回滚面。会因闲置暂停的一律降为备。"
+ ],
+ "fleets": [
+  {
+   "id": "db-neon-pg",
+   "provider": "Neon",
+   "engine": "Postgres",
+   "role": "主库（写主）",
+   "rank": "主",
+   "envs": [
+    "GBT_DB_NEON_URL"
+   ],
+   "endpoint": "（占位 · 未开通：形如 postgresql://<user>:<pw>@<host>/<db>?sslmode=require）",
+   "status": "未开通"
+  },
+  {
+   "id": "db-tidb",
+   "provider": "TiDB Cloud",
+   "engine": "MySQL 兼容（Serverless）",
+   "role": "备主库 · 大表/分析",
+   "rank": "主",
+   "envs": [
+    "GBT_DB_TIDB_URL"
+   ],
+   "endpoint": "（占位 · 未开通）",
+   "status": "未开通"
+  },
+  {
+   "id": "db-turso",
+   "provider": "Turso",
+   "engine": "libSQL（SQLite）",
+   "role": "记忆分片编队（百库）",
+   "rank": "主",
+   "envs": [
+    "GBT_DB_TURSO_TOKEN"
+   ],
+   "endpoint": "（占位 · 未开通：形如 libsql://<db>-<org>.turso.io）",
+   "status": "未开通"
+  },
+  {
+   "id": "db-d1",
+   "provider": "Cloudflare",
+   "engine": "D1（SQLite）",
+   "role": "边缘热表 · 配置 · 路由",
+   "rank": "备",
+   "envs": [
+    "CLOUDFLARE_API_TOKEN"
+   ],
+   "endpoint": "（占位 · 未开通：与现役 Worker 同账号，走 binding 而不是公网地址）",
+   "status": "未开通"
+  },
+  {
+   "id": "db-upstash",
+   "provider": "Upstash",
+   "engine": "Redis（Serverless）",
+   "role": "缓存 · 限流 · 队列",
+   "rank": "备",
+   "envs": [
+    "GBT_DB_UPSTASH_TOKEN"
+   ],
+   "endpoint": "（占位 · 未开通：形如 https://<db>.upstash.io）",
+   "status": "未开通"
+  },
+  {
+   "id": "db-supabase",
+   "provider": "Supabase",
+   "engine": "Postgres + pgvector（含对象存储）",
+   "role": "向量层（降为备）",
+   "rank": "备",
+   "envs": [
+    "GBT_DB_SUPABASE_KEY"
+   ],
+   "endpoint": "（占位 · 未开通：形如 https://<ref>.supabase.co）",
+   "status": "未开通"
+  },
+  {
+   "id": "obj-r2",
+   "provider": "Cloudflare",
+   "engine": "R2（对象存储，不是数据库）",
+   "role": "归档层（工件/帧/模型/备份）",
+   "rank": "备",
+   "envs": [
+    "CLOUDFLARE_API_TOKEN"
+   ],
+   "endpoint": "（占位 · 未开通）",
+   "status": "未开通"
+  }
+ ],
+ "shards_100": [
+  {
+   "shard": "sh-001",
+   "id": "db-turso-001",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_001",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-002",
+   "id": "db-turso-002",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_002",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-003",
+   "id": "db-turso-003",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_003",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-004",
+   "id": "db-turso-004",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_004",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-005",
+   "id": "db-turso-005",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_005",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-006",
+   "id": "db-turso-006",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_006",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-007",
+   "id": "db-turso-007",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_007",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-008",
+   "id": "db-turso-008",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_008",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-009",
+   "id": "db-turso-009",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_009",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-010",
+   "id": "db-turso-010",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_010",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-011",
+   "id": "db-turso-011",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_011",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-012",
+   "id": "db-turso-012",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_012",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-013",
+   "id": "db-turso-013",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_013",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-014",
+   "id": "db-turso-014",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_014",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-015",
+   "id": "db-turso-015",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_015",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-016",
+   "id": "db-turso-016",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_016",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-017",
+   "id": "db-turso-017",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_017",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-018",
+   "id": "db-turso-018",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_018",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-019",
+   "id": "db-turso-019",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_019",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-020",
+   "id": "db-turso-020",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_020",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-021",
+   "id": "db-turso-021",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_021",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-022",
+   "id": "db-turso-022",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_022",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-023",
+   "id": "db-turso-023",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_023",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-024",
+   "id": "db-turso-024",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_024",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-025",
+   "id": "db-turso-025",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_025",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-026",
+   "id": "db-turso-026",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_026",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-027",
+   "id": "db-turso-027",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_027",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-028",
+   "id": "db-turso-028",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_028",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-029",
+   "id": "db-turso-029",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_029",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-030",
+   "id": "db-turso-030",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_030",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-031",
+   "id": "db-turso-031",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_031",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-032",
+   "id": "db-turso-032",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_032",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-033",
+   "id": "db-turso-033",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_033",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-034",
+   "id": "db-turso-034",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_034",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-035",
+   "id": "db-turso-035",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_035",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-036",
+   "id": "db-turso-036",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_036",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-037",
+   "id": "db-turso-037",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_037",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-038",
+   "id": "db-turso-038",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_038",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-039",
+   "id": "db-turso-039",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_039",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-040",
+   "id": "db-turso-040",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_040",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-041",
+   "id": "db-turso-041",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_041",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-042",
+   "id": "db-turso-042",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_042",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-043",
+   "id": "db-turso-043",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_043",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-044",
+   "id": "db-turso-044",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_044",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-045",
+   "id": "db-turso-045",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_045",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-046",
+   "id": "db-turso-046",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_046",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-047",
+   "id": "db-turso-047",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_047",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-048",
+   "id": "db-turso-048",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_048",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-049",
+   "id": "db-turso-049",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_049",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-050",
+   "id": "db-turso-050",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_050",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-051",
+   "id": "db-turso-051",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_051",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-052",
+   "id": "db-turso-052",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_052",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-053",
+   "id": "db-turso-053",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_053",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-054",
+   "id": "db-turso-054",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_054",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-055",
+   "id": "db-turso-055",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_055",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-056",
+   "id": "db-turso-056",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_056",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-057",
+   "id": "db-turso-057",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_057",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-058",
+   "id": "db-turso-058",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_058",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-059",
+   "id": "db-turso-059",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_059",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-060",
+   "id": "db-turso-060",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_060",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-061",
+   "id": "db-turso-061",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_061",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-062",
+   "id": "db-turso-062",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_062",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-063",
+   "id": "db-turso-063",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_063",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-064",
+   "id": "db-turso-064",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_064",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-065",
+   "id": "db-turso-065",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_065",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-066",
+   "id": "db-turso-066",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_066",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-067",
+   "id": "db-turso-067",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_067",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-068",
+   "id": "db-turso-068",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_068",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-069",
+   "id": "db-turso-069",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_069",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-070",
+   "id": "db-turso-070",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_070",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-071",
+   "id": "db-turso-071",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_071",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-072",
+   "id": "db-turso-072",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_072",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-073",
+   "id": "db-turso-073",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_073",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-074",
+   "id": "db-turso-074",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_074",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-075",
+   "id": "db-turso-075",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_075",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-076",
+   "id": "db-turso-076",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_076",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-077",
+   "id": "db-turso-077",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_077",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-078",
+   "id": "db-turso-078",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_078",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-079",
+   "id": "db-turso-079",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_079",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-080",
+   "id": "db-turso-080",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_080",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-081",
+   "id": "db-turso-081",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_081",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-082",
+   "id": "db-turso-082",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_082",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-083",
+   "id": "db-turso-083",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_083",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-084",
+   "id": "db-turso-084",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_084",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-085",
+   "id": "db-turso-085",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_085",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-086",
+   "id": "db-turso-086",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_086",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-087",
+   "id": "db-turso-087",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_087",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-088",
+   "id": "db-turso-088",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_088",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-089",
+   "id": "db-turso-089",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_089",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-090",
+   "id": "db-turso-090",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_090",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-091",
+   "id": "db-turso-091",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_091",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-092",
+   "id": "db-turso-092",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_092",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-093",
+   "id": "db-turso-093",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_093",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-094",
+   "id": "db-turso-094",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_094",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-095",
+   "id": "db-turso-095",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_095",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-096",
+   "id": "db-turso-096",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_096",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-097",
+   "id": "db-turso-097",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_097",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-098",
+   "id": "db-turso-098",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_098",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-099",
+   "id": "db-turso-099",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_099",
+   "status": "未开通"
+  },
+  {
+   "shard": "sh-100",
+   "id": "db-turso-100",
+   "endpoint": "（占位 · 未开通）",
+   "env": "GBT_DB_TURSO_SHARD_100",
+   "status": "未开通"
+  }
+ ],
+ "shards_note": "「百库」= db-turso 的记忆分片编队；本表生成 100 个槽位，各带独立 env 名，未开通一律「未开通」。"
+}

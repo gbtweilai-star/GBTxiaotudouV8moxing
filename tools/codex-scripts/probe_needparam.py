@@ -111,13 +111,13 @@ def classify(rc: int, out: str) -> dict:
     if env.get("denied") is True or str(env.get("status")) == "denied":
         return {"判决": "🔒 被门拒·缺授权",
                 "详情": {"missing_scopes": env.get("missing_scopes"),
-                        "reason": str(env.get("message") or env.get("reason") or "")[:150]},
+                       "reason": str(env.get("message") or env.get("reason") or "")[:150]},
                 "怎么解": env.get("how_to_grant") or env.get("怎么授权")}
     res = env.get("result") if isinstance(env.get("result"), dict) else env
     if res.get("denied") is True:
         return {"判决": "🔒 被门拒·缺授权",
                 "详情": {"missing_scopes": res.get("missing_scopes"),
-                        "reason": str(res.get("message") or "")[:150]}}
+                       "reason": str(res.get("message") or "")[:150]}}
     if res.get("ok") is False:
         ec = res.get("error_class")
         msg = str(res.get("message") or "")[:160]
@@ -135,7 +135,7 @@ def classify(rc: int, out: str) -> dict:
     if res.get("ok") is True:
         return {"判决": "✅ 通（给参后真跑通）", "详情": {"键": sorted(res)[:10]}}
     return {"判决": "❓ 判不了", "详情": {"rc": rc, "顶层键": sorted(env)[:10],
-                                 "原文尾": (out or "")[-300:]}}
+                                  "原文尾": (out or "")[-300:]}}
 
 
 def probe(kind: str) -> dict:
@@ -154,7 +154,7 @@ def probe(kind: str) -> dict:
     return dict(c, **{"payload": d["payload"], "rc": rc, "秒": round(time.time() - t0, 1),
                       "为什么这条安全": d["为什么安全"], "出网": d["会不出网"],
                       "命令": "python tools/codex-scripts/five-dim.py cap %s '%s'"
-                              % (kind, json.dumps(d["payload"], ensure_ascii=False))})
+                      % (kind, json.dumps(d["payload"], ensure_ascii=False))})
 
 
 def cmd_table(a) -> int:
@@ -178,13 +178,13 @@ def cmd_run(a) -> int:
         "合计": tally,
         "🔴 本轮新露出来的作用域（**空参探时看不见**）": {
             "怎么露的": "空参时这些位**先卡在参数校验**，根本走不到门 ⇒ 作用域永远不出现；"
-                        "给参之后门才发声",
+            "给参之后门才发声",
             "逐位": new_scopes,
             "对账的影响": "「缺授权按作用域」那张表若只按**空参探**生成，会**漏掉这些作用域**"
-                          "（实测：`osint_scan` → `osint_private`）",
+            "（实测：`osint_scan` → `osint_private`）",
         },
         "读法": "「✅ 通」= 给参后真跑通 ·「🟠 环境未就绪」= 分支跑了、条件缺（**不是坏**）· "
-                "「🟡 仍是缺参」= 还要别的参 ·「🔒 被门拒」= 从缺参改判成缺授权",
+        "「🟡 仍是缺参」= 还要别的参 ·「🔒 被门拒」= 从缺参改判成缺授权",
         "at": time.strftime("%Y-%m-%dT%H:%M:%S"),
     }
     print(json.dumps(payload, ensure_ascii=False, indent=1))
@@ -226,13 +226,13 @@ def cmd_selftest(a) -> int:
        "已验")
     ck("分类器·缺参报错 ⇒ 判仍是缺参",
        classify(0, '{"result":{"ok":false,"error_class":"user_error","message":"缺少 url"}}'
-               )["判决"].startswith("🟡"), "已验")
+                )["判决"].startswith("🟡"), "已验")
     ck("分类器·ok:true ⇒ 判通",
        classify(0, '{"result":{"ok":true,"n":3}}')["判决"].startswith("✅"), "已验")
     # 🔴 负控：`ok:false` + `status:"needs_*"` **不是痛**（browser 实测就是这个）
     ck("分类器·**ok:false + needs_\\* ⇒ 判环境未就绪，不判痛**",
        classify(0, '{"result":{"ok":false,"status":"needs_browser_debug","cdp_available":false}}'
-               )["判决"].startswith("🟠"),
+                )["判决"].startswith("🟠"),
        "已验（否则就是假痛，F35 同型）")
     # ⑤ 读数里有噪声时也要取到**最后一个**信封（神经总线踩过的坑）
     noisy = '前情提要 {"junk":1}\n{"result":{"ok":true,"x":1}}\n[stamp] 尾巴\n'

@@ -143,7 +143,7 @@ a0 = J["accessors"][prims[0]["attributes"]["POSITION"]]
 if "min" in a0 and not np.allclose(np.array(a0["min"]), P.min(axis=0), atol=1e-3):
     bad.append("F accessor.min 与实际数据不符")
 print(f"[F 几何] 顶点 {int(sum(J['accessors'][p['attributes']['POSITION']]['count'] for p in prims))}"
-      f" · 身高 {h:.4f} · bbox x±{allP[:,0].max():.3f} z±{allP[:,2].max():.3f}")
+      f" · 身高 {h:.4f} · bbox x±{allP[:, 0].max():.3f} z±{allP[:, 2].max():.3f}")
 
 for n in notes:
     print("  ⚠️", n)

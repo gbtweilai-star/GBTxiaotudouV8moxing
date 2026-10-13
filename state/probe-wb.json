@@ -1,0 +1,11 @@
+{
+ "图": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\state\\probe-wb.png",
+ "源GLB": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\rig\\model-rigged-anim.glb",
+ "源sha256": "4a37321fa525f9b2e5476d33fd53502e3baffd2c41dda19f7efe795a7c879673",
+ "图sha256": "4be5632cbcdb9cd9ec41c70bf128ac73a513e1d7a9f0f14fb026d13dfc4964c6",
+ "at": "2026-10-10 16:03:05",
+ "取景": "三点光 3/4 视角",
+ "字节": 1522365,
+ "预设sha256": "2fbff31328b7088030e3eba777a43fb3f808c0d63771d44ddfa94dd48c0eb428",
+ "预设": "state\\digihuman\\render-preset.json"
+}

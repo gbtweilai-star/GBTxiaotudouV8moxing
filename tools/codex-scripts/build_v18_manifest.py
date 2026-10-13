@@ -6,12 +6,11 @@
 并补上 4 个 api.py 内联实现的能力。
 """
 import json
-import re
 import sys
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -59,11 +58,11 @@ for c in srcmap["caps"]:
         "ms": r.get("ms"), "note": (r.get("note") or "")[:150],
     })
 
-from collections import Counter
+from collections import Counter  # noqa: E402
 print("能力 %d 个" % len(rows))
 print("实测状态:", dict(Counter(x["state"] for x in rows)))
 print("有实现模块: %d · api.py 内联: %d" % (sum(1 for x in rows if x["module"]),
-                                        sum(1 for x in rows if not x["module"])))
+                                     sum(1 for x in rows if not x["module"])))
 print("模块行数合计: %s" % f"{sum((x['module_lines'] or 0) for x in rows):,}")
 print("内联的:", ", ".join(x["name"] for x in rows if not x["module"]))
 

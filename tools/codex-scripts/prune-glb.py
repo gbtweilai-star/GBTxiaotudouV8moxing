@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """修剪 GLB：删掉**没有被任何材质引用**的 texture / image 及其 bufferView（孤儿贴图常见于手工组装）。
 用法: python tools/codex-scripts/prune-glb.py <file.glb>"""
-import json, pathlib, struct, sys
+import json
+import pathlib
+import struct
+import sys
 
 p = pathlib.Path(sys.argv[1])
 raw = p.read_bytes()
@@ -72,6 +75,6 @@ js = json.dumps(J, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 while len(js) % 4:
     js += b" "
 p.write_bytes(b"glTF" + struct.pack("<II", 2, 12 + 8 + len(js) + 8 + len(new_bin))
-             + struct.pack("<I", len(js)) + b"JSON" + js
-             + struct.pack("<I", len(new_bin)) + b"BIN\x00" + bytes(new_bin))
+              + struct.pack("<I", len(js)) + b"JSON" + js
+              + struct.pack("<I", len(new_bin)) + b"BIN\x00" + bytes(new_bin))
 print(f"修剪后 {p.stat().st_size/1024/1024:.2f} MB")

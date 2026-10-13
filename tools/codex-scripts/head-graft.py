@@ -7,7 +7,9 @@
   ④ 共用**身体那一套 22 骨**：新头按到骨段距离权重（只用 Head/Neck/HeadTop）
   ⑤ 头用胸像自己的 3 张贴图（新材质），身体保持 4K 材质
 输出：raw/rig/model-rigged-4k-graft.glb"""
-import io, json, math, pathlib, struct
+import json
+import pathlib
+import struct
 import numpy as np
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
@@ -27,7 +29,8 @@ def load(p):
 
 
 def acc(J, BIN, i, comps):
-    a = J["accessors"][i]; bv = J["bufferViews"][a["bufferView"]]
+    a = J["accessors"][i]
+    bv = J["bufferViews"][a["bufferView"]]
     dt = {5126: np.float32, 5125: np.uint32, 5123: np.uint16}[a["componentType"]]
     return np.frombuffer(bytes(BIN), dt, a["count"] * comps, bv.get("byteOffset", 0)).reshape(a["count"], comps)
 
@@ -79,7 +82,7 @@ s = (head_h_b / max(1e-9, head_h_h)) * 0.965         # ×0.965：人像标准 1/
 PH2 = (PH[used] - neck_c_h) * s + neck_c_b
 PH2[:, 1] += (neck_b - PH2[:, 1].min()) - 0.007      # 下沉仅 0.007：领口上方露短颈（核心口径：可见颈段≈0.02-0.03×H；颈几何仍伸进领口内遮缝）
 print(f"对齐 v8：头高 身体 {head_h_b:.3f}/胸像 {head_h_h:.3f} ⇒ 缩放 {s:.4f} · "
-      f"头 y {PH2[:,1].min():.3f}~{PH2[:,1].max():.3f}（身体顶 {yb_top:.3f}）· 底沉 0.02")
+      f"头 y {PH2[:, 1].min():.3f}~{PH2[:, 1].max():.3f}（身体顶 {yb_top:.3f}）· 底沉 0.02")
 
 # 新头权重（只用 Head/Neck/HeadTop；骨骼世界坐标取自身体 rig）
 names = [JB["nodes"][j].get("name", "") for j in JB["skins"][0]["joints"]]
@@ -92,8 +95,11 @@ for k, n in enumerate(JB["nodes"]):
 for j in JB["skins"][0]["joints"]:
     chain, cur, g = [], j, 0
     while cur is not None and cur not in world:
-        chain.append(cur); cur = parent_of.get(cur); g += 1
-        if g > 200: raise SystemExit("父链成环")
+        chain.append(cur)
+        cur = parent_of.get(cur)
+        g += 1
+        if g > 200:
+            raise SystemExit("父链成环")
     w = world[cur] if cur is not None else np.zeros(3, np.float64)
     for node in reversed(chain):
         w = w + np.array(JB["nodes"][node].get("translation", [0, 0, 0]), np.float64)
@@ -102,15 +108,21 @@ jid = {n: JB["skins"][0]["joints"][idx_of[n]] for n in names if n.startswith("mi
 head_names = [n for n in ("mixamorig:HeadTop", "mixamorig:Head", "mixamorig:Neck") if n in jid]
 hp = {n: world[jid[n]] for n in head_names}
 
+
 def seg_d(v, a, b):
-    ab = b - a; t = np.clip(((v - a) @ ab) / max(1e-12, ab @ ab), 0, 1)
+    ab = b - a
+    t = np.clip(((v - a) @ ab) / max(1e-12, ab @ ab), 0, 1)
     return np.linalg.norm(v - (a + t * ab))
+
+
 D = np.stack([[seg_d(v, hp[n], hp[n] + np.array([0, 0.05, 0])) for v in PH2] for n in head_names], axis=1)
 order = np.argsort(D, axis=1)
-W = np.zeros_like(D); rows = np.arange(len(PH2))[:, None]
+W = np.zeros_like(D)
+rows = np.arange(len(PH2))[:, None]
 W[rows, order] = 1.0 / np.power(D[rows, order] + 1e-4, 3)
 W /= W.sum(axis=1, keepdims=True)
-J4 = np.zeros((len(PH2), 4), np.uint16); W4 = np.zeros((len(PH2), 4), np.float32)
+J4 = np.zeros((len(PH2), 4), np.uint16)
+W4 = np.zeros((len(PH2), 4), np.float32)
 for k in range(min(4, len(head_names))):
     J4[:, k] = [idx_of[head_names[i]] for i in order[:, k]]
     W4[:, k] = W[rows[:, 0], order[:, k]]
@@ -118,26 +130,36 @@ W4 /= W4.sum(axis=1, keepdims=True)
 print(f"新头权重：和 {W4.sum(axis=1).min():.4f}/{W4.sum(axis=1).max():.4f} · 骨 {head_names}")
 
 # 组装：改身体索引 + 追加头的 primitive（含胸像 3 张贴图作为新材质）
+
+
 def add_view(BIN, arr, target=None):
     while len(BIN) % 4:
         BIN.append(0)
-    o = len(BIN); BIN.extend(arr.tobytes())
+    o = len(BIN)
+    BIN.extend(arr.tobytes())
     v = {"buffer": 0, "byteOffset": o, "byteLength": arr.nbytes}
     if target:
         v["target"] = target
     JB["bufferViews"].append(v)
     return len(JB["bufferViews"]) - 1
 
+
 nv = add_view(BB, IB2.astype(np.uint32).reshape(-1), 34963)
 JB["accessors"].append({"bufferView": nv, "componentType": 5125, "count": IB2.size, "type": "SCALAR"})
 pr_b["indices"] = len(JB["accessors"]) - 1
 
 # 头贴图（胸像的 3 张）搬进来
+
+
 def head_img(slot):
-    m = JH["materials"][0]; pbr = m.get("pbrMetallicRoughness", {})
-    if slot == "base": return JH["textures"][pbr["baseColorTexture"]["index"]]["source"]
-    if slot == "norm": return JH["textures"][m["normalTexture"]["index"]]["source"]
+    m = JH["materials"][0]
+    pbr = m.get("pbrMetallicRoughness", {})
+    if slot == "base":
+        return JH["textures"][pbr["baseColorTexture"]["index"]]["source"]
+    if slot == "norm":
+        return JH["textures"][m["normalTexture"]["index"]]["source"]
     return JH["textures"][pbr["metallicRoughnessTexture"]["index"]]["source"]
+
 
 img_new = {}
 for slot in ("base", "norm", "mr"):
@@ -146,7 +168,8 @@ for slot in ("base", "norm", "mr"):
     data = bytes(BH[bv.get("byteOffset", 0): bv.get("byteOffset", 0) + bv["byteLength"]])
     while len(BB) % 4:
         BB.append(0)
-    o = len(BB); BB.extend(data)
+    o = len(BB)
+    BB.extend(data)
     JB["bufferViews"].append({"buffer": 0, "byteOffset": o, "byteLength": len(data)})
     JB["images"].append({"bufferView": len(JB["bufferViews"]) - 1, "mimeType": JH["images"][si].get("mimeType", "image/jpeg")})
     JB["textures"].append({"sampler": 0, "source": len(JB["images"]) - 1})
@@ -163,14 +186,23 @@ an = add_view(BB, NH[used].astype(np.float32), 34962)
 au = add_view(BB, UH[used].astype(np.float32), 34962)
 aj = add_view(BB, J4, 34962)
 aw = add_view(BB, W4, 34962)
+
+
 def push_acc(bv_, ctype, cnt, typ, mm=None):
     a = {"bufferView": bv_, "componentType": ctype, "count": cnt, "type": typ}
-    if mm: a.update(mm)
-    JB["accessors"].append(a); return len(JB["accessors"]) - 1
+    if mm:
+        a.update(mm)
+    JB["accessors"].append(a)
+    return len(JB["accessors"]) - 1
+
+
 a_p = push_acc(ap, 5126, len(PH2), "VEC3", {"min": [float(x) for x in PH2.min(axis=0)], "max": [float(x) for x in PH2.max(axis=0)]})
-a_n = push_acc(an, 5126, len(PH2), "VEC3"); a_u = push_acc(au, 5126, len(PH2), "VEC2")
-a_j = push_acc(aj, 5123, len(J4), "VEC4"); a_w = push_acc(aw, 5126, len(W4), "VEC4")
-remap = -np.ones(len(PH), np.int64); remap[used] = np.arange(len(used))
+a_n = push_acc(an, 5126, len(PH2), "VEC3")
+a_u = push_acc(au, 5126, len(PH2), "VEC2")
+a_j = push_acc(aj, 5123, len(J4), "VEC4")
+a_w = push_acc(aw, 5126, len(W4), "VEC4")
+remap = -np.ones(len(PH), np.int64)
+remap[used] = np.arange(len(used))
 IH3 = remap[IH2].astype(np.uint32).reshape(-1)
 ai = add_view(BB, IH3, 34963)
 a_i = push_acc(ai, 5125, IH3.size, "SCALAR")

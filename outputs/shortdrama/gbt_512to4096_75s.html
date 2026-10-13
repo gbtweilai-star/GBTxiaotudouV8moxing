@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GBT小土豆V8 · 第一次把贴图从 512 干到 4096（75s 竖屏短剧）</title>
+<style>
+  :root{
+    --ink:#e9f4ff; --dim:#7f93a8; --blue:#2ad4f0; --blue2:#3b82f6;
+    --line:rgba(255,255,255,.07); --gray:#8b939c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;background:#000;overflow:hidden;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","Courier New",monospace;
+    color:var(--ink);-webkit-font-smoothing:antialiased}
+  #fit{position:fixed;inset:0;display:grid;place-items:center}
+  .stage{position:relative;width:1080px;height:1920px;background:#05070b;overflow:hidden;
+    transform-origin:center center;box-shadow:0 0 140px rgba(42,212,240,.18),0 0 0 1px rgba(255,255,255,.05)}
+
+  /* 黑底白网格 */
+  .grid{position:absolute;inset:0;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:60px 60px;background-position:-1px -1px}
+  .grid::after{content:"";position:absolute;inset:0;
+    background:radial-gradient(120% 80% at 50% 0%,rgba(42,212,240,.10),transparent 60%),
+               radial-gradient(90% 60% at 50% 100%,rgba(59,130,246,.10),transparent 60%)}
+  .vig{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 50%,transparent 45%,rgba(0,0,0,.85))}
+
+  .seg{position:absolute;inset:0;opacity:0;transition:opacity .45s ease;pointer-events:none}
+  .seg.on{opacity:1}
+
+  /* ── 0-8s · Dither Veil ───────────────────────────────── */
+  #seg1 .veil{position:absolute;inset:0}
+  .dcell{position:absolute;width:90px;height:240px;background:#0b1016;
+    border:1px solid rgba(255,255,255,.06);opacity:0}
+  .s1{position:absolute;left:0;right:0;text-align:center}
+  .s1-tag{top:520px;font-size:26px;letter-spacing:.42em;color:var(--dim);opacity:0}
+  .s1-title{top:640px;font-size:104px;line-height:1.12;font-weight:700;opacity:0;
+    color:#dff6ff;text-shadow:0 0 18px rgba(42,212,240,.85),0 0 64px rgba(42,212,240,.45)}
+  .s1-title b{color:var(--blue);font-weight:700}
+  .s1-sub{top:900px;font-size:34px;color:#9fb6cc;opacity:0}
+  .s1-rule{position:absolute;left:50%;top:1010px;width:0;height:2px;transform:translateX(-50%);
+    background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+
+  /* ── 8-25s · Flip Card 能力位 ─────────────────────────── */
+  .s2-head{position:absolute;left:84px;top:170px}
+  .s2-head .k{font-size:22px;letter-spacing:.4em;color:var(--dim)}
+  .s2-head .t{font-size:76px;font-weight:700;margin-top:14px;color:#dff6ff;
+    text-shadow:0 0 18px rgba(42,212,240,.7)}
+  .s2-grid{position:absolute;left:84px;top:430px;width:912px;
+    display:grid;grid-template-columns:1fr 1fr;gap:34px}
+  .card{height:300px;perspective:1400px;opacity:0}
+  .card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d}
+  .face{position:absolute;inset:0;border-radius:18px;display:flex;flex-direction:column;
+    justify-content:center;padding:34px;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02)}
+  .face.f{color:#9fb6cc;font-size:28px;letter-spacing:.2em}
+  .face.b{transform:rotateY(180deg);background:linear-gradient(160deg,rgba(42,212,240,.12),rgba(59,130,246,.05));
+    border-color:rgba(42,212,240,.35);box-shadow:inset 0 0 40px rgba(42,212,240,.10)}
+  .face.b .n{font-size:40px;font-weight:700;color:#dff6ff}
+  .face.b .d{font-size:24px;color:#9fb6cc;margin-top:16px;line-height:1.5}
+
+  /* ── 25-60s · Background Beams + 黑进 ComfyUI ─────────── */
+  .beams{position:absolute;inset:-25% -10%;opacity:0;overflow:hidden}
+  .beam{position:absolute;top:-20%;width:3px;height:150%;
+    background:linear-gradient(180deg,transparent,rgba(42,212,240,.75),transparent);
+    filter:blur(.4px);transform:skewX(-18deg)}
+  .s3-console{position:absolute;left:84px;top:300px;width:912px;padding:38px 40px;
+    border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(4,8,14,.82);
+    box-shadow:0 0 70px rgba(42,212,240,.16)}
+  .s3-console .bar{font-size:22px;color:var(--dim);letter-spacing:.28em;margin-bottom:22px}
+  .s3-line{font-size:27px;line-height:1.86;color:#8ff3ff;opacity:0;white-space:pre-wrap}
+  .s3-line i{color:#5d7b93;font-style:normal}
+  .s3-meter{position:absolute;left:84px;top:1180px;width:912px}
+  .s3-num{font-size:190px;font-weight:700;letter-spacing:-.03em;color:#dff6ff;
+    text-shadow:0 0 30px rgba(42,212,240,.85),0 0 90px rgba(42,212,240,.35)}
+  .s3-cap{font-size:24px;color:var(--dim);letter-spacing:.34em;margin-top:8px}
+  .s3-track{position:relative;height:12px;border:1px solid rgba(255,255,255,.16);border-radius:99px;margin-top:34px}
+  .s3-fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:99px;
+    background:linear-gradient(90deg,var(--blue2),var(--blue));box-shadow:0 0 26px rgba(42,212,240,.8)}
+  .s3-ends{display:flex;justify-content:space-between;font-size:22px;color:#7f93a8;margin-top:14px}
+  .s3-judge{position:absolute;left:84px;top:1560px;width:912px;font-size:23px;color:#7f93a8;line-height:1.9;opacity:0}
+  .s3-judge b{color:#8ff3ff;font-weight:400}
+  .burst{position:absolute;left:50%;top:640px;width:140px;height:140px;margin:-70px 0 0 -70px;
+    border-radius:50%;border:1px solid rgba(42,212,240,.6);opacity:0}
+  .s3-head{position:absolute;left:84px;top:170px}
+  .s3-head .k{font-size:22px;letter-spacing:.4em;color:var(--dim)}
+  .s3-head .t{font-size:88px;font-weight:700;margin-top:12px;color:#dff6ff;
+    text-shadow:0 0 20px rgba(42,212,240,.85),0 0 70px rgba(42,212,240,.4)}
+
+  /* ── 60-75s · Tear Ticket 撕票 ────────────────────────── */
+  .tk-wrap{position:absolute;left:84px;top:430px;width:912px;height:640px}
+  .tk-half{position:absolute;top:0;width:456px;height:640px;overflow:hidden;
+    background:linear-gradient(160deg,#0d141c,#070b11);border:1px solid rgba(255,255,255,.14)}
+  .tk-half.l{left:0;border-radius:18px 0 0 18px}
+  .tk-half.r{right:0;border-radius:0 18px 18px 0}
+  .tk-inner{position:absolute;top:0;width:912px;height:640px;padding:52px 56px}
+  .tk-half.l .tk-inner{left:0}
+  .tk-half.r .tk-inner{left:-456px}
+  .tk-k{font-size:22px;letter-spacing:.4em;color:var(--dim)}
+  .tk-t{font-size:62px;font-weight:700;color:#dff6ff;margin-top:18px;
+    text-shadow:0 0 18px rgba(42,212,240,.7)}
+  .tk-row{display:flex;justify-content:space-between;font-size:26px;color:#9fb6cc;
+    margin-top:26px;border-bottom:1px dashed rgba(255,255,255,.12);padding-bottom:12px}
+  .tk-row b{color:#8ff3ff;font-weight:400}
+  .tk-code{position:absolute;right:56px;bottom:44px;font-size:22px;color:#5d7b93;letter-spacing:.2em}
+  .perf{position:absolute;left:455px;top:0;width:2px;height:640px;background:repeating-linear-gradient(#fff0 0 10px,rgba(255,255,255,.35) 10px 20px)}
+  .tear{position:absolute;left:50%;top:430px;width:0;height:640px;transform:translateX(-50%);
+    background:#000;clip-path:polygon(0 0,100% 6%,0 12%,100% 18%,0 24%,100% 30%,0 36%,100% 42%,0 48%,100% 54%,0 60%,100% 66%,0 72%,100% 78%,0 84%,100% 90%,0 96%,100% 100%,0 100%);
+    box-shadow:0 0 40px rgba(42,212,240,.5)}
+  .s4-hook{position:absolute;left:0;right:0;top:1200px;text-align:center;font-size:44px;
+    color:#dff6ff;opacity:0;text-shadow:0 0 22px rgba(42,212,240,.6)}
+  .s4-hook span{display:block;font-size:28px;color:#7f93a8;margin-top:20px;letter-spacing:.24em}
+  .stamp{position:absolute;left:50%;top:1500px;width:420px;height:420px;margin-left:-210px;
+    display:grid;place-items:center;opacity:0;transform:scale(3) rotate(-14deg)}
+  .stamp .ring{position:absolute;inset:0;border:6px solid rgba(42,212,240,.9);border-radius:50%;
+    box-shadow:0 0 40px rgba(42,212,240,.5),inset 0 0 40px rgba(42,212,240,.25)}
+  .stamp .ring2{position:absolute;inset:26px;border:2px dashed rgba(42,212,240,.7);border-radius:50%}
+  .stamp .txt{text-align:center;color:#dff6ff;letter-spacing:.2em}
+  .stamp .txt .big{font-size:64px;font-weight:700;text-shadow:0 0 20px rgba(42,212,240,.9)}
+  .stamp .txt .sm{font-size:24px;color:#8ff3ff;margin-top:12px;letter-spacing:.3em}
+
+  /* ── 灰色按钮矩形（模拟 control_index.json）──────────── */
+  .graybtn{position:absolute;border-radius:14px;border:1px solid rgba(255,255,255,.18);
+    background:linear-gradient(180deg,#9aa3ad,#6e7780);color:#101418;
+    display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;
+    letter-spacing:.06em;box-shadow:0 10px 26px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.35);
+    z-index:6}
+  .graybtn small{position:absolute;bottom:-34px;left:0;right:0;text-align:center;font-size:20px;
+    color:#6b7784;font-weight:400;letter-spacing:.18em}
+
+  /* ── 小土豆 ───────────────────────────────────────────── */
+  #potato{position:absolute;left:0;top:0;font-size:118px;line-height:1;z-index:8;
+    filter:drop-shadow(0 12px 26px rgba(0,0,0,.75));will-change:transform}
+  #potato .lbl{position:absolute;left:50%;top:100%;transform:translateX(-50%);font-size:22px;
+    color:#ffd98a;white-space:nowrap;letter-spacing:.16em;text-shadow:0 0 12px rgba(0,0,0,.9)}
+
+  /* ── HUD ──────────────────────────────────────────────── */
+  .hud{position:absolute;left:64px;right:64px;top:64px;display:flex;justify-content:space-between;
+    font-size:22px;color:#5d7b93;letter-spacing:.18em;z-index:9}
+  .hud .chip{border:1px solid rgba(255,255,255,.14);border-radius:99px;padding:8px 18px}
+  .hud .chip.hot{border-color:rgba(42,212,240,.7);color:#8ff3ff;box-shadow:0 0 24px rgba(42,212,240,.35)}
+  .cred{position:absolute;left:0;right:0;bottom:52px;text-align:center;font-size:22px;
+    color:#4d5f70;letter-spacing:.24em;z-index:9}
+  .cred b{color:var(--blue);font-weight:400}
+
+  /* ── 播放遮罩 ─────────────────────────────────────────── */
+  #veilclick{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.92);
+    display:grid;place-items:center;text-align:center;cursor:pointer;transition:opacity .5s ease}
+  #veilclick.off{opacity:0;pointer-events:none}
+  #veilclick .play{font-size:40px;color:#dff6ff;letter-spacing:.2em;
+    text-shadow:0 0 24px rgba(42,212,240,.7)}
+  #veilclick .sub{margin-top:22px;font-size:22px;color:#7f93a8;letter-spacing:.24em}
+  #veilclick .err{margin-top:26px;font-size:22px;color:#ff7a7a}
+</style>
+</head>
+<body>
+<div id="fit">
+  <div class="stage" id="stage">
+    <div class="grid"></div>
+    <div class="vig"></div>
+
+    <!-- 0-8s -->
+    <div class="seg" id="seg1">
+      <div class="veil" id="veil"></div>
+      <div class="s1 s1-tag">SHORT-DRAMA · 竖屏 75s · 触手产线</div>
+      <div class="s1 s1-title">第一次把贴图<br>从 <b>512</b> 干到 <b>4096</b></div>
+      <div class="s1 s1-sub">小土豆 · 短剧自动化导演</div>
+      <div class="s1-rule" id="s1rule"></div>
+    </div>
+
+    <!-- 8-25s -->
+    <div class="seg" id="seg2">
+      <div class="s2-head">
+        <div class="k">CAPABILITY SLOTS</div>
+        <div class="t">能力位</div>
+      </div>
+      <div class="s2-grid" id="cards"></div>
+    </div>
+
+    <!-- 25-60s -->
+    <div class="seg" id="seg3">
+      <div class="beams" id="beams"></div>
+      <div class="burst" id="burst"></div>
+      <div class="s3-head">
+        <div class="k">BLACK INTO COMFYUI</div>
+        <div class="t">黑进 ComfyUI</div>
+      </div>
+      <div class="s3-console">
+        <div class="bar">/ comfy · 4090 · 512 → 4096</div>
+        <div class="s3-line" data-l="0">$ ssh comfyui@127.0.0.1 -p 8188            <i># 挂上算力</i></div>
+        <div class="s3-line" data-l="1">&gt; load checkpoint  sd15_base          <i># 512 档底图</i></div>
+        <div class="s3-line" data-l="2">&gt; prompt  black coat / yellow straps / whr 0.737</div>
+        <div class="s3-line" data-l="3">&gt; tiled_upscale  x8  ESRGAN              <i># 逐块放大</i></div>
+        <div class="s3-line" data-l="4">&gt; out  512 → 4096                        <i># ×64 像素</i></div>
+      </div>
+      <div class="s3-meter">
+        <div class="s3-num" id="resnum">512</div>
+        <div class="s3-cap">PIXELS PER SIDE</div>
+        <div class="s3-track"><div class="s3-fill" id="resfill"></div></div>
+        <div class="s3-ends"><span>512 · 底图</span><span>4096 · 出货</span></div>
+      </div>
+      <div class="s3-judge" id="judge">
+        判据：像素数 <b>×64</b> · 回读哈希一致 · 无空文件 · 有入口<br>
+        触手规则：<b>先看再动 · 动后等稳定 · 每步亲眼验证</b>
+      </div>
+    </div>
+
+    <!-- 60-75s -->
+    <div class="seg" id="seg4">
+      <div class="tk-wrap" id="ticket">
+        <div class="tk-half l"><div class="tk-inner">
+          <div class="tk-k">GBT小土豆V8 · 出片票</div>
+          <div class="tk-t">小土豆<br>第一次 4096</div>
+          <div class="tk-row"><span>时长</span><b>75.000s</b></div>
+          <div class="tk-row"><span>画幅</span><b>1080 × 1920</b></div>
+          <div class="tk-row"><span>贴图</span><b>512 → 4096</b></div>
+          <div class="tk-row"><span>导演</span><b>小土豆 🥔</b></div>
+          <div class="tk-code">NO.0001</div>
+        </div></div>
+        <div class="tk-half r"><div class="tk-inner">
+          <div class="tk-k">GBT小土豆V8 · 出片票</div>
+          <div class="tk-t">小土豆<br>第一次 4096</div>
+          <div class="tk-row"><span>时长</span><b>75.000s</b></div>
+          <div class="tk-row"><span>画幅</span><b>1080 × 1920</b></div>
+          <div class="tk-row"><span>贴图</span><b>512 → 4096</b></div>
+          <div class="tk-row"><span>导演</span><b>小土豆 🥔</b></div>
+          <div class="tk-code">NO.0001</div>
+        </div></div>
+        <div class="perf"></div>
+      </div>
+      <div class="tear" id="tear"></div>
+      <div class="s4-hook" id="hook">
+        下一集：4096 贴图，贴进整条短剧产线
+        <span>她说：这一张，我自己出的</span>
+      </div>
+      <div class="stamp" id="stamp">
+        <div class="ring"></div><div class="ring2"></div>
+        <div class="txt"><div class="big">自由的风</div><div class="sm">GBT 钢印 · 不可删除</div></div>
+      </div>
+    </div>
+
+    <!-- 灰色按钮矩形（模拟 control_index.json）· 小土豆必须避让 -->
+    <div class="graybtn" id="ctrlIndex">control_index.json<small>SECONDARY · DISABLED</small></div>
+
+    <div id="potato">🥔<span class="lbl">小土豆</span></div>
+
+    <div class="hud">
+      <div class="chip" id="hudseg">SEG 1 · DITHER VEIL</div>
+      <div class="chip" id="hudavoid">避让 control_index.json</div>
+      <div class="chip" id="hudt">00.0s / 75.0s</div>
+    </div>
+    <div class="cred">GBT小土豆V8 · 开发者 <b>自由的风</b> · 本署名不可删除、不可篡改归属</div>
+  </div>
+</div>
+
+<div id="veilclick">
+  <div>
+    <div class="play">▶ 点击播放 · 75 秒</div>
+    <div class="sub">竖屏短剧 · 512 → 4096 · 短剧自动化导演</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   GBT小土豆V8 · 75s 竖屏短剧 · 512 → 4096
+   0-8s Dither Veil(96格) → 8-25s Flip Card → 25-60s Beams+ComfyUI
+   → 60-75s Tear Ticket + 钢印
+   全片由一条 anime.js 主时间轴驱动；🥔 每帧做一次「避让灰矩形」
+   ══════════════════════════════════════════════════════════════ */
+(function(){
+  var W=1080,H=1920,TOTAL=75;                 // 秒
+  var stage=document.getElementById('stage');
+  var potato=document.getElementById('potato');
+
+  /* CDN 没加载起来就如实报，不装作能播 */
+  if(!window.anime){
+    document.getElementById('veilclick').innerHTML =
+      '<div><div class="play">anime.js 没加载起来</div>'+
+      '<div class="err">需要 https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js（联网后重开）</div></div>';
+    return;
+  }
+
+  /* ── 自适应：把 1080×1920 等比缩到视口 ───────────────── */
+  function fit(){
+    var s=Math.min(window.innerWidth/W, window.innerHeight/H);
+    stage.style.transform='scale('+s+')';
+  }
+  window.addEventListener('resize',fit); fit();
+
+  /* ── 96 格 Dither Veil ──────────────────────────────── */
+  var COLS=12, ROWS=8, CW=W/COLS, CH=H/ROWS, veil=document.getElementById('veil');
+  for(var i=0;i<COLS*ROWS;i++){
+    var c=document.createElement('div'); c.className='dcell';
+    c.style.left=((i%COLS)*CW)+'px'; c.style.top=(Math.floor(i/COLS)*CH)+'px';
+    c.style.width=CW+'px'; c.style.height=CH+'px';
+    veil.appendChild(c);
+  }
+
+  /* ── 能力位卡（正/反面）──────────────────────────────── */
+  var SLOTS=[
+    ['SLOT 01','dh_pose','人话 → 骨角度，摆一个姿势给她'],
+    ['SLOT 02','pod_link','本机 ⇄ 云卡：传 / 跑 / 回读对账'],
+    ['SLOT 03','music_forge','自己的模型出符号层，渲染器只负责响'],
+    ['SLOT 04','media_pipeline','短剧 · 电影 · 音乐，一条线走完'],
+    ['SLOT 05','vision','看一眼，把画面量成数'],
+    ['SLOT 06','key_gateway','13 条通道自动换道，钥匙只有一处真源']
+  ];
+  var box=document.getElementById('cards');
+  SLOTS.forEach(function(s){
+    var d=document.createElement('div'); d.className='card';
+    d.innerHTML='<div class="card-inner"><div class="face f">'+s[0]+'</div>'+
+      '<div class="face b"><div class="n">'+s[1]+'</div><div class="d">'+s[2]+'</div></div></div>';
+    box.appendChild(d);
+  });
+
+  /* ── Aceternity 风格光束 ────────────────────────────── */
+  var beams=document.getElementById('beams');
+  for(var b=0;b<14;b++){
+    var el=document.createElement('div'); el.className='beam';
+    el.style.left=(anime.random(-5,105))+'%';
+    el.style.width=(anime.random(2,5))+'px';
+    el.style.opacity=(anime.random(30,95)/100);
+    el.style.height=(anime.random(120,190))+'%';
+    beams.appendChild(el);
+  }
+
+  /* ── 小土豆：位置由 P 承载，写回前先避让 ────────────── */
+  var P={x:540,y:1620};
+  var GRAY={x:120,y:1120,w:400,h:150};        // 灰矩形真身（＝元素尺寸，见 #ctrlIndex）
+  document.getElementById('ctrlIndex').style.cssText+=
+    'left:'+GRAY.x+'px;top:'+GRAY.y+'px;width:'+GRAY.w+'px;height:'+GRAY.h+'px;';
+  var R=66, AVOID=false;
+  var hudAvoid=document.getElementById('hudavoid');
+  function clamp(v,a,b){return v<a?a:(v>b?b:v);}
+  function place(){
+    var x=clamp(P.x,R+16,W-R-16), y=clamp(P.y,R+40,H-R-90), hit=false;
+    var nx=clamp(x,GRAY.x,GRAY.x+GRAY.w), ny=clamp(y,GRAY.y,GRAY.y+GRAY.h);
+    var dx=x-nx, dy=y-ny, d2=dx*dx+dy*dy;
+    if(d2<R*R){
+      hit=true;
+      if(dx===0&&dy===0){                      // 圆心落在矩形里 → 沿最小穿透方向推出
+        var l=x-GRAY.x, r=GRAY.x+GRAY.w-x, t=y-GRAY.y, bo=GRAY.y+GRAY.h-y;
+        var m=Math.min(l,r,t,bo);
+        if(m===l) x=GRAY.x-R; else if(m===r) x=GRAY.x+GRAY.w+R;
+        else if(m===t) y=GRAY.y-R; else y=GRAY.y+GRAY.h+R;
+      }else{
+        var d=Math.sqrt(d2)||1; x=nx+dx/d*R; y=ny+dy/d*R;
+      }
+    }
+    AVOID=hit;
+    hudAvoid.className='chip'+(hit?' hot':'');
+    potato.style.transform='translate('+x+'px,'+y+'px) translate(-50%,-50%)';
+  }
+
+  /* ── 段位与计时 ─────────────────────────────────────── */
+  var SEGS=[['seg1','SEG 1 · DITHER VEIL',0],['seg2','SEG 2 · FLIP CARD',8],
+            ['seg3','SEG 3 · BEAMS / COMFYUI',25],['seg4','SEG 4 · TEAR TICKET',60]];
+  var hudSeg=document.getElementById('hudseg'), hudT=document.getElementById('hudt');
+  var shown=-1;
+  function tick(){
+    var t=clock.t, idx=0;
+    for(var i=0;i<SEGS.length;i++) if(t>=SEGS[i][2]) idx=i;
+    if(idx!==shown){
+      shown=idx;
+      SEGS.forEach(function(s,i){document.getElementById(s[0]).classList.toggle('on',i===idx);});
+      hudSeg.textContent=SEGS[idx][1];
+    }
+    hudT.textContent=('0'+t.toFixed(1)).slice(-4)+'s / 75.0s';
+    place();
+  }
+
+  /* ── 主时间轴 ───────────────────────────────────────── */
+  var clock={t:0};
+  var tl=anime.timeline({autoplay:false});
+
+  // 时钟：整片唯一真源，75 秒
+  tl.add({targets:clock,t:TOTAL,duration:TOTAL*1000,easing:'linear',update:tick},0);
+
+  // ── 0-8s Dither Veil ────────────────────────────────
+  tl.add({targets:'.dcell',opacity:[0,1],duration:520,delay:anime.stagger(5),easing:'linear'},0);
+  tl.add({targets:'.dcell',
+          translateX:function(){return anime.random(-920,920);},
+          translateY:function(){return anime.random(-1180,1180);},
+          rotate:function(){return anime.random(-200,200);},
+          scale:[1,.35],opacity:[1,0],duration:2500,delay:anime.stagger(14),easing:'easeInOutQuart'},820);
+  tl.add({targets:'.s1-rule',width:['0px','840px'],duration:900,easing:'easeOutQuart'},3300);
+  tl.add({targets:'.s1-title',opacity:[0,1],translateY:[46,0],
+          letterSpacing:['0.05em','0em'],duration:1200,easing:'easeOutExpo'},3400);
+  tl.add({targets:'.s1-tag',opacity:[0,.9],translateY:[16,0],duration:700},4300);
+  tl.add({targets:'.s1-sub',opacity:[0,1],translateY:[18,0],duration:800,easing:'easeOutCubic'},4700);
+
+  // ── 8-25s Flip Card 能力位 ───────────────────────────
+  tl.add({targets:'.s2-head',opacity:[0,1],translateY:[-24,0],duration:800,easing:'easeOutExpo'},8050);
+  tl.add({targets:'.card',opacity:[0,1],translateY:[70,0],duration:700,
+          delay:anime.stagger(170),easing:'easeOutCubic'},8500);
+  tl.add({targets:'.card-inner',rotateY:[0,180],duration:900,
+          delay:anime.stagger(250),easing:'easeInOutQuad'},9200);
+  tl.add({targets:'.card',translateY:[0,-70],opacity:[1,0],duration:700,
+          delay:anime.stagger(70),easing:'easeInCubic'},23200);
+  tl.add({targets:'.s2-head',opacity:[1,0],duration:600},23600);
+
+  // ── 25-60s Background Beams + 黑进 ComfyUI ───────────
+  tl.add({targets:'.beams',opacity:[0,1],duration:900},25000);
+  tl.add({targets:'.s3-head',opacity:[0,1],translateY:[-26,0],duration:800,easing:'easeOutExpo'},25300);
+  tl.add({targets:'.s3-console',opacity:[0,1],translateY:[40,0],duration:800,easing:'easeOutCubic'},25800);
+  tl.add({targets:'.s3-line',opacity:[0,1],translateX:[-14,0],duration:420,
+          delay:anime.stagger(520),easing:'easeOutCubic'},26600);
+  tl.add({targets:'.s3-meter',opacity:[0,1],translateY:[50,0],duration:900,easing:'easeOutExpo'},28000);
+  tl.add({targets:'.s3-judge',opacity:[0,1],duration:900},44000);
+  tl.add({targets:'.s3-fill',width:['0%','100%'],duration:26000,easing:'easeInOutSine'},29000);
+  var num={v:512};
+  tl.add({targets:num,v:4096,duration:24000,easing:'easeInOutCubic',
+          update:function(){document.getElementById('resnum').textContent=Math.round(num.v);}},30000);
+  tl.add({targets:'.burst',scale:[.4,3.2],opacity:[.9,0],duration:1400,easing:'easeOutQuart'},28800);
+  tl.add({targets:'.burst',scale:[.4,3.2],opacity:[.9,0],duration:1400,easing:'easeOutQuart'},48000);
+
+  // ── 60-75s Tear Ticket 撕票 ─────────────────────────
+  tl.add({targets:'#ticket',opacity:[0,1],translateY:[90,0],scale:[.94,1],duration:900,easing:'easeOutExpo'},60000);
+  tl.add({targets:'#tear',width:['0px','26px'],duration:260,easing:'easeOutQuart'},63800);
+  tl.add({targets:'.tk-half.l',translateX:[0,-680],rotate:[0,-7],opacity:[1,.06],
+          duration:820,easing:'easeInOutCubic'},64300);
+  tl.add({targets:'.tk-half.r',translateX:[0,680],rotate:[0,7],opacity:[1,.06],
+          duration:820,easing:'easeInOutCubic'},64300);
+  tl.add({targets:'#tear',width:['26px','0px'],opacity:[1,0],duration:420},65200);
+  tl.add({targets:'#hook',opacity:[0,1],translateY:[40,0],duration:900,easing:'easeOutExpo'},67200);
+  tl.add({targets:'#stamp',opacity:[0,1],scale:[3,1],rotate:[-14,-9],duration:700,easing:'easeOutBack'},70000);
+  tl.add({targets:'#stamp',rotate:[-9,-9.6],duration:600,direction:'alternate'},70700);
+
+  // ── 🥔 走位（故意穿过灰矩形上方，验证避让真的生效）──
+  function hop(x,y,at,du){ tl.add({targets:P,x:x,y:y,duration:du,easing:'easeInOutSine',update:place},at); }
+  hop(250,1500,0,2600);        // 开场露面
+  hop(760,760,2600,3200);      // 升到标题旁
+  hop(300,1210,6000,2600);     // ← 故意撞向灰矩形 → 应被推出去
+  hop(820,1660,9000,3000);     // 卡片区
+  hop(180,700,12500,3400);     // 穿到左上
+  hop(880,1000,17000,3200);
+  hop(300,1210,22000,3600);    // ← 再撞一次
+  hop(560,520,26000,3000);     // 进 ComfyUI 上方
+  hop(880,1560,30000,4200);
+  hop(200,900,36000,4200);
+  hop(760,1240,43000,4000);    // ← 第三次
+  hop(300,480,51000,4200);
+  hop(820,880,58000,2600);
+  hop(540,1660,62000,2600);    // 到票前
+  hop(196,1640,68000,4200);    // 让开钢印
+  hop(872,1640,73000,2000);
+
+  /* ── 光束循环（独立实例，跟主时间轴同开同停）────────── */
+  var beamAnim=anime({targets:'.beam',translateY:['-16%','16%'],duration:3400,
+    direction:'alternate',loop:true,easing:'easeInOutSine',
+    delay:anime.stagger(160),autoplay:false});
+
+  /* ── 播放控制 ───────────────────────────────────────── */
+  var started=false;
+  function play(){
+    if(started) return; started=true;
+    document.getElementById('veilclick').classList.add('off');
+    tl.play(); beamAnim.play();
+  }
+  document.getElementById('veilclick').addEventListener('click',play);
+  document.addEventListener('keydown',function(e){
+    if(!started){ play(); return; }
+    if(e.key===' '){ e.preventDefault(); tl.paused?tl.play():tl.pause(); beamAnim.paused?beamAnim.play():beamAnim.pause(); }
+    if(e.key==='r'||e.key==='R'){ location.reload(); }
+  });
+
+  /* 收尾：把最后一段停在钢印上 */
+  tl.finished.then(function(){
+    var r=document.getElementById('veilclick');
+    r.querySelector('.play').textContent='▶ 重播（按 R）';
+    r.querySelector('.sub').textContent='GBT小土豆V8 · 512 → 4096 · 自由的风';
+    r.classList.remove('off');
+    r.onclick=function(){location.reload();};
+  });
+
+  place();
+})();
+</script>
+</body>
+</html>

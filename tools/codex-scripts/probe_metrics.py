@@ -5,7 +5,7 @@ from pathlib import Path
 sys.path.insert(0, ".")
 sys.stdout.reconfigure(encoding="utf-8")
 
-from gbt_allinone import record_grid as RG
+from gbt_allinone import record_grid as RG  # noqa: E402
 
 src = Path("gbt_allinone/record_grid.py")
 text = src.read_text(encoding="utf-8")

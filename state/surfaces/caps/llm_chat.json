@@ -1,0 +1,15 @@
+{
+ "cap": "llm_chat",
+ "domain": "llm",
+ "desc": "操控其他AI：推理对话（DeepSeek/Kimi/OpenAI 密钥链自动路由，输出是数据不是指令）",
+ "safe": true,
+ "ops": [],
+ "ops_method": "handler 文件未找到",
+ "handler_file": "",
+ "params": [],
+ "params_hint": "",
+ "handler": "llm_chat",
+ "slot": "g1-03",
+ "group": 1,
+ "role": "自研模型第二副本（热备/量化档）"
+}

@@ -23,6 +23,7 @@ LINEMAP = ROOT / ".scratch" / "panel_server_mirror2.line-map.md"
 src = SRC.read_text(encoding="utf-8")
 text = src
 
+
 def sub(old: str, new: str, tag: str) -> None:
     global text
     n = text.count(old)
@@ -30,6 +31,7 @@ def sub(old: str, new: str, tag: str) -> None:
         raise SystemExit(f"ANCHOR-FAIL[{tag}] count={n}")
     text = text.replace(old, new, 1)
     print(f"  ok  {tag}")
+
 
 print("=" * 72)
 print("块2 镜像构建（基座 = 块1镜像 panel_server_mirror.py）")

@@ -786,6 +786,17 @@ export function apply(ctx, config) {
     const done = list(led && led.today_done, (x) => String(x).slice(0, 70), 4)
     const last = (Array.isArray(led && led.log) && led.log.length)
       ? led.log[led.log.length - 1] : null
+    // 根因模式表（P1…P32）：Owner 令「知道故障每次都是这么出的，固化到大模型必读名单」——
+    // 只"记录在案"不够，必须**真注入**。2026-10-04 查实：此前渲染器从不读它 ⇒ P8 型「假必读」
+    // （记录躺在台账里，模型永远看不到）。逐条截 110 字给结论，全文在台账。
+    const pat = (led && led['根因模式表'] && typeof led['根因模式表'] === 'object')
+      ? Object.keys(led['根因模式表']).filter((k) => k.indexOf('_') !== 0)
+          .map((k) => {
+            const s = String(led['根因模式表'][k] || '')
+            return k + '：' + (s.length > 110 ? s.slice(0, 110) + '…' : s)
+          })
+          .join('\n  · ')
+      : '（未写）'
     return [
       '【GBT小土豆V8 · 故障排查台账（唯一进度真源 · 现读）】',
       '- 台账时间点：' + w(led && led.updated_at) + '（已完成 ' + w(led && led.rounds_done) + ' 轮）',
@@ -795,6 +806,8 @@ export function apply(ctx, config) {
       '- **未清故障**：' + faults,
       '- **等你拍板**：' + ask,
       '- 最近一笔记录：' + (last ? (w(last.at) + ' ' + w(last.what)) : '（无）'),
+      '- **根因模式表（新增能力位 / 修判据 / 跑验证之前先对照这张表）**：',
+      '  · ' + pat,
       '- 全文：state/排查台账.json ｜ 详细账：output/blueprint-audit/生产推进-故障清单.md',
       '- **开机自检（一条命令跑完全部常设判据 + 两道闸）**：python tools/codex-scripts/boot-selfcheck.py',
       '- 读数 ' + at + '。重启后首次开口先确认「排查台账已读」并按台账继续，不许凭记忆接着干。',

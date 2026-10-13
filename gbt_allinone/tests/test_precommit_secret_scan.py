@@ -276,7 +276,23 @@ class JudgmentWiringTest(unittest.TestCase):
                 continue
             if p.resolve() in excluded:
                 continue
-            if any(part in (".git", "node_modules", "__pycache__", "archive") for part in p.parts):
+            # 🔴 2026-10-10 修（**扫描盲区，有证据**）：
+            #    实测本判据红在 offenders = ['.scratch/_baseline_wt/gbt_allinone/tests/test_precommit_secret_scan.py']。
+            #    那不是"有件指向 TEMP"，那是**框架门基线 worktree 里的整仓副本** ——
+            #    .scratch/_baseline_wt 是 git worktree（git worktree list 里挂着，detached HEAD），
+            #    **本身就不该被当成"仓内代码"扫**：它存在即副本，扫它只会扫到自己的影子。
+            #    ⇒ 跳过名单加 ".scratch"（与 .git/node_modules/__pycache__/archive 同理）。
+            #    注意：**不动 excluded** —— 排除面仍恰好是"定义正则的本文件"一条（下面那条断言继续咬）。
+            # 🔴 2026-10-11 加 "_upstream"（**治根，实测有据**）：
+            #    本判据全仓 rglob，而 _upstream/ 是**第三方仓**（本仓口径：「第三方依赖树，
+            #    不是资产」，与 .venv/site-packages 同族）。实测：克隆一个外部件进
+            #    _upstream/ 之后，本判据单跑从 **220s 涨到 382s**，直接顶穿 boot-selfcheck
+            #    给的 300s 超时 ⇒ 以 "timeout>300s" 的形式**假红**。
+            #    它扫的是"仓内代码有没有把自审指向 TEMP"，第三方仓的 README/assets
+            #    与这件事无关 ⇒ 跳过（≠ 放行：scan 本体审的是 git diff，不受影响）。
+            if any(part in (".git", "node_modules", "__pycache__", "archive", ".scratch",
+                            "_upstream")
+                   for part in p.parts):
                 continue
             try:
                 text = _code_only(p) if p.suffix.lower() == ".py" else p.read_text(
@@ -297,7 +313,10 @@ class JudgmentWiringTest(unittest.TestCase):
         """
         offenders = []
         for pkg in ROOT.rglob("package.json"):
-            if any(part in (".git", "node_modules", "__pycache__", "archive") for part in pkg.parts):
+            # 同上：_upstream 是第三方仓，与"本仓有没有把自审指向 TEMP"无关；
+            # 扫它会拖慢判据（见上一条注释的 220s→382s 实测）。
+            if any(part in (".git", "node_modules", "__pycache__", "archive", "_upstream")
+                   for part in pkg.parts):
                 continue
             try:
                 doc = json.loads(pkg.read_text(encoding="utf-8", errors="replace"))

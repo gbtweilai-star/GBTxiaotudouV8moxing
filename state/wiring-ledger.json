@@ -1,0 +1,499 @@
+{
+ "_note": "机器可读接线台账（2026-10-08 主人令「继续，记得看登记表把所有能力挨个接好」）",
+ "_口径": "四件齐才算接好：在册（在它的登记表里）/ 可达（真调一次能通；写类过门并留痕，不许绕门）/ 有绑定（cap-bindings 三边，未绑=报红）/ 有验收（非 LLM 判据，未知判据 fail-closed）。缺一=部分接。",
+ "_generated": "2026-10-08T10:18:00",
+ "_sources": {
+  "能力注册表": "gbt_allinone/caps_registry.py（现读 240 位·UNIMPLEMENTED 0）",
+  "可控制面登记表": "gbt_allinone/tools/surface_bind.py::TOOLS（现读 9 工具）",
+  "页面登记表": "console_hub scan（on_disk 25 = registered 25，盲区 0）",
+  "缺口真源": "state/command-playbook.json（32 条；174 格复算 46/54/59/15）",
+  "绑定台账": "state/cap-bindings.json（240 条·未绑 0；--check 15 PASS）",
+  "四态审计": "state/capability-audit.json（326 项：接上 323/断连 2/缺失 0/未探测 1）",
+  "授权台账": "gbt_allinone/store/auth_grants.jsonl（filesystem_write 2 窗·process_execute 2 窗·external_llm/audit_read/deploy_publish/data_export/owner_control 0 张）",
+  "人类可读表": "docs/能力接线总表.md（同源）"
+ },
+ "counts": {
+  "total": 27,
+  "在册_齐": 21,
+  "在册_部分或未验": 5,
+  "可达_齐": 19,
+  "可达_部分或未验": 8,
+  "绑定_齐": 24,
+  "绑定_部分或未验": 1,
+  "验收_齐": 19,
+  "验收_部分或未验": 6,
+  "接好": 13,
+  "部分接": 14
+ },
+ "items": [
+  {
+   "id": "registry.caps",
+   "名称": "能力注册表（240 位）",
+   "类别": "登记表",
+   "登记表出处": "gbt_allinone/caps_registry.py + `py -3.14 -m gbt_allinone list`",
+   "四件": {
+    "在册": "✓（自身）",
+    "可达": "✓（现读 240；api.py 字面量分支 240，双向差集 0；onboarding_gate gaps=[]）",
+    "绑定": "✓（cap-bindings 240 条·未绑 0；--check 15 PASS/负对照 10 PASS）",
+    "验收": "✓（capability-audit --check：14 PASS + 8 负对照 PASS；framework 类 241/241 接上）"
+   },
+   "结论": "接好",
+   "缺什么": "",
+   "谁有权给": "",
+   "证据": "现读：UNIMPLEMENTED 0 · DISABLED 0 · 审计条数 487748",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "registry.surfaces",
+   "名称": "可控制面登记表（TOOLS 9 工具）",
+   "类别": "登记表",
+   "登记表出处": "gbt_allinone/tools/surface_bind.py::TOOLS（红线未动）",
+   "四件": {
+    "在册": "✓（现读 9：ffmpeg/git/genoffice/freebuff/comfyui/lobehub/blender/python/netsh；任务书「8 个」已过期）",
+    "可达": "✓（verify() registered=9 problems=[]；键数 628/177/19/3/966/76/2409/302/43，全部 ≥ 阈值，gone=0）",
+    "绑定": "△→✓（9/9 清单有绑定行；freebuff 本轮补绑 freebuff_term，TOOLS 声明词仍错）",
+    "验收": "✓（min_keys 阈值 + 消失键=断连 判据）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺：TOOLS 里 freebuff 的触手名改 freebuff_term（否则重扫还会绑不上）；keys() 摘要漏 comfyui/blender 两行",
+   "谁有权给": "主人/风哥（surface_bind.py 在禁改清单内）",
+   "证据": "scan 现读 绑定总数 7194 · 资产缺失 0 · 触手不在册 0 · 断连 0",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "registry.hub",
+   "名称": "工作台页面登记表（console_hub）",
+   "类别": "登记表",
+   "登记表出处": "console_hub.PAGES + `run console_hub '{\"op\":\"scan\"}'`",
+   "四件": {
+    "在册": "✓（PAGES 登记）",
+    "可达": "✓（现读 on_disk 25 · registered 25）",
+    "绑定": "✓（console_hub 能力位已绑·直连）",
+    "验收": "✓（scan 判据：unregistered 必须为 0）"
+   },
+   "结论": "接好",
+   "缺什么": "",
+   "谁有权给": "",
+   "证据": "unregistered=[] broken=[] ⇒ 盲区 0（盘上=登记）",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "slot.1.wf",
+   "名称": "① wf_define/wf_run/wf_status/wf_resume",
+   "类别": "指挥侧位",
+   "登记表出处": "caps_registry [engine]",
+   "四件": {
+    "在册": "✓",
+    "可达": "✓（wf_run 真跑 run_id=c15-producer-20261008-1130-1791428729523 status=ok nodes={produce:ok}；wf_status 复读一致）",
+    "绑定": "✓（已绑·直连 engine）",
+    "验收": "✓（节点 status + store/wf_runs 记录）"
+   },
+   "结论": "接好",
+   "缺什么": "",
+   "谁有权给": "",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "slot.2.lr",
+   "名称": "② lr_submit/lr_tick/lr_status",
+   "类别": "指挥侧位",
+   "登记表出处": "caps_registry [longrun]",
+   "四件": {
+    "在册": "✓",
+    "可达": "✓（5 次真跑：T0062 done/T0063 done/T0064 failed/T0065 failed/T0066 done；progress total=66）",
+    "绑定": "✓（已绑·直连 longrun）",
+    "验收": "✓（四种判据 + 未知判据 fail-closed：T0061 实证）"
+   },
+   "结论": "接好",
+   "缺什么": "",
+   "谁有权给": "",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "slot.3.control_loop",
+   "名称": "③ control_loop",
+   "类别": "指挥侧位",
+   "登记表出处": "caps_registry [desktop]",
+   "四件": {
+    "在册": "✓",
+    "可达": "✓（op=selftest 真跑 failures=0，6 路反向自检全过）",
+    "绑定": "✓（已绑·直连）",
+    "验收": "✓（自检判据：枚举外动作/过期/遮挡/DONE 无证据/预算闸/慢脑升级）"
+   },
+   "结论": "接好",
+   "缺什么": "",
+   "谁有权给": "",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "slot.4.autopilot",
+   "名称": "④ autopilot",
+   "类别": "指挥侧位",
+   "登记表出处": "caps_registry [llm]",
+   "四件": {
+    "在册": "✓",
+    "可达": "✗本轮（缺票：真调 denied，需 external_llm，票 0 张）",
+    "绑定": "✓（已绑·直连；能量=declared external_llm）",
+    "验收": "✓（轮数上限在代码）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺 external_llm 票（可达一位未验）",
+   "谁有权给": "主人",
+   "证据": "原文：capability requires human authorization（external_llm）",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "slot.5.audit",
+   "名称": "⑤ audit_query / audit.jsonl",
+   "类别": "指挥侧位",
+   "登记表出处": "caps_registry [data] + gbt_allinone/store/audit.jsonl",
+   "四件": {
+    "在册": "✓",
+    "可达": "✗本轮（audit_query 缺票：需 audit_read，票 0 张；旁证 CLI 现读审计条数 487748）",
+    "绑定": "✓（已绑·直连）",
+    "验收": "——（账本类）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺 audit_read 票（可达一位未验）",
+   "谁有权给": "主人",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "slot.6.logbook",
+   "名称": "⑥ state/logbook.jsonl",
+   "类别": "指挥侧位",
+   "登记表出处": "tools/codex-scripts/logbook.py",
+   "四件": {
+    "在册": "✓",
+    "可达": "✓（verify 现读：链自洽 88 条，末条 hash=sha256:be2d658102f5b43）",
+    "绑定": "——（账本类，非能力位）",
+    "验收": "✓（只追加 + 自链哈希，改一行即断链）"
+   },
+   "结论": "接好",
+   "缺什么": "",
+   "谁有权给": "",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "gap.C-11",
+   "名称": "C-11 交接带关键约束与风险（等级+责任人）",
+   "类别": "缺口范式",
+   "登记表出处": "state/command-playbook.json C-11",
+   "四件": {
+    "在册": "✗（全线无 risk→owner+severity 原生字段）",
+    "可达": "✓（接法真跑：command_chain plan/commit 台账带执行席+许可；handoff write ho-1791429016227 带「风险带 R2｜依据｜责任人｜期限」行）",
+    "绑定": "✓（所用位全已绑·直连）",
+    "验收": "✓（非 LLM：字段非空可机检；handoff verify 要求 src 齐）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺原生 risk→{owner,severity} 字段（现靠 许可标签+结构化行 替代）",
+   "谁有权给": "主人（改 wf/lr schema 或新设能力位）",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "gap.C-15",
+   "名称": "C-15 终审权独立（验收方≠产出方）",
+   "类别": "缺口范式",
+   "登记表出处": "state/command-playbook.json C-15",
+   "四件": {
+    "在册": "✗（独立终审位未注册为能力位——红线内我无权改 gbt_allinone/**）",
+    "可达": "✓（最小实现真跑：产出 wf_run+create 过门；终审三条独立路径 T0062 done / memory_bank trace / terminal-review review EXIT=0；反面 T0063 done(自判) vs T0064 failed(终审)；负对照 T0065 failed 有牙）",
+    "绑定": "✓（所用位全已绑·直连，零未绑）",
+    "验收": "✓（非 LLM 判据 file_exists/contains/sha256 + 退出码 0/1）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺「在册」：final_review 注册三处（caps_registry/api/policy）；或授权我改",
+   "谁有权给": "主人/风哥",
+   "证据": "见 docs/能力接线总表.md §4.2/§5 原文读数",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "gap.C-19",
+   "名称": "C-19 升级件（五选项+决策人+期限）",
+   "类别": "缺口范式",
+   "登记表出处": "state/command-playbook.json C-19",
+   "四件": {
+    "在册": "✗（lr/tactics 无原生五选项+决策人+期限；**并修正登记表证据句**：options 已有 3 条）",
+    "可达": "✓（terminal-review.py escalate T0065 真跑：五选项+决策人=主人+期限 72h）",
+    "绑定": "✓",
+    "验收": "✓（逐条可勾 + 决策人有名 + 期限有日期）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺 tactics.escalate 原生五选项+decider+deadline（现 3 选项，无 decider/deadline）",
+   "谁有权给": "主人（改 tactics.py 约 10 行）",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "gap.C-20",
+   "名称": "C-20 差异化重试（失败数据回流）",
+   "类别": "缺口范式",
+   "登记表出处": "state/command-playbook.json C-20",
+   "四件": {
+    "在册": "✗（lr_tick 原生仍同参重跑：longrun.py:139）",
+    "可达": "✓（terminal-review.py reflow T0065→T0066 done；params 带 _prev_error/_prev_attempts/_prev_fingerprints/_reflow_of）",
+    "绑定": "✓",
+    "验收": "✓（第 N 次输入 ≠ 第 N-1 次：回流字段可机检）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺 lr_tick 原生回流（重试时把 why/fingerprints 塞进 params）",
+   "谁有权给": "主人（改 longrun.tick 几行）",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "gap.C-26",
+   "名称": "C-26 冲刺级复盘三问",
+   "类别": "缺口范式",
+   "登记表出处": "state/command-playbook.json C-26",
+   "四件": {
+    "在册": "✗（无常设三问→Action items 结构）",
+    "可达": "✓（terminal-review.py retro --handoff 真跑：三问读数 66 任务/37 done/1117 runs；Action items 落 handoff ho-1791429027263）",
+    "绑定": "✓",
+    "验收": "✓（每条 Action items 有承接处：映射非空）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺常设机制（挂 sched_define 定时/收工钩子）",
+   "谁有权给": "主人/风哥",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "part.C-01",
+   "名称": "C-01 单一真相源",
+   "类别": "部分范式",
+   "登记表出处": "state/command-playbook.json C-01",
+   "四件": {
+    "在册": "✓",
+    "可达": "△（未复跑：同名幂等覆盖行为同前）",
+    "绑定": "✓",
+    "验收": "△（缺唯一性校验）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺「唯一正本+唯一性校验」",
+   "谁有权给": "主人",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "part.C-03",
+   "名称": "C-03 切错判据",
+   "类别": "部分范式",
+   "登记表出处": "state/command-playbook.json C-03",
+   "四件": {
+    "在册": "✓",
+    "可达": "△（未复跑）",
+    "绑定": "✓",
+    "验收": "△（有同因可读、缺同因自动判切错）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺同因自动判切错",
+   "谁有权给": "主人",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "part.C-14",
+   "名称": "C-14 验收默认不通过",
+   "类别": "部分范式",
+   "登记表出处": "state/command-playbook.json C-14",
+   "四件": {
+    "在册": "✓",
+    "可达": "△（未复跑）",
+    "绑定": "✓",
+    "验收": "△（②已有：acceptance 缺省 status_ok、未知判据 fail-closed；①wf 无默认否决）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺 wf 侧默认否决语义",
+   "谁有权给": "主人",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "part.C-17",
+   "名称": "C-17 排除陈旧产物",
+   "类别": "部分范式",
+   "登记表出处": "state/command-playbook.json C-17",
+   "四件": {
+    "在册": "✓",
+    "可达": "△（未复跑；本轮 create 返回 verify_new_sha=true 复现写后读回自证）",
+    "绑定": "✓",
+    "验收": "△（缺判据层通用新鲜度维度）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺通用新鲜度判据",
+   "谁有权给": "主人",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "part.C-25",
+   "名称": "C-25 超时/超预算即停",
+   "类别": "部分范式",
+   "登记表出处": "state/command-playbook.json C-25",
+   "四件": {
+    "在册": "✓",
+    "可达": "△（未复跑）",
+    "绑定": "✓",
+    "验收": "△（单节点 timeout 有；缺总预算阀）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺总预算/总时限阀",
+   "谁有权给": "主人",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "part.C-28",
+   "名称": "C-28 经验固化成判据",
+   "类别": "部分范式",
+   "登记表出处": "state/command-playbook.json C-28",
+   "四件": {
+    "在册": "✓",
+    "可达": "△（未复跑）",
+    "绑定": "✓",
+    "验收": "△（工作流可复用；缺重演报红强校验）"
+   },
+   "结论": "部分接",
+   "缺什么": "缺坑重演报红强校验",
+   "谁有权给": "主人",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "comp.terminal_review",
+   "名称": "terminal-review.py（C-15 接线件）",
+   "类别": "接线件",
+   "登记表出处": "tools/codex-scripts/terminal-review.py（本轮新建）",
+   "四件": {
+    "在册": "✓（2026-10-08 补：已在册为能力位 review_gate —— caps_registry / api.py / policy.py 三处齐）",
+    "可达": "✓（review 正/反两例真跑：EXIT=0 / EXIT=1；在册后经 run_task 唯一门真调）",
+    "绑定": "✓（在册后随能力位进绑定口径，见 capability-bindings 现读）",
+    "验收": "✓（非 LLM 判据 + 退出码可当闸）"
+   },
+   "结论": "接好",
+   "缺什么": "",
+   "谁有权给": "",
+   "证据": "§5 原文读数；与 longrun._judge 同口径；在册护照 fc-20261008T105721-qjk7（logbook #112/#113）",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "comp.freebuff_bind",
+   "名称": "freebuff 可控制面清单补绑",
+   "类别": "数据面补全",
+   "登记表出处": "state/asset_bindings.json",
+   "四件": {
+    "在册": "✓（TOOLS 在册；声明词错已记录）",
+    "可达": "✓（bind 回执 ✔ state/surfaces/freebuff.json → freebuff_term）",
+    "绑定": "✓（补绑后 9/9 清单有绑定行）",
+    "验收": "——（绑定动作自身以回执为证）"
+   },
+   "结论": "接好",
+   "缺什么": "仍欠：TOOLS 声明词 freebuff→freebuff_term（surface_bind.py 禁改）",
+   "谁有权给": "主人/风哥",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "spot.prompt_bridge",
+   "名称": "prompt_bridge（抽查）",
+   "类别": "抽查",
+   "登记表出处": "caps_registry [llm]",
+   "四件": {
+    "在册": "✓",
+    "可达": "✓（op=status 真跑 ok：四段结构在位、external_model=false）",
+    "绑定": "✓（已绑·直连）",
+    "验收": "✓"
+   },
+   "结论": "接好",
+   "缺什么": "",
+   "谁有权给": "",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "spot.energy_scheduler",
+   "名称": "energy_scheduler（抽查）",
+   "类别": "抽查",
+   "登记表出处": "caps_registry [llm]",
+   "四件": {
+    "在册": "✓",
+    "可达": "✓（op=status 真跑 ok：多能源源表读数）",
+    "绑定": "✓（已绑·直连）",
+    "验收": "✓"
+   },
+   "结论": "接好",
+   "缺什么": "",
+   "谁有权给": "",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "spot.spend_guard",
+   "名称": "spend_guard（抽查）",
+   "类别": "抽查",
+   "登记表出处": "caps_registry [system]",
+   "四件": {
+    "在册": "✓",
+    "可达": "✓（op=ledger 真跑 ok：key_gateway 真账 556 行按日聚合）",
+    "绑定": "✓（已绑·直连）",
+    "验收": "✓"
+   },
+   "结论": "接好",
+   "缺什么": "",
+   "谁有权给": "",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "spot.tactics_advise",
+   "名称": "tactics_advise（抽查）",
+   "类别": "抽查",
+   "登记表出处": "caps_registry [longrun]",
+   "四件": {
+    "在册": "✓",
+    "可达": "✓（op=status 真跑 ok：posture=default）",
+    "绑定": "✓（已绑·直连）",
+    "验收": "✓"
+   },
+   "结论": "接好",
+   "缺什么": "",
+   "谁有权给": "",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  },
+  {
+   "id": "spot.transfer",
+   "名称": "transfer（抽查）",
+   "类别": "抽查",
+   "登记表出处": "caps_registry [engine]",
+   "四件": {
+    "在册": "✓",
+    "可达": "✓（op=stats 真跑 ok）",
+    "绑定": "✓（已绑·直连）",
+    "验收": "✓"
+   },
+   "结论": "接好",
+   "缺什么": "",
+   "谁有权给": "",
+   "证据": "",
+   "at": "2026-10-08T10:18:00"
+  }
+ ],
+ "_自验": {
+  "174 格复算": "29 条 × 6 位 = 174；已有 46 / 部分 54 / 缺 59 / 不适用 15（与 docs/AI指挥手册-蒸馏.md 一致）",
+  "缺口本轮推进": "C-11 / C-15 / C-19 / C-20 / C-26 五条：全部从「缺」推进到「部分接（3/4，差在册）」并留真读数",
+  "C-15 反面证据": "T0063 done（同一位自判放行假产出）vs T0064 failed（独立终审拦下）",
+  "缺票如实报": [
+   "external_llm（autopilot 未验）",
+   "audit_read（audit_query 未验）"
+  ],
+  "登记表不符": "4 条真错/不一致（see docs/能力接线总表.md §6）：freebuff 触手标签不在册、C-19 证据句、keys() 摘要漏 2 行、lobehub 字段缺族"
+ }
+}

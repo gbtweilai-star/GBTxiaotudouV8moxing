@@ -1424,21 +1424,41 @@ def baseline_plan(purpose: str = "", files: list[str] | None = None) -> dict:
 
 
 def release(name: str = "default", purpose: str = "",
-            plan: dict | None = None) -> dict:
-    """排练全绿后一次性晋升生产；任何未过门因素都会阻断。"""
+            plan: dict | None = None,
+            owner_override: bool = False, override_reason: str = "") -> dict:
+    """排练全绿后一次性晋升生产；任何未过门因素都会阻断。
+
+    🔴 2026-10-13（主人令：「**技术层面不能给她有限制只保留人工授权护栏即可**」·
+       「**直接改成终端YES才能使用就好了有时候我需要用到的啊**」）：
+      「排练未全绿」**不再是死路**。默认照旧卡住；主人在终端发**专用一次性钥匙**
+      `deploy_force`（提示符 YES）+ 调用方显式 `owner_override=true`
+      ⇒ 放行并**大声落审计** `mirror_release_overridden`。
+      钥匙由**门外那道门**认（`policy.evaluate` 见 `owner_override` 就改要 `deploy_force`）⇒
+      旗标不带授权，模型无法自我解锁。
+    """
     from . import mirror_space as MS
 
     if plan is not None:
         define_plan(name, plan)
     rehearsal = rehearse(name)
     if not rehearsal.get("ok"):
-        return {
-            "ok": False,
-            "blocked": True,
-            "name": name,
-            "reason": "生产前排练未全绿，禁止晋升",
-            "rehearsal": rehearsal,
-        }
+        if not owner_override:
+            _audit("mirror_release_blocked",
+                   {"name": name, "blockers": rehearsal.get("blockers")})
+            return {
+                "ok": False,
+                "blocked": True,
+                "name": name,
+                "reason": "生产前排练未全绿，禁止晋升",
+                "rehearsal": rehearsal,
+                "如何放行": ("这不是技术层死限：主人在终端发**专用一次性钥匙** `deploy_force`"
+                          "（python -m gbt_allinone auth grant --scope deploy_force --ttl 600，"
+                          "提示符敲 YES），再带 owner_override=true 重调即可放行；"
+                          "放行会写审计 mirror_release_overridden。"),
+            }
+        _audit("mirror_release_overridden",
+               {"name": name, "blockers": rehearsal.get("blockers"),
+                "reason": str(override_reason or purpose or "(未写理由)")[:200]})
     # R-H95 · 实测修（2026-09-19）：本行原为
     #     MS.ascend(purpose, require_rehearsal=True, rehearsal_name=name)
     # 而 `mirror_space.ascend()` 的真身签名是 `ascend(purpose: str = "")`——只有单形参。
@@ -1446,7 +1466,9 @@ def release(name: str = "default", purpose: str = "",
     # （同族：R113 在 api 层给了同样的绕行说明）。排练门在本函数**上面**已经跑过
     # （`rehearse(name)` 不过就 return blocked），不需要再往唯一写 production 的
     # 函数里塞第二个门 —— 门有两处，就会有一处是坏的。
-    promotion = MS.ascend(purpose or f"镜像排练晋升: {name}")
+    promotion = MS.ascend(purpose or f"镜像排练晋升: {name}",
+                          owner_override=owner_override,
+                          override_reason=override_reason)
     return {
         "ok": bool(promotion.get("ok")),
         "name": name,

@@ -1,0 +1,53 @@
+{
+  "category": "kinetic-type",
+  "duration_s": 10,
+  "fps": 30,
+  "canvas": { "w": 1080, "h": 1920, "aspect": "9:16" },
+  "style": "cinematic-dramatic 的缓慢呼吸 + 3d-cgi 的材质感 + 克制的 tech-saas 调性；文字是主角，画面只有深色渐变与一处「微光」辉光",
+  "palette": ["#0B1021", "#141E33", "#1C2740"],
+  "font": "system-ui / sans-serif（通用族，不引外链字体：CJK 走系统回退）",
+  "beats": [0.8, 2.8, 5.3, 9.3],
+  "export": "mp4",
+  "asset_needs": [],
+  "block": "caption-kinetic-slam",
+  "customize": {
+    "borrowed": "单条 paused timeline + 逐词入场 + fitFontSize 自适应字号（机制复用）",
+    "changed": "画布 1920×1080 → 1080×1920；英文词表 → 我们模型给的三句中文；快节奏 slam（0.2s 级、四向乱入）→ 缓慢呼吸（1.2-2.0s 入场 + 长停留）；纯黑底 → #0B1021→#141E33 渐变 + #1C2740「微光」辉光；去掉 Google Fonts 外链（零出网、避免 font_family_without_font_face）",
+    "palette": ["#0B1021", "#141E33", "#1C2740"],
+    "text": ["微光", "在数字时代看见温度", "—— GBT小土豆V8 ——"]
+  },
+  "content": {
+    "scenes": [
+      {
+        "id": "hook",
+        "start": 0,
+        "end": 2.8,
+        "text": "微光",
+        "emphasis_words": ["微光"],
+        "emotion": "单字重击后留白",
+        "motion": "自下方 90px 缓升 + 淡入 + 轻微放大收束，停住不动（0.8s 入场，1.4s 停留）",
+        "beats": [0.8]
+      },
+      {
+        "id": "build",
+        "start": 2.8,
+        "end": 5.3,
+        "text": "在数字时代看见温度",
+        "emphasis_words": ["温度"],
+        "emotion": "匀速铺陈",
+        "motion": "淡入 + 轻微上升，字距匀速收紧；中点一条细线自中心横向展开",
+        "beats": [2.9, 3.6]
+      },
+      {
+        "id": "resolve",
+        "start": 5.3,
+        "end": 10.0,
+        "text": "—— GBT小土豆V8 ——",
+        "emphasis_words": ["GBT小土豆V8"],
+        "emotion": "0.5 倍速淡出至静默",
+        "motion": "淡入后长停留，末段 2.4s 极慢淡出，只留「微光」辉光呼吸",
+        "beats": [5.4, 9.3]
+      }
+    ]
+  }
+}

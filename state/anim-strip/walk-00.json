@@ -1,0 +1,11 @@
+{
+ "图": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\state\\anim-strip\\walk-00.png",
+ "源GLB": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\holo_pet\\assets\\digital-human\\raw\\rig\\model-rigged-anim.glb",
+ "源sha256": "4a37321fa525f9b2e5476d33fd53502e3baffd2c41dda19f7efe795a7c879673",
+ "图sha256": "dacbf02348cb5734c53eff66647abe04822b25563080a69ff656804822e1d773",
+ "at": "2026-10-10 19:10:37",
+ "取景": "三点光 3/4 视角",
+ "字节": 461707,
+ "预设sha256": "2fbff31328b7088030e3eba777a43fb3f808c0d63771d44ddfa94dd48c0eb428",
+ "预设": "state\\digihuman\\render-preset.json"
+}

@@ -1,0 +1,1395 @@
+{
+ "spec": "plugins50-gates",
+ "at": "2026-10-11",
+ "note": "**门表见真**：deploy/cloud-10/plugins50.json 的设计 + 能力位注册表现读 + **policy.evaluate() 真调**（5 探针 op）。",
+ "field_note": "门以 decision.scopes 为准（非空=受限）；risk 与 action 一并记。",
+ "scope_descriptions": {
+  "owner_control": "主人总控授权：一条可替代该次动作所需的全部未授权作用域（一次性消耗）",
+  "process_execute": "启动进程、执行命令或连接 MCP/终端服务器",
+  "filesystem_write": "写入、移动、删除或自动整理文件",
+  "remote_device": "启动/停止远程设备中继或外部接管通道",
+  "deploy_publish": "部署、晋升、回滚或写入生产交付区",
+  "network_private": "访问本机、内网、保留地址或非标准端口",
+  "browser_control": "操控系统浏览器或自动化浏览器执行点击/输入",
+  "desktop_control": "调用桌面触手的输入、鼠标、键盘与窗口控制能力",
+  "device_control": "连接、写入或控制蓝牙及其他外部设备",
+  "external_llm": "把当前任务数据发送到外部大模型服务",
+  "data_export": "把数据发送到外部服务或持久化到框架外",
+  "privacy_read": "读取屏幕、摄像头、麦克风或隐私载体",
+  "audit_read": "读取审计、授权或运行历史",
+  "audio_output": "让本机发声（TTS 合成/播放）或写入音频产物"
+ },
+ "slots": [
+  {
+   "slot": "g1-01",
+   "role": "自研原生大模型底座（图4 · Ninfer 式专用推理引擎 + 单卡）",
+   "driver": "local_brain",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "local_brain"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g1-02",
+   "role": "决策引擎 Laya（图6 · 33ms 非自回归 · RL 训出）",
+   "driver": "control_loop",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "control_loop"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g1-03",
+   "role": "自研模型第二副本（热备/量化档）",
+   "driver": "llm_chat",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [
+      "external_llm"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [
+      "external_llm"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [
+      "external_llm"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [
+      "external_llm"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [
+      "external_llm"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "llm_chat"
+    }
+   },
+   "restricted": true
+  },
+  {
+   "slot": "g1-04",
+   "role": "模型权重与检查点仓（版本化）",
+   "driver": "model_key_pool",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "model_key_pool"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g1-05",
+   "role": "推理路由（本地→云→CLI 车道）",
+   "driver": "brain_route",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "brain_route"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g1-06",
+   "role": "模型评测台（基准与回归）",
+   "driver": "brain_health",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "brain_health"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g1-07",
+   "role": "训练/微调配方（就绪闸 + 七阶段）",
+   "driver": "train_recipe",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "train_recipe"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g1-08",
+   "role": "安全卸载/审查面（abliteration 通道）",
+   "driver": "sec_llm",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [
+      "external_llm"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [
+      "external_llm"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [
+      "external_llm"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [
+      "external_llm"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [
+      "external_llm"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "sec_llm"
+    }
+   },
+   "restricted": true
+  },
+  {
+   "slot": "g1-09",
+   "role": "模型服务守护（探活/重启/用量）",
+   "driver": "svc_inspect",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "svc_inspect"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g1-10",
+   "role": "模型台账（谁在用、用量、成本）",
+   "driver": "event_ledger",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "event_ledger"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g2-11",
+   "role": "AI 短剧工作流（脚本→分镜→素材→剪辑→成片）",
+   "driver": "media_run",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "media_run"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g2-12",
+   "role": "AI 电影工作流（概念→剧本→镜头→声音→剪辑）",
+   "driver": "media_pipeline",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "media_pipeline"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g2-13",
+   "role": "AI 音乐工作流（词→编曲→音频→母带→发行）",
+   "driver": "audio_mix",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "audio_mix"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g2-14",
+   "role": "剪辑引擎（时间线语义：轨/片/变速/转场）",
+   "driver": "edit_pipeline",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "edit_pipeline"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g2-15",
+   "role": "动作镜头系统（10 运镜 × 4 机位）",
+   "driver": "actioncam",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "actioncam"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g2-16",
+   "role": "调色/外观库（词即指令）",
+   "driver": "look_grade",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "look_grade"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g2-17",
+   "role": "影片装配线（清单制·任意增删重制）",
+   "driver": "filmkit",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "filmkit"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g2-18",
+   "role": "音轨抽取/音频件（8 格式）",
+   "driver": "audio_extract",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "audio_extract"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g2-19",
+   "role": "一句话→全链计划（节奏/帧率/调色/模板）",
+   "driver": "one_shot",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "one_shot"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g2-20",
+   "role": "素材许可账（无许可不进成品格）",
+   "driver": "media_license",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "media_license"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g3-21",
+   "role": "本机文档/表格/文本资产分类入云",
+   "driver": "datakit",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "datakit"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g3-22",
+   "role": "全树资产索引（软链真身去重）",
+   "driver": "asset_index",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "asset_index"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g3-23",
+   "role": "记忆库（FTS5 秒搜）",
+   "driver": "memory_manager",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "memory_manager"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g3-24",
+   "role": "Obsidian 永久记忆（只追加）",
+   "driver": "obsidian_vault",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [
+      "filesystem_write"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [
+      "filesystem_write"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [
+      "filesystem_write"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "obsidian_vault"
+    }
+   },
+   "restricted": true
+  },
+  {
+   "slot": "g3-25",
+   "role": "记忆来源印章（防篡改）",
+   "driver": "memory_bank",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "memory_bank"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g3-26",
+   "role": "上下文归档（索引+检索层）",
+   "driver": "context_vault",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "context_vault"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g3-27",
+   "role": "资产单点损失体检",
+   "driver": "asset_vault_freeze",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "asset_vault_freeze"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g3-28",
+   "role": "文件卫生（家规自检+归位）",
+   "driver": "file_hygiene",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "file_hygiene"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g3-29",
+   "role": "仓库读写面（万能触手·Web 六态）",
+   "driver": "omni_web",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [
+      "filesystem_write",
+      "privacy_read",
+      "data_export"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [
+      "filesystem_write",
+      "privacy_read",
+      "data_export"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [
+      "filesystem_write",
+      "privacy_read",
+      "data_export"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [
+      "filesystem_write",
+      "data_export"
+     ],
+     "risk": "high",
+     "restricted": true,
+     "action": "omni_web"
+    }
+   },
+   "restricted": true
+  },
+  {
+   "slot": "g3-30",
+   "role": "资产↔触手穿透绑定（台账只增）",
+   "driver": "tentacle_bind",
+   "in_registry": true,
+   "gates": {
+    "op=status": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "status"
+    },
+    "op=run": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "run"
+    },
+    "op=apply": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "apply"
+    },
+    "op=publish": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "publish"
+    },
+    "op=(空)": {
+     "scopes": [],
+     "risk": "low",
+     "restricted": false,
+     "action": "tentacle_bind"
+    }
+   },
+   "restricted": false
+  },
+  {
+   "slot": "g4-31",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g4-32",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g4-33",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g4-34",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g4-35",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g4-36",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g4-37",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g4-38",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g4-39",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g4-40",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g5-41",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g5-42",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g5-43",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g5-44",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g5-45",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g5-46",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g5-47",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g5-48",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g5-49",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  },
+  {
+   "slot": "g5-50",
+   "role": "备用槽位（待主人指派承载）",
+   "driver": null,
+   "in_registry": false,
+   "gates": {},
+   "restricted": false
+  }
+ ]
+}

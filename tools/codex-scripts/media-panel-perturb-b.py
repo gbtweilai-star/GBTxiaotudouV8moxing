@@ -12,11 +12,11 @@
   ③ **最要命的：我没验返回值**，扰动根本没生效就去量面板，然后判"判据没通过"。
   ⇒ 纪律：**扰动必须先自证生效**（返回 ok + 独立读数 +1），再去量被扰对象。
 """
-import json
-import re
-import subprocess
-import sys
-from pathlib import Path
+import json  # noqa: E402
+import re  # noqa: E402
+import subprocess  # noqa: E402
+import sys  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[2]
@@ -48,7 +48,8 @@ def led():
 from gbt_allinone.tools import media_license as ML            # noqa: E402
 from importlib.util import module_from_spec, spec_from_file_location   # noqa: E402
 _s = spec_from_file_location("cr", ROOT / "tools" / "codex-scripts" / "clean_residue.py")
-cr = module_from_spec(_s); _s.loader.exec_module(cr)
+cr = module_from_spec(_s)
+_s.loader.exec_module(cr)
 
 print("=" * 80)
 print("扰动 B（反向对照）· 许可账 +1 ⇒ 只许「许可」动")

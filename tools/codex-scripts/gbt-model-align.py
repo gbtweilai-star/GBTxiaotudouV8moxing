@@ -109,8 +109,8 @@ def door_scan() -> dict:
                 bypass.append({**row, "为什么可疑": "不是统一口（%s）" % mod})
     return {"扫过的模块数": walked, "走统一口的调用点": through, "绕过的调用点": bypass,
             "判决": ("✅ **所有模型调用都走统一口**" if not bypass
-                    else "🔴 **有 %d 处绕过统一口** ⇒ 「所有运行都读它」**现在还不成立**"
-                         % len(bypass)),
+                   else "🔴 **有 %d 处绕过统一口** ⇒ 「所有运行都读它」**现在还不成立**"
+                   % len(bypass)),
             "口径": "AST 真调用；`llm/` 内部不算绕过；`status()` 不算模型调用"}
 
 
@@ -138,9 +138,9 @@ def identity() -> dict:
         from gbt_allinone.llm import cloud_llm as CL
         key = str(getattr(CL, "API_KEY", "") or "")
         out["通道现读"] = {"provider": getattr(CL, "PROVIDER", "") or "**未配**",
-                          "model": getattr(CL, "MODEL", "") or "**未配**",
-                          "base_url": "已配" if getattr(CL, "BASE_URL", "") else "**未配**",
-                          "api_key": ("已配（前4位 %s****）" % key[:4]) if key else "**未配**"}
+                       "model": getattr(CL, "MODEL", "") or "**未配**",
+                       "base_url": "已配" if getattr(CL, "BASE_URL", "") else "**未配**",
+                       "api_key": ("已配（前4位 %s****）" % key[:4]) if key else "**未配**"}
         out["通道可用"] = bool(getattr(CL, "PROVIDER", "")) and bool(key)
     except Exception as e:  # noqa: BLE001
         out["通道现读"] = "**未读到**：%s" % str(e)[:80]
@@ -164,10 +164,10 @@ TARGET = {
     ],
     "截图宣称": ["27B 参数", "媲美顶级闭源模型", "支持 100 万 Token", "本地 8GB 显存即可运行"],
     "我方核验状态": ("**分级如实**：① **型号存在 = 已核**（有官方权重，出处可点开）· "
-                "② **具体宣称仍未取证** —— 「媲美顶级闭源」「100 万 Token」「8GB 显存即可运行」"
-                "我**没在本机复现过任何一项**，也没拿到它的评测读数"),
+               "② **具体宣称仍未取证** —— 「媲美顶级闭源」「100 万 Token」「8GB 显存即可运行」"
+               "我**没在本机复现过任何一项**，也没拿到它的评测读数"),
     "与本机的关系": ("截图那句「本地 8GB 显存即可运行」说的是**量化版**；本机现读显存 **3.98 GB**、"
-                "可用内存 **1.06 GB** ⇒ **连量化版也放不下**（判据是现读数，不是感觉）"),
+               "可用内存 **1.06 GB** ⇒ **连量化版也放不下**（判据是现读数，不是感觉）"),
     "红线": "**宣传语不是读数**：在拿到可复现证据前，本卡**不给它打分、不写它的「实测值」**",
 }
 
@@ -199,7 +199,7 @@ def local_power() -> dict:
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=25)
         vals = [int(x) for x in (r.stdout or "").strip().split(",") if x.strip().isdigit()]
         out["显存现读"] = (["%.2f GB" % (v / 1024 ** 3) for v in vals] if vals
-                        else "**未读到**")
+                       else "**未读到**")
     except Exception as e:  # noqa: BLE001
         out["显存现读"] = "**未读到**（%s）" % str(e)[:50]
     return out
@@ -215,7 +215,7 @@ def card() -> dict:
         {"项": "「所有运行都读它」是否成立", "我方现读": d["判决"],
          "出处": "本件 AST 扫描（扫过 %d 个模块）" % d["扫过的模块数"],
          "对方": "—", "差 / 下一步": ("无绕过" if not d["绕过的调用点"]
-                             else "把 %d 处改走统一口（要过框架自改护照）" % len(d["绕过的调用点"]))},
+                                else "把 %d 处改走统一口（要过框架自改护照）" % len(d["绕过的调用点"]))},
         {"项": "模型身份（落到谁身上）",
          "我方现读": "%s / %s" % (exp.get("provider") or "**未读到**", exp.get("model") or "**未读到**"),
          "出处": "gbt_allinone/llm/unified.py 的 EXPECTED_PROVIDER/EXPECTED_MODEL（现读 AST 常量）",
@@ -284,13 +284,13 @@ def switchover_plan() -> dict:
         names = {"**未读到**": str(e)[:60]}
     return {
         "为什么需要计划": "「所有运行读统一口」**已经成立**（唯一门 8 走 0 绕），"
-                    "但统一口**读到的那个「它」现在还是第三方**（agnes）⇒ 这一步才是把身份换成我们的",
+        "但统一口**读到的那个「它」现在还是第三方**（agnes）⇒ 这一步才是把身份换成我们的",
         "第 0 步·先看现状": "`py -3 -X utf8 tools/codex-scripts/gbt-model-align.py card` 的"
                       "「② 身份」那两行 —— **期望** vs **现读** 必须都看得见",
         "第 1 步·把自有端点接上（**要钱/凭据**）": {
             "在自有端点部署": "Qwen3.8-27B（官方权重，已核实存在）或 abliterated 量化版 —— "
-                        "**本机跑不动**（显存 3.98 GB / 可用内存 1.06 GB，现读），"
-                        "所以落点是：云 GPU 租用 或 自有网关后的托管端点",
+            "**本机跑不动**（显存 3.98 GB / 可用内存 1.06 GB，现读），"
+            "所以落点是：云 GPU 租用 或 自有网关后的托管端点",
             "要设的环境变量（**现读自 `cloud_llm._KEY_CHAIN`**）": {
                 "GBT_LLM_PROVIDER": "custom",
                 "GBT_LLM_API_KEY": "（自有端点的 key —— **不要贴给我**，设进环境即可）",
@@ -300,7 +300,7 @@ def switchover_plan() -> dict:
             "为什么是这四个": "`custom` 那一条在链里的环境变量清单 = %s（现读）"
                        % names.get("custom", "**未读到**"),
             "改完怎么验": "`gbt-model-align.py card` 看「② 身份 · 现读」 —— "
-                      "provider/model 应变成我们自己的；**此时 `drift` 仍会是 true**（诚实报「落到别家」）",
+            "provider/model 应变成我们自己的；**此时 `drift` 仍会是 true**（诚实报「落到别家」）",
         },
         "第 2 步·把身份声明也改成我们的（**走框架护照**）": {
             "改哪两行": "`gbt_allinone/llm/unified.py` 的 `EXPECTED_PROVIDER` / `EXPECTED_MODEL`"

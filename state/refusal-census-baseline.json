@@ -1,22 +1,20 @@
 {
- "at": "2026-09-25T08:05:24",
- "门面硬拒": 15,
+ "at": "2026-10-10T00:55:11",
+ "门面硬拒": 13,
  "指纹": [
-  "gbt_allinone/api.py|_run_benign",
   "gbt_allinone/auth_gate.py|audit_degraded",
   "gbt_allinone/deployment_rehearsal.py|_normalize_plan",
   "gbt_allinone/deployment_rehearsal.py|release",
   "gbt_allinone/file_operation.py|_check_content",
-  "gbt_allinone/file_operation.py|_check_rel",
-  "gbt_allinone/file_operation.py|_op_write",
   "gbt_allinone/file_operation.py|_require_enabled",
-  "gbt_allinone/file_operation.py|_resolve_target_name",
   "gbt_allinone/file_operation.py|_write_root_checked",
   "gbt_allinone/mirror_space.py|ascend",
   "gbt_allinone/qiankun.py|one_key_deploy",
   "gbt_allinone/room_space.py|release",
   "gbt_allinone/security/data_policy.py|_bad_input",
-  "gbt_allinone/security/net_guard.py|validate_url"
+  "gbt_allinone/security/net_guard.py|validate_url",
+  "gbt_allinone/security/redteam.py|_pentest_plan",
+  "gbt_allinone/security/redteam.py|remote_domain"
  ],
- "原因": "重立基线（口径变更）：① 指纹统一正斜杠（原先把 Windows 反斜杠写进指纹，跨口径会对不上）；② 新增「认领表」硬要求 —— 每一处门面硬拒都必须有处置（保留（防护）/ 保留（主人红线）/ 假阳性），没处置一律 rc=1。现读 15 处**全部认领**：10 处防护 · 4 处主人红线（未声明落点不许写生产 · 排练/验证未全绿不许晋升）· 1 处假阳性（那是读数说明串）。"
+ "原因": "2026-10-10：两处门面硬拒追根因后**已逐条认领处置**（redteam.remote_domain=保留·主人红线：公网 endpoint 一律拒，那正是无授权远控的形状；redteam._pentest_plan=假阳性：它正常返回五阶段计划 ok=True，不是拒绝）。基线 15 -> 13，新增 2 条均已在 CLAIMS 表里带 处置/谁定的/为什么/放开的后果 四件。"
 }

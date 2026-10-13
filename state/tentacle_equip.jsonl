@@ -1,0 +1,73 @@
+{"at": "2026-10-09T13:20:43", "event": "plan:design-inclusive-visuals-specialist", "ok": true, "detail": "包容性视觉专家"}
+{"at": "2026-10-09T13:20:44", "event": "plan:design-image-prompt-engineer", "ok": true, "detail": "图像提示词工程师"}
+{"at": "2026-10-09T13:20:45", "event": "plan:marketing-app-store-optimizer", "ok": true, "detail": "应用商店优化师"}
+{"at": "2026-10-09T13:20:46", "event": "plan:__没有这个职业__", "ok": false, "detail": "未立"}
+{"at": "2026-10-09T13:20:58", "event": "plan:design-inclusive-visuals-specialist", "ok": true, "detail": "包容性视觉专家"}
+{"at": "2026-10-09T13:20:59", "event": "plan:design-image-prompt-engineer", "ok": true, "detail": "图像提示词工程师"}
+{"at": "2026-10-09T13:21:01", "event": "plan:marketing-app-store-optimizer", "ok": true, "detail": "应用商店优化师"}
+{"at": "2026-10-09T13:21:02", "event": "plan:__没有这个职业__", "ok": false, "detail": "未立"}
+{"at": "2026-10-09T13:21:02", "event": "equip:design-inclusive-visuals-specialist", "ok": false, "detail": "包容性视觉专家 动作4 dry=False"}
+{"at": "2026-10-09T13:21:46", "event": "plan:design-inclusive-visuals-specialist", "ok": true, "detail": "包容性视觉专家"}
+{"at": "2026-10-09T13:21:47", "event": "plan:design-image-prompt-engineer", "ok": true, "detail": "图像提示词工程师"}
+{"at": "2026-10-09T13:21:49", "event": "plan:marketing-app-store-optimizer", "ok": true, "detail": "应用商店优化师"}
+{"at": "2026-10-09T13:21:50", "event": "plan:__没有这个职业__", "ok": false, "detail": "未立"}
+{"at": "2026-10-09T13:21:50", "event": "equip:design-inclusive-visuals-specialist", "ok": false, "detail": "包容性视觉专家 动作4 dry=False"}
+{"at": "2026-10-09T13:22:14", "event": "plan:design-inclusive-visuals-specialist", "ok": true, "detail": "包容性视觉专家"}
+{"at": "2026-10-09T13:22:18", "event": "plan:design-image-prompt-engineer", "ok": true, "detail": "图像提示词工程师"}
+{"at": "2026-10-09T13:22:22", "event": "plan:marketing-app-store-optimizer", "ok": true, "detail": "应用商店优化师"}
+{"at": "2026-10-09T13:22:25", "event": "plan:__没有这个职业__", "ok": false, "detail": "未立"}
+{"at": "2026-10-09T13:22:27", "event": "equip:design-inclusive-visuals-specialist", "ok": false, "detail": "包容性视觉专家 动作4 dry=False"}
+{"at": "2026-10-09T13:23:42", "event": "equip:academic-anthropologist", "ok": false, "detail": "人类学家 动作2 dry=True"}
+{"at": "2026-10-09T13:23:42", "event": "equip:__没有__", "ok": false, "detail": "未立职业"}
+{"at": "2026-10-09T13:23:47", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T13:23:53", "event": "plan:__绝对没有这个职业__", "ok": false, "detail": "未立"}
+{"at": "2026-10-09T13:23:58", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T13:25:29", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T13:26:20", "event": "equip:academic-anthropologist", "ok": false, "detail": "人类学家 动作2 dry=True"}
+{"at": "2026-10-09T13:26:21", "event": "equip:__没有__", "ok": false, "detail": "未立职业"}
+{"at": "2026-10-09T13:26:23", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T13:26:25", "event": "plan:__绝对没有这个职业__", "ok": false, "detail": "未立"}
+{"at": "2026-10-09T13:26:27", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T13:27:10", "event": "equip:academic-anthropologist", "ok": false, "detail": "人类学家 动作2 dry=True"}
+{"at": "2026-10-09T13:27:10", "event": "equip:__没有__", "ok": false, "detail": "未立职业"}
+{"at": "2026-10-09T13:27:12", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T13:27:14", "event": "plan:__绝对没有这个职业__", "ok": false, "detail": "未立"}
+{"at": "2026-10-09T13:27:16", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T13:28:30", "event": "equip:academic-anthropologist", "ok": false, "detail": "人类学家 动作2 dry=True"}
+{"at": "2026-10-09T13:28:30", "event": "equip:__没有__", "ok": false, "detail": "未立职业"}
+{"at": "2026-10-09T13:28:33", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T13:28:37", "event": "plan:__绝对没有这个职业__", "ok": false, "detail": "未立"}
+{"at": "2026-10-09T13:28:42", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T14:01:00", "event": "assign:t001", "ok": true, "detail": "AI 数据修复工程师·engineering"}
+{"at": "2026-10-09T14:01:00", "event": "assign:t002", "ok": false, "detail": "职业不在册：__没有这个职业__"}
+{"at": "2026-10-09T14:01:05", "event": "plan:t001", "ok": true, "detail": "AI 数据修复工程师"}
+{"at": "2026-10-09T14:01:30", "event": "assign:t900", "ok": true, "detail": "AI 数据修复工程师·engineering"}
+{"at": "2026-10-09T14:01:30", "event": "assign:t900", "ok": true, "detail": "AI 数据修复工程师·engineering"}
+{"at": "2026-10-09T14:01:30", "event": "assign:t901", "ok": false, "detail": "职业不在册：__册里没有这个职业__"}
+{"at": "2026-10-09T14:01:38", "event": "equip:academic-anthropologist", "ok": false, "detail": "人类学家 动作2 dry=True"}
+{"at": "2026-10-09T14:01:38", "event": "equip:__没有__", "ok": false, "detail": "未立职业"}
+{"at": "2026-10-09T14:01:40", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T14:01:43", "event": "plan:__绝对没有这个职业__", "ok": false, "detail": "未立"}
+{"at": "2026-10-09T14:01:43", "event": "assign:t902", "ok": true, "detail": "品牌守护者·design"}
+{"at": "2026-10-09T14:01:45", "event": "plan:t902", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T14:01:48", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T14:22:31", "event": "assign:t900", "ok": true, "detail": "AI 数据修复工程师·engineering"}
+{"at": "2026-10-09T14:22:31", "event": "assign:t900", "ok": true, "detail": "AI 数据修复工程师·engineering"}
+{"at": "2026-10-09T14:22:32", "event": "assign:t901", "ok": false, "detail": "职业不在册：__册里没有这个职业__"}
+{"at": "2026-10-09T14:22:37", "event": "equip:academic-anthropologist", "ok": false, "detail": "人类学家 动作2 dry=True"}
+{"at": "2026-10-09T14:22:37", "event": "equip:__没有__", "ok": false, "detail": "未立职业"}
+{"at": "2026-10-09T14:22:39", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T14:22:41", "event": "plan:__绝对没有这个职业__", "ok": false, "detail": "未立"}
+{"at": "2026-10-09T14:22:41", "event": "assign:t902", "ok": true, "detail": "品牌守护者·design"}
+{"at": "2026-10-09T14:22:43", "event": "plan:t902", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T14:22:46", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T14:27:28", "event": "assign:t900", "ok": true, "detail": "AI 数据修复工程师·engineering"}
+{"at": "2026-10-09T14:27:28", "event": "assign:t900", "ok": true, "detail": "AI 数据修复工程师·engineering"}
+{"at": "2026-10-09T14:27:28", "event": "assign:t901", "ok": false, "detail": "职业不在册：__册里没有这个职业__"}
+{"at": "2026-10-09T14:27:36", "event": "equip:academic-anthropologist", "ok": false, "detail": "人类学家 动作2 dry=True"}
+{"at": "2026-10-09T14:27:36", "event": "equip:__没有__", "ok": false, "detail": "未立职业"}
+{"at": "2026-10-09T14:27:38", "event": "plan:design", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T14:27:40", "event": "plan:__绝对没有这个职业__", "ok": false, "detail": "未立"}
+{"at": "2026-10-09T14:27:40", "event": "assign:t902", "ok": true, "detail": "品牌守护者·design"}
+{"at": "2026-10-09T14:27:42", "event": "plan:t902", "ok": true, "detail": "品牌守护者"}
+{"at": "2026-10-09T14:27:44", "event": "plan:design", "ok": true, "detail": "品牌守护者"}

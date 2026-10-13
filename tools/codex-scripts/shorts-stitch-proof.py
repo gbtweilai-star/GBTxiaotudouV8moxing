@@ -173,14 +173,14 @@ def run_proof() -> dict:
     return {
         "造出的片段（**故意不同分辨率**，逼出「先归一化」这一步）": clips,
         "时间线": {"画布": CANVAS, "段数": len(segs),
-                 "名义时长": round(nominal, 3), "转场重叠": round(overlap, 3),
-                 "**预期实际时长**": round(expect, 3)},
+                "名义时长": round(nominal, 3), "转场重叠": round(overlap, 3),
+                "**预期实际时长**": round(expect, 3)},
         "① validate": {"ok": v.get("ok") if isinstance(v, dict) else None,
-                    "实际键": _keys(v), "错": (v or {}).get("errors") or (v or {}).get("为什么")},
+                       "实际键": _keys(v), "错": (v or {}).get("errors") or (v or {}).get("为什么")},
         "② render": {"ok": r.get("ok") if isinstance(r, dict) else None,
-                    "实际键": _keys(r),
-                    "落盘": (r or {}).get("out") or (r or {}).get("path") or (r or {}).get("为什么"),
-                    "耗时s": (r or {}).get("elapsed_s")},
+                     "实际键": _keys(r),
+                     "落盘": (r or {}).get("out") or (r or {}).get("path") or (r or {}).get("为什么"),
+                     "耗时s": (r or {}).get("elapsed_s")},
         "③ probe（**ffprobe 回读，不拿「命令成功」当结论**）":
             {"实测时长": dur_real, "帧数": vid.get("frames"),
              "预期帧数": vid.get("frames_expected"),
@@ -266,11 +266,11 @@ def cmd_selftest(a) -> int:
     tl = build_timeline()
     segs = tl["tracks"]["video"]
     e1 = sum(s["dur"] for s in segs) - sum((s.get("transition_in") or {}).get("dur", 0)
-                                          for s in segs[1:])
+                                           for s in segs[1:])
     segs2 = [dict(s) for s in segs]
     segs2[0]["dur"] += 1.0
     e2 = sum(s["dur"] for s in segs2) - sum((s.get("transition_in") or {}).get("dur", 0)
-                                           for s in segs2[1:])
+                                            for s in segs2[1:])
     ck("**判据随数据变**（改一段时长 ⇒ 预期值必须跟着变）",
        abs((e2 - e1) - 1.0) < 1e-9, "e1=%.3f e2=%.3f 差=%.3f" % (e1, e2, e2 - e1))
     # ③ 写根 fail-closed：产物必须落在 outputs/（它声明的写根内）
@@ -283,7 +283,7 @@ def cmd_selftest(a) -> int:
     # ⑤ 负控：预期时长的算法本身 —— 只给一段时**不许**减重叠
     one = [{"dur": 2.0}]
     e_one = sum(s["dur"] for s in one) - sum((s.get("transition_in") or {}).get("dur", 0)
-                                            for s in one[1:])
+                                             for s in one[1:])
     ck("**负控：只有一段时不许减重叠**", abs(e_one - 2.0) < 1e-9, "e=%.3f" % e_one)
     # ⑥–⑪ 「取不到读数」那条**诚实分支**：抽成函数就是为了能在这里真触发它。
     # 🔴 它原来长在 `run_proof()` 里、**从未被触发过**；真触发时会 `NameError`（引用了不存在的局部名）。

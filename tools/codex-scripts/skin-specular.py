@@ -149,7 +149,7 @@ mr_new[:, :, 2] = 0.0                                 # B = 金属度 **一律 0
 buf = io.BytesIO()
 Image.fromarray(mr_new.astype(np.uint8)).save(buf, format="PNG", optimize=True)
 newbytes = buf.getvalue()
-print(f"新 MR 贴图：{len(newbytes)/1024:.0f} KB · 金属度 → 0（原均值 {mr0[:,:,2].mean()/255:.3f}）"
+print(f"新 MR 贴图：{len(newbytes)/1024:.0f} KB · 金属度 → 0（原均值 {mr0[:, :, 2].mean()/255:.3f}）"
       f" · 粗糙度均值 {filled.mean():.3f}")
 
 # ⑥ 追加到缓冲区末尾（其他偏移一律不动）
@@ -159,7 +159,7 @@ newoff = len(BIN)
 BIN.extend(newbytes)
 if mri is not None:
     bv = J["bufferViews"][J["images"][mri]["bufferView"]]
-    print(f"  image{mri} bufferView：偏移 {bv.get('byteOffset',0)} → {newoff} · "
+    print(f"  image{mri} bufferView：偏移 {bv.get('byteOffset', 0)} → {newoff} · "
           f"{bv['byteLength']} → {len(newbytes)} 字节")
     bv["byteOffset"] = newoff
     bv["byteLength"] = len(newbytes)

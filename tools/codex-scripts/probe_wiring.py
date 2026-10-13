@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """探明接线现状：140 个可执行能力里，哪些没接上（routed but not wired）、
 5 个接线缺口具体是什么。只读，不改任何文件。"""
-import json
 import sys
 from pathlib import Path
 
@@ -34,7 +33,7 @@ for r in unwired:
         r.get("name"), r.get("domain"), r.get("status"), r.get("handler")))
 
 # 按域统计
-from collections import Counter
+from collections import Counter  # noqa: E402
 dom = Counter(r.get("domain") for r in rows)
 print("\n● 域分布:", dict(dom.most_common()))
 

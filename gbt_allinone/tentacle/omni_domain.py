@@ -473,7 +473,7 @@ class OmniDomainMixin:
                            "contract": chr(10).join(f"[{e['type']}] {e['text']} @({e['x']},{e['y']})" for e in elements[:100])}
                 # ⛔ 2026-08-07 打磨: UI元素坐标契约穿透 → 大脑拿到可点击控件清单
                 try:
-                    from brain.tentacle_transmission import transmit as _tx
+                    from .brain.tentacle_transmission import transmit as _tx
                     _tx({"elements": result.get("elements", [])[:40],
                          "count": result.get("count", 0), "scope": scope, "ok": True},
                         source="omni_tentacle.extract_ui_elements", channel="visual",

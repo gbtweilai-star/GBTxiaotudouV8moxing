@@ -184,7 +184,7 @@ def main(argv=None) -> int:
         if i:
             c = i.get("counts") or {}
             print(f"  ③ 独立审计 : {i.get('decision')} → 退回 {i.get('stage_to_return')} "
-                  f"（阻断 {c.get('blocker',0)} / 重要 {c.get('major',0)} / 次要 {c.get('minor',0)}）")
+                  f"（阻断 {c.get('blocker', 0)} / 重要 {c.get('major', 0)} / 次要 {c.get('minor', 0)}）")
             entry["review_decision"] = i.get("decision")
             if i.get("decision") != "pass":
                 rc = max(rc, 0)   # 退回不是脚本错误，只是状态

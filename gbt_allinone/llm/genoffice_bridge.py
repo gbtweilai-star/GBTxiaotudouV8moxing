@@ -987,7 +987,7 @@ def selftest(live: bool = True, verbose: bool = True) -> int:
         chk("B1 伪造 gbtv8- 密钥必须 401", st == 401, "HTTP %s" % st)
         st, _, _ = _http(port, "POST", "/v1/chat/completions",
                          {"model": "x", "messages": [{"role": "user", "content": "hi"}]},
-                         token="freellmapi-whatever-not-unified")
+                         token="freellmapi-whatever-not-unified")  # PROC_SCAN_OFF: 自检负对照夹具（B2 非统一前缀必须 401），非真实密钥
         chk("B2 非统一前缀必须 401", st == 401, "HTTP %s" % st)
         st, _, txt = _http(port, "GET", "/v1/models", token=tok)
         chk("B3 真统一密钥放行 /v1/models", st == 200, "HTTP %s" % st)

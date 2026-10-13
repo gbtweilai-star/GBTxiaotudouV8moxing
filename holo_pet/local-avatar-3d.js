@@ -34,15 +34,17 @@ if (canvas) {
   let model;
   let mixer;
   const loader = new GLTFLoader();
-  // 🔴 2026-09-25 换代：从上一代的 `model-rigged-anim.glb`（3.22 MiB · 22 骨）
-  //    换成**本代已过出厂闸的终件** `avatar-hd.glb`（54.35 MB · **26 关节** ·
-  //    idle/talk 两段动画 · 头独占 3×4096² 贴图 · 资产级金属度 0 + T 区/唇部粗糙度差异）。
-  //    换它的依据是可复核的读数（不是文件名）：
-  //      ① 出厂闸 release-check.py 六组硬检全过；
-  //      ② 自研绑骨（0 积分）22 关节 + 4 根头发弹簧链 = 26；
-  //      ③ gltf.animations[0] 是 idle（4.0s · 首末帧逐位相等 = 可无缝循环）。
-  //    ⚠️ 已知代价：**51 MB 比上一代重 16 倍**，面板首屏会明显变慢。
-  //       变轻需要减面，而本地两条减面路已独立验证**全部毁 UV** ⇒ 需服务端或 DCC（待 Owner 定）。
+  // 🔴 2026-10-10 换代（主人令「我从新绑骨了你替换一下精细点哈」+「记得把旧的清理了」）：
+  //    这一版的 `avatar-hd.glb` 是**主人在 Tripo 重新绑骨的成品**转出来的，读数**全部现读**：
+  //      · **12.64 MB** · **65 关节**（mixamorig 标准命名，含手指）· 2 段动画 idle/walk
+  //      · 机检（tools/codex-scripts/verify-3d-asset.py）：**20,543 面 = 主角量级**（20k–80k 内）·
+  //        NORMAL/TEXCOORD_0 齐 · **蒙皮零权重顶点 0 · 每顶点权重和最大偏差 0.000000（归一 True）**
+  //      · S8 门：idle 2.00s 闭合差 0.000000 · walk 1.10s 闭合差 0.000000 **步幅比 0.550**（需 0.5–0.8）
+  //    ✅ 顺手解掉了上一版**写在下面那条"已知代价"**：54.35 MB → 12.64 MB（**轻 4.3 倍**），
+  //       而且**没有减面**（减面那条老路会毁 UV），面板首屏不再被 51 MB 拖住。
+  //    ⚠️ 与上一版的差别（如实写，不藏着）：上一版是**自研绑骨 26 关节 + 头发弹簧链**，
+  //       这一版是 **Tripo 重绑 65 关节**（头发弹簧链不在了）；上一版 idle 4.0s，这一版 2.0s。
+  //    ✅ 旧的 4 份同一 mesh 的重复件（合计 70.6 MB）**已送回收站**，不再各存一份。
   loader.load("./assets/digital-human/raw/rig/avatar-hd.glb", (gltf) => {
     model = gltf.scene;
     const box = new THREE.Box3().setFromObject(model);
@@ -51,12 +53,26 @@ if (canvas) {
     model.position.sub(center);
     model.position.y = -size.y * 0.34;
     model.rotation.y = Math.PI;
-    const scale = 1.65 / Math.max(size.y, 0.01);
+    // 🔴 2026-10-10 同一个病的**第三副副本**（前两副在 Blender 那边：清动画≠绑定姿势 · 求值前后差 0.979 vs 0.621）：
+    //    这里按 size.y 把人缩到 1.65 —— 而 size 量的是**当前姿势**下的包围盒。
+    //    实测同一具模型：**绑定姿势 0.979** vs **动画姿势 0.621** ⇒ 缩放系数差 **1.6 倍**
+    //    （1.65/0.979=1.685 vs 1.65/0.621=2.657）⇒ 她在大屏上的大小**会随"什么时候量"而变**。
+    //    ⇒ 用**绑定姿势**的高度做基准：GLB 的骨架在解析时就是 bind pose，
+    //      所以在**加进场景、还没跑 mixer 之前**量（本行就在 play 之前，顺序是对的），
+    //      并写明"这个数必须是 bind pose 的" —— 免得后人在 play 之后再量一次。
+    const scale = 1.65 / Math.max(size.y, 0.01);   // ⚠️ size 必须是**绑定姿势**下量的（见上）
     model.scale.setScalar(scale);
     scene.add(model);
     if (gltf.animations.length) {
+      // 🔴 2026-10-10 修（与 Blender 那边**同一个病**的第三副副本：对象没搞清就下手）：
+      //    原写法按**下标**取 gltf.animations[0] —— 顺序是 GLB 里的事，不该按下标赌。
+      //    现在顺序恰好是 ['idle','walk'] 所以看着对；**顺序一变成 [walk, idle]，她就会原地走**。
+      //    ⇒ 按**名字**取 idle，取不到再退回第一条（退路要留，但不能把退路当主路）。
       mixer = new THREE.AnimationMixer(model);
-      mixer.clipAction(gltf.animations[0]).play();
+      const idle = THREE.AnimationClip.findByName(gltf.animations, "idle")
+        || gltf.animations[0];
+      mixer.clipAction(idle).play();
+      console.log("[local-avatar-3d] 动画取自:", idle.name || "(无名·按下标退回第一条)");
     }
     document.body.dataset.localAvatar3d = "ready";
     console.log("[local-avatar-3d] loaded", JSON.stringify({ animations: gltf.animations.length, height: size.y, scale }));

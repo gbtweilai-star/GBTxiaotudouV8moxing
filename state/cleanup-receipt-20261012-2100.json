@@ -1,0 +1,57 @@
+{
+  "at": "2026-10-12T21:00:00",
+  "actor": "codex 桌面会话 · 主人令 2026-10-12「给我整理分类清楚保持项目树干净整洁」",
+  "mechanism": "Microsoft.VisualBasic.FileIO.FileSystem（SendToRecycleBin）—— 只进回收站，可还原",
+  "quantifier": "tools/codex-scripts/clean_residue.py（只读报告）+ tools/codex-scripts/tree-registry.py --check + probe_hygiene.py + old-pages.py + supersede-check.py --check",
+  "judged_zones": "tools/ gbt_allinone/ potato_pet/ quant_workspace/ .scratch/（仅其中的 __pycache__）",
+  "skipped_zones": [
+    "_upstream/**（别人的仓库；仓规「别人的目录一律不碰」）",
+    "plugins/**（同上）",
+    "holo_pet/**（同上；仓规点名）",
+    ".scratch/_baseline_wt/**（**框架门基线 worktree**，detached HEAD 30f0b9f；tools/codex-scripts/restore_missing_caps.py 真依赖。刻意整棵不碰，含它自己的 __pycache__）",
+    "_legacy_sources/** · .mimosa/** · vendor/**（缓存/外部类，真身留盘上）",
+    "dist/ outputs/ output/ out/ render/ delivery/ projects/（产物与记录：产物账不是残骸）"
+  ],
+  "items": [
+    { "path": "gbt_allinone/__pycache__", "kind": "dir", "bytes": 4521742, "criterion": "LAYOUT 铁律 3「零缓存入库」", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "gbt_allinone/tools/__pycache__", "kind": "dir", "bytes": 3821277, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "gbt_allinone/tests/__pycache__", "kind": "dir", "bytes": 3395803, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "tools/codex-scripts/__pycache__", "kind": "dir", "bytes": 1818077, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "gbt_allinone/tentacle/__pycache__", "kind": "dir", "bytes": 1591473, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "gbt_allinone/llm/__pycache__", "kind": "dir", "bytes": 474183, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "gbt_allinone/security/__pycache__", "kind": "dir", "bytes": 472134, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "tools/__pycache__", "kind": "dir", "bytes": 409553, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "tools/digihuman/__pycache__", "kind": "dir", "bytes": 203756, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "gbt_allinone/brain/__pycache__", "kind": "dir", "bytes": 153362, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "gbt_allinone/integration/__pycache__", "kind": "dir", "bytes": 139232, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "gbt_allinone/tentacle/brain/__pycache__", "kind": "dir", "bytes": 74772, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "tools/video/__pycache__", "kind": "dir", "bytes": 72130, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "potato_pet/__pycache__", "kind": "dir", "bytes": 70765, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "gbt_allinone/recon/last30days/__pycache__", "kind": "dir", "bytes": 56320, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "gbt_allinone/recon/__pycache__", "kind": "dir", "bytes": 53248, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": ".scratch/review-gate-20261008/__pycache__", "kind": "dir", "bytes": 22528, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "quant_workspace/01_量化收割引擎/backtest/__pycache__", "kind": "dir", "bytes": 4096, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": ".scratch/_stamp_site/__pycache__", "kind": "dir", "bytes": 1024, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null },
+    { "path": "gbt_allinone/adapters/__pycache__", "kind": "dir", "bytes": 0, "criterion": "同上", "to_recycle_bin": true, "rc": 0, "err": null }
+  ],
+  "counts": { "planned": 20, "recycled_ok": 20, "failed": 0, "bytes": 16855475 },
+  "waits_owner": [
+    { "path": "video-src", "why": "本轮**已补登记**进 state/tree-registry.json（class=视频源码；被 tools/video/hf-check.py:37 真引用）。登记即修完，不需你拍。" },
+    { "path": "test_localsystem.txt", "bytes": 12, "why": "未被 git 跟踪 · 全仓零引用；2026-10-08 已列「待主人判」，本轮复核原样还在" },
+    { "path": "tmpwebapp-node-modulesprepare.log", "bytes": 152, "why": "同上（10-04 的 npm prepare 日志）" },
+    { "path": "config.toml.bak", "bytes": 3540, "why": "🔴 2026-10-08 回执记过：**现行 config.toml 已不在**，此件可能是唯一一份 ⇒ 倾向留，但归你定" },
+    { "path": "_main_shot.png / _w3_shot.png", "why": "**已被 git 跟踪**（是入库件、不是残留）⇒ 只报不动" },
+    { "path": "state/_heal_backup/（6 个时间戳目录）", "why": "自愈回滚备份落点（docs/能力审计与自愈回滚-设计.md 逐字：「备份是复制，回滚是复制回去」「不许删文件」）⇒ 不动" },
+    { "path": "projects/digital-human/out/_v1_backup/", "why": "docs/数字人-绑骨与全肢体动作.md 记着它的 md5（00399da4…）作证据链 ⇒ 不动" },
+    { "path": ".scratch/render · .scratch/_traces · .scratch/vision_probe · .scratch/_v22_diff · .scratch/archive · .scratch/ai_duanju_audit · .scratch/旁观者契约稿.md · .scratch/DSH旁观者接入设计稿.md", "why": "🔴 **tree-registry --check 的 R8 八条红**：这 8 件被登记为「已判过、必留」，现在**盘上确实不在**。本轮核实：不在回收站、不在 Obsidian 搬移落点（Documents\\Obsidian Vault\\_V8临时存放处）、账本无搬移记录。2026-10-08 的 done_log 已记过「历次作业动过 .scratch 8 件」⇒ **是既有红、不是本轮造成**。我不动 R8 的期望表（把期望改掉＝把真红涂绿）；要不要恢复/销案，请你发话。" }
+  ],
+  "incident": null,
+  "final_check": {
+    "at": "2026-10-12T21:05",
+    "tree-registry --check": "红 9 → 8（R1 未登记 0；余 8 条全为既有 R8）",
+    "file_hygiene": "clean",
+    "ghost_guard": "clean（540 件）",
+    "supersede-check --check": "PASS 5 判据 · PASS 8 负对照",
+    "old-pages": "被超越 0 · 零引用 3 · 现行 305"
+  }
+}

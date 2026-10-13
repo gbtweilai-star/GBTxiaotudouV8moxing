@@ -64,10 +64,182 @@ except ImportError:            # 以脚本方式直跑本文件时
 activate_local_dependencies()
 
 
-def tts(text, voice=None, rate=0, out=None):
-    """Windows SAPI 语音合成 → WAV 文件（真实发声，桌面宠物同款栈）。"""
+def _edge_tts(text: str, voice: str = "zh-TW-HsiaoChenNeural", out: str | None = None,
+              edge_rate: str = "+0%", pitch: str = "+0Hz", volume: str = "+0%") -> dict:
+    """Edge 神经语音（免费 · 高音质 · 14 种中文含台湾腔/辽宁腔）→ MP3 落盘 + 播放。
+    主人 2026-10-04 定：台湾腔（zh-TW-HsiaoChenNeural）为默认。比 SAPI 好几个档次。
+
+    2026-10-13 加 `edge_rate` / `pitch` / `volume` 三个透传口（主人反馈「像念稿、死板」）：
+    edge-tts 7.x 的 Communicate 支持这三个韵律参数，原先没接 ⇒ 出来是一根平线。
+    三者**只作用于 edge-tts 这条路**；默认值 "+0%/+0Hz/+0%" ⇒ 不传时与改动前逐字节相同。
+    （注意与既有的整数 `rate` 不是一回事：那个是 SAPI 的档位。）
+    """
+    try:
+        import edge_tts
+        import asyncio
+
+        async def _synth():
+            tts = edge_tts.Communicate(text, voice, rate=edge_rate,
+                                       pitch=pitch, volume=volume)
+            path = out or os.path.join(
+                os.environ.get("TEMP", os.environ.get("TMP", "")),
+                "gbt_edge_tts.mp3")
+            # 父目录不存在时 tts.save 会 [WinError 2] 并触发外层静默回退 SAPI —— 先建好
+            os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+            await tts.save(path)
+            return path
+
+        path = asyncio.run(_synth())
+        # 播放（安全：os.startfile 不经 shell，不拼命令）
+        os.startfile(path)
+        return {"ok": True, "backend": "edge-tts", "voice": voice,
+                "file": path, "spoken": True, "text": text[:80],
+                "edge_rate": edge_rate, "pitch": pitch, "volume": volume}
+    except Exception as e:  # noqa: BLE001
+        return {"ok": False, "error": f"edge-tts 失败: {str(e)[:160]}"}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# VoiceStudio 本地语音工作台（上游：debpalash/VoiceStudio · AGPL-3.0 · 已接
+# `_upstream/VoiceStudio`，headless 后端跑 127.0.0.1:3900）。主人 2026-10-04「下一步」。
+# 这条道的价值：**完全本地**的克隆/设计/646 语言（不经任何云端）。代价：CPU + 内存
+# （本机 7.9G RAM：OmniVoice 2.4G 权重档会把机器挤到交换；轻量档 MOSS-TTS-Nano 100M 更合身）。
+# 出站只许**字面回环**：四重校验见 `_vs_url()`（协议 / 主机白名单 / 解析后 IP 必须回环 /
+# 禁重定向）——与 `tools/codex-scripts/cliproxy.py` 同款边界，无任何用户输入参与目标构造。
+# 服务起停/克隆/转写/模型管理的操作口是本仓 `tools/codex-scripts/voicestudio.py`。
+# ─────────────────────────────────────────────────────────────────────────────
+import ipaddress as _ipaddress
+import socket as _socket
+import urllib.parse as _urlparse
+import urllib.request as _urlrequest
+
+_VS_HOST = "127.0.0.1"                  # 本组合唯一的出站目标（字面值，非常量拼接）
+_VS_PORT = int(os.environ.get("OMNIVOICE_PORT", "3900") or 3900)
+_VS_ALLOWED_HOSTS = ("127.0.0.1",)      # 主机白名单：只有一个字面回环地址
+_VS_OUT = Path(__file__).resolve().parents[1] / "state" / "voicestudio" / "out"
+
+
+class _VSNoRedirect(_urlrequest.HTTPRedirectHandler):
+    """拒绝重定向：本地服务不该把我们导去别处（防被引导型 SSRF）。"""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # noqa: D102
+        return None
+
+
+_VS_OPENER = _urlrequest.build_opener(_VSNoRedirect)
+
+
+def _vs_url(path: str) -> str:
+    """VoiceStudio 的唯一出站点。四重校验：路径形状 → 协议 → 主机白名单 → 解析后 IP 必须回环。"""
+    if not path.startswith("/") or path.startswith("//"):
+        raise ValueError("路径必须以单个 / 开头：%r" % path[:40])
+    url = "http://%s:%d%s" % (_VS_HOST, _VS_PORT, path)
+    parts = _urlparse.urlsplit(url)
+    if parts.scheme != "http":
+        raise ValueError("只许 http：%r" % url)
+    if parts.hostname not in _VS_ALLOWED_HOSTS:
+        raise ValueError("主机不在白名单 %r 内，拒绝：%r" % (_VS_ALLOWED_HOSTS, url))
+    try:
+        ip = _ipaddress.ip_address(_socket.gethostbyname(parts.hostname))
+    except ValueError as e:
+        raise ValueError("主机解析失败，拒绝：%r（%s）" % (url, e))
+    if not ip.is_loopback:
+        raise ValueError("解析后 IP 非回环，拒绝：%s" % ip)
+    return url
+
+
+def _vs_health(timeout: float = 1.0) -> tuple[bool, str | None]:
+    """→ (是否在跑, 版本)。连不上⇒(False, None)，不算错——只是"没起"。"""
+    try:
+        with _VS_OPENER.open(_vs_url("/health"), timeout=timeout) as r:
+            d = json.loads(r.read().decode("utf-8", "replace"))
+            return True, d.get("version")
+    except Exception:  # noqa: BLE001
+        return False, None
+
+
+def voicestudio_tts(text: str, profile: str | None = None, language: str | None = None,
+                    out: str | None = None, instruct: str | None = None,
+                    speed: float = 1.0, steps: int = 16, timeout: float = 900.0,
+                    play: bool = True, engine: str | None = None) -> dict:
+    """VoiceStudio（本地克隆引擎 · 646 语言）出声 → WAV 落盘（+ 播放）。
+
+    `engine` 可点名引擎：`omnivoice`（默认 · 质量档 · 本机 CPU 约 157s/句）、
+    `moss-tts-nano`（轻量档 100M · 本机热启动快得多）。不点名 = 服务端默认。
+
+    失败**如实报**（backend_down + reason + 起法），**绝不偷偷降级到别的嗓子**
+    —— 显式点名这条道时，静默换成 edge-tts 会让主人以为听到的是克隆声。
+    """
     if not text:
         raise ValueError("缺少 text：要合成的文本")
+    import uuid as _uuid
+    boundary = "----gbtVScap" + _uuid.uuid4().hex
+    fields = {"text": text, "speed": str(speed), "num_step": str(steps)}
+    if language:
+        fields["language"] = language
+    if profile:
+        fields["profile_id"] = profile
+    if instruct:
+        fields["instruct"] = instruct
+    if engine:
+        fields["engine"] = engine
+    chunks = []
+    for k, v in fields.items():
+        chunks.append(("--%s\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s\r\n"
+                       % (boundary, k, v)).encode("utf-8"))
+    chunks.append(("--%s--\r\n" % boundary).encode("utf-8"))
+    req = _urlrequest.Request(_vs_url("/generate"), data=b"".join(chunks), method="POST")
+    req.add_header("Content-Type", "multipart/form-data; boundary=%s" % boundary)
+    try:
+        with _VS_OPENER.open(req, timeout=timeout) as resp:
+            raw = resp.read()
+            aid = (resp.headers.get("X-Audio-Id") or "").strip()
+            gen = resp.headers.get("X-Gen-Time")
+            dur = resp.headers.get("X-Audio-Duration")
+    except Exception as e:  # noqa: BLE001 —— 连不上/超时/5xx 都属于"这条道现在出不了声"
+        return {"ok": False, "backend": "voicestudio", "status": "backend_down",
+                "reason": "%s: %s" % (type(e).__name__, str(e)[:160]),
+                "spoken": False,
+                "hint": "起服务：py -3.14 tools/codex-scripts/voicestudio.py up"}
+    target = Path(out) if out else (_VS_OUT / ("vs-%s.wav" % (aid or ("t%d" % int(time.time())))))
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(raw)
+    res = {"ok": True, "backend": "voicestudio", "file": str(target), "bytes": len(raw),
+           "audio_id": aid or None, "gen_time_s": gen, "audio_duration_s": dur,
+           "profile_id": profile, "language": language, "text": text[:80], "spoken": False}
+    if play:
+        os.startfile(str(target))  # 安全：不经 shell
+        res["spoken"] = True
+    return res
+
+
+def tts(text, voice=None, rate=0, out=None, backend=None, engine=None,
+        edge_rate="+0%", pitch="+0Hz", volume="+0%"):
+    """语音合成。链：**显式点名 voicestudio（本地克隆引擎）** → edge-tts 神经语音
+    （默认台湾腔 zh-TW-HsiaoChenNeural）→ SAPI 回退。
+
+    `backend="voicestudio"` 或 `voice="vs:<profile_id>"` ⇒ **只走 VoiceStudio**；
+    服务没起就如实报 backend_down（不偷偷换嗓子）。`engine` 透传给 VoiceStudio
+    （`omnivoice`=质量档 / `moss-tts-nano`=轻量快速档）。不点名时行为与改动前一致。
+    """
+    if not text:
+        raise ValueError("缺少 text：要合成的文本")
+    _vs = backend == "voicestudio" or (isinstance(voice, str) and voice.startswith("vs:"))
+    if _vs:
+        prof = voice[3:].strip() or None if (isinstance(voice, str) and voice.startswith("vs:")) else None
+        return voicestudio_tts(text, profile=prof, out=out, engine=engine)
+    # edge-tts 优先（音质好几个档次）
+    try:
+        import edge_tts  # noqa: F401
+        v = voice or "zh-TW-HsiaoChenNeural"   # 主人定：台湾腔
+        r = _edge_tts(text, voice=v, out=out, edge_rate=edge_rate,
+                      pitch=pitch, volume=volume)
+        if r.get("ok"):
+            return r
+        # edge-tts 失败 → 降 SAPI
+    except ImportError:
+        pass
+    # SAPI 回退
     try:
         import comtypes.client
     except Exception as e:  # noqa: BLE001
@@ -180,7 +352,8 @@ def recognizers(ttl=300.0):
             "|ForEach-Object{$_.Culture.Name+'|'+$_.Id}")
     try:
         cp = subprocess.run([exe, "-NoProfile", "-Command", code],
-                            capture_output=True, timeout=25)
+                            capture_output=True, timeout=25,
+                            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         txt = (cp.stdout or b"").decode("utf-8", "replace")
         out = [x.strip() for x in txt.splitlines() if "|" in x]
     except Exception:  # noqa: BLE001
@@ -404,7 +577,8 @@ def _io_boundary(boundary, path):
 #   实测：传 `path=<wav路径>` 期望落盘，读数却是 `{"ok":true,"spoken":true}`（直接发声、零文件）。
 #   ⇒ 修法不是"多加几个名字"（第 59 轮就是这么补的，同类病照样复发），而是**认不出就报**。
 _ACCEPTED_PARAMS = {
-    "tts": {"text", "voice", "rate", "out"},
+    "tts": {"text", "voice", "rate", "out", "backend", "engine",
+            "edge_rate", "pitch", "volume"},
     "asr": {"audio"},
     "listen": {"seconds", "culture", "min_confidence", "timeout", "wav"},
     "status": set(),
@@ -414,7 +588,10 @@ _ACCEPTED_PARAMS = {
 def _dispatch(op, params):
     if op in ("tts", "speak", None):
         return tts(params.get("text"), params.get("voice"),
-                   int(params.get("rate", 0)), params.get("out"))
+                   int(params.get("rate", 0)), params.get("out"),
+                   params.get("backend"), params.get("engine"),
+                   params.get("edge_rate", "+0%"), params.get("pitch", "+0Hz"),
+                   params.get("volume", "+0%"))
     if op == "asr":
         return asr(params.get("audio"))
     if op == "listen":
@@ -429,8 +606,13 @@ def _dispatch(op, params):
         recs = recognizers()
         zh = [r for r in recs if r.startswith("zh")]
         w = _wavein_count()
+        _vs_up, _vs_ver = _vs_health(timeout=0.8)
         return {"ok": True,
-                "tts": "win-sapi（可用）",
+                "tts": "edge-tts（神经语音 · 默认台湾腔）+ win-sapi（回退）",
+                # 🔴 2026-10-04：VoiceStudio 本地克隆引擎（127.0.0.1:3900）——
+                #    只读探测（0.8s 超时）。点名 `backend="voicestudio"` 才走它。
+                "voicestudio": (("up（v%s · 本地克隆 646 语言）" % _vs_ver) if _vs_up
+                                else "down（未起 · py -3.14 tools/codex-scripts/voicestudio.py up）"),
                 "asr": "configured" if (base and key) else "needs_dependency",
                 "listen": ("win-speech（离线可用）" if zh else "needs_dependency"),
                 "recognizers": recs,

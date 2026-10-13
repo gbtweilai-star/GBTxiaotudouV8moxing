@@ -29,6 +29,21 @@ import json
 import sys
 from pathlib import Path
 
+# 🔴 2026-10-10 修：**在 GBK 控制台上不带 -X utf8 调用时本件会当场崩**。
+#    实测（真因，不是猜）：gbt_allinone/tests/test_dead_judgments.py 调本件用的是
+#        subprocess.run([sys.executable, str(TOOL), "--json"], ...)
+#    —— **没带 -X utf8**；而本机控制台是 GBK ⇒ 第 222 行 print(json.dumps(..., ensure_ascii=False))
+#    印到字符 U+21D2 时抛
+#        UnicodeEncodeError: 'gbk' codec can't encode character U+21D2
+#    ⇒ **stdout 是空的** ⇒ 调用方 json.loads('') 抛 JSONDecodeError ⇒ 开机自检
+#    「判据/没有恒真判据」恒红。**这不是调用方的错 —— 是工具不够硬**：
+#    任何不带 -X utf8 的调用者都会踩。修法：入口处把 stdout/stderr 钉成 UTF-8。
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8")   # type: ignore[attr-defined]
+    except Exception:
+        pass
+
 ROOT = next(p for p in Path(__file__).resolve().parents if (p / "gbt_allinone").is_dir())
 DEFAULT_ROOTS = ["tools/codex-scripts", "gbt_allinone"]
 
@@ -63,8 +78,8 @@ def _is_const_bool(node) -> bool:
     if isinstance(node, (ast.List, ast.Tuple, ast.Set, ast.Dict)):
         return all(_is_const_bool(e) for e in ast.iter_child_nodes(node))
     if isinstance(node, ast.Compare) and len(node.ops) == 1:
-        l, r = node.left, node.comparators[0]
-        if _is_const_bool(l) and _is_const_bool(r):
+        lft, r = node.left, node.comparators[0]
+        if _is_const_bool(lft) and _is_const_bool(r):
             return True
     return False
 
@@ -114,9 +129,54 @@ def scan_file(path: Path) -> tuple:
     def add(node, rule, why):
         hits.append({"file": rel, "line": getattr(node, "lineno", 0), "rule": rule, "why": why})
 
+    # 🔴 2026-10-10 修（**真因，有证据**）：A 类原来扫**任何** BoolOp 里的 True/False 常量，
+    #    **不分它站在什么位置** ⇒ 把**测试替身**错报成恒真判据。
+    #    实测：开机自检「判据/没有恒真判据」一直红，咬住的是
+    #        gbt_allinone/tests/test_deepseek_bridge.py:262
+    #            BR.clip_write = lambda text: seen.update(text=text) or True
+    #    那是**故意的存根**（把真函数换成永远成功的假函数），dict.update() 返回 None，
+    #    None or True = True —— 它是**被赋值的表达式值**，**不是判据**，永远不会出现在任何判决里。
+    #    ⇒ 收紧成：**只在判据位置报 A 类** —— If/While/Assert/IfExp 的条件位、推导式的 if 位。
+    #      这正是本文件文档里举的两个真例子站的位置
+    #      （verify_v21.py:178 的判据内 or True · scan_engine.py:380 的 if name_traps or True:）。
+    #    **判据位** = ① 条件槽（If/While/Assert/IfExp/推导式的 if）
+    #              ∪ ② **判据助手调用的那个参数**（chk 的第 2 个位参看 COND_ARG）
+    #    它自己的负控样本就长这样：chk("x", ("undefined" not in t) or True, "note")
+    #    —— or True 是 chk 的**参数**，不是条件槽 ⇒ 只按条件槽收会**漏掉真判据**（实测漏了）。
+    _judgment_positions = set()
+    _cond_holders = (ast.If, ast.While, ast.Assert, ast.IfExp, ast.comprehension)
     for node in ast.walk(tree):
-        # A. or True / and False
-        if isinstance(node, ast.BoolOp):
+        if isinstance(node, _cond_holders):
+            t = getattr(node, "test", None)
+            if t is None:
+                t = getattr(node, "if_", None)
+            if t is not None:
+                for sub in ast.walk(t):
+                    _judgment_positions.add(id(sub))
+        if isinstance(node, ast.Call):
+            _fn = ""
+            _attr = False
+            if isinstance(node.func, ast.Name):
+                _fn = node.func.id
+            elif isinstance(node.func, ast.Attribute):
+                _fn = node.func.attr
+                _attr = True
+            if _attr and not _fn.startswith("assert"):
+                _fn = ""
+            _slots = []
+            if _fn in COND_ARG and len(node.args) > COND_ARG[_fn]:
+                _slots.append(node.args[COND_ARG[_fn]])
+            elif _fn in SINGLE_ARG_NAMES and node.args:
+                _slots.append(node.args[0])
+            elif _fn in REL_NAMES and len(node.args) >= 2:
+                _slots.extend(node.args[:2])
+            for _sl in _slots:
+                for sub in ast.walk(_sl):
+                    _judgment_positions.add(id(sub))
+
+    for node in ast.walk(tree):
+        # A. or True / and False —— **只在判据位**
+        if isinstance(node, ast.BoolOp) and id(node) in _judgment_positions:
             for v in node.values:
                 if isinstance(v, ast.Constant):
                     if isinstance(node.op, ast.Or) and v.value is True:

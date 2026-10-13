@@ -7,7 +7,6 @@
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 
 # 🔴 2026-09-26 自纠：原来写死本机绝对路径 C:\Users\ADMIN\Desktop\GBT小土豆V8 ——

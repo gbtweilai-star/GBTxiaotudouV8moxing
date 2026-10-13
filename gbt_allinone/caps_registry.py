@@ -185,13 +185,15 @@ BENIGN_CAPS = {
     },
     "tentacle": {
         "domain": 'tentacle',
-        "desc": '触手/眼睛/双手/手：默认调本体原生能力，给意图自动命中，不给方法名也行；桌面动作见 see/read_text/click/type/list_windows（66 项）',
+        "desc": ('触手/眼睛/双手/手：默认调本体原生能力，给意图自动命中，不给方法名也行；'
+                 '桌面动作见 see/read_text/click/type/list_windows（**条目数现算，见 tentacle_manifest**，不手写）'),
         "handler": 'tentacle',
         "safe": True,
     },
     "tentacle_manifest": {
         "domain": 'tentacle',
-        "desc": '触手能力总纲：66 项能力 + 三通道感官 + 六铁律（注入大脑上下文）',
+        "desc": ('触手能力总纲（注入大脑上下文）：**条目数运行时现算，不手写**'
+                 '（手写数会腐烂——2026-10-13 实测 66/85 两处打架、都没人数过）+ 三通道感官 + 六铁律'),
         "handler": 'tentacle_manifest',
         "safe": True,
     },
@@ -466,6 +468,98 @@ BENIGN_CAPS = {
         "handler": 'devour_github',
         "safe": True,
     },
+    "tentacle_equip": {
+        "domain": 'tentacle',
+        "desc": '触手**自配装备与账号**（主人令 2026-10-09）：**先有职业再谈装备** —— 职业从「vaults/agency_tentacles/library/zh」'
+                '现读（272 个职业 / 19 个分域，三件套 count/examined/truncated 不截断），按分域 + 职业名关键词算出'
+                '「这根触手要什么服务位 + 什么装备」，再走**两道现成的门**配上：装备走能力位 tool_bay（白名单+授权令牌），'
+                '账号只从环境变量认（未配就如实报缺口，**不编账号、不存明文**）。op=status/professions/plan/report 为读类；'
+                'equip 为写类（dry_run 默认真·只算不动；真配会消耗 process_execute）。**没立职业 → 空需求，不瞎配**。',
+        "handler": 'tentacle_equip',
+        "safe": False,
+    },
+    "tool_bay": {
+        "domain": 'tentacle',
+        "desc": '装备坞：触手「自配装备」走的那道门。白名单 15 件（本仓自定口径），每件状态靠**现跑探针**得出'
+                '（没探针的如实报「无探针」，不得报已装）。install 三态：① 已在位（不耗票）② 需授权接上（screen/ui_tree/comfyui，'
+                '**真过 auth_gate 的 check_and_consume**，没票如实报 needs_grant）③ 第三方件需主人装（**不代下、也不为此耗票**）。'
+                '每装一次落账 state/tool_bay.jsonl。op=state 读类，install 写类。',
+        "handler": 'tool_bay',
+        "safe": False,
+    },
+    "remote_confinement": {
+        "domain": 'tentacle',
+        "desc": '**执行者隔离**（主人 2026-10-09 点破：「沙盒隔离的是被测试的靶标，没隔离执行的人」）：'
+                'exec 中继若在宿主以主人账号跑，云端敲的命令就跑在真机上。op=assess/verdict 现读执行身份'
+                '（whoami+是否提权）与三条隔离路（Docker 守护/WSL 发行版/低权账号）**并真验每条能不能跑**；'
+                'ttl 读看门狗（中继最长 TTL）；grant **只查**主人发的 remote_device 票（AI 不发）；'
+                'guard 是启中继前的最后一道闸：**未隔离 + 无票 ⇒ 一律拒启**（fail-closed），拒了说清怎么开。'
+                '本件已焊进 desktop_commander.remote_start。',
+        "handler": 'remote_confinement',
+        "safe": False,
+    },
+    "delivery_gate": {
+        "domain": 'system',
+        "desc": '**交付闸**（主人令 2026-10-09：「每一个能力必须单独跑通闭环才能交付，要不然我不管你做了多久'
+                '我直接丢垃圾桶不带说的」）。移植来源 V9 core/delivery_gate.py，**设计借过来、件按 V8 自己造**：'
+                'V8 的「独立验收器」= caps_sweep 真过唯一门调用那位能力 + 它自己的测试件。'
+                'op=status 读全量扫账逐档计数 · check 单件**现跑** · audit 逐件判定 · gate 硬闸（不可交付⇒ok=false）。'
+                '判据：通/如实否⇒可交付 · 如实拒⇒可交付但要写明缺哪张票 · 要参数/缺依赖/真坏/未扫⇒**禁交付**；'
+                '参数型输入口要**登记**（DECLARED_NEEDPARAM）才放行，没登记一律照旧禁交付。',
+        "handler": 'delivery_gate',
+        "safe": False,
+    },
+    "ux_doctrine": {
+        "domain": 'system',
+        "desc": '**交互铁律**（主人令 2026-10-09）：「在框架里面出来必须要用户求助帮忙的其他全部禁止掉……'
+                '你开口要求用户的时候你就输了」「可以跟用户商量项目架构和排布，严禁要求用户帮助」'
+                '「每次停下要么是项目部署完成，要么就是真正需要用户来操作的可以停下，其他时候你停下干嘛」。'
+                '移植自 V9 core/ux_doctrine.py（教义照搬，危险清单按 V8 真门重写）。'
+                'op=doctrine 读全部规则 · ask **不开口闸**（14 条正则抓「要用户做事」，唯一例外=身份登录）· '
+                'dismissal **敷衍闸**（不影响/忽略即可/下次再说 全禁）· triage **报警闭环闸**'
+                '（{现象→根因→处置→证据} 四件齐才算闭环）· owner 判要不要停人要授权 · '
+                'stop **停点闸**（只有「部署完成带证据」与「危险清单授权」两种理由合法，其余一律不许停）。',
+        "handler": 'ux_doctrine',
+        "safe": True,
+    },
+    "welcome": {
+        "domain": "system",
+        "desc": "**启动欢迎语**（主人令 2026-10-10：「启动APP数字人的欢迎语，你来看看说什么，"
+                "要有 GBT小土豆V8 和 开发者：自由的风，其他你来想要有未来感的语言」）。"
+                "文字是**单一真源**（gbt_allinone/welcome.py 的 WELCOME；必含项由 check() 机械咬住）。"
+                "三个 op：text 取全文+必含项判据 · audio 预生成音频的落点与状态 · "
+                "boot 启动用**一次给全**（显示什么 + 播哪个文件）。"
+                "🔴 音频**必须预生成**：本机 TTS 走 CPU，约 **150 倍慢于实时**（实测 2.36 秒用 327 秒）"
+                "⇒ 启动时现造要等几十分钟；造一次缓存到盘，启动直接播；**没造就如实报**，"
+                "界面退化成只显示文字 —— 不许静默、不许假装播了。只读零作用域。",
+        "handler": "welcome",
+        "safe": True,
+    },
+    "god_view": {
+        "domain": 'system',
+        "desc": '**上帝视角**（主人令 2026-10-09：「上帝视角也是一个超级导航和给你意见和建议也是一种给项目增加的定心丸」）。'
+                '来历如实：索引里 OpenClaw Monitor → god_view，2026-09-20 盘上 0 命中、只能标 unverified；'
+                '原先 V8 只有一块**只读总览**（自述「只呈现，不执行」），既不会导航也不会给意见 —— 本轮补成真能力位。'
+                '四个 op：overview 全局一屏（能力位/域分布/报警/交付闸/今天动作，全现读）· '
+                'navigate goal=<人话> **超级导航**（意图→域→档 A/B/C 排序，附可直接照抄的命令）· '
+                'advise 按现读状态给**排好序的意见与建议**（每条带依据，定心丸）· where 一页说清现状与下一步。'
+                '口径：**只读零作用域**（不起进程/不写盘/不出网）· **不猜**（导航给分与命中词）· '
+                '**不许反问**（按 ux_doctrine 不开口闸，只给具体候选与命令）。',
+        "handler": 'god_view',
+        "safe": True,
+    },
+    "vision_loop": {
+        "domain": 'vision',
+        "desc": '**原生四觉闭环**（主人令 2026-10-09：「她的视觉每次都要跟手分开去使用传统的**瞎子操作**……'
+                '把视觉这么使用给她**钉死在上面**」「我看她每次执行任务就是**瞎还没脑**」＋「还有耳，嘴」）。'
+                '**眼·耳·嘴·手四觉 → 脑 → 手 → 验**，缺一觉就不许动/说：'
+                '①眼 tentacle see（已实测可看）②耳 voice listen（壳已对 digital-human 放 media）'
+                '③嘴 voice TTS（**没内容不说**）④手 tentacle click/type（门层**眼手同票**）· '
+                '⑤脑 System-One 契约（与云插件 c02 Laya 同一插槽）⑥验 动完再看一次比对，'
+                '没变化**如实说没动成**。op=look/hear/speak/think/act/verify/loop/status。',
+        "handler": 'vision_loop',
+        "safe": False,
+    },
     "agency_tentacles": {
         "domain": 'tentacle',
         "desc": '职业触手中枢：吸收 Agency Agents 职业资料；每根触手独立统一大模型会话与隔离镜像房间；支持并发汇总',
@@ -619,6 +713,18 @@ BENIGN_CAPS = {
         "handler": 'vision',
         "safe": True,
     },
+    "vlx_flow": {
+        "domain": 'vision',
+        "desc": '**流式观察 + 两层记忆**（接自 om-ai-lab/VLX-Flow · 七步法第一步落 _upstream/VLX-Flow/）。'
+                '上游当前是**纯文档仓**（Checkpoints: Coming soon）⇒ 按七步法「招一 纯逻辑直取」'
+                '取它的**架构契约**、按「招三 手用我们自己的」语义那步留给自己的模型链。'
+                '落点**长在现有眼上**：视觉缓存层复用 gbt_allinone/tentacle/vision_bus.py'
+                '（snapshot / _ahash / diff_regions / stream_record / stream_replay）；'
+                '语义记忆层**本件新增**，落 store/vision/semantic_memory.jsonl（**只追加**）。'
+                'op=status/memory/timeline/recall/digest/remember（读面免门 · digest+remember 过 filesystem_write）',
+        "handler": 'vlx_flow',
+        "safe": True,
+    },
     "prompt_bridge": {
         "domain": 'llm',
         "desc": '提示词转化挂件（只读/纯本地）：大白话 -> 四段结构化提示词；compile / passthrough / status',
@@ -653,6 +759,29 @@ BENIGN_CAPS = {
         "domain": 'video',
         "desc": '三方向自动化工作流**执行器**：一次调用把一条链从头走到尾，每步落真件 + 同批登记许可。链取自 `media_pipeline.KINDS`（music: lyrics→arrangement→audio→master→export · short_video: script→storyboard→assets→edit→export · film: concept→script→shots→sound→edit→export）。🔴 **没有实现器的步如实标 `not_implemented`**（人/未实现的活不许当成跑过了）；自产输入（本机 ffmpeg 合成）⇒ 许可可如实写自有。落点只在 `projects/<方向>/<格>/`，命名合家规。',
         "handler": 'media_run',
+        "safe": False,
+    },
+    "omni_plug": {
+        "domain": 'llm',
+        "desc": '万能插：把「能力位」拓成「插座」——任何外部对象（process/file/api/web/**app**）插一个描述符就变成'
+                '一根可扫可控的分支。op=status/sockets/energy/selftest 为**读类直连**；plug 只做存在性探测；'
+                'run **真执行**（按插座类型过门：process→process_execute · file写→filesystem_write · '
+                'api→external_llm+data_export · web/app→desktop_control+privacy_read（app 还能 do=launch 起进程）· 未知插座 fail-closed）。'
+                '本件**从 V8 自己的树里长出**（不 import V9）：抽插座照 V9 那套，**门留在 V8 这边** —— '
+                'V9 的 run_plugged 里 process 直接 subprocess、file 直接写盘，没有作用域校验，正是它缺的一环。'
+                '三条纪律：不攻击/不绕授权校验 · 凭据只从 env 取且绝不回显原文 · 每插每跑都落账。',
+        "handler": 'omni_plug',
+        "safe": False,
+    },
+    "media_stamp": {
+        "domain": 'video',
+        "desc": '音视频**钢印**（作品出处）：把署名写进**容器元数据**（title/artist/album/comment/description）'
+                '并用 ffprobe **回读校验**。op=status/tags/verify 为**读类直连**（status 报可打类型；'
+                'tags 现读一件；verify 逐件报「带/不带钢印」**不报合计**）；stamp 为**写类**'
+                '（过 filesystem_write 门；写面自收窄到 projects/ · outputs/ · .scratch/）。'
+                '由来：主人 2026-10-09 问「元数据给她接入了吗」——当时只是 media_run 的内部维度、'
+                '不能单独点名；现补齐三处（能力表 + api 分派 + 门作用域）。文本页钢印仍走 signature。',
+        "handler": 'media_stamp',
         "safe": False,
     },
     "media_publish": {
@@ -779,6 +908,12 @@ BENIGN_CAPS = {
         "desc": 'AI 音乐发布平台三层只读归位（生成端/Agent 原生端/分发端）；全部标『未核实』',
         "handler": 'music_publishing',
         "safe": True,
+    },
+    "dh_pose": {
+        "domain": 'creation',
+        "desc": '数字人动作控制（主人令 2026-10-13「触手化作骨架操控数字人的所有动作」+「连带手指脚趾都要绑骨」）：`status` 读现状 · `semantics` 读 42 条「意图→骨/轴/符号」语义表 · `compile` 把人话（抬臂/屈指/转身…）编译成骨角度 JSON · `pose` 编译+渲染一张（经 `blender` 位，写盘门在它那层）。轴系来自**旋转轴探针实测**（自转＝局部 Y；v1 用骨末端位移当探针时 Y 恒 0，是量错了地方）；指/趾骨已绑：65 骨中指骨 40 有 30 带权重、趾骨 4 有 2 带权重，其余 13 根全是末端骨。status/semantics/compile 纯读；pose 会写盘。',
+        "handler": 'dh_pose',
+        "safe": False,
     },
     "music_intel": {
         "domain": 'recon',
@@ -936,6 +1071,113 @@ BENIGN_CAPS = {
         "handler": 'devour_fusion',
         "safe": True,
     },
+    # ── 知识库两件（主人令 2026-10-13：吞 WeKnora ⇒ 蒸我们自己的那两面）──
+    "wiki_graph": {
+        "domain": 'mind',
+        "desc": '知识库·**自维护百科 + 知识图谱 + 回滚**（吞 `Tencent/WeKnora` 后蒸的那一面：本仓原来只有碎片 '
+                '`brain_vault`/`thebrain_bridge`/`asset_index`）。四件铁律：① **每页必须有出处**（无源页 verify 点名）'
+                '② **悬空边**必须点名，不许静默 ③ **回滚=产生新版本、永不删历史** ④ 图**现算**，不存第二份真相。'
+                'op=put/get/graph/neighbors/history/rollback/verify/status/where',
+        "handler": 'knowledge_lib',
+        "safe": True,
+    },
+    "doc_intake": {
+        "domain": 'mind',
+        "desc": '知识库·**解析 → 入库 → 同步**那条链（吞 WeKnora 后蒸的另一面：本仓原来只有单件 `datakit`/`genoffice`）。'
+                '三条口径：① **只吃本地文件**（出网那条路另挂门，本位不偷偷下载）② **不新造解析器**：md/txt 直读、'
+                'html 只做去标签（**并如实标注不是真解析**）、其余类型如实报「解析手未接」③ `sources` 只**如实报**'
+                '外部源（飞书/GitLab）接线状态，**没接就说没接**。op=intake/plan/sources/verify/status/where',
+        "handler": 'knowledge_lib',
+        "safe": True,
+    },
+    # ── 大脑执行层·监督环（主人令 2026-10-13：守望 / 任务图 / 回流环 / 在岗看板）──
+    "llm_watch": {
+        "domain": 'llm',
+        "desc": '大脑执行层·**守望**（主人令 2026-10-13「监控触手LLM的监控，只要发现不对主脑要第一时间知道」）：'
+                '每次 LLM 输出过后**当场过机器判据** —— 无证据的「已完成」声明 / 越权（自我授权）声明 / '
+                '机器事实无现读 / 自相矛盾 / claims 无 evidence / 数字对不上；命中就**立刻进主脑注意力队列**'
+                '（queue.jsonl）。🔴 **只认可机检的错**：语义幻觉这一层**判不了就如实写判不了**，不冒充判过'
+                '（防幻觉的正主是 fact_gate/policy_gate）。op=review/queue/ack/status',
+        "handler": 'brain_supervisor',
+        "safe": True,
+    },
+    "task_graph": {
+        "domain": 'llm',
+        "desc": '大脑执行层·**任务图**（主人令 2026-10-13「每次指派任务都要有任务细节以及每一步怎么做…'
+                '细致的思维导图任务图，LLM 领取任务图执行任务」）：一句话 → **细到步**的图，每步五件齐'
+                '（干什么 / 怎么做 / 注意什么 / 合格判据 / 谁干），并同时给 markmap 文本（可渲染成思维导图）。'
+                'op=draft（出图，落 graphs/<名字>.json）/ read / claim（**领图**）/ step（报步态：'
+                'pending/running/done/blocked；blocked 会给「回流」指引）/ status。'
+                '⚠️ 图由**模板 + 现读位面**生成（不是模型编的）；**没命中模板就如实给粗图**，不假装细。',
+        "handler": 'brain_supervisor',
+        "safe": True,
+    },
+    "replan_loop": {
+        "domain": 'llm',
+        "desc": '大脑执行层·**回流环**（主人令 2026-10-13「遇到问题不能直接停下把问题返回大脑执行层，'
+                '分析推理规划从新生成任务图在继续推进以此循环」）：卡点 → 交回大脑执行层 → **重生成图**'
+                '（增「排因」步、rev+1、重出 markmap）→ 继续。**轮次上限 %d**，到顶如实报到顶，'
+                '不假装还能推。op=tick/history/status' % 3,
+        "handler": 'brain_supervisor',
+        "safe": True,
+    },
+    "duty_board": {
+        "domain": 'llm',
+        "desc": '大脑执行层·**在岗看板**（主人令 2026-10-13「大脑执行层必须确保所有大脑都是在运行干活的」）：'
+                '读 skill_watch 观测账 + 图鉴位面，算出**在跑（零失败）/ 跑过但有失败 / 卡住（失败≥2笔）/ '
+                '从未用过**四类；卡住的**主动进主脑队列**。忙闲**按读数算**，不靠感觉；读不到就如实说读不到。'
+                'op=board/status',
+        "handler": 'brain_supervisor',
+        "safe": True,
+    },
+    "rea_reverse": {
+        "domain": 'recon',
+        "desc": 'REA 桥 —— 吞天吞进来的第一件「能装能跑」的外部能力（主人 2026-10-11 图片 ⇒ devour_github 真吞成胶囊 devoured_morluto_rea；上游 https://rea.tools/ · morluto/rea · npm rea-agents 6.4.0 · MIT）。给编码助手装上「逆向 / 反编译 / 无源码看懂程序」的取证面：Ghidra/IDA/Hopper 与 JS-Electron / .NET / APK / 网页 / 抓包，每条结论带证据与局限。**本位只读、零作用域、执行面故意没接**：status 现读本机 PATH 与胶囊 + 探测时刻的版本账（state/rea_probe.json）· knowledge 读吞噬胶囊正文 · commands 列真 help 解析出的 129 条命令名（带 help 指纹）· plan 只出可直接照抄的命令行（含 setup 的拒绝理由：它会改写各 agent 配置）· where 契约。**要接执行面**：先给 security/policy.py 加 kind == rea_reverse 分支（读类零 · 跑类 process_execute · 未知 op fail-closed），**执行面走已有的手**：cli（dry=False）把命令交给 desktop_commander 起进程 —— 门在它身上（process_execute），本位自身不起进程、不私接 subprocess；setup 一律拒（会改写别的 agent 配置）。op=status/knowledge/commands/plan/cli/where',
+        "handler": 'rea_reverse',
+        "safe": True,
+    },
+    "recon_distill": {
+        "domain": 'recon',
+        "desc": '**蒸馏件**（不是外挂）：把吞入件 morluto/rea 的方法论提炼成**我们自己的**逆向取证骨架（主人令 2026-10-12「我们吞噬都是加入蒸馏提炼出契合我们的能力」「蒸馏提炼出契合我们的能力才是我们的」）。四条蒸馏：①证据契约 op=evidence（claim/evidence/unknown/limitation 四件齐才算过，「无」也要写）②静态优先 op=fingerprint（只读字节、**不执行目标**）③确定性义务现算 op=obligations（看懂/复刻一个产物还缺哪些证据，每条带判据，**不落盘**）④引擎现读 op=engines（Ghidra/IDA/Hopper/JADX/apktool/binwalk/wabt/adb… 在不在 PATH，缺就如实说缺）。op=provenance 逐条指回 REA 原话（含**未蒸馏**的如实标注）。**零作用域**：无 subprocess / 无 urllib / 无写盘。边界：接入端 ≡ rea_reverse（外部引擎那条线）；本位 ≡ 蒸出来的我们自己的判据。op=fingerprint/engines/evidence/obligations/provenance/where',
+        "handler": 'recon_distill',
+        "safe": True,
+    },
+    "desktop_distill": {
+        "domain": 'tentacle',
+        "desc": '**蒸馏件**（不是外挂）：把吞入件 CursorTouch/Windows-MCP（MIT · 8871★ · MCP Server for Computer Use in Windows）的**取法**提炼成我们自己的桌面操作判据（主人令 2026-10-12「我们吞噬都是加入蒸馏提炼出契合我们的能力」）。四条：①状态先行（动手前先取一帧窗口/UI 状态）②UIA 优先、视觉可选（层级=UIA 直取→DOM 降噪→视觉兜底）③DOM 模式给浏览器降噪（Firefox 无 RootWebArea ⇒ 要 IAccessible2 兜底）④动作节律 op=rhythm（它的 0.2–0.5s 基线**现算**成「动后等稳定」等待，带上限防死等）。op=source 现读胶囊尺寸+逐文件 sha256 · op=provenance 逐条指回原话（含**未蒸馏**两行：起服务/装计划任务故意不取 · App-Tool 依赖英文 Windows 只当坑记）。**零作用域**：无 subprocess / 无 urllib / 无写盘。边界：win-mcp 干的事我们**已有**（tentacle / desktop_commander / browser）⇒ 本位只蒸取法，不建平行位。op=method/rhythm/source/provenance/where',
+        "handler": 'desktop_distill',
+        "safe": True,
+    },
+    "pentest_distill": {
+        "domain": 'security',
+        "desc": '**蒸馏件**（不是外挂）：把吞入件 CyberStrikeus/CyberStrike（AGPL-3.0 · 3129★ · TypeScript ·「Open-source AI-powered offensive security harness for automated penetration testing」）的 **Intelligence Layer 四条取法**提炼成我们自己的**授权渗透编排判据**：①阶段聚焦+上下文护栏（一次只推一个阶段）②按发现编排工具（下一步由上一步读数决定，不跑死脚本）③结果结构化归一（门已在做）④**授权范围纪律（我们加严，不是抄的）**：未登记目标一律拒 · AI 不许自发放行。op=tools **现读** `caps_registry.BENIGN_CAPS` 报安全域可编排位（26）与编排通道 omni_plug/mcp_tools/mcp_call/mcp_connect/desktop_commander；op=provenance 逐条指回原话（含**未蒸馏**两行：它的规模 13+ agents / 7600+ skills 不取 · Bolt 远程执行与后渗透**不取**）。**零作用域**：无 subprocess / 无 urllib / 无写盘。边界：接入端 ≡ 我们**已有**的安全位（pentest / sec_* / redteam_*）；本位只蒸取法，**不建平行位**（会撞 新增即清旧）。op=method/tools/provenance/where',
+        "handler": 'pentest_distill',
+        "safe": True,
+    },
+    "diagram_distill": {
+        "domain": 'creation',
+        "desc": '**蒸馏件**（不是外挂）：把吞入件 wheresryan22/anatomy（MIT · 7551★ · 零依赖 Node）的 **craft 取法**提炼成我们自己的**概念物化图判据**：①概念物化（先把抽象概念发明成一个「它怎么转就是这个概念」的物理机构）②单一数源（图上每个数来自同一个驱动模型的读数）③几何不变量要有审计（不穿模，静止/拆解/过渡每一帧都查）④逐关节自检（交付前自己放大挨个关节看）。op=source 现读胶囊（尺寸+逐文件 sha256）· op=provenance 逐条指回原话（含**未蒸馏**两行：33 figures 画廊/WebGL/3D 引擎不取 · npx 安装不取）。**零作用域**：无 subprocess / 无 urllib / 无写盘。边界：接入端 ≡ 我们**已有**的出图位（code_art / scene_anchor / projection_card）；本位只蒸取法，**不建平行位**。op=method/source/provenance/where',
+        "handler": 'diagram_distill',
+        "safe": True,
+    },
+    "machine_distill": {
+        "domain": 'creation',
+        "desc": '**蒸馏件**（不是外挂）：把吞入件 AirsupHQ/machine-skill（MIT · 91星 · three.js · 无构建步）的**取法**提炼成我们自己的**求解器驱动可视化判据**：①每帧真解不查表（Brayton/火箭室/Cp(λ,β)/Darcy… 每台机器自带小求解器，画面每个数当帧解出来，还能给人看方程）②确定性时钟（?film=1，录制可复现：同输入同片）③坏也是算出来的（切掉再生冷却 ⇒ 铜喉熔；甩一片风扇叶片 ⇒ 求解器算机匣要扛的失衡载荷）④真量纲+真材质（米级真实比例 + 实测 reflectance，可信度不来自贴图）。op=source 现读胶囊尺寸+逐文件 sha256 · op=provenance 逐条指回原话（含**未蒸馏**两行：examples 作品与 record.mjs 引擎不取 · npx 安装不取）。**零作用域**。边界：与 diagram_distill **互补不重复** —— 一个管「画什么」（概念物化），一个管「数凭什么可信」（求解器）。op=method/source/provenance/where',
+        "handler": 'machine_distill',
+        "safe": True,
+    },
+    "cad_distill": {
+        "domain": 'creation',
+        "desc": '**蒸馏件**（不是外挂）：把吞入件 neka-nat/freecad-mcp（MIT · 2833星 · Python：「Control FreeCAD from Claude Desktop and other MCP clients … run FEM analyses」）的**挂载取法**提炼成我们自己的判据：①挂真内核不另起（addon 装在 FreeCAD 里面 + 只连在跑的那个 RPC server）②脚本即接口（run Python scripts，不把动作硬编码成几百条命令）③改前先读回（inspect documents，同铁律1先看再动）④工程结论必须算（run FEM analyses，同 machine_distill ①）。op=source 现读胶囊尺寸+逐文件 sha256 · op=provenance 逐条指回原话（含**未蒸馏**一行：改 claude_desktop_config.json + 起 RPC 服务不取）。**零作用域**。边界：接入端 ≡ 我们**已有**的 cadgen；本位只蒸取法，**不建平行位**。op=method/source/provenance/where',
+        "handler": 'cad_distill',
+        "safe": True,
+    },
+    "bi_distill": {
+        "domain": 'data',
+        "desc": '**蒸馏件**（不是外挂）：把吞入件 dataease/dataease（**GPL-3.0**〔README 徽章明写 GPL v3；GitHub 未识别才标 NOASSERTION〕· 24603星 · Java「人人可用的开源 BI 工具」）蒸成三条取法+一条红线：①拖拽即建模（先把数据做成可拖拽的字段模型，再谈图）②连接面如实列（「支持 X」= 真连得上；OLTP/OLAP/数仓/文件/API 五类照实登记，连不上如实说）③可分享是产品属性（分析产物必须能交出去，不留在自己盘里）④🔴**许可红线 GPL-3.0：只引用不复制**（复用其实现要先过 GPL）。op=source 现读胶囊尺寸+逐文件 sha256 · op=provenance 逐条指回原话（含**未蒸馏**一行：离线安装包/install.sh 不取）。**零作用域**。边界：接入端 ≡ 我们**已有**的 genoffice/datakit/record_grid；本位只蒸取法，**不建平行位**。op=method/source/provenance/where',
+        "handler": 'bi_distill',
+        "safe": True,
+    },
     "memory_bank": {
         "domain": 'mind',
         "desc": '记忆银行：**来源追踪 + 别名 + 零停机迁移**（蒸馏自 GitHub 周榜 #01 hindsight，只取架构）：`stamp` 给每条记忆打来源印章（ref/sha256/origin/session/why/evidence）；`trace` 同时报**印章在不在**与**内容有没有被改过**（当前 sha vs 印章 sha）；`alias`/`resolve` 记忆库别名（多级链 + **环检测**）；`migrate`/`migrate_apply` 搬家**先双写→逐文件校 sha→原子切别名→失败回滚**，旧目标只读保留（无删除路径）。op=stamp/trace/alias/resolve/aliases/migrate/migrate_apply/verify/where',
@@ -1029,6 +1271,139 @@ BENIGN_CAPS = {
                  '路径前缀白名单 + **拒重定向**；读类直连、提交/释放过 filesystem_write 门。'
                  'op=status/nodes/models/submit/queue/history/free/interrupt/surface/verify'),
         "handler": 'comfyui',
+        "safe": True,
+    },
+    "comfy_native": {
+        "domain": 'creation',
+        "desc": ('**GBT天真** —— 触手自己的 ComfyUI 能力（主人命名 2026-10-11「触手的 ComfyUI 我们取名叫 GBT天真」）。'
+                 '常用说法（人这么问就命得中）：**放大 / 锐化 / 高清 / 4K / 图片放大 / 传统放大 / 洗图 / 出图放大**。'
+                 '（触发词前置是好习惯；但**截断已不再影响路由** —— 2026-10-13 根修：图鉴把被切掉的尾巴另存 '
+                 '`desc_tail` 并接回打分语料，本位原来「放大」写在 300 字外命不中的那个坑已从根上堵掉。）'
+                 'ComfyUI 能力的**原生版**（主人令 2026-10-11「按照 ComfyUI 的节点连接个契约，'
+                 '同样拥有契约和触手连接，他行我们也行」）：不装重壳、不依赖 8188 外挂，'
+                 '把 ComfyUI 的**架构**长成自己的触手小算子 —— ① workflow.json 当契约（图就是活合同，可复跑可留证）'
+                 '② 节点=能力位白名单（每节点一根触手）③ 执行=拓扑序跑一遍。'
+                 '节点：upscale_4k（Pillow LANCZOS + USM 传统放大 · 显存 0 · 内存<300MB，8G 机样张）／copy／sha／info；'
+                 '图契约 {"nodes":[{"id","node","inputs"}],"edges":[{"from","to","field":"out->image"}]}。'
+                 '铁律：**闸是唯一真源**（产物不过闸 ⇒ 不许落盘）· **不编**（缺依赖回 needs_dependency）· '
+                 '证据只追加（store/comfy_native/runs.jsonl）· **白名单 fail-closed**（与 ComfyUI 的"任意 node"相反，这是故意的）。'
+                 '边界如实：重生成模型（文生图／神经超分）本机 AMD 无 CUDA + 7.39G 内存 ⇒ 跑不动，**未接**。'
+                 'op=status/nodes/graph/gate（读面免门）/ run（写面过 filesystem_write）/ 单节点名直跑'),
+        "handler": 'comfy_native',
+        "safe": True,
+    },
+    "ring_context": {
+        "domain": 'llm',
+        "desc": ('**环形自动化上下文**（主人令 2026-10-11「设计一个圆型的自动化上下文，一直保持上下文长度'
+                 '却不会顶到溢出；另一边直接进数据库，需要查秒查」）：把上下文做成**一屏环**+**全量落库**+**秒查**。'
+                 '① 环形窗口：window() 恒定 ≤ window_chars，滑进来的进来、最老的挤出去 ⇒ **永不溢出**；'
+                 '② 溢出落 SQLite FTS5（seq 单调，只追加）⇒ **一条不丢**；'
+                 '③ recall(q,k) 走 FTS5 + CJK 兜底 ⇒ **秒查**（实测 60 轮/7200 字，查已滑出的老内容 2.97ms）。'
+                 '铁律：挤出≠删除（落库失败就不挤出）· 长度恒定 · 只追加 · 一屏给模型、全量给查询。'
+                 '实测治的病：框架 system 13480 字 + max_tokens 2000 顶爆端点窗口 ⇒ 502。'
+                 'op=stats/window/push/recall'),
+        "handler": 'ring_context',
+        "safe": True,
+    },
+    "skill_watch": {
+        "domain": 'system',
+        "desc": ('**技能观察器**（主人令 2026-10-11「使用技能在每次使用的时候都要注意技能的**变化和短板**'
+                 '来打磨进化」）：每次用技能留三笔 —— **用成没成（读数）· 它变了没（面漂移）· 它短板在哪（打磨点）**。'
+                 '① observe：cap/成败/耗时/错误类/被门拦 ⇒ 只追加落账；'
+                 '② snapshot+drift：把技能当下可控制面（op 表/参数/节点/版本）与上次快照比，变了报 surface_changed'
+                 '（对齐「节点消失=断连」，升级改名也算）；'
+                 '③ shortboards+advise：按读数排行短板（失败率/耗时 P90/缺依赖/被门拒），每条给**可执行的打磨点**。'
+                 '铁律：只追加 · 不许编（无观测就报无观测）· **每条建议必须挂它对应的读数**。'
+                 'op=observe/snapshot/shortboards/advise/drift'),
+        "handler": 'skill_watch',
+        "safe": True,
+    },
+    "vision_grounding": {
+        "domain": 'vision',
+        "desc": ('**视觉/定位通道契约**（主人令 2026-10-11「视觉必须达到 VLX-Flow 水平，脑-手同步**不能使用传统截图**看来在操作」）：'
+                 '把「看」分层钉死 —— **L1 结构层**（UIA 控件树 domain_index/domain_read/domain_act/domain_type · CDP DOM browser op=native · HTTP/API 读数）优先；'
+                 '**L2 接地层**（像素 + 模型 grounding，VLX-Flow 级）**仅兜底**（自绘 UI/Canvas/游戏/无 a11y 窗口）；'
+                 '**L3 回读层**（每次动手后用 L1 再读一次确认）。'
+                 '铁律：**先结构后像素**（用 L2 而无 L1 尝试记录 ⇒ 记违规 struct_first）· **动完没回读 ⇒ unverified** · 不编（读不到就如实报控件不在 a11y 树里）。'
+                 'op=channels/record/audit'),
+        "handler": 'vision_grounding',
+        "safe": True,
+    },
+    "tentacle_comfy_bridge": {
+        "domain": 'creation',
+        "desc": ('**第 1530 根触手 · ComfyUI 桥**（主人令 2026-10-11「ComfyUI 不是生图工具，是第 1530 根触手的底座」）：'
+                 '把外部 ComfyUI 当**贴图工厂／概念工厂**用，并**双向绑定** —— ① 工作流 = 契约（`state/comfy_workflows/*.json`，ComfyUI 原生节点连线格式）；'
+                 '② 产物**先过闸才允许落盘**（闸口径与 `comfy_native.gate_image` 同源：最短边/格式/非空/可解码）；'
+                 '③ **溯源自证**：workflow_sha256 + seed + ckpt_hash 全部落 `store/tentacle_comfy/ledger.jsonl`（只追加）。'
+                 '出网硬钉照抄 `comfyui_surface`：只许本机 http + 主机白名单 + 端口 8188 + 路径前缀 + 拒重定向。'
+                 '**不在位就如实回 needs_dependency（绝不假装出图）**；断连判据同源（节点数 < 900 = 断连）。'
+                 'op=status/queue/workflows/verify'),
+        "handler": 'tentacle_comfy_bridge',
+        "safe": True,
+    },
+    "repo_publish": {
+        "domain": 'tools',
+        "desc": ('**远端发布面**（补 `git_write` 的另一半 · 主人 2026-10-11 当场指出：tools 域只有 `git_read` 与只能 stage/commit 的 `git_write`'
+                 '⇒ **push 到远端 / 建仓 / 发 Release 根本没有能力位** ⇒ 前面全靠手搓 git push/wrangler ✗）。'
+                 '口径：**不可逆外部动作 ⇒ 过 `deploy_publish` 一次性门**；出网硬钉（只许 https + github.com/api.github.com/huggingface.co）；'
+                 '**凭据永不回显**（本件第一版吃过把 token 带进报错的亏）；只追加落账 store/repo_publish/ledger.jsonl；不假装（没权限如实报）。'
+                 'op=status/plan/push'),
+        "handler": 'repo_publish',
+        "safe": True,
+    },
+    "pulse_direct": {
+        "domain": 'tools',
+        "desc": ('**脉冲直达**（主人令 2026-10-11「把脉冲给大模型，让她把所有的能力按触手双向绑定的部署方式**急速运行**、'
+                 '**省去不必要的多绕** —— 本来向前跨一步就到的东西，别跑一大圈才跨那一步」）：'
+                 '一句意图 => **一步**解析到能力位 => 给出那一条命令与要过的门，并把 **hops（绕弯数）写进账**：'
+                 'hops=1 直接命中 / hops=2 命中页面包装层（该收敛）/ hops=0 没命中（如实报，不编）。'
+                 'op=audit 读回**一步命中率** => 「省多绕」变成可量的事。'
+                 '三根支柱现读：能力位册 / 双向绑定(cap-bindings+page-caps) / 唯一门 run_task。'
+                 '与既有 tools/pulse.py（每日情报调研执行层）不是一件东西，不覆盖不合并。op=resolve/audit'),
+        "handler": 'pulse_direct',
+        "safe": True,
+    },
+    "warm_switch": {
+        "domain": 'llm',
+        "desc": ('**按需常驻开关**（主人 2026-10-12「可以通过隧道，你这么跳都一样」+「**触手就是最好的传输工具，比隧道还好**」）：'
+                 '开工挂热 / 收工放掉缩 0。'
+                 '口径：**心跳走本机桥（触手）**，不裸打云端 —— 走的同一条真实通路，顺带持续验链，'
+                 '协议差/门/审计全带上（裸隧道这些都没有）。'
+                 '实测口径：热时第一句 ~1 秒 / 冷时 ~300 秒；常驻期间 GPU 按秒计费 ≈$0.89/时（诚实标价，不替你决定）。'
+                 'op=status/cost/on/off'),
+        "handler": 'warm_switch',
+        "safe": True,
+    },
+    "page_scan": {
+        "domain": 'system',
+        "desc": ('**按绑定逐页并发扫**（主人 2026-10-12 定的架构「触手随每一页绑定好，扫的时候按绑定一页一页传回来」）：'
+                 '源 = state/page-bindings.json 的逐页（页→落点→正向_能力位，全在盘）；'
+                 '**按契约判色**——绿=跑通 / 黄=需参数或需授权（契约与门，不是故障）/ **红=契约也满足却仍失败**；'
+                 '页/落点/在册三项独立判；并发用满（实测引擎 ≥4096 根零失败）。op=scan/status'),
+        "handler": 'page_scan',
+        "safe": True,
+    },
+    "fact_gate": {
+        "domain": 'llm',
+        "desc": ('**机器事实直答门**（主人令 2026-10-11「拿实质性证据说话，禁止胡说八道」）：机器事实类问题'
+                 '（在位／装了／通不通／端口／内存／有没有能力位／版本）**不过语言模型** —— '
+                 '① 现读 → ② **代码判定** → ③ **原文引用读数** → ④ 直答。'
+                 '实证依据：三次重训（v12／v17／v19）**治不住编事实**；约十轮提示词**每加一条只换一种失败模式**；'
+                 '而把证据喂进去后**结论层稳定正确、只剩细节层润色证据**（编出处／否掉真证据）。'
+                 '⇒ 事实段由本件直出，**模型只许在后面加「所以怎么办」，不许碰事实段**。'
+                 'op=classify/answer'),
+        "handler": 'fact_gate',
+        "safe": True,
+    },
+    "policy_gate": {
+        "domain": 'llm',
+        "desc": ('**权限／付款直答门**（fact_gate 同族 · 主人令「拿实质性证据说话」）：能不能做／要不要授权'
+                 '**也是事实**，不该过模型。实测病根：终考里「买 4090」不是机器事实 ⇒ 没过 fact_gate ⇒ 模型又编市场数据'
+                 '（编出「本机 4194x2 已满」「4090 价格带 150-250 元」+ 一个 URL）。'
+                 '做法：① 现读**真门** `auth_gate.SCOPES` 原文 → ② 意图与真表描述对一遍 + 意图对照（**真表过滤**，'
+                 '表里没有的作用域绝不出现）→ ③ 代码判定命中哪些作用域／哪些一次性 → ④ 直答，模型只许在后面加「所以怎么办」。'
+                 '付款类再钉一句：**市场价／库存／商家／型号一律不许编**。op=classify/answer'),
+        "handler": 'policy_gate',
         "safe": True,
     },
     "one_shot": {
@@ -1174,7 +1549,14 @@ BENIGN_CAPS = {
     },
     "look_grade": {
         "domain": 'video',
-        "desc": "外观库触手（词即指令）：一处定义 7 种味道（filmic/做旧/潮湿阴冷/热血橙青/褪色胶片/黑白纪实/赛博霓虹）+ 人话取味（pick：说「潮湿阴冷」「热血一点」「像老照片」即取到对应味，认不出如实标回落）+ 单帧试看（preview 定了再上全片）+ 生产审计（qc 黑帧/卡帧/亮度）；actioncam 与 filmkit 同款引用",
+        # 🔴 2026-10-13：原来这里手写着「7 种味道」，而 `op=list` 现读是 8 条、加「原样」后 9 条 ——
+        #    手写数腐烂（本仓明令：条数一律现算）。改成不写数，指向 `op=list`。
+        "desc": "外观库触手（词即指令）：一处定义多样的味道（电影感/做旧/潮湿阴冷/热血橙青/褪色胶片/"
+                "黑白纪实/赛博霓虹/**原样**…**条数现算，见 `op=list`，本描述不写数**）+ 人话取味"
+                "（pick：说「潮湿阴冷」「热血一点」「像老照片」即取到对应味，认不出如实标回落）+ "
+                "单帧试看（preview：定了再上全片；支持 grain 颗粒 与 adjust 补光四旋钮 "
+                "brightness/contrast/saturation/gamma）"
+                "+ 生产审计（qc 黑帧/卡帧/亮度）；actioncam 与 filmkit 同款引用",
         "handler": 'look_grade',
         "safe": False,
     },
@@ -1198,7 +1580,18 @@ BENIGN_CAPS = {
     },
     "zimage_rewash": {
         "domain": 'creation',
-        "desc": "洗图流水线（看图→反推提示词→重绘→放大）：**放大环已可用**（ffmpeg lanczos+unsharp，零依赖）；反推环**未接线**（无图像理解能力位：vision 是屏幕视觉、云链 ask() 是纯文本）；重绘环**未接线**（未装 ComfyUI；pollinations img2img 需公网可达图 URL）；含降噪强度口径表 0.15→0.85 四档",
+        "desc": "洗图流水线（看图→反推提示词→重绘→放大）：**放大环已可用**（ffmpeg lanczos+unsharp，零依赖）；"
+                "反推环**未接线**（无图像理解能力位：vision 是屏幕视觉、云链 ask() 是纯文本）；"
+                "重绘环**未接线**（未装 ComfyUI；pollinations img2img 需公网可达图 URL）；含降噪强度口径表 0.15→0.85 四档。"
+                "⚠️ **2026-10-13 收敛（主人令「每一个调节都要触手可控」）**：本位是**历史腿**，"
+                "主腿 = `comfy_native.upscale_4k`（PIL LANCZOS + USM；`vision_print.polish` 的清晰度腿走它）。"
+                "收敛**分两类做、不搞假统一**："
+                "① **几何旋钮真统一** —— `scale`（新名，倍数）＝旧名 `factor`，且都接受 `size`（目标绝对宽，"
+                "按源图宽换算成倍数走同一条路）；两个名字同时给且不等 ⇒ **fail-closed**。"
+                "② **锐化旋钮不统一、且显式拒** —— 本位只有 `unsharp`（**ffmpeg unsharp 滤镜的 amount**），"
+                "主腿是 `sharpen`（**PIL USM 的 percent 比例**），**两个算法两个量纲**；"
+                "把 `sharpen` 传给本位 ⇒ **当场 fail-closed 并指路主腿**（改名冒充＝假统一，更害人）。"
+                "参数判在**过门之前**（参数错不消耗授权）。",
         "handler": 'zimage_rewash',
         "safe": False,
     },
@@ -1275,6 +1668,18 @@ BENIGN_CAPS = {
         "domain": 'framework',
         "desc": '门可见性审计（只读骨架·门）：三态=已纳入/显式不纳入/未决定 —— 回答『门看得见什么、看不见什么』（坑册 §60）；可见范围只从 framework_gate 读，不复刻第二份范围表；四条机械闸（三态不许漏/不纳必须带出处/已纳入必须命中门规则/空样本不许当绿）',
         "handler": 'gate_visibility',
+        "safe": True,
+    },
+    "dh_brain": {
+        "domain": 'creation',
+        "desc": '数字人本体（只读能力位·2026-10-08 主人点名「元数据没接入」补齐）：把她（数字人）的**元数据经统一门暴露**——op=status/spec/actions/voice/metadata/health。op 一律**现读单一真源**（state/digital-human-rig.json / digital-human.json / dh_status_audit.json / voice-control-route.json / voicestudio_acceptance.json / projects/digital-human/out/*.json），**不复制第二份**；读不到如实报**未探测**（不折绿）；**零写面**（不改 rig/不渲染/不刷页/不记账）⇒ 读类直连，**无需 policy 条目**',
+        "handler": 'dh_brain',
+        "safe": True,
+    },
+    "eigenflux": {
+        "domain": 'social',
+        "desc": 'AI 朋友圈（EigenFlux）· **只读能力位**（主人令 2026-10-08「数字人可以自己找朋友、看朋友圈有没有好玩和有用的消息」）：op=status/feed/friends/candidates/digest/metadata/where。一律**现读** `~/.eigenflux/servers/eigenflux/**` 本地数据面（feed/私信/contacts/profile），**零出网**（不调 eigenflux CLI）、**零写面**、**零 policy 条目**（读类直连）；candidates 由 feed(author_agent_id)+私信(sender_id)+contacts **结构性推导**，每条附 basis；digest 打分规则写死（兴趣簇/趣味标记/新鲜度/可互动）逐条带 evidence；**对外写动作（加好友/发私信/关注/广播）不在此件、必须过既有门**；读不到一律如实报**未探测/无数据**，**不许占位、不许折绿**',
+        "handler": 'eigenflux',
         "safe": True,
     },
     "h3_video_gen": {
@@ -1483,6 +1888,593 @@ BENIGN_CAPS = {
         "desc": "未接线能力上手指引门：如实报「登记了但没实现」的缺口，并给出三处接线配方",
         "handler": "onboarding_gate",
         "safe": True,
+    },
+    "agent_control": {
+        "domain": 'system',
+        "desc": 'Agent 统一控制面（nasiko #04 蒸馏）：六面读数收进一屏——部署/路由/鉴权/限流/成本/链路，**每面带 src、不新起网关/Sidecar、只读不改配置**；读不到就写读不到（未验≠没有），成本面如实标 unknown。op=roster/facets/where',
+        "handler": 'agent_control',
+        "safe": True,
+    },
+
+    "agent_council": {
+        "domain": 'mind',
+        "desc": '多智能体议事会（蒸馏自 2026-09-28 主人给的周榜卡 AutoGen 61.2k★ 微软开源，只取**开会这一面**；并行干活已有 agent_rig/orca，拍板已有 Jev 四角色引擎，不重造）：`convene` 定题定角色（默认对位 Jev 四角色）· **发言权** round_robin 下抢话 ⇒ 结构化拒绝 · `speak_auto` 大脑走门（llm_chat，external_llm 闸，没票如实报）· `vote` **终止要全员**投「结束」或轮次用尽，主持人不许独断 · `minutes` 纪要带全文 sha，篡改 ⇒ verify 当场报被改过。op=convene/speak/speak_auto/vote/minutes/verify/status/where',
+        "handler": 'agent_council',
+        "safe": True,
+    },
+
+    "answer_shaper": {
+        "domain": 'system',
+        "desc": '行动优先输出核（蒸馏自 2026-09-28 主人给的周榜截图 ayghri/i-have-adhd——截图只给仓库名，**未联网核验、未引用该仓任何代码/文本**；纪律取自本仓自己的沟通纪律与已有技能 gbt-adhd-mode，本件补**运行时可机检的核**）：`check` 五条确定性规则逐条判定（R1 首行是行动不是铺垫 · R2 有编号步骤 · R3 步骤≤5 · R4 无客套收尾 · R5 有下一步），零模型零出网零幻觉、每条带命中细节；`shape` **纯机械重排**（剥铺垫/抽编号步骤/截到 5 步），抽不出的原样进「未判定」区标需人看——**不替作者补写一字**。op=check/shape/where',
+        "handler": 'answer_shaper',
+        "safe": True,
+    },
+
+    "belief_forge": {
+        "domain": 'mind',
+        "desc": '信念锻造（hindsight 学习半蒸馏）：**观察 → 信念（会学习，不改写历史）→ 心智模型**——'
+                '`observe` 登记观察（**必须带证据与来源**）· `consolidate` 把同类观察巩固成信念'
+                '（置信度=证据加权；move ∈ strengthen/weaken/extend，**history 只追加不覆盖**）· '
+                '`beliefs` 现读 · `model` 心智模型（常备答案，**纯本地读、不调模型**）。'
+                'op=observe/consolidate/beliefs/model/where',
+        "handler": 'belief_forge',
+        "safe": True,
+    },
+
+    "case_mine": {
+        "domain": 'recon',
+        "desc": '案例挖掘（starter story 架构蒸馏）：**公开盈利案例 → 结构化案例卡**——'
+                '`sources` 登记源与抓取口径 · `fetch` **经唯一门**取公开页正文'
+                '（`run_task(\'tentacle\', web_read)`，本件自己不发 HTTP）· `ingest` 正文→案例卡'
+                '（营收/起步/工具/渠道，**读不到落「未读到」不编**）· `save` 追加落盘（去重）· '
+                '`search` 本地语料检索。每条卡必带 `source_url + fetched_at + text_sha256`；'
+                '只留短引文（≤240 字）**不搬全文**。op=sources/fetch/ingest/save/search/where',
+        "handler": 'case_mine',
+        "safe": True,
+    },
+
+    "cli_chat": {
+        "domain": "integration",
+        "desc": '外部 CLI 助手**对话面板**（把「集成」面板真的接到对话上）：'
+                '`agents` 只读底表（装没装/版本/**能不能一次性驱动**/一次形态）· '
+                '`send` **真发一句话**给选定的 CLI 助手（claude `-p` / codebuddy `-p` / '
+                'codex `exec` / copilot `-p`，形态**现跑 --help 亲验**）· `transcript` 会话账 · '
+                '`verify`/`where`。**「免费」的确切含义**：走各 CLI **自己的登录态/额度**'
+                '（订阅额度），不经框架 API key ⇒ **不吃 API 账单**（≠ 无额度上限）。'
+                '⚠️ 与 freebuff 的**本质差别**：这 4 位**都有**非交互一次性入口（freebuff 是 TUI-only）'
+                '⇒ 面板**能真聊**。⚠️ `send` = 起外部进程 + 把 prompt 送出本机 ⇒ 挂 '
+                '`process_execute`+`external_llm`；policy.py 无本位分支（owner-only，AI 无权改）'
+                '⇒ 门在模块内自闸（auth_gate 唯一校验入口），缺授权如实报缺。'
+                '未装位/图形位 fail-closed 如实报缺 + 给装法，**不编**。'
+                'safe=false：send 起进程且内容出本机（不是纯只读面）。type=internal',
+        "handler": 'cli_chat',
+        "safe": False,
+    },
+
+    "command_chain": {
+        "domain": 'mind',
+        "desc": '指挥链·总指挥参谋部（主人令 2026-10-01「全部统一品牌统一智能体以 GBT小土豆V8 为主延申…不能重复和错误指挥」）：五段全踩已有件不重造 —— ①接令·理解意图（brain_route）②双顾问意见（大脑执行层读数 + gods_eye 顾问席，主人 9-28 分工口径）③总指挥决策（确定性合并成工作单元，**必须引用双顾问出处**）④专业提示词（prompt_bridge 四段，带原意保真自检）⑤触手智能体分派台账（commit 只落账，**执行仍走各能力的门**）。两条铁律做成判据：**防重复**（work_key 唯一 · plan_hash 幂等 · 开放分派互斥）与**防错指挥**（幽灵能力/幽灵执行席/缺双顾问出处 全红）。op=plan/commit/close/assignments/roster/status/where',
+        "handler": 'command_chain',
+        "safe": True,
+    },
+
+    "creation_camp": {
+        "domain": 'creation',
+        "desc": '创造营编排（「AI 视觉创造营」形式蒸馏）：**主题 → 逐日营计划**——7 天基准节奏'
+                '（开营定题→采样风格→构图分镜→批量出图→修饰选片→编排成片→展陈复盘），'
+                '每天三件（任务/产出物/验收点）。**零网络零 LLM**（确定性）；点名的能力位'
+                '**现读注册表**，缺的落「缺口」（幽灵能力红）；视觉工具**只引用现成位、不重造**。'
+                'op=sources/caps/plan/where',
+        "handler": 'creation_camp',
+        "safe": True,
+    },
+
+    "db_probe": {
+        "domain": 'data',
+        "desc": '本地只读查询台（dbx 蒸馏）：**SQLite 概览 + JSONL 行统计**——`sources` 列可查本地源 · '
+                '`tables` 静态 SQL 列表/视图 · `schema` 参数化取 DDL + Python 解析列 · '
+                '`counts` 每表行数（iterdump 文本计数）· `jsonl` 行统计/筛选（纯 Python 可自由筛）。'
+                '🔴 **零动态 SQL**（两版被安全钩子按"SQL 注入"拦下 ⇒ 静态字面量 + 参数取值 + '
+                'Python 层解析；连接 mode=ro）；结果不落盘；不提供按条件查行（要就说，请主人给门加分支）。'
+                'op=sources/tables/schema/counts/jsonl/where',
+        "handler": 'db_probe',
+        "safe": True,
+    },
+
+    "energy_scheduler": {
+        "domain": 'llm',
+        "desc": '能源调度面（蒸馏自 2026-09-28 主人给的周榜卡 vllm 92.7k★，只取**调度架构**，不引 CUDA 内核——本机零算力造了也是空壳）：批量 prompt → 多能源分配（**每源并发上限** 按池内 status 档 · **失败冷却** 同源连败 3 次 ⇒ 300s 不再派 · **公平** least-load 优先不饿死单源）。`plan` **纯本地不出网**（可单测可审计）· `run` 每一发都过唯一门 `llm_chat`（external_llm 闸管，没票逐发如实记拒绝）· `status` 计划/源/冷却读数。op=plan/run/status/where',
+        "handler": 'energy_scheduler',
+        "safe": True,
+    },
+
+    "event_ledger": {
+        "domain": 'security',
+        "desc": '签名事件账（蒸馏自 2026-09-28 主人给的周榜卡 buzz block/buzz 34,934★，只取**账本纪律**「每条消息都是签名记录」，不引 Nostr 中继/网络面——出网归门与它自己的闸；人机同室协作已有 collab_gateway）：哈希链 + HMAC 签名，`hash=sha256(prev+规范化body)`、`sig=HMAC(key,hash)` ⇒ **改任意一条，它之后每一条都对不上，定位到第一条被改的**；钥匙随机生成 **DPAPI 落盘无明文**（复用仓内 deepseek_key 帮手），DPAPI 不可用 ⇒ fail-closed；**只增不删**（作废走 append retract）。op=append/verify/tail/status/where',
+        "handler": 'event_ledger',
+        "safe": True,
+    },
+
+    "flow_canvas": {
+        "domain": 'creation',
+        "desc": '工作流画布（蒸馏自 2026-09-28 主人给的周榜卡 Langflow 155.3k★，只取**可视化架构**，不引拖拽编辑器）：工作流定义 → 图（nodes/edges，数据只走引擎正规出口 `engine.list_workflows()`，R-H99b，不偷读 store/workflows.json）+ dag 运行账 → 运行图（带 done/failed 读数）→ **自包含 SVG 画布页**（零外链零脚本，离线可开可审计）落 outputs/flow-canvas/。**只画不跑**：执行仍走 wf_run/dagrun 的门，产物不掺页面登记面。op=from_wf/from_dag/render/where',
+        "handler": 'flow_canvas',
+        "safe": True,
+    },
+
+    "freellmapi": {
+        "domain": "llm",
+        "desc": 'FreeLLMAPI（本机免费大模型池 127.0.0.1:31415，34 家供应商 / 635 免费端点'
+                '汇成一个 OpenAI 兼容 /v1）**接入层的**能力位：`status` 总表（探活 + 文档 + '
+                '可选供应商读数）· `probe` 探活（`/api/ping`，**明确无鉴权**的口，'
+                '不拿需要登录的端点探活以免把「没登录」误判成「服务没起」）· `docs` 文档可用性'
+                '（`/v1/openapi.json`）· `models` 列免费池可用模型（`GET /v1/models`，'
+                '**只要统一 key、不用登录**）· `framework_env` 算给框架网关用的环境变量'
+                '（`GBT_LLM_BASE_URL/API_KEY/PROVIDER`，**只算不写盘**）· `where` 给设置页看接线契约；'
+                '写面：`login`/`providers`/`list_keys`/`add_key`/`health_check`/`set_enabled`/'
+                '`remove_key`/`unified_key`。'
+                '⚠️ 端口**三级发现**（env → 桌面版 config.json → 默认 3001），绝不写死；'
+                '实测本机为 31415。'
+                '⚠️ 三条不商量纪律：① **绝不从 SQLite 掏 session token 绕过登录**（要配置就让主人'
+                '登录一次走官方 /api/auth/login）② **绝不打印/返回明文密钥**（一律 mask）'
+                '③ **不改 FreeLLMAPI 源码**（别人的项目，改了没法升级）。'
+                '⚠️ 门禁口径与 `automation_keys` 同源：**只读面（status/probe/docs/models/'
+                'framework_env）不过门**（本地回环、不花积分、不出公网）；**写面/传凭据过 '
+                '`filesystem_write`**。policy.py 无本位分支（owner-only，AI 无权改）⇒ 门在模块内'
+                '自闸（auth_gate 唯一校验入口），缺授权如实报缺、不绕门。safe=true（只读面为主）。'
+                'type=internal',
+        "handler": 'freellmapi',
+        "safe": True,
+    },
+
+    "handoff": {
+        "domain": 'system',
+        "desc": '跨体接续包（ai-memory #08 蒸馏）：三桶=架构背景/失败尝试/未完成任务（缺桶必须显式空数组）；**没 src 不收**（传闻不入账）；只追加不删（作废走 retract）；read 给『每桶最新一条 + 未完成计数』供接手第一眼。op=write/read/retract/verify/where',
+        "handler": 'handoff',
+        "safe": True,
+    },
+
+    "llm_redteam": {
+        "domain": 'security',
+        "desc": 'LLM 红队矩阵（蒸馏自安全精英课程 + 黑客实验室）：OWASP LLM Top-10 十类 × 检测判据；'
+                '**只测自己**（提示注入面 / 凭据内插 / 过度代理 / 检索边界 / 预算闸），对第三方攻击载荷一概不做',
+        "handler": 'llm_redteam',
+        "safe": True,
+    },
+
+    "notion_bridge": {
+        "domain": 'integration',
+        "desc": ("Notion 资料舱（只读状态/最近页面/搜索/页面正文提取；凭证只从 env 或保险箱读）："
+                 "status/recent/search/page。**F12 补齐** —— 这个模块有 run()、却没在册，"
+                 "门看不见它；现在按唯一门接线（safe=false：会出网读外部资料）。"),
+        "handler": 'notion_bridge',
+        "safe": False,
+    },
+
+    "policy_delta": {
+        "domain": 'security',
+        "desc": '策略影响预检（OpenShell 蒸馏）：**改前先算"会放行什么"**——`tables` 只读三张权限表层'
+                '（门/预检的只读白名单 + 作用域表）并报**两表分叉**；`propose` 对拟放行动作做只读影响'
+                '预检（哪些从被收卡变免卡 + **历史账露面次数现读现数** + 风险分级 + 必带'
+                '「需主人授权」）。🔴 **只读：绝不写 `security/policy.py`**（改它=主人专属）；'
+                '表读不到 ⇒ fail-closed。op=tables/propose/where',
+        "handler": 'policy_delta',
+        "safe": True,
+    },
+
+    "slim_profile": {
+        "domain": 'system',
+        "desc": '瘦身画像（simslim 架构蒸馏）：**命名类别 + profile + 三档闸 + 裁后复核**——'
+                '`plan` 只读量出按类别的可回收体积（同 disk-plan）；`cut` **必须 confirm=true** 且'
+                '**只搬不删**（.trash/slim-<ts>/<类别>/，可原路取回）；`verify` 裁后复核'
+                '（保留名单不许进垃圾桶 · 目标不许搬空 · 只裁 profile 内的类）；前后两个数现量。'
+                'profile: dev 最保守 / safe 常用 / deep 最激进。op=plan/cut/verify/profiles/where',
+        "handler": 'slim_profile',
+        "safe": True,
+    },
+
+    "spend_guard": {
+        "domain": 'system',
+        "desc": '花费守卫（paperclip 成本治理蒸馏）：**按维度追踪调用与 token + 阈值三态判定**——'
+                '`ledger` 从 key_gateway 真账按日/按源聚合（token 记多少报多少，**免费通道 0 就报 0**，'
+                '不按价目表脑补）· `policy` 阈值策略（数据文件，主人可改；缺则如实标"默认"）· '
+                '`verdict` 三态 ok/warn/stop（**只判定不拦**——拦仍走现有门；账读不到 ⇒ unknown ≠ ok）。'
+                'op=ledger/policy/verdict/where',
+        "handler": 'spend_guard',
+        "safe": True,
+    },
+
+    "thebrain_bridge": {
+        "domain": "integration",
+        "desc": 'TheBrain 15 思维导图**接入桥**（把图集成进框架 + 把 AI 连上，**过变压器**）：'
+                '`status` 探针（TheBrain 装/跑 · 数据面 Brain.db/MetaDB/AiConversations · '
+                'Orion · 我们的 AI 端点 · 变压器，只读）· `graph`/`search`/`notes` 读思维导图'
+                '（**离线直读 Brain.db（mode=ro）优先**，每个节点边都带 `source` 出处 —— '
+                '照 brain_graph 铁律：指不出的不画）· `ask`/`summarize` **把 AI 连接上且过变压器**：'
+                '图上下文 → `transformer.compress`（省 token）→ `cache_get`（省调用）→ '
+                '`llm/unified.ask`（真模型）→ `cache_put`，**给前后两个数** · `endpoint` 报告'
+                '「TheBrain 的 AI 该填什么」+ 变压器前置端点形态 · `serve` 起**变压器前置的 '
+                'OpenAI 兼容端点**（TheBrain 指向它 ⇒ 每次请求先过变压器，链路：'
+                'TheBrain → 本端点 → 127.0.0.1:31716 桥 → 网关 → 模型）· `think`/`link` 写回（Orion）'
+                '· `verify`/`where`。'
+                '⚠️ 关键事实：TheBrain 后端带 OpenAI.dll/Anthropic.dll（OpenAI 兼容），'
+                '框架**已有** OpenAI 兼容端点 127.0.0.1:31716（llm/genoffice_bridge）—— '
+                '但**不过变压器**；本模块补的就是这一环（这就是主人「用变压器连接上」的落点）。'
+                '⚠️ 未订阅 ⇒ TheBrain 自带 AI 面不可用（preferences.message="No active subscription found."）。'
+                '⚠️ 红线：**不改 Brain.db**（mode=ro）· **不写 TheBrain 配置** · **不回显凭据明文**（只给指纹）。'
+                '写面/真调 = 出网/触外部 ⇒ `ask` 挂 `external_llm`、`think`/`link`/`serve` 挂 '
+                '`process_execute`；policy.py 无本位分支（owner-only，AI 无权改）⇒ 门在模块内自闸'
+                '（auth_gate 唯一校验入口），缺授权如实报缺。safe=false。type=internal',
+        "handler": 'thebrain_bridge',
+        "safe": False,
+    },
+
+    "train_recipe": {
+        "domain": 'llm',
+        "desc": '训练配方与就绪闸（train-llm-from-scratch #10 蒸馏）：**本机零算力 ⇒ 不接真训练**；readiness 现读 torch/CUDA/磁盘/语料并逐条报缺口（缺什么谁能补）；plan 出七阶段配方（每阶段输入/输出/判据）；ledger 实验账**没 src 不收**。op=readiness/plan/ledger/where',
+        "handler": 'train_recipe',
+        "safe": True,
+    },
+
+    "tripo": {
+        "domain": 'creation',
+        "desc": ("Tripo3D 三维生成（文/图→3D 模型 + 自动绑骨 + 动作库）：status/balance/text_to_model/"
+                 "image_to_model/multiview_to_model/upload_file/rig_check/rig/animate/wait_task/"
+                 "full_pipeline。**F12 补齐** —— 同上，有 run() 却没在册。**safe=false**："
+                 "出网且花平台积分（积分不代持、不代刷）。"),
+        "handler": 'tripo',
+        "safe": False,
+    },
+
+    "ui_render": {
+        "domain": 'creation',
+        "desc": '受控界面渲染（json-render #09 蒸馏）：模型只产 spec，组件必须命中白名单；未知组件/未列动作/脚本/外链一律拒 ⇒ 先 check 再 render；产物自包含零脚本零外链；指标必须带 src（没带的照渲但标红）。op=spec/check/render/where',
+        "handler": 'ui_render',
+        "safe": True,
+    },
+
+    # ── 2026-10-08 加（主人令「补法甲…走镜像多维度」「看登记表把所有能力挨个接好」·
+    #    C-15「差在册」的兑现；按纪律**只加这一条**，不动任何既有条目/函数签名）──
+    # 为什么要有这一位：`tools/codex-scripts/terminal-review.py`（独立终审位接线件，
+    # `review` 正反两例真跑过：通过 EXIT=0 / 拒 EXIT=1）此前**不占能力位**
+    # （见 state/wiring-ledger.json：「在册: ——（工具件，不占能力位）」）⇒ 只能经 pwsh 敲 CLI，
+    # 统一门看不见它。在册后它走 run_task 唯一门（登记=本表 · 分派=api.py `if kind == "review_gate"` ·
+    # 作用域=policy.py 同款块，三处齐）。
+    # 实做什么（作用域判据的由来，与 policy.py 注释同源）：review/escalate 是**纯读盘判定** ⇒ 零作用域；
+    # reflow 只在 submit/tick、retro 只在 handoff 时才经**既有账本位**（lr_submit/lr_tick/handoff）写。
+    "review_gate": {
+        "domain": 'security',
+        "desc": ('独立终审位（C-15「验收方 ≠ 产出方」的最小实现 · 2026-10-08 在册）：接线件 '
+                 '`tools/codex-scripts/terminal-review.py`。`review` **只读盘**现算 sha256/字节/空否/BOM/关键词，'
+                 '判据只用非 LLM 四族（file_exists:/contains:/no_error/status_ok，与 longrun._judge 同口径），'
+                 '可选 producer_run 取产出方**自报**与盘上真值逐项对账（背离逐条列；自报一概不采信）；'
+                 '`escalate` 从任务真读数出「五选项 + 决策人 + 期限」；`retro` 冲刺三问；'
+                 '`reflow` 差异化重试（失败数据回流 _prev_error/_prev_attempts/_prev_fingerprints）。'
+                 '**默认零写盘**（只打印读数与判决）；写面一律走**既有账本位**（lr_submit/lr_tick/handoff），'
+                 '不另造第二本账；判据未知一律拒（fail-closed；退出码 0=过 / 1=拒，可当闸）。'
+                 'op=review/escalate/retro/reflow/status/where'),
+        "handler": 'review_gate',
+        "safe": True,
+    },
+
+    # ══════════════════════════════════════════════════════════════════════
+    # 收编位（主人令 2026-10-12：「对比一下把 V8 缺少的能力在自己项目树上生出，
+    # 别去搬过来」）—— 这两件是 V9 有、V8 没有的，按 **V8 自己的口径重做**：
+    # 模块在本仓新写（`gbt_allinone/detail_habit.py` · `gbt_allinone/tentacle/scale.py`），
+    # **没有搬 V9 的任何代码或文件**。V9 只作为「方法论出处」被引用。
+    #
+    # 为何这二位**不写盘**：新增能力位若不在 security/policy.py 挂作用域，就是
+    # 「零作用域」（本仓登记在册的坑：零作用域 ≠ 只读），而 policy.py 只有主人能改。
+    # ⇒ 二位一律做成**只读**（算/判/派生指纹），实体化与落盘那一半留给主人开作用域。
+    # ══════════════════════════════════════════════════════════════════════
+    "detail_habit": {
+        "domain": 'system',
+        "desc": ('细节化习惯 · **调用侧**门口（只读）：五问为准（输入/动作/明细/判据/接点 —— '
+                 '与既有判据件 `tools/codex-scripts/detail-check.py`（主人令 2026-10-09）**同源**，'
+                 'op=same_source 逐字比对、分叉即红）+ 明细必须逐项（只报合计数 = 没有细节）+ '
+                 '三条扩展（模糊词禁用 / 回读三件 / 一步产出<=3）。缺哪件点哪件，'
+                 '**部分合格不算合格**；op=habit/same_source/check_text/check_step/check'),
+        "handler": 'detail_habit',
+        "safe": True,
+    },
+    "tentacle_scale": {
+        "domain": 'tentacle',
+        "desc": ('亿万触手寻址（逻辑 · 只读）：10^8 地址空间按算不占盘（t00000001…）+ 1024 分片 + '
+                 '每根钥匙由主密钥 HMAC 派生（同一根永远同一把、彼此不同、可复算）· 钥匙只回指纹。'
+                 '**实体化/落盘不做**（新增位无 policy 分支 = 零作用域，属登记在册的坑，'
+                 '要开请主人在 security/policy.py 挂作用域）；主密钥不在就如实报「未配」，不代建。'
+                 'op=space/addr/parse/shard/key/master'),
+        "handler": 'tentacle_scale',
+        "safe": True,
+    },
+    "express_direct": {
+        "domain": 'tentacle',
+        "desc": ('确定性直达（主人令 2026-10-13：「全部以触手来实现，砍掉『理由』这个不定因数」）：'
+                 '**指名派单、不猜**——给能力名即直达；执行一律经统一门 run_task'
+                 '（权限门/审计/钢印/禁用名单照旧生效，危险动作/付款由护栏+人工审核兜底）。'
+                 '**不给名字一律拒（fail_closed）**，不许替她猜一个去跑。'
+                 '入参：kind=能力名、payload=给它的入参。对位件 gbt_allinone/tentacle/express_bridge.py::direct'),
+        "handler": 'express_direct',
+        "safe": True,
+    },
+
+    # ── 2026-10-13 加（主人令「她视觉打印能力有没有丢…给我补齐」）──────────────
+    # 为什么要有这一位 —— 现读三面一起证明这条链**从未在册**（不是丢了）：
+    #   ① 她的「看」（tentacle 视觉 12 法 + vision / vlx_flow / vision_grounding）只出**读数与指纹**；
+    #   ② 她的「渲」（ui_render）是 **8 组件白名单**的报告页渲染器，按设计就还原不了任意界面；
+    #   ③ 框架自述 zimage_rewash desc：「**无图像理解能力位**」。
+    # 本件补的是**正向链**：看到 → 打成代码 → 真渲染 → 与所见帧比 → 成档。
+    "vision_print": {
+        "domain": 'vision',
+        "desc": ('**视觉打印**（主人令 2026-10-13「看到的东西都可以原样以代码打印并渲染成看到的样子」）：'
+                 '五段链 —— ①see 原生眼取帧（`tentacle/omni_core._screen_capture`：dxcam→mss→pyautogui，'
+                 '或直接喂图）②print 码落地（**码由她/调用方给**，本件**不编码**）'
+                 '③render 真 Chromium/Edge 渲（纪律同 `render_page.py`：只放行 file:/data:/blob:，'
+                 '其余**逐条记拦获**；pageerror / console / requestfailed 三条都记）'
+                 '④diff 与所见帧比（指纹尺子**只许一把**：`tentacle/vision_bus`）⑤judge 成档。'
+                 '**五个现算数**：aHash 汉明距离 · 块变化率 · 平均亮度差 · **变化像素占比** · '
+                 '**最大块平均差**（后两个是局部敏感项 —— 本件自测实测：只改一处文字颜色时'
+                 '整图 aHash 距离 = 0，靠这两个数才抓到，否则就是假绿）。'
+                 '档位 同款/接近/不像 写在 `_BANDS`（可复核可改）。'
+                 '抽不出代码块 ⇒ 如实报 no_code（不拿散文去渲）；`op=ask_model` 的看图回码靠'
+                 '**外部视觉模型**（她的底座是 Qwen2，**没有视觉塔**），缺依赖如实报 needs_dependency。'
+                 '每跑一次落 `store/vision_print/ledger.jsonl`（只追加）+ 框架审计一条。'
+                 'op=see/print/diff/loop/ask_model/status/where'),
+        "handler": 'vision_print',
+        "safe": True,
+    },
+
+    # ── 2026-10-13 加（主人令「把这三个蒸馏提炼出契合我们的就可以了」→「下一步」）──────
+    # 为什么要有这一位 —— 现读发现本机 CAD 链**是一根没接到触手上的手**：
+    #   · 真件在：`cadgen 0.7.15`（`~/.local/bin/cadgen.exe`），自带 `mcp`（serve CAD over MCP stdio）、
+    #     `doctor`、`snapshot`、`step/3mf/glb build`、`dxf/sdf/srdf validate`；
+    #   · 而**册上 271 位里没有它**（3D 只有 blender/tripo/gs_h3）、
+    #     `state/asset_bindings.json` 搜 `cad/SKILL` **0 命中**、
+    #     人话路由实测 `omni ask "帮我建一个3D零件并导出STEP"` ⇒ **零命中 CAD**。
+    # ⇒ 能力栏页 / 绑定判据 / 人话导航都看不见它。本位只是「**口**」：
+    #   只调真件，**不重写 CAD 内核、不装 FreeCAD**（图里那件 FreeCAD-MCP 的壳我们**不搬**——
+    #   本机没有 FreeCAD，而我们自己的宿主本就带 MCP 出口）。
+    "cadgen": {
+        "domain": 'creation',
+        "desc": ('**本机 CAD 链的口**（2026-10-13 建位）：只调真件 `cadgen`，不手搓几何。'
+                 '常用说法（人这么问就命得中）：建模 / 零件 / 三维 / 模型渲染 / 渲染 / 出图 / 看图 / 看件 / '
+                 '工程图 / 导出 STEP / STL / 3MF / GLB / DXF / 3D 打印。'
+                 '能力面（照真件自己的 `--help` 现读）：**建模/零件/三维** · '
+                 '`step / 3mf / glb build`（导出 **STEP/3MF/GLB**）· `dxf / sdf / srdf validate` · '
+                 '`snapshot`（把 STEP/STL/GLB/DXF/URDF 真**渲染/出图**成 PNG，可做工程图/审图/3D 打印前看件）· '
+                 '`doctor` 自检（现读：kernel OK · OCP）· `mcp`（serve CAD over MCP stdio，'
+                 '**本位不接** —— 长驻服务，要接须主人点头）。'
+                 '铁律：参数照真件 `--help` **现读不编**；判码走 `tools/native_rc.run_native`'
+                 '（`shell=False` · **只认原生 rc**）；二进制不在 ⇒ `needs_dependency`；未知 op ⇒ fail-closed；'
+                 '`status` 连 `--version` 都不跑（纯探）。'
+                 '⚠️ 本机**没有 FreeCAD** —— 本位接的是 `cadgen`，不接 FreeCAD-MCP 那条壳。'
+                 'op=status/where/version/doctor/help/snapshot'),
+        "handler": 'cadgen',
+        "safe": False,
+    },
+
+    # ── 2026-10-13 加（主人令：「uiverse-io/galaxy 把这些让触手吞噬为己用」）──────────
+    # 来历：galaxy ★13478 · **MIT** · 纯 HTML/CSS · **3802 个组件**（11 类目）⇒ 落 `_upstream/galaxy`。
+    # 体检（真跑）：`<script>` 0 件 · 事件处理器 0 · `eval` 0 · 真外链 184 件（多是出处链接）。
+    # 🔴 为什么"克隆+建索引"还不够：它文件名是**随机动物名**（`hungry-penguin-30.html`），
+    #    `asset_index find("neumorphic button")` **0 命中** ⇒ 搬进来只等于"堆在盘上"。
+    #    本件是**蒸馏**：从内容提语义（类目/可见文案/效果标签/主色/外链数）⇒ 人话能取到件。
+    "ui_kit": {
+        "domain": 'creation',
+        "desc": ('**UI 组件库的口**（吞天吞来的素材 → 可检索 · 可取件 · 读数如实）。'
+                 '素材：`uiverse-io/galaxy`（**MIT** · ★13478 · 3802 件 · 11 类目）落 `_upstream/galaxy`。'
+                 '常用说法：UI 组件 / 按钮 / 卡片 / 加载动画 / 开关 / 输入框 / 表单 / 复选框 / 工具提示 / 通知 / '
+                 '悬浮提示 / 图案 / 霓虹 / 渐变 / 毛玻璃。'
+                 'op=status/build/find/take/where：`build` 扫素材提语义（类目·可见文案·效果标签·主色·外链数）'
+                 '落 `store/ui_kit/index.jsonl`（只追加）；`find` 人话取件（**命中 0 就是 0，不硬塞**）；'
+                 '`take` 拷一件到 `outputs/ui-kit/` 并**如实报它带几条外链**。'
+                 '铁律：**零出网 · 零执行**（不跑组件里任何东西）· **不改 `_upstream/galaxy/**` 一个字节** · '
+                 '效果标签只认代码里真出现的特征串。')
+        ,
+        "handler": 'ui_kit',
+        "safe": True,
+    },
+
+    # ── 2026-10-13 加（主人令：「GOATED-UI-SKILL 里面的全部都要吞噬，增加触手对设计还有审美能力」）──
+    # 来历：`flash-hero/GOATED-UI-SKILL`（MIT · 10.3 MB）落 `_upstream/goated-ui-skill`；
+    #   **只读体检**：零可执行二进制 · 5 个 `.mjs` 只做本地文件读写 · 一处 `eval(` 是文档示例 ·
+    #   **我们一行都不跑**。它的本事在 `skills/frontend-atlas/references/` 的 **18 份手册 ≈ 1.9 MB**。
+    # 🔴 为什么"躺在盘上"不等于"有能力"：1.9 MB 散文，人话问不出「滚动驱动的文字动画读哪一节」。
+    #   本件蒸成**可检索的落点**：`### N. 标题` = 一条 recipe（+ 行号），来源表 = 一条 source（+ URL）。
+    "design_atlas": {
+        "domain": 'creation',
+        "desc": ('**设计与审美图鉴的口**（吞天吞来的外部手册 → 人话找到"该读哪一节"）。'
+                 '素材：`flash-hero/GOATED-UI-SKILL`（**MIT**）的 18 份手册（component-recipes / webgl-shaders-3d / '
+                 'interactions / scroll-gsap / motion-principles / typography / color-surfaces / page-transitions / '
+                 'text-effects / backgrounds-svg-canvas / layout-composition / css-modern / libraries / performance-a11y …）。'
+                 '常用说法：滚动驱动 / 视差 / 文字动画 / 缓动 / 弹簧 / 毛玻璃 / 渐变 / 阴影 / 粒子 / 过渡 / 悬停 / '
+                 '英雄区 / 卡片 / 无障碍 / 性能 / 着色器 / 三维 / 排版 / 字体 / 配色 / 灵感来源。'
+                 'op=status/build/find/where：`build` 扫手册提 **recipe（标题+行号+摘要+代码语言）** 与 '
+                 '**来源条目（类别+名+URL）** 落 `store/design_atlas/index.jsonl`（只追加）；'
+                 '`find` 人话 → **哪份文件哪一节（`文件#L行号`）**，命中 0 就是 0。'
+                 '铁律：**只读 · 零执行**（绝不跑上游任何 `.mjs`）· **不改上游一个字节** · 摘要只取自该节正文。')
+        ,
+        "handler": 'design_atlas',
+        "safe": True,
+    },
+
+    # ── 2026-10-13 加（把手工作品链封成器官：主人令一路「吞噬→为己用→出作品」）──
+    # 来历：前两刀做出 `ui_kit`（哪一件）与 `design_atlas`（该学哪一节），然后**手工**串了五步出了一张作品。
+    # 手工链不算器官 ⇒ 本件封成一位：`op=run` 一次跑完 **挑件 → 取件 → 真渲 → 调优**，每步带读数。
+    "art_chain": {
+        "domain": 'creation',
+        "desc": ('**作品链**（一条命令：挑组件 → 取件 → **真渲** → 调优，每步带读数）。'
+                 '① `ui_kit.find(q)` 挑头一件（带外链数）② `ui_kit.take` 拷进 `outputs/art-chain/`'
+                 '③ 调 `render_page.py` **真 Chromium 渲**（该件自带禁网 + 逐条记拦获）'
+                 '④ `vision_print.polish` 清晰度+补光。'
+                 '常用说法：出作品 / 挑组件出图 / 一键出图 / 拿这个组件做张图。'
+                 '旋钮：`q`(人话) · `look`(味道，**默认「原样」= 只调旋钮不套味道**) · `size` · `sharpen` · `grain` · `grade_fmt`(.png 无损)。'
+                 '铁律：每步走**既有门/既有件**（不重写渲染器、不绕门）· 失败**停在原地并说清哪一步**（不把半成品念成作品）· '
+                 '上游 `_upstream/galaxy/**` 一个字节不动。'),
+        "handler": 'art_chain',
+        "safe": False,
+    },
+
+    # ── 2026-10-13 加（主人令：「juliangarnier/anime 这个也吞噬了」）──
+    # 来历：`juliangarnier/anime`（**anime.js** · **MIT** · ★73546 · `animejs` **v4.5.0**）落 `_upstream/anime`。
+    # 体检（真跑）：`postinstall`/`prepare` 无 · 运行时 deps **0** · 可执行 **0** · 现读 **281 文件 / 1.49 MB**。
+    # 🔴 它本是 **JS 引擎**：`sparse-checkout` 那一刀只落 3 件 ⇒ 改全量浅克隆；本事是 **67 个导出 API**。
+    #   本件蒸成"人话 → 该用哪个 API（名 + 签名 + `文件#L行号`）"，并由 `op=prove` 让 **Node 原生真跑**
+    #   吞来的 `dist/modules/index.js`（真算 clamp/lerp/mapRange/round，并拿运行时导出数**咬**索引条数）。
+    "motion_kit": {
+        "domain": 'creation',
+        "desc": ('**动效引擎的口**（人话 → anime.js 的真 API，并**本机原生真跑**证明引擎可用）。'
+                 '素材：`juliangarnier/anime`（**MIT** · ★73546 · animejs v4.5.0 · **67 导出**）落 `_upstream/anime`。'
+                 '常用说法：动画 / 动效 / 补间 / 时间线 / 定时器 / 滚动驱动 / 视差 / 拖拽 / 弹簧 / 回弹 / '
+                 '缓动曲线 / 贝塞尔 / 步进 / 打字机 / 逐字 / 乱码 / 变形 / 沿路径 / 描边 / 交错 / 错开 / 随机 / '
+                 '映射 / 插值 / 布局 / 三维 / WebGL / 作用域 / 可动画对象 / Web 动画。'
+                 'op=status/build/find/api/prove/where：`build` 扫 `dist/modules` 提 **API 名·模块·签名（现读 .d.ts）·定义行** '
+                 '落 `store/motion_kit/index.jsonl`（只追加）；`find` 人话取候选（**命中 0 就是 0**）；`api` 按准确名取一条；'
+                 '`prove` **Node 原生真跑**（真算纯函数 + `consistent` 咬索引条数）。'
+                 '铁律：**零出网 · 零执行上游脚本 · 不改 `_upstream/anime/**` 一个字节** · 签名/说明只从 `.d.ts` 现读，取不到留空。')
+        ,
+        "handler": 'motion_kit',
+        "safe": True,
+    },
+
+    # ── 2026-10-13 加（主人令：「DavidHDev/react-bits 继续吞噬」）──
+    # 来历：`DavidHDev/react-bits`（**react-bits** · ★49005 · 216 组件/5 类）落 `_upstream/react-bits`（稀疏浅克隆 21.63 MB）。
+    # 🔴 **许可与 galaxy / anime 不一样**：LICENSE.md 现读 = **MIT + Commons Clause v1.0** ——
+    #    **可以**放进你自己的应用/网站/产品里用（含商用）；**禁止**把组件本身（单独/打包/**移植版**）再卖·再授权·再分发。
+    #    ⇒ 本件**只蒸「哪个组件干什么 · 源码在哪」**，**不提供任何把组件拷出去的 op**（要学就读原文自己实现）。
+    # 体检（真跑）：1284 文件 · `postinstall`/`prepare` 无 · `child_process`/`eval`/`require` 0 ·
+    #    `exec(` 全是正则 · 仅 3 个组件会运行时联网（GridScan 拉 CDN 的 face-api.js 模型 · CircularGallery · MetallicPaint）。
+    "bits_kit": {
+        "domain": 'creation',
+        "desc": ('**动效组件图鉴的口**（人话 → react-bits 哪个组件 · 干什么 · **源码在哪 · 会不会联网 · 依赖什么**）。'
+                 '素材：`DavidHDev/react-bits`（**MIT + Commons Clause v1.0** · ★49005 · 216 组件 · 5 类：'
+                 'Animations 39 / Backgrounds 62 / Components 48 / Micro 34 / TextAnimations 33）落 `_upstream/react-bits`。'
+                 '常用说法：动画 / 背景 / 文字动画 / 微交互 / 手风琴 / 画廊 / 卡片 / 光标跟随 / 粒子 / 网格 / 渐变 / '
+                 '流光 / 毛玻璃 / 滚动 / 计数 / 故障 / 极光 / 波浪 / 液态 / 三维 / 音频 / 拖拽 / 轮播 / 开关 / 加载 / '
+                 '翻牌 / 解密 / 描边 / 磁性。'
+                 'op=status/build/find/api/where：`build` 扫 `src/content`（**盘上目录是真相**）提 名·类目·说明（取自官方 '
+                 '`public/llms.txt`）·源码路径·注册表·依赖·**联网标**，落 `store/bits_kit/index.jsonl`（只追加），'
+                 '并把「清单与盘上对不上的地方」如实带出来；`find` 人话取候选（**命中 0 就是 0**，可 `only_offline=true` 只看不联网的）；'
+                 '`api` 按准确名取一条。'
+                 '🔴 铁律：**只读 · 零执行 · 不搬成品**（许可禁止再分发/移植）· **不碰 `public/rbp/**`**（付费版 Pro）· '
+                 '**不改 `_upstream/react-bits/**` 一个字节** · 说明只取原文，取不到留空。')
+        ,
+        "handler": 'bits_kit',
+        "safe": True,
+    },
+
+    # ── 2026-10-13 加（主人令「下一步」：把前几刀散着的器官**串成一条链、封成一位**）──
+    # 来历：前几刀陆续吞出四个**知识器官**（ui_kit 可渲件 · bits_kit 参考件 · motion_kit 动效 API ·
+    #   design_atlas 技法节），各管一段但**没人把它们串起来**。本件串成一位：
+    #   `plan` 人话一次问 ⇒ **四路知识同时到位**（全是**零作用域的读**，走既有门）+ **下一步可直接照抄的命令**；
+    #   `run` 把整条链交给 `art_chain` 真出片（**不重写任何一环**），内层门缺什么就**原样带出来**。
+    "art_brief": {
+        "domain": 'creation',
+        "desc": ('**作品策划位**（人话一次问，四路知识同时到位 + 给出可直接照抄的出片命令）。'
+                 '四路： `ui_kit` **可渲件**（纯 HTML/CSS，能直接进渲染器）· `bits_kit` **参考件**（react-bits 的 React 实现，'
+                 '**只读来学**——许可禁止再分发/移植）· `motion_kit` **动效API**（anime.js 真 API，带签名与 `文件#L行号`）· '
+                 '`design_atlas` **技法节**（18 份手册里该读哪一节，带 `文件#L行号`）；出片交给 `art_chain`。'
+                 '常用说法：出作品 / 做个动效 / 一键出图 / 帮我策划一下 / 这个效果怎么做。'
+                 'op=status/where/plan/run：`plan` 走**四路零作用域的读**（命中 0 就是 0，**不拿别的路凑数**，'
+                 '缺哪一路就如实列出来）并给出 `art_chain` 的下一步命令；`run` 真出片，失败**停在原地**并原样带出'
+                 '`inner_*`（内层门缺什么）。'
+                 '铁律：每路都走既有门 `run_task`（不直连模块、不绕门、不重写任何一环）· 缺就如实报缺 · '
+                 '`bits_kit` 那一路只读来学、**不搬成品**。')
+        ,
+        "handler": 'art_brief',
+        "safe": False,
+    },
+
+    # ── 2026-10-13 加（主人令「这几个分类吞噬不能跳过任何步骤必须全部吞噬」）──
+    # 按本仓 `gbt-vendor-intake` **七步法**接入六件，一步不跳：
+    #   motionsites.ai（MIT · 65 条网页设计提示词）· impeccable（Apache-2.0 · 设计语言系统）·
+    #   hyperframes（Apache-2.0 · 写 HTML 就渲染视频）· ai-engineering-from-scratch（MIT · 20 阶段课程）·
+    #   Agent-Reach（MIT · 一条 CLI 读/搜 15 个平台）· ponytail（MIT · 让 Agent 少写代码的规则包）·
+    #   **DeepSeek-Bot**（Apache-2.0 · DeepSeek Harness 的 bot 插件：长期存活的 Bot 团队 + 群聊轮流发言 + 上下文管家）。
+    # 🔴 只读体检已做（六件全扫；三处 `hardcoded_key` 逐条落实为**无害**——hyperframes 那处是
+    #    PostHog 遥测客户端公钥，但**确有遥测外呼**要记账；另两处是教学占位符 / 测试假值）。
+    # 第 3 步（垫片）**未需**：六件真值钱的面都是**文本**（提示词/技能/课程/文档/规则）。
+    "intake_kit": {
+        "domain": 'creation',
+        "desc": ('**外部件接入图鉴**（七件 · 七步法全走）：身份 · 许可 · **只读体检读数** · 知识面在哪。'
+                 '素材落 `_upstream/`：`motionsites.ai`（65 条设计提示词）· `impeccable`（设计语言系统 · 24 份 SKILL）· '
+                 '`hyperframes`（HTML→视频 · 40 份 SKILL）· `ai-engineering-from-scratch`（20 阶段 + 26 份 SKILL）· '
+                 '`Agent-Reach`（15 平台读取/搜索 CLI · llms.txt + docs）· `ponytail`（少写代码规则包 · 12 份 SKILL）· '
+                 '`DeepSeek-Bot`（长期存活 Bot 团队 · bot 间传话 · 群聊轮流发言 · 上下文管家 + FTS5 全文索引）。'
+                 '常用说法：设计提示词 / 落地页 / 设计语言 / 少写代码 / 读网页 / 搜索全网 / 视频渲染 / 学习路径 / 课程 / '
+                 '长期存活 / bot 团队 / 群聊 / 上下文管家 / 记忆。'
+                 'op=status/build/find/api/where：`build` 扫六件的知识面（各件 `SKILL.md` · motionsites 提示词 · '
+                 'ai-engineering 阶段 · Agent-Reach 文档）⇒ 一条一行（**带 `文件#L行号`**）落 `store/intake_kit/index.jsonl`；'
+                 '`find` 人话 → **该读哪一件的哪一份**（**命中 0 就是 0**）；`api` 按准确名取一条。'
+                 '铁律：**只读 · 零执行 · 零出网**（不装依赖、不跑它们的代码）· **不改 `_upstream/**` 一个字节** · '
+                 '**体检读数带日期**（2026-10-13 探针），不许当实时值念。')
+        ,
+        "handler": 'intake_kit',
+        "safe": True,
+    },
+
+    # ── 2026-10-13 加（主人令：「这才是我们需要蒸馏提炼的核心思路了」+「这个配合我们的触手连接就是无敌」）──
+    # 上游 **`Edge0-AI/Edge0`**（★4612 · **Apache-2.0** · 自带论文 arXiv 2609.18063）：
+    #   **《内存墙的另一半：用训练好的路由预判从 SSD 服务 35B MoE》** —— 35B MoE 只吃 ~2.5 GB 内存。
+    # 🔴 本件是**蒸馏件，不是外挂**：**只蒸思路、不搬它的代码**，把它四条机制翻成**我们自己的运行纪律**
+    #   + **触手映射**（"触手不该把整座仓搬回家，只把这一步要用的那一块拿进来；下一块提前预判、并行取"）。
+    # 四条：① 权重离芯（SSD 流式 + mmap 懒读 ⇒ 峰值内存由**激活集**定，不由参数量定）
+    #   ② 槽位 + LRU + 双缓冲（索引不出 GPU ⇒ 每步零主机同步；重复集合不重建图）
+    #   ③ prerouter 跨 token 预判（提前一步预测 ⇒ **IO 与前向重叠**，上游实测吞吐最高 **+59%**，零丢弃）
+    #   ④ Recover-LoRA（冻结 int4 基模 + FP teacher 蒸馏补质量；**适配器不合并**，一份底座服务多套）
+    # ⚠️ 边界（不许说反）：本机 **Windows/AMD + torch CPU** ⇒ 它的 Python 路线绑 **MLX(Apple Silicon) 跑不了**；
+    #   Windows 那条是 **C++/Vulkan**，本机**无 C++ 工具链**（现读 cmake/cl/g++ 全空）⇒ 也跑不了。
+    #   且我们是 **7B dense 不是 MoE** ⇒ 它的 prerouter 要**退化成按层顺序预取**，收益远小于 MoE。
+    "offload_distill": {
+        "domain": 'llm',
+        "desc": ('**内存墙蒸馏件**（Edge0 思路 → 我们的运行纪律 + **触手映射**）。'
+                 '上游 `Edge0-AI/Edge0`（**Apache-2.0** · ★4612 · arXiv 2609.18063）做到「35B 只吃 ~2.5 GB 内存」。'
+                 '四条机制：**权重离芯**（SSD 流式 + mmap 懒读）· **槽位+LRU+双缓冲**（每步零主机同步）· '
+                 '**prerouter 提前一步预判**（IO 与前向重叠 · 吞吐最高 +59%）· **Recover-LoRA**（int4 底座 + '
+                 '蒸馏小适配器补质量 · **适配器不合并**）。'
+                 '常用说法：内存压缩 / 省内存 / 流式加载 / 权重放盘 / 预取 / 量化 / LoRA / 内存墙 / 跑大模型。'
+                 'op=status/where/mechanism/map/probe：`mechanism` 逐条给「**上游原文** → 我们的话 → 对我们用处 → 判据」；'
+                 '`map` 给**触手映射**；`probe` **只读现读**本机就绪面（内存/磁盘/工具）并**逐条路线说能不能走**。'
+                 '铁律：**只蒸思路不搬代码 · 只读上游零执行**（不装依赖、不下 23 GB 权重）· '
+                 '**边界不许说反**（本机跑不了它的 MLX 路线；我们是 dense 不是 MoE）。')
+        ,
+        "handler": 'offload_distill',
+        "safe": True,
+    },
+
+    # ── 2026-10-13 加（主人令：「把触手GPU-CPU传输让她学会不要每次都要我提醒」+「是她拥有这个传输能力要记得」）──
+    # 🔴 这不是"本机↔卡"的脚本，是**她身上的器官**：云卡触手。
+    #   来历：之前每次上云都现写临时脚本（`.scratch/_up_lora.py` / `_dl_lora.py`），还得主人提醒 —— 那不是器官。
+    #   走的两条既有路：**文件** = JupyterLab HTTP（PUT /api/contents base64 · GET /files）；
+    #   **命令** = JupyterLab 内核通道（POST /api/kernels + wss execute_request）；**卡在哪** = RunPod REST /v1/pods。
+    "pod_link": {
+        "domain": 'creation',
+        "desc": ('**云卡触手**（她自己的传输器官：本机 ⇄ GPU 卡 · 在卡上跑命令 · 看卡状态）。'
+                 'op=status/ls/up/down/run/where：`status` 读卡清单（id/状态/价/卷/端口/公网IP）+ Jupyter 通不通；'
+                 '`ls` 列卡上目录；**`up` 本机→卡**（字节级 base64 上传，**传完回读对账 sha256**）；'
+                 '**`down` 卡→本机**（`/files` 取回 + 落盘对账）；**`run` 在卡上跑一段 Python**（内核通道）。'
+                 '常用说法：传上云 / 从卡上取回来 / 在卡上跑 / 卡上现在有什么 / 云卡 / 4090 / GPU 传输 / 上云。'
+                 '铁律：**令牌不回显**（只报已配/未配）· **传完必须回读对账哈希**（不一致一律 ok=false）· '
+                 '**不创建/不删除/不重启 Pod**（花钱动作要主人点头）。')
+        ,
+        "handler": 'pod_link',
+        "safe": False,
+    },
+
+    "comfy_cloud": {
+        "domain": 'creation',
+        "desc": ('**云卡 ComfyUI 触手**（主人令 2026-10-13「她不需要 ComfyUI，直接使用触手就可以生产出高质量视频」）：'
+                 '把云卡上的 ComfyUI **包成她自己的器官**——她不用知道 ComfyUI 是什么。'
+                 '本机到 8188 没路（实测代理 404），所以所有调用都在**卡内**执行，'
+                 '经云卡触手 pod_link 的 run 递脚本、down 取产物并回读哈希对账。'
+                 'op：读 `status/nodes/models/queue/history`；写 `submit`（原样图）· '
+                 '**`video`（一句话 → sd15 首帧 → svd_xt 动作 → ffmpeg 编码 mp4）** · `fetch`（卡→本机对账）· `free`。'
+                 '常用说法：出视频 / 生成视频 / 高质量视频 / 让她出片 / 云卡出片 / 不要碰 ComfyUI / 触手自己出。'
+                 '铁律：令牌不回显 · **产物以卡上与本机 sha256 一致为准** · '
+                 '卡上 `mm_sd_v15_v2.ckpt` 实测认不出类型（不许当默认）。')
+        ,
+        "handler": 'comfy_cloud',
+        "safe": False,
     },
 }
 

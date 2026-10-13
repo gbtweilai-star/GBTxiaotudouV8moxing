@@ -1,0 +1,116 @@
+{
+ "id": "cyber_suit_4k",
+ "purpose": "赛博战衣 4K 贴图（V8 贴图工厂 · 要 GPU）",
+ "note": "ComfyUI 原生节点连线格式=契约；workflow.json + seed + 模型哈希全部落盘（可追溯）",
+ "contract": {
+  "3": {
+   "class_type": "KSampler",
+   "inputs": {
+    "seed": 737,
+    "steps": 25,
+    "cfg": 6.5,
+    "sampler_name": "dpmpp_2m",
+    "scheduler": "karras",
+    "denoise": 1,
+    "model": [
+     "4",
+     0
+    ],
+    "positive": [
+     "6",
+     0
+    ],
+    "negative": [
+     "7",
+     0
+    ],
+    "latent_image": [
+     "5",
+     0
+    ]
+   }
+  },
+  "4": {
+   "class_type": "CheckpointLoaderSimple",
+   "inputs": {
+    "ckpt_name": "SD1.5/model.safetensors"
+   }
+  },
+  "5": {
+   "class_type": "EmptyLatentImage",
+   "inputs": {
+    "width": 768,
+    "height": 1152,
+    "batch_size": 1
+   }
+  },
+  "6": {
+   "class_type": "CLIPTextEncode",
+   "inputs": {
+    "text": "photorealistic cyber bodysuit, matte black tactical fabric, glossy patent yellow straps, harness detail, studio lighting, rim light, PBR, ultra detailed fabric weave, 8k",
+    "clip": [
+     "4",
+     1
+    ]
+   }
+  },
+  "7": {
+   "class_type": "CLIPTextEncode",
+   "inputs": {
+    "text": "anime, cartoon, deformed, extra limbs, lowres, blurry, watermark, duplicate, 3D render plastic",
+    "clip": [
+     "4",
+     1
+    ]
+   }
+  },
+  "8": {
+   "class_type": "VAEDecode",
+   "inputs": {
+    "samples": [
+     "3",
+     0
+    ],
+    "vae": [
+     "4",
+     2
+    ]
+   }
+  },
+  "9": {
+   "class_type": "ImageScale",
+   "inputs": {
+    "image": [
+     "8",
+     0
+    ],
+    "upscale_method": "lanczos",
+    "width": 4096,
+    "height": 4096,
+    "crop": "disabled"
+   }
+  },
+  "10": {
+   "class_type": "SaveImage",
+   "inputs": {
+    "filename_prefix": "gbt_cyber_suit_4k",
+    "images": [
+     "9",
+     0
+    ]
+   }
+  }
+ },
+ "gate": {
+  "min_side": 4096,
+  "format": "PNG",
+  "non_empty": true,
+  "why": "最短边 >=4096 + 非空 + 可解码（与 comfy_native.gate_image 同口径）"
+ },
+ "provenance": {
+  "seed": 737,
+  "ckpt": "SD1.5/model.safetensors",
+  "ckpt_hash": "跑时现读",
+  "workflow_sha256": "落盘时算"
+ }
+}

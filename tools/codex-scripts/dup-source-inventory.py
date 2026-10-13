@@ -88,7 +88,7 @@ def top_level() -> list[Path]:
 def deep_hits(max_depth: int = 3) -> list[Path]:
     """在整仓里找名字像「依赖树/源码树副本」的目录（深度受限）。"""
     hits: list[Path] = []
-    base_depth = len(ROOT.parts)
+    len(ROOT.parts)
     stack = [(ROOT, 0)]
     while stack:
         here, depth = stack.pop()

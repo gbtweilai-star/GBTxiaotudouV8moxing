@@ -8,7 +8,13 @@
 用法：
   python plugins/gbt-master/tools/phase1-owner.py
 """
-import hashlib, json, os, pathlib, struct, sys, time, urllib.request
+import hashlib
+import json
+import os
+import pathlib
+import sys
+import time
+import urllib.request
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
 DH = WS / "holo_pet/assets/digital-human"

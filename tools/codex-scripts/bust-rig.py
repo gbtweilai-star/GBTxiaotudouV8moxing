@@ -6,12 +6,15 @@
   · 骨骼平移**相对父节点**（绝对坐标会累加成错姿势 —— 踩过）
   · 微动 clip：呼吸(脊柱)+头部摆动/点头，周期整除时长 ⇒ 循环闭合
 输出：raw/portrait-bust-rigged.glb（含 idle 微动）"""
-import json, math, pathlib, struct
+import json
+import math
+import pathlib
+import struct
 import numpy as np
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
 DH = WS / "holo_pet/assets/digital-human"
-import sys
+import sys  # noqa: E402
 SRC = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else DH / "raw/portrait-bust.glb"
 OUT = pathlib.Path(sys.argv[2]) if len(sys.argv) > 2 else DH / "raw/portrait-bust-rigged.glb"
 
@@ -25,7 +28,8 @@ del raw
 
 
 def acc(i, comps):
-    a = J["accessors"][i]; bv = J["bufferViews"][a["bufferView"]]
+    a = J["accessors"][i]
+    bv = J["bufferViews"][a["bufferView"]]
     dt = {5126: np.float32, 5125: np.uint32, 5123: np.uint16}[a["componentType"]]
     return np.frombuffer(bytes(BIN), dt, a["count"] * comps, bv.get("byteOffset", 0)).reshape(a["count"], comps).astype(np.float64)
 
@@ -50,10 +54,14 @@ for f in np.arange(0.30, 0.63, 0.01):
     if best is None or w < best[0]:
         best = (w, f, y)
 neck_f = best[1] if best else 0.45
+
+
 def cen_at(f, tol=0.02):
     y = y_top - f * H
     band = P[np.abs(P[:, 1] - y) < tol * H]
     return band.mean(axis=0) if len(band) else P.mean(axis=0)
+
+
 J3 = {
     "SpineBase": cen_at(0.94), "Spine1": cen_at(min(0.92, neck_f + 0.22)),
     "Neck": cen_at(neck_f), "Head": cen_at(max(0.06, neck_f - 0.16)),
@@ -64,19 +72,27 @@ names = list(PARENT)
 print(f"颈位实测 f={neck_f:.2f}（横截最窄 {best[0]:.3f}）· 关节 {len(names)}")
 
 # ② 权重
+
+
 def seg_d(v, a, b):
-    ab = b - a; t = np.clip(((v - a) @ ab) / max(1e-12, ab @ ab), 0, 1)
+    ab = b - a
+    t = np.clip(((v - a) @ ab) / max(1e-12, ab @ ab), 0, 1)
     return np.linalg.norm(v - (a + t * ab))
+
+
 tail = {n: (np.mean([J3[c] for c in names if PARENT[c] == n], axis=0) if any(PARENT[c] == n for c in names)
-              else J3[n] + np.array([0, 0.05 * H, 0])) for n in names}
+            else J3[n] + np.array([0, 0.05 * H, 0])) for n in names}
 D = np.stack([[seg_d(v, J3[n], tail[n]) for v in P] for n in names], axis=1)
 order = np.argsort(D, axis=1)[:, :4]
-W = np.zeros_like(D); rows = np.arange(len(P))[:, None]
+W = np.zeros_like(D)
+rows = np.arange(len(P))[:, None]
 W[rows, order] = 1.0 / np.power(D[rows, order] + 1e-4, 3)
 W /= W.sum(axis=1, keepdims=True)
 nb = [[] for _ in range(len(P))]
 for a, b, c in IDX:
-    nb[a] += [b, c]; nb[b] += [a, c]; nb[c] += [a, b]
+    nb[a] += [b, c]
+    nb[b] += [a, c]
+    nb[c] += [a, b]
 nb = [np.array(sorted(set(x))) for x in nb]
 for _ in range(3):
     W2 = W.copy()
@@ -85,14 +101,16 @@ for _ in range(3):
             W2[i] = 0.5 * W[i] + 0.5 * W[nb[i]].mean(axis=0)
     W = W2 / W2.sum(axis=1, keepdims=True)
 top4 = np.argsort(W, axis=1)[:, ::-1][:, :4]
-w4 = np.take_along_axis(W, top4, axis=1); w4 /= w4.sum(axis=1, keepdims=True)
-print(f"权重：和 {w4.sum(axis=1).min():.4f}/{w4.sum(axis=1).max():.4f} · 活跃骨 {(w4>0.01).sum(axis=1).mean():.2f}")
+w4 = np.take_along_axis(W, top4, axis=1)
+w4 /= w4.sum(axis=1, keepdims=True)
+print(f"权重：和 {w4.sum(axis=1).min():.4f}/{w4.sum(axis=1).max():.4f} · 活跃骨 {(w4 > 0.01).sum(axis=1).mean():.2f}")
 
 
 def add_view(arr, target=None):
     while len(BIN) % 4:
         BIN.append(0)
-    o = len(BIN); BIN.extend(arr.tobytes())
+    o = len(BIN)
+    BIN.extend(arr.tobytes())
     v = {"buffer": 0, "byteOffset": o, "byteLength": arr.nbytes}
     if target:
         v["target"] = target
@@ -100,14 +118,16 @@ def add_view(arr, target=None):
     return len(J["bufferViews"]) - 1
 
 
-jv = add_view(top4.astype(np.uint16), 34962); wv = add_view(w4.astype(np.float32), 34962)
+jv = add_view(top4.astype(np.uint16), 34962)
+wv = add_view(w4.astype(np.float32), 34962)
 J["accessors"].append({"bufferView": jv, "componentType": 5123, "count": len(top4), "type": "VEC4"})
 J["accessors"].append({"bufferView": wv, "componentType": 5126, "count": len(w4), "type": "VEC4"})
 pr["attributes"]["JOINTS_0"] = len(J["accessors"]) - 2
 pr["attributes"]["WEIGHTS_0"] = len(J["accessors"]) - 1
 
 # ③ 骨骼节点（相对父节点）+ skin
-base = len(J["nodes"]); idx = {}
+base = len(J["nodes"])
+idx = {}
 for n in names:
     par = PARENT[n]
     rel = J3[n] - (J3[par] if par else 0.0)
@@ -119,14 +139,19 @@ for n in names:
         J["nodes"][idx[n]]["children"] = kids
 ibm = np.array([np.linalg.inv(np.eye(4)) for _ in names], np.float32)   # 占位，下面按世界坐标重算
 world = {}
+
+
 def wpos(n):
     w = np.array(J["nodes"][idx[n]]["translation"], np.float64)
     return w if PARENT[n] is None else wpos(PARENT[n]) + w
+
+
 for n in names:
     world[n] = wpos(n)
 ibm = []
 for n in names:
-    m = np.eye(4, dtype=np.float32); m[:3, 3] = -world[n]
+    m = np.eye(4, dtype=np.float32)
+    m[:3, 3] = -world[n]
     ibm.append(m.T.flatten())
 ibm = np.array(ibm, np.float32)
 iv = add_view(ibm)
@@ -138,10 +163,15 @@ J["nodes"].append({"name": "Armature", "children": [idx["SpineBase"]]})
 J["scenes"][0]["nodes"] = [0, len(J["nodes"]) - 1]
 
 # ④ idle 微动（呼吸 + 头部摆动/点头；周期整除时长 ⇒ 循环闭合）
+
+
 def quat(rx, ry, rz):
     hx, hy, hz = map(math.radians, (rx / 2, ry / 2, rz / 2))
-    cx, sx = math.cos(hx), math.sin(hx); cy, sy = math.cos(hy), math.sin(hy); cz, sz = math.cos(hz), math.sin(hz)
+    cx, sx = math.cos(hx), math.sin(hx)
+    cy, sy = math.cos(hy), math.sin(hy)
+    cz, sz = math.cos(hz), math.sin(hz)
     return np.array([sx*cy*cz + cx*sy*sz, cx*sy*cz - sx*cy*sz, cx*cy*sz + sx*sy*cz, cx*cy*cz - sx*sy*sz], np.float32)
+
 
 LEN, FPS = 8.0, 12
 times = np.arange(0, LEN + 1e-6, 1 / FPS, dtype=np.float32)
@@ -157,7 +187,8 @@ for t in times:
 samplers, channels = [], []
 while len(BIN) % 4:
     BIN.append(0)
-o = len(BIN); BIN.extend(times.tobytes())
+o = len(BIN)
+BIN.extend(times.tobytes())
 J["bufferViews"].append({"buffer": 0, "byteOffset": o, "byteLength": times.nbytes})
 J["accessors"].append({"bufferView": len(J["bufferViews"]) - 1, "componentType": 5126, "count": len(times),
                        "type": "SCALAR", "min": [float(times.min())], "max": [float(times.max())]})
@@ -166,7 +197,8 @@ for n in names:
     arr = np.array(per[n], np.float32)
     while len(BIN) % 4:
         BIN.append(0)
-    o = len(BIN); BIN.extend(arr.tobytes())
+    o = len(BIN)
+    BIN.extend(arr.tobytes())
     J["bufferViews"].append({"buffer": 0, "byteOffset": o, "byteLength": arr.nbytes})
     J["accessors"].append({"bufferView": len(J["bufferViews"]) - 1, "componentType": 5126, "count": len(arr), "type": "VEC4"})
     samplers.append({"input": tin, "output": len(J["accessors"]) - 1, "interpolation": "LINEAR"})

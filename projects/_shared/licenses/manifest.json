@@ -3,6 +3,24 @@
   "note": "素材许可账 —— 逐件登记（文件 + sha256 + 出处 + 授权）",
   "entries": [
     {
+      "file": "projects/film/01-screenplay/20261009-film-堂屋-01concept.md",
+      "sha256": "c9e6494d30542fbcea626888d47b845cd565a1d001eee9540f562b954c406f67",
+      "bytes": 1559,
+      "source": "本仓自撰（GBT小土豆V8 · 人机合稿；作者见件内署名）",
+      "license": "自有（无第三方素材 · 零出网 · 署名在件内）",
+      "note": "三方向工作流输入口真件（2026-10-09 闭环）",
+      "at": "2026-10-09T09:57:09"
+    },
+    {
+      "file": "projects/film/01-screenplay/20261009-film-堂屋-02script.md",
+      "sha256": "5096fe94286039478d20cf6b40541244d163e09834669364ce480dc97849c2a7",
+      "bytes": 1506,
+      "source": "本仓自撰（GBT小土豆V8 · 人机合稿；作者见件内署名）",
+      "license": "自有（无第三方素材 · 零出网 · 署名在件内）",
+      "note": "三方向工作流输入口真件（2026-10-09 闭环）",
+      "at": "2026-10-09T09:57:09"
+    },
+    {
       "file": "projects/film/03-shoot/20260923-film-pipeline-selftest-rehearsal.mp4",
       "sha256": "66ae7284d8a935e9cf2f092273e29a94ee4580fda127551cfb5d9ec1b1569113",
       "bytes": 2401091,
@@ -10,6 +28,15 @@
       "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
       "note": "三方向工作流自检件 · AI电影/shots（**彩排，非作品**）",
       "at": "2026-09-23T15:45:03"
+    },
+    {
+      "file": "projects/film/03-shoot/20261009-film-堂屋-03shots.mp4",
+      "sha256": "3abc6801b59d305033a4a37f1899a99f7960220d123a2b4f020f3c28e7316599",
+      "bytes": 4293944,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（film 步 shots）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · AI电影/shots（**彩排，非作品**）",
+      "at": "2026-10-09T11:39:36"
     },
     {
       "file": "projects/film/04-assets/20260923-film-pipeline-selftest-rehearsal.wav",
@@ -21,6 +48,15 @@
       "at": "2026-09-23T15:31:04"
     },
     {
+      "file": "projects/film/04-assets/20261009-film-堂屋-04sound.wav",
+      "sha256": "e4aa1678a9d8a58b602a8322d5fff7e9f6df152971df3f7a85919b6eae2e8971",
+      "bytes": 6350664,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（film 步 sound）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · AI电影/sound（**彩排，非作品**）",
+      "at": "2026-10-09T09:55:13"
+    },
+    {
       "file": "projects/film/05-edit/20260923-film-pipeline-selftest-rehearsal.mp4",
       "sha256": "d660117971ad00488409c106ee8e583ebe29f91e0f9ac5c831d660e241aafb3c",
       "bytes": 2401132,
@@ -28,6 +64,15 @@
       "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
       "note": "三方向工作流自检件 · AI电影/edit（**彩排，非作品**）",
       "at": "2026-09-23T15:31:04"
+    },
+    {
+      "file": "projects/film/05-edit/20261009-film-堂屋-05edit.mp4",
+      "sha256": "4c3f6b81e00edb6110ca36e499dd138669d000c51502a06dddebb6da28b5af29",
+      "bytes": 13544231,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（film 步 edit）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · AI电影/edit（**彩排，非作品**）",
+      "at": "2026-10-09T11:44:59"
     },
     {
       "file": "projects/film/06-final/20260923-film-pipeline-selftest-rehearsal.mp4",
@@ -39,6 +84,33 @@
       "at": "2026-09-23T15:31:04"
     },
     {
+      "file": "projects/film/06-final/20261009-film-堂屋-06export.mp4",
+      "sha256": "e027f1ebf4c5093f97db7674eeb5f277fbe744afc9ea5aa429e9d0ff32d31d56",
+      "bytes": 13544233,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（film 步 export）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · AI电影/export（**彩排，非作品**）",
+      "at": "2026-10-09T11:45:00"
+    },
+    {
+      "file": "projects/music/01-lyrics/20260921-夜航/20260921-music-夜航-01lyrics.md",
+      "sha256": "215bdfb46c6717ecabbec4283c0e2bedc0990cb71f0d1fe7403993cbbb1af887",
+      "bytes": 4207,
+      "source": "本仓自撰（GBT小土豆V8 · 人机合稿；作者见件内署名）",
+      "license": "自有（无第三方素材 · 零出网 · 署名在件内）",
+      "note": "三方向工作流输入口真件（2026-10-09 闭环）",
+      "at": "2026-10-09T09:57:09"
+    },
+    {
+      "file": "projects/music/03-arrange/20261009-music-夜航-02arrangement.mid",
+      "sha256": "13bde89575df756aa24fce9b97e0f06652f51085cb1a5cd4ea158b1dca334d1c",
+      "bytes": 1046,
+      "source": "本仓自撰（GBT小土豆V8 · 人机合稿；作者见件内署名）",
+      "license": "自有（无第三方素材 · 零出网 · 署名在件内）",
+      "note": "三方向工作流输入口真件（2026-10-09 闭环）",
+      "at": "2026-10-09T09:57:09"
+    },
+    {
       "file": "projects/music/04-mix/20260923-music-pipeline-selftest-rehearsal.wav",
       "sha256": "4ee0c299c57fcb06a77e2ec81a51e34b5d685b3a5dbf02921c5022ab7ae28b95",
       "bytes": 352878,
@@ -46,6 +118,15 @@
       "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
       "note": "三方向工作流自检件 · AI音乐/audio（**彩排，非作品**）",
       "at": "2026-09-23T15:30:51"
+    },
+    {
+      "file": "projects/music/04-mix/20261009-music-夜航-03audio.wav",
+      "sha256": "7fe5a6619351af61835e178c57aafb14f3ffdaa6f2d68736371d7aa71a7dd541",
+      "bytes": 7645276,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（music 步 audio）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · AI音乐/audio（**彩排，非作品**）",
+      "at": "2026-10-09T09:55:20"
     },
     {
       "file": "projects/music/05-master/20260923-music-pipeline-selftest-rehearsal.wav",
@@ -66,6 +147,15 @@
       "at": "2026-09-23T16:15:31"
     },
     {
+      "file": "projects/music/05-master/20261009-music-夜航-04master.wav",
+      "sha256": "6d39f5c4c8231f2fdd30107285c0e4601c6b72e8459d8657f60ae8c92664eed3",
+      "bytes": 7645276,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（music 步 master）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · AI音乐/master（**彩排，非作品**）",
+      "at": "2026-10-09T09:55:30"
+    },
+    {
       "file": "projects/music/06-release/20260923-music-pipeline-selftest-rehearsal.flac",
       "sha256": "6ad2b1ead611918135894a208fe9f87d5590220877903f89f73c29c491ec30a5",
       "bytes": 267148,
@@ -73,6 +163,33 @@
       "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
       "note": "三方向工作流自检件 · AI音乐/export（**彩排，非作品**）",
       "at": "2026-09-23T15:30:52"
+    },
+    {
+      "file": "projects/music/06-release/20261009-music-夜航-05export.flac",
+      "sha256": "1d3468cf25093b8331c38163131400ede07bf0fc63549177dd36613320c07258",
+      "bytes": 1850241,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（music 步 export）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · AI音乐/export（**彩排，非作品**）",
+      "at": "2026-10-09T09:55:37"
+    },
+    {
+      "file": "projects/short-video/01-script/20261009-short-video-醒来-01script.md",
+      "sha256": "1965f88250ee29f410b95e0a33c0cfcd22ff49abc5abb285a0e8cff4939b2f9a",
+      "bytes": 1667,
+      "source": "本仓自撰（GBT小土豆V8 · 人机合稿；作者见件内署名）",
+      "license": "自有（无第三方素材 · 零出网 · 署名在件内）",
+      "note": "三方向工作流输入口真件（2026-10-09 闭环）",
+      "at": "2026-10-09T09:57:03"
+    },
+    {
+      "file": "projects/short-video/02-storyboard/20261009-short-video-醒来-02storyboard.json",
+      "sha256": "47861df1534be409e5c6defdbe1e21ff0d3bd7e0f3b2756290a7f3bb169db1ab",
+      "bytes": 2501,
+      "source": "本仓自撰（GBT小土豆V8 · 人机合稿；作者见件内署名）",
+      "license": "自有（无第三方素材 · 零出网 · 署名在件内）",
+      "note": "三方向工作流输入口真件（2026-10-09 闭环）",
+      "at": "2026-10-09T09:57:06"
     },
     {
       "file": "projects/short-video/03-raw/20260923-short-video-pipeline-selftest-rehearsal.mp4",
@@ -93,6 +210,33 @@
       "at": "2026-09-26T04:46:20"
     },
     {
+      "file": "projects/short-video/03-raw/20261009-short-video-醒来-03assets.mp4",
+      "sha256": "a48e6ee1aa8968f66b5b8f36420404b50cda03e9e47a8758959f9f81b571d86f",
+      "bytes": 5489964,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（short_video 步 assets）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · 短视频/assets（**彩排，非作品**）",
+      "at": "2026-10-09T11:33:34"
+    },
+    {
+      "file": "projects/short-video/03-raw/20261009-short-video-醒来-ep01-03assets.mp4",
+      "sha256": "686c5f0b47c39a58247af82ac795026a1da8cc738c8f56da5ae4acd09ff1f65f",
+      "bytes": 2133322,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（short_video 步 assets）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · 短视频/assets（**彩排，非作品**）",
+      "at": "2026-10-09T11:48:00"
+    },
+    {
+      "file": "projects/short-video/03-raw/20261009-short-video-醒来-ep02-03assets.mp4",
+      "sha256": "5acf6e6823f5e290dcbbec9eb586fc66c61963ac0446a4cd6bde9d119b791a0a",
+      "bytes": 2126701,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（short_video 步 assets）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · 短视频/assets（**彩排，非作品**）",
+      "at": "2026-10-09T11:37:10"
+    },
+    {
       "file": "projects/short-video/04-cut/20260923-short-video-pipeline-selftest-rehearsal.mp4",
       "sha256": "3e64e71ed2fc78336bf58e383ce68be6da4e23677845a3af2c749c58a2444032",
       "bytes": 2526508,
@@ -109,6 +253,33 @@
       "license": "自有（本机自产，CC0等效）",
       "note": "short-video | sha16=32a558b574cda1ce",
       "at": "2026-09-26T05:00:37"
+    },
+    {
+      "file": "projects/short-video/04-cut/20261009-short-video-醒来-04edit.mp4",
+      "sha256": "3775359a2921d5f7db5f2d38f52c4a114d90b499bff0db64bf1f18ce4ca6e1b0",
+      "bytes": 12286913,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（short_video 步 edit）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · 短视频/edit（**彩排，非作品**）",
+      "at": "2026-10-09T11:36:52"
+    },
+    {
+      "file": "projects/short-video/04-cut/20261009-short-video-醒来-ep01-04edit.mp4",
+      "sha256": "06d674dfbdc602302c87f2661c02cea387cd9e01888df5946be42e372c9b9bc1",
+      "bytes": 4096676,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（short_video 步 edit）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · 短视频/edit（**彩排，非作品**）",
+      "at": "2026-10-09T11:49:04"
+    },
+    {
+      "file": "projects/short-video/04-cut/20261009-short-video-醒来-ep02-04edit.mp4",
+      "sha256": "46131cf972a6eefeffdc4f4f727478a1394be58e1dba7f7b692b69ac70e4ef4a",
+      "bytes": 4050671,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（short_video 步 edit）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · 短视频/edit（**彩排，非作品**）",
+      "at": "2026-10-09T11:38:25"
     },
     {
       "file": "projects/short-video/04-cut/彩排样板/20260923-short-video-彩排样板-rehearsal.mp4",
@@ -145,9 +316,36 @@
       "license": "自有（本机自产，CC0等效）",
       "note": "short-video | sha16=32a558b574cda1ce",
       "at": "2026-09-26T05:00:37"
+    },
+    {
+      "file": "projects/short-video/05-publish/20261009-short-video-醒来-05export.mp4",
+      "sha256": "9baf63be97efbd42079ff7a535d6a5ac0d977974806b351bedb13da76e7cb24e",
+      "bytes": 12286915,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（short_video 步 export）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · 短视频/export（**彩排，非作品**）",
+      "at": "2026-10-09T11:36:53"
+    },
+    {
+      "file": "projects/short-video/05-publish/20261009-short-video-醒来-ep01-05export.mp4",
+      "sha256": "1c4d919a55fd8ee0390c3867be961bd0469fcd7ff35835c1fb25d3501f5482f8",
+      "bytes": 4096678,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（short_video 步 export）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · 短视频/export（**彩排，非作品**）",
+      "at": "2026-10-09T11:49:04"
+    },
+    {
+      "file": "projects/short-video/05-publish/20261009-short-video-醒来-ep02-05export.mp4",
+      "sha256": "46b69b9a5d47fa53276e8f515014aa9336fe695b937283f5a1d481854a164e5e",
+      "bytes": 4050673,
+      "source": "本仓 ffmpeg 自产：三方向工作流自检（short_video 步 export）",
+      "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）",
+      "note": "三方向工作流自检件 · 短视频/export（**彩排，非作品**）",
+      "at": "2026-10-09T11:38:26"
     }
   ],
-  "updated": "2026-09-28T01:53:25",
+  "updated": "2026-10-09T11:49:04",
   "removed": [
     {
       "file": "README.md",

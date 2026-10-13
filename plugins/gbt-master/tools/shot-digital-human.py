@@ -1,5 +1,6 @@
 """真渲染数字人面板：等三维模型就位（或如实失败/缺料），截图存证。"""
-import json, pathlib, sys
+import json
+import pathlib
 from playwright.sync_api import sync_playwright
 
 URL = "http://127.0.0.1:8788/holo_pet/index.html"

@@ -1,0 +1,50 @@
+{
+  "style": "赛博霓虹 · 冷蓝基底，紫青只走管道液体；分段调色由该镜情绪决定（集间接点共享同一调色）",
+  "hook_video": false,
+  "share_shot": 4,
+  "share_text": "你好，新版本。",
+  "att_copyright": true,
+  "att_safety": true,
+  "att_owner": true,
+  "series": {
+    "series": "醒来",
+    "episode": 2,
+    "prev_episode": "醒来-ep01",
+    "tail_handoff": false,
+    "head_handoff": true
+  },
+  "shots": [
+    {
+      "no": 1,
+      "render": "静帧（配运镜）",
+      "eyeline": "平视，离开水面",
+      "depth": "浅景深",
+      "reason": "**接点镜**：承接第 1 集尾镜的调色与场景，只把视线从水面抬起",
+      "duration": 5
+    },
+    {
+      "no": 2,
+      "render": "3D 角色",
+      "eyeline": "正反打",
+      "depth": "浅景深（锐面在两脸之间）",
+      "reason": "全系列只有对视这一镜需要真角色渲染，其余靠光影",
+      "duration": 5
+    },
+    {
+      "no": 3,
+      "render": "生成视频",
+      "eyeline": "大远景，镜头升起",
+      "depth": "深景深",
+      "reason": "逐区亮起是全局变化，只能靠能运动的远景承担",
+      "duration": 5
+    },
+    {
+      "no": 4,
+      "render": "数据图",
+      "eyeline": "正面读屏",
+      "depth": "深景深",
+      "reason": "末镜只交付一句可转发的话，干净屏才有东西截图",
+      "duration": 5
+    }
+  ]
+}

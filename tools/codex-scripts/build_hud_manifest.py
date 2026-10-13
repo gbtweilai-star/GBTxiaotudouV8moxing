@@ -15,7 +15,7 @@ from ctypes import wintypes as wt
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 sys.path.insert(0, str(BASE))
 OUT = BASE / ".scratch" / "hud_manifest.json"
 
@@ -24,6 +24,8 @@ from gbt_allinone import caps_registry as CR  # noqa: E402
 from gbt_allinone import selfscan as SS       # noqa: E402
 
 # ── 本机实时读数（Windows API，不引第三方库） ──
+
+
 class MEMORYSTATUSEX(ctypes.Structure):
     _fields_ = [("dwLength", wt.DWORD), ("dwMemoryLoad", wt.DWORD),
                 ("ullTotalPhys", ctypes.c_ulonglong), ("ullAvailPhys", ctypes.c_ulonglong),
@@ -65,7 +67,7 @@ DIM_OF = {
     "执行": ["tentacle", "system", "tools"],
     "交互": ["llm", "voice", "comms", "integration", "social", "creation"],
     "协同": ["project", "finance", "security", "framework", "image_video",
-             "infra", "video", "life", "collab"],
+           "infra", "video", "life", "collab"],
 }
 DIM_GLOSS = {
     "感知": "看与听：情报、视觉、设备",

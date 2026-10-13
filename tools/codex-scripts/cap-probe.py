@@ -119,7 +119,15 @@ def main() -> int:
     a = ap.parse_args()
 
     tiers = json.loads(TIERS_FILE.read_text(encoding="utf-8")) if TIERS_FILE.is_file() else {"tiers": {}}
-    tier = (tiers.get("tiers") or {}).get(a.tier) or []
+    _tier_map = (tiers.get("tiers") or {})
+    if a.tier not in _tier_map:
+        # 🔴 2026-10-04 修（真故障）：tier 名写错（如「只读」vs「只读档」）时原来**静默**取到空列表
+        # ⇒ 逐位探针空跑一轮，还把**空报告**覆盖掉上一份真读数（本轮实测撞上，报告被写空）。
+        # 纪律：名字不认 ⇒ 当场红 + 列合法名 + **不写报告**（不静默、不拿空当结果）。
+        print("🔴 tier 名不认：%r —— 合法名：%s" % (a.tier, "、".join(sorted(_tier_map)) or "（分档表为空）"))
+        print("   分档表：%s" % TIERS_FILE)
+        return 2
+    tier = _tier_map.get(a.tier) or []
     kinds = [x["kind"] if isinstance(x, dict) else str(x) for x in tier]
     # 2026-10-03：名册先对齐活注册表——快照名册里的陈旧名不算 GHOST（那是运行时幽灵），单列 STALE_ROSTER
     try:
@@ -176,7 +184,17 @@ def main() -> int:
             except Exception:                               # noqa: BLE001
                 pass
         miss = b.get("missing") or d.get("missing") or r.get("missing") or []
-        if isinstance(miss, (int, str)):                    # 2026-10-03：新框架里 missing 可能是计数/单名
+        # 🔴 2026-10-04 修判据错尺（P1）：`missing` **计数型**（如 obsidian_vault 的
+        #    `missing: 27`= 27 个触手库缺记忆页）**不是"缺作用域"** —— 旧版把计数也归
+        #    NEEDS_CRED，把一条真读数读成了"需票"（实测：20:17 报告里 obsidian_vault 缺 [4] 之类）。
+        #    口径：**缺作用域**=门拒（`denied`）或 missing 是**名单**（list/tuple/set/单名 str）；
+        #    计数单列 `missing_count` 进行里当证据，不占票型。
+        miss_count = None
+        if isinstance(miss, bool):                          # bool 是 int 的子类，先挡（True 不是计数）
+            miss = [str(miss)]
+        elif isinstance(miss, int):
+            miss_count, miss = miss, []
+        elif isinstance(miss, str):
             miss = [miss]
         elif not isinstance(miss, (list, tuple, set)):
             miss = [str(miss)]
@@ -187,7 +205,10 @@ def main() -> int:
             rows.append({"kind": kind, "bucket": "NEEDS_CRED", "missing": miss, "op": pick})
         elif ok and has_content:
             buckets["REAL"].append("%s(%s)" % (kind, pick))
-            rows.append({"kind": kind, "bucket": "REAL", "op": pick})
+            row = {"kind": kind, "bucket": "REAL", "op": pick}
+            if miss_count is not None:
+                row["missing_count"] = miss_count                # 计数照记（是读数，不是票型）
+            rows.append(row)
         elif ok:
             buckets["FAKE"].append("%s(%s)：ok 但结果空壳" % (kind, pick))
             rows.append({"kind": kind, "bucket": "FAKE", "op": pick})

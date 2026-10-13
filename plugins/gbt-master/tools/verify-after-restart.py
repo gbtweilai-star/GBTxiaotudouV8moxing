@@ -179,7 +179,7 @@ if honesty.exists():
         n = int(rep.get("problem_count") or 0)
         add(n == 0, "⑧ 注入面诚实性（0 假账）",
             "查了 %s 段注入 · 假账 %d 条%s" % (rep.get("blocks"), n,
-                                        "" if n == 0 else "：" + str(rep.get("problems"))[:160]),
+                                       "" if n == 0 else "：" + str(rep.get("problems"))[:160]),
             "python tools/codex-scripts/audit-injection-honesty.py 退出码 0")
     except Exception as e:  # noqa: BLE001
         add(False, "⑧ 注入面诚实性（0 假账）", "跑不动：%s" % e,
@@ -241,5 +241,5 @@ bad = [r for r in rows if not r[0]]
 print("-" * 92)
 # 结论**不许写死项数**：这张单从 5 项长到 9 项，写死一次就过期一次（本仓老账）。
 print("结论：%s" % ("%d 项全部到位 ✅" % len(rows) if not bad
-                  else "共 %d 项，还有 %d 项没到位（上面带 ⏳ 的）" % (len(rows), len(bad))))
+                 else "共 %d 项，还有 %d 项没到位（上面带 ⏳ 的）" % (len(rows), len(bad))))
 raise SystemExit(1 if bad else 0)

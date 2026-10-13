@@ -1,0 +1,36 @@
+{
+ "cap": "media_license",
+ "domain": "video",
+ "desc": "素材许可账（三方向流程台「家规第 2 条：没有许可的素材不许进成品格」的数据源）：`register` 逐件登记（**现算 sha256** + 出处 + 授权 + 时间）、`unregister` 撤销（**必须写 why**，留档在 removed）、`status`/`list`/`check` 只读核对（账↔盘：陈旧 / sha 对不上 / 漏登）。🔴 **source 与 license 为空一律拒绝**——空着的许可记录比没有记录更坏（让人以为查过了）。只登记盘上真有的仓内素材；写面只落 `projects/_shared/licenses/`。**只登记与核对，不判定授权是否真实/充分**（那是主人的事）。",
+ "safe": false,
+ "ops": [
+  {
+   "op": "check",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "list",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "register",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "status",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "unregister",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "static-heuristic",
+ "handler_file": "gbt_allinone\\tools\\media_license.py",
+ "params": [],
+ "params_hint": "",
+ "handler": "media_license",
+ "slot": "g2-20",
+ "group": 2,
+ "role": "素材许可账（无许可不进成品格）"
+}

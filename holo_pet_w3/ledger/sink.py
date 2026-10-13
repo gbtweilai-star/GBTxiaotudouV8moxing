@@ -84,7 +84,6 @@ def write(record: dict, scratch_path: str | Path, lane: str, root=None) -> dict:
       （不许静默丢行：丢了行，四路对齐判据会变成 INCONCLUSIVE，而没人知道为什么）
     · root 仅为可测性而设：传了就用它当仓库根（验证用临时根，不碰真账本）
     """
-    import json
 
     row = dict(record)
     if persist_enabled():

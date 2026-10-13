@@ -172,7 +172,7 @@ def main() -> int:
                     "Generate new token（只勾 File content 的只读即可）；"
                     "然后在本机设 `setx %s <token>` 并**重开终端**" % a.token_env),
             "_口径": ("缺凭据就**如实报缺并停下**：不读缓存、不拿截图当稿子、不编 frame 名。"
-                      "本件只从环境变量取，且只报已配/未配")
+                    "本件只从环境变量取，且只报已配/未配")
         }, ensure_ascii=False, indent=1))
         return 3
 
@@ -284,7 +284,7 @@ def main() -> int:
                           "figma_err": j.get("err"), "scale": a.scale, "format": a.format,
                           "saved": saved, "failed": failed,
                           "_口径": ("导出 URL 是**临时**的；图**逐字节**落盘。"
-                                    "`ok` 只说明拿到了字节，**不说明好看** —— 审美走 gbt-aesthetic")},
+                                  "`ok` 只说明拿到了字节，**不说明好看** —— 审美走 gbt-aesthetic")},
                          ensure_ascii=False, indent=1))
         return 0 if saved else 5
 

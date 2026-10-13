@@ -1,0 +1,810 @@
+{
+ "at": "2026-10-12T22:09:33",
+ "页数": 40,
+ "绑好": 40,
+ "未绑好": 0,
+ "逐页": [
+  {
+   "页": "console",
+   "名称": "总控台",
+   "落点": "../../holo_pet/assets/console/index.html",
+   "落点在盘": true,
+   "真源字节": 45900,
+   "正向_能力位": [
+    "agent_console",
+    "console_hub",
+    "console_pages"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "home",
+   "名称": "工作空间首页",
+   "落点": "../../holo_pet/assets/home/index.html",
+   "落点在盘": true,
+   "真源字节": 19096,
+   "正向_能力位": [
+    "agent_rig",
+    "freebuff_term"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "plugins-mesh",
+   "名称": "云插件互绑拓扑",
+   "落点": "../plugins-mesh/index.html",
+   "落点在盘": true,
+   "真源字节": 42817,
+   "正向_能力位": [
+    "cloud_pc"
+   ],
+   "正向来源": "申报",
+   "申报理由": "云插件互绑拓扑页，真源 deploy/cloud-10/mesh.json；云侧那一层的能力位是 cloud_pc",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "gallery",
+   "名称": "页面卡库",
+   "落点": "../../holo_pet/assets/gallery/index.html",
+   "落点在盘": true,
+   "真源字节": 151650,
+   "正向_能力位": [
+    "console_pages"
+   ],
+   "正向来源": "申报",
+   "申报理由": "页面总目录（画廊），由 console_pages 统一登记与生成",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "workbench",
+   "名称": "Bento 工作台",
+   "落点": "../../holo_pet/assets/workbench/index.html",
+   "落点在盘": true,
+   "真源字节": 21511,
+   "正向_能力位": [
+    "console_hub",
+    "console_pages",
+    "gs_h3"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "tentacle3d",
+   "名称": "触手 3D 全景",
+   "落点": "../../holo_pet/assets/tentacle3d/index.html",
+   "落点在盘": true,
+   "真源字节": 83703,
+   "正向_能力位": [
+    "desktop_commander",
+    "tentacle",
+    "tentacle_manifest",
+    "key_gateway",
+    "multimodal_port",
+    "brain_verify",
+    "brain_health",
+    "deploy_queue"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "brain",
+   "名称": "神经工作台",
+   "落点": "../brain/index.html",
+   "落点在盘": true,
+   "真源字节": 9083,
+   "正向_能力位": [
+    "brain_route",
+    "brain_execute",
+    "brain_verify",
+    "brain_health",
+    "brain_unify",
+    "brain_vault",
+    "dream_replay",
+    "obsidian_vault"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "eye",
+   "名称": "触手视觉回传",
+   "落点": "../eye/index.html",
+   "落点在盘": true,
+   "真源字节": 4345,
+   "正向_能力位": [
+    "gods_eye",
+    "command_chain"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "activity",
+   "名称": "触手活动流",
+   "落点": "../activity/index.html",
+   "落点在盘": true,
+   "真源字节": 6824,
+   "正向_能力位": [
+    "event_ledger"
+   ],
+   "正向来源": "申报",
+   "申报理由": "活动流页，读的是事件账本 event_ledger",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "exec-deck",
+   "名称": "执行面",
+   "落点": "../exec-deck/index.html",
+   "落点在盘": true,
+   "真源字节": 3755,
+   "正向_能力位": [
+    "codex_thread_new",
+    "codex_turn_send",
+    "codex_interrupt",
+    "codex_chat",
+    "brain_execute",
+    "brain_unify",
+    "tentacle_equip",
+    "remote_confinement"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "code-deck",
+   "名称": "代码台",
+   "落点": "../code-deck/index.html",
+   "落点在盘": true,
+   "真源字节": 10624,
+   "正向_能力位": [
+    "codex_status",
+    "codex_tools",
+    "codex_thread_new",
+    "codex_turn_send",
+    "codex_interrupt",
+    "codex_chat",
+    "codex_models",
+    "multimodal_port"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "logbook",
+   "名称": "记录本",
+   "落点": "../logbook/index.html",
+   "落点在盘": true,
+   "真源字节": 7603,
+   "正向_能力位": [
+    "ledger_note"
+   ],
+   "正向来源": "申报",
+   "申报理由": "记录本页，背后就是台账登记那一档（ledger_note）",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "blueprint",
+   "名称": "项目蓝图",
+   "落点": "../blueprint/index.html",
+   "落点在盘": true,
+   "真源字节": 41421,
+   "正向_能力位": [
+    "project_context"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "cloud-plugins",
+   "名称": "云插件独立页",
+   "落点": "../cloud-plugins/index.html",
+   "落点在盘": true,
+   "真源字节": 28164,
+   "正向_能力位": [
+    "cloud_pc"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "cloud-status",
+   "名称": "连接状态",
+   "落点": "../cloud-status/index.html",
+   "落点在盘": true,
+   "真源字节": 50612,
+   "正向_能力位": [
+    "codex_status",
+    "wf_status",
+    "lr_status",
+    "llm_status",
+    "key_gateway",
+    "multimodal_port",
+    "genoffice_bridge",
+    "brain_vault"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "db-fleet",
+   "名称": "数据库编队",
+   "落点": "../db-fleet/index.html",
+   "落点在盘": true,
+   "真源字节": 8890,
+   "正向_能力位": [
+    "recon_distill",
+    "agent_rig",
+    "asset_index",
+    "db_probe",
+    "thebrain_bridge"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "capabilities",
+   "名称": "能力统计",
+   "落点": "../capabilities/index.html",
+   "落点在盘": true,
+   "真源字节": 211939,
+   "正向_能力位": [
+    "genoffice"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "wf-short-video",
+   "名称": "短视频流水线",
+   "落点": "../../holo_pet/assets/wf-short-video/index.html",
+   "落点在盘": true,
+   "真源字节": 9702,
+   "正向_能力位": [
+    "wf_define",
+    "wf_run",
+    "wf_status",
+    "wf_resume",
+    "multimodal_port",
+    "wf_cache_clear",
+    "media_pipeline",
+    "edit_pipeline"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "wf-movie",
+   "名称": "电影流水线",
+   "落点": "../../holo_pet/assets/wf-movie/index.html",
+   "落点在盘": true,
+   "真源字节": 9209,
+   "正向_能力位": [
+    "wf_define",
+    "wf_run",
+    "wf_status",
+    "wf_resume",
+    "wf_cache_clear",
+    "console_pages",
+    "n8n_wf",
+    "flow_canvas"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "wf-music",
+   "名称": "音乐流水线",
+   "落点": "../../holo_pet/assets/wf-music/index.html",
+   "落点在盘": true,
+   "真源字节": 8996,
+   "正向_能力位": [
+    "wf_define",
+    "wf_run",
+    "wf_status",
+    "wf_resume",
+    "wf_cache_clear",
+    "media_pipeline",
+    "audio_mix",
+    "media_run"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "wf-film",
+   "名称": "影片流水线",
+   "落点": "../../holo_pet/assets/wf-film/index.html",
+   "落点在盘": true,
+   "真源字节": 8920,
+   "正向_能力位": [
+    "wf_define",
+    "wf_run",
+    "wf_status",
+    "wf_resume",
+    "wf_cache_clear",
+    "audio_mix",
+    "media_run",
+    "film_intel"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "task-manager",
+   "名称": "任务管理",
+   "落点": "../../holo_pet/assets/task-manager/index.html",
+   "落点在盘": true,
+   "真源字节": 10413,
+   "正向_能力位": [
+    "pulse_direct",
+    "memory_manager",
+    "task_manager",
+    "case_mine",
+    "tripo"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "health-panel",
+   "名称": "健康面板",
+   "落点": "../../holo_pet/assets/health-panel/index.html",
+   "落点在盘": true,
+   "真源字节": 8149,
+   "正向_能力位": [
+    "health",
+    "genoffice_bridge",
+    "brain_health",
+    "brain_unify",
+    "gods_eye",
+    "sec_sweeper",
+    "dh_brain",
+    "freellmapi"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "structure",
+   "名称": "结构图",
+   "落点": "../../holo_pet/assets/structure/index.html",
+   "落点在盘": true,
+   "真源字节": 47811,
+   "正向_能力位": [
+    "project_context"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "console3d",
+   "名称": "总控台 3D",
+   "落点": "../../holo_pet/assets/console3d/index.html",
+   "落点在盘": true,
+   "真源字节": 62489,
+   "正向_能力位": [
+    "console_hub",
+    "console_pages",
+    "blender",
+    "tripo"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "automation",
+   "名称": "自动化",
+   "落点": "../../holo_pet/assets/automation/index.html",
+   "落点在盘": true,
+   "真源字节": 17615,
+   "正向_能力位": [
+    "tentacle_pipeline",
+    "media_run",
+    "media_publish",
+    "browser",
+    "ring_context",
+    "automation_keys",
+    "blender",
+    "n8n_wf"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "music",
+   "名称": "音乐台",
+   "落点": "../../holo_pet/assets/music/index.html",
+   "落点在盘": true,
+   "真源字节": 12765,
+   "正向_能力位": [
+    "audio_mix",
+    "media_run",
+    "media_publish",
+    "music_publishing",
+    "music_intel",
+    "console_pages"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "keys",
+   "名称": "钥匙台",
+   "落点": "../../holo_pet/assets/keys/index.html",
+   "落点在盘": true,
+   "真源字节": 5035,
+   "正向_能力位": [
+    "key_gateway",
+    "surface_bind",
+    "sec_sweeper",
+    "automation_keys",
+    "freellmapi"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "freebuff",
+   "名称": "免费算力",
+   "落点": "../../holo_pet/assets/freebuff/index.html",
+   "落点在盘": true,
+   "真源字节": 18254,
+   "正向_能力位": [
+    "freebuff_term",
+    "surface_bind",
+    "cli_chat"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "godview-page",
+   "名称": "上帝视角页",
+   "落点": "../../holo_pet/assets/godview/index.html",
+   "落点在盘": true,
+   "真源字节": 12090,
+   "正向_能力位": [
+    "obsidian_vault",
+    "console_hub",
+    "console_pages",
+    "pulse_direct",
+    "page_scan",
+    "task_manager",
+    "notion_bridge"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "dsh-chat",
+   "名称": "对话",
+   "落点": "../shell/dsh-embed.html",
+   "落点在盘": true,
+   "真源字节": 4048,
+   "正向_能力位": [
+    "codex_chat",
+    "llm_chat",
+    "freebuff_term",
+    "agent_council",
+    "cli_chat",
+    "energy_scheduler"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "godview",
+   "名称": "上帝视角（窗）",
+   "落点": "../index.html",
+   "落点在盘": true,
+   "真源字节": 17178,
+   "正向_能力位": [
+    "god_view"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "eigenflux",
+   "名称": "AI 朋友圈",
+   "落点": "../eigenflux/index.html",
+   "落点在盘": true,
+   "真源字节": 2344,
+   "正向_能力位": [
+    "sec_chain",
+    "sec_llm",
+    "llm_chat",
+    "multimodal_port",
+    "genoffice_bridge",
+    "brain_route",
+    "brain_execute",
+    "brain_verify"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "h1",
+   "名称": "赏金台",
+   "落点": "../h1/index.html",
+   "落点在盘": true,
+   "真源字节": 3351,
+   "正向_能力位": [
+    "auto_publish"
+   ],
+   "正向来源": "申报",
+   "申报理由": "赏金台（赏金与草稿），收入侧的能力位是 auto_publish",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "energy",
+   "名称": "能量与绑定",
+   "落点": "../energy/index.html",
+   "落点在盘": true,
+   "真源字节": 113790,
+   "正向_能力位": [
+    "key_gateway",
+    "omni_plug",
+    "sec_sweeper",
+    "energy_pool",
+    "energy_scheduler"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "ai-board",
+   "名称": "AI 工作面板",
+   "落点": "../ai-board/index.html",
+   "落点在盘": true,
+   "真源字节": 9346,
+   "正向_能力位": [
+    "sec_chain",
+    "sec_llm",
+    "llm_chat",
+    "multimodal_port",
+    "genoffice_bridge",
+    "brain_route",
+    "brain_execute",
+    "brain_verify"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "welcome",
+   "名称": "启动欢迎语",
+   "落点": "../welcome/index.html",
+   "落点在盘": true,
+   "真源字节": 2964,
+   "正向_能力位": [
+    "welcome"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "health-ledger",
+   "名称": "框架总账",
+   "落点": "../health-ledger/index.html",
+   "落点在盘": true,
+   "真源字节": 5659,
+   "正向_能力位": [
+    "health",
+    "genoffice_bridge",
+    "brain_health",
+    "brain_unify",
+    "tentacle_comfy_bridge",
+    "repo_publish",
+    "sec_sweeper",
+    "dh_brain"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "digital-human",
+   "名称": "数字人",
+   "落点": "../digital-human/index.html",
+   "落点在盘": true,
+   "真源字节": 166621,
+   "正向_能力位": [
+    "welcome",
+    "vision_loop",
+    "dh_brain",
+    "eigenflux",
+    "cloud_pc"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js",
+    "energy-data.js"
+   ],
+   "绑好": true
+  },
+  {
+   "页": "capability-bar",
+   "名称": "能力栏",
+   "落点": "../capability-bar/index.html",
+   "落点在盘": true,
+   "真源字节": 50586,
+   "正向_能力位": [
+    "capability_net"
+   ],
+   "正向来源": "关键词",
+   "申报理由": "",
+   "反向_提及于": [
+    "capabilities-data.js"
+   ],
+   "绑好": true
+  }
+ ],
+ "口径": "三方向齐（正向 页→能力位 · 反向 能力位→页 · 真源在盘非空）才算绑好"
+}

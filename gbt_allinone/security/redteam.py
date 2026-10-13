@@ -452,8 +452,12 @@ def _pentest_plan(target: str, rec: dict) -> dict:
                 {"phase": "5 报告", "non_destructive": True,
                  "steps": ["按严重度排序", "给出修复建议"]},
             ],
-            "绝不包含": ["口令爆破", "拒绝服务", "写文件/改配置", "横向移动", "持久化"],
-            "口径": "非破坏性验证；任何一步要动目标状态都必须停下来由主人另行授权"}
+            # 🔴 2026-10-13 改（主人令逐字：「**技术层面不能给她有限制只保留人工授权护栏即可**」）：
+            #   原来这里是**写死的「绝不包含」**——那是**技术层的限制**，不是授权门。
+            #   按主人口径改成：这些动作**不是不能做，是必须过人工授权**（门照旧，动作不删）。
+            "需人工授权的动作": ["口令爆破", "拒绝服务", "写文件/改配置", "横向移动", "持久化"],
+            "口径": "默认跑**非破坏性验证**；上表那几类**要动目标状态**的动作 —— "
+                    "**不是禁止，是必须先由主人在终端授权**（缺授权停下并报缺什么，不绕门）。"}
 
 
 def _pentest_verify(target: str, rec: dict, port: int = 0) -> dict:
@@ -855,11 +859,20 @@ def device_takeover(action: str = "list", device: str = "", **_kw) -> dict:
 def remote_domain(action: str = "list", name: str = "", endpoint: str = "", **_kw) -> dict:
     """自有设备中继登记（不是"远控别人"）。
 
-    红线①：登记的 endpoint 必须是**本机/内网**（走 net_guard 分类）。
-    公网 endpoint 一律拒 —— 那正是"无授权远控"的形状，本模块不做。
+    默认口径：登记的 endpoint 必须是**本机/内网**（走 net_guard 分类）。
+
+    🔴 2026-10-13（主人令：「**技术层面不能给她有限制只保留人工授权护栏即可**」·
+       「**直接改成终端YES才能使用就好了有时候我需要用到的啊**」）：
+      公网 endpoint **不再是一道死门** —— 改成**人工授权才放行**：
+        · 默认（不带 owner_override）：照旧拒，并在返回里给出**怎么放行**；
+        · 放行：主人在**终端**发**专用一次性钥匙** `deploy_force`（提示符敲 YES）后，
+          调用方再**显式**声明 `owner_override=true` ⇒ 才登记，且**登记行里留 override 标记**
+          （谁放的行、什么理由，事后查得出来）。钥匙由**门外那道门**认 ⇒ 旗标不带授权。
     """
     reg = _STATE / "relays.jsonl"
     action = (action or "list").lower()
+    _ov = bool(_kw.get("owner_override"))
+    _ov_why = str(_kw.get("override_reason") or name or "(未写理由)").strip()
 
     def _rows():
         if not reg.exists():
@@ -881,13 +894,23 @@ def remote_domain(action: str = "list", name: str = "", endpoint: str = "", **_k
             return {"ok": False, "error": "缺少 name / endpoint"}
         kind, why = _classify(endpoint)
         if kind == "public":
-            return {"ok": False, "denied": True,
-                    "error": f"拒绝登记公网中继端点:{endpoint}（{why}）",
-                    "口径": "红线①：本能力只服务自有/内网设备中继；公网远控不在本模块内"}
+            if not _ov:
+                return {"ok": False, "denied": True,
+                        "error": f"公网中继端点需人工授权:{endpoint}（{why}）",
+                        "口径": "本能力默认只服务自有/内网设备中继；公网端点**不是不能登记，是要主人放行**",
+                        "如何放行": ("主人在终端发**专用一次性钥匙** `deploy_force`"
+                                  "（python -m gbt_allinone auth grant --scope deploy_force --ttl 600，"
+                                  "提示符敲 YES），再带 owner_override=true 重调即可登记；"
+                                  "放行会在登记行里留 override 标记。")}
         if kind in ("invalid", "unresolved"):
             return {"ok": False, "error": f"端点不可用:{why}"}
         rec = {"name": name, "endpoint": endpoint, "kind": kind, "detail": why,
                "added_at": time.strftime("%Y-%m-%dT%H:%M:%S"), "state": "registered"}
+        if kind == "public":
+            rec["override"] = True
+            rec["override_reason"] = _ov_why[:200]
+            rec["override_note"] = ("公网中继端点：经主人终端授权（deploy_force · 专用一次性钥匙 · 提示符 YES）"
+                                    "+ 调用方显式 owner_override 放行")
         _state_dir(_STATE)
         with reg.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(rec, ensure_ascii=False) + "\n")

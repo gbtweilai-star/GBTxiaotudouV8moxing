@@ -32,7 +32,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import subprocess
 import sys
 import time
@@ -72,9 +71,9 @@ STEPS = [
     # ── 第 76 轮扩的两条腿（原来这份"总验收"只盖脑窗，另两条腿各自散着）─────────
     ("⑦ 姿势链（照片→骨架 · 七条判据）", [PY, ".scratch/_verify_pose_chain.py"], None,
      "姿势链", (".scratch/pose-venv/Scripts/python.exe",
-              "tools/codex-scripts/openpose-extract.py",
-              "tools/codex-scripts/openpose-skeleton.py",
-              "render/comfy-pose/1790183271-lora-RAW_photo_full_body.png")),
+             "tools/codex-scripts/openpose-extract.py",
+             "tools/codex-scripts/openpose-skeleton.py",
+             "render/comfy-pose/1790183271-lora-RAW_photo_full_body.png")),
     # 单张图的误差**证明不了**"换姿势跑通了" ⇒ 判别力那一条单列（见 §二十九）
     ("⑦b 多姿势判别力（对角必须全胜）", [PY, ".scratch/_verify_pose_multi.py"], None, "姿势链", ()),
     ("⑧ Figma 离线腿（四态八条）", [PY, ".scratch/_verify_figma.py"], None,
@@ -199,8 +198,8 @@ def main():
         if isinstance(j, dict):
             verdict = j.get("verdict") or j.get("_判据")
         if verdict is None:                       # 取读数那支没有 verdict，按关键行判
-            keep = [l.strip() for l in out.splitlines()
-                    if any(k in l for k in ("密度判定", "取景判定", "重叠率", "空壳判定", "聚簇判定"))]
+            keep = [ln.strip() for ln in out.splitlines()
+                    if any(k in ln for k in ("密度判定", "取景判定", "重叠率", "空壳判定", "聚簇判定"))]
             # 脚本自己崩了（有 traceback / 空 stdout）⇒ 也归"起不来"，别把崩溃念成"对象未过"
             crash = code != 0 and not out.strip()
             verdict = (" · ".join(keep[:4]) or

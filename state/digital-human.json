@@ -1,0 +1,315 @@
+{
+ "id": "digital-human",
+ "title": "数字人页（绑骨全肢体 + 语音交互）· 状态台账",
+ "writer": "tools/codex-scripts/dh-rig-check.py --emit-state（**只由工具写**，不手改）",
+ "at": "2026-10-08T08:10:49",
+ "page": {
+  "path": "holo_pet_w3/digital-human/index.html",
+  "bytes": 101505,
+  "sha256_16": "f7594b439052057a",
+  "self_contained": {
+   "原理": "CSP connect-src 'none' 由浏览器执法",
+   "外链样式表": 0,
+   "外链脚本": 0,
+   "iframe": 0,
+   "网络取数原语": 0,
+   "module 脚本": 0,
+   "本地图": [
+    "reference-02.jpg"
+   ],
+   "经典脚本": "内联 3 段"
+  }
+ },
+ "rig": {
+  "ready": true,
+  "joints": 24,
+  "mirror_pairs": 9,
+  "symmetry_worst_px": 0.0,
+  "symmetry_ok": true,
+  "rest_law_ok": true,
+  "required_joints_ok": true,
+  "action_mirror_ok": true,
+  "evidence": {
+   "structure": {
+    "ok": true,
+    "issues": [],
+    "joints": 24,
+    "roots": [
+     "pelvis"
+    ],
+    "required_ok": true,
+    "pairs": 9
+   },
+   "symmetry": {
+    "ok": true,
+    "worst_px": 0.0,
+    "worst_pair": "",
+    "tolerance_px": 0.5,
+    "bad": [],
+    "pairs_checked": 9
+   },
+   "rest_law": {
+    "ok": true,
+    "bad": []
+   },
+   "action_mirror": {
+    "ok": true,
+    "bad": [],
+    "per_action_asym": {
+     "idle": false,
+     "talk": false,
+     "wave": true,
+     "walk": true,
+     "turn": false,
+     "crouch": false,
+     "stretch": false,
+     "refpose": true
+    }
+   },
+   "spec": {
+    "joints": 24,
+    "pairs": 9,
+    "viewBox": [
+     0,
+     0,
+     360,
+     680
+    ],
+    "root": [
+     180,
+     300
+    ],
+    "figure": {
+     "headTopY": 116,
+     "soleY": 607.4,
+     "heightPx": 491.4,
+     "proportion": "头高 56 / 全身 491 ≈ 1:8.8；腿(髋→底) 307 ≈ 62% —— 照参考图的长腿比例定"
+    }
+   }
+  }
+ },
+ "actions": {
+  "ready": true,
+  "baseline": {
+   "d2": 2.6,
+   "who_d2": "upperArmL",
+   "d1": 0.533,
+   "disp": 3.375,
+   "who_disp": "handR",
+   "samples": 41
+  },
+  "per_action": {
+   "idle": {
+    "cn": "常态呼吸+微重心漂移",
+    "sym": true,
+    "verdict": "现量基线",
+    "d2": 2.6,
+    "who_d2": "upperArmL",
+    "d1": 0.533,
+    "who_d1": "upperArmL",
+    "disp": 3.375,
+    "who_disp": "handR",
+    "moving_joints": 0,
+    "joints_measured": 25
+   },
+   "talk": {
+    "cn": "说话：嘴型+点头+手势",
+    "sym": true,
+    "verdict": "真在动",
+    "d2": 67.0,
+    "who_d2": "handL",
+    "d1": 20.113,
+    "who_d1": "handL",
+    "disp": 24.451,
+    "who_disp": "handL",
+    "moving_joints": 8,
+    "joints_measured": 25
+   },
+   "wave": {
+    "cn": "抬手打招呼",
+    "sym": false,
+    "verdict": "真在动",
+    "d2": 229.747,
+    "who_d2": "handR",
+    "d1": 38.737,
+    "who_d1": "handR",
+    "disp": 207.587,
+    "who_disp": "handR",
+    "moving_joints": 4,
+    "joints_measured": 25
+   },
+   "walk": {
+    "cn": "走动两步（3/4 视角）",
+    "sym": false,
+    "verdict": "真在动",
+    "d2": 74.0,
+    "who_d2": "footL",
+    "d1": 21.051,
+    "who_d1": "footL",
+    "disp": 196.913,
+    "who_disp": "toeL",
+    "moving_joints": 14,
+    "joints_measured": 25
+   },
+   "turn": {
+    "cn": "转身一整圈（2.5D）",
+    "sym": true,
+    "verdict": "真在动",
+    "d2": 360.0,
+    "who_d2": "root",
+    "d1": 16.404,
+    "who_d1": "root",
+    "disp": 58.854,
+    "who_disp": "handR",
+    "moving_joints": 7,
+    "joints_measured": 25
+   },
+   "crouch": {
+    "cn": "蹲下再起",
+    "sym": true,
+    "verdict": "真在动",
+    "d2": 56.0,
+    "who_d2": "foreArmR",
+    "d1": 8.248,
+    "who_d1": "foreArmR",
+    "disp": 97.607,
+    "who_disp": "shinR",
+    "moving_joints": 20,
+    "joints_measured": 25
+   },
+   "stretch": {
+    "cn": "伸懒腰",
+    "sym": true,
+    "verdict": "真在动",
+    "d2": 191.0,
+    "who_d2": "foreArmL",
+    "d1": 22.9,
+    "who_d1": "foreArmL",
+    "disp": 232.014,
+    "who_disp": "handL",
+    "moving_joints": 12,
+    "joints_measured": 25
+   },
+   "refpose": {
+    "cn": "照参考图的姿势（一手抬到头发）",
+    "sym": false,
+    "verdict": "静态姿势",
+    "d2": 0.0,
+    "who_d2": "",
+    "d1": 0.0,
+    "who_d1": "",
+    "disp": 0.0,
+    "who_disp": "",
+    "moving_joints": 0,
+    "joints_measured": 25
+   }
+  },
+  "criteria": {
+   "幅度d2": ">5°",
+   "连续性d1": ">0.2°",
+   "位移": ">2px",
+   "对基线": "幅度与位移均 >2×现量基线",
+   "root": "伪关节（角度=yaw、位置=根位移）必须计入，否则转身/走动/蹲起会被误判"
+  },
+  "not_moving_by_design": {
+   "refpose": "单帧静态姿势（照参考图摆的），不进'真在动'判决",
+   "idle": "现量基线本身（判据反过来：必须很小）"
+  }
+ },
+ "voice": {
+  "chain": "麦克风 → 离线听写(SAPI) → 文本入框 → 面板桥 /api/message → TTS 出声 → 嘴型/动作同步",
+  "legs": {
+   "at": "2026-10-08T08:10:49",
+   "bridge": {
+    "ok": true,
+    "target": "http://127.0.0.1:8765/api/message",
+    "why": "本机回环·设计内依赖（主人令点名允许的唯一一条）· 只判能不能连上，不发请求"
+   },
+   "intercom": {
+    "ok": true,
+    "legs": {
+     "tts": "edge-tts（神经语音 · 默认台湾腔）+ win-sapi（回退）",
+     "asr_cloud": "needs_dependency",
+     "listen_local": "win-speech（离线可用）",
+     "recognizers_zh": [
+      "zh-CN|MS-2052-80-DESK"
+     ],
+     "wavein_devices": 0,
+     "listen_input": "wavein 可见 0 个输入设备",
+     "listen_note": "wavein_devices = 0 ⇒ 设备直连那条腿**在本机是死的**（与插不插麦克风无关）；只听 wasapi-record 那条腿。两条腿都写在 listen 返回的 legs 里。",
+     "capture_ready": false,
+     "tts_gate": {
+      "denied": true,
+      "missing_scopes": [
+       "audio_output"
+      ],
+      "how_to_grant": [
+       "终端运行: python -m gbt_allinone auth grant --scope audio_output --ttl 600",
+       "或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）",
+       "该作用域是**时段授权**：一张在 TTL 内可反复用"
+      ]
+     }
+    }
+   },
+   "sapi": {
+    "ok": true,
+    "voices": [
+     "Microsoft Huihui Desktop | zh-CN | Female | enabled=True",
+     "Microsoft Zira Desktop | en-US | Female | enabled=True",
+     "Microsoft David Desktop | en-US | Male | enabled=True"
+    ],
+    "zh_voices": [
+     "Microsoft Huihui Desktop | zh-CN | Female | enabled=True"
+    ],
+    "note": "离线嗓（页面臂 A 的 speechSynthesis 底下就是这批 SAPI 嗓）"
+   }
+  },
+  "page_side": {
+   "A · 本机离线嗓": "window.speechSynthesis（底下系统 SAPI；嗓表异步，等 voiceschanged + 轮询）",
+   "B · 门内 SAPI": "gbtW3.intercom('say') —— 需 audio_output 授权（台账现为 0 ⇒ 会如实报缺）",
+   "C · 云臂": "hf_voice.py —— 需 HF 密钥、会出网（页面只显示状态，不默认调）",
+   "桥": "gbtW3.message({text})（壳口，目标写死在壳里）；浏览器直开时无此口，页面如实标"
+  }
+ },
+ "honesty": {
+  "未验": [
+   "真麦克风采集（本机录音端点在场 0 个：WASAPI 0 / winmm 0 / Chromium 0）",
+   "流式 interim 上屏（离线识别器只有整段/定长返回）",
+   "真 barge-in 打断（离线识别器不能边说边听）",
+   "白龙马的 Whisper+VAD 参数（RMS 三阈值/2s 切句）——本机不跑 Whisper，未接",
+   "hf_voice 云臂（缺 HF 密钥，未验）",
+   "真实窗内出声（需壳的 audio_autoplay + 真实音频设备；无头取证拿不到声音）"
+  ],
+  "判据来源": "本件与页面各自独立实现同一套运动学；两套对账一致才算过"
+ },
+ "negative_controls": [
+  {
+   "name": "负对照A·一侧横移取反",
+   "expect_red": true,
+   "got_red": true,
+   "pass": true,
+   "detail": "镜像最大误差 24.00px（应 >0.5px 才报红）"
+  },
+  {
+   "name": "负对照B·静息角不互为相反数",
+   "expect_red": true,
+   "got_red": true,
+   "pass": true,
+   "detail": "报红条数 1"
+  },
+  {
+   "name": "负对照C·把 wave 清零",
+   "expect_red": true,
+   "got_red": true,
+   "pass": true,
+   "detail": "wave 判决 = 未达门"
+  },
+  {
+   "name": "负对照C2·把 idle 放大成动作",
+   "expect_red": true,
+   "got_red": true,
+   "pass": true,
+   "detail": "idle 现被量成 幅度297.90° 位移132.00px"
+  }
+ ]
+}

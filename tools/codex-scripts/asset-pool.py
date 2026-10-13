@@ -22,9 +22,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
-import os
 import pathlib
-import shutil
 import sys
 import tempfile
 import time
@@ -192,7 +190,7 @@ def cmd_ls(a) -> int:
                          "sha256_前16": str(e.get("sha256"))[:16], "at": e.get("at")})
     print(json.dumps({"素材": rows,
                       "合计": {"条数": len(rows), "总字节": tot,
-                              "按类": {k: len(v) for k, v in sorted(idx.items())}},
+                             "按类": {k: len(v) for k, v in sorted(idx.items())}},
                       "索引键": "%s/assets/index.json" % PREFIX},
                      ensure_ascii=False, indent=1))
     return 0

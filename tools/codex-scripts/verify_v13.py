@@ -11,7 +11,7 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 PROTO = BASE / "V13 GBT小土豆V8-可交互原型.html"
 CANVAS = BASE / "V13 GBT小土豆V8-无限画布.html"
@@ -60,10 +60,14 @@ emoji = re.findall(r"[\U0001F300-\U0001FAFF\u2600-\u27BF]", p)
 chk("无 emoji 作 UI 元素", not emoji, "命中 " + "".join(sorted(set(emoji))[:8]) if emoji else "")
 
 # ── 4. 对比度（WCAG 2.2 AA ≥ 4.5:1） ──
+
+
 def lum(hexc):
     hexc = hexc.lstrip("#")
     r, g, b = (int(hexc[i:i + 2], 16) / 255 for i in (0, 2, 4))
-    f = lambda v: v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
+
+    def f(v):
+        return v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
     return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
 
 
@@ -123,13 +127,13 @@ chk("画布 p1~p43 齐", all(("function p%d(" % i) in c for i in range(1, 44)), 
 chk("原型无 undefined 字面量", "undefined" not in re.sub(r"//[^\n]*", "", p.split("const V13 = ")[1]), "（数据层已解析，见运行期校验）")
 
 
-
 # ── 7b. 品牌 Logo（主人提供）──
-import base64 as _b64
-import hashlib as _hl
+import base64 as _b64  # noqa: E402
+
 
 def _imgs(text):
     return re.findall(r"data:image/(webp|png);base64,([A-Za-z0-9+/=]+)", text)
+
 
 p_imgs, c_imgs = _imgs(p), _imgs(c)
 chk("原型内嵌 Logo", any(m == "webp" for m, _ in p_imgs), "%d 个 data URI" % len(p_imgs))
@@ -140,6 +144,8 @@ chk("favicon 不重复内嵌", sum(1 for m, _ in p_imgs if m == "png") <= 1 and
 
 # 解码内嵌 Logo，验证字节完整
 _emb = json.loads((S / "logo_embed.json").read_text(encoding="utf-8"))
+
+
 def _payload(text, want):
     for m, b in _imgs(text):
         if m != want:
@@ -148,6 +154,8 @@ def _payload(text, want):
         if raw[:4] == b"RIFF" or raw[:4] == b"\x89PNG":
             return raw
     return b""
+
+
 _lp = _payload(p, "webp")
 _lc = _payload(c, "webp")
 chk("原型 Logo 是合法 WebP", _lp[:4] == b"RIFF" and _lp[8:12] == b"WEBP", "%d B" % len(_lp))

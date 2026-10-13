@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """构建 V10：把「项目树」放进上帝视角（按 @deepseek-ai/dsh-api-workspace-files 规格呈现）。"""
-import json
 import re
 import shutil
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 V9P = BASE / "V9 GBT小土豆V8-可交互原型.html"
 V10P = BASE / "V10 GBT小土豆V8-可交互原型.html"

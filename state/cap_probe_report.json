@@ -1,14 +1,14 @@
 {
  "tier": "只读档",
- "total": 147,
+ "total": 161,
  "buckets": {
-  "REAL": 111,
-  "HONEST_STUB": 10,
-  "FAKE": 1,
-  "NEEDS_CRED": 17,
+  "REAL": 131,
+  "HONEST_STUB": 15,
+  "FAKE": 0,
+  "NEEDS_CRED": 6,
   "ERR": 0,
   "GHOST": 0,
-  "SKIP": 8
+  "SKIP": 9
  },
  "rows": [
   {
@@ -37,6 +37,11 @@
    "op": "(default)"
   },
   {
+   "kind": "answer_shaper",
+   "bucket": "REAL",
+   "op": "check"
+  },
+  {
    "kind": "audit_query",
    "bucket": "NEEDS_CRED",
    "missing": [
@@ -58,6 +63,11 @@
    "kind": "awesome_tools_index",
    "bucket": "REAL",
    "op": "status"
+  },
+  {
+   "kind": "belief_forge",
+   "bucket": "REAL",
+   "op": "observe"
   },
   {
    "kind": "brain_health",
@@ -91,11 +101,8 @@
   },
   {
    "kind": "bt_control",
-   "bucket": "NEEDS_CRED",
-   "missing": [
-    "device_control"
-   ],
-   "op": "(default)"
+   "bucket": "REAL",
+   "op": "smart_scan"
   },
   {
    "kind": "cap_tags",
@@ -113,6 +120,11 @@
    "op": "audit"
   },
   {
+   "kind": "case_mine",
+   "bucket": "REAL",
+   "op": "sources"
+  },
+  {
    "kind": "code_art",
    "bucket": "REAL",
    "op": "status"
@@ -124,11 +136,8 @@
   },
   {
    "kind": "codex_interrupt",
-   "bucket": "NEEDS_CRED",
-   "missing": [
-    "process_execute"
-   ],
-   "op": "(default)"
+   "bucket": "HONEST_STUB",
+   "op": "缺少 thread_id：请先调用 codex_thread_new"
   },
   {
    "kind": "codex_status",
@@ -137,10 +146,7 @@
   },
   {
    "kind": "codex_thread_new",
-   "bucket": "NEEDS_CRED",
-   "missing": [
-    "process_execute"
-   ],
+   "bucket": "REAL",
    "op": "(default)"
   },
   {
@@ -150,12 +156,8 @@
   },
   {
    "kind": "codex_turn_send",
-   "bucket": "NEEDS_CRED",
-   "missing": [
-    "process_execute",
-    "external_llm"
-   ],
-   "op": "(default)"
+   "bucket": "HONEST_STUB",
+   "op": "缺少 thread_id：请先调用 codex_thread_new"
   },
   {
    "kind": "comfyui",
@@ -193,6 +195,11 @@
    "op": "matrix"
   },
   {
+   "kind": "creation_camp",
+   "bucket": "REAL",
+   "op": "sources"
+  },
+  {
    "kind": "cross_scan",
    "bucket": "REAL",
    "op": "(default)"
@@ -203,6 +210,11 @@
    "op": "(default)"
   },
   {
+   "kind": "db_probe",
+   "bucket": "REAL",
+   "op": "sources"
+  },
+  {
    "kind": "devour_fusion",
    "bucket": "REAL",
    "op": "list"
@@ -211,8 +223,7 @@
    "kind": "devour_github",
    "bucket": "NEEDS_CRED",
    "missing": [
-    "data_export",
-    "filesystem_write"
+    "data_export"
    ],
    "op": "(default)"
   },
@@ -220,9 +231,7 @@
    "kind": "devour_pulse",
    "bucket": "NEEDS_CRED",
    "missing": [
-    "data_export",
-    "filesystem_write",
-    "external_llm"
+    "data_export"
    ],
    "op": "(default)"
   },
@@ -267,6 +276,16 @@
    "op": "status"
   },
   {
+   "kind": "energy_scheduler",
+   "bucket": "REAL",
+   "op": "plan"
+  },
+  {
+   "kind": "event_ledger",
+   "bucket": "REAL",
+   "op": "verify"
+  },
+  {
    "kind": "file_hygiene",
    "bucket": "REAL",
    "op": "(default)"
@@ -275,6 +294,11 @@
    "kind": "film_intel",
    "bucket": "REAL",
    "op": "redlines"
+  },
+  {
+   "kind": "flow_canvas",
+   "bucket": "REAL",
+   "op": "where"
   },
   {
    "kind": "freebuff_term",
@@ -305,6 +329,11 @@
    "kind": "growth_hooks",
    "bucket": "REAL",
    "op": "verify"
+  },
+  {
+   "kind": "handoff",
+   "bucket": "REAL",
+   "op": "read"
   },
   {
    "kind": "health",
@@ -373,23 +402,17 @@
   },
   {
    "kind": "mcp_call",
-   "bucket": "NEEDS_CRED",
-   "missing": [
-    "process_execute"
-   ],
+   "bucket": "HONEST_STUB",
    "op": "(default)"
   },
   {
    "kind": "mcp_connect",
-   "bucket": "NEEDS_CRED",
-   "missing": [
-    "process_execute"
-   ],
+   "bucket": "HONEST_STUB",
    "op": "(default)"
   },
   {
    "kind": "mcp_tools",
-   "bucket": "FAKE",
+   "bucket": "REAL",
    "op": "(default)"
   },
   {
@@ -422,10 +445,7 @@
   },
   {
    "kind": "mirror_parity",
-   "bucket": "NEEDS_CRED",
-   "missing": [
-    "filesystem_write"
-   ],
+   "bucket": "REAL",
    "op": "(default)"
   },
   {
@@ -435,11 +455,7 @@
   },
   {
    "kind": "mirror_rehearse",
-   "bucket": "NEEDS_CRED",
-   "missing": [
-    "process_execute",
-    "filesystem_write"
-   ],
+   "bucket": "REAL",
    "op": "(default)"
   },
   {
@@ -462,10 +478,7 @@
   },
   {
    "kind": "mirror_simulate",
-   "bucket": "NEEDS_CRED",
-   "missing": [
-    "filesystem_write"
-   ],
+   "bucket": "REAL",
    "op": "(default)"
   },
   {
@@ -485,10 +498,7 @@
   },
   {
    "kind": "obsidian_vault",
-   "bucket": "NEEDS_CRED",
-   "missing": [
-    2
-   ],
+   "bucket": "REAL",
    "op": "status"
   },
   {
@@ -525,6 +535,11 @@
    "kind": "platform_profile",
    "bucket": "REAL",
    "op": "(default)"
+  },
+  {
+   "kind": "policy_delta",
+   "bucket": "REAL",
+   "op": "tables"
   },
   {
    "kind": "proactive_report",
@@ -637,6 +652,16 @@
    "op": "(default)"
   },
   {
+   "kind": "slim_profile",
+   "bucket": "REAL",
+   "op": "plan"
+  },
+  {
+   "kind": "spend_guard",
+   "bucket": "REAL",
+   "op": "where"
+  },
+  {
    "kind": "stigmergy",
    "bucket": "REAL",
    "op": "status"
@@ -688,10 +713,7 @@
   },
   {
    "kind": "think_loop",
-   "bucket": "NEEDS_CRED",
-   "missing": [
-    "external_llm"
-   ],
+   "bucket": "HONEST_STUB",
    "op": "(default)"
   },
   {
@@ -703,6 +725,11 @@
    "kind": "trace_store",
    "bucket": "REAL",
    "op": "(default)"
+  },
+  {
+   "kind": "train_recipe",
+   "bucket": "REAL",
+   "op": "readiness"
   },
   {
    "kind": "transfer",
@@ -763,22 +790,7 @@
    "op": "(default)"
   }
  ],
- "stale_roster": [
-  "answer_shaper",
-  "belief_forge",
-  "case_mine",
-  "command_chain",
-  "creation_camp",
-  "db_probe",
-  "energy_scheduler",
-  "event_ledger",
-  "flow_canvas",
-  "handoff",
-  "policy_delta",
-  "slim_profile",
-  "spend_guard",
-  "train_recipe"
- ],
- "made_at": "2026-10-03T16:01:44",
+ "stale_roster": [],
+ "made_at": "2026-10-08T21:29:49",
  "_口径": "只读探针（词表三路取 · 只发 READISH op · 词表空的只读位走默认直调兜底）；FAKE 必须为 0；GHOST=注册表在册但运行时不认；SKIP=编排器名不盲调；STALE_ROSTER=快照名册里的陈旧名（不在活注册表，已剔除不占读数）"
 }

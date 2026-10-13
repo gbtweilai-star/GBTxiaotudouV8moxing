@@ -81,7 +81,7 @@ def dyn_rows(probe: dict, caps: dict) -> list:
         if kind not in caps and kind not in _unimpl_names():
             continue
         msg = str(rec.get("message") or "")
-        head = str(rec.get("result_head") or "")
+        str(rec.get("result_head") or "")
         code = str(rec.get("reason_code") or "")
         status = str(rec.get("status") or "")
         why = None

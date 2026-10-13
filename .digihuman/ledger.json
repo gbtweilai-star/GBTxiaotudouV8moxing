@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-22 22:17:31",
+ "updated": "2026-10-13 16:24:44",
  "stages": [
   {
    "id": "S0",
@@ -17,19 +17,19 @@
    "id": "S2",
    "name": "姿态规范(T-pose)",
    "ok": true,
-   "note": "S2 门: ✅ 人工已复核（AI目视复核(GBT小土豆V8) · 待Owner复看 @ 2026-09-22 22:03:19）· 五条 = 双臂水平 / 双腿直立 / 正面全身 / 无遮挡物 / 白底"
+   "note": "S2 门: ✅ 人工已复核（自由的风 @ 2026-10-10 18:22:02）· 图哈希吻合 b373e63083dd… · 五条 = 双臂水平 / 双腿直立 / 正面全身 / 无遮挡物 / 白底"
   },
   {
    "id": "S3",
    "name": "重拓扑/分部位LOD",
    "ok": true,
-   "note": "4.33 MB（上限 12）"
+   "note": "6.68 MB（上限 12）"
   },
   {
    "id": "S4",
    "name": "UV + PBR 贴图",
    "ok": true,
-   "note": "✅ 贴图 3 张 · 槽位 ['baseColor', 'metalRough', 'normal'] · baseColor 2048x2048JPEG、metalRough 1024x1024PNG、normal 1024x1024JPEG"
+   "note": "✅ 贴图 3 张 · 槽位 ['baseColor', 'metalRough', 'normal'] · baseColor 4096x4096JPEG、metalRough 4096x4096PNG、normal 4096x4096PNG"
   },
   {
    "id": "S5",
@@ -41,7 +41,7 @@
    "id": "S6",
    "name": "蒙皮权重",
    "ok": true,
-   "note": "关节 22 · VRM 必需骨缺 0 · 权重和 1.0000~1.0000"
+   "note": "关节 65 · VRM 必需骨缺 0 · 权重和 1.0000~1.0000"
   },
   {
    "id": "S7",
@@ -53,7 +53,7 @@
    "id": "S8",
    "name": "动画/重定向",
    "ok": true,
-   "note": "✅ idle 8.00s/22轨 旋转闭合差 0.000000、walk 1.10s/23轨 旋转闭合差 0.000000 步幅比 0.550 · 旋转闭合最差 0.000000（阈 0.001） · 步幅比 [0.55]（需 0.5–0.8）"
+   "note": "✅ idle 8.00s/65轨 旋转闭合差 0.000000、walk 1.10s/66轨 旋转闭合差 0.000000 步幅比 0.562 · 旋转闭合最差 0.000000（阈 0.001） · 步幅比 [0.562]（需 0.5–0.8）"
   },
   {
    "id": "S9",
@@ -65,7 +65,7 @@
    "id": "S10",
    "name": "标准格式封装(VRM)",
    "ok": true,
-   "note": "✅ humanoid 必需骨 15/15 · springs 7 链 · 带四参关节 7 · meta GBT小土豆 · 数字人"
+   "note": "✅ humanoid 必需骨 15/15 · springs 0 链 · 带四参关节 0 · meta GBT小土豆 · 数字人"
   },
   {
    "id": "S11",
@@ -76,8 +76,8 @@
   {
    "id": "S12",
    "name": "验收(客观+人眼)",
-   "ok": true,
-   "note": "✅ 字段 34 个 · 必填齐"
+   "ok": false,
+   "note": "✅ 字段 67 个 · 必填齐 · 渲染 latest.png 2311KB · 源哈希吻合 9279c1644408… · 预设吻合 d55e20b0a8a9… · 2026-10-13 16:23:40 · 三点光 3/4 视角 · 规程量规: latest: 1080×1920 · 轮廓锯齿度 0.000（越低越好） · 强边缘均值 22.3 · 脸部高光占比 0.008% · 脸部最大亮度 251 · 梯度方差 43.7 · **复核已失效** —— 图换过了（记录 44ad012cb70b… ≠ 现在 82dca4b8e452…）⇒ 重看 · 主体占高 86%（应≥55%）· 占宽 100%（应≥20%）"
   },
   {
    "id": "S13",
@@ -86,7 +86,7 @@
    "note": "齐全"
   }
  ],
- "pass": 14,
+ "pass": 13,
  "total": 14,
  "providers": {
   "local": {
@@ -107,8 +107,8 @@
    ]
   },
   "tripo": {
-   "ok": true,
-   "note": "{\"key\":\"tsk_Ge6r…BEzE\",\"source\":\"profile:default\",\"profile\":\"default\",\"region\":\"",
+   "ok": false,
+   "note": "{\"error\":\"Invalid API key\",\"exit_code\":3,\"api_code\":2,\"http_status\":401,\"suggest",
    "caps": [
     "geom.generate",
     "geom.texture",
@@ -149,8 +149,8 @@
    ]
   },
   "blender": {
-   "ok": false,
-   "note": "命令不在 PATH：blender",
+   "ok": true,
+   "note": "\tbuild system: CMake",
    "caps": [
     "mesh.decimate",
     "mesh.convert",

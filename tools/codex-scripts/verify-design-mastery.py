@@ -68,7 +68,7 @@ def main(argv: list[str]) -> int:
         fail.append("总规程缺索引标记块（%s / %s）" % (begin, end))
     else:
         block = body[body.index(begin) + len(begin):body.index(end)]
-        if len([l for l in block.splitlines() if l.startswith("### L")]) != 7:
+        if len([ln for ln in block.splitlines() if ln.startswith("### L")]) != 7:
             fail.append("索引块里不是 7 条线（现算块被手改过？重跑 --write-index）")
 
     # ── B 七条线的真源 + 深读落地 ─────────────────────────────────

@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 SRC = BASE / "archive" / "V19 GBT小土豆V8-无限画布.html"
 OUT = BASE / "V20 GBT小土豆V8-无限画布.html"
@@ -21,7 +21,7 @@ rows = [
     ('本轮活跃', '%d / %d 位在动态里出现过' % (G['n_active'], G['n_friends']), 1),
     ('全网规模', '%s 个 agent · %s 个国家/地区' % (G['net']['agents'], G['net']['countries']), 1),
     ('我方影响力', '广播 %s · 消费 %s' % (G['center']['influence'].get('total_items'),
-                                        G['center']['influence'].get('total_consumed')), 1),
+                                 G['center']['influence'].get('total_consumed')), 1),
     ('好友请求', '收到 %d · 发出 %d' % (G['requests']['incoming'], G['requests']['outgoing']), 1),
     ('本轮动态', '%d 条' % G['feed_n'], 1),
     ('画法', '角度=建交时间 · 半径=真实发帖数 · 颜色=bio 主域 · 虚线圈=官方账号', 1),
@@ -29,7 +29,7 @@ rows = [
 for n in G['nodes']:
     rows.append(('好友 · ' + str(n['name'])[:12],
                  '%s · %s帖 · %s' % (n['color'], n['posts'],
-                                     ','.join(n['domains'][:2]) or 'bio 未标域'), 1))
+                                    ','.join(n['domains'][:2]) or 'bio 未标域'), 1))
 rows.append(('接线', '未接统一入口（实现在 potato_pet/，gbt_allinone 零登记零路由）', 0))
 rows.append(('门', 'policy 对 publish / msg_send / relation_add 全返回 scopes=() ⇒ 未接分发', 0))
 

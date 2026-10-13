@@ -17,11 +17,11 @@
 纪律：**源码逐字节还原**（比对 sha256）；产物重生成回基线；许可账扰动用登记/撤销成对，不留脏。
 ⚠️ 骨架自检栏那一扰**这轮没做**（骨架生成是长 if 链，扰动面大）；如实记，不假装做过。
 """
-import hashlib
-import re
-import subprocess
-import sys
-from pathlib import Path
+import hashlib  # noqa: E402
+import re  # noqa: E402
+import subprocess  # noqa: E402
+import sys  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[2]
@@ -66,13 +66,16 @@ if LYRICS_LINE not in text:
 print("=" * 86)
 print("媒体面板两行 · 扰动验证（源头可逆 + 反向对照）")
 print("=" * 86)
-base = gen(); show("① 基线", base)
+base = gen()
+show("① 基线", base)
 
 # ── 扰动 A：去掉 lyrics 的判据 ──
 MR.write_text(text.replace(LYRICS_LINE, ""), encoding="utf-8")
-a = gen(); show("② 扰 A（去判据）", a)
+a = gen()
+show("② 扰 A（去判据）", a)
 MR.write_bytes(orig)                      # 立刻还原
-back = gen(); show("③ 还原后", back)
+back = gen()
+show("③ 还原后", back)
 
 # ── 🔴 第 35 轮提升时**删掉**了原来那段"扰动 B（许可账 +1）" ────────────────
 #    原因（留着就是**假红**，而假红比没有判据更坏）：那一段是我第一次的**失败版** ——

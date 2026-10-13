@@ -50,7 +50,8 @@ i = h.find("const PANELS = [")
 blk = h[i:h.find("\n]", i)]
 entries = []
 for part in re.split(r"\{\s*id:\s*'", blk)[1:]:
-    g = lambda pat: (re.search(pat, part, re.S).group(1) if re.search(pat, part, re.S) else "")
+    def g(pat):
+        return re.search(pat, part, re.S).group(1) if re.search(pat, part, re.S) else ""
     entries.append((g(r"^([^']+)'"), g(r"name:\s*'([^']*)'"), g(r"file:\s*'([^']*)'")))
 
 index_html = (ROOT / PAGE).read_text(encoding="utf-8", errors="replace")
@@ -138,7 +139,7 @@ print("  **不进判据**：非卡片的本地 .html 锚点 %d 个（导航 / �
 print("  " + "-" * 74)
 for a in noncard:
     print("  L%-4d %-52s %s" % (a["line"], a["path"],
-                               "（名册里也有）" if a["path"] in roster_set else "（名册外 · 子入口）"))
+                                "（名册里也有）" if a["path"] in roster_set else "（名册外 · 子入口）"))
 if not noncard:
     print("  （无）")
 

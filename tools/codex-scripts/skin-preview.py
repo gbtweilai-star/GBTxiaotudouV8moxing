@@ -241,7 +241,7 @@ def main():
     print("=" * 74)
     print("  素材来源：**本机 PIL 程序化绘制**（不取用任何第三方素材）⇒ 许可：自有")
     print("  人物：**剪影**（不画脸 —— 剪影不是肖像）")
-    cards, arts = [], []
+    _, arts = [], []
     for tag in ("A", "B", "C"):
         p = PALETTES[tag]
         im = render(tag)

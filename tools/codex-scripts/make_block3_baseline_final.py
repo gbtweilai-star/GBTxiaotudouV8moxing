@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """从 block3_probe_prod.json 蒸馏出「块3 落生产前改前基线」工件。"""
 from __future__ import annotations
-import hashlib, json, sys
+import hashlib
+import json
+import sys
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")
@@ -34,15 +36,15 @@ art = {
     "scenes": cells,
     "改前两格": {
         "换连接+守卫关": {"resume_frames_in_bridge": cells["C2 换连接(守卫关)"]["resume_frames_in_bridge"],
-                          "verdict": cells["C2 换连接(守卫关)"]["verdict"],
-                          "hit": cells["C2 换连接(守卫关)"]["hit"],
-                          "new": cells["C2 换连接(守卫关)"]["new"],
-                          "定性": "静默复用陈旧 tid = 病灶"},
+                    "verdict": cells["C2 换连接(守卫关)"]["verdict"],
+                    "hit": cells["C2 换连接(守卫关)"]["hit"],
+                    "new": cells["C2 换连接(守卫关)"]["new"],
+                    "定性": "静默复用陈旧 tid = 病灶"},
         "换连接+守卫开": {"resume_frames_in_bridge": cells["C1 换连接(守卫开)"]["resume_frames_in_bridge"],
-                          "verdict": cells["C1 换连接(守卫开)"]["verdict"],
-                          "hit": cells["C1 换连接(守卫开)"]["hit"],
-                          "new": cells["C1 换连接(守卫开)"]["new"],
-                          "定性": "反应式兜底（发了、被拒、才重建）"},
+                    "verdict": cells["C1 换连接(守卫开)"]["verdict"],
+                    "hit": cells["C1 换连接(守卫开)"]["hit"],
+                    "new": cells["C1 换连接(守卫开)"]["new"],
+                    "定性": "反应式兜底（发了、被拒、才重建）"},
     },
     "判据": "落生产后用同一探针 --target=prod 复跑，应 22/22 PASS（本文件 9 项 FAIL 全转 PASS）",
     "source_artifacts": [".scratch/block3_probe_prod.json", ".scratch/block3_probe_prod.jsonl",

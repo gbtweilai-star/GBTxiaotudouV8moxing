@@ -57,7 +57,7 @@ TOOLS = {
         "why": "办公文档蒸馏版（本地引擎命令面）",
     },
     "freebuff": {
-        "tentacle": "freebuff",
+        "tentacle": "freebuff_term",
         "probe": [["--help"]],
         "rx": r"^\s{2}(-{1,2}[a-zA-Z][\w\-]{1,30})",
         "min_keys": 3,
@@ -93,6 +93,18 @@ TOOLS = {
         "rx": r"__MODS__(\d+)",
         "min_keys": 100,
         "why": "解释器（**每个标准库模块一把键** —— 那才是可调用面；只报模块数不算绑定）",
+    },
+    # ── 2026-10-08 加（主人令「调节蓝牙，无线网全部都能操作」）+ 协调者授权按"只加条目"改 ──
+    # 为什么是 netsh：本仓 240 个能力位里**没有 wifi/wlan 位**（全仓 grep 无命中），
+    # 而 `netsh wlan` 是本机 Wi-Fi 唯一的"自己报出可控制键"的工具 —— 正是本绑定器的适用对象。
+    # 实测（2026-10-08）：顶层 15 + show 子键 17 + set 子键 11 = **43 把**（min_keys 留余量到 40）。
+    # ⚠️ 只加本条目；不许顺手动别的工具定义、不许改函数签名。
+    "netsh": {
+        "tentacle": "tentacle",
+        "probe": [["wlan", "help"], ["wlan", "show", "?"], ["wlan", "set", "?"]],
+        "rx": r"^\s{0,4}([?A-Za-z][A-Za-z0-9_\- ]{0,44}?)\s-\s",
+        "min_keys": 40,
+        "why": "无线网面（主人令 2026-10-08）：netsh wlan 的可控制键（show 读类 / connect·set 写类）",
     },
 }
 

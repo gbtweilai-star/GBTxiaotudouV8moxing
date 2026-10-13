@@ -53,7 +53,10 @@ CAPS = [
     ("shared_resources", "门", "共享资源占用"),
     ("hook_registry", "门", "钩子登记"),
     ("orchestration_kernel", "门", "编排内核"),
-    ("cross_scan", "交叉", "跨域交叉扫描"),
+    # 🔴 2026-10-13 深扫补盲区（原清单只有旧件 ⇒ 新件**从没被扫过**=盲点）：
+    #    旧 cross_scan 实测给到 300s 仍超时（结构问题，不是预算），已在册的增强版
+    #    penetrating_cross_scan（钩子强制/步骤锁/双路交叉互扫/遗漏补扫/留痕）才是要用的那件。
+    ("penetrating_cross_scan", "交叉", "穿透式交叉扫描（增强版·新件：钩子+步骤锁+双路互扫+遗漏补扫+留痕）"),
     ("coverage_auditor", "交叉", "覆盖审计（谁没被验过）"),
     ("context_vault", "交叉", "上下文仓"),
     ("energy_pool", "交叉", "能量池"),
@@ -90,6 +93,28 @@ def unwrap(res):
     if isinstance(res, dict) and "preview" in res and "_摘要" in res:
         return res.get("preview"), True
     return res, False
+
+
+# 🔴 2026-10-13 修（深扫报红 1 条：cross_scan 超时 90s）：
+#    它是"扫全项目"的重活，90 秒不是它的预算——**慢位要给自己的预算**，不是当故障念。
+SLOW_CAPS = {"cross_scan": 300}
+
+# 🔴 2026-10-13：**已退场件·只列不探**（「新增即清旧」）。不藏、也不当红：
+#    旧 `cross_scan` 给到 300s 仍超时（结构问题），同族增强版 `penetrating_cross_scan`
+#    已入探针清单且通过 ⇒ 旧件不再探；但**在此显式登记**，谁读总扫都能看见它被退场了。
+#    注意：这是**扫描层退场**；**登记层退场**（caps_registry 里的在位登记 + handler 文件回收）
+#    仍待做 —— 那一步要按清旧判据走，不许在这个文件里假装已完成。
+RETIRED_CAPS = [("cross_scan", "旧跨域扫描：300s 仍超时；已由 penetrating_cross_scan 取代（登记层退场待做）")]
+
+# 🔴 2026-10-13 修（深扫"认不出 5 条"）：**纯数据位**的已知形状表。
+#    这几位只回数据、不报 verdict/ok/quiet ⇒ 旧逻辑一律归"形状看不懂"（那是尺子的问题，不是对象的）。
+DATA_CAPS = {
+    "health": ("platform", "python", "time"),
+    "platform_profile": ("workspace", "exists", "top_level_dirs"),
+    "project_context": ("status", "path", "sha256"),
+    "pipeline_status": ("records", "count", "total"),
+    "svc_inspect": ("services", "total", "up", "down"),
+}
 
 
 def run_cap(cap, timeout=90):   # 单位超时：一个慢位不许吃掉全扫的预算
@@ -142,6 +167,15 @@ def classify(rec):
     # ② 明确说"干净"
     if res.get("verdict") in ("clean", "ok") or res.get("ok") is True or res.get("quiet") is True:
         return "通过", "%s%s" % (res.get("verdict") or ("ok" if res.get("ok") is True else "quiet"), tag)
+    # ②b 🔴 2026-10-13 修：**纯数据位**（只回数据、不报 verdict/ok/quiet 的只读解释器）
+    #     不许被归成"形状看不懂"——它有已知形状，按形状核对；对不上才算认不出。
+    #     实测这五位命中：health / platform_profile / project_context / pipeline_status / svc_inspect。
+    _exp = DATA_CAPS.get(rec.get("cap"))
+    if _exp and all(k in res for k in _exp):
+        _down = res.get("down")
+        if isinstance(_down, int) and _down > 0:
+            return "有发现", "svc_inspect 报 %d 个服务下线（键名对上了）" % _down
+        return "通过", "数据位（按已知形状核对通过）"
     # ③ 认不出 ⇒ 不硬凑
     return "形状看不懂", "键名=%s%s" % (",".join(list(res)[:8]), tag)
 
@@ -163,7 +197,7 @@ def main():
     for cap, group, why in CAPS:
         if pick and not any(p in group for p in pick):
             continue
-        rec = run_cap(cap, timeout=a.timeout)
+        rec = run_cap(cap, timeout=SLOW_CAPS.get(cap, a.timeout))
         cls, note = classify(rec)
         env = rec.get("信封") or {}
         rows.append({"能力位": cap, "组": group, "说明": why, "类": cls, "判据": note,
@@ -180,8 +214,8 @@ def main():
            "逐位": rows,
            "只列不跑（写动作，要主人点头）": [{"能力位": c, "为什么": w} for c, w in NOT_RUN],
            "_口径": ("判据只用能力位**自己报的字段**（verdict/findings/needs_a_look/ok/denied）；"
-                     "本件不发明健康分。收窄过的结果读的是 preview。"
-                     "「形状看不懂」不是通过 —— 是这条我认不出判据，照实标出来给人看。")}
+                   "本件不发明健康分。收窄过的结果读的是 preview。"
+                   "「形状看不懂」不是通过 —— 是这条我认不出判据，照实标出来给人看。")}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(rep, ensure_ascii=False, indent=1), "utf-8")
     print("=" * 78)

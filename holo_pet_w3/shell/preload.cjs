@@ -19,6 +19,10 @@ contextBridge.exposeInMainWorld("gbtW3", {
   non_readonly_capability: "summon（只起一个本机窗口：不写文件、不发网络、不 kill 进程）"
     + " · connectDsh（把主人**运行时**给的对话面 URL 交给窗口加载：只放行本机回环；"
     + "URL 只在内存，**不落盘、不回显**，返回值只给 host）"
+    + " · openExternal（把**本机回环**页面交给系统浏览器打开：只放行回环，不落盘、只回 host）"
+    + " · panelGoto（**面板内跳页**：让面板窗切到某注册窗的页面，不开新窗）"
+    + " · capFrame（**取一帧触手视野**：走面板桥真调 tentacle see；只在内存回传，不落盘）"
+    + " · heartbeat（**触手心跳派活**：按轮换给只读能力位派活，账本自己会记；关掉即停）"
     + " · showWindow（一体式 App 铬的跨窗跳转：**只认注册表里已有的窗 id**；"
     + "只改窗口可见性/焦点，不写文件、不出网、不 kill 进程）"
     + " · intercom（**开麦克风采集 + 让本机出声**。第 58 轮加。"
@@ -39,7 +43,30 @@ contextBridge.exposeInMainWorld("gbtW3", {
   pets: (payload) => invoke("w3:pets", payload),
   summon: (payload) => invoke("w3:summon", payload),
   connectDsh: (payload) => invoke("w3:connect-dsh", payload),
+  /* 🔴 2026-10-09 主人令「必须镶嵌进去……统一品牌和Logo，我们是把她集成进我们」：
+     取**对话引擎入口**给自己的本地页用（品牌框架页 / 面板内嵌页），
+     这样引擎跑在**我们的门面**里，而不是她的整窗界面。
+     口径不变：只放行本机回环；没有就如实说"还没接上"，不假装。 */
+  dshEntry: () => invoke("w3:dsh-entry"),
+  /* 数字人页的「文本→桥」受理口（2026-10-08）：页面是**离线自包含**的
+     （CSP `connect-src 'none'`，自己发不出任何请求），所以由**壳替它跑这一趟**：
+     页面只给文本，**目标由壳写死**（只可能打到本机面板桥 :8765 的 /api/message）
+     ⇒ 页面构造不出别的地址，也就不用放开它的网络面。失败**带原文**回来，不静默。 */
+  message: (payload) => invoke("w3:message", payload),
   showWindow: (payload) => invoke("w3:show-window", payload),
+  /* 在系统浏览器里打开**本机回环**页面（动作口，2026-10-04）：页面固定的配套 ——
+     窗不上跳，显式意图走浏览器。只放行回环；URL 只进内存，返回只有 host。 */
+  openExternal: (payload) => invoke("w3:open-external", payload),
+  /* 面板内跳页（主人令 2026-10-04「固定在 APP 面板上」）：让**面板窗**在内容区里切页，
+     不再新建 OS 窗。只认得注册表里的窗 id（壳侧解析成页面路径）。 */
+  panelGoto: (payload) => invoke("w3:panel-goto", payload),
+  /* 触手视野**活体取帧**（动作口，2026-10-04）：真调 tentacle see 取一帧，
+     只在内存回给页面渲染（不落盘、不缓存、不回显路径）。 */
+  capFrame: () => invoke("w3:cap-frame"),
+  /* 触手活动流（只读账本尾）与心跳派活开关（动作口：按轮换给**只读**能力位派活）。 */
+  capActivity: () => invoke("w3:cap-activity"),
+  heartbeat: (payload) => invoke("w3:heartbeat", payload),
+  onPanelGoto: (handler) => ipcRenderer.on("panel:goto", (_e, msg) => handler(msg)),
   eigenflux: () => invoke("w3:eigenflux"),
   /* R-H295 新接的两只**只读**审计器（欠账：「覆盖审计接进上帝视角」「零调用点清单接进上帝视角」）。
      两者都是**实时现跑** —— 主进程侧走 /api/capability 真调框架审计器再等 cap_result，

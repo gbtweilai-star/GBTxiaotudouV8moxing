@@ -39,8 +39,17 @@ def ask(prompt, system="", model=None, temperature=0.7, max_tokens=2000,
     """
     from . import bridge as LB
     t0 = time.time()
+    # 🔴 2026-10-12 修（闭环断点就在这里 · 实测）：`purpose` 原来**只写进审计、不传下去** ——
+    #    ⇒ `cloud_llm.run()` 的 `_purpose` 恒为 "" ⇒ 按 purpose 的两条机制全部失效：
+    #      ① 触手维度独立密钥路由（`_PURPOSE_ROUTING_MAP`）；
+    #      ② 2026-10-12 新加的「内部结构化调用跳过 fact_gate / policy_gate 直答门」守卫。
+    #    实测病案：`semantic_route.choose()` 明传 `purpose="semantic_route"`，到这里被吞掉，
+    #    于是它的 JSON 请求仍被 fact_gate 拦成散文 ⇒ 主路整条失效、永远降级到词表辅路。
+    #    下游 `bridge.chat` **本来就支持 purpose**（bridge.py:46,55 透传 cloud_llm）——
+    #    断点只在这一处，故只补这一处，不另做第二份实现。
     r = LB.chat(prompt, system=system, model=model, temperature=temperature,
-                max_tokens=max_tokens, timeout=timeout)
+                max_tokens=max_tokens, timeout=timeout,
+                purpose=purpose or "generic")
     if not isinstance(r, dict):
         r = {"ok": False, "error": f"桥返回非 dict: {type(r).__name__}"}
     # 漂移如实报：统一大模型说好是 agnes-2.5-flash，落到别人身上要看得见（不静默降级）。

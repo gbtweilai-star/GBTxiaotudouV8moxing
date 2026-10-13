@@ -1,11 +1,11 @@
 {
- "at": "2026-09-25T02:32:07",
- "本次探位数": 1,
+ "at": "2026-10-04T20:58:41",
+ "本次探位数": 192,
  "合计": {
-  "✅ 通": 1,
+  "✅ 通": 157,
   "⛔ 痛": 0,
-  "🟡 需参数·未探": 0,
-  "🔒 被门拒·缺授权": 0
+  "🟡 需参数·未探": 9,
+  "🔒 被门拒·缺授权": 26
  },
  "运行期排除复核": "待探 ∩ (改状态 ∪ safe=False) = ∅ ✅",
  "被排除": {
@@ -23,22 +23,1318 @@
    "wf_run"
   ],
   "safe=False": [
+   "actioncam",
    "audio_extract",
    "audio_mix",
+   "blender",
+   "claude_code",
+   "cli_chat",
    "code_patch",
+   "codebuddy",
+   "collab_gateway",
+   "credential_steal",
+   "data_hijack",
+   "device_takeover",
    "edit_pipeline",
+   "filmkit",
+   "genoffice",
+   "genoffice_bridge",
    "git_write",
+   "gs_h3",
+   "key_gateway",
+   "keylogger",
+   "look_grade",
    "media_license",
    "media_publish",
-   "media_run"
+   "media_run",
+   "multimodal_port",
+   "n8n_wf",
+   "notion_bridge",
+   "omni_web",
+   "pentest",
+   "redteam_recon",
+   "remote_domain",
+   "room_space",
+   "screen_sniff",
+   "thebrain_bridge",
+   "tripo",
+   "ul_tars_desktop",
+   "zimage_rewash"
   ]
  },
  "逐位": [
   {
+   "kind": "a1art_skill",
+   "态": "✅ 通",
+   "秒": 7.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "absorb_loop",
+   "态": "✅ 通",
+   "秒": 6.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "account_registry",
+   "态": "✅ 通",
+   "秒": 6.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "action_gate",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "agency_tentacles",
+   "态": "✅ 通",
+   "秒": 6.5,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "agent_console",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "agent_control",
+   "态": "✅ 通",
+   "秒": 6.2,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "agent_council",
+   "态": "✅ 通",
+   "秒": 5.8,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "agent_rig",
+   "态": "✅ 通",
+   "秒": 6.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "alerts",
+   "态": "✅ 通",
+   "秒": 6.5,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "answer_shaper",
+   "态": "✅ 通",
+   "秒": 7.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "asset_index",
+   "态": "✅ 通",
+   "秒": 6.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "asset_vault_freeze",
+   "态": "✅ 通",
+   "秒": 13.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "audit_query",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 8.5,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "audit_read"
+   ],
+   "读数尾": " },  \"missing_scopes\": [   \"audit_read\"  ],  \"reason\": \"需要人工授权（audit_read）：读取审计、授权或运行历史\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope audit_read --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "auth_gate_status",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "auto_publish",
+   "态": "✅ 通",
+   "秒": 6.4,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "auto_switch",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "automation_keys",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "autopilot",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.6,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "external_llm"
+   ],
+   "读数尾": "ng_scopes\": [   \"external_llm\"  ],  \"reason\": \"需要人工授权（external_llm）：把当前任务数据发送到外部大模型服务\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope external_llm --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "awesome_tools_index",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "belief_forge",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "bluetooth",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.0,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "device_control"
+   ],
+   "读数尾": "pes\": [   \"device_control\"  ],  \"reason\": \"需要人工授权（device_control）：连接、写入或控制蓝牙及其他外部设备\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope device_control --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "brain_council",
+   "态": "✅ 通",
+   "秒": 7.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "brain_execute",
+   "态": "🟡 需参数·未探",
+   "秒": 6.4,
+   "为什么": "空参探不动（user_error）：**缺少 kind 或 parallel** —— 要按它的契约给参再探",
+   "读数尾": "{  \"gate\": \"run_task\",  \"kind\": \"brain_execute\",  \"status\": \"error\",  \"stamp\": false,  \"denied\": false,  \"result\": {   \"status\": \"error\",   \"kind\": \"brain_execute\",   \"message\": \"缺少 kind 或 parallel\",   \"error_class\": \"user_error\"  },  \"_信封\": {   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "brain_health",
+   "态": "✅ 通",
+   "秒": 11.8,
+   "读数尾": "iteable comtypes cache directory: 'C:\\Users\\ADMIN\\AppData\\Roaming\\Python\\Python314\\site-packages\\comtypes\\gen'"
+  },
+  {
+   "kind": "brain_route",
+   "态": "🟡 需参数·未探",
+   "秒": 5.9,
+   "为什么": "空参探不动（user_error）：**需要 intent：任务意图描述** —— 要按它的契约给参再探",
+   "读数尾": "{  \"gate\": \"run_task\",  \"kind\": \"brain_route\",  \"status\": \"error\",  \"stamp\": false,  \"denied\": false,  \"result\": {   \"status\": \"error\",   \"kind\": \"brain_route\",   \"message\": \"需要 intent：任务意图描述\",   \"error_class\": \"user_error\"  },  \"_信封\": {   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "brain_unify",
+   "态": "🟡 需参数·未探",
+   "秒": 5.9,
+   "为什么": "空参探不动（user_error）：**需要 goal（意图）或 kind（指定能力）** —— 要按它的契约给参再探",
+   "读数尾": "{  \"gate\": \"run_task\",  \"kind\": \"brain_unify\",  \"status\": \"error\",  \"stamp\": false,  \"denied\": false,  \"result\": {   \"status\": \"error\",   \"kind\": \"brain_unify\",   \"message\": \"需要 goal（意图）或 kind（指定能力）\",   \"error_class\": \"user_error\"  },  \"_信封\": {   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "brain_vault",
+   "态": "✅ 通",
+   "秒": 7.3,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "brain_verify",
+   "态": "✅ 通",
+   "秒": 11.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "brand_outro",
+   "态": "✅ 通",
+   "秒": 6.7,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "browser",
+   "态": "🟡 需参数·未探",
+   "秒": 7.4,
+   "为什么": "空参探不动（user_error）：**缺少 url** —— 要按它的契约给参再探",
+   "读数尾": "{  \"gate\": \"run_task\",  \"kind\": \"browser\",  \"status\": \"error\",  \"stamp\": false,  \"denied\": false,  \"result\": {   \"status\": \"error\",   \"kind\": \"browser\",   \"message\": \"缺少 url\",   \"error_class\": \"user_error\"  },  \"_信封\": {   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "bt_control",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.1,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "device_control"
+   ],
+   "读数尾": "pes\": [   \"device_control\"  ],  \"reason\": \"需要人工授权（device_control）：连接、写入或控制蓝牙及其他外部设备\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope device_control --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "cap_tags",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "capability_net",
+   "态": "✅ 通",
+   "秒": 6.7,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "caps_called_audit",
+   "态": "✅ 通",
+   "秒": 11.4,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "case_mine",
+   "态": "✅ 通",
+   "秒": 6.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "cloud_pc",
+   "态": "✅ 通",
+   "秒": 7.6,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "code_art",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "code_audit",
+   "态": "✅ 通",
+   "秒": 7.0,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "codex_chat",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.1,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "process_execute",
+    "external_llm"
+   ],
+   "读数尾": "\",   \"external_llm\"  ],  \"reason\": \"需要人工授权（process_execute）：启动进程、执行命令或连接 MCP/终端服务器\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope process_execute --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "codex_interrupt",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.0,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "process_execute"
+   ],
+   "读数尾": "  \"process_execute\"  ],  \"reason\": \"需要人工授权（process_execute）：启动进程、执行命令或连接 MCP/终端服务器\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope process_execute --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "codex_models",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.1,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "external_llm"
+   ],
+   "读数尾": "ng_scopes\": [   \"external_llm\"  ],  \"reason\": \"需要人工授权（external_llm）：把当前任务数据发送到外部大模型服务\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope external_llm --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "codex_status",
+   "态": "✅ 通",
+   "秒": 6.7,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "codex_thread_new",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.5,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "process_execute"
+   ],
+   "读数尾": "  \"process_execute\"  ],  \"reason\": \"需要人工授权（process_execute）：启动进程、执行命令或连接 MCP/终端服务器\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope process_execute --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "codex_tools",
+   "态": "✅ 通",
+   "秒": 6.0,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "codex_turn_send",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.0,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "process_execute",
+    "external_llm"
+   ],
+   "读数尾": "\",   \"external_llm\"  ],  \"reason\": \"需要人工授权（process_execute）：启动进程、执行命令或连接 MCP/终端服务器\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope process_execute --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "comfyui",
+   "态": "✅ 通",
+   "秒": 8.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "command_chain",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "console_hub",
+   "态": "✅ 通",
+   "秒": 6.2,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "console_pages",
+   "态": "✅ 通",
+   "秒": 11.8,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "context_vault",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "control_loop",
+   "态": "✅ 通",
+   "秒": 6.0,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "count_words",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "coverage_auditor",
+   "态": "✅ 通",
+   "秒": 7.1,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "coze_mail",
+   "态": "✅ 通",
+   "秒": 7.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "create",
+   "态": "✅ 通",
+   "秒": 6.2,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "creation_camp",
+   "态": "✅ 通",
+   "秒": 6.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
    "kind": "cross_scan",
    "态": "✅ 通",
-   "秒": 445.9,
+   "秒": 98.4,
    "读数尾": "ng\\Python\\Python314\\site-packages\\comtypes\\gen' INFO:dxcam.dxcam:Frame buffer build(start): 1920x1080 c=3 n=8."
+  },
+  {
+   "kind": "datakit",
+   "态": "✅ 通",
+   "秒": 6.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "db_probe",
+   "态": "✅ 通",
+   "秒": 8.3,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "deploy_queue",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "desktop_commander",
+   "态": "✅ 通",
+   "秒": 6.8,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "devour_fusion",
+   "态": "✅ 通",
+   "秒": 6.3,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "devour_github",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.4,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "data_export",
+    "filesystem_write"
+   ],
+   "读数尾": "\"data_export\",   \"filesystem_write\"  ],  \"reason\": \"需要人工授权（data_export）：把数据发送到外部服务或持久化到框架外\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope data_export --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**一次性消耗**：用掉即从账本删行\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "devour_scan",
+   "态": "✅ 通",
+   "秒": 6.7,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "director_mood",
+   "态": "✅ 通",
+   "秒": 6.4,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "drama",
+   "态": "✅ 通",
+   "秒": 6.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "dream_replay",
+   "态": "✅ 通",
+   "秒": 6.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "echo",
+   "态": "✅ 通",
+   "秒": 6.7,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "emotion_projection",
+   "态": "✅ 通",
+   "秒": 6.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "energy_pool",
+   "态": "✅ 通",
+   "秒": 7.0,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "energy_scheduler",
+   "态": "✅ 通",
+   "秒": 6.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "event_ledger",
+   "态": "✅ 通",
+   "秒": 6.2,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "feishu_embed",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "file_hygiene",
+   "态": "✅ 通",
+   "秒": 14.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "film_intel",
+   "态": "✅ 通",
+   "秒": 6.0,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "flow_canvas",
+   "态": "✅ 通",
+   "秒": 6.2,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "freebuff_term",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "freellmapi",
+   "态": "✅ 通",
+   "秒": 8.8,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "gate_visibility",
+   "态": "✅ 通",
+   "秒": 8.5,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "ghost_guard",
+   "态": "✅ 通",
+   "秒": 7.8,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "git_read",
+   "态": "✅ 通",
+   "秒": 6.3,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "gods_eye",
+   "态": "✅ 通",
+   "秒": 8.4,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "growth_hooks",
+   "态": "✅ 通",
+   "秒": 7.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "h3_video_gen",
+   "态": "✅ 通",
+   "秒": 6.5,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "handoff",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "health",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "hf_voice",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "hook_enforcer",
+   "态": "✅ 通",
+   "秒": 6.2,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "hook_registry",
+   "态": "✅ 通",
+   "秒": 6.2,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "inventory",
+   "态": "✅ 通",
+   "秒": 6.7,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "ledger_note",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "libtv_skill",
+   "态": "✅ 通",
+   "秒": 6.0,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "libtv_workflow",
+   "态": "✅ 通",
+   "秒": 6.2,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "life",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "llm_chat",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.1,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "external_llm"
+   ],
+   "读数尾": "ng_scopes\": [   \"external_llm\"  ],  \"reason\": \"需要人工授权（external_llm）：把当前任务数据发送到外部大模型服务\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope external_llm --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "llm_redteam",
+   "态": "✅ 通",
+   "秒": 6.4,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "llm_status",
+   "态": "✅ 通",
+   "秒": 7.5,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "lobehub",
+   "态": "✅ 通",
+   "秒": 9.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "local_brain",
+   "态": "✅ 通",
+   "秒": 6.0,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "long_run_supervisor",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "lr_status",
+   "态": "✅ 通",
+   "秒": 6.8,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "mcp_call",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 9.7,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "process_execute"
+   ],
+   "读数尾": "  \"process_execute\"  ],  \"reason\": \"需要人工授权（process_execute）：启动进程、执行命令或连接 MCP/终端服务器\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope process_execute --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "mcp_connect",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.4,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "process_execute"
+   ],
+   "读数尾": "  \"process_execute\"  ],  \"reason\": \"需要人工授权（process_execute）：启动进程、执行命令或连接 MCP/终端服务器\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope process_execute --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "mcp_tools",
+   "态": "✅ 通",
+   "秒": 6.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "media_pipeline",
+   "态": "✅ 通",
+   "秒": 6.4,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "memory_bank",
+   "态": "✅ 通",
+   "秒": 6.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "memory_manager",
+   "态": "✅ 通",
+   "秒": 6.2,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "meta_cognition",
+   "态": "✅ 通",
+   "秒": 6.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "mind",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "mirror_ascend",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.0,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "deploy_publish"
+   ],
+   "读数尾": "g_scopes\": [   \"deploy_publish\"  ],  \"reason\": \"需要人工授权（deploy_publish）：部署、晋升、回滚或写入生产交付区\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope deploy_publish --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**一次性消耗**：用掉即从账本删行\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "mirror_parity",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 9.6,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "filesystem_write"
+   ],
+   "读数尾": ": [   \"filesystem_write\"  ],  \"reason\": \"需要人工授权（filesystem_write）：写入、移动、删除或自动整理文件\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope filesystem_write --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "mirror_plan",
+   "态": "✅ 通",
+   "秒": 6.8,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "mirror_rehearse",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.0,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "process_execute",
+    "filesystem_write"
+   ],
+   "读数尾": " \"filesystem_write\"  ],  \"reason\": \"需要人工授权（process_execute）：启动进程、执行命令或连接 MCP/终端服务器\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope process_execute --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "mirror_release",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 7.5,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "deploy_publish",
+    "process_execute",
+    "filesystem_write"
+   ],
+   "读数尾": "_execute\",   \"filesystem_write\"  ],  \"reason\": \"需要人工授权（deploy_publish）：部署、晋升、回滚或写入生产交付区\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope deploy_publish --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**一次性消耗**：用掉即从账本删行\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "mirror_rewind",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 8.0,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "deploy_publish"
+   ],
+   "读数尾": "g_scopes\": [   \"deploy_publish\"  ],  \"reason\": \"需要人工授权（deploy_publish）：部署、晋升、回滚或写入生产交付区\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope deploy_publish --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**一次性消耗**：用掉即从账本删行\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "mirror_scan",
+   "态": "✅ 通",
+   "秒": 6.5,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "mirror_shape",
+   "态": "✅ 通",
+   "秒": 5.7,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "mirror_simulate",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 5.9,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "filesystem_write"
+   ],
+   "读数尾": ": [   \"filesystem_write\"  ],  \"reason\": \"需要人工授权（filesystem_write）：写入、移动、删除或自动整理文件\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope filesystem_write --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "mirror_status",
+   "态": "✅ 通",
+   "秒": 9.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "model_key_pool",
+   "态": "✅ 通",
+   "秒": 6.0,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "music_intel",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "music_publishing",
+   "态": "✅ 通",
+   "秒": 6.0,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "observer_anchor",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "obsidian_vault",
+   "态": "✅ 通",
+   "秒": 7.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "omission_detector",
+   "态": "✅ 通",
+   "秒": 6.0,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "onboarding_gate",
+   "态": "✅ 通",
+   "秒": 9.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "one_key_deploy",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 7.7,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "deploy_publish",
+    "process_execute",
+    "filesystem_write"
+   ],
+   "读数尾": "_execute\",   \"filesystem_write\"  ],  \"reason\": \"需要人工授权（deploy_publish）：部署、晋升、回滚或写入生产交付区\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope deploy_publish --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**一次性消耗**：用掉即从账本删行\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "one_shot",
+   "态": "✅ 通",
+   "秒": 7.7,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "orchestration_kernel",
+   "态": "✅ 通",
+   "秒": 9.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "osint_scan",
+   "态": "🟡 需参数·未探",
+   "秒": 9.6,
+   "为什么": "空参探不动（user_error）：**缺少 target：请提供要扫描的域名或 IP** —— 要按它的契约给参再探",
+   "读数尾": "{  \"gate\": \"run_task\",  \"kind\": \"osint_scan\",  \"status\": \"error\",  \"stamp\": false,  \"denied\": false,  \"result\": {   \"status\": \"error\",   \"kind\": \"osint_scan\",   \"message\": \"缺少 target：请提供要扫描的域名或 IP\",   \"error_class\": \"user_error\"  },  \"_信封\": {   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "paywallbuster",
+   "态": "✅ 通",
+   "秒": 7.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "penetrating_cross_scan",
+   "态": "✅ 通",
+   "秒": 6.7,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "persona_kernel",
+   "态": "✅ 通",
+   "秒": 9.3,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "pipeline_rollback",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 8.0,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "deploy_publish"
+   ],
+   "读数尾": "g_scopes\": [   \"deploy_publish\"  ],  \"reason\": \"需要人工授权（deploy_publish）：部署、晋升、回滚或写入生产交付区\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope deploy_publish --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**一次性消耗**：用掉即从账本删行\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "pipeline_status",
+   "态": "✅ 通",
+   "秒": 8.5,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "pipeline_submit",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.9,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "deploy_publish"
+   ],
+   "读数尾": "g_scopes\": [   \"deploy_publish\"  ],  \"reason\": \"需要人工授权（deploy_publish）：部署、晋升、回滚或写入生产交付区\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope deploy_publish --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**一次性消耗**：用掉即从账本删行\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "pipeline_versions",
+   "态": "🟡 需参数·未探",
+   "秒": 9.4,
+   "为什么": "空参探不动（user_error）：**缺少 name：请给出产物名** —— 要按它的契约给参再探",
+   "读数尾": "{  \"gate\": \"run_task\",  \"kind\": \"pipeline_versions\",  \"status\": \"error\",  \"stamp\": false,  \"denied\": false,  \"result\": {   \"status\": \"error\",   \"kind\": \"pipeline_versions\",   \"message\": \"缺少 name：请给出产物名\",   \"error_class\": \"user_error\"  },  \"_信封\": {   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "platform_profile",
+   "态": "✅ 通",
+   "秒": 7.8,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "policy_delta",
+   "态": "✅ 通",
+   "秒": 6.4,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "proactive_report",
+   "态": "✅ 通",
+   "秒": 6.8,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "project_context",
+   "态": "✅ 通",
+   "秒": 7.2,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "projection_card",
+   "态": "✅ 通",
+   "秒": 6.8,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "prompt_bridge",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "quant",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "quant_backtest",
+   "态": "✅ 通",
+   "秒": 7.9,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "quant_params",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "quant_strategy",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "record_grid",
+   "态": "🟡 需参数·未探",
+   "秒": 6.9,
+   "为什么": "空参探不动（user_error）：**需要 text（内联文本）或 path（框架内相对路径）** —— 要按它的契约给参再探",
+   "读数尾": "{  \"gate\": \"run_task\",  \"kind\": \"record_grid\",  \"status\": \"error\",  \"stamp\": false,  \"denied\": false,  \"result\": {   \"status\": \"error\",   \"kind\": \"record_grid\",   \"message\": \"需要 text（内联文本）或 path（框架内相对路径）\",   \"error_class\": \"user_error\"  },  \"_信封\": {   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "render_evolution",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "scene_anchor",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "sched_status",
+   "态": "✅ 通",
+   "秒": 7.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "scrapling",
+   "态": "✅ 通",
+   "秒": 6.0,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "sec_chain",
+   "态": "✅ 通",
+   "秒": 494.5,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "sec_defenses",
+   "态": "✅ 通",
+   "秒": 8.4,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "sec_llm",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 5.6,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "external_llm"
+   ],
+   "读数尾": "ng_scopes\": [   \"external_llm\"  ],  \"reason\": \"需要人工授权（external_llm）：把当前任务数据发送到外部大模型服务\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope external_llm --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "sec_scan",
+   "态": "✅ 通",
+   "秒": 466.5,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "sec_surface",
+   "态": "✅ 通",
+   "秒": 48.2,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "sec_sweeper",
+   "态": "✅ 通",
+   "秒": 5.8,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "selfscan",
+   "态": "✅ 通",
+   "秒": 6.0,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "shared_resources",
+   "态": "✅ 通",
+   "秒": 5.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "signature_guard",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "slim_profile",
+   "态": "✅ 通",
+   "秒": 5.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "social_eng",
+   "态": "✅ 通",
+   "秒": 5.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "spend_guard",
+   "态": "✅ 通",
+   "秒": 5.7,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "stigmergy",
+   "态": "✅ 通",
+   "秒": 5.7,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "surface_bind",
+   "态": "✅ 通",
+   "秒": 8.0,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "svc_inspect",
+   "态": "✅ 通",
+   "秒": 6.7,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "tactics_advise",
+   "态": "✅ 通",
+   "秒": 6.0,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "task_manager",
+   "态": "✅ 通",
+   "秒": 9.4,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "tentacle",
+   "态": "🟡 需参数·未探",
+   "秒": 5.7,
+   "为什么": "空参探不动（user_error）：**缺少 action：给触手能力名（tentacle_manifest）、给 intent 走自动路由、或 op=caps 看全部能力** —— 要按它的契约给参再探",
+   "读数尾": "{  \"gate\": \"run_task\",  \"kind\": \"tentacle\",  \"status\": \"error\",  \"stamp\": false,  \"denied\": false,  \"result\": {   \"status\": \"error\",   \"kind\": \"tentacle\",   \"message\": \"缺少 action：给触手能力名（tentacle_manifest）、给 intent 走自动路由、或 op=caps 看全部能力\",   \"error_class\": \"user_error\"  },  \"_信封\": {   \"found\": true,   \"synced\": true,   \"entry\": \"auto\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "tentacle_bind",
+   "态": "✅ 通",
+   "秒": 8.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "tentacle_cognition",
+   "态": "✅ 通",
+   "秒": 6.6,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "tentacle_manifest",
+   "态": "✅ 通",
+   "秒": 5.9,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "tentacle_pipeline",
+   "态": "✅ 通",
+   "秒": 8.8,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "tentacle_status",
+   "态": "✅ 通",
+   "秒": 10.0,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "think_loop",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.2,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "external_llm"
+   ],
+   "读数尾": "ng_scopes\": [   \"external_llm\"  ],  \"reason\": \"需要人工授权（external_llm）：把当前任务数据发送到外部大模型服务\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope external_llm --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "topic_watch",
+   "态": "🟡 需参数·未探",
+   "秒": 6.7,
+   "为什么": "空参探不动（user_error）：**缺少 need：请给一句需求（如「帮我盯着 AI 行业动态」）** —— 要按它的契约给参再探",
+   "读数尾": "{  \"gate\": \"run_task\",  \"kind\": \"topic_watch\",  \"status\": \"error\",  \"stamp\": false,  \"denied\": false,  \"result\": {   \"status\": \"error\",   \"kind\": \"topic_watch\",   \"message\": \"缺少 need：请给一句需求（如「帮我盯着 AI 行业动态」）\",   \"error_class\": \"user_error\"  },  \"_信封\": {   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "trace_store",
+   "态": "✅ 通",
+   "秒": 6.1,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "train_recipe",
+   "态": "✅ 通",
+   "秒": 13.3,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "transfer",
+   "态": "✅ 通",
+   "秒": 7.4,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "transformer",
+   "态": "✅ 通",
+   "秒": 7.0,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "trend_watch",
+   "态": "✅ 通",
+   "秒": 7.9,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "truth_scan",
+   "态": "✅ 通",
+   "秒": 5.8,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "ui_render",
+   "态": "✅ 通",
+   "秒": 5.8,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "verification_watch",
+   "态": "✅ 通",
+   "秒": 6.2,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "video_intel",
+   "态": "✅ 通",
+   "秒": 6.0,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
+  },
+  {
+   "kind": "vision",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.4,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "privacy_read"
+   ],
+   "读数尾": "ng_scopes\": [   \"privacy_read\"  ],  \"reason\": \"需要人工授权（privacy_read）：读取屏幕、摄像头、麦克风或隐私载体\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope privacy_read --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "voice",
+   "态": "🔒 被门拒·缺授权",
+   "秒": 6.1,
+   "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）：这道位能探，但要主人发作用域",
+   "缺作用域": [
+    "audio_output"
+   ],
+   "读数尾": "pes\": [   \"audio_output\"  ],  \"reason\": \"需要人工授权（audio_output）：让本机发声（TTS 合成/播放）或写入音频产物\",  \"how_to_grant\": [   \"终端运行: python -m gbt_allinone auth grant --scope audio_output --ttl 600\",   \"或主人手写 store/auth_grants.jsonl 追加一行（格式见 auth_gate.SCOPES 与 README）\",   \"该作用域是**时段授权**：一张在 TTL 内可反复用\"  ],  \"note\": \"日常技术动作=时段授权（TTL 内可多次）· owner_control/deploy_publish/remote_device/data_export=一次性消耗；AI 调用路径无权自行发放\" }"
+  },
+  {
+   "kind": "voice_orchestra",
+   "态": "✅ 通",
+   "秒": 6.4,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "wave_probe",
+   "态": "✅ 通",
+   "秒": 7.5,
+   "读数尾": "   \"found\": true,   \"synced\": true,   \"entry\": \"outer\",   \"via\": \"ctx\",   \"来源\": \"审计账本末尾现读（门亲笔，不是本包装器的自述）\"  } }"
+  },
+  {
+   "kind": "wf_status",
+   "态": "✅ 通",
+   "秒": 6.2,
+   "读数尾": "   \"默认上限\": 1500,   \"说明\": \"为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；要全量请加 `--full`，或收窄 payload（例如指定 op/domain）\"  } }"
   }
  ]
 }

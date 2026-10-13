@@ -1,0 +1,36 @@
+{
+ "cap": "event_ledger",
+ "domain": "security",
+ "desc": "签名事件账（蒸馏自 2026-09-28 主人给的周榜卡 buzz block/buzz 34,934★，只取**账本纪律**「每条消息都是签名记录」，不引 Nostr 中继/网络面——出网归门与它自己的闸；人机同室协作已有 collab_gateway）：哈希链 + HMAC 签名，`hash=sha256(prev+规范化body)`、`sig=HMAC(key,hash)` ⇒ **改任意一条，它之后每一条都对不上，定位到第一条被改的**；钥匙随机生成 **DPAPI 落盘无明文**（复用仓内 deepseek_key 帮手），DPAPI 不可用 ⇒ fail-closed；**只增不删**（作废走 append retract）。op=append/verify/tail/status/where",
+ "safe": true,
+ "ops": [
+  {
+   "op": "append",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "status",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "tail",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "verify",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "where",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "static-heuristic",
+ "handler_file": "gbt_allinone\\tools\\event_ledger.py",
+ "params": [],
+ "params_hint": "",
+ "handler": "event_ledger",
+ "slot": "g1-10",
+ "group": 1,
+ "role": "模型台账（谁在用、用量、成本）"
+}

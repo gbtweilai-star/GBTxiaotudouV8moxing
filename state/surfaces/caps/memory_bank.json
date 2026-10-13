@@ -1,0 +1,52 @@
+{
+ "cap": "memory_bank",
+ "domain": "mind",
+ "desc": "记忆银行：**来源追踪 + 别名 + 零停机迁移**（蒸馏自 GitHub 周榜 #01 hindsight，只取架构）：`stamp` 给每条记忆打来源印章（ref/sha256/origin/session/why/evidence）；`trace` 同时报**印章在不在**与**内容有没有被改过**（当前 sha vs 印章 sha）；`alias`/`resolve` 记忆库别名（多级链 + **环检测**）；`migrate`/`migrate_apply` 搬家**先双写→逐文件校 sha→原子切别名→失败回滚**，旧目标只读保留（无删除路径）。op=stamp/trace/alias/resolve/aliases/migrate/migrate_apply/verify/where",
+ "safe": true,
+ "ops": [
+  {
+   "op": "alias",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "aliases",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "migrate",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "migrate_apply",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "resolve",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "stamp",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "trace",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "verify",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "where",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "static-heuristic",
+ "handler_file": "gbt_allinone\\tools\\memory_bank.py",
+ "params": [],
+ "params_hint": "",
+ "handler": "memory_bank",
+ "slot": "g3-25",
+ "group": 3,
+ "role": "记忆来源印章（防篡改）"
+}

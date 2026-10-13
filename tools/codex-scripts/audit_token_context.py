@@ -32,7 +32,7 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 # 负向断言排除 HTML 实体：`&#8722;`（减号）`&#8962;`（房号）里也有"#+数字"。
 # ⚠️ 上一版写的是 `(?<!&#)` —— **那是错的**：`#` 前面两个字符是 `X&` 而非 `&#`
-#（`#` 就是匹配起点本身），该断言永远成立，实体根本没被排除。
+# （`#` 就是匹配起点本身），该断言永远成立，实体根本没被排除。
 # 反证测试当场抓到（期望「实体不算颜色」却仍出现在类别里）。正确写法是只看前一个字符。
 HEX = re.compile(r"(?<!&)#[0-9a-fA-F]{3,8}\b")
 
@@ -121,20 +121,22 @@ def main() -> int:
 
         drift_uniq, drift_occ = set(), 0
         for zone in sorted(b, key=lambda z: -sum(b[z].values())):
-            uniq = len(b[zone]); occ = sum(b[zone].values())
+            uniq = len(b[zone])
+            occ = sum(b[zone].values())
             tag = "计入漂移" if zone in DRIFT else ("不计入" if zone in NOT_DRIFT else "未分类")
             mark = "!" if zone in DRIFT else " "
             print(f"   {mark} {zone:<14} 去重 {uniq:>3} · 出现 {occ:>4}   [{tag}]")
             if zone in DRIFT:
-                drift_uniq |= set(b[zone]); drift_occ += occ
+                drift_uniq |= set(b[zone])
+                drift_occ += occ
                 top = sorted(b[zone].items(), key=lambda x: -x[1])[:8]
                 print(f"       高频: {top}")
             elif zone == "令牌块内定义":
                 print(f"       令牌: {sorted(b[zone])}")
             elif zone == "调色板展示":
-                print(f"       这是**有意为之的色彩展示**，颜色就是内容 —— 不是漂移")
+                print("       这是**有意为之的色彩展示**，颜色就是内容 —— 不是漂移")
             elif zone == "颜色数据/实参":
-                print(f"       这是传给函数的颜色实参/数据，不是样式声明")
+                print("       这是传给函数的颜色实参/数据，不是样式声明")
 
         verdict = "PASS" if len(drift_uniq) <= a.cap else "HIT"
         if verdict == "HIT":

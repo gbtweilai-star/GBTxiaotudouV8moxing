@@ -329,7 +329,7 @@ def main() -> int:
                       "sampler": a.sampler, "scheduler": a.scheduler, "ckpt": ckpt,
                       "legs": notes, "images": saved,
                       "_口径": ("CPU 路线，耗时是真读数。**出图 ≠ 姿势对 ≠ 审美合格**："
-                                "姿势是否咬合要另用骨架叠图比对，审美另走 gbt-aesthetic")},
+                              "姿势是否咬合要另用骨架叠图比对，审美另走 gbt-aesthetic")},
                      ensure_ascii=False, indent=1))
     return 0
 

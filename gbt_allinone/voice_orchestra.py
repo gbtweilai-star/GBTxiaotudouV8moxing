@@ -68,7 +68,7 @@ VOICE_SKILL_REGISTRY: List[VoiceSkill] = [
     VoiceSkill("Qwen3-TTS", VoiceDomain.CLONE, "阿里千问", ["3秒声纹克隆", "97ms超低延迟", "自然语言设计声音"], "本地/云端", "Apache-2.0", "实时数字人、多语言客服"),
     VoiceSkill("VibeVoice", VoiceDomain.CLONE, "微软", ["1分钟克隆", "60分钟长音频", "42k Star"], "本地/云端", "MIT", "有声书制作、长视频配音"),
     VoiceSkill("Seed-VC", VoiceDomain.CLONE, "社区", ["零样本语音转换", "歌声转换", "实时支持"], "本地", "GPL-3.0", "歌声转换、实时变声直播"),
-    VoiceSkill("VoiceStudio", VoiceDomain.CLONE, "Palash Deb", ["本地语音工作台", "16个TTS引擎集成", "实时听写+克隆+配音"], "本地", "AGPL-3.0", "一站式语音创作、视频配音工作流"),
+    VoiceSkill("VoiceStudio", VoiceDomain.CLONE, "Palash Deb", ["完全本地 · 646 语言", "克隆/设计/配音/转写", "已接本机 127.0.0.1:3900"], "本地（已接）", "AGPL-3.0", "一站式语音创作、视频配音工作流"),
 
     # --- 大脑 (Audio LLM) ---
     VoiceSkill("Qwen-Omni", VoiceDomain.LLM, "阿里", ["端到端多模态", "文本/音频/图像输入", "音频输出"], "本地/云端", "Apache-2.0", "全模态AI Agent"),
@@ -270,11 +270,25 @@ def run(op: str = "status", **params) -> dict:
             except Exception:
                 return False
 
+        def _svc(host: str, port: int, timeout: float = 0.6) -> str:
+            """本机服务的活体探测（只读：只建 TCP 连接，不发请求、不写盘）。"""
+            import socket as _s
+            try:
+                with _s.create_connection((host, port), timeout=timeout):
+                    return "up"
+            except Exception:  # noqa: BLE001 —— 连不上就是"没起"，不是错误
+                return "down"
+
         return {"ok": True, "readonly": True, "op": "status", "registry_size": len(VOICE_SKILL_REGISTRY),
                 "local_backends": {"onnxruntime": _has("onnxruntime"), "torch": _has("torch"),
                                    "dxcam": _has("dxcam"), "sapi": _os.name == "nt"},
+                # 2026-10-04 接入：VoiceStudio 本地语音工作台（headless 后端）。
+                # 看"服务在不在"与看"包能不能 import"是两把尺 —— 分开报。
+                "local_services": {"voicestudio(127.0.0.1:3900)": _svc("127.0.0.1", 3900)},
                 "note": ("本机可跑性以能 import 的后端为准；torch 缺失则 2B 级以上本地模型不可跑，"
-                         "见 gbt_allinone/docs/语音中枢v2.0-实测与部署.md")}
+                         "见 gbt_allinone/docs/语音中枢v2.0-实测与部署.md。"
+                         "local_services 是活体探测（只读 TCP 连接）；VoiceStudio 起停/说话/克隆走 "
+                         "tools/codex-scripts/voicestudio.py")}
     raise ValueError("未知 op: %s（可用: list / pipeline / status）" % op)
 
 

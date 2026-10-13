@@ -87,7 +87,7 @@ def main() -> int:
 
     # ③ 结构
     rc3, out3 = run("audit-regulations.py")
-    a = re.search(r"共 (\d+) 件.*?去重后 (\d+) 件", out3)
+    re.search(r"共 (\d+) 件.*?去重后 (\d+) 件", out3)
     s = re.search(r"小计：(\d+) 件 · 合计 (\d+) 行 · 点名过的能力位（去重前）(\d+) 处 · 「未验」标记 (\d+) 处", out3)
     gap = re.search(r"缺节的件：(\d+) / (\d+)", out3)
     if gap and gap.group(1) != "0":
@@ -131,28 +131,28 @@ def main() -> int:
     print("   缺节：%s" % (gap.group(0).split("：")[1] if gap else "（没解析到）"))
     # ④ 设计全维度（总规程 + 七份深读）
     print("④ 设计全维度（总规程 8 节 + 七份深读点名全覆盖 + 索引覆盖）")
-    d_last = [l for l in out4.strip().splitlines() if l.strip()] if out4.strip() else []
+    d_last = [ln for ln in out4.strip().splitlines() if ln.strip()] if out4.strip() else []
     print("   %s" % (d_last[-1] if d_last else "（跑不起来）"))
-    for l in d_last:
-        if l.strip().startswith("🔴"):
-            print("   %s" % l.strip())
+    for ln in d_last:
+        if ln.strip().startswith("🔴"):
+            print("   %s" % ln.strip())
     pending_domains = re.findall(r"^\s*⏳ 在队里\s+([A-Za-z0-9_]+)\s", out1, re.M)
     # ⑤ 技能根一致性 + 图鉴新鲜度
     print("⑤ 技能根一致性 / 图鉴新鲜度（源 · 产品口径 · 本会话加载根 · 图鉴 vs 盘上）")
     if drift5:
         print("   gbt-* 哈希偏差：%s 个" % drift5.group(1))
-    for l in out5.splitlines():
-        if l.startswith("   ✅ 已刷新") or "本会话真正加载的根" in l:
-            print("   %s" % l.strip())
-        if ("图鉴 built_at" in l) or ("盘上有、图鉴里没有" in l):
-            print("   %s" % l.strip())
-        if l.strip().startswith("🔴") and "图鉴" not in l and "⇒ 重扫" in l:
-            print("   %s" % l.strip())
+    for ln in out5.splitlines():
+        if ln.startswith("   ✅ 已刷新") or "本会话真正加载的根" in ln:
+            print("   %s" % ln.strip())
+        if ("图鉴 built_at" in ln) or ("盘上有、图鉴里没有" in ln):
+            print("   %s" % ln.strip())
+        if ln.strip().startswith("🔴") and "图鉴" not in ln and "⇒ 重扫" in ln:
+            print("   %s" % ln.strip())
     print("⑥ 队列余量（**现读**；技能目录会被外部更新，清空只是当时的快照）")
     print("   未深蒸域：%d 个%s" % (len(pending_domains),
-                                 "" if not pending_domains else "（%s）" % "、".join(pending_domains)))
+                              "" if not pending_domains else "（%s）" % "、".join(pending_domains)))
     print("   未深蒸簇：%d 个%s" % (len(pending_clusters),
-                                 "" if not pending_clusters else "（%s）" % "、".join(pending_clusters)))
+                              "" if not pending_clusters else "（%s）" % "、".join(pending_clusters)))
     print("-" * 78)
     if bad:
         print("结论：**不通过** —— " + "；".join(bad))

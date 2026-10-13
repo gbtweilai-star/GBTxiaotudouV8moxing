@@ -44,6 +44,7 @@ STATE = ROOT / ".scratch" / "_genrouter_state.json"
 B = []
 def add(**kw): B.append(kw)
 
+
 # ── 本机（真无限，慢）──────────────────────────────────────────────────────
 add(id="comfy_local", name="本机 ComfyUI（SD1.5 · CPU）", kind="image", adapter="comfy_local",
     free="真无限（本地）", needs=[], unit="586 秒/张（实测）", probe="http://127.0.0.1:8188/system_stats")
@@ -66,13 +67,13 @@ _OA = [
     ("azure_openai",    "Azure OpenAI",              "AZURE_OPENAI_KEY",   "由 AZURE_OPENAI_ENDPOINT 给"),
     ("google_ai",       "Google AI Studio / Gemini", "GOOGLE_API_KEY",     "https://generativelanguage.googleapis.com/v1beta"),
     ("hf_inference",    "HuggingFace Inference",     "HF_TOKEN",           "https://api-inference.huggingface.co"),
-    ("replicate",       "Replicate",                 "REPLICATE_API_TOKEN","https://api.replicate.com/v1"),
+    ("replicate",       "Replicate",                 "REPLICATE_API_TOKEN", "https://api.replicate.com/v1"),
     ("fal",             "fal.ai",                     "FAL_KEY",            "https://fal.run"),
     ("venice",          "Venice.ai",                  "VENICE_API_KEY",     "https://api.venice.ai/api/v1"),
     ("together",        "Together AI",                "TOGETHER_API_KEY",   "https://api.together.xyz/v1"),
     ("deepinfra",       "DeepInfra",                  "DEEPINFRA_API_KEY",  "https://api.deepinfra.com/v1"),
     ("novita",          "Novita AI",                  "NOVITA_API_KEY",     "https://api.novita.ai/v3"),
-    ("siliconflow",     "SiliconFlow 硅基流动",        "SILICONFLOW_API_KEY","https://api.siliconflow.cn/v1"),
+    ("siliconflow",     "SiliconFlow 硅基流动",        "SILICONFLOW_API_KEY", "https://api.siliconflow.cn/v1"),
     ("modelscope",      "ModelScope 魔搭",             "MODELSCOPE_API_KEY", "https://api-inference.modelscope.cn/v1"),
     ("dashscope",       "阿里云百炼 / 通义万相",        "DASHSCOPE_API_KEY",  "https://dashscope.aliyuncs.com/api/v1"),
     ("volc_ark",        "火山方舟 Ark（本仓有 arkcli 规程）", "ARK_API_KEY",  "https://ark.ap-southeast.bytepluses.com/api/v3"),
@@ -86,7 +87,7 @@ _OA = [
     ("xfyun",           "讯飞星火",                    "XF_APP_ID",          "https://spark-api.xf-yun.com/v1"),
     ("hunyuan",         "腾讯混元",                    "HUNYUAN_SECRET_ID",  "https://hunyuan.tencentcloudapi.com"),
     ("stability",       "Stability AI",                "STABILITY_API_KEY",  "https://api.stability.ai"),
-    ("bfl",             "Black Forest Labs（FLUX 官方）","BFL_API_KEY",       "https://api.bfl.ai/v1"),
+    ("bfl",             "Black Forest Labs（FLUX 官方）", "BFL_API_KEY",       "https://api.bfl.ai/v1"),
     ("ideogram",        "Ideogram",                    "IDEOGRAM_API_KEY",   "https://api.ideogram.ai"),
     ("recraft",         "Recraft",                     "RECRAFT_API_KEY",    "https://external.api.recraft.ai/v1"),
     ("luma",            "Luma AI（图/视频）",           "LUMA_API_KEY",      "https://api.lumalabs.ai/dream-machine/v1"),
@@ -100,7 +101,7 @@ _OA = [
     ("lightricks",      "Lightricks LTX（视频）",       "LTX_API_KEY",       "未查"),
     ("wavespeed",       "WaveSpeedAI",                 "WAVESPEED_API_KEY", "https://api.wavespeed.ai"),
     ("comet",           "CometAPI（聚合）",             "COMETAPI_KEY",      "https://api.cometapi.com/v1"),
-    ("openrouter",      "OpenRouter（聚合）",           "OPENROUTER_API_KEY","https://openrouter.ai/api/v1"),
+    ("openrouter",      "OpenRouter（聚合）",           "OPENROUTER_API_KEY", "https://openrouter.ai/api/v1"),
     ("aihubmix",        "AiHubMix（聚合）",             "AIHUBMIX_KEY",      "https://aihubmix.com/v1"),
     ("ohmygpt",         "OhMyGPT（聚合）",              "OHMYGPT_KEY",       "https://api.ohmygpt.com/v1"),
     ("gptgod",          "GPTGOD（聚合）",               "GPTGOD_KEY",        "未查"),
@@ -113,7 +114,7 @@ _OA = [
 ]
 for i, (bid, nm, env, base) in enumerate(_OA):
     kind = "video" if any(k in bid for k in ("runway", "pika", "kling", "vidu", "hailuo",
-                                              "higgsfield", "lightricks", "luma", "stability_video")) else (
+                                             "higgsfield", "lightricks", "luma", "stability_video")) else (
            "llm" if bid in ("ollama_local", "lmstudio_local", "localai_local", "openrouter",
                             "comet", "aihubmix", "ohmygpt", "gptgod") else "image")
     add(id=bid, name=nm, kind=kind, adapter="openai_image" if kind == "image" else "none",
@@ -477,14 +478,12 @@ def gen_fal(b, prompt, outdir, idx):
 def gen_comfy(b, prompt, outdir, idx):
     """本机 ComfyUI：把它并进**同一个池**（原来它只活在 `comfy-run.py` 那个独立脚本里 ——
        两条路等于两套口径，本仓最贵的教训）。五步：探活 → 认模型 → 提交 → 等 → 取图。"""
-    import os
-    import re
     import urllib.parse
     import uuid
     base = (b.get("base") or "http://127.0.0.1:8188").rstrip("/")
     t0 = time.time()
     try:
-        st = get_json(base, "/system_stats", timeout=8)
+        get_json(base, "/system_stats", timeout=8)
     except Exception as e:  # noqa: BLE001
         return {"ok": False, "backend": b["id"], "status": "server_down",
                 "error": "%s: %s" % (type(e).__name__, str(e)[:100]),
@@ -852,7 +851,7 @@ def cmd_selftest(st):
     print("调度自检：候选 %d 个" % len(cands))
     print("  轮询池：%s" % ([b["id"] for b in cands] or "(空)"))
     print("  全到顶时的回落：%s" % ("comfy_local（本机，永远在）"
-                                   if any(b["id"] == "comfy_local" for b in B) else "❗没有本机回落"))
+                            if any(b["id"] == "comfy_local" for b in B) else "❗没有本机回落"))
     st["day"] = today()
     save_state(st)
     print("  状态文件：%s（今天计数 %s）" % (STATE, st["calls"].get(today(), {})))

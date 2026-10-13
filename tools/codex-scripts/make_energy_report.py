@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """生成《GBT小土豆V8 · 能量总览》Markdown（数据全部来自实时扫描，不手抄）。"""
-import json
 import sys
 import time
 from collections import defaultdict
@@ -10,7 +9,7 @@ from pathlib import Path
 # （2026-09-23 实测：从仓根跑 `py -3.14 tools/codex-scripts/make_energy_report.py` → 报错。）
 # 跑脚本时 `sys.path[0]` 是**脚本所在目录**、不是 cwd，所以必须把仓根自己塞进去，不能指望 cwd。
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）.parent
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）.parent
 sys.path.insert(0, str(BASE))
 
 from gbt_allinone import api as API  # noqa: E402
@@ -60,7 +59,7 @@ add("| 注册↔路由对齐 | **%s / %s**（未路由 %d，幽灵路由 %d） |
     % (routing.get("routed"), routing.get("registered"), len(routing.get("unrouted") or []),
        len(routing.get("ghost_routes") or [])))
 add("| 模块导入体检 | **%s / %s** 通过 |" % (modules.get("checked", 0) - len(modules.get("failed") or []),
-                                        modules.get("checked", 0)))
+                                     modules.get("checked", 0)))
 add("| 调用点接线 | **wired %s / total %s**，孤儿 **%s** |"
     % (audit.get("wired_count", "?"), audit.get("total", "?"), audit.get("orphan_count", "?")))
 add("| 五维体检总判定 | **%s** |" % scan.get("verdict"))

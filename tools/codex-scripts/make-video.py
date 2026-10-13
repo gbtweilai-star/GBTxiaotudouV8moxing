@@ -210,11 +210,11 @@ def main() -> int:
             "重叠": "%.3f s（%d 处交叉溶解 × %.2f s）" % (overlap, max(n - 1, 0), xf if n > 1 else 0),
             "实际": "%.3f s（= 名义 − 重叠）" % actual,
             "对得上吗": (abs(actual - (nominal - overlap)) <= 0.06
-                      or "⚠️ 差 %.3f s（超出容差，要查）" % abs(actual - (nominal - overlap))),
+                     or "⚠️ 差 %.3f s（超出容差，要查）" % abs(actual - (nominal - overlap))),
         },
         "ffprobe": info,
         "_口径": ("**真生成的帧 + 真合成的运动**：帧来自生成模型，帧间运动由 ffmpeg 算（Ken Burns/溶解）。"
-                 "本机无 CUDA、内存 7.4GB ⇒ **逐帧生成式视频不做**，不把这条含糊成'逐帧生成'。"),
+                "本机无 CUDA、内存 7.4GB ⇒ **逐帧生成式视频不做**，不把这条含糊成'逐帧生成'。"),
     }, ensure_ascii=False, indent=1))
     return 0 if ok else 5
 

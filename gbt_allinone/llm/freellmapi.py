@@ -305,3 +305,93 @@ if __name__ == "__main__":
     import sys
     print(json.dumps(status_report(sys.argv[1] if len(sys.argv) > 1 else ""),
                      ensure_ascii=False, indent=2))
+
+
+# ── 2026-10-04 丢失腿复原轮：以下常量与三入口（_gate / run_op / run）从基线工作树
+#    （.scratch/_baseline_wt）逐字接回 —— 活树这份模块此前只有 `status_report` 等底层函数、
+#    缺能力位入口 ⇒ 注册表里有名字、真调却 `module has no attribute 'run'`。
+#    复原工具：tools/codex-scripts/restore_missing_caps.py（可复跑）。 ──
+_REPO = Path(__file__).resolve().parents[2]
+
+_GATE_WRITE = ("filesystem_write",)   # 改对方配置 / 传凭据（与 automation_keys 的 set/unset 同口径）
+
+_READ_OPS = ("status", "probe", "docs", "models", "framework_env", "where")
+_GATED_OPS = ("login", "unified_key", "providers", "list_keys", "add_key",
+              "health_check", "set_enabled", "remove_key")
+
+
+def _gate(scopes, detail: str) -> dict:
+    """`security/policy.py` 无 `freellmapi` 分支（owner-only，AI 无权改）
+    ⇒ 门层零作用域 ⇒ 本模块走授权门的**唯一校验入口** `auth_gate.check_and_consume_many`
+    （与 `policy.authorize` 同一个）—— **不是绕门，是补门**。"""
+    try:
+        from .. import auth_gate
+        from ..security import policy as _policy
+    except ImportError:                                           # 独立加载
+        sys.path.insert(0, str(_REPO))
+        from gbt_allinone import auth_gate                        # type: ignore
+        from gbt_allinone.security import policy as _policy        # type: ignore
+    if _policy.is_trusted():
+        return {"ok": True, "trusted": True, "scopes": list(scopes)}
+    return auth_gate.check_and_consume_many(list(scopes), detail=detail)
+
+
+def run_op(op: str = "status", **params) -> dict:
+    """能力位 op 分派。只读面不过门；写面/传凭据过 `filesystem_write`。"""
+    op = str(op or "status").strip().lower()
+    if op in ("where", "help"):
+        return {"ok": True, "op": "where", "cap": "freellmapi",
+                "base_url": base_url(), "discovered_from": discover_base_url()[1],
+                "read_ops": list(_READ_OPS), "gated_ops": list(_GATED_OPS),
+                "gate_scope": list(_GATE_WRITE),
+                "_口径": "只读面（探活/文档/模型列表）不过门；写面（配密钥）过 filesystem_write"}
+    if op == "status":
+        return status_report(str(params.get("token") or ""))
+    if op == "probe":
+        return probe(float(params.get("timeout") or 5.0))
+    if op == "docs":
+        return docs_available(float(params.get("timeout") or 5.0))
+    if op == "models":
+        return models(str(params.get("unified") or params.get("key") or ""),
+                      timeout=float(params.get("timeout") or 20.0))
+    if op == "framework_env":
+        unified = str(params.get("unified") or params.get("key") or "")
+        return {"ok": bool(unified), "op": "framework_env",
+                "env": framework_env(unified, params.get("base_url")),
+                "_口径": "只算出来，不写盘（与 automation_keys 同一纪律）"}
+    if op not in _GATED_OPS:
+        return {"ok": False, "op": op,
+                "error": "未知 op：%s（只读：%s；需授权：%s）"
+                         % (op, ", ".join(_READ_OPS), ", ".join(_GATED_OPS))}
+    gate = _gate(_GATE_WRITE, "freellmapi %s → 改对方配置/传凭据" % op)
+    if not gate.get("ok"):
+        return {"ok": False, "op": op, "denied": True, "fail_closed": True,
+                "error_class": "needs_authorization",
+                "error": gate.get("error"), "missing": gate.get("missing") or list(_GATE_WRITE),
+                "how_to_grant": gate.get("how_to_grant"),
+                "why": "配密钥 = 改对方服务的状态 ⇒ 要授权",
+                "口径": "缺授权如实报缺；**不绕门**"}
+    tok = str(params.get("token") or "")
+    if op == "login":
+        return login(str(params.get("email") or ""), str(params.get("password") or ""))
+    if op == "unified_key":
+        return unified_key(tok)
+    if op == "providers":
+        return providers(tok)
+    if op == "list_keys":
+        return list_keys(tok)
+    if op == "add_key":
+        return add_key(tok, str(params.get("platform") or ""),
+                       str(params.get("key") or ""), str(params.get("label") or ""))
+    if op == "health_check":
+        return health_check(tok, params.get("key_id"))
+    if op == "set_enabled":
+        return set_enabled(tok, params.get("key_id"), bool(params.get("enabled")))
+    return remove_key(tok, params.get("key_id"))
+
+
+def run(payload: dict | None = None) -> dict:
+    """能力位入口（api.py 分派到这里）。op 默认 status（**只读**探活）。"""
+    p = dict(payload or {})
+    op = str(p.pop("op", None) or p.pop("action", None) or "status").lower()
+    return run_op(op, **p)

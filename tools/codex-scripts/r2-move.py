@@ -161,9 +161,9 @@ def put_and_verify(local, key):
         return False, {"阶段": "put失败", "本地字节": n, "本地sha256": sha, **r}
     v = do_verify(key, sha, n)
     return bool(v["对得上"]), {"阶段": "回验通过" if v["对得上"] else "回验不过",
-                              "本地字节": n, "本地sha256": sha,
-                              "远端字节": v["字节"], "远端sha256": v["sha256"],
-                              "回验耗时s": v["耗时s"]}
+                            "本地字节": n, "本地sha256": sha,
+                            "远端字节": v["字节"], "远端sha256": v["sha256"],
+                            "回验耗时s": v["耗时s"]}
 
 
 def cmd_put(a):
@@ -194,7 +194,7 @@ def cmd_verify(a):
 def cmd_list_buckets(a):
     rc, out, err = run_wrangler(["r2", "bucket", "list"])
     print(json.dumps({"ok": rc == 0, "exit": rc,
-                      "桶": [l.strip() for l in (out or "").splitlines() if l.strip()],
+                      "桶": [ln.strip() for ln in (out or "").splitlines() if ln.strip()],
                       "stderr": (err or "")[:200]}, ensure_ascii=False, indent=1))
     return 0 if rc == 0 else 1
 
@@ -261,7 +261,7 @@ def move_chunked(local, key, keep):
         P = json.loads(PARTS.read_text(encoding="utf-8")) if PARTS.exists() else {}
         P[key] = {k: rec[k] for k in ("整文件字节", "整文件sha256", "分片数", "每片上限MiB")}
         P[key]["恢复命令"] = ("python tools/codex-scripts/r2-move.py restore %s --parts %d "
-                              "--sha256 %s --bytes %d" % (key, nparts, whole_sha, whole_n))
+                          "--sha256 %s --bytes %d" % (key, nparts, whole_sha, whole_n))
         PARTS.parent.mkdir(parents=True, exist_ok=True)
         PARTS.write_text(json.dumps(P, ensure_ascii=False, indent=1), "utf-8")
         print(json.dumps({"ok": True, "status": "moved_deleted_chunked", "记录": rec,
@@ -391,22 +391,37 @@ def cmd_download(a):
 def main():
     ap = argparse.ArgumentParser(description="大件搬 R2（字节级回验，对不上不删；>300MiB 自动分片）")
     sub = ap.add_subparsers(dest="cmd")
-    p = sub.add_parser("put"); p.add_argument("local"); p.add_argument("--key", default="")
+    p = sub.add_parser("put")
+    p.add_argument("local")
+    p.add_argument("--key", default="")
     p.set_defaults(fn=cmd_put)
-    p = sub.add_parser("download"); p.add_argument("key"); p.add_argument("--to", default="")
+    p = sub.add_parser("download")
+    p.add_argument("key")
+    p.add_argument("--to", default="")
     p.add_argument("--parts", type=int, default=0)
-    p.add_argument("--sha256", default=""); p.add_argument("--bytes", type=int, default=None)
+    p.add_argument("--sha256", default="")
+    p.add_argument("--bytes", type=int, default=None)
     p.set_defaults(fn=cmd_download)
-    p = sub.add_parser("verify"); p.add_argument("key")
-    p.add_argument("--sha256", default=""); p.add_argument("--bytes", type=int, default=None)
+    p = sub.add_parser("verify")
+    p.add_argument("key")
+    p.add_argument("--sha256", default="")
+    p.add_argument("--bytes", type=int, default=None)
     p.set_defaults(fn=cmd_verify)
-    p = sub.add_parser("move"); p.add_argument("local"); p.add_argument("--key", default="")
-    p.add_argument("--keep", action="store_true"); p.add_argument("--force-chunk", action="store_true")
+    p = sub.add_parser("move")
+    p.add_argument("local")
+    p.add_argument("--key", default="")
+    p.add_argument("--keep", action="store_true")
+    p.add_argument("--force-chunk", action="store_true")
     p.set_defaults(fn=cmd_move)
-    p = sub.add_parser("restore"); p.add_argument("key"); p.add_argument("--parts", type=int, required=True)
-    p.add_argument("--sha256", default=""); p.add_argument("--bytes", type=int, default=None)
-    p.add_argument("--keep-out", default=""); p.set_defaults(fn=cmd_restore)
-    p = sub.add_parser("list-buckets"); p.set_defaults(fn=cmd_list_buckets)
+    p = sub.add_parser("restore")
+    p.add_argument("key")
+    p.add_argument("--parts", type=int, required=True)
+    p.add_argument("--sha256", default="")
+    p.add_argument("--bytes", type=int, default=None)
+    p.add_argument("--keep-out", default="")
+    p.set_defaults(fn=cmd_restore)
+    p = sub.add_parser("list-buckets")
+    p.set_defaults(fn=cmd_list_buckets)
     a = ap.parse_args()
     if not getattr(a, "fn", None):
         ap.print_help()

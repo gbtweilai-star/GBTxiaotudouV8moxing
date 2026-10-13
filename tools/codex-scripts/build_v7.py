@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """构建 V7：V6 基础上加「万能插」「亿万触手」两块真面板。归档 V6 → 写 V7。"""
-import json
 import re
 import shutil
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 V6P = BASE / "V6 GBT小土豆V8-可交互原型.html"
 V7P = BASE / "V7 GBT小土豆V8-可交互原型.html"

@@ -1,0 +1,38 @@
+# 模板（可复制成 %APPDATA%\gbt-cliproxy\config.yaml；实际由 tools/codex-scripts/cliproxy.py 生成）
+# 口径两条（实测）：① openai-compatibility 在**顶层 api-keys** 下；② 自定义上游**必须列 models**。
+# 密钥不要写在这里：本文件只是形状示范（真值走环境变量，由 cliproxy.py up 生成到应用数据区）。
+config-version: 8
+
+server:
+  host: "127.0.0.1"          # 只绑回环：不外露
+  port: 8317
+
+access:
+  api-keys:                  # 客户端（我们框架）调这个代理时要带的钥匙
+    - "<GBT_CLIPROXY_KEY：不给则由本机随机生成并落 client-key.txt>"
+
+api-keys:                    # 上游车道（与 access 平级！）
+  openai-compatibility:
+    - name: "gbt-potato"                       # 自家大模型车道
+      base-url: "<GBT_POTATO_BASE_URL>/v1"     # 例：https://<你的 worker>/v1
+      keys:
+        - api-key: "<GBT_POTATO_API_KEY：云端 Worker 现读要 GW_AUTH>"
+      models:
+        - name: "gbt-potato-v8"
+
+    - name: "gbt-free-pool"                    # 本机免费池车道
+      base-url: "http://127.0.0.1:31415/v1"
+      keys:
+        - api-key: "<GBT_FREE_POOL_KEY 或 none>"
+      models:
+        - name: "gbt-free-pool"
+      disabled: true                           # 池没在跑就如实 disabled，不编「活着」
+
+    # 任意 OpenAI 兼容上游照抄一段即可（OpenRouter / 自建端点 …）：
+    # - name: "openrouter"
+    #   base-url: "https://openrouter.ai/api/v1"
+    #   keys: [{ api-key: "<env 里的钥匙>" }]
+    #   models: [{ name: "moonshotai/kimi-k2:free" }]
+
+# CLI 账户车道（Codex / Claude / Gemini / Grok / Kimi / Muse / Devin）不写在这里：
+# 跑一次 OAuth 登录（_upstream/CLIProxyAPI/CLIProxyAPI.exe -codex-login 等）⇒ 凭证落 auths/ ⇒ 车道自动出现。

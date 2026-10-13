@@ -28,6 +28,7 @@ import argparse
 import importlib.util
 import json
 import pathlib
+import re
 import shutil
 import subprocess
 import sys
@@ -151,8 +152,8 @@ def coverage(all_ids: list, measured: list) -> dict:
     return {"全机末梢": len(all_ids), "已测": len(all_ids) - len(untested), "未测": len(untested),
             "未测名单": untested,
             "警告": "**已测 %d / 全机 %d** —— 未测的按『未知』算，未测里可能有真痛"
-                    "（例如框架门）。**不许把部分覆盖念成全清。**"
-                    % (len(all_ids) - len(untested), len(all_ids))}
+            "（例如框架门）。**不许把部分覆盖念成全清。**"
+            % (len(all_ids) - len(untested), len(all_ids))}
 
 
 def _plan(deep: bool) -> list[str]:
@@ -207,8 +208,8 @@ def cmd_patrol(a) -> int:
     merged = {e["编号"]: e for e in old.get("明细", [])}
     for r in rows:
         merged[r["编号"]] = {"编号": r["编号"], "名称": r["名称"], "感觉": r["感觉"],
-                             "强度": r["强度"], "为什么": r.get("为什么") or r.get("读数尾")}
-    untested = [i for i in all_ids if i not in merged]
+                           "强度": r["强度"], "为什么": r.get("为什么") or r.get("读数尾")}
+    [i for i in all_ids if i not in merged]
     CACHE.write_text(json.dumps({
         "at": time.strftime("%Y-%m-%dT%H:%M:%S"), "触手根数": _dp()._tentacles()[0],
         "合计": _summary(list(merged.values())),
@@ -219,12 +220,12 @@ def cmd_patrol(a) -> int:
 
     out = {
         "巡检": {"深度": "deep（含强探针）" if a.deep else "quick（只跑中/弱探针，省时）",
-                 "本轮跑": len(rows), "未跑（强探针留给 --deep）": len(_dp().PLUGIN_SLOTS) - len(rows)},
+               "本轮跑": len(rows), "未跑（强探针留给 --deep）": len(_dp().PLUGIN_SLOTS) - len(rows)},
         "变化": [c for c in changes if a.all or c["变化"] not in ("— 稳定",)],
         "判决": ("🔴 **出现新痛**：%s" % [c["编号"] for c in new_pain]) if new_pain else
-                ("❓ 有未知（**不等于健康**）：%s" % [c["编号"] for c in unknown]) if unknown else
-                ("🟢 有新愈：%s" % [c["编号"] for c in healed]) if healed else
-                ("🟡 未愈仍在：%s" % [c["编号"] for c in chronic]) if chronic else "✅ 无变化，无新痛",
+        ("❓ 有未知（**不等于健康**）：%s" % [c["编号"] for c in unknown]) if unknown else
+        ("🟢 有新愈：%s" % [c["编号"] for c in healed]) if healed else
+        ("🟡 未愈仍在：%s" % [c["编号"] for c in chronic]) if chronic else "✅ 无变化，无新痛",
         "账本": str(HISTORY.relative_to(ROOT)),
         "口径": "只报**变化**；全量看 map，痛处看 pain。未知 ≠ 健康。",
     }
@@ -327,7 +328,7 @@ def cmd_map(a) -> int:
                      "隔离位已真建": (ROOT / "state" / "tentacle-slots" / ("T%02d" % (k + 1))).is_dir(),
                      "末梢数": len(mine), "痛": sum(1 for r in mine if r["感觉"].startswith("⛔")),
                      "末梢": [{"编号": r["编号"], "名称": r["名称"], "感觉": r["感觉"],
-                               "强度": r["强度"], "做什么": r["做什么"]} for r in mine]})
+                             "强度": r["强度"], "做什么": r["做什么"]} for r in mine]})
     out = {
         "全身图": body,
         "合计": _summary(rows),
@@ -340,10 +341,10 @@ def cmd_map(a) -> int:
         "at": time.strftime("%Y-%m-%dT%H:%M:%S"), "触手根数": n,
         "合计": out["合计"],
         "痛或未知": [{"编号": r["编号"], "名称": r["名称"], "感觉": r["感觉"], "强度": r["强度"],
-                      "为什么": r.get("为什么") or r.get("读数尾")} for r in rows
-                     if not r["感觉"].startswith("✅")],
+                  "为什么": r.get("为什么") or r.get("读数尾")} for r in rows
+                 if not r["感觉"].startswith("✅")],
         "明细": [{"编号": r["编号"], "名称": r["名称"], "感觉": r["感觉"], "强度": r["强度"],
-                  "为什么": r.get("为什么") or r.get("读数尾")} for r in rows],
+                "为什么": r.get("为什么") or r.get("读数尾")} for r in rows],
     }, ensure_ascii=False, indent=1), encoding="utf-8")
     out["读数已缓存"] = str(CACHE.relative_to(ROOT))
     print(json.dumps(out, ensure_ascii=False, indent=1))
@@ -421,14 +422,14 @@ def caps_scan() -> dict:
         "改状态定义条数": len(sc),
         "分类计数": {k: len(v) for k, v in buckets.items()},
         "覆盖率": "%.1f%%（%d / %d 可探针）" % (100.0 * len(probeable) / max(len(B), 1),
-                                              len(probeable), len(B)),
+                                        len(probeable), len(B)),
         "可探针": probeable,
         "须排除·改状态": buckets["须排除·改状态"],
         "须排除·safe=False": buckets["须排除·safe=False"],
         "须排除·需参数": buckets["须排除·需参数"],
         "未实现（不在良性表，不可探针）": sorted(un),
         "红线判据": ("**可探针 ∩ 改状态 == ∅** —— 由自检咬住；"
-                     "覆盖率低不是问题，**碰了会改状态的位才是问题**"),
+                 "覆盖率低不是问题，**碰了会改状态的位才是问题**"),
         "明细": rows,
     }
 
@@ -460,7 +461,7 @@ def probe_cap(kind: str, timeout: int = 300) -> dict:
     except subprocess.TimeoutExpired:
         return {"kind": kind, "态": "⛔ 痛",
                 "为什么": "探针超时 %ds%s" % (eff, "（**重件档**）" if kind in HEAVY_KINDS else
-                                              "（卡住也是痛）"),
+                                       "（卡住也是痛）"),
                 "重件": kind in HEAVY_KINDS, "秒": round(time.time() - t0, 1)}
     out = (r.stdout or "") + (r.stderr or "")
     if r.returncode == 0:
@@ -487,7 +488,7 @@ def probe_cap(kind: str, timeout: int = 300) -> dict:
         if env.get("denied") is True or scopes:
             return {"kind": kind, "态": "🔒 被门拒·缺授权", "秒": round(time.time() - t0, 1),
                     "为什么": "**被门拒**（信封 denied=true / missing_scopes 非空）："
-                              "这道位能探，但要主人发作用域",
+                    "这道位能探，但要主人发作用域",
                     "缺作用域": scopes, "读数尾": out.strip().replace("\n", " ")[-400:]}
         if ec == "user_error" or any(w in msg for w in ("缺少", "必填", "required", "missing")):
             return {"kind": kind, "态": "🟡 需参数·未探", "秒": round(time.time() - t0, 1),
@@ -524,7 +525,7 @@ def run_list(limit: int = 0, only: str = "", skip: int = 0) -> dict:
         if not probeable:
             return {"ok": False, "why": "%r 不在可探针清单里（可能被排除或不存在）" % only,
                     "提示": "被排除的位**不许探** —— 改状态 %d + safe=False %d"
-                            % (len(cs["须排除·改状态"]), len(cs["须排除·safe=False"]))}
+                    % (len(cs["须排除·改状态"]), len(cs["须排除·safe=False"]))}
     if skip:
         probeable = probeable[skip:]
     if limit:
@@ -595,15 +596,15 @@ def cmd_caps(a) -> int:
             "口径": "**累积账**：按 kind 合并、只更新这次探到的；单点探测**不会**冲掉全量视图",
         }, ensure_ascii=False, indent=1), encoding="utf-8")
         out["真探结果"] = {"本次探位数": len(rows), "合计": tally,
-                           "运行期排除复核": rl["运行期排除复核"],
-                           "痛": [x["kind"] for x in rows if x["态"] == "⛔ 痛"],
-                           "需参数": [x["kind"] for x in rows if x["态"].startswith("🟡")],
-                           "被门拒": [x["kind"] for x in rows if x["态"].startswith("🔒")],
-                           "落盘": str(p.relative_to(ROOT))}
+                       "运行期排除复核": rl["运行期排除复核"],
+                       "痛": [x["kind"] for x in rows if x["态"] == "⛔ 痛"],
+                       "需参数": [x["kind"] for x in rows if x["态"].startswith("🟡")],
+                       "被门拒": [x["kind"] for x in rows if x["态"].startswith("🔒")],
+                       "落盘": str(p.relative_to(ROOT))}
         # 🔴 两个数分开念
         out["已探针率"] = "%d / %d（可探针）" % (len(rows), r["分类计数"]["可探针"])
         out["口径"] = ("**可探针率 ≠ 已探针率**：87.9% 是「能不能探」，"
-                       "上面这个才是「真探了多少」")
+                     "上面这个才是「真探了多少」")
         out["仍待真探"] = r["分类计数"]["可探针"] - len(rows)
     print(json.dumps(out, ensure_ascii=False, indent=1))
     return 0 if not inter else 5
@@ -638,7 +639,7 @@ def caps_drift() -> dict:
             "当前位数": len(cur), "🔴 变坏": worse, "🟢 变好": better,
             "＋ 新增": new, "－ 消失": gone,
             "判决": ("🔴 **有 %d 位变坏** ⇒ 立刻查" % len(worse)) if worse else
-                    "✅ 无变坏（%d 位与基线同级）" % max(len(base) - len(better), 0),
+            "✅ 无变坏（%d 位与基线同级）" % max(len(base) - len(better), 0),
             "口径": "优先级 通(0) < 缺授权/需参数(1) < 痛(2)；只报状态差，细节看累积账"}
 
 
@@ -675,7 +676,6 @@ def cmd_caps_drift(a) -> int:
 
 def cmd_selftest(a) -> int:
     """真身自检：**末梢覆盖** + **痛觉四态** + 超时算痛 + 未知不当健康。"""
-    import tempfile
     lines, bad = [], 0
     dp = _dp()
 
@@ -756,7 +756,7 @@ def cmd_selftest(a) -> int:
     ck("能力位·注册表读得到（不写死条数）",
        cs.get("ok") and cs.get("良性表条数", 0) > 0,
        "良性表 %s 条 · 未实现 %s 条 · 合计 %s" % (cs.get("良性表条数"), cs.get("未实现条数"),
-                                                cs.get("合计口径")))
+                                        cs.get("合计口径")))
     inter = sorted(set(cs.get("可探针") or []) & set(cs.get("须排除·改状态") or []))
     ck("能力位·**可探针 ∩ 改状态 == ∅**（本条是这一层的命门）", inter == [],
        "交集=%s" % (inter or "∅"))

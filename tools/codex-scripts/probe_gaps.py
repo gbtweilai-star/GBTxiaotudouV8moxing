@@ -11,7 +11,7 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 sys.path.insert(0, str(BASE))
 OUT = BASE / ".scratch" / "gap_probe.json"
 from gbt_allinone import api as API  # noqa: E402

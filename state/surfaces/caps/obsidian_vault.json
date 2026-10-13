@@ -1,0 +1,48 @@
+{
+ "cap": "obsidian_vault",
+ "domain": "mind",
+ "desc": "Obsidian 永久记忆层（主人令 2026-09-27「让触手的吞天拥有永久记忆 Obsidian，所有触手每一根都绑定独立的 Obsidian，再把所有的 Obsidian 和本体的自研 Obsidian 双向绑定到一起互通共享」）：**227 根触手各一本独立库**（`vaults/<触手>/`：README MOC + 记忆.md + `.obsidian/app.json`，Obsidian 直接能开）· **本体的自研库**=brain_vault 认的那本（Documents\\Codex\\ObsidianVault）· 双向 = 触手页链回 [[GBT本体记忆]] + 本体 [[触手总索引]] 链到每一本（两条都查）。**只追加、无删除路径**；不写主人自己的库（只指向）。写主人 Documents 目录时走 filesystem_write 门（`root=documents`）。op=status/provision/remember/sync_page/bind/recall/verify/where",
+ "safe": true,
+ "ops": [
+  {
+   "op": "bind",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "provision",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "recall",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "remember",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "status",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "sync_page",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "verify",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "where",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "static-heuristic",
+ "handler_file": "gbt_allinone\\tools\\obsidian_vault.py",
+ "params": [],
+ "params_hint": "",
+ "handler": "obsidian_vault",
+ "slot": "g3-24",
+ "group": 3,
+ "role": "Obsidian 永久记忆（只追加）"
+}

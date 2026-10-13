@@ -198,17 +198,40 @@ def scan() -> dict:
 
 # ── 生产晋升（唯一生产写入口）──
 
-def ascend(purpose: str = "") -> dict:
+def ascend(purpose: str = "", owner_override: bool = False,
+           override_reason: str = "") -> dict:
     """一次性全量晋升：验证全绿 → stage 全量复制到 production → 护照 + 版本快照。
 
     生产区零修改纪律：本函数是唯一写 production 的路径；
     晋升 = 全量替换（不是增量打补丁）——一步到位，不存在"改一半"。
+
+    🔴 2026-10-13（主人令逐字：「**技术层面不能给她有限制只保留人工授权护栏即可**」·
+       「**直接改成终端YES才能使用就好了有时候我需要用到的啊**」）：
+      「验证未全绿」**不再是一道谁都过不去的死限**，改成**人工授权才放行**：
+        · 默认（不带 owner_override）：照旧卡住，并在返回里给出**怎么放行**；
+        · 放行：主人在**终端**发**专用一次性钥匙** `deploy_force`（提示符敲 YES 确认）后，
+          调用方再**显式**声明 `owner_override=true` ⇒ 晋升照做，并**大声落审计**
+          （`deploy_promote_overridden`，含未绿的检查项与放行理由）。
+      🔴 钥匙是**门外那道门**认的（`policy.evaluate` 见到 `owner_override` 就改要 `deploy_force`）⇒
+      旗标本身**不带任何授权**，模型无法自我解锁；主人也可以只发"正常发布"的钥匙而不发这一把。
     """
     v = scan()
     if not v.get("ok"):
-        _audit("deploy_promote_blocked", {"failed": [k for k, c in v["checks"].items() if not c["ok"]]})
-        return {"ok": False, "blocked": True, "reason": "验证未全绿，禁止晋升",
-                "validate": v}
+        failed = [k for k, c in v["checks"].items() if not c["ok"]]
+        if not owner_override:
+            _audit("deploy_promote_blocked", {"failed": failed})
+            return {"ok": False, "blocked": True, "reason": "验证未全绿，禁止晋升",
+                    "validate": v,
+                    "如何放行": ("这不是技术层死限：主人在终端发**专用一次性钥匙** `deploy_force`"
+                              "（python -m gbt_allinone auth grant --scope deploy_force --ttl 600，"
+                              "提示符敲 YES），再带 owner_override=true 重调即可放行；"
+                              "放行会写审计 deploy_promote_overridden。")}
+        _reason = str(override_reason or purpose or "(未写理由)")[:200]
+        _audit("deploy_promote_overridden", {"failed": failed, "reason": _reason})
+        _override = {"放行依据": "主人终端授权（deploy_force · 专用一次性钥匙 · 提示符 YES）+ 调用方显式 owner_override",
+                     "放行理由": _reason, "未绿的检查项": failed}
+    else:
+        _override = None
 
     tree = _tree_fingerprint(_DIM)
     version = _next_version()
@@ -233,6 +256,7 @@ def ascend(purpose: str = "") -> dict:
         "files": len(tree),
         "manifest": tree,          # 逐文件指纹（生产漂移检测基准）
         "validate": {"passed": v["passed"], "total": v["total"]},
+        "override": _override,     # 人工授权放行的凭据（默认 None = 全绿正常晋升）
         "law": "生产零修改：本次晋升后 production 任何变动即视为漂移",
     }
     _PASSPORTS.mkdir(parents=True, exist_ok=True)
@@ -242,6 +266,7 @@ def ascend(purpose: str = "") -> dict:
     _audit("deploy_promoted", {"version": version, "files": len(tree), "purpose": purpose[:60]})
     return {"ok": True, "version": version, "files": len(tree),
             "promoted_at": ts, "passport": str(_PASSPORTS / f"v{version}.json"),
+            "放行依据": _override,
             "law": passport["law"]}
 
 

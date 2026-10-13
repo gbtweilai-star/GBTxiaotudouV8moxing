@@ -38,14 +38,15 @@ binding = "AI"
 
 [vars]
 # 自托管 OpenAI 兼容端点（真无限制那条只走这里）。没接线时读数=未读到。
-LLM_ENDPOINT = ""
-UNCENSORED_ENDPOINT = ""
+LLM_ENDPOINT = "https://api.runpod.ai/v2/qnnqf9w8xcefj8/openai/v1"
+UNCENSORED_ENDPOINT = "https://api.runpod.ai/v2/qnnqf9w8xcefj8/openai/v1"
 IMAGE_ENDPOINT = ""
 
 # 🔐 统一密钥口 —— **只有大模型用这一个 key**，其它模块间双向直连不走密钥。
 #   值来自环境 OPENAI_API_KEY（已配：sk-teamo-...），由 host credentials 管理。
 #   01/03 号模块用它打自建端点；Workers AI 走平台侧，不消费这个 key。
-LLM_API_KEY = "<从 OPENAI_API_KEY 环境变量取，不在源码里写>"
+# LLM_API_KEY 由 **secret** 注入（2026-10-11 修正：原先是同名占位 var，会把占位串当真 key 打给自建端点 ⇒ 401）：
+#   wrangler secret put LLM_API_KEY -c deploy/cloud-10/wrangler.toml
 
 # 🔑 网关鉴权（模块间双向调用时用，内网互认）+ 主人令牌（/admin/grant 身份）
 #   🔴🔴 2026-10-04 纪律恢复：**令牌绝不许写在这份文件里**（它是入库的明文）。
@@ -61,6 +62,18 @@ GBT_IDENTITY = ""
 
 # Workers AI 的模型 id
 WORKERS_AI_MODEL = "@cf/openai/gpt-oss-120b"
+
+# ── 🔴 2026-10-10 补声明（由 tools/codex-scripts/cloud-config-wiring.py 咬出来的 5 处硬伤）──
+#    那件判据的原话：「代码读 env.X，而配置里既没声明、连注释里都没提 ⇒ 部署后就是 undefined」。
+#    实测缺失（A 类读而未声明）：LLM_MODEL · UNCENSORED_MODEL · IMAGE_MODEL · IMAGE_API_KEY · SANDBOX。
+#    修法就是**在这里交代清楚** —— 值空不空是第二件事，**先让部署前对账归零**。
+#    （部署法制：用户看到的应当是一次性部署直接生产，而不是第一次部署就吃 undefined。）
+LLM_MODEL = ""            # modules.js:350 读；空 ⇒ 回落代码默认 gbt-potato-v8
+UNCENSORED_MODEL = "gbt-potato-v8"
+IMAGE_MODEL = ""          # modules.js:447 读；空 ⇒ 回落默认 gbt-potato-v8-image
+IMAGE_API_KEY = ""        # modules.js:455 有 if 守卫；空 ⇒ 不带 authorization 头（不是崩，是不带）
+SANDBOX = ""              # modules.js:583 用 !!ctx.env.SANDBOX 判接线、596 调 .exec；
+                          #   空 ⇒ 沙箱面显式不接线（读数是"未接线"，不是坏）
 
 # 本网落盘前缀（与 src/modules.js 的 NS_PREFIX 必须一致）
 NS_PREFIX = "mesh10/"

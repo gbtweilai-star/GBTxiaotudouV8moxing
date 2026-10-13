@@ -495,16 +495,75 @@ _LOCK_FILE = _STEPS_FILE.with_name("sync_steps.lock")
 _LOCK_TIMEOUT = 5.0
 
 
+_STALE_LOCK_SECONDS = 60.0
+
+
+def _pid_alive(pid: int) -> bool:
+    """那个 PID 现在还活着吗。
+
+    🔴 2026-10-11 加：锁泄漏回收要用它（见 _stale_lock 的说明）。
+    跨平台：Windows 走 OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION)，
+    其余走 os.kill(pid, 0)。任何异常都判"不活" —— 宁可回收一把可疑的锁，
+    也不要让一把死锁把**所有收步**永远挡在门外（实测挡了 13 天）。
+    """
+    if pid <= 0:
+        return False
+    try:
+        if os.name == "nt":
+            import ctypes
+            k32 = ctypes.windll.kernel32
+            h = k32.OpenProcess(0x1000, False, int(pid))
+            if not h:
+                return False
+            k32.CloseHandle(h)
+            return True
+        os.kill(int(pid), 0)
+        return True
+    except Exception:                                               # noqa: BLE001
+        return False
+
+
+def _stale_lock() -> bool:
+    """锁是不是**死锁**（占有者已不在）⇒ 可以回收。
+
+    🔴 2026-10-11 加（**这是一条真故障的治根修复，不是预防性改动**）：
+      实测 gbt_allinone/store/sync_steps.lock 里写着 PID **7896**、写于 **2026-09-28**，
+      而 PID 7896 **早已不在** ⇒ 那把锁把**所有收步**挡了 **13 天**：
+        · five-dim close 报「步账锁没拿到（5.0s 超时）—— 不写了」
+        · exec-deck 把后果如实报成「**欠的活 29 步超 48h**（欠的活没人收）」
+      —— 不是没人收，是**收不了**。本文件 L491 的注释早就写了
+      「进程被杀（超时、job_kill）」，但**没有回收机制** ⇒ 一被杀就永久锁死。
+      判据：锁里的 PID 不活 **且** 锁文件比 _STALE_LOCK_SECONDS 还老 ⇒ 判死锁。
+      （加"比 N 秒还老"是为了防**读锁那一瞬间**占有者刚写入 PID 的竞态。）
+    """
+    try:
+        raw = _LOCK_FILE.read_text(encoding="utf-8", errors="replace").strip()
+        age = time.time() - _LOCK_FILE.stat().st_mtime
+    except OSError:
+        return False
+    try:
+        pid = int(raw)
+    except ValueError:
+        pid = 0
+    if age < _STALE_LOCK_SECONDS:
+        return False
+    return not _pid_alive(pid)
+
+
 @contextlib.contextmanager
 def _steps_lock(timeout: float = _LOCK_TIMEOUT):
     """跨进程独占（O_CREAT|O_EXCL 锁文件）。
 
-    yield `True` = 拿到锁；`False` = **没拿到**（超时或文件系统出问题）。
+    yield True = 拿到锁；False = **没拿到**（超时或文件系统出问题）。
     拿不到**不阻塞执行**（步账不能反过来把能力调用弄崩），但调用方**必须如实记**，
     绝不当成"锁过了"。
+
+    🔴 2026-10-11：拿到 FileExistsError 时**多查一次这把锁是不是死的**
+    （占有者进程已不在 ⇒ 回收后重试），否则一次 job_kill 就能把收步锁死 13 天。
     """
     t0 = time.time()
     got = False
+    reclaimed = False
     try:
         _LOCK_FILE.parent.mkdir(parents=True, exist_ok=True)
         while time.time() - t0 < timeout:
@@ -517,6 +576,13 @@ def _steps_lock(timeout: float = _LOCK_TIMEOUT):
                 got = True
                 break
             except FileExistsError:
+                if not reclaimed and _stale_lock():
+                    try:
+                        os.unlink(str(_LOCK_FILE))
+                        reclaimed = True
+                        continue           # 回收后立刻重试，不等那 0.02s
+                    except OSError:
+                        pass
                 time.sleep(0.02)
             except OSError:
                 break                      # 目录/权限问题：退化成无锁，但**如实报** got=False

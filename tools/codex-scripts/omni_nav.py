@@ -24,6 +24,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import sys
 import time
 from pathlib import Path
 
@@ -206,7 +207,7 @@ def gate(topic: str, materials: list, terms: list | None = None) -> dict:
             "topic": str(topic)[:120], "materials": rec["materials"],
             "learned_n": len(rec["materials"]),
             "_口径": "自动抓料→查账新鲜即复用→旧/缺才全文重读（sha+行数+标题树+关键行）"
-                     "→复验新鲜→放行；材料一变即判过期重学；无任何跳过参数"}
+            "→复验新鲜→放行；材料一变即判过期重学；无任何跳过参数"}
 
 
 # ── 抓料：从意图/落点自动抓核心资料 ──────────────────────────────

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """构建 V14：补「框架核心层」10 面板。"""
-import json
 import re
 import shutil
 import sys
@@ -12,7 +11,7 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 V13P = BASE / "V13 GBT小土豆V8-可交互原型.html"
 V14P = BASE / "V14 GBT小土豆V8-可交互原型.html"

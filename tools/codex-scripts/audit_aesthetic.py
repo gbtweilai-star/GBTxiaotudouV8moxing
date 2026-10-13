@@ -149,8 +149,8 @@ def audit_html(path: Path) -> dict:
         findings.append({"id": "P1-1", "tier": "P1",
                          "title": "强调色没被当令牌用：令牌区之外裸 hex 过多",
                          "count": outside, "hits": [{"line": 0, "text":
-                         ":root 内 %d · JS 令牌表内 %d · **令牌区之外 %d**（阈值 12）"
-                         % (in_root, in_js_tokens, outside)}],
+                                                     ":root 内 %d · JS 令牌表内 %d · **令牌区之外 %d**（阈值 12）"
+                                                     % (in_root, in_js_tokens, outside)}],
                          "note": "令牌没被尊重，后面就没法整体换肤"})
 
     accent_uses = len(re.findall(r"var\(\s*--accent\s*\)", text))
@@ -158,7 +158,7 @@ def audit_html(path: Path) -> dict:
         findings.append({"id": "P1-2", "tier": "P1",
                          "title": "`var(--accent)` 被用太多（一屏最多 2 处可见）",
                          "count": accent_uses, "hits": [{"line": 0, "text":
-                         "出现 %d 次（阈值 6）" % accent_uses}],
+                                                         "出现 %d 次（阈值 6）" % accent_uses}],
                          "note": "强调色用滥 = 哪里都不强调"})
 
     order_pos = {}
@@ -178,7 +178,7 @@ def audit_html(path: Path) -> dict:
     hits += _find(lines, r"class=\"[^\"]*(?:blob|wave)[^\"]*\"", limit=3)
     add("P2-1", "P2", "装饰性 blob / wave 背景（没有意义的几何）", hits[:4])
 
-    finding_ids = {f["id"] for f in findings}
+    {f["id"] for f in findings}
     missing = []
     if not any(f["id"].startswith("P0") for f in findings):
         missing.append("（本文件没有命中任何 P0 —— 但**没命中 ≠ 没问题**，见下面的 manual 清单）")

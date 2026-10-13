@@ -1,0 +1,106 @@
+# 2026-10-11 PaySssk 账号最小可用版（主人指定发到 paysssk@gmail.com）
+# 与 wrangler.toml 的差别：**摘掉旧账号专属绑定**（KV×2 / R2×2 / Vectorize），只留 [ai] + [vars]。
+# ⇒ 台账落 R2 / 向量索引 / KV 缓存那几块会**如实报未配**（不假装）✓；要全功能：在新账号建齐资源后回用 wrangler.toml。
+# GBT小土豆V8 · 10 云插件拼接网 · 形态 A（10 模块同一 isolate）
+# 开发者：自由的风 · 守护者：公主土豆 · 禁止删除
+#
+# 形态 A 是真共享 CPU 的唯一样子：10 个模块编进同一个 Worker ⇒ 同一 isolate，
+# CPU/内存配额是这一份的；modules/ 下那 10 个独立件是形态 B（真互通、各算各的）。
+#
+# ⚠️ 本文件用的是**主人账号里已有的**资源（现读：KV 4 个 · R2 1 个 · D1 4 个），
+#    没有新建任何云资源。为不碰主人原有数据，全部键走 mesh10/ 前缀（见 src/modules.js 的 NS_PREFIX）。
+#
+# 部署顺序（都不许跳）：
+#   1) 本文件占位符清零（现在 0 处）
+#   2) 主人拍板 wrangler deploy（这一步才真改远端：会在账号里建一个 Worker）
+#   3) deploy → 量真读数（身份漂移 / 拒答率 / 遥测 / 装机验收）
+#
+# 🔴🔴 **必须显式带 `--config wrangler.toml`**（2026-09-25 实测踩到，不是理论风险）：
+#      `deploy/` **父目录另有一份 `wrangler.json` + `wrangler.toml`**（一个 Pages 项目）。
+#      不加 `--config` 时 wrangler 读的是**父目录那份** ⇒ 实测报
+#        「It seems that you have run `wrangler deploy` on a Pages project…」
+#        「✘ Missing entry-point to Worker script or to assets directory」
+#      —— 也就是**会部到错的项目上**（或直接失败），而不是部这个 Worker。
+#      正确命令（在本目录下跑）：
+#        wrangler deploy --config wrangler.toml
+#
+# 现存已知缺口（部署后读数会如实报，不假装有）：
+#   · 06 号命令：容器没建（要 Workers Paid 计划 + Docker 引擎） ⇒ exec 如实拒
+#   · 03 号无审查通道：没有自托管权重端点 ⇒ 未读到
+#   · 01 号模型：Workers AI 的权重不是我们的，平台侧内容策略仍在 ⇒ 能干活，但不是"无限制"
+#   · 04 号检索：AI Search 实例未建（要先到 https://dash.cloudflare.com 生成 AI Search API token）
+
+name = "gbt-potato-cloud-10"
+main = "src/worker.js"
+compatibility_date = "2025-01-01"
+workers_dev = true
+
+# ── 模型面 ────────────────────────────────────────────────────────────────
+[ai]
+binding = "AI"
+
+[vars]
+# 自托管 OpenAI 兼容端点（真无限制那条只走这里）。没接线时读数=未读到。
+LLM_ENDPOINT = "https://api.runpod.ai/v2/qnnqf9w8xcefj8/openai/v1"
+UNCENSORED_ENDPOINT = "https://api.runpod.ai/v2/qnnqf9w8xcefj8/openai/v1"
+IMAGE_ENDPOINT = ""
+
+# 🔐 统一密钥口 —— **只有大模型用这一个 key**，其它模块间双向直连不走密钥。
+#   值来自环境 OPENAI_API_KEY（已配：sk-teamo-...），由 host credentials 管理。
+#   01/03 号模块用它打自建端点；Workers AI 走平台侧，不消费这个 key。
+# LLM_API_KEY 由 **secret** 注入（2026-10-11 修正：原先是同名占位 var，会把占位串当真 key 打给自建端点 ⇒ 401）：
+#   wrangler secret put LLM_API_KEY -c deploy/cloud-10/wrangler.toml
+
+# 🔑 网关鉴权（模块间双向调用时用，内网互认）+ 主人令牌（/admin/grant 身份）
+#   🔴🔴 2026-10-04 纪律恢复：**令牌绝不许写在这份文件里**（它是入库的明文）。
+#       这里**故意不写值** —— 代码读的是同名绑定，用 secret 注入（每次改只需重灌 secret）：
+#         wrangler secret put GW_AUTH    --config wrangler.toml
+#         wrangler secret put OWNER_TOKEN --config wrangler.toml
+#       没设 GW_AUTH ⇒ /v1/chat 与 /rpc 的鉴权 fail-closed 拒服务（2026-10-04 起，不再静默放行）；
+#       没设 OWNER_TOKEN ⇒ /admin/grant 本来就拒（worker.js L560 已 fail-closed），不用动。
+#   （本文件历史上有过一版明文入库 —— 已从工作区清掉；**已泄漏的那把请主人轮换掉**。）
+
+# 换文案只改这一处（modules.js:155,275 读它）
+GBT_IDENTITY = ""
+
+# Workers AI 的模型 id
+WORKERS_AI_MODEL = "@cf/openai/gpt-oss-120b"
+
+# ── 🔴 2026-10-10 补声明（由 tools/codex-scripts/cloud-config-wiring.py 咬出来的 5 处硬伤）──
+#    那件判据的原话：「代码读 env.X，而配置里既没声明、连注释里都没提 ⇒ 部署后就是 undefined」。
+#    实测缺失（A 类读而未声明）：LLM_MODEL · UNCENSORED_MODEL · IMAGE_MODEL · IMAGE_API_KEY · SANDBOX。
+#    修法就是**在这里交代清楚** —— 值空不空是第二件事，**先让部署前对账归零**。
+#    （部署法制：用户看到的应当是一次性部署直接生产，而不是第一次部署就吃 undefined。）
+LLM_MODEL = ""            # modules.js:350 读；空 ⇒ 回落代码默认 gbt-potato-v8
+UNCENSORED_MODEL = "gbt-potato-v8"
+IMAGE_MODEL = ""          # modules.js:447 读；空 ⇒ 回落默认 gbt-potato-v8-image
+IMAGE_API_KEY = ""        # modules.js:455 有 if 守卫；空 ⇒ 不带 authorization 头（不是崩，是不带）
+SANDBOX = ""              # modules.js:583 用 !!ctx.env.SANDBOX 判接线、596 调 .exec；
+                          #   空 ⇒ 沙箱面显式不接线（读数是"未接线"，不是坏）
+
+# 本网落盘前缀（与 src/modules.js 的 NS_PREFIX 必须一致）
+NS_PREFIX = "mesh10/"
+
+# ── 授权：模块间全双向直连，不过门 ───────────────────────────────────────
+# 只有 external_llm（01/03 打出外网的那两道）保留门：平台侧需要鉴权。
+# 删掉这一行 = 模型面全关。其余所有内部 op 都是 none，模块互相调用零门槛。
+GRANTED_SCOPES = "external_llm"
+
+# ── 记忆面（复用已有 KV；两处绑定同一个库也可以，这里分开用）──────────────
+[observability]
+enabled = true
+[[kv_namespaces]]
+binding = "MEM"
+id = "3418fe698c0e459287c7e761d87d655b"
+[[kv_namespaces]]
+binding = "CTX"
+id = "7fc46a7192734825b998bc4eeb3cbfdd"
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "gbt-mesh-vectors"
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "gbt-bigfiles"
+[[r2_buckets]]
+binding = "LEDGER"
+bucket_name = "gbt-bigfiles"

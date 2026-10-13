@@ -148,7 +148,7 @@ def do_append(section_path: Path, target: Path) -> tuple[int, dict]:
     out = {"ok": all(v.values()), "落点": _rel(target),
            "sha": "%s → %s" % (_sha(old_b), _sha(actual)),
            "行数": "%d → %d（本段 %d 行 · %s）" % (len(old.splitlines()), len(new.splitlines()),
-                                                  p["本段行数"], p["换行"]),
+                                            p["本段行数"], p["换行"]),
            "不变量": v}
     return (0 if out["ok"] else 1), out
 
@@ -218,7 +218,7 @@ def selftest() -> int:
            rc == 0 and out["ok"] is True and raw.count(b"\r\n") == raw.count(b"\n")
            and out["不变量"]["换行仍均匀"],
            "%s ｜ CRLF %d ｜ LF %d" % (out.get("行数") or "**未读到行数**",
-                                      raw.count(b"\r\n"), raw.count(b"\n")))
+                                     raw.count(b"\r\n"), raw.count(b"\n")))
 
         # ③ 负控：段自带尾分隔线 ⇒ 统一成一条，不许相邻双分隔线
         sec2 = td / "sec2.md"

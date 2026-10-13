@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-13T19:16:59",
+  "slot": "state/comfyui_object_info.json",
+  "source": "卡内活读：pod_link op=run → GET http://127.0.0.1:8188/object_info（卡 hurhqqrx9b3u7o）",
+  "not": "不是本机直连读的（本机 8188 没起），也不是上午那份快照",
+  "nodes": 962,
+  "categories": 183,
+  "bytes": 1127473,
+  "sha256_16": "78e98ed86085a99b",
+  "对比": {
+    "注册表声明": 966,
+    "上午快照": 957,
+    "活读": 962
+  },
+  "活读比快照多的节点": [
+    "AceStepAudioCodes",
+    "AceStepSettings",
+    "AceStepShowText",
+    "AceStepText2MusicGenParams",
+    "AceStepText2MusicServer"
+  ],
+  "活读比快照少的节点": []
+}

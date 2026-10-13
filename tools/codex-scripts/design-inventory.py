@@ -107,9 +107,9 @@ def negctl() -> int:
             encoding="utf-8")
         rc, out = run(copy)
         print("   负对照（声明指向不存在的路径）exit=%d（期望 1）" % rc)
-        for l in out.splitlines():
-            if "不在盘" in l:
-                print("      " + l.strip()[:150])
+        for ln in out.splitlines():
+            if "不在盘" in ln:
+                print("      " + ln.strip()[:150])
         if rc != 1:
             wrong.append("负对照没判红（exit=%d）" % rc)
     finally:

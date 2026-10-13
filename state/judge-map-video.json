@@ -1,0 +1,119 @@
+{
+ "逐阶段": [
+  {
+   "阶段": "S0",
+   "名称": "素材",
+   "能力位": "media.assets",
+   "判据类型": "机检",
+   "判据": [
+    "gate_assets"
+   ],
+   "实测": "OK",
+   "读数": "素材面: video-out(22 件)",
+   "负控出处": [
+    "pipeline.py: selftest **通过** ·   cur = list(Image.open(f).convert(\"L\").getdata())"
+   ]
+  },
+  {
+   "阶段": "S1",
+   "名称": "创意(生成)",
+   "能力位": "media.creative",
+   "判据类型": "机检",
+   "判据": [
+    "gate_creative"
+   ],
+   "实测": "OK",
+   "读数": "**本地录制**: creative-local.mp4（触手 see · desktop_control · 不花钱）",
+   "负控出处": [
+    "pipeline.py: selftest **通过** ·   cur = list(Image.open(f).convert(\"L\").getdata())"
+   ]
+  },
+  {
+   "阶段": "S2",
+   "名称": "剪",
+   "能力位": "video.cut",
+   "判据类型": "机检",
+   "判据": [
+    "gate_video"
+   ],
+   "实测": "OK",
+   "读数": "6.346s · 640x360 · 30/1 · 音轨有 · 67KB",
+   "负控出处": [
+    "pipeline.py: selftest **通过** ·   cur = list(Image.open(f).convert(\"L\").getdata())"
+   ]
+  },
+  {
+   "阶段": "S3",
+   "名称": "动效(HyperFrames)",
+   "能力位": "video.motion",
+   "判据类型": "机检",
+   "判据": [
+    "gate_hf_check",
+    "gate_motion",
+    "gate_video"
+   ],
+   "实测": "OK",
+   "读数": "六域门（声明后端自己的）: Lint 0 errors, 0 warnings · Runtime 0 errors, 0 warnings · Layout 0 issues across ",
+   "负控出处": [
+    "2026-10-10 改工程一个字节 ⇒ 判决作废（实测）",
+    "2026-10-10 换回死帧 ⇒ 判红（实测）"
+   ]
+  },
+  {
+   "阶段": "S4",
+   "名称": "批量(Remotion)",
+   "能力位": "video.batch",
+   "判据类型": "机检",
+   "判据": [
+    "gate_video"
+   ],
+   "实测": "OK",
+   "读数": "12.747s · 1920x1080 · 30/1 · 音轨有 · 184KB",
+   "负控出处": [
+    "pipeline.py: selftest **通过** ·   cur = list(Image.open(f).convert(\"L\").getdata())"
+   ]
+  },
+  {
+   "阶段": "S5",
+   "名称": "精修",
+   "能力位": "video.finish",
+   "判据类型": "机检",
+   "判据": [
+    "gate_video"
+   ],
+   "实测": "OK",
+   "读数": "12.747s · 1920x1080 · 30/1 · 音轨有 · 240KB",
+   "负控出处": [
+    "pipeline.py: selftest **通过** ·   cur = list(Image.open(f).convert(\"L\").getdata())"
+   ]
+  },
+  {
+   "阶段": "S6",
+   "名称": "验收",
+   "能力位": "video.probe",
+   "判据类型": "机检",
+   "判据": [
+    "gate_video"
+   ],
+   "实测": "OK",
+   "读数": "12.747s · 1920x1080 · 30/1 · 音轨有 · 240KB",
+   "负控出处": [
+    "pipeline.py: selftest **通过** ·   cur = list(Image.open(f).convert(\"L\").getdata())"
+   ]
+  },
+  {
+   "阶段": "S7",
+   "名称": "发布与账本",
+   "能力位": "—",
+   "判据类型": "机检",
+   "判据": [
+    "gate_publish"
+   ],
+   "实测": "OK",
+   "读数": "账本 2026-10-10 16:39:00 · 8 行 · 自称过 8/8 · pass 字段吻合 · 声明产物齐",
+   "负控出处": [
+    "pipeline.py: selftest **通过** ·   cur = list(Image.open(f).convert(\"L\").getdata())"
+   ]
+  }
+ ]
+}

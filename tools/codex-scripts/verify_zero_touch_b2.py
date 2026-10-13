@@ -1,4 +1,6 @@
-import hashlib, os, sys, time
+import hashlib
+import sys
+import time
 from pathlib import Path
 sys.stdout.reconfigure(encoding="utf-8")
 ROOT = Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
@@ -13,8 +15,10 @@ EXTRA = ["gbt_allinone/codex_bridge.py", "gbt_allinone/security/policy.py",
          ".scratch/codex_v2_mirror/panel_server_mirror.py",
          ".scratch/codex_v2_mirror/panel_server_mirror2.py"]
 
+
 def h(p):
     return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
 
 print("%-52s %-12s %s" % ("file", "size", "mtime"))
 print("-" * 100)

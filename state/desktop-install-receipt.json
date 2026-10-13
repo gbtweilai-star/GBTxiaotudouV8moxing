@@ -1,29 +1,29 @@
 {
-  "at": "2026-09-23T14:57:46",
+  "at": "2026-10-10T01:29:33",
   "verdict": "PASS",
   "what": "GBT小土豆V8 一体式桌面壳 · 装机包（electron-builder --win --dir · portable）",
   "artifact": {
     "exe": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\dist\\win-unpacked\\GBT小土豆V8.exe",
-    "exe_bytes": 235706368,
-    "files": 306,
-    "bytes": 378299836,
+    "exe_bytes": 235830272,
+    "files": 455,
+    "bytes": 388068198,
     "electronVersion": "43.0.0"
   },
   "checks": [
     {
       "check": "可执行文件",
       "ok": true,
-      "detail": "GBT小土豆V8.exe · 224.8 MB · sha16 e1b93ac2c874dc68"
+      "detail": "GBT小土豆V8.exe · 224.9 MB · sha16 be724796c14efefc"
     },
     {
       "check": "整包体量",
       "ok": true,
-      "detail": "306 文件 / 360.8 MB"
+      "detail": "455 文件 / 370.1 MB"
     },
     {
       "check": "app 面非空",
       "ok": true,
-      "detail": "228 文件 / 3.8 MB"
+      "detail": "355 文件 / 7.9 MB"
     },
     {
       "check": "壳与 extraResources 齐件",
@@ -33,7 +33,7 @@
     {
       "check": "窗口数与源一致",
       "ok": true,
-      "detail": "包内 8 扇 · 源 8 扇 · godview, eigenflux, h1, dsh-chat, exec-deck, code-deck, brain, eye"
+      "detail": "包内 19 扇 · 源 19 扇 · panel, godview, eigenflux, h1, dsh-chat, plugins-mesh, exec-deck, code-deck, brain, eye, logbook, blueprint, cloud-plugins, cloud-status, db-fleet, capabilities, energy, digital-human, capability-bar"
     },
     {
       "check": "负规则·触手截图未进包",

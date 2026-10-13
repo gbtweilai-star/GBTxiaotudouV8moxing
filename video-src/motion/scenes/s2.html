@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- head 只是源文件的元数据；运行时**只克隆 <template> 里的东西**，其余（含整个 head）丢弃 -->
+  </head>
+  <body>
+    <template>
+      <style>
+        /* 契约：子合成的根一律用 #root 选择器（lint: subcomposition_root_styled_by_class） */
+        #root { position: absolute; inset: 0; display: grid; place-items: center; }
+        .name { font-size: 128px; font-weight: 700; color: #ffffff; line-height: 1; text-align: center; }
+        .sub  { font-size: 52px; color: #9fb3c8; letter-spacing: 0.14em; margin-top: 28px; text-align: center; }
+      </style>
+      <div id="root" data-composition-id="scene-s2" data-width="1920" data-height="1080">
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="name" id="n">小土豆 V8</div>
+          <div class="sub"  id="s">指挥官框架 · 万物皆可插</div>
+        </div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        tl.from("#n", { x: -220, opacity: 0, duration: 0.9, ease: "power3.out" }, 0);
+        tl.from("#s", { x: 180,  opacity: 0, duration: 0.9, ease: "power3.out" }, 0.5);
+        tl.to("#n", { opacity: 0, duration: 0.4, ease: "power2.in" }, 3.1);   // 宿主只给 3.6s
+        tl.to("#s", { opacity: 0, duration: 0.4, ease: "power2.in" }, 3.1);
+        window.__timelines["scene-s2"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

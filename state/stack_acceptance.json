@@ -1,0 +1,49 @@
+{
+ "at": "2026-10-04T22:56:53",
+ "rows": [
+  {
+   "leg": "浏览器触手（公网+本机页）",
+   "ok": true,
+   "reading": "CDP=ready · 本机页正文='Ollama is running'"
+  },
+  {
+   "leg": "桌面触手（窗口/UI 读）",
+   "ok": true,
+   "reading": "窗口 13 个 · UIA 文本块 201"
+  },
+  {
+   "leg": "文件/进程触手（desktop_commander）",
+   "ok": true,
+   "reading": "版本 0.2.52 · 工具 26 件"
+  },
+  {
+   "leg": "统一密钥双向绑定（门认钥 + 整链真发）",
+   "ok": true,
+   "reading": "key_id=key_4b52d2c65c5e · 整链 200 1823ms · 回话='整链已通'"
+  },
+  {
+   "leg": "面板服务 8765",
+   "ok": true,
+   "reading": "HTTP 200"
+  },
+  {
+   "leg": "50 邮箱（CF Email Routing）",
+   "ok": true,
+   "reading": "50 个 cNN@gbtxiaotudou.com",
+   "note": "创建时已核（新建 50/失败 0 + 回读 50/50）；本腿失败只表示**这次没复验到**"
+  },
+  {
+   "leg": "50 槽云端（/slots50）",
+   "ok": true,
+   "reading": "槽 50 · 已接线 30 · 备用 20 · 有向边 2450"
+  },
+  {
+   "leg": "三条车道（路由器 /v1/models）",
+   "ok": true,
+   "reading": "车道 3 条：gbt-potato-v8、qwen3:latest、qwen3:0.6b"
+  }
+ ],
+ "pass": 8,
+ "fail": 0,
+ "note": "逐条真读数；拿不到写「未读到」+原因，不拿绿顶"
+}

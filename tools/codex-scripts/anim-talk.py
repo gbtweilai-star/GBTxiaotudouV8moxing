@@ -129,12 +129,12 @@ for c in an["channels"]:
 #    生成器里的 `nm` 取的是**外层列表推导残留的最后一个值**（永远是 Head），
 #    于是永远匹配不上、恒判"不对称"。改用**字典直接查**，不靠闭包变量。
 AMPMAP = {nm: amp for nm, ax, amp, cyc in CH}
-for l, r in (("mixamorig:LeftArm", "mixamorig:RightArm"),
-             ("mixamorig:LeftForeArm", "mixamorig:RightForeArm"),
-             ("mixamorig:LeftHand", "mixamorig:RightHand")):
-    al, ar = AMPMAP.get(l), AMPMAP.get(r)
+for lft, r in (("mixamorig:LeftArm", "mixamorig:RightArm"),
+               ("mixamorig:LeftForeArm", "mixamorig:RightForeArm"),
+               ("mixamorig:LeftHand", "mixamorig:RightHand")):
+    al, ar = AMPMAP.get(lft), AMPMAP.get(r)
     if al is None or ar is None or abs(al + ar) > 1e-9:
-        bad.append(f"左右不对称：{l}={al} / {r}={ar}")
+        bad.append(f"左右不对称：{lft}={al} / {r}={ar}")
 print(f"动作：talk · {len(an['channels'])} 通道 · {N} 帧 · 时长 {DUR}s")
 print(f"驱动骨：{[nm for nm, *_ in CH]}")
 print(f"总动画数：{len(J2['animations'])}（{[a.get('name') for a in J2['animations']]}）")

@@ -102,3 +102,5 @@ ShortGPT（被 MoneyPrinterTurbo 覆盖）· RedditVideoMakerBot（无 Reddit �
 2. 训练级定制：GPT-SoVITS 微调 → **Colab GPU 训练**（内存压强派单制：本机不训）；
 3. 接线：`voice_orchestra` 注册克隆引擎档位 → 电影配音统一走克隆声线（跨集一致，配合连续性铁律）；
 4. 主人自己的声音克隆（用于旁白/出镜配音）：参考音频 10 秒即成，**声纹属生物凭据——参考音频只存 DPAPI 保险箱，不进 git**。
+
+> 开发者：自由的风

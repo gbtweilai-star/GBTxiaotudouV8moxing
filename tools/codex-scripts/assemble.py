@@ -151,7 +151,7 @@ def assemble(jid: str, fps: int, work: pathlib.Path, slot: str, apply_upload: bo
     res = {"ok": True, "job_id": jid, "帧数": len(got), "成片真解出帧数": n_read, "fps": fps,
            "产物": out.name, "bytes": nbytes, "sha256": sha,
            "探针": {k: probe.get(k) for k in ("nb_frames", "nb_read_frames", "width", "height",
-                                              "r_frame_rate", "duration")},
+                                            "r_frame_rate", "duration")},
            "执行地": "LOCAL-触手（云函数未授权）", "数据面": "CLOUD"}
     if not apply_upload:
         return res

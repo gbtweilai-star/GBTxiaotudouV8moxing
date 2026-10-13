@@ -4,7 +4,6 @@
 再生成：python tools/codex-scripts/structure-snapshot.py（接新能力后跑一次，页面自动长）"""
 import json
 import subprocess
-import collections
 import datetime
 import sys
 from pathlib import Path
@@ -36,8 +35,9 @@ def caps():
     sys.path.insert(0, str(ROOT))
     from gbt_allinone.caps_registry import BENIGN_CAPS
     from gbt_allinone.tools.energy_pool import list_energies
-    LAYER = lambda d: ("decision" if d in ("llm", "security", "audit")
-                       else "local" if d in ("system", "data", "local") else "all")
+
+    def LAYER(d):
+        return "decision" if d in ("llm", "security", "audit") else "local" if d in ("system", "data", "local") else "all"
     return [{"k": k, "d": m.get("domain", "other"), "s": bool(m.get("safe")),
              "h": str(m.get("handler") or ""), "t": str(m.get("desc") or "")[:90],
              "layer": LAYER(m.get("domain", "other"))}
@@ -202,6 +202,7 @@ setInterval(() => {
 }, 120);
 </script></body></html>
 """
+
 
 def main():
     data = build_data()

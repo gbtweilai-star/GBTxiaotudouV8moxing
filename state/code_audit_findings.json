@@ -1,207 +1,9 @@
 {
- "at": "2026-10-03T19:13:02",
- "target": "gbt_allinone,tools",
- "files": 942,
- "lines": 264346,
+ "at": "2026-10-14T00:44:06",
+ "target": "gbt_allinone/api.py,gbt_allinone/tests",
+ "files": 184,
+ "lines": 42792,
  "findings": [
-  {
-   "id": "F-INJ-001-08c2ee-133",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "gbt_allinone/recon/last30days/engine/vendor/bird-search/lib/runtime-query-ids.js",
-   "line": 133,
-   "snippet": "const match = pattern.regex.exec(bundleContents);",
-   "evidence": {
-    "file_sha256": "24c546dd5ac2e0bbdf7cc85796b5dd263cf33b5a3611477d00635fcd69d9140e",
-    "line_text": "const match = pattern.regex.exec(bundleContents);",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\recon\\last30days\\engine\\vendor\\bird-search\\lib\\runtime-query-ids.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:12:58"
-  },
-  {
-   "id": "F-INJ-001-435105-233",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "gbt_allinone/security/security_brain.py",
-   "line": 233,
-   "snippet": "or \"exec(compile(\" in line or \"exec(compile (\" in line",
-   "evidence": {
-    "file_sha256": "f7e687b62c2968c9df1aff9aa05b7fc808ef7448bd1d164b02e09f9f1705f7d2",
-    "line_text": "or \"exec(compile(\" in line or \"exec(compile (\" in line",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:12:58"
-  },
-  {
-   "id": "F-INJ-001-435105-235",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "gbt_allinone/security/security_brain.py",
-   "line": 235,
-   "snippet": "or \"safe_builtins\" in line or \"safe_builtins\" in _prev_ctx  # 受限builtins exec(含前文)",
-   "evidence": {
-    "file_sha256": "f7e687b62c2968c9df1aff9aa05b7fc808ef7448bd1d164b02e09f9f1705f7d2",
-    "line_text": "or \"safe_builtins\" in line or \"safe_builtins\" in _prev_ctx  # 受限builtins exec(含前文)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:12:58"
-  },
-  {
-   "id": "F-INJ-001-435105-236",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "gbt_allinone/security/security_brain.py",
-   "line": 236,
-   "snippet": "or \"self.exec(\" in line  # 远程执行工具自身调用(设计)",
-   "evidence": {
-    "file_sha256": "f7e687b62c2968c9df1aff9aa05b7fc808ef7448bd1d164b02e09f9f1705f7d2",
-    "line_text": "or \"self.exec(\" in line  # 远程执行工具自身调用(设计)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:12:58"
-  },
-  {
-   "id": "F-INJ-001-435105-237",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "gbt_allinone/security/security_brain.py",
-   "line": 237,
-   "snippet": "or \"exec(open(\" in line  # 子代理参数模板示例(设计)",
-   "evidence": {
-    "file_sha256": "f7e687b62c2968c9df1aff9aa05b7fc808ef7448bd1d164b02e09f9f1705f7d2",
-    "line_text": "or \"exec(open(\" in line  # 子代理参数模板示例(设计)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:12:58"
-  },
-  {
-   "id": "F-INJ-001-435105-242",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "gbt_allinone/security/security_brain.py",
-   "line": 242,
-   "snippet": "or '\"exec(\"' in line or '\"eval(\"' in line  # 模式库定义 \"exec(\"",
-   "evidence": {
-    "file_sha256": "f7e687b62c2968c9df1aff9aa05b7fc808ef7448bd1d164b02e09f9f1705f7d2",
-    "line_text": "or '\"exec(\"' in line or '\"eval(\"' in line  # 模式库定义 \"exec(\"",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:12:58"
-  },
-  {
-   "id": "F-INJ-001-435105-243",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "gbt_allinone/security/security_brain.py",
-   "line": 243,
-   "snippet": "or \"'exec('\" in line or \"'eval('\" in line  # 模式库定义 'exec('",
-   "evidence": {
-    "file_sha256": "f7e687b62c2968c9df1aff9aa05b7fc808ef7448bd1d164b02e09f9f1705f7d2",
-    "line_text": "or \"'exec('\" in line or \"'eval('\" in line  # 模式库定义 'exec('",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:12:58"
-  },
-  {
-   "id": "F-INJ-001-435105-245",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "gbt_allinone/security/security_brain.py",
-   "line": 245,
-   "snippet": "or '\"exec(open\"' in line or '\"exec(open' in line  # ⛔ 2026-08-09 模式库字符串拼接 \"exec(open\"+E(设计内)",
-   "evidence": {
-    "file_sha256": "f7e687b62c2968c9df1aff9aa05b7fc808ef7448bd1d164b02e09f9f1705f7d2",
-    "line_text": "or '\"exec(open\"' in line or '\"exec(open' in line  # ⛔ 2026-08-09 模式库字符串拼接 \"exec(open\"+E(设计内)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:12:58"
-  },
-  {
-   "id": "F-INJ-002-435105-643",
-   "rule": "INJ-002",
-   "severity": "medium",
-   "stage": "注入面",
-   "what": "shell=True 或字符串拼命令（subprocess/os.system 吃变量）",
-   "file": "gbt_allinone/security/security_brain.py",
-   "line": 643,
-   "snippet": "{\"regex\": r\"subprocess\\.(Popen|run|call|check_output)\\([^)]*shell\\s*=\\s*True\", \"title\": \"subprocess shell=True(B602)\", \"severity\": \"high\", \"cwe_id\": \"CWE-78\", \"",
-   "evidence": {
-    "file_sha256": "f7e687b62c2968c9df1aff9aa05b7fc808ef7448bd1d164b02e09f9f1705f7d2",
-    "line_text": "{\"regex\": r\"subprocess\\.(Popen|run|call|check_output)\\([^)]*shell\\s*=\\s*True\", \"title\": \"subprocess shell=True(B602)\", \"severity\": \"high\", \"cwe_id\": \"CWE-78\", \"",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\security\\security_brain.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:12:58"
-  },
-  {
-   "id": "F-DES-001-ac78b9-223",
-   "rule": "DES-001",
-   "severity": "high",
-   "stage": "破坏面",
-   "what": "破坏性命令（递归删目录 / 清表 / 硬回退）",
-   "file": "gbt_allinone/tentacle/omni_fs.py",
-   "line": 223,
-   "snippet": "_shutil.rmtree(str(d))",
-   "evidence": {
-    "file_sha256": "262e137bcd3f0dc53bdb779fbedf8ed0ec8bfe8162f5341b61a58312fa9e0c35",
-    "line_text": "_shutil.rmtree(str(d))",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tentacle\\omni_fs.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:12:58"
-  },
-  {
-   "id": "F-DES-001-ac78b9-272",
-   "rule": "DES-001",
-   "severity": "high",
-   "stage": "破坏面",
-   "what": "破坏性命令（递归删目录 / 清表 / 硬回退）",
-   "file": "gbt_allinone/tentacle/omni_fs.py",
-   "line": 272,
-   "snippet": "_shutil.rmtree(str(p))",
-   "evidence": {
-    "file_sha256": "262e137bcd3f0dc53bdb779fbedf8ed0ec8bfe8162f5341b61a58312fa9e0c35",
-    "line_text": "_shutil.rmtree(str(p))",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tentacle\\omni_fs.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:12:58"
-  },
   {
    "id": "F-CRED-001-57fe4f-70",
    "rule": "CRED-001",
@@ -218,7 +20,7 @@
    },
    "repro": "python -c \"import re,pathlib;print(re.findall(r'(sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{12,})', pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_auto_publish.py').read_text(encoding='utf-8',errors='replace'))[:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:12:58"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-CRED-001-8785bf-45",
@@ -236,7 +38,7 @@
    },
    "repro": "python -c \"import re,pathlib;print(re.findall(r'(sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{12,})', pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_cloud_pc.py').read_text(encoding='utf-8',errors='replace'))[:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:12:59"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-1048fd-45",
@@ -254,7 +56,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_code_patch.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:12:59"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-1048fd-47",
@@ -272,7 +74,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_code_patch.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:12:59"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-0d1258-143",
@@ -290,7 +92,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_coze_mail.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:12:59"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-JDG-001-7bc7b0-6",
@@ -308,7 +110,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_dead_judgments.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:12:59"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-JDG-001-7bc7b0-91",
@@ -326,7 +128,25 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_dead_judgments.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:12:59"
+   "at": "2026-10-14T00:44:05"
+  },
+  {
+   "id": "F-JDG-001-c8e5d9-262",
+   "rule": "JDG-001",
+   "severity": "medium",
+   "stage": "判据面",
+   "what": "恒真/恒假判据（看着在判其实不会红）",
+   "file": "gbt_allinone/tests/test_deepseek_bridge.py",
+   "line": 262,
+   "snippet": "BR.clip_write = lambda text: seen.update(text=text) or True",
+   "evidence": {
+    "file_sha256": "5dfd6eb8e54c8dc4d2e50515abb644261560b027e7afce3c9e44544888f957cc",
+    "line_text": "BR.clip_write = lambda text: seen.update(text=text) or True",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_deepseek_bridge.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
+   "verified_by": "",
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-067ab2-467",
@@ -344,7 +164,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_dependency_face.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:12:59"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-067ab2-482",
@@ -362,7 +182,25 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_dependency_face.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:12:59"
+   "at": "2026-10-14T00:44:05"
+  },
+  {
+   "id": "F-INJ-001-31289d-62",
+   "rule": "INJ-001",
+   "severity": "high",
+   "stage": "注入面",
+   "what": "动态执行（把字符串当代码跑）",
+   "file": "gbt_allinone/tests/test_design_atlas.py",
+   "line": 62,
+   "snippet": "（「一处 eval( 是文档示例」）⇒ 假红。**判据不许把散文当代码读**（本会话第 4 次同族）。",
+   "evidence": {
+    "file_sha256": "b27c9a8b083e3b3c8de39d12f93f6819ca5ec1dd81c47b8686a32baad383a531",
+    "line_text": "（「一处 eval( 是文档示例」）⇒ 假红。**判据不许把散文当代码读**（本会话第 4 次同族）。",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_design_atlas.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
+   "verified_by": "",
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-6aba9c-177",
@@ -380,7 +218,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_distilled_ops.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:12:59"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-6aba9c-198",
@@ -398,7 +236,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_distilled_ops.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:12:59"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-fe469d-121",
@@ -416,7 +254,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_file_operation.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-fe469d-126",
@@ -434,7 +272,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_file_operation.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-fe469d-127",
@@ -452,7 +290,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_file_operation.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-fe469d-131",
@@ -470,7 +308,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_file_operation.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-fe469d-531",
@@ -488,7 +326,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_file_operation.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-DES-001-fe469d-609",
@@ -506,7 +344,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_file_operation.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-INJ-002-430fef-11",
@@ -524,7 +362,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_git_repo.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:05"
   },
   {
    "id": "F-INJ-002-430fef-160",
@@ -542,7 +380,61 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_git_repo.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:05"
+  },
+  {
+   "id": "F-INJ-002-fb2be0-7",
+   "rule": "INJ-002",
+   "severity": "medium",
+   "stage": "注入面",
+   "what": "shell=True 或字符串拼命令（subprocess/os.system 吃变量）",
+   "file": "gbt_allinone/tests/test_hacker_scan_scope.py",
+   "line": 7,
+   "snippet": "③ 精度：命令注入必须是**调用**（os.system( ），规则表里的中文说明不算；",
+   "evidence": {
+    "file_sha256": "5e4e0f725cdc0d85461a3ad127a18fb882c48c4580de3e367071d903c558d956",
+    "line_text": "③ 精度：命令注入必须是**调用**（os.system( ），规则表里的中文说明不算；",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_hacker_scan_scope.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
+   "verified_by": "",
+   "at": "2026-10-14T00:44:06"
+  },
+  {
+   "id": "F-INJ-002-fb2be0-80",
+   "rule": "INJ-002",
+   "severity": "medium",
+   "stage": "注入面",
+   "what": "shell=True 或字符串拼命令（subprocess/os.system 吃变量）",
+   "file": "gbt_allinone/tests/test_hacker_scan_scope.py",
+   "line": 80,
+   "snippet": "r = _scan_in('import os\\nos.system(user_input)\\n')",
+   "evidence": {
+    "file_sha256": "5e4e0f725cdc0d85461a3ad127a18fb882c48c4580de3e367071d903c558d956",
+    "line_text": "r = _scan_in('import os\\nos.system(user_input)\\n')",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_hacker_scan_scope.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
+   "verified_by": "",
+   "at": "2026-10-14T00:44:06"
+  },
+  {
+   "id": "F-INJ-002-48a14d-118",
+   "rule": "INJ-002",
+   "severity": "medium",
+   "stage": "注入面",
+   "what": "shell=True 或字符串拼命令（subprocess/os.system 吃变量）",
+   "file": "gbt_allinone/tests/test_motion_kit.py",
+   "line": 118,
+   "snippet": "bad.append((\"shell=True\", node.lineno))",
+   "evidence": {
+    "file_sha256": "fd183def531fb89ab982be60b840dd25e81dfa658e57735e3e613c435bc62ab7",
+    "line_text": "bad.append((\"shell=True\", node.lineno))",
+    "how_found": "扫描正则命中（第 1 路读法）"
+   },
+   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_motion_kit.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
+   "verified_by": "",
+   "at": "2026-10-14T00:44:06"
   },
   {
    "id": "F-INJ-001-d5476d-101",
@@ -560,7 +452,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_skill_vet.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:06"
   },
   {
    "id": "F-DES-001-d5476d-149",
@@ -578,7 +470,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_skill_vet.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:06"
   },
   {
    "id": "F-DES-001-d5476d-168",
@@ -596,7 +488,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_skill_vet.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:06"
   },
   {
    "id": "F-INJ-001-d5476d-175",
@@ -614,7 +506,7 @@
    },
    "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_skill_vet.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:06"
   },
   {
    "id": "F-INJ-002-c5efe9-12",
@@ -632,7 +524,7 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_skill_vetting.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
+   "at": "2026-10-14T00:44:06"
   },
   {
    "id": "F-DES-001-c5efe9-12",
@@ -650,901 +542,19 @@
    },
    "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\tests\\test_skill_vetting.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
    "verified_by": "",
-   "at": "2026-10-03T19:13:00"
-  },
-  {
-   "id": "F-INJ-002-a35f09-406",
-   "rule": "INJ-002",
-   "severity": "medium",
-   "stage": "注入面",
-   "what": "shell=True 或字符串拼命令（subprocess/os.system 吃变量）",
-   "file": "tools/penetrating_cross_scan.py",
-   "line": 406,
-   "snippet": "(r\"shell\\s*=\\s*True\", \"shell=True（命令拼接风险）\"),",
-   "evidence": {
-    "file_sha256": "614117ab6eb6deeaead2f7b62d1dd041accd5d82fcd12d352b9c5f613f07fb6f",
-    "line_text": "(r\"shell\\s*=\\s*True\", \"shell=True（命令拼接风险）\"),",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\penetrating_cross_scan.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:00"
-  },
-  {
-   "id": "F-INJ-002-a35f09-422",
-   "rule": "INJ-002",
-   "severity": "medium",
-   "stage": "注入面",
-   "what": "shell=True 或字符串拼命令（subprocess/os.system 吃变量）",
-   "file": "tools/penetrating_cross_scan.py",
-   "line": 422,
-   "snippet": "实例：`omni_process.py` 里那行写的是 `shell=False`，注释里提到旧写法 `shell=True`，",
-   "evidence": {
-    "file_sha256": "614117ab6eb6deeaead2f7b62d1dd041accd5d82fcd12d352b9c5f613f07fb6f",
-    "line_text": "实例：`omni_process.py` 里那行写的是 `shell=False`，注释里提到旧写法 `shell=True`，",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\penetrating_cross_scan.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:00"
-  },
-  {
-   "id": "F-INJ-002-a35f09-423",
-   "rule": "INJ-002",
-   "severity": "medium",
-   "stage": "注入面",
-   "what": "shell=True 或字符串拼命令（subprocess/os.system 吃变量）",
-   "file": "tools/penetrating_cross_scan.py",
-   "line": 423,
-   "snippet": "结果被判成\"命令拼接风险\"；另一例是文档串里的 `os.system('rm -rf /')` 示例。",
-   "evidence": {
-    "file_sha256": "614117ab6eb6deeaead2f7b62d1dd041accd5d82fcd12d352b9c5f613f07fb6f",
-    "line_text": "结果被判成\"命令拼接风险\"；另一例是文档串里的 `os.system('rm -rf /')` 示例。",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\penetrating_cross_scan.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:00"
-  },
-  {
-   "id": "F-DES-001-a35f09-423",
-   "rule": "DES-001",
-   "severity": "high",
-   "stage": "破坏面",
-   "what": "破坏性命令（递归删目录 / 清表 / 硬回退）",
-   "file": "tools/penetrating_cross_scan.py",
-   "line": 423,
-   "snippet": "结果被判成\"命令拼接风险\"；另一例是文档串里的 `os.system('rm -rf /')` 示例。",
-   "evidence": {
-    "file_sha256": "614117ab6eb6deeaead2f7b62d1dd041accd5d82fcd12d352b9c5f613f07fb6f",
-    "line_text": "结果被判成\"命令拼接风险\"；另一例是文档串里的 `os.system('rm -rf /')` 示例。",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\penetrating_cross_scan.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:00"
-  },
-  {
-   "id": "F-DES-001-eea0c4-183",
-   "rule": "DES-001",
-   "severity": "high",
-   "stage": "破坏面",
-   "what": "破坏性命令（递归删目录 / 清表 / 硬回退）",
-   "file": "tools/selfgrowth.py",
-   "line": 183,
-   "snippet": "shutil.rmtree(dst, ignore_errors=True)",
-   "evidence": {
-    "file_sha256": "785fcfa231920ed10bc5e100cb3d59c757325cf6e719a8b7b62c11fd0bf7ff95",
-    "line_text": "shutil.rmtree(dst, ignore_errors=True)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\selfgrowth.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:00"
-  },
-  {
-   "id": "F-DES-001-045453-163",
-   "rule": "DES-001",
-   "severity": "high",
-   "stage": "破坏面",
-   "what": "破坏性命令（递归删目录 / 清表 / 硬回退）",
-   "file": "tools/skills_sync.py",
-   "line": 163,
-   "snippet": "shutil.rmtree(dst, ignore_errors=True)",
-   "evidence": {
-    "file_sha256": "a9b0227732466c75ae05374f631fa68fa9ecfea5f283092f485260864ed774f1",
-    "line_text": "shutil.rmtree(dst, ignore_errors=True)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\skills_sync.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:00"
-  },
-  {
-   "id": "F-DES-001-f2a595-99",
-   "rule": "DES-001",
-   "severity": "high",
-   "stage": "破坏面",
-   "what": "破坏性命令（递归删目录 / 清表 / 硬回退）",
-   "file": "tools/codex-scripts/build_shadow_repo.py",
-   "line": 99,
-   "snippet": "为什么不能用 shutil.rmtree(ignore_errors=True)：",
-   "evidence": {
-    "file_sha256": "82ce0a0bcd910c8aa4f112ce97250da0ae28f75be64f55b8a8294df38aae3bc4",
-    "line_text": "为什么不能用 shutil.rmtree(ignore_errors=True)：",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\build_shadow_repo.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:01"
-  },
-  {
-   "id": "F-DES-001-feb238-23",
-   "rule": "DES-001",
-   "severity": "high",
-   "stage": "破坏面",
-   "what": "破坏性命令（递归删目录 / 清表 / 硬回退）",
-   "file": "tools/codex-scripts/clean_residue.py",
-   "line": 23,
-   "snippet": "⇒ **无脑 `rm -rf .scratch` 会当场弄坏面板、留痕、跑测、面板审计。**",
-   "evidence": {
-    "file_sha256": "0ec711e601b5a0fb26758f0a4f289c360abae53a7d6bd465ac7827245fe2706f",
-    "line_text": "⇒ **无脑 `rm -rf .scratch` 会当场弄坏面板、留痕、跑测、面板审计。**",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\clean_residue.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:01"
-  },
-  {
-   "id": "F-DES-001-dc34c4-1118",
-   "rule": "DES-001",
-   "severity": "high",
-   "stage": "破坏面",
-   "what": "破坏性命令（递归删目录 / 清表 / 硬回退）",
-   "file": "tools/codex-scripts/cloud-mesh.py",
-   "line": 1118,
-   "snippet": "shutil.rmtree(probe.parent)",
-   "evidence": {
-    "file_sha256": "3b6fb3b8695f9e3bda83f48955d57c85b3b2f746f86c5f28d1b6a753cb4b67df",
-    "line_text": "shutil.rmtree(probe.parent)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\cloud-mesh.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:01"
-  },
-  {
-   "id": "F-JDG-001-41ffc1-171",
-   "rule": "JDG-001",
-   "severity": "medium",
-   "stage": "判据面",
-   "what": "恒真/恒假判据（看着在判其实不会红）",
-   "file": "tools/codex-scripts/criterion_bench.py",
-   "line": 171,
-   "snippet": "out.append((n.lineno, \"`or True` —— 短路后判据恒真\"))",
-   "evidence": {
-    "file_sha256": "2b1c8e090068d32f262ab169370b2e34308802a6a2080ac361d52466b1991dbe",
-    "line_text": "out.append((n.lineno, \"`or True` —— 短路后判据恒真\"))",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\criterion_bench.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:01"
-  },
-  {
-   "id": "F-JDG-001-8cef41-7",
-   "rule": "JDG-001",
-   "severity": "medium",
-   "stage": "判据面",
-   "what": "恒真/恒假判据（看着在判其实不会红）",
-   "file": "tools/codex-scripts/fix-dead-undefined-check.py",
-   "line": 7,
-   "snippet": "chk(\"原型无 undefined 字面量\", \"undefined\" not in re.sub(…, p.split(\"const V21 = \")[1].split(\"\\n  }\")[0]) or True, …)",
-   "evidence": {
-    "file_sha256": "68a895fd06e340eb299cac009801560124cb3afc4927fce60da939d765bb5c38",
-    "line_text": "chk(\"原型无 undefined 字面量\", \"undefined\" not in re.sub(…, p.split(\"const V21 = \")[1].split(\"\\n  }\")[0]) or True, …)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\fix-dead-undefined-check.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:01"
-  },
-  {
-   "id": "F-JDG-001-8cef41-14",
-   "rule": "JDG-001",
-   "severity": "medium",
-   "stage": "判据面",
-   "what": "恒真/恒假判据（看着在判其实不会红）",
-   "file": "tools/codex-scripts/fix-dead-undefined-check.py",
-   "line": 14,
-   "snippet": "1. 删掉 `or True`；",
-   "evidence": {
-    "file_sha256": "68a895fd06e340eb299cac009801560124cb3afc4927fce60da939d765bb5c38",
-    "line_text": "1. 删掉 `or True`；",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\fix-dead-undefined-check.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:01"
-  },
-  {
-   "id": "F-INJ-002-15e1a0-40",
-   "rule": "INJ-002",
-   "severity": "medium",
-   "stage": "注入面",
-   "what": "shell=True 或字符串拼命令（subprocess/os.system 吃变量）",
-   "file": "tools/codex-scripts/lark_delete_caches.py",
-   "line": 40,
-   "snippet": "encoding=\"utf-8\", timeout=timeout, cwd=str(ROOT), shell=True)",
-   "evidence": {
-    "file_sha256": "2bcd1273d0b9e57c70332c1fce283621ad4171ac50b82270e18585aef779eaca",
-    "line_text": "encoding=\"utf-8\", timeout=timeout, cwd=str(ROOT), shell=True)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\lark_delete_caches.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:01"
-  },
-  {
-   "id": "F-INJ-002-d2a261-41",
-   "rule": "INJ-002",
-   "severity": "medium",
-   "stage": "注入面",
-   "what": "shell=True 或字符串拼命令（subprocess/os.system 吃变量）",
-   "file": "tools/codex-scripts/lark_inventory.py",
-   "line": 41,
-   "snippet": "cwd=str(ROOT), shell=True)",
-   "evidence": {
-    "file_sha256": "6efbc4ca73912cdfeb83898cd1b162fff9c57dda4e636c123a05c55198d08621",
-    "line_text": "cwd=str(ROOT), shell=True)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\lark_inventory.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:01"
-  },
-  {
-   "id": "F-DES-001-17d980-171",
-   "rule": "DES-001",
-   "severity": "high",
-   "stage": "破坏面",
-   "what": "破坏性命令（递归删目录 / 清表 / 硬回退）",
-   "file": "tools/codex-scripts/quickscan_evolve.py",
-   "line": 171,
-   "snippet": "shutil.rmtree(d, ignore_errors=True)",
-   "evidence": {
-    "file_sha256": "9e4badd482cf49bb53bc2785df20fe1384d6f1163ec130da1834a4f5d55d54f1",
-    "line_text": "shutil.rmtree(d, ignore_errors=True)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\quickscan_evolve.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:01"
-  },
-  {
-   "id": "F-DES-001-17d980-423",
-   "rule": "DES-001",
-   "severity": "high",
-   "stage": "破坏面",
-   "what": "破坏性命令（递归删目录 / 清表 / 硬回退）",
-   "file": "tools/codex-scripts/quickscan_evolve.py",
-   "line": 423,
-   "snippet": "shutil.rmtree(_fx, ignore_errors=True)",
-   "evidence": {
-    "file_sha256": "9e4badd482cf49bb53bc2785df20fe1384d6f1163ec130da1834a4f5d55d54f1",
-    "line_text": "shutil.rmtree(_fx, ignore_errors=True)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\quickscan_evolve.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:01"
-  },
-  {
-   "id": "F-DES-001-17d980-461",
-   "rule": "DES-001",
-   "severity": "high",
-   "stage": "破坏面",
-   "what": "破坏性命令（递归删目录 / 清表 / 硬回退）",
-   "file": "tools/codex-scripts/quickscan_evolve.py",
-   "line": 461,
-   "snippet": "shutil.rmtree(_ax, ignore_errors=True)",
-   "evidence": {
-    "file_sha256": "9e4badd482cf49bb53bc2785df20fe1384d6f1163ec130da1834a4f5d55d54f1",
-    "line_text": "shutil.rmtree(_ax, ignore_errors=True)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\quickscan_evolve.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:01"
-  },
-  {
-   "id": "F-DES-001-f32fa7-171",
-   "rule": "DES-001",
-   "severity": "high",
-   "stage": "破坏面",
-   "what": "破坏性命令（递归删目录 / 清表 / 硬回退）",
-   "file": "tools/codex-scripts/shorts-stitch-proof.py",
-   "line": 171,
-   "snippet": "shutil.rmtree(workdir, ignore_errors=True)",
-   "evidence": {
-    "file_sha256": "65f067e8dc6e5004811271a64ba5c4dca0cc61d567718d200a37824549608c0e",
-    "line_text": "shutil.rmtree(workdir, ignore_errors=True)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\shorts-stitch-proof.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'rmtree' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-d3309c-120",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/skill-vet.py",
-   "line": 120,
-   "snippet": "(\"eval/exec 外部输入\", r\"(?<![\\w.])(eval|exec)\\s*\\(\", \"Step2: uses eval()/exec() with external input\"),",
-   "evidence": {
-    "file_sha256": "a57fdb3e6f2fcc5c41a7f34deef62a08445c25f13a926f8995430d0879f3688f",
-    "line_text": "(\"eval/exec 外部输入\", r\"(?<![\\w.])(eval|exec)\\s*\\(\", \"Step2: uses eval()/exec() with external input\"),",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\skill-vet.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-002-d3309c-340",
-   "rule": "INJ-002",
-   "severity": "medium",
-   "stage": "注入面",
-   "what": "shell=True 或字符串拼命令（subprocess/os.system 吃变量）",
-   "file": "tools/codex-scripts/skill-vet.py",
-   "line": 340,
-   "snippet": "census.append(dict(c, empty_shell=True))   # 同名空壳：如实列出，不算技能根",
-   "evidence": {
-    "file_sha256": "a57fdb3e6f2fcc5c41a7f34deef62a08445c25f13a926f8995430d0879f3688f",
-    "line_text": "census.append(dict(c, empty_shell=True))   # 同名空壳：如实列出，不算技能根",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\skill-vet.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-JDG-001-aec86d-85",
-   "rule": "JDG-001",
-   "severity": "medium",
-   "stage": "判据面",
-   "what": "恒真/恒假判据（看着在判其实不会红）",
-   "file": "tools/codex-scripts/sync-panel-snapshot.py",
-   "line": 85,
-   "snippet": "而 `verify_v22.py` **没报**（它那条\"无 undefined 字面量\"检查里写着 `or True`，等于空转）。",
-   "evidence": {
-    "file_sha256": "291a30b2bcdc6f30ae1c96065d4d2381fc6d6620b149097184eb1f9650cb7ca2",
-    "line_text": "而 `verify_v22.py` **没报**（它那条\"无 undefined 字面量\"检查里写着 `or True`，等于空转）。",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\sync-panel-snapshot.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-29487a-115",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_ledger_sink.py",
-   "line": 115,
-   "snippet": "exec(compile(seg, str(p), \"exec\"), ns)",
-   "evidence": {
-    "file_sha256": "0351a6a600b0a4bcfb6df2e82c46ba3bfc867fdf0025d6e77c826289beae67c1",
-    "line_text": "exec(compile(seg, str(p), \"exec\"), ns)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_ledger_sink.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-c660c0-28",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_loader_scope.py",
-   "line": 28,
-   "snippet": "exec(fn, g)",
-   "evidence": {
-    "file_sha256": "76c8d5c8506e7e5693455339890812fdd0200135117015abf8e0f814a2bce697",
-    "line_text": "exec(fn, g)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_loader_scope.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-f6e86f-19",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_loader_scope2.py",
-   "line": 19,
-   "snippet": "exec(fn, g)",
-   "evidence": {
-    "file_sha256": "9b805850a1bb05b930a2572ce283c3c6df4b7ea6c3e85468e1a362623462c6d4",
-    "line_text": "exec(fn, g)",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_loader_scope2.py').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-d328dd-22",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v11_canvas_runtime.js",
-   "line": 22,
-   "snippet": "while ((hit = re.exec(src)) !== null) {",
-   "evidence": {
-    "file_sha256": "748e47e5a275ed045828d55e81569f8ae635819acf9d5d0c044298e819dfe37b",
-    "line_text": "while ((hit = re.exec(src)) !== null) {",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v11_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-d328dd-51",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v11_canvas_runtime.js",
-   "line": 51,
-   "snippet": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-   "evidence": {
-    "file_sha256": "748e47e5a275ed045828d55e81569f8ae635819acf9d5d0c044298e819dfe37b",
-    "line_text": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v11_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-587e03-22",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v12_canvas_runtime.js",
-   "line": 22,
-   "snippet": "while ((hit = re.exec(src)) !== null) {",
-   "evidence": {
-    "file_sha256": "4f31c3efcdcc15006824fdf185f5a4aea5d5ab1ab0c787f12a804fac0dda328a",
-    "line_text": "while ((hit = re.exec(src)) !== null) {",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v12_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-587e03-51",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v12_canvas_runtime.js",
-   "line": 51,
-   "snippet": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-   "evidence": {
-    "file_sha256": "4f31c3efcdcc15006824fdf185f5a4aea5d5ab1ab0c787f12a804fac0dda328a",
-    "line_text": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v12_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-145dc7-22",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v13_canvas_runtime.js",
-   "line": 22,
-   "snippet": "while ((hit = re.exec(src)) !== null) {",
-   "evidence": {
-    "file_sha256": "8fbe746466bf31aaafe56bc7f9a189d36f87f8c25937bd1caeac5f681a6a8146",
-    "line_text": "while ((hit = re.exec(src)) !== null) {",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v13_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-145dc7-72",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v13_canvas_runtime.js",
-   "line": 72,
-   "snippet": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-   "evidence": {
-    "file_sha256": "8fbe746466bf31aaafe56bc7f9a189d36f87f8c25937bd1caeac5f681a6a8146",
-    "line_text": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v13_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-94903b-22",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v14_canvas_runtime.js",
-   "line": 22,
-   "snippet": "while ((hit = re.exec(src)) !== null) {",
-   "evidence": {
-    "file_sha256": "1b6a666abc022f9e5d971c765f335180b60def7bd36c25789df933ddf675f462",
-    "line_text": "while ((hit = re.exec(src)) !== null) {",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v14_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-94903b-72",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v14_canvas_runtime.js",
-   "line": 72,
-   "snippet": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-   "evidence": {
-    "file_sha256": "1b6a666abc022f9e5d971c765f335180b60def7bd36c25789df933ddf675f462",
-    "line_text": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v14_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-d51bfe-22",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v15_canvas_runtime.js",
-   "line": 22,
-   "snippet": "while ((hit = re.exec(src)) !== null) {",
-   "evidence": {
-    "file_sha256": "d4fe4495bde6f9e6345bf5147ddd5b05681a3bb81fe3971b49b5446513c4e7d8",
-    "line_text": "while ((hit = re.exec(src)) !== null) {",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v15_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-d51bfe-72",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v15_canvas_runtime.js",
-   "line": 72,
-   "snippet": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-   "evidence": {
-    "file_sha256": "d4fe4495bde6f9e6345bf5147ddd5b05681a3bb81fe3971b49b5446513c4e7d8",
-    "line_text": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v15_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-96d369-22",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v16_canvas_runtime.js",
-   "line": 22,
-   "snippet": "while ((hit = re.exec(src)) !== null) {",
-   "evidence": {
-    "file_sha256": "a1c681eea6c679a9cf2556f6c44655a5595a3d2fd612c58f4fcc0ecf08f9b502",
-    "line_text": "while ((hit = re.exec(src)) !== null) {",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v16_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-96d369-72",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v16_canvas_runtime.js",
-   "line": 72,
-   "snippet": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-   "evidence": {
-    "file_sha256": "a1c681eea6c679a9cf2556f6c44655a5595a3d2fd612c58f4fcc0ecf08f9b502",
-    "line_text": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v16_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-b34fb1-22",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v17_canvas_runtime.js",
-   "line": 22,
-   "snippet": "while ((hit = re.exec(src)) !== null) {",
-   "evidence": {
-    "file_sha256": "68883a332a11b19e0cf95a9377f5d2465c873d689bbc429787b8aa8762f874a5",
-    "line_text": "while ((hit = re.exec(src)) !== null) {",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v17_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-b34fb1-72",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v17_canvas_runtime.js",
-   "line": 72,
-   "snippet": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-   "evidence": {
-    "file_sha256": "68883a332a11b19e0cf95a9377f5d2465c873d689bbc429787b8aa8762f874a5",
-    "line_text": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v17_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-2504a4-22",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v18_canvas_runtime.js",
-   "line": 22,
-   "snippet": "while ((hit = re.exec(src)) !== null) {",
-   "evidence": {
-    "file_sha256": "e1c3ad76ac90be6f805db772d6a4979c497a14cb893e7882be67dcfd475e98f7",
-    "line_text": "while ((hit = re.exec(src)) !== null) {",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v18_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-2504a4-72",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v18_canvas_runtime.js",
-   "line": 72,
-   "snippet": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-   "evidence": {
-    "file_sha256": "e1c3ad76ac90be6f805db772d6a4979c497a14cb893e7882be67dcfd475e98f7",
-    "line_text": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v18_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-a7be8d-22",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v19_canvas_runtime.js",
-   "line": 22,
-   "snippet": "while ((hit = re.exec(src)) !== null) {",
-   "evidence": {
-    "file_sha256": "ee2605ac2bda63e5d3b21b94971fd7afb8e28afdd8ee6b26a8ef8ccb29fa3168",
-    "line_text": "while ((hit = re.exec(src)) !== null) {",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v19_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-a7be8d-72",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v19_canvas_runtime.js",
-   "line": 72,
-   "snippet": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-   "evidence": {
-    "file_sha256": "ee2605ac2bda63e5d3b21b94971fd7afb8e28afdd8ee6b26a8ef8ccb29fa3168",
-    "line_text": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v19_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-34bd90-22",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v20_canvas_runtime.js",
-   "line": 22,
-   "snippet": "while ((hit = re.exec(src)) !== null) {",
-   "evidence": {
-    "file_sha256": "c953c4c47e01f3acadb890038e45ea6bae1ea7e16847477ea5d871771569cd8e",
-    "line_text": "while ((hit = re.exec(src)) !== null) {",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v20_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-34bd90-72",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v20_canvas_runtime.js",
-   "line": 72,
-   "snippet": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-   "evidence": {
-    "file_sha256": "c953c4c47e01f3acadb890038e45ea6bae1ea7e16847477ea5d871771569cd8e",
-    "line_text": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v20_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-493bf9-24",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v21_canvas_runtime.js",
-   "line": 24,
-   "snippet": "while ((hit = re.exec(src)) !== null) {",
-   "evidence": {
-    "file_sha256": "84095c343c9e7d6adeec56b5b4af5f65af4d929bb5366224e64f9ab3469be669",
-    "line_text": "while ((hit = re.exec(src)) !== null) {",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v21_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-493bf9-74",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/codex-scripts/verify_v21_canvas_runtime.js",
-   "line": 74,
-   "snippet": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-   "evidence": {
-    "file_sha256": "84095c343c9e7d6adeec56b5b4af5f65af4d929bb5366224e64f9ab3469be669",
-    "line_text": "'\\n; return { fns: Object.keys(' + JSON.stringify(Object.keys(fns)) + '), g: (n) => eval(n) };';",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\codex-scripts\\verify_v21_canvas_runtime.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-002-e09ab9-271",
-   "rule": "INJ-002",
-   "severity": "medium",
-   "stage": "注入面",
-   "what": "shell=True 或字符串拼命令（subprocess/os.system 吃变量）",
-   "file": "tools/digihuman/pipeline.py",
-   "line": 271,
-   "snippet": "r = subprocess.run(tmpl, shell=True, cwd=str(WS))",
-   "evidence": {
-    "file_sha256": "f6957173987936cfea677c17adcfdddf2b1fa64a45433bbd8a8ffc872eae5f43",
-    "line_text": "r = subprocess.run(tmpl, shell=True, cwd=str(WS))",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\digihuman\\pipeline.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'shell=True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-JDG-001-c70bb1-41",
-   "rule": "JDG-001",
-   "severity": "medium",
-   "stage": "判据面",
-   "what": "恒真/恒假判据（看着在判其实不会红）",
-   "file": "tools/shortvideo-music-mcp/sample_v2.py",
-   "line": 41,
-   "snippet": "errors=\"replace\", timeout=300, shell=(sys.platform == \"win32\" and False))",
-   "evidence": {
-    "file_sha256": "56499ac0957d5f0eeec391cef64bde22e37762ef31292ad0739f04bc4dc6c454",
-    "line_text": "errors=\"replace\", timeout=300, shell=(sys.platform == \"win32\" and False))",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import pathlib;print([l.strip() for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\shortvideo-music-mcp\\sample_v2.py').read_text(encoding='utf-8',errors='replace').splitlines() if 'or True' in l][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
-  },
-  {
-   "id": "F-INJ-001-1449b6-34",
-   "rule": "INJ-001",
-   "severity": "high",
-   "stage": "注入面",
-   "what": "动态执行（把字符串当代码跑）",
-   "file": "tools/shortvideo-music-mcp/server.js",
-   "line": 34,
-   "snippet": "exec(",
-   "evidence": {
-    "file_sha256": "9393cae6ef09a9adf558c3f7c1a09dfc3b42744cce25fb44ec35cdb95a619b5c",
-    "line_text": "exec(",
-    "how_found": "扫描正则命中（第 1 路读法）"
-   },
-   "repro": "python -c \"import re,pathlib;P=r'\\b(ev[ae]l|ex[ae]c)\\s*\\(';print([l for l in pathlib.Path('C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\tools\\shortvideo-music-mcp\\server.js').read_text(encoding='utf-8',errors='replace').splitlines() if re.search(P,l)][:3])\"",
-   "verified_by": "",
-   "at": "2026-10-03T19:13:02"
+   "at": "2026-10-14T00:44:06"
   }
  ],
  "triaged": [
   [
    "已分诊",
-   "DES-001",
-   "**纯注释/文档行里的提及**（不可执行）⇒ 需人核，不算 finding"
+   "CRED-001",
+   "占位符/示例形状（无真实凭据形状）"
   ],
   [
    "已分诊",
-   "DES-001",
-   "NEEDS_HUMAN:变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
+   "INJ-001",
+   "占位符/示例形状（无真实凭据形状）"
   ],
   [
    "已分诊",
@@ -1554,17 +564,7 @@
   [
    "已分诊",
    "INJ-002",
-   "占位符/示例形状（无真实凭据形状）"
-  ],
-  [
-   "已分诊",
-   "INJ-002",
    "**纯注释/文档行里的提及**（不可执行）⇒ 需人核，不算 finding"
-  ],
-  [
-   "已分诊",
-   "CRED-001",
-   "占位符/示例形状（无真实凭据形状）"
   ],
   [
    "已分诊",
@@ -1573,150 +573,10 @@
   ],
   [
    "已分诊",
-   "INJ-002",
-   "已登记豁免（审计器自身的规则表与复现模板（要找的字面量必然在此出现））"
-  ],
-  [
-   "已分诊",
    "DES-001",
-   "已登记豁免（审计器自身的规则表与复现模板（要找的字面量必然在此出现））"
-  ],
-  [
-   "已分诊",
-   "JDG-001",
-   "已登记豁免（审计器自身的规则表与复现模板（要找的字面量必然在此出现））"
-  ],
-  [
-   "已分诊",
-   "INJ-002",
-   "已登记豁免（另一台扫描器的模式表（同上：模式串不是漏洞））"
-  ],
-  [
-   "已分诊",
-   "INJ-001",
-   "已登记豁免（另一台扫描器的模式表（同上：模式串不是漏洞））"
-  ],
-  [
-   "已分诊",
-   "JDG-001",
    "**纯注释/文档行里的提及**（不可执行）⇒ 需人核，不算 finding"
-  ],
-  [
-   "已分诊",
-   "DES-001",
-   "已登记豁免（技能安检器：它维护的正是**危险词清单**（清单不是漏洞））"
-  ],
-  [
-   "已分诊",
-   "INJ-002",
-   "已登记豁免（技能安检器：它维护的正是**危险词清单**（清单不是漏洞））"
-  ],
-  [
-   "已分诊",
-   "JDG-001",
-   "占位符/示例形状（无真实凭据形状）"
-  ],
-  [
-   "已分诊",
-   "JDG-001",
-   "已登记豁免（判据扫描器本体：里面必然出现恒真模式的**模式串**）"
-  ],
-  [
-   "已分诊",
-   "JDG-001",
-   "已登记豁免（假端点的故意死分支（避免真发 404））"
-  ],
-  [
-   "已分诊",
-   "DES-001",
-   "占位符/示例形状（无真实凭据形状）"
   ]
  ],
- "needs_human": [
-  {
-   "rule": "DES-001",
-   "file": "gbt_allinone/checkpoint.py",
-   "line": 405,
-   "snippet": "shutil.rmtree(dst)",
-   "why": "变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
-  },
-  {
-   "rule": "DES-001",
-   "file": "gbt_allinone/hygiene.py",
-   "line": 190,
-   "snippet": "shutil.rmtree(pc)",
-   "why": "变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
-  },
-  {
-   "rule": "DES-001",
-   "file": "gbt_allinone/hygiene.py",
-   "line": 202,
-   "snippet": "shutil.rmtree(d)",
-   "why": "变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
-  },
-  {
-   "rule": "DES-001",
-   "file": "gbt_allinone/mirror_space.py",
-   "line": 96,
-   "snippet": "shutil.rmtree(dst)",
-   "why": "变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
-  },
-  {
-   "rule": "DES-001",
-   "file": "gbt_allinone/mirror_space.py",
-   "line": 140,
-   "snippet": "shutil.rmtree(p)",
-   "why": "变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
-  },
-  {
-   "rule": "DES-001",
-   "file": "gbt_allinone/mirror_space.py",
-   "line": 220,
-   "snippet": "shutil.rmtree(vdir)",
-   "why": "变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
-  },
-  {
-   "rule": "DES-001",
-   "file": "gbt_allinone/mirror_space.py",
-   "line": 225,
-   "snippet": "shutil.rmtree(_REALITY)",
-   "why": "变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
-  },
-  {
-   "rule": "DES-001",
-   "file": "gbt_allinone/mirror_space.py",
-   "line": 313,
-   "snippet": "shutil.rmtree(_REALITY)",
-   "why": "变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
-  },
-  {
-   "rule": "DES-001",
-   "file": "tools/genoffice_pack.py",
-   "line": 76,
-   "snippet": "shutil.rmtree(OUT)",
-   "why": "变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
-  },
-  {
-   "rule": "DES-001",
-   "file": "tools/selfgrowth.py",
-   "line": 185,
-   "snippet": "shutil.rmtree(target)",
-   "why": "变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
-  },
-  {
-   "rule": "DES-001",
-   "file": "tools/skills_sync.py",
-   "line": 167,
-   "snippet": "shutil.rmtree(hub)",
-   "why": "变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
-  },
-  {
-   "rule": "DES-001",
-   "file": "tools/codex-scripts/cloud-mesh.py",
-   "line": 419,
-   "snippet": "shutil.rmtree(d)",
-   "why": "变量目标的删除（静态判不出指向哪；要人看一眼或查该变量的来历）"
-  }
- ],
+ "needs_human": [],
  "_口径": "命中先分诊；**分不清的进 needs_human，不硬报**；全量面天然含框架自家的清理路径，日常该用的是 diff_audit（改动面）或 rules= 定向。"
 }

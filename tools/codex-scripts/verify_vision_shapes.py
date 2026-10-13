@@ -45,6 +45,7 @@ vb = load("gbt_allinone/tentacle/vision_bus.py", "vb_probe")
 
 class _BlindEye:
     """一只瞎眼：_screen_capture 永远失败（模拟无显示 / DXGI 取不到帧）。"""
+
     def _screen_capture(self, region=None, **kw):
         return {"ok": False, "error": "DXGI 取不到帧（模拟无显示）"}
 
@@ -65,6 +66,7 @@ chk("diff_with_previous 同样结构化（原来会 KeyError）",
 
 class _ShapeBrokenEye:
     """取帧"成功"但没有 image_base64 —— 形状异常也要结构化，不许 KeyError。"""
+
     def _screen_capture(self, region=None, **kw):
         return {"ok": True, "size": [100, 100]}
 
@@ -102,6 +104,7 @@ chk("正常取帧 → ok=True 且带 fingerprint",
 
 class _CorruptEye:
     """取帧"成功"但帧是坏的 —— 解码会抛 OSError，必须被拦成结构化拒绝。"""
+
     def _screen_capture(self, region=None, **kw):
         return {"ok": True, "size": [8, 8], "image_kb": 0.1, "image_base64": _BROKEN_B64}
 

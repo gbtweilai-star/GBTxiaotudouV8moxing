@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "generated": "2026-09-28T08:29:11",
+  "generated": "2026-10-14T00:08:12",
   "source": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\skills",
   "home_hub": "C:\\Users\\ADMIN\\.agents\\skills",
   "ws_hub": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\.agents\\skills",
-  "count": 88,
-  "in_sync": 88,
+  "count": 91,
+  "in_sync": 91,
   "skills": {
     "autoclaw-mcp-tools": {
       "hub": "home",
@@ -13,6 +13,14 @@
       "src_hash": "bf021b994e23bd23",
       "hub_hash": "bf021b994e23bd23",
       "files": 1,
+      "in_sync": true
+    },
+    "bug-bounty-usdt-evm": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "643152494440d51e",
+      "hub_hash": "643152494440d51e",
+      "files": 6,
       "in_sync": true
     },
     "digihuman-pipeline": {
@@ -26,24 +34,24 @@
     "gbt-aesthetic": {
       "hub": "home",
       "installed": true,
-      "src_hash": "e9b66f4abe26fe66",
-      "hub_hash": "e9b66f4abe26fe66",
+      "src_hash": "571786be627f21e1",
+      "hub_hash": "571786be627f21e1",
       "files": 5,
       "in_sync": true
     },
     "gbt-ai-101": {
       "hub": "home",
       "installed": true,
-      "src_hash": "c7accaa5df181a30",
-      "hub_hash": "c7accaa5df181a30",
+      "src_hash": "41561772b5ef04ca",
+      "hub_hash": "41561772b5ef04ca",
       "files": 1,
       "in_sync": true
     },
     "gbt-ai-anything": {
       "hub": "home",
       "installed": true,
-      "src_hash": "1363fca171e051d6",
-      "hub_hash": "1363fca171e051d6",
+      "src_hash": "00105b1760eb9083",
+      "hub_hash": "00105b1760eb9083",
       "files": 1,
       "in_sync": true
     },
@@ -66,8 +74,8 @@
     "gbt-arkcli": {
       "hub": "home",
       "installed": true,
-      "src_hash": "37978e1a340f3839",
-      "hub_hash": "37978e1a340f3839",
+      "src_hash": "8760b75ea23ab660",
+      "hub_hash": "8760b75ea23ab660",
       "files": 1,
       "in_sync": true
     },
@@ -90,16 +98,16 @@
     "gbt-automation": {
       "hub": "home",
       "installed": true,
-      "src_hash": "e1e0bd061ce2199a",
-      "hub_hash": "e1e0bd061ce2199a",
+      "src_hash": "11de7a795ae1f261",
+      "hub_hash": "11de7a795ae1f261",
       "files": 1,
       "in_sync": true
     },
     "gbt-brain": {
       "hub": "home",
       "installed": true,
-      "src_hash": "c638d86312bbda47",
-      "hub_hash": "c638d86312bbda47",
+      "src_hash": "99bb0dbe422fe01e",
+      "hub_hash": "99bb0dbe422fe01e",
       "files": 1,
       "in_sync": true
     },
@@ -114,8 +122,8 @@
     "gbt-chengfeng": {
       "hub": "home",
       "installed": true,
-      "src_hash": "95f1223faf802607",
-      "hub_hash": "95f1223faf802607",
+      "src_hash": "a68a7939f04118f0",
+      "hub_hash": "a68a7939f04118f0",
       "files": 1,
       "in_sync": true
     },
@@ -130,64 +138,72 @@
     "gbt-code-taste": {
       "hub": "home",
       "installed": true,
-      "src_hash": "57cd3621d3b587a3",
-      "hub_hash": "57cd3621d3b587a3",
+      "src_hash": "27a5260fa7db57ec",
+      "hub_hash": "27a5260fa7db57ec",
       "files": 2,
       "in_sync": true
     },
     "gbt-collab": {
       "hub": "home",
       "installed": true,
-      "src_hash": "5192b7c72b69dbd7",
-      "hub_hash": "5192b7c72b69dbd7",
+      "src_hash": "5976f7ba1a1c2040",
+      "hub_hash": "5976f7ba1a1c2040",
+      "files": 1,
+      "in_sync": true
+    },
+    "gbt-command": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "4b4dbaf388c9498c",
+      "hub_hash": "4b4dbaf388c9498c",
       "files": 1,
       "in_sync": true
     },
     "gbt-comms": {
       "hub": "home",
       "installed": true,
-      "src_hash": "e92f80e9e3b6a5e7",
-      "hub_hash": "e92f80e9e3b6a5e7",
+      "src_hash": "dae23bddda057d61",
+      "hub_hash": "dae23bddda057d61",
       "files": 1,
       "in_sync": true
     },
     "gbt-console": {
       "hub": "home",
       "installed": true,
-      "src_hash": "e788a1e7fd78776f",
-      "hub_hash": "e788a1e7fd78776f",
+      "src_hash": "3b2c2096b54611a7",
+      "hub_hash": "3b2c2096b54611a7",
       "files": 1,
       "in_sync": true
     },
     "gbt-control-loop": {
       "hub": "home",
       "installed": true,
-      "src_hash": "da7b3342169dc767",
-      "hub_hash": "da7b3342169dc767",
+      "src_hash": "e62c2f3454d9a329",
+      "hub_hash": "e62c2f3454d9a329",
       "files": 1,
       "in_sync": true
     },
     "gbt-creation": {
       "hub": "home",
       "installed": true,
-      "src_hash": "737e1223a7da394b",
-      "hub_hash": "737e1223a7da394b",
+      "src_hash": "8525f5f22b636ce1",
+      "hub_hash": "8525f5f22b636ce1",
       "files": 1,
       "in_sync": true
     },
     "gbt-dangerous": {
       "hub": "home",
       "installed": true,
-      "src_hash": "c252081a2ace24c3",
-      "hub_hash": "c252081a2ace24c3",
+      "src_hash": "8aad407a6ea80171",
+      "hub_hash": "8aad407a6ea80171",
       "files": 1,
       "in_sync": true
     },
     "gbt-data": {
       "hub": "home",
       "installed": true,
-      "src_hash": "b450c834dd7ebc52",
-      "hub_hash": "b450c834dd7ebc52",
+      "src_hash": "848c9131693106de",
+      "hub_hash": "848c9131693106de",
       "files": 1,
       "in_sync": true
     },
@@ -210,24 +226,24 @@
     "gbt-desktop": {
       "hub": "home",
       "installed": true,
-      "src_hash": "eaaf8f719202bafd",
-      "hub_hash": "eaaf8f719202bafd",
+      "src_hash": "01a19ea8985289fd",
+      "hub_hash": "01a19ea8985289fd",
       "files": 1,
       "in_sync": true
     },
     "gbt-device": {
       "hub": "home",
       "installed": true,
-      "src_hash": "4e1c29944b2ca305",
-      "hub_hash": "4e1c29944b2ca305",
+      "src_hash": "9de3e6b7be809ed3",
+      "hub_hash": "9de3e6b7be809ed3",
       "files": 1,
       "in_sync": true
     },
     "gbt-devour": {
       "hub": "home",
       "installed": true,
-      "src_hash": "e7d3dac0b9dec54f",
-      "hub_hash": "e7d3dac0b9dec54f",
+      "src_hash": "422579a28803f46c",
+      "hub_hash": "422579a28803f46c",
       "files": 1,
       "in_sync": true
     },
@@ -242,8 +258,8 @@
     "gbt-dl-101": {
       "hub": "home",
       "installed": true,
-      "src_hash": "a8410d5eeef1b4b0",
-      "hub_hash": "a8410d5eeef1b4b0",
+      "src_hash": "7b26e52f9761cf29",
+      "hub_hash": "7b26e52f9761cf29",
       "files": 1,
       "in_sync": true
     },
@@ -258,8 +274,8 @@
     "gbt-engine": {
       "hub": "home",
       "installed": true,
-      "src_hash": "30bc768d0f307f02",
-      "hub_hash": "30bc768d0f307f02",
+      "src_hash": "eae9b862089b0fff",
+      "hub_hash": "eae9b862089b0fff",
       "files": 1,
       "in_sync": true
     },
@@ -282,8 +298,8 @@
     "gbt-finance": {
       "hub": "home",
       "installed": true,
-      "src_hash": "a09ee4e5287825f6",
-      "hub_hash": "a09ee4e5287825f6",
+      "src_hash": "b83a2220dd8059eb",
+      "hub_hash": "b83a2220dd8059eb",
       "files": 1,
       "in_sync": true
     },
@@ -338,56 +354,56 @@
     "gbt-infra": {
       "hub": "home",
       "installed": true,
-      "src_hash": "7b2454473d06fd20",
-      "hub_hash": "7b2454473d06fd20",
+      "src_hash": "1418bec919507cb9",
+      "hub_hash": "1418bec919507cb9",
       "files": 1,
       "in_sync": true
     },
     "gbt-integration": {
       "hub": "home",
       "installed": true,
-      "src_hash": "079fad0e343cb4ab",
-      "hub_hash": "079fad0e343cb4ab",
+      "src_hash": "787d7b0726012518",
+      "hub_hash": "787d7b0726012518",
       "files": 1,
       "in_sync": true
     },
     "gbt-lark": {
       "hub": "home",
       "installed": true,
-      "src_hash": "9c1e77fa7d3a66fa",
-      "hub_hash": "9c1e77fa7d3a66fa",
+      "src_hash": "369be66375fe94d7",
+      "hub_hash": "369be66375fe94d7",
       "files": 1,
       "in_sync": true
     },
     "gbt-life": {
       "hub": "home",
       "installed": true,
-      "src_hash": "56f9d022d03db160",
-      "hub_hash": "56f9d022d03db160",
+      "src_hash": "0e4e1de2b1b18864",
+      "hub_hash": "0e4e1de2b1b18864",
       "files": 1,
       "in_sync": true
     },
     "gbt-llm": {
       "hub": "home",
       "installed": true,
-      "src_hash": "645b789c677b0c6f",
-      "hub_hash": "645b789c677b0c6f",
+      "src_hash": "52c1c0b588c89272",
+      "hub_hash": "52c1c0b588c89272",
       "files": 1,
       "in_sync": true
     },
     "gbt-longrun": {
       "hub": "home",
       "installed": true,
-      "src_hash": "c84f47c4fe797ca6",
-      "hub_hash": "c84f47c4fe797ca6",
+      "src_hash": "f64f200ed1a3f6d7",
+      "hub_hash": "f64f200ed1a3f6d7",
       "files": 1,
       "in_sync": true
     },
     "gbt-mind": {
       "hub": "home",
       "installed": true,
-      "src_hash": "ce34032e0269d7c4",
-      "hub_hash": "ce34032e0269d7c4",
+      "src_hash": "c54ce7f32b5209ab",
+      "hub_hash": "c54ce7f32b5209ab",
       "files": 1,
       "in_sync": true
     },
@@ -402,16 +418,16 @@
     "gbt-omni": {
       "hub": "home",
       "installed": true,
-      "src_hash": "a100659d175b480f",
-      "hub_hash": "a100659d175b480f",
+      "src_hash": "a191df383f0da1c9",
+      "hub_hash": "a191df383f0da1c9",
       "files": 2,
       "in_sync": true
     },
     "gbt-pipeline": {
       "hub": "home",
       "installed": true,
-      "src_hash": "0fb68dc0f1b2cea8",
-      "hub_hash": "0fb68dc0f1b2cea8",
+      "src_hash": "b6fa1c3eeb35c4a4",
+      "hub_hash": "b6fa1c3eeb35c4a4",
       "files": 1,
       "in_sync": true
     },
@@ -426,24 +442,24 @@
     "gbt-pptx": {
       "hub": "home",
       "installed": true,
-      "src_hash": "09d5f90fa0a035d8",
-      "hub_hash": "09d5f90fa0a035d8",
+      "src_hash": "54ddad7267adff30",
+      "hub_hash": "54ddad7267adff30",
       "files": 1,
       "in_sync": true
     },
     "gbt-producer": {
       "hub": "home",
       "installed": true,
-      "src_hash": "143a6c2097ef4e41",
-      "hub_hash": "143a6c2097ef4e41",
+      "src_hash": "b774f83b0a8921ca",
+      "hub_hash": "b774f83b0a8921ca",
       "files": 1,
       "in_sync": true
     },
     "gbt-project": {
       "hub": "home",
       "installed": true,
-      "src_hash": "e4a85865412e13cf",
-      "hub_hash": "e4a85865412e13cf",
+      "src_hash": "815e27d7be77bd6c",
+      "hub_hash": "815e27d7be77bd6c",
       "files": 1,
       "in_sync": true
     },
@@ -458,16 +474,16 @@
     "gbt-quickscan": {
       "hub": "home",
       "installed": true,
-      "src_hash": "da498bd4e26e19d4",
-      "hub_hash": "da498bd4e26e19d4",
+      "src_hash": "ff1646de8254255f",
+      "hub_hash": "ff1646de8254255f",
       "files": 1,
       "in_sync": true
     },
     "gbt-recon": {
       "hub": "home",
       "installed": true,
-      "src_hash": "cedc798ad632c010",
-      "hub_hash": "cedc798ad632c010",
+      "src_hash": "cf45e3d01ca81737",
+      "hub_hash": "cf45e3d01ca81737",
       "files": 1,
       "in_sync": true
     },
@@ -498,24 +514,32 @@
     "gbt-selfgrowth": {
       "hub": "home",
       "installed": true,
-      "src_hash": "f17bf00109b5913a",
-      "hub_hash": "f17bf00109b5913a",
+      "src_hash": "e04072d5d0e39014",
+      "hub_hash": "e04072d5d0e39014",
       "files": 1,
+      "in_sync": true
+    },
+    "gbt-showreel": {
+      "hub": "home",
+      "installed": true,
+      "src_hash": "8c934fe259435264",
+      "hub_hash": "8c934fe259435264",
+      "files": 4,
       "in_sync": true
     },
     "gbt-social": {
       "hub": "home",
       "installed": true,
-      "src_hash": "1f8bea952b0fbeb9",
-      "hub_hash": "1f8bea952b0fbeb9",
+      "src_hash": "421c95df384bf9be",
+      "hub_hash": "421c95df384bf9be",
       "files": 1,
       "in_sync": true
     },
     "gbt-system": {
       "hub": "home",
       "installed": true,
-      "src_hash": "175871219455abaa",
-      "hub_hash": "175871219455abaa",
+      "src_hash": "a86bcf172d11b857",
+      "hub_hash": "a86bcf172d11b857",
       "files": 1,
       "in_sync": true
     },
@@ -546,16 +570,16 @@
     "gbt-tools": {
       "hub": "home",
       "installed": true,
-      "src_hash": "2e64f9f4e629547f",
-      "hub_hash": "2e64f9f4e629547f",
+      "src_hash": "842c357e1198b6d5",
+      "hub_hash": "842c357e1198b6d5",
       "files": 1,
       "in_sync": true
     },
     "gbt-vendor-intake": {
       "hub": "home",
       "installed": true,
-      "src_hash": "1416db2a872f6da4",
-      "hub_hash": "1416db2a872f6da4",
+      "src_hash": "6e70e3922fb84355",
+      "hub_hash": "6e70e3922fb84355",
       "files": 1,
       "in_sync": true
     },
@@ -570,16 +594,16 @@
     "gbt-video": {
       "hub": "home",
       "installed": true,
-      "src_hash": "7821e68b5cbaa1c7",
-      "hub_hash": "7821e68b5cbaa1c7",
+      "src_hash": "32447ab3bf805ac2",
+      "hub_hash": "32447ab3bf805ac2",
       "files": 1,
       "in_sync": true
     },
     "gbt-video-tools": {
       "hub": "home",
       "installed": true,
-      "src_hash": "c49f875e2ca4f4a4",
-      "hub_hash": "c49f875e2ca4f4a4",
+      "src_hash": "d0fcbfb753838201",
+      "hub_hash": "d0fcbfb753838201",
       "files": 1,
       "in_sync": true
     },
@@ -594,8 +618,8 @@
     "gbt-voice": {
       "hub": "home",
       "installed": true,
-      "src_hash": "9c4d6a19aa22b547",
-      "hub_hash": "9c4d6a19aa22b547",
+      "src_hash": "6e3b03eedc586406",
+      "hub_hash": "6e3b03eedc586406",
       "files": 1,
       "in_sync": true
     },
@@ -610,8 +634,8 @@
     "gbt-youtube": {
       "hub": "home",
       "installed": true,
-      "src_hash": "0b36c0ea9028d22f",
-      "hub_hash": "0b36c0ea9028d22f",
+      "src_hash": "00d35d8e8cedf810",
+      "hub_hash": "00d35d8e8cedf810",
       "files": 1,
       "in_sync": true
     },

@@ -1160,30 +1160,57 @@ def _next_version(dirs: dict[str, Path]) -> int:
 
 
 def release(room_id: str, purpose: str = "",
-            plan: dict | None = None) -> dict:
-    """房间内一次性晋升：全绿后写房间现实区，保留时间线和护照。"""
+            plan: dict | None = None,
+            owner_override: bool = False, override_reason: str = "") -> dict:
+    """房间内一次性晋升：全绿后写房间现实区，保留时间线和护照。
+
+    🔴 2026-10-13（主人令：「**技术层面不能给她有限制只保留人工授权护栏即可**」·
+       「**直接改成终端YES才能使用就好了有时候我需要用到的啊**」）：
+      「排练未全绿」/「晋升门未通过」两关**都不是死路**了。默认照旧卡住；
+      主人在终端发**专用一次性钥匙** `deploy_force`（提示符 YES）+ 调用方显式
+      `owner_override=true` ⇒ 放行并**大声落审计**。
+      钥匙由**门外那道门**认 ⇒ 旗标不带授权，模型无法自我解锁。
+    """
     room_id = _canonical_room_id(room_id)
     root, meta = _room_meta(room_id)
     if plan is not None:
         define_plan(room_id, plan)
     rehearsal = rehearse(room_id)
     if not rehearsal.get("ok"):
-        return {
-            "ok": False,
-            "blocked": True,
-            "room_id": room_id,
-            "reason": "房间排练未全绿，禁止写入房间现实区",
-            "rehearsal": rehearsal,
-        }
+        if not owner_override:
+            _audit("room_release_blocked",
+                   {"room_id": room_id, "blockers": rehearsal.get("blockers")})
+            return {
+                "ok": False,
+                "blocked": True,
+                "room_id": room_id,
+                "reason": "房间排练未全绿，禁止写入房间现实区",
+                "rehearsal": rehearsal,
+                "如何放行": ("这不是技术层死限：主人在终端发**专用一次性钥匙** `deploy_force`"
+                          "（python -m gbt_allinone auth grant --scope deploy_force --ttl 600，"
+                          "提示符敲 YES），再带 owner_override=true 重调即可放行；"
+                          "放行会写审计 room_release_overridden。"),
+            }
+        _audit("room_release_overridden",
+               {"room_id": room_id, "blocked_by": "rehearsal",
+                "blockers": rehearsal.get("blockers"),
+                "reason": str(override_reason or purpose or "(未写理由)")[:200]})
     gate_result = gate(room_id)
     if not gate_result.get("ok"):
-        return {
-            "ok": False,
-            "blocked": True,
-            "room_id": room_id,
-            "reason": "房间晋升门未通过",
-            "gate": gate_result,
-        }
+        if not owner_override:
+            return {
+                "ok": False,
+                "blocked": True,
+                "room_id": room_id,
+                "reason": "房间晋升门未通过",
+                "gate": gate_result,
+                "如何放行": ("同上：主人终端发**专用一次性钥匙** `deploy_force`（YES），"
+                          "再带 owner_override=true 重调。"),
+            }
+        _audit("room_release_overridden",
+               {"room_id": room_id, "blocked_by": "gate",
+                "blockers": gate_result.get("blockers"),
+                "reason": str(override_reason or purpose or "(未写理由)")[:200]})
     dirs = _ensure_dirs(root)
     with FileLock(_room_lock(room_id)):
         from . import mirror_space as MS

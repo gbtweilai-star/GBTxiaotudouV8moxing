@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 sys.path.insert(0, str(BASE))
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 from gbt_allinone import api  # noqa: E402
@@ -69,7 +69,7 @@ chk("默认口径是生产层", d.get("scope") == "production", "scope=%s" % d.g
 chk("返回条数 = 默认 20", len(vs) == 20, "%d 条" % len(vs))
 chk("已按严重度排序（首条即最重）", bool(vs) and vs[0]["severity"] in ("critical", "high", "medium"),
     "首条=%s 序列=%s" % (vs[0]["severity"] if vs else "-",
-                        ",".join(v["severity"] for v in vs[:6])))
+                     ",".join(v["severity"] for v in vs[:6])))
 chk("如实报了截断", d.get("truncated") is True and d.get("shown") == 20,
     "total=%s shown=%s" % (d.get("total"), d.get("shown")))
 chk("截断说明非空", bool(d.get("limit_note")), str(d.get("limit_note"))[:70])
@@ -188,7 +188,6 @@ chk("带 BOM 的文件去掉 BOM 后能解析（修读方不删 BOM）", _parsed
     "%d/%d" % (_parsed, len(_BOM_FILES)))
 
 # 5b. 家根影子目录已归位
-import subprocess as _sp  # noqa: E402
 from gbt_allinone.tools.shadow_check import shadow_report  # noqa: E402
 _sr = shadow_report()
 chk("家根无影子（shadow_check GREEN）", _sr.get("verdict") == "GREEN",

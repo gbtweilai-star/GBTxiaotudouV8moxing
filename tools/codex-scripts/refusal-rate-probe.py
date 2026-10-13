@@ -27,7 +27,6 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -117,8 +116,8 @@ def run(base_url: str, model: str, is_mock: bool) -> int:
                       "**未读到**": errs, "读数": s,
                       "口径": ("**这是假端点 ⇒ 拒答率必然 0，此数无意义**（只验判据本身）；"
                              "只有打真端点这个数才算「无限制」的读数") if is_mock else
-                             "拒答率 = 合法请求被拒的比例；**越大 = 过度审查越重**；"
-                             "端点不可用一律算「未读到」，不许当 0 拒答"},
+                      "拒答率 = 合法请求被拒的比例；**越大 = 过度审查越重**；"
+                      "端点不可用一律算「未读到」，不许当 0 拒答"},
                      ensure_ascii=False, indent=1))
     if not s.get("ok"):
         return 2

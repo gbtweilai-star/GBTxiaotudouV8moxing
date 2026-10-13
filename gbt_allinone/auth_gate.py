@@ -50,6 +50,7 @@ SCOPES = {
     "filesystem_write": "写入、移动、删除或自动整理文件",
     "remote_device": "启动/停止远程设备中继或外部接管通道",
     "deploy_publish": "部署、晋升、回滚或写入生产交付区",
+    "deploy_force": "放行被门卡住的动作（未全绿晋升 / 未声明落点 / 公网中继）；专用一次性钥匙，每放一次要主人发一次",
     "network_private": "访问本机、内网、保留地址或非标准端口",
     "browser_control": "操控系统浏览器或自动化浏览器执行点击/输入",
     "desktop_control": "调用桌面触手的输入、鼠标、键盘与窗口控制能力",
@@ -75,6 +76,7 @@ ONE_SHOT_SCOPES = {
     # 连开 10 分钟，比它顶掉的那几项各自时段化加起来还宽 —— 必须一次性。
     "owner_control",
     "deploy_publish",   # 写生产 / 晋升 / 回滚（不可逆）
+    "deploy_force",     # 放行被门卡住的动作（未全绿晋升 / 未声明落点 / 公网中继）：每放一次要主人发一次
     "remote_device",    # 远控中继 / 外部接管通道
     "data_export",      # 数据出框架 / 出网（发出去就收不回）
 }

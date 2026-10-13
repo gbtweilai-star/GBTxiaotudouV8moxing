@@ -23,7 +23,6 @@ import json
 import pathlib
 import subprocess
 import sys
-import time
 
 for _s in (sys.stdout, sys.stderr):
     try:
@@ -76,8 +75,8 @@ def cmd_scan(a) -> int:
         "合计 MB": round(total / 2 ** 20, 1),
         "本地可用 GB": round(_free_gb(), 2),
         "清单": [{"M": round(p.stat().st_size / 2 ** 20, 1),
-                  "p": str(p.relative_to(ROOT)) if str(p).startswith(str(ROOT)) else str(p)}
-                 for p in cand],
+                "p": str(p.relative_to(ROOT)) if str(p).startswith(str(ROOT)) else str(p)}
+               for p in cand],
         "口径": "本命令**只读**，不搬不删",
     }, ensure_ascii=False, indent=1))
     return 0
@@ -114,7 +113,7 @@ def cmd_spill(a) -> int:
         "apply": bool(a.apply), "件数": len(rows),
         "腾出 MB": round(freed / 2 ** 20, 1),
         "本地可用 GB": {"前": round(before, 2), "后": round(after, 2),
-                        "差": round(after - before, 2)},
+                    "差": round(after - before, 2)},
         "明细": rows,
         "账": "state/cloud-vault.jsonl（cloud-vault 落；写不进就不删）",
     }, ensure_ascii=False, indent=1))

@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "kind": "film",
+  "label": "AI电影",
+  "product": {
+    "file": "projects/film/06-final/20261009-film-堂屋-06export.mp4",
+    "sha256": "e027f1ebf4c5093f97db7674eeb5f277fbe744afc9ea5aa429e9d0ff32d31d56",
+    "bytes": 13544233
+  },
+  "license": {
+    "file": "projects/film/06-final/20261009-film-堂屋-06export.mp4",
+    "sha256": "e027f1ebf4c5093f97db7674eeb5f277fbe744afc9ea5aa429e9d0ff32d31d56",
+    "source": "本仓 ffmpeg 自产：三方向工作流自检（film 步 export）",
+    "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）"
+  },
+  "metadata": {
+    "title": "堂屋",
+    "desc": "三方向工作流自检件（彩排件；正式发布前请去掉 -rehearsal）",
+    "tags": [
+      "selftest",
+      "film"
+    ],
+    "cover": null,
+    "note": "标题/简介/标签先落模板；平台侧字段各平台不同，提交时再按平台整形"
+  },
+  "targets": [
+    {
+      "name": "爱奇艺（号/自制）",
+      "class": "长视频平台",
+      "earn": "分账（有效播放）+ 自制采购",
+      "needs": "版权方/机构资质 + 授权",
+      "verified": false
+    },
+    {
+      "name": "腾讯视频",
+      "class": "长视频平台",
+      "earn": "分账 + 采购",
+      "needs": "版权方资质 + 授权",
+      "verified": false
+    },
+    {
+      "name": "优酷",
+      "class": "长视频平台",
+      "earn": "分账 + 采购",
+      "needs": "版权方资质 + 授权",
+      "verified": false
+    },
+    {
+      "name": "B 站（影视区）",
+      "class": "长视频平台",
+      "earn": "激励 / 联合出品",
+      "needs": "实名 + 授权",
+      "verified": false
+    },
+    {
+      "name": "YouTube（长片）",
+      "class": "海外",
+      "earn": "广告分成（需入 YPP）",
+      "needs": "频道门槛 + 授权",
+      "verified": false
+    },
+    {
+      "name": "海外发行/影展",
+      "class": "发行渠道",
+      "earn": "版权销售 / 采购 / 奖金",
+      "needs": "成片 + 版权链 + 投递",
+      "verified": false
+    }
+  ],
+  "preflight": {
+    "license_registered": true,
+    "naming_compliant": true,
+    "rehearsal": false,
+    "note": "**彩排件不要发布** —— 这一栏是给主人看的，不替你判；正式件请去掉 -rehearsal。"
+  },
+  "gate": {
+    "required_scope": "deploy_publish",
+    "how": "python -m gbt_allinone auth grant --scope deploy_publish --ttl 600",
+    "why": "发布不可逆 + 零凭据 ⇒ 必须主人一次性授权"
+  },
+  "at": "2026-10-09T11:45:00"
+}

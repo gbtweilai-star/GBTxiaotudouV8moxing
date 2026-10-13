@@ -22,7 +22,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import subprocess
 import sys
 import urllib.error
@@ -121,10 +120,10 @@ def check(as_json: bool) -> int:
         return 2
     out = {"现读": c, "云侧": cloud_side(),
            "口径": "**插件是接线，不是算力**：`dsh-llm-qwen-local` 只是适配器（要一个已在跑的 "
-                   "vLLM/OpenAI 兼容端点）⇒ 27B 的算力必须另有来源；`未读到` ≠ `不存在`（只有 404 才算）",
+           "vLLM/OpenAI 兼容端点）⇒ 27B 的算力必须另有来源；`未读到` ≠ `不存在`（只有 404 才算）",
            "算力侧现读": {"本机 GPU": "torch 2.14.0+cpu / cuda=False / directml=False",
-                        "本机显存": "3.98 GB", "最小量化档": "5.77 GiB（Qwen3.8-27B-UD-IQ1_S.gguf）",
-                        "本机服务端口": "11434/8000/1234 全没监听"}}
+                     "本机显存": "3.98 GB", "最小量化档": "5.77 GiB（Qwen3.8-27B-UD-IQ1_S.gguf）",
+                     "本机服务端口": "11434/8000/1234 全没监听"}}
     if as_json:
         print(json.dumps(out, ensure_ascii=False, indent=1))
     else:

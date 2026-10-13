@@ -64,7 +64,7 @@ def fingerprint(p):
 
 def overlap(a, b):
     """前 4000 字符的重合率（按 40 字一格的块比对）—— 便宜且够用的相似度。"""
-    n, blk = 40, 0
+    n, _ = 40, 0
     if not a or not b:
         return 0.0
     step = max(1, len(a) // n)
@@ -115,7 +115,8 @@ def main(argv):
         print("  ✅ 没找到「同标题 + 近乎同尺寸/同内容」的页对。")
         return 0
 
-    rel = lambda p: str(p.relative_to(ROOT))
+    def rel(p):
+        return str(p.relative_to(ROOT))
     pairs.sort(key=lambda x: -(x[2] + x[4]))
     print("  找到 %d 对：" % len(pairs))
     for title, p1, n1, p2, n2, exact, same_size, ov in pairs:

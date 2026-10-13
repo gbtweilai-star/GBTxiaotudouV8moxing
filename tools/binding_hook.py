@@ -166,6 +166,18 @@ def after_add(kind: str = "", tool: str = "", fix: bool = True) -> dict:
             ov.bind()
         except Exception as exc:                               # noqa: BLE001
             fixed.append(f"⑥记忆页：失败 {type(exc).__name__}: {str(exc)[:80]}")
+    # 补 ⑤ 绑定（2026-10-13 机械加固：没有工具区清单时，绑**本位自己的产物**）
+    # 病：原先只有 `tool` 给了才补 ⇒ 纯判据件永远 ⑤=false，靠人"记得"去 tentacle_bind.bind。
+    if fix and not tool and not before["⑤绑定"]:
+        # 2026-10-13 根因修：文档名是中文（蒸馏-X），按名字 glob 匹配不到 ⇒ 改成**按内容找**
+        _docs = [p for p in sorted((ROOT / "docs").glob("*.md"))
+                 if kind in p.name or kind in p.read_text(encoding="utf-8", errors="ignore")]
+        for _a in [ROOT / "gbt_allinone" / "tools" / (kind + ".py")] + _docs:
+            if _a.is_file():
+                subprocess.run([sys.executable, str(ROOT / "tools" / "tentacle_bind.py"), "bind",
+                                _a.relative_to(ROOT).as_posix(), kind],
+                               cwd=str(ROOT), capture_output=True, timeout=120)
+                fixed.append("⑤绑定：绑本位产物 " + _a.name)
     # 补 ⑤ 绑定（走工具区探针绑定清单）
     if fix and tool and not before["⑤绑定"]:
         try:

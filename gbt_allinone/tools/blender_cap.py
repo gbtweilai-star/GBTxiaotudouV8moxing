@@ -102,11 +102,16 @@ def run_op(op: str = "status", **params) -> dict:
     # 可控制面（主人令 2026-09-27「每一个可控制按键都要双向绑定」）：
     # 让 Blender 自己报出 76 命名空间 / 2409 算子 / 49 数据族，落 state/blender_surface.json；
     # 升级后重扫对比，**消失的键=断连**（报警，不静默）。执行口 bpy 过 filesystem_write 门。
-    if op in ("surface", "keys", "bpy", "data", "verify"):
+    # 🔴 2026-10-10 补 config（主人令同日再点一次这条：「所有控制按键**和各自配置**」）：
+    #    上一条主人令（2026-09-27）把**可控制键**绑全了（2409 算子 + 双向绑定 + 升级对比），
+    #    但**没暴露每个键的各自配置** —— bpy 口是盲传参数的（参数名写错也不拦）。
+    #    config = 每个算子的参数清单（名/类型/默认值/说明），现读自 Blender 自己的 RNA：
+    #    实测 **2409 算子 · 5842 条参数配置**（state/surfaces/blender-ops.json）。
+    if op in ("surface", "keys", "bpy", "data", "verify", "config"):
         import importlib.util as _iu
         _sp = _iu.spec_from_file_location("blender_surface", _ROOT_OF() / "gbt_allinone" / "tools" / "blender_surface.py")
         _bs = _iu.module_from_spec(_sp)
         _sp.loader.exec_module(_bs)
         return _bs.run_op(op, **params)
     return {"ok": False, "fail_closed": True,
-            "error": f"未知 op:{op}（可用：status / run / surface / keys / bpy / data / verify）"}
+            "error": f"未知 op:{op}（可用：status / run / surface / keys / bpy / data / verify / config）"}

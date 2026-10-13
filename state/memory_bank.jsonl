@@ -8,3 +8,4 @@
 {"at": "2026-09-28T06:02:35", "event": "alias", "name": "mem:y", "target": "mem:x"}
 {"at": "2026-09-28T06:03:08", "event": "alias", "name": "mem:x", "target": "mem:y"}
 {"at": "2026-09-28T06:03:08", "event": "alias", "name": "mem:y", "target": "mem:x"}
+{"at": "2026-10-08T10:05:38", "event": "stamp", "ref": "outputs/c15-final-review/artifact-20261008-1130.txt", "exists": true, "sha256": "d077521bca628749ee5c502d6e61607cae9e2ce97c8ef6494618686d02064993", "origin": "上游产物", "session": "c15-final-review-20261008-1130", "why": "C-15 终审：对产出物独立读盘留章（不看产出方自报）", "evidence": [], "evidence_missing": []}

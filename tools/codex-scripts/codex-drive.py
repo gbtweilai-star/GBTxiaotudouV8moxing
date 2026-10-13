@@ -144,7 +144,7 @@ def main():
            "任务": task[:2000], "提示字数": len(prompt)}
     r = run_codex(prompt, write=a.write, timeout=a.timeout)
     rec["第一次"] = {"exit": r.get("exit"), "耗时s": r.get("耗时s"),
-                     "命中冷却": is_cooldown((r.get("out") or "") + (r.get("err") or ""))}
+                  "命中冷却": is_cooldown((r.get("out") or "") + (r.get("err") or ""))}
     healed = None
     if rec["第一次"]["命中冷却"]:
         healed = repin()
@@ -162,7 +162,7 @@ def main():
     print(out.strip()[-4000:] if out.strip() else "(空答复)")
     print("=" * 74)
     print("驱动读数：%s · exit=%s · %ss%s" % (rec["成败"], r.get("exit"), r.get("耗时s"),
-                                        ("　（换过一次钉：%s）" % healed.get("改后")) if healed else ""))
+                                         ("　（换过一次钉：%s）" % healed.get("改后")) if healed else ""))
     print("留痕：%s" % p)
     return 0 if rec["成败"].startswith("✅") else 1
 

@@ -24,6 +24,11 @@ _DIVISIONS = {
     "gis", "marketing", "paid-media", "product", "project-management",
     "sales", "security", "spatial-computing", "specialized", "support", "testing",
     "company", "hr", "legal", "supply-chain",
+    # 🔴 2026-10-13 补（主人令「三大自动化每条线都要有职业撑着」）：
+    #    本仓之前**没有影视分部**，所以"影视职业"这个面一直是空的；新增 film 分部后
+    #    必须同时进这张表，否则文件在盘上、职业面却**看不见**（看着 272/19 不动、
+    #    "已看 281" —— 配了没接上，正是本仓最忌讳的假绿）。
+    "film",
 }
 
 

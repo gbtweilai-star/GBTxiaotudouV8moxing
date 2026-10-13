@@ -151,6 +151,8 @@ J3["Head"] = list(pick(centroid(at_height(FR["head"])),
 J3["HeadTop"] = [float(J3["Head"][0]), float(y_top), float(J3["Head"][2])]
 
 # ④ 四肢：测地线追踪（全部在**焊点图**上做）
+
+
 def nearest_weld(target):
     return int(np.argmin(((GP - target) ** 2).sum(axis=1)))
 
@@ -194,13 +196,14 @@ for sign, side in side_name.items():
     path = trace(prev_sh, hand_i)
     seg = path
     L = len(seg)
+
     def at(f):
         return seg[min(L - 1, max(0, int(round(f * (L - 1)))))]
     J3[f"{side}Shoulder"] = [float(x) for x in GP[seg[0]]]
     J3[f"{side}Arm"] = [float(x) for x in GP[at(0.45)]]
     J3[f"{side}ForeArm"] = [float(x) for x in GP[at(0.75)]]
     J3[f"{side}Hand"] = [float(x) for x in GP[at(0.97)]]
-    print(f"  [{side}] 手焊点 #{hand_i} y={GP[hand_i,1]:+.3f} |x|={abs(GP[hand_i,axis_arm]):.3f} · "
+    print(f"  [{side}] 手焊点 #{hand_i} y={GP[hand_i, 1]:+.3f} |x|={abs(GP[hand_i, axis_arm]):.3f} · "
           f"路径 {L} 点（肩→手）"
           f"（肩 y={J3[f'{side}Shoulder'][1]:+.3f} → 手 y={J3[f'{side}Hand'][1]:+.3f}）")
 
@@ -211,6 +214,7 @@ for sign, side in side_name.items():
     foot_i = int(np.argmax(dsel2))
     path2 = trace(prev_hips, foot_i)
     L2 = len(path2)
+
     def at2(f):
         return path2[min(L2 - 1, max(0, int(round(f * (L2 - 1)))))]
     J3[f"{side}UpLeg"] = [float(x) for x in GP[at2(0.28)]]
@@ -236,14 +240,17 @@ for side in ("Left", "Right"):
 print(f"关节 {len(J3)} 个（门限 ≥20 ⇒ {'过' if len(J3) >= 20 else '不过'}）")
 for k in PARENT:
     if k in J3:
-        print(f"  {k:16s} ← {str(PARENT[k]):14s}  {[round(v,3) for v in J3[k]]}")
+        print(f"  {k:16s} ← {str(PARENT[k]):14s}  {[round(v, 3) for v in J3[k]]}")
 OUT_JSON.write_text(json.dumps({"joints": J3, "parent": PARENT, "axes": AX, "height": H},
                                ensure_ascii=False, indent=1), encoding="utf-8")
 
 # ⑤ 验收图：网格剪影 + 骨架叠加
+
+
 def shot(a_axis, tag, W=560, Hh=900):
     im = Image.new("RGB", (W, Hh), (14, 18, 28))
     d = ImageDraw.Draw(im)
+
     def to_px(v, ax):
         x = (v[ax] - P[:, ax].min()) / max(1e-9, ext[ax]) * (W - 60) + 30
         yy = (y_top - v[1]) / max(1e-9, H) * (Hh - 60) + 30

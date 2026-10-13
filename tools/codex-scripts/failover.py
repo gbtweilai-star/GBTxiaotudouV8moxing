@@ -283,7 +283,7 @@ def cmd_selftest(a) -> int:
     print(json.dumps({"自检": {"条数": len(lines), "通过": len(lines) - bad, "不通过": bad},
                       "逐条": lines,
                       "口径": "内存读数用 GBT_FAKE_FREE_MB 注入（读数里会**明确标出是注入值**）；"
-                              "切换走本地替身云"},
+                      "切换走本地替身云"},
                      ensure_ascii=False, indent=1))
     return 0 if bad == 0 else 1
 

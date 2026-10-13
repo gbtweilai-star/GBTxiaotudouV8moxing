@@ -1,0 +1,38 @@
+{
+ "at": "2026-10-04T20:07:59",
+ "planned": 24,
+ "restored_modules": [
+  "gbt_allinone\\tools\\agent_control.py",
+  "gbt_allinone\\tools\\agent_council.py",
+  "gbt_allinone\\tools\\answer_shaper.py",
+  "gbt_allinone\\tools\\belief_forge.py",
+  "gbt_allinone\\tools\\case_mine.py",
+  "gbt_allinone\\cli_chat.py",
+  "gbt_allinone\\tools\\command_chain.py",
+  "gbt_allinone\\tools\\creation_camp.py",
+  "gbt_allinone\\tools\\db_probe.py",
+  "gbt_allinone\\tools\\energy_scheduler.py",
+  "gbt_allinone\\tools\\event_ledger.py",
+  "gbt_allinone\\tools\\flow_canvas.py",
+  "gbt_allinone\\tools\\handoff.py",
+  "gbt_allinone\\tools\\llm_redteam.py",
+  "gbt_allinone\\tools\\policy_delta.py",
+  "gbt_allinone\\tools\\slim_profile.py",
+  "gbt_allinone\\tools\\spend_guard.py",
+  "gbt_allinone\\thebrain_bridge.py",
+  "gbt_allinone\\tools\\train_recipe.py",
+  "gbt_allinone\\tools\\ui_render.py"
+ ],
+ "skipped_no_module": [
+  "cli_agent_hub"
+ ],
+ "failed": [],
+ "compile_errors": [
+  {
+   "file": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\gbt_allinone\\api.py",
+   "error": "Sorry: IndentationError: expected an indented block after 'if' statement on line 1528 (api.py, line 1530)"
+  }
+ ],
+ "smoke": [],
+ "note": "复原=三处接线（模块/注册表/api）；作用域块仅在基线有才插；备份 *.bak-restore-20261004-200749"
+}

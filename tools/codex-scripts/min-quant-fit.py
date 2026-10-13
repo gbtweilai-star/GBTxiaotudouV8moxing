@@ -27,7 +27,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 import urllib.error
 import urllib.request
@@ -162,7 +161,7 @@ def survey(as_json: bool) -> int:
         })
     out = {
         "上限口径": {"来源": LIMITS_DOC, "现读日期": LIMITS_READ_AT,
-                     "档位": [{"name": e["name"], "mib": e["bytes"] // MIB, "source": e["source"]} for e in ENVELOPES]},
+                 "档位": [{"name": e["name"], "mib": e["bytes"] // MIB, "source": e["source"]} for e in ENVELOPES]},
         "逐件": rows,
         "结论口径": "只看算术：**文件字节 vs 上限字节**。装不下就写超几倍，不许含糊。",
     }

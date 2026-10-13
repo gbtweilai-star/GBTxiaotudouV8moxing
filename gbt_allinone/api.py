@@ -167,7 +167,9 @@ def _run_benign(kind, payload, policy_decision=None):
         from .recon.guard import classify_target
         t = (payload or {}).get("target") or ""
         if not t:
-            raise ValueError("缺少 target：请提供要扫描的域名或 IP")
+            # 🔴 2026-10-09 主人令「严禁要求用户帮助」：把「请提供」改成**陈述缺什么**，
+            #    再附一个可直接照抄的示例 —— 伙伴自己把路铺好，不许把活推回去。
+            raise ValueError("缺少 target（要扫的域名或 IP）。例：{\"target\": \"example.com\"}")
         kind_t, _reason = classify_target(t)
         allow_private = kind_t == "private"
         rs = scan_target(t, allow_private=allow_private)
@@ -311,11 +313,26 @@ def _run_benign(kind, payload, policy_decision=None):
         prompt = p.get("prompt") or p.get("q") or ""
         if not prompt:
             raise ValueError("缺少 prompt：请给出要问黑客大脑的问题")
-        return AG.chat(prompt, system=p.get("system", ""),
-                       model=p.get("model"), max_tokens=int(p.get("max_tokens", 3000)),
-                       temperature=float(p.get("temperature", 0.7)),
-                       timeout=int(p.get("timeout", 180)),
-                       _coding_discipline=p.get("_coding_discipline"))
+        # 🔴 2026-10-08 修真断线（本线实测，两处独立复现）：
+        #    本分支原来**无条件**多传 `_coding_discipline=`，而 `abl_gateway.chat()`
+        #    从不接这个参数 ⇒ 经统一门调 sec_llm **必然**抛
+        #    `chat() got an unexpected keyword argument '_coding_discipline'`
+        #    ⇒ sec_llm 经框架入口 100% 不可用（直连 AG.chat 反而好用）。
+        #    修法遵守本线纪律「只加不改既有函数签名」：**不动 chat() 的签名**，
+        #    在此按 `inspect.signature` **过滤**掉对方不接的 kwarg；接了才传。
+        #    （`_coding_discipline` 是编码纪律注入标记，不是 sec_llm 的语义参数。）
+        _kw = {"system": p.get("system", ""), "model": p.get("model"),
+               "max_tokens": int(p.get("max_tokens", 3000)),
+               "temperature": float(p.get("temperature", 0.7)),
+               "timeout": int(p.get("timeout", 180))}
+        try:
+            import inspect as _inspect
+            if "_coding_discipline" in _inspect.signature(AG.chat).parameters:
+                _kw["_coding_discipline"] = p.get("_coding_discipline")
+        except Exception:                                       # noqa: BLE001
+            # 判不了签名就不传（宁可少传一个纪律标记，也不让整条 sec_llm 断线）
+            pass
+        return AG.chat(prompt, **_kw)
 
     # ── 外部 CLI 智能体：接通（2026-09-25 补齐）─────────────────────────────
     # 这 3 位长期**登记了却没有分派分支** ⇒ 真调落到本函数末尾那条兜底，
@@ -490,6 +507,12 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import obsidian_vault as _obs
         p = payload or {}
         return _obs.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "vlx_flow":
+        # 流式观察 + 两层记忆（接自 om-ai-lab/VLX-Flow · 七步法第四步接线）。
+        # 读面（status/memory/timeline/recall）免门；写面（digest/remember）由处理器层挂
+        # filesystem_write —— 见本文件处理器层的门规约。
+        from .tools import vlx_flow_cap as _vf
+        return _vf.run(payload or {})
     if kind == "cap_tags":
         from .tools import cap_tags as _cap
         p = payload or {}
@@ -506,6 +529,38 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import devour_fusion as _dev
         p = payload or {}
         return _dev.run_op(p.get("op", "list"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "rea_reverse":
+        from .tools import rea_reverse as _rea
+        p = payload or {}
+        return _rea.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "bi_distill":
+        from .tools import bi_distill as _bi
+        p = payload or {}
+        return _bi.run_op(p.get("op", "method"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "cad_distill":
+        from .tools import cad_distill as _cd
+        p = payload or {}
+        return _cd.run_op(p.get("op", "method"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "machine_distill":
+        from .tools import machine_distill as _mc
+        p = payload or {}
+        return _mc.run_op(p.get("op", "method"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "diagram_distill":
+        from .tools import diagram_distill as _dg
+        p = payload or {}
+        return _dg.run_op(p.get("op", "method"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "pentest_distill":
+        from .tools import pentest_distill as _pd
+        p = payload or {}
+        return _pd.run_op(p.get("op", "method"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "desktop_distill":
+        from .tools import desktop_distill as _dd
+        p = payload or {}
+        return _dd.run_op(p.get("op", "method"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "recon_distill":
+        from .tools import recon_distill as _rd
+        p = payload or {}
+        return _rd.run_op(p.get("op", "where"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "memory_bank":
         from .tools import memory_bank as _mem
         p = payload or {}
@@ -535,9 +590,26 @@ def _run_benign(kind, payload, policy_decision=None):
             return _rs.define_plan(p.get("room_id", ""), p.get("plan"))
         if op == "get_plan":
             return _rs.get_plan(p.get("room_id", ""))
+        if op == "frame":
+            return _rs.frame(p.get("room_id", ""), p.get("frame_id"))
         if op == "gate":
             return _rs.gate(p.get("room_id", ""))
-        return {"ok": True, "op": "status", "note": "room_space 可用 op：create/enter/define_plan/get_plan/frame/gate/namespace"}
+        # 🔴 2026-10-09 根因修复（登记 ≠ 接线，护照 fc-20261009T051306-0ztd）：
+        #   上一行原本直接把 `frame` / `namespace` 写进「可用 op」文案里，却**没有分支** ⇒
+        #   调用它们会掉进兜底、返回 `ok:true + op:status + 一段说明` —— 调用方会把
+        #   「没接线」读成「成功」。实测：`cap room_space {"op":"namespace"}` 返回 status note。
+        #   修法：把两个已在 `room_space` 模块里实现好的 op 真接上；未知 op 不再静默降级。
+        if op == "shape":
+            # policy.evaluate 早已把 shape 归入 filesystem_write ⇒ 这里补上真接线。
+            return _rs.shape(p.get("room_id", ""), p.get("path", ""),
+                             p.get("content", ""), p.get("note", ""))
+        if op == "namespace":
+            return _rs.namespace(p.get("room_id", ""))
+        _known = ["create", "enter", "define_plan", "get_plan", "frame", "gate", "namespace", "shape"]
+        if not p.get("op"):
+            return {"ok": True, "op": "status", "note": "room_space 可用 op：" + "/".join(_known)}
+        return {"ok": False, "op": op, "error": "未知 room_space op", "known": _known,
+                "note": "未知 op 不再静默降级成 status（登记 ≠ 接线）"}
     if kind == "collab_gateway":
         # F12：协作网关（会话/信箱/同伴）
         from . import collab_gateway as _cg
@@ -583,6 +655,56 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import comfyui_surface as _cs
         p = payload or {}
         return _cs.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "policy_gate":
+        # 权限/付款直答门：现读真门作用域表 -> 意图对照（真表过滤）-> 代码判定；不过模型。
+        from .llm import policy_gate as _pg
+        if (payload or {}).get('op') == 'answer':
+            return _pg.answer(str((payload or {}).get('prompt') or ''))
+        return {'ok': True, 'is_policy': _pg.classify(str((payload or {}).get('prompt') or ''))}
+    if kind == "page_scan":
+        # 按绑定逐页并发扫（页/落点/在册三判 + 三色）
+        from .tools import page_scan as _ps
+        return _ps.run(payload or {})
+    if kind == "warm_switch":
+        # 按需常驻：心跳走本机桥（触手），不裸打云端。
+        from .tools import warm_switch as _ws
+        return _ws.run(payload or {})
+    if kind == "pulse_direct":
+        # 脉冲直达：意图 -> 一步到能力位 + 那一条命令；hops 落账（省多绕可量）。
+        from .tools import pulse_direct as _pd
+        return _pd.run(payload or {})
+    if kind == "repo_publish":
+        # 远端发布面：status/plan 只读；push 过 deploy_publish 门（门在 run_task 里咬）。
+        from .tools import repo_publish as _rp
+        return _rp.run(payload or {})
+    if kind == "fact_gate":
+        # 机器事实直答门：现读 -> 代码判定 -> 原文引用；不过模型。
+        from .llm import fact_gate as _fg
+        if (payload or {}).get('op') == 'answer':
+            return _fg.answer(str((payload or {}).get('prompt') or ''))
+        return {'ok': True, 'is_fact': _fg.classify(str((payload or {}).get('prompt') or ''))}
+    if kind == "tentacle_comfy_bridge":
+        # 1530 · ComfyUI 桥：工作流=契约 · 闸先于落盘 · 溯源自证（不在位如实报）。
+        from .tools import tentacle_comfy_bridge as _cb
+        return _cb.run(payload or {})
+    if kind == "vision_grounding":
+        # 视觉/定位通道契约：L1 结构层优先，L2 像素仅兜底，L3 动完必回读。
+        from .tools import vision_grounding as _vg
+        return _vg.run(payload or {})
+    if kind == "skill_watch":
+        # 技能观察器：每次用技能留三笔（读数/面漂移/打磨点）。
+        from .tools import skill_watch as _sw
+        return _sw.run(payload or {})
+    if kind == "ring_context":
+        # 环形自动化上下文：一屏环 + 全量落库 + 秒查（治上下文顶爆）。
+        from .llm import ring_context as _rc
+        return _rc.run(payload or {})
+    if kind == "comfy_native":
+        # ComfyUI 能力的**原生版**（主人令 2026-10-11「按 ComfyUI 的节点连接契约，同样拥有契约和触手连接」）：
+        # 不依赖 8188 外挂 —— workflow.json 当契约 · 节点=能力位白名单 · 执行=拓扑序跑一遍。
+        # 铁律：闸是唯一真源（产物不过闸不许落盘）· 白名单 fail-closed。
+        from .tools import comfy_native as _cn
+        return _cn.run(payload or {})
     if kind == "one_shot":
         # 一句话 → 全链计划（只读；写盘要过门）
         from .tools import one_shot as _os
@@ -664,6 +786,19 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import proactive_report as _pr
         p = payload or {}
         return _pr.run(p.get("op", "model"), **{k: v for k, v in p.items() if k != "op"})
+    # 知识库两件（主人令 2026-10-13）：自维护百科+图谱+回滚 / 解析→入库→同步。
+    # 同 brain_supervisor 口径：整位零作用域（只动我们自己的库：pages/revisions/intake 账）。
+    if kind in ("wiki_graph", "doc_intake"):
+        from . import knowledge_lib as _kl
+        return _kl.run(kind, payload or {})
+
+    # 大脑执行层·监督环（主人令 2026-10-13）：守望 / 任务图 / 回流环 / 在岗看板。
+    # 四个位同一模块、同一道门；整位零作用域（只动我们自己的账：队列/图/回流账），
+    # 与 wf_* / lr_* 同口径 —— policy.evaluate 里也显式写了一行交代它。
+    if kind in ("llm_watch", "task_graph", "replan_loop", "duty_board"):
+        from . import brain_supervisor as _bs
+        return _bs.run(kind, payload or {})
+
     if kind == "observer_anchor":
         from .tools import observer_anchor as _oa
         p = payload or {}
@@ -701,6 +836,11 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import music_publishing as _mp
         p = payload or {}
         return _mp.run(p.get("op", "status"))      # 只读：不写盘、不出网
+    if kind == "dh_pose":
+        from .tools import dh_pose as _dp
+        p = payload or {}
+        return _dp.run(p.get("op", "status"),
+                       **{k: v for k, v in p.items() if k != "op"})
     if kind == "director_mood":
         from .tools import director_mood as _dm
         p = payload or {}
@@ -900,6 +1040,12 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import gate_visibility as _gv
         p = payload or {}
         return _gv.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "dh_brain":
+        # 数字人本体（只读能力位·2026-10-08 主人点名「元数据没接入」补齐）：
+        # **只读单一真源、零写面**（不改 rig/不渲染/不刷页/不记账）⇒ 读类直连，无需 policy 条目
+        from .tools import dh_brain as _dh
+        p = payload or {}
+        return _dh.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "h3_video_gen":
         # 只读骨架：**不装技能、不出网、不落盘、不发密钥**（只登记契约与判据）
         from .tools import h3_video_gen as _h3
@@ -1062,6 +1208,9 @@ def _run_benign(kind, payload, policy_decision=None):
             p.get("name") or "one-key",
             p.get("room") or "",
             bool(p.get("into_global_production", False)),
+            # 人工授权放行（主人终端发 deploy_publish · 提示符 YES 才算数）
+            owner_override=bool(p.get("owner_override", False)),
+            override_reason=p.get("override_reason", "") or "",
         )
     if kind == "deploy_queue":
         from . import qiankun
@@ -1132,6 +1281,8 @@ def _run_benign(kind, payload, policy_decision=None):
             p.get("name") or "default",
             p.get("purpose", ""),
             p.get("plan") if isinstance(p.get("plan"), dict) else None,
+            owner_override=bool(p.get("owner_override", False)),
+            override_reason=p.get("override_reason", "") or "",
         )
     if kind == "mirror_ascend":
         from . import mirror_space as MS
@@ -1151,7 +1302,9 @@ def _run_benign(kind, payload, policy_decision=None):
                 "name": p.get("name") or "default",
                 "cap": "mirror_ascend",
             }
-        return MS.ascend(p.get("purpose", ""))
+        return MS.ascend(p.get("purpose", ""),
+                         owner_override=bool(p.get("owner_override", False)),
+                         override_reason=p.get("override_reason", "") or "")
     if kind == "mirror_status":
         from . import deployment_rehearsal as DR
         from . import mirror_space as MS
@@ -1200,6 +1353,47 @@ def _run_benign(kind, payload, policy_decision=None):
     if kind == "devour_pulse":
         from .devour import devour_pulse as _pulse
         return _pulse()
+    if kind == "tentacle_equip":
+        # 触手自配装备与账号：职业（agency_tentacles 册）→ 需求 → 走 tool_bay / account_registry 两道门
+        from . import tentacle_equip as _te
+        p = payload or {}
+        return _te.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "tool_bay":
+        # 装备坞：白名单 + 探针 + 授权令牌（门在 auth_gate，本件不自判、不自发）
+        from . import tool_bay as _tb
+        p = payload or {}
+        return _tb.run(p.get("op", "state"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "remote_confinement":
+        # 执行者隔离：读类现读（会起探针 ⇒ 门挂 process_execute）；guard 只判决，不动手
+        from .tentacle import remote_confinement as _rc
+        p = payload or {}
+        return _rc.run(p.get("op", "verdict"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "delivery_gate":
+        # 交付闸：每个能力单独闭环才准交付（读账/现跑/硬闸）
+        from . import delivery_gate as _dg
+        p = payload or {}
+        return _dg.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "ux_doctrine":
+        # 交互铁律：不开口闸 / 敷衍闸 / 报警闭环闸 / 停点闸（纯函数，零外部动作）
+        from . import ux_doctrine as _ux
+        p = payload or {}
+        return _ux.run(p.get("op", "doctrine"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "welcome":
+        # 启动欢迎语（主人令 2026-10-10）：文字单一真源 + **预生成**音频缓存 + 启动一次给全。
+        # 音频必须预生成：本机 TTS 走 CPU，约 150 倍慢于实时（实测 2.36 秒要 327 秒）。
+        from . import welcome as _wc
+        p = payload or {}
+        return _wc.run(p.get("op", "text"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "god_view":
+        # 上帝视角：超级导航 + 意见与建议（只读现读数，不猜、不反问）
+        from . import god_view as _gv
+        p = payload or {}
+        return _gv.run(p.get("op", "overview"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "vision_loop":
+        # 原生四觉闭环：眼/耳/嘴/手 + 脑 + 验（缺一觉拒动/拒说）
+        from . import vision_loop as _vl
+        p = payload or {}
+        return _vl.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "agency_tentacles":
         from .tools import agency_tentacles as _at
         p = payload or {}
@@ -1233,6 +1427,16 @@ def _run_benign(kind, payload, policy_decision=None):
         from .tools import media_run as _mr
         p = payload or {}
         return _mr.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "omni_plug":
+        # 万能插（插座层）：读类直连；plug 只探测；run 真执行 —— 作用域在 policy 里按插座类型挂
+        from . import omni_plug as _op
+        p = payload or {}
+        return _op.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "media_stamp":
+        # 音视频钢印：署名写进容器元数据 + ffprobe 回读校验（读类三 op 直连，stamp 过写门）
+        from .tools import media_stamp as _ms
+        p = payload or {}
+        return _ms.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
     if kind == "media_license":
         # 素材许可账（三方向流程台「家规第 2 条」的**逐件**数据源）。
         # 写面只落 projects/_shared/licenses/；media_flow 的门只读它（判定归门，登记归能力位）。
@@ -1256,12 +1460,54 @@ def _run_benign(kind, payload, policy_decision=None):
         cmd = p.get("command")
         if not server or not cmd:
             raise ValueError("需要 server（会话名）与 command（启动命令数组，如 ['npx','-y','@modelcontextprotocol/server-everything']）")
-        return MB.connect(server, cmd)
+        _conn = MB.connect(server, cmd)
+        # 🔴 2026-10-14 加（修「卡点二」）：`mcp_bridge._SESSIONS` 是**模块级**会话表 ⇒
+        #   会话随**进程**生灭，而每次 `cap` 都是新进程（`multi` 的每个 job 还是子进程）
+        #   ⇒ 实测「上一个进程 `mcp_connect` 成功，下一个进程 `mcp_tools` 必报 未连接」。
+        #   所以在这里给一个**可选的 `then`**：连上之后**在同一进程里顺手**做一步。
+        #   为什么不给 `mcp_tools` 加 `command`：那位在 `policy.py` 里是**零作用域**，
+        #   让它能起进程 = 开一条绕过 `process_execute` 的门（policy 明令不许改）⇒ 不碰它。
+        then = str(p.get("then") or "").strip().lower()
+        if not _conn.get("ok") or not then:
+            return _conn
+        if then in ("tools", "list"):
+            t = MB.list_tools(server)
+            return {**_conn, "then": "tools", "tools": t.get("tools") or [],
+                    "count": t.get("count") or 0,
+                    "ok": bool(t.get("ok")), "then_error": t.get("error")}
+        if then in ("call", "tool"):
+            tool = str(p.get("tool") or "")
+            if not tool:
+                return {**_conn, "ok": False, "then": "call",
+                        "then_error": "then=call 需要 tool（参数放 arguments）"}
+            c = MB.call(server, tool, p.get("arguments"))
+            # 🔴 2026-10-14 实测：MCP 层会把**工具自己的业务错误**报成 `ok:true` + `raw.isError:false`。
+            #   实测那发：`get_balance` 打到 HackerOne 回 `401 Unauthorized`，而 `call.ok` 仍是 `true`、
+            #   `raw.isError` 仍是 `false`，**真值只在 `text` 里**（"Error: H1 API error 401 …"）。
+            #   ⇒ 这里再读一层再定色，否则"信封绿"会把"本体红"盖掉（本仓的老病）。
+            _txt = str(c.get("text") or "")
+            _raw = c.get("raw") if isinstance(c.get("raw"), dict) else {}
+            _err = c.get("error") or (("工具报错：" + _txt[:300]) if (
+                (not c.get("ok")) or _raw.get("isError") or _txt.lstrip().startswith("Error:")
+            ) else None)
+            return {**_conn, "then": "call", "tool": tool, "call": c,
+                    "ok": _err is None, "then_error": _err}
+        return {**_conn, "ok": False, "then": then,
+                "then_error": "不认的 then：%s（只认 tools / call）" % then}
     if kind == "mcp_tools":
         from .tentacle import mcp_bridge as MB
         server = (payload or {}).get("server") or ""
         if not server:
-            return MB.status()
+            # 🔴 2026-10-03 修读数口径（能力位探针把这条判成 FAKE：ok 信封 + 空壳结果）：
+            #    原来直接 `return MB.status()` ⇒ 没有工具时回 `{"servers": {}}`，
+            #    **连 ok/计数/原因都没有** ⇒ 探针看见"ok=True 但空壳" ⇒ 按名字贴 FAKE。
+            #    修法：**如实带读数** —— 没连工具不是坏了，但必须说出来（ok=False + count=0 + note）。
+            st = MB.status() or {}
+            servers = st.get("servers") or {}
+            return {"ok": bool(servers), "servers": servers, "count": len(servers),
+                    "note": ("桥里没有可用工具 —— **这不是坏了**：MCP 工具要先用 "
+                             "`mcp_connect` 连上（本机现读无健康 MCP 工具）"
+                             if not servers else "已连接的工具清单")}
         return MB.list_tools(server)
     if kind == "mcp_call":
         from .tentacle import mcp_bridge as MB
@@ -1516,7 +1762,390 @@ def _run_benign(kind, payload, policy_decision=None):
                               intent=p.get("intent", ""),
                               address=p.get("address"),
                               scan_timeout=p.get("scan_timeout", 6.0))
-    # 🔴 2026-09-25 **假绿修复**：这里原来**没有兜底 return** —— 函数走到末尾就**隐式返回 None**，
+    if kind == "eigenflux":
+        # 2026-10-08 补分派腿（P2 同族，判据 `test_a_registry_equals_dispatch` 当场咬出来的）：
+        # 注册表已收 EigenFlux（AI 朋友圈 · 只读位），api.py 漏了这条 ⇒ 调用会落 `not_wired`。
+        # 入口形状与同族一致：`run(op, **kw)`，缺省 status；**只读面**（零出网、零写面）。
+        from .tools import eigenflux as _ef
+        p = payload or {}
+        return _ef.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+    if kind == "agent_control":
+        # 2026-09-28 蒸馏第二批：nasiko 控制面六面一屏
+        from .tools import agent_control as _act
+        p = payload or {}
+        return _act.run_op(p.get("op", 'facets'), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "agent_council":
+        # 2026-09-28 蒸馏（AutoGen 开会面）：发言权/终止投票/纪要；大脑走 llm_chat 的门
+        from .tools import agent_council as _council
+        p = payload or {}
+        return _council.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "answer_shaper":
+        # 2026-09-28 蒸馏（i-have-adhd 纪律面）：行动优先输出的可机检核，零模型
+        from .tools import answer_shaper as _ash
+        p = payload or {}
+        return _ash.run_op(p.get("op", "check"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "belief_forge":
+        # 2026-10-01 六源蒸馏轮（hindsight 学习半）：观察 → 信念（不覆盖）→ 心智模型
+        from .tools import belief_forge as _bf
+        p = payload or {}
+        return _bf.run_op(p.get("op", "beliefs"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "case_mine":
+        # 2026-10-01 三源接入轮（starter story）：公开盈利案例 → 结构化案例卡（取数经触手门）
+        from .tools import case_mine as _cm
+        p = payload or {}
+        return _cm.run_op(p.get("op", "sources"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "cli_chat":
+        # 对话面板（2026-09-28 主人令「直接把这个面板集成进对话面板，这样就可以免费使用了」）：
+        # `agents` 只读底表（真探+真版本+能否一次性驱动）；`send` 真发一句话给选定 CLI 助手
+        # （走各 CLI 自己的登录态/额度 ⇒ 不吃框架 API 账单），写面在模块内自闸
+        # （process_execute + external_llm），缺授权如实报缺。
+        from . import cli_chat
+        return cli_chat.run(payload)
+
+
+    if kind == "command_chain":
+        # 2026-10-01 指挥链（主人令：总指挥参谋部）：接令→意图→双顾问→决策→专业提示词→
+        # 触手分派台账。plan/roster/status/assignments 只读；commit 只追加自己的台账
+        # （分派 ≠ 执行：每个能力位的真正执行仍走 run_task 的门与确认）。
+        from .tools import command_chain as _chain
+        p = payload or {}
+        return _chain.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "creation_camp":
+        # 2026-10-01 三源接入轮（AI 视觉创造营）：主题 → 逐日营计划（确定性、幽灵能力红）
+        from .tools import creation_camp as _cc
+        p = payload or {}
+        return _cc.run_op(p.get("op", "sources"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "db_probe":
+        # 2026-10-01 六源蒸馏轮（dbx 只读概览）：零动态 SQL + JSONL 行统计
+        from .tools import db_probe as _dbp
+        p = payload or {}
+        return _dbp.run_op(p.get("op", "sources"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "energy_scheduler":
+        # 2026-09-28 蒸馏（vllm 调度核）：plan 纯本地，run 逐发过 llm_chat 的门
+        from .tools import energy_scheduler as _esch
+        p = payload or {}
+        return _esch.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "event_ledger":
+        # 2026-09-28 蒸馏（buzz 账本纪律）：哈希链 + HMAC 签名，钥匙 DPAPI 无明文
+        from .tools import event_ledger as _el
+        p = payload or {}
+        return _el.run_op(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "flow_canvas":
+        # 2026-09-28 蒸馏（Langflow 可视化面）：只画不跑，图走引擎正规出口
+        from .tools import flow_canvas as _fc
+        p = payload or {}
+        return _fc.run_op(p.get("op", "from_wf"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "freellmapi":
+        from .llm import freellmapi as _fl
+        return _fl.run(payload or {})
+
+    # 触手金钥匙（V8：连接大脑执行层的眼睛与双手）
+
+    if kind == "handoff":
+        # 2026-09-28 蒸馏第二批：ai-memory 交接三桶
+        from .tools import handoff as _hd
+        p = payload or {}
+        return _hd.run_op(p.get("op", 'read'), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "llm_redteam":
+        # LLM 红队矩阵（2026-10-01 蒸馏位）：**只测自己**，不对外。
+        # 边界写死在模块头：只读、不出网、不跑攻击；对外目标一律拒并指到 `pentest`（要主人登记授权）。
+        from .tools import llm_redteam as _lrt
+        p = payload or {}
+        return _lrt.run_op(p.get("op", "matrix"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "notion_bridge":
+        # F12：Notion 资料舱（只读为主；凭证走 env/保险箱，本件不碰凭据）
+        from . import notion_bridge as _nb
+        return _nb.run(payload or {})
+
+    if kind == "policy_delta":
+        # 2026-10-01 六源蒸馏轮（OpenShell 策略预检）：只读算"会放行什么"，绝不写 policy.py
+        from .tools import policy_delta as _pd
+        p = payload or {}
+        return _pd.run_op(p.get("op", "tables"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "slim_profile":
+        # 2026-09-28 蒸馏第三批（simslim）：命名类别/profile 三档闸 + 只搬不删 + 裁后复核
+        from .tools import slim_profile as _sp
+        p = payload or {}
+        return _sp.run_op(p.get("op", "profiles"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "spend_guard":
+        # 2026-10-01 六源蒸馏轮（paperclip 成本治理）：按维度追踪 + 阈值三态（只判定不拦）
+        from .tools import spend_guard as _sg
+        p = payload or {}
+        return _sg.run_op(p.get("op", "verdict"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "thebrain_bridge":
+        # TheBrain 15 思维导图接入桥（2026-09-28 主人令「把这个思维导图集成进去把AI连接上，
+        # 使用我们的变压器连接上」）：读面 graph/search/notes（离线直读 Brain.db，只读）；
+        # ask/summarize 把 AI 连接上**且过变压器**（compress+cache，给前后两个数）；
+        # serve 起变压器前置的 OpenAI 兼容端点；endpoint 只报告接法不替主人改配置。
+        # 红线：不改 Brain.db · 不写 TheBrain 配置 · 不回显凭据明文。
+        # 门在模块内自闸（ask→external_llm，think/link/serve→process_execute），缺授权如实报缺。
+        from . import thebrain_bridge
+        return thebrain_bridge.run(payload)
+
+    # ── 授权红队内核（Owner 2026-09-25 令：黑客能力多维度全覆盖，使用需人工授权）──
+    # 这 12 位此前在 UNIMPLEMENTED_CAPS 里只有名字、没有实现（调用得到 unknown capability）。
+    # 实现层：security/redteam.py；作用域：security/policy.py 的 evaluate()。
+    # 接线三处必须同时在位（本表 + 本分支 + policy 作用域），少一处门就看不见它。
+    if kind in ("redteam_recon", "pentest", "keylogger", "screen_sniff",
+                "device_takeover", "remote_domain", "credential_steal",
+                "social_eng", "paywallbuster", "asset_vault_freeze",
+                "data_hijack", "onboarding_gate"):
+        from .security import redteam as _RT
+        return _RT.run(kind, payload or {})
+
+    # 真实性审计层（V8：零假执行铁律）
+
+    if kind == "train_recipe":
+        # 2026-09-28 蒸馏第二批：train-llm 七阶段配方 + 就绪闸
+        from .tools import train_recipe as _trc
+        p = payload or {}
+        return _trc.run_op(p.get("op", 'readiness'), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "tripo":
+        # F12：Tripo3D 三维生成（出网 + 花积分 ⇒ 由门与它自己的闸管）
+        from . import tripo as _tp
+        p = payload or {}
+        return _tp.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "ui_render":
+        # 2026-09-28 蒸馏第二批：json-render 约束渲染（先 check 再 render）
+        from .tools import ui_render as _uir
+        p = payload or {}
+        return _uir.run_op(p.get("op", 'spec'), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "review_gate":
+        # 独立终审位（C-15「验收方 ≠ 产出方」· 2026-10-08 在册）：接线件是
+        # `tools/codex-scripts/terminal-review.py`（脚本不在 gbt_allinone 包内 ⇒ 按**文件路径**装载，
+        # 与 tools/surface_bind.py 装载 tools/tentacle_bind.py 同款做法；**不改件本身**）。
+        # 默认零写盘：review/escalate/retro 只读盘与台账；reflow --submit/--tick 与 retro --handoff 的写
+        # **走既有账本能力位**（lr_submit / lr_tick / handoff），不另造第二本账（作用域见 policy.py 同款块）。
+        import argparse as _rg_argparse
+        import contextlib as _rg_ctxlib
+        import importlib.util as _rg_ilu
+        import io as _rg_io
+        import json as _rg_json
+        p = payload or {}
+        op = str(p.get("op") or "status").lower()
+        _rg_path = Path(__file__).resolve().parents[1] / "tools" / "codex-scripts" / "terminal-review.py"
+        if not _rg_path.is_file():
+            return {"ok": False, "kind": "review_gate", "status": "needs_dependency",
+                    "error_class": "needs_dependency",
+                    "message": "接线件不在盘：%s（装了再调，不硬编）" % _rg_path}
+        _rg_spec = _rg_ilu.spec_from_file_location("gbt_terminal_review", _rg_path)
+        _rg = _rg_ilu.module_from_spec(_rg_spec)
+        _rg_spec.loader.exec_module(_rg)
+
+        def _rg_call(_fn, **_kw):
+            """调接线件的子命令，把它的 JSON 读数**收下来**（件按 CLI 口径写：打印 + 退出码）。
+            退出码一并透出（0=过 / 1=拒，可当闸）；`SystemExit`（如「任务不存在」）如实报，不许吞。"""
+            _buf = _rg_io.StringIO()
+            try:
+                with _rg_ctxlib.redirect_stdout(_buf):
+                    _rc = _fn(_rg_argparse.Namespace(**_kw))
+            except SystemExit as _e:
+                return {"ok": False, "status": "rejected", "fail_closed": True, "exit": 1,
+                        "error": str(_e)}
+            try:
+                _out = _rg_json.loads(_buf.getvalue())
+            except Exception:                                        # noqa: BLE001
+                _out = {"raw": _buf.getvalue()[-2000:]}
+            _out["exit"] = _rc
+            _out.setdefault("status", "ok" if _out.get("ok") else "rejected")
+            if _out.get("ok") is False and not _out.get("error"):
+                _out["error"] = "；".join(_out.get("reasons") or []) or "拒（fail-closed）"
+            return _out
+
+        if op in ("status", "where"):
+            return {"ok": True, "op": op, "kind": "review_gate", "tentacle": "review_gate",
+                    "entry": "run_task('review_gate', {...})",
+                    "接线件": str(_rg_path.relative_to(Path(__file__).resolve().parents[1])),
+                    "件在盘": True, "件字节": _rg_path.stat().st_size,
+                    "ops": ["review", "escalate", "retro", "reflow", "status", "where"],
+                    "口径": "独立终审：只读盘 + 非 LLM 判据（file_exists/contains/sha256，"
+                            "与 longrun._judge 同口径）；判据未知一律拒（fail-closed）；默认零写盘",
+                    "写面承接处": {"reflow+submit": "run_task('lr_submit')",
+                                   "reflow+tick": "run_task('lr_tick')",
+                                   "retro+handoff": "run_task('handoff', op='write')"},
+                    "在册三处": ["caps_registry.BENIGN_CAPS", "api.py::_run_benign",
+                                 "security/policy.py::evaluate"]}
+        if op == "review":
+            return _rg_call(_rg.cmd_review,
+                            artifact=str(p.get("artifact") or p.get("path") or ""),
+                            token=str(p.get("token") or ""),
+                            expect_sha256=str(p.get("expect_sha256") or p.get("sha256") or ""),
+                            producer_run=str(p.get("producer_run") or ""))
+        if op == "escalate":
+            return _rg_call(_rg.cmd_escalate,
+                            task_id=str(p.get("task") or p.get("task_id") or ""),
+                            ttl_hours=int(p.get("ttl_hours") or 72))
+        if op == "retro":
+            return _rg_call(_rg.cmd_retro, handoff=bool(p.get("handoff")))
+        if op == "reflow":
+            return _rg_call(_rg.cmd_reflow,
+                            task_id=str(p.get("task") or p.get("task_id") or ""),
+                            acceptance=str(p.get("acceptance") or ""),
+                            submit=bool(p.get("submit")), tick=bool(p.get("tick")))
+        return {"ok": False, "kind": "review_gate", "status": "error", "fail_closed": True,
+                "error_class": "user_error",
+            "message": "未知 op:%s（review/escalate/retro/reflow/status/where）" % op}
+
+    if kind == "detail_habit":
+        from . import detail_habit
+        p = payload or {}
+        op = str(p.get("op") or "habit").strip().lower()
+        if op in ("habit", "doctrine", ""):
+            return detail_habit.habit()
+        if op in ("same_source", "source", "sync"):
+            return detail_habit.same_source()
+        if op == "check_text":
+            return detail_habit.check_text(p.get("text") or p.get("正文") or "")
+        if op == "check_step":
+            return detail_habit.check_step(p.get("step") or p)
+        if op == "check":
+            return detail_habit.check(p.get("steps") or [])
+        return {"ok": False, "status": "error", "error_class": "user_error", "fail_closed": True,
+                "message": "未知 op:%s（habit/same_source/check_text/check_step/check）" % op}
+
+    if kind == "tentacle_scale":
+        from .tentacle import scale
+        p = payload or {}
+        return scale.run(str(p.get("op") or "space"), p)
+
+    if kind == "express_direct":
+        # 确定性直达：指名派单 ── **不猜**（主人令 2026-10-13「全部以触手来实现」）
+        from .tentacle import express_bridge as _eb
+        p = payload or {}
+        return _eb.direct(str(p.get("kind") or p.get("能力位") or ""), p.get("payload") or {})
+
+    if kind == "vision_print":
+        # 视觉打印（主人令 2026-10-13「看到的东西都可以原样以代码打印并渲染成看到的样子」）：
+        # 五段链 see→print→render→diff→judge，本体落 tools/vision_print.py。
+        # 🔴 本分支**真接两只手进来**（不是装饰性 import，是依赖注入 —— 能力位自带哪只眼、
+        #    用哪把尺子，由**门这一处**说了算）：
+        #    · `tentacle.vision_bus` = 眼底（指纹 / 网格块 / 区域差）—— 相似度的尺子只许一把；
+        #    · `vision_cap` = 眼睛的云端腿（看图回码走它，缺依赖它如实报）。
+        #    这两条也是「触手承载」的**代码证据**（capability-bindings 读的就是这里）。
+        # 默认 op=status（纯契约读数，零作用域）：裸调不会偷偷去截屏/起浏览器。
+        # ⚠️ 必须用**全路径** `from .tentacle.vision_bus import …`；从 tentacle **包根**
+        #    去 import vision_bus 会被绑定判据读成「**整只手**」（导入了 tentacle 包 =
+        #    够得着全部 10 个触手域）⇒ 本位会被**虚报成绑满 点击 / 键盘 / 听觉 / 文件**。
+        #    本位只用「眼」这一域，就不许 claim 别的域。
+        # 🔴 连**注释里**写一句代码样例都会被算进去（本条即教训：第一版注释里带了那句包根
+        #    import 的样例，判据当场把它当代码读 ⇒ 虚报 10 域，实测抓到后改成本措辞）。
+        from .tentacle.vision_bus import _ahash as _vb_ahash, diff_regions as _vb_diff
+        from . import vision_cap as _vc
+        from .tools import vision_print as _vpr
+        import types as _vt
+        p = payload or {}
+        _vb = _vt.SimpleNamespace(_ahash=_vb_ahash, diff_regions=_vb_diff)
+        _extra = {k: v for k, v in p.items() if k not in ("op", "bus", "cap")}
+        return _vpr.run(p.get("op", "status"), bus=_vb, cap=_vc, **_extra)
+
+    if kind == "cadgen":
+        # 本机 CAD 链的口（2026-10-13 建位）：只调真件 `cadgen`，**不重写几何**。
+        # 判码走 `tools/native_rc.run_native`（shell=False · 只认原生 rc）—— 不手搓 subprocess，
+        # 也不许拿它打印的话判成败（R97 口径）。参数照真件 `--help` 现读，不编 flag。
+        # 默认 op=status（纯探，连 --version 都不跑）⇒ 裸调不会偷偷起进程。
+        from .tools import cadgen_cap as _cg
+        p = payload or {}
+        return _cg.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "ui_kit":
+        # UI 组件库的口（2026-10-13 建位）：素材来自吞天落位的 uiverse-io/galaxy（MIT）。
+        # 本位**零出网、零执行**（只读文本提语义 + 拷件），不改 `_upstream/galaxy/**` 一个字节。
+        # 默认 op=status（只读索引计数）⇒ 裸调不会去扫盘、不会写盘。
+        from .tools import ui_kit as _uk
+        p = payload or {}
+        return _uk.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "design_atlas":
+        # 设计与审美图鉴的口（2026-10-13 建位）：素材 = 吞天落位的 GOATED-UI-SKILL（MIT）18 份手册。
+        # 本位**只读、零执行**（绝不跑上游 .mjs），不改上游一个字节；默认 op=status（只读计数）。
+        from .tools import design_atlas as _da
+        p = payload or {}
+        return _da.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "art_chain":
+        # 作品链（2026-10-13 建位）：把「挑件→取件→真渲→调优」封成一位。
+        # 每一步都调**既有门/既有件**（ui_kit / render_page.py / vision_print.polish），
+        # 本分支只做编排；失败停在原地并说清。默认 op=status（只读契约面）。
+        from .tools import art_chain as _ac
+        p = payload or {}
+        return _ac.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "motion_kit":
+        # 动效引擎的口（2026-10-13 建位）：素材 = 吞天落位的 juliangarnier/anime（MIT · animejs v4.5.0）。
+        # 本位**只读上游 + 零出网**；`prove` 只在本机原生跑引擎算纯函数（真跑，不假装）。
+        # 默认 op=status（只读计数）⇒ 裸调不会扫盘、不会写盘、不会起 Node。
+        from .tools import motion_kit as _mk
+        p = payload or {}
+        return _mk.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "bits_kit":
+        # 动效组件图鉴的口（2026-10-13 建位）：素材 = 吞天落位的 DavidHDev/react-bits。
+        # 🔴 它许可是 **MIT + Commons Clause v1.0**（禁止再分发/移植）⇒ 本位**只给知识与出处**，
+        # **不提供把组件拷出去的 op**；只读上游、零执行、零出网。默认 op=status ⇒ 裸调不扫盘、不写盘。
+        from .tools import bits_kit as _bk
+        p = payload or {}
+        return _bk.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "art_brief":
+        # 作品策划位（2026-10-13 建位）：把四个知识器官（ui_kit/bits_kit/motion_kit/design_atlas）
+        # 与出片链 art_chain **串成一位**。`plan` 全是零作用域的读；`run` 才真出片（调 art_chain，不重写任何一环）。
+        # 默认 op=status（只读契约面）⇒ 裸调不会扫盘、不会出片。
+        from .tools import art_brief as _ab
+        p = payload or {}
+        return _ab.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "intake_kit":
+        # 外部件接入图鉴（2026-10-13 建位）：六件按七步法接入（克隆→只读体检→…）后的知识面索引。
+        # 本位**只读上游 · 零执行 · 零出网**（不装依赖、不跑它们的代码）。
+        # 默认 op=status（只读台账）⇒ 裸调不会扫盘、不会写盘。
+        from .tools import intake_kit as _ik
+        p = payload or {}
+        return _ik.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "offload_distill":
+        # 内存墙蒸馏件（2026-10-13 建位）：把 Edge0 的思路蒸成我们的纪律 + 触手映射。
+        # 本位**整位只读零作用域**（无 subprocess、无 urllib、无写盘）；`probe` 只用 shutil.which
+        # 与系统只读 API。默认 op=status ⇒ 裸调不扫盘、不起进程。
+        from .tools import offload_distill as _od
+        p = payload or {}
+        return _od.run(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "pod_link":
+        # 云卡触手（2026-10-13 建位）：本机 ⇄ GPU 卡（传文件 · 在卡上跑命令 · 看状态）。
+        # 文件走 JupyterLab HTTP，命令走内核通道（WebSocket）；卡坐标走 RunPod REST。
+        # 默认 op=status（只读卡清单）⇒ 裸调不传文件、不在卡上跑东西。
+        from .tools import pod_link as _pl
+        p = payload or {}
+        return _pl.run_dispatch(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+    if kind == "comfy_cloud":
+        # 云卡 ComfyUI 触手（2026-10-13 建位，主人令：「她不需要 ComfyUI，直接使用触手就能出高质量视频」）。
+        # 本机到 8188 无路 ⇒ 所有调用在**卡内**执行；运输复用云卡触手 pod_link（run/down）。
+        # 默认 op=status（只读：卡上 ComfyUI 活没活、多少节点、队列空不空）。
+        from .tools import comfy_cloud as _cc
+        p = payload or {}
+        return _cc.run_dispatch(p.get("op", "status"), **{k: v for k, v in p.items() if k != "op"})
+
+# 🔴 2026-09-25 **假绿修复**：这里原来**没有兜底 return** —— 函数走到末尾就**隐式返回 None**，
     #    而 `run_task` 在 L1543 无条件把它包成 `{"status": "ok", "kind": kind, "result": None}`。
     #    实测后果：登记在 `BENIGN_CAPS` 却**没有分派分支**的位（`claude_code` / `codebuddy` /
     #    `ul_tars_desktop`）真调返回 **`status: ok` + 内层 `result: None`** ⇒
@@ -2116,3 +2745,42 @@ def _run_task_core_body(kind, payload=None, stamp=True, probe=False):
                          **({"probe": True} if _probe else {})})
         # 错误如实暴露（V8 处世理念：不伪造、坏结果如实报）
         return {"status": "error", "kind": kind, "message": str(e)}
+
+# ── 2026-10-11 技能观察器自动钩（主人令：每次使用都要注意技能的变化和短板）──────────
+# 包装唯一门 run_task：**每次调用留三笔**（成败/耗时/错误类或门）。
+# 纪律：probe=True 免记（探针不算使用）；观察失败**绝不影响**主调用（吞掉异常）。
+_run_task_base = run_task
+
+
+def run_task(kind, payload=None, stamp=True, safe=False, probe=False):
+    import time as _t
+    _t0 = _t.time()
+    try:
+        _r = _run_task_base(kind, payload, stamp=stamp, safe=safe, probe=probe)
+    except Exception as _e:
+        if not probe:
+            try:
+                from .tools import skill_watch as _sw
+                _sw.observe(str(kind), False, (_t.time() - _t0) * 1000,
+                            type(_e).__name__, str(_e)[:200])
+            except Exception:
+                pass
+        raise
+    if not probe:
+        try:
+            from .tools import skill_watch as _sw
+            _d = _r if isinstance(_r, dict) else {}
+            _ok = bool(_d.get('ok', True)) and not _d.get('denied')
+            # 2026-10-11 修（我自己的短板）：拒包的 missing_scopes 是**嵌在 result 里**的，
+            #   原写法只读顶层 ⇒ "门=" 恒为空。两处都读，取到为止。
+            # 2026-10-11 修（我自己的短板两连）：拒包的真字段名是 **missing / scopes**，
+            #   不是 missing_scopes（那是 five-dim 包装器加的）。顶层与 result 两处都读。
+            _miss = (_d.get('missing') or _d.get('missing_scopes')
+                     or (_d.get('result') or {}).get('missing') or [])
+            _gate = ','.join(_miss[:3]) if isinstance(_miss, list) else str(_miss)[:60]
+            _cls = 'gate_denied' if _d.get('denied') else ('' if _ok else 'error')
+            _sw.observe(str(kind), _ok, (_t.time() - _t0) * 1000, _cls,
+                        str(_d.get('error') or '')[:200], _gate)
+        except Exception:
+            pass
+    return _r

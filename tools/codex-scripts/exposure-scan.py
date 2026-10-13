@@ -126,7 +126,6 @@ def main(argv):
     # 默认找最近一次取证产物
     base = Path(a.dir) if a.dir else None
     if base is None:
-        import os
         import tempfile
         base = Path(tempfile.gettempdir()) / "gbt-shell-shots"
     dumps = sorted(base.glob("*.txt")) if base.is_dir() else []

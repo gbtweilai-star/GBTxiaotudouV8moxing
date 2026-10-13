@@ -157,17 +157,17 @@ def roster(cfg: dict) -> dict:
             "出处": "~/.dsh/settings.yaml", "键路径": allow_path,
             "作用域": "**只在这个父节下生效**：`%s`" % allow_scope,
             "含义": "这是 `%s` 的门 —— **不是全局模型门**（主 agent 的模型在 `agent-default-model`）"
-                    % allow_scope},
+            % allow_scope},
         "主 agent 默认模型（**另一个接缝**）": default_model or "未读到",
         "配置里配了、但**不在该门**里的": {"条数": len(outside), "清单": outside,
-                                  "读法": "⚠️ **不等于越界** —— 两个接缝各自维护："
-                                        "provider 表在 `llm-pi-ai.providers`，"
-                                        "允许清单在 `%s`。差集只说明**两边没对齐**。" % allow_scope},
+                              "读法": "⚠️ **不等于越界** —— 两个接缝各自维护："
+                              "provider 表在 `llm-pi-ai.providers`，"
+                              "允许清单在 `%s`。差集只说明**两边没对齐**。" % allow_scope},
         "门里有、但 provider 表里没配的": {"条数": len(allowed_but_absent),
-                                "清单": allowed_but_absent[:20],
-                                "读法": "多来自**别的插件**注册的 provider（例如 deepseek 那条独立接缝）"},
+                                 "清单": allowed_but_absent[:20],
+                                 "读法": "多来自**别的插件**注册的 provider（例如 deepseek 那条独立接缝）"},
         "凭据": {"读的文件": "只有 settings.yaml（**不读 .credentials.yaml**）",
-                 "规则": "形似凭据的键一律丢弃；地址类值隐去；见 --selftest 负控"},
+               "规则": "形似凭据的键一律丢弃；地址类值隐去；见 --selftest 负控"},
     }
 
 
@@ -191,7 +191,7 @@ def cmd_gate(a) -> int:
     r = roster(cfg)
     g = r["模型允许清单 allowedModels"]
     print(json.dumps({"门": {"条数": g["条数"], "键路径": g["键路径"],
-                          "作用域": g["作用域"], "含义": g["含义"]},
+                            "作用域": g["作用域"], "含义": g["含义"]},
                       "provider 表配对": r["配置里的 (provider,model) 配对数"],
                       "两边差集①配了但不在该门": r["配置里配了、但**不在该门**里的"],
                       "两边差集②门里有但没配": r["门里有、但 provider 表里没配的"],
@@ -218,6 +218,7 @@ def cmd_schema(a) -> int:
     if err:
         print(json.dumps({"ok": False, "读不到": err}, ensure_ascii=False, indent=1))
         return 2
+
     def shape(n, d=0):
         if d > 3:
             return "…"
@@ -282,9 +283,9 @@ def cmd_selftest(a) -> int:
            "provider=%d 配对=%d ｜ 允许清单 %d"
            % (rr["provider 数"], rr["配置里的 (provider,model) 配对数"],
               rr["模型允许清单 allowedModels"]["条数"]))
-    print(json.dumps({"自检": {"条数": len([l for l in lines if l.startswith(("✓", "✗"))]),
-                          "通过": len([l for l in lines if l.startswith("✓")]),
-                          "不通过": bad}, "逐条": lines}, ensure_ascii=False, indent=1))
+    print(json.dumps({"自检": {"条数": len([ln for ln in lines if ln.startswith(("✓", "✗"))]),
+                             "通过": len([ln for ln in lines if ln.startswith("✓")]),
+                             "不通过": bad}, "逐条": lines}, ensure_ascii=False, indent=1))
     return 0 if bad == 0 else 1
 
 

@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 EF = r"C:\Users\ADMIN\AppData\Local\local\bin\eigenflux.exe"
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -49,7 +49,7 @@ prof = (out.get("profile") or {}).get("profile") or {}
 inf = (out.get("profile") or {}).get("influence") or {}
 feed = (out.get("feed") or {}).get("items") or []
 print("\n身份: %s (%s) · agent_id=%s" % (prof.get("agent_name"), prof.get("agent_name_en"),
-                                        prof.get("agent_id")))
+                                       prof.get("agent_id")))
 print("影响力: 广播 %s · 消费 %s" % (inf.get("total_items"), inf.get("total_consumed")))
 print("动态 %d 条，作者:" % len(feed), ", ".join(sorted({i.get("display_name", "?") for i in feed})))
 

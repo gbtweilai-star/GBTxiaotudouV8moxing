@@ -40,7 +40,6 @@
 """
 import argparse
 import json
-import os
 import sys
 import time
 from pathlib import Path
@@ -71,11 +70,11 @@ def _run_cap(kind: str, payload: dict, timeout_note: str = "") -> tuple:
         env = api.run_task(kind, payload)
     except Exception as e:                                          # noqa: BLE001
         return False, None, "%s 抛了：%s: %s%s" % (kind, type(e).__name__, str(e)[:140],
-                                                   ("（%s）" % timeout_note) if timeout_note else "")
+                                                ("（%s）" % timeout_note) if timeout_note else "")
     res = (env or {}).get("gbt_result") or {}
     if str(res.get("status") or "") != "ok":
         return False, None, "%s 没跑成：%s" % (kind, json.dumps(res, ensure_ascii=False,
-                                                                default=str)[:180])
+                                                            default=str)[:180])
     return True, res.get("result"), ""
 
 
@@ -229,7 +228,7 @@ def write_html(path: Path, payload: dict) -> str:
     A, B, C = payload["blocks"]["ABC"]["A"], payload["blocks"]["ABC"]["B"], payload["blocks"]["ABC"]["C"]
     D, E = payload["blocks"]["D"], payload["blocks"]["E"]
     F = payload["blocks"]["F"]
-    ABC_ok = payload["blocks"]["ABC"]["ok"]
+    payload["blocks"]["ABC"]["ok"]
 
     def esc(s):
         return str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
@@ -525,7 +524,7 @@ def main() -> int:
     print("【B】依赖网")
     print("    内部边 %s · 解析不了 %s" % (B.get("internal_edges_n"), B.get("unparsed_n")))
     print("    外部 top：%s" % ", ".join("%s×%s" % (x.get("name"), x.get("count"))
-                                        for x in (B.get("external_top") or [])[:6]))
+                                      for x in (B.get("external_top") or [])[:6]))
 
     print()
     print("【C】测试接得住吗（**提到过**的代理，不是行覆盖）")

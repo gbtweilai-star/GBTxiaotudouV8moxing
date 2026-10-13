@@ -102,7 +102,7 @@ def torch_build(comfy: Path) -> dict:
                     "出处": str(v), "怎么算的": "读 version.py，不 import torch"}
     return {"torch版本": "**未读到**", "构建口径": "**未读到**",
             "出处": "在这几个位置都没找到 torch/version.py：%s" % (["%s/%s" % (".", s) for s in
-                                                          (".venv", "venv", "python_embeded")],)}
+                                                       (".venv", "venv", "python_embeded")],)}
 
 
 def model_inv(comfy: Path) -> dict:
@@ -175,12 +175,12 @@ def mem_feasibility(comfy: Path) -> dict:
         "内存现读": ram,
         "估计峰值MB": peak,
         "怎么估的": "最大检查点 %d MB × 1.2（加载期） + 1843 MB（torch/attention/潜空间运行时）"
-                    % (biggest // 1024 ** 2),
+        % (biggest // 1024 ** 2),
         "差多少MB": (0 if ok else peak - free),
         "结论": ("✅ 内存这一关看起来够（**仍需实测**）" if ok else
-                "🔴 **现在装不进内存**：空闲 %d MB，估峰值 %d MB，**差 %d MB** "
-                "⇒ 硬起服务会大量换页（页面文件峰值本机已到 12.7 GB）"
-                % (free, peak, peak - free)),
+               "🔴 **现在装不进内存**：空闲 %d MB，估峰值 %d MB，**差 %d MB** "
+               "⇒ 硬起服务会大量换页（页面文件峰值本机已到 12.7 GB）"
+               % (free, peak, peak - free)),
     }
 
 
@@ -225,18 +225,18 @@ def verdict(surf: dict) -> dict:
         "算力": accel,
         "能做什么（**有据**）": {
             "**现在能不能真出图**": ("✅ 内存这一关看起来够（仍需实测）" if mem_ok else
-                              ("❓ 内存未读到，**不敢说能**" if mem_rd else
-                               "🔴 **现在不行**：%s" % mem_line)),
+                             ("❓ 内存未读到，**不敢说能**" if mem_rd else
+                              "🔴 **现在不行**：%s" % mem_line)),
             "出图/分镜/关键帧（能力面）": ("✅ 有 %d 个图像模型（SD1.5 系 + ControlNet + LCM-LoRA）" % n_img)
-                              if can_img else "🔴 不行：没有图像模型",
+            if can_img else "🔴 不行：没有图像模型",
             "视频/动图生成": ("✅ 有 %d 个视频模型" % n_vid) if can_vid
-                        else "🔴 不行：**没有视频模型**",
+            else "🔴 不行：**没有视频模型**",
             "合片（出片那一段）": "✅ 本仓已有真链：ffmpeg / Remotion / HyperFrames / assemble.py "
-                          "（与 ComfyUI 无关，独立成立）",
+            "（与 ComfyUI 无关，独立成立）",
         },
         "到「无限生产高质量电影」缺什么": gaps or ["（现读没发现缺口）"],
         "诚实边界": "「无限」与「高质量」是**目标**不是**读数** —— 本工具只报"
-                    "「现在有什么、缺什么」，**不承诺产量与画质**。",
+        "「现在有什么、缺什么」，**不承诺产量与画质**。",
     }
 
 
@@ -247,7 +247,7 @@ def scan() -> dict:
                 "找过的位置": "COMFYUI_HOME / ~/ComfyUI / ~/Desktop/ComfyUI / C:/ComfyUI / D:/ComfyUI 等"}
     c = comfys[0]
     surf = {"ok": True, "安装": {"路径": str(c), "候选数": len(comfys),
-                              "全部": [str(x) for x in comfys]},
+                               "全部": [str(x) for x in comfys]},
             "算力后端": torch_build(c), "服务": server_up(), "内存可行性": mem_feasibility(c),
             "模型清单": model_inv(c),
             "at": time.strftime("%Y-%m-%dT%H:%M:%S")}
@@ -357,7 +357,6 @@ def cmd_selftest(a) -> int:
        "不敢说能" in str(fake_v["能做什么（**有据**）"]["**现在能不能真出图**"]),
        str(fake_v["能做什么（**有据**）"]["**现在能不能真出图**"])[:44])
     # 🔴 只读：AST 扫**真调用**，并检查**除落 state 那一处外没有别的写盘**
-    import ast
     src = Path(__file__).read_text(encoding="utf-8")
     stray = _stray_writes(src)
     ck("**只读**：除落 `state/comfy-surface.json` 那一次，无别的写盘调用",

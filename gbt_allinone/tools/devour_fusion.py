@@ -14,8 +14,10 @@
 
 `intake` 登记、`audit` 逐条查这三件、`fuse` 把缺的记忆页补齐（调用 `obsidian_vault.remember`）。
 
-**诚实标注**：图片里那三个开源件（Windows-MCP / DataEase / FreeCAD-MCP）现在只登记成 **`待吞`** ——
-它们要真正吞进来得先装上/联网，那是主人的一步；登记成 `已吞` 就是假账。
+**诚实标注（2026-10-13 更新）**：图片里那三个开源件已**真吞**（`devour_github` 落胶囊，不必先装上）——
+`Windows-MCP` 与 `CyberStrike` 另蒸出原生位（`desktop_distill` / `pentest_distill`）⇒ `已融合`；
+`DataEase` / `FreeCAD-MCP` 只落胶囊、还没蒸 ⇒ `已吸收`（**没蒸就不写 `已融合`**，那是假账）。
+状态一律以 `list` **从盘上算出来的** `fused` 为准，不看台账里写的字。
 
 op=intake / list / audit / fuse / verify / where
 """

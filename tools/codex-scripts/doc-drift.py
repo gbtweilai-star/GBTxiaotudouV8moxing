@@ -162,7 +162,7 @@ def check_d4():
         if not p.is_file():
             continue
         try:
-            age_h = (Path(__file__).stat().st_mtime - p.stat().st_mtime) / 3600.0
+            (Path(__file__).stat().st_mtime - p.stat().st_mtime) / 3600.0
         except OSError:
             continue
         if rel == "holo_pet_w3/README.md":

@@ -1,0 +1,15 @@
+{
+ "cap": "svc_inspect",
+ "domain": "pipeline",
+ "desc": "服务巡检：探活已登记服务端口并落审计（只看不动）",
+ "safe": true,
+ "ops": [],
+ "ops_method": "handler 文件未找到",
+ "handler_file": "",
+ "params": [],
+ "params_hint": "",
+ "handler": "svc_inspect",
+ "slot": "g1-09",
+ "group": 1,
+ "role": "模型服务守护（探活/重启/用量）"
+}

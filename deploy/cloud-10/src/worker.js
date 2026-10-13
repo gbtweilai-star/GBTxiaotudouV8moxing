@@ -15,6 +15,9 @@
 
 import { MODULES, createState, SCOPES, NS_PREFIX, withIdentity } from "./modules.js";
 import { MESH, MODULE_IDS, OP_GATES, PEERS } from "./mesh.generated.js";
+// 50 槽蓝图（主人 2026-10-04）：槽位/分组/邮箱/边数 —— 由 tools/codex-scripts/cloud-slots50.py
+// 从 deploy/cloud-10/plugins50.json 生成。**现网 10 个真模块**与**蓝图 50 槽**在读数里如实分开。
+import { SLOTS50, EMAIL_PLANE, SLOT_EDGES } from "./slots.generated.js";
 
 const JSON_HEADERS = { "content-type": "application/json; charset=utf-8" };
 
@@ -282,10 +285,13 @@ export function createMesh(env, sharedState) {
           //    模块里**真实现了**自托管分支（`callOpenAI(LLM_ENDPOINT)`，报 weights_ours=true）；
           //    流式那条在本文件里**没有**该分支，恒走 Workers AI。
           //    ⇒ 一个扁平的 `weights_ours` 说不清这件事，所以拆成两条路各报各的。
-          weights_ours: false,
-          llm_endpoint_wired: { non_stream: Boolean(e.LLM_ENDPOINT), stream: false },
+          // ✅ 2026-10-11：**两条路现在都走自托管了**（流式分支已补，见 L375 起）⇒
+          //    那个「拆开报」的理由消失了，扁平值必须**跟着配置走真值** ——
+          //    配了 LLM_ENDPOINT 就是 ours，没配就是 false（读数不许停在旧的假值上）。
+          weights_ours: Boolean(e.LLM_ENDPOINT),
+          llm_endpoint_wired: { non_stream: Boolean(e.LLM_ENDPOINT), stream: Boolean(e.LLM_ENDPOINT) },
           llm_endpoint_note: e.LLM_ENDPOINT
-            ? "已配 LLM_ENDPOINT：**非流式**走自托管（模块里有分支）；**流式**没有分支，仍走 Workers AI"
+            ? "已配 LLM_ENDPOINT：**非流式与流式都走自托管**（2026-10-11 补上流式分支，SSE 原样转发）"
             : "未配 LLM_ENDPOINT ⇒ 两条路都走 Workers AI",
           identity: "GBT小土豆V8",
           stream: true,           // 已实现（SSE 分片现测通过）
@@ -370,18 +376,41 @@ export function createMesh(env, sharedState) {
         //    非流式那条转给模块、模块里**有**自托管分支；流式这条在本文件里**没有**。
         //    ⇒ 要么补上流式的自托管分支，要么让调用方走非流式；这里如实 501，不假装。
         if (e.LLM_ENDPOINT) {
-          return json({
-            error: {
-              message: "流式路径没有自托管分支：LLM_ENDPOINT 已配，但 `stream:true` 这条"
-                       + "恒走 Workers AI（非流式那条走 `gbt-c01-llm-gateway`，是认 LLM_ENDPOINT 的）",
-              type: "not_implemented",
+          // ✅ 2026-10-11 **把这个 501 换成真分支**（主人令「修复好部署上去」）：
+          //    原来配了 LLM_ENDPOINT 走流式就 501 —— 诚实，但等于**流式不可用**，
+          //    而客户端（含 DSH 适配器）默认要 SSE ⇒ 切换过去会当场失败。
+          //    现在按 `callOpenAI` 的同一约定直连自托管并**原样转发 SSE**：
+          //      拼 URL / 鉴权（密钥只进请求头，永不进读数）/ 非 2xx 如实分档 / 字节流回传。
+          const _base = String(e.LLM_ENDPOINT).replace(/\/+$/, "");
+          const _h = { "content-type": "application/json" };
+          if (e.LLM_API_KEY) _h["authorization"] = "Bearer " + e.LLM_API_KEY;
+          const _t0 = Date.now();
+          let _up;
+          try {
+            _up = await fetch(_base + "/chat/completions", {
+              method: "POST",
+              headers: _h,
+              body: JSON.stringify(Object.assign({}, body, { stream: true })),
+            });
+          } catch (err) {
+            return json({ error: { message: "自托管流式：连不上端点（" + String(err && err.message || err).slice(0, 120) + "）", type: "upstream_error" },
+                          gbt: { configured: "LLM_ENDPOINT", wired: { non_stream: true, stream: true }, ms: Date.now() - _t0 } }, 502);
+          }
+          if (!_up.ok || !_up.body) {
+            const _t = await _up.text().catch(() => "");
+            return json({ error: { message: "自托管流式：上游 HTTP " + _up.status + " " + String(_t).slice(0, 200), type: "upstream_error" },
+                          gbt: { configured: "LLM_ENDPOINT", wired: { non_stream: true, stream: true }, ms: Date.now() - _t0 } }, 502);
+          }
+          // SSE 原样转发：不缓冲、不改形状（改形状就会丢 delta 或伪造读数）
+          return new Response(_up.body, {
+            status: 200,
+            headers: {
+              "content-type": _up.headers.get("content-type") || "text/event-stream; charset=utf-8",
+              "cache-control": "no-cache",
+              "x-gbt-weights": "ours",
+              "x-gbt-upstream": "self-hosted",
             },
-            gbt: {
-              configured: "LLM_ENDPOINT", wired: { non_stream: true, stream: false },
-              how_to_fix: "补流式自托管分支；或用 stream:false 让请求走模块那条已接线的路",
-              why: "静默走 Workers AI 会烧免费神经元、还让人以为走的是自建端点",
-            },
-          }, 501);
+          });
         }
         const wid = (body.model && body.model !== "gbt-potato-v8") ? body.model : e.WORKERS_AI_MODEL;
         // 🔴 2026-09-25 **改错误分档**：这两条原来都报 `502 / upstream_error` —— **归错了**。
@@ -547,12 +576,137 @@ export function createMesh(env, sharedState) {
         routes: ["GET /mesh", "GET /edges", "GET /health", "POST /rpc/<id>/<op>", "POST /mesh/full-ping", "POST /admin/grant"],
       });
     }
+    if (method === "GET" && path === "/slots50") {
+      // 50 槽蓝图现读（主人 2026-10-04）：分组 / 每槽承载与邮箱 / 全互联边数。
+      // 口径：**已接线 = 现网那 10 个真模块能跑**；其余槽在位但如实标 wired:false（未接线），
+      // 不拿"表里有"冒充"线上能跑"。
+      const byGroup = {};
+      for (const s of SLOTS50) {
+        byGroup[s.group] = byGroup[s.group] || { group: s.group, slots: 0, wired: 0 };
+        byGroup[s.group].slots += 1;
+        if (s.wired) byGroup[s.group].wired += 1;
+      }
+      return json({
+        spec: "plugins50",
+        slots: SLOTS50.length,
+        wired_now: SLOTS50.filter((s) => s.wired).length,
+        unwired: SLOTS50.filter((s) => !s.wired).map((s) => s.slot),
+        groups: Object.values(byGroup),
+        edges: SLOT_EDGES,
+        email_plane: EMAIL_PLANE,
+        note: "邮箱面由 Cloudflare Email Routing 建（永久地址）；边数 = 槽×(槽-1) 全互联",
+      });
+    }
+    // ── 50 槽桥：云端排队 ⇄ 本机桥代理执行 ⇄ 结果回传（主人 2026-10-04 令「槽转发到对应能力位」）──
+    // 本机槽桥（slot_bridge_agent）用 GW_AUTH 调这四条路；槽→本机能力位的映射在代理侧（读槽位表）。
+    // 存储全走 MEM（KV）+ mesh10/ 前缀：q/=排队 · c/=认领 · r/=结果。**门**：与 /v1/chat 同一把 GW_AUTH。
+    const SLOTS_KEY = "mesh10/slots50/queue";
+    if (path.startsWith("/slots50/")) {
+      // 🔴 门先立：这四条路能**触发本机执行**，不上门就是公开的命令注入面。
+      const _gw = String(e.GW_AUTH || "");
+      const authed = _gw && (request.headers.get("Authorization") || "").replace(/^Bearer /, "") === _gw;
+      if (!authed) {
+        return json({ error: { message: _gw ? "Authorization 不对（本端点已开启网关鉴权）" : "网关密钥未配置（GW_AUTH 未设）⇒ fail-closed", type: "authentication_error" }, gbt: { scheme: "Bearer GW_AUTH" } }, 401);
+      }
+      // 🔴 认领超时回收（崩溃自愈）：挂在**列表读取**开头 —— 代理先读列表，回收必须这时发生
+      //    （放 claim 里没用：代理看到 0 条排队就返回了，根本走不到 claim —— 实测撞上）。
+      async function recycleStaleSlots() {
+        try {
+          const list = await e.MEM.list({ prefix: SLOTS_KEY + "/q/" });
+          for (const k of (list.keys || [])) {
+            const raw = await e.MEM.get(k.name);
+            if (!raw) continue;
+            let entry;
+            try { entry = JSON.parse(raw); } catch (_) { continue; }
+            if (entry.state === "claimed" &&
+                (!entry.claimed_at || (Date.now() - Date.parse(entry.claimed_at)) > 120000)) {
+              entry.state = "queued";
+              entry.reclaimed = (entry.reclaimed || 0) + 1;
+              await e.MEM.put(k.name, JSON.stringify(entry));
+            }
+          }
+        } catch (_) { /* 回收失败不拦主流程（下轮再试） */ }
+      }
+      await recycleStaleSlots();
+      // ① 排队
+      if (method === "POST" && path === "/slots50/queue") {
+        const b = await request.json().catch(() => ({}));
+        const item = b && b.item;
+        const slotRow = SLOTS50.find((s) => s.slot === (item && item.slot));
+        if (!item || !slotRow) return json({ ok: false, error: "缺少 item.slot 或槽不在 50 槽表里" }, 400);
+        if (!slotRow.wired && slotRow.group >= 4) return json({ ok: false, error: "备用槽（未指派）不收活" }, 400);
+        // 队列 id 用 crypto 随机（Mimosa 提示：别用 Math.random 当标识）
+        const rnd = Array.from(crypto.getRandomValues(new Uint8Array(6))).map((x) => x.toString(36)).join("").slice(0, 8);
+        const id = "s" + Date.now().toString(36) + rnd;
+        const entry = { id, slot: item.slot, cap: slotRow.driver, op: String(item.op || "status"),
+                        args: item.args || {}, ts: new Date().toISOString(), state: "queued" };
+        await e.MEM.put(SLOTS_KEY + "/q/" + id, JSON.stringify(entry));
+        return json({ ok: true, id, entry });
+      }
+      // ② 取列表（代理轮询这个）
+      if (method === "GET" && path === "/slots50/queue") {
+        const list = await e.MEM.list({ prefix: SLOTS_KEY + "/q/" });
+        const items = [];
+        for (const k of (list.keys || [])) {
+          const raw = await e.MEM.get(k.name);
+          if (!raw) continue;
+          try { items.push(JSON.parse(raw)); } catch (_) {}
+        }
+        items.sort((a, b) => (a.ts < b.ts ? -1 : 1));
+        return json({ ok: true, items });
+      }
+      // ③ 认领
+      if (method === "POST" && path === "/slots50/claim") {
+        const b = await request.json().catch(() => ({}));
+        const ids = Array.isArray(b && b.ids) ? b.ids : [];
+        const claimed = [];
+        for (const id of ids) {
+          const kq = SLOTS_KEY + "/q/" + id;
+          const raw = await e.MEM.get(kq);
+          if (!raw) continue;
+          try {
+            const entry = JSON.parse(raw);
+            if (entry.state === "queued") {
+              entry.state = "claimed";
+              entry.claimed_at = new Date().toISOString();
+              entry.agent = (b && b.agent) || "";
+              await e.MEM.put(kq, JSON.stringify(entry));
+              claimed.push(id);
+            } else if (entry.state === "claimed" &&
+                       (!entry.claimed_at ||
+                        (Date.now() - Date.parse(entry.claimed_at)) > 120000)) {
+              // 认领超时回收（含没有 claimed_at 的旧版条目）：回队列重排
+              entry.state = "queued";
+              entry.reclaimed = (entry.reclaimed || 0) + 1;
+              await e.MEM.put(kq, JSON.stringify(entry));
+            }
+          } catch (_) {}
+        }
+        return json({ ok: true, claimed });
+      }
+      // ④ 回结果
+      if (method === "POST" && path === "/slots50/result") {
+        const b = await request.json().catch(() => ({}));
+        const id = b && b.id;
+        if (!id) return json({ ok: false, error: "缺少 id" }, 400);
+        const res = { id, ok: !!(b && b.ok), result: String((b && b.result) || "").slice(0, 8000),
+                      error: String((b && b.error) || "").slice(0, 500), agent: (b && b.agent) || "",
+                      ms: (b && b.ms) || null, ts: new Date().toISOString() };
+        await e.MEM.put(SLOTS_KEY + "/r/" + id, JSON.stringify(res));
+        const kq = SLOTS_KEY + "/q/" + id;
+        const raw = await e.MEM.get(kq);
+        if (raw) { try { const entry = JSON.parse(raw); entry.state = "done"; await e.MEM.put(kq, JSON.stringify(entry)); } catch (_) {} }
+        return json({ ok: true, id });
+      }
+    }
     if (method === "GET" && path === "/mesh") {
       return json({
         form: MESH.form,
         form_note: MESH.form_note,
         doctrine: MESH.doctrine,
         owner_labels: MESH.owner_labels,
+        slots50: { slots: SLOTS50.length, wired_now: SLOTS50.filter((s) => s.wired).length,
+                   edges: SLOT_EDGES, email_plane: EMAIL_PLANE },
         modules: MESH.modules.map((m) => ({ seq: m.seq, id: m.id, owner_label: m.owner_label, duty: m.duty, ops: m.ops, gates: m.op_gates, cloud: m.cloud, boundary: m.boundary })),
         edges_expected: MESH.edges.directed_expected,
         state_scope: {

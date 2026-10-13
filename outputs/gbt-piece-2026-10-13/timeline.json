@@ -1,0 +1,46 @@
+{
+  "name": "微光 · GBT小土豆V8",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "bg": "black"
+  },
+  "tracks": {
+    "video": [
+      {
+        "src": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V8\\outputs\\gbt-piece-2026-10-13\\微光_bg_2160x3840.png",
+        "t0": 0.0,
+        "dur": 10.0,
+        "fit": "cover",
+        "motion": {
+          "kind": "kenburns",
+          "zoom_to": 1.1
+        }
+      }
+    ],
+    "audio": [],
+    "text": [
+      {
+        "text": "微光",
+        "t0": 0.8,
+        "dur": 2.0
+      },
+      {
+        "text": "在数字时代看见温度",
+        "t0": 2.8,
+        "dur": 2.5
+      },
+      {
+        "text": "—— GBT小土豆V8 ——",
+        "t0": 5.3,
+        "dur": 4.0
+      }
+    ]
+  },
+  "metadata": {
+    "title": "微光 · GBT小土豆V8",
+    "artist": "GBT小土豆V8",
+    "comment": "开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属"
+  }
+}

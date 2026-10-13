@@ -1,0 +1,36 @@
+{
+ "cap": "tentacle_bind",
+ "domain": "system",
+ "desc": "资产↔触手穿透式绑定（主人令 2026-09-26）：每个资产绑定到产生/维护它的触手；bind/unbind/auto/sweep 增删绑定，scan 全量体检（红点只剩「触手断连」一种：资产缺失或触手不在注册表），coverage 报穿透率，一切动作追加写 state/asset_bindings.jsonl 台账（只增不删）",
+ "safe": true,
+ "ops": [
+  {
+   "op": "auto",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "bind",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "scan",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "sweep",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "unbind",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "desc 兜底（分派代码非静态可提取形态）",
+ "handler_file": "",
+ "params": [],
+ "params_hint": "",
+ "handler": "tentacle_bind",
+ "slot": "g3-30",
+ "group": 3,
+ "role": "资产↔触手穿透绑定（台账只增）"
+}

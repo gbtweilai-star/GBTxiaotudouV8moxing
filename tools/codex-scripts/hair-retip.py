@@ -67,7 +67,7 @@ dom = np.take_along_axis(JT, slot[:, None], axis=1).ravel()
 hair = (dom == IDX_HEAD) & (P[:, 1] < y_head - 0.005)
 Hp = P[hair]
 print(f"头部 primitive #{hi} · 头发顶点 {len(Hp)} · 头发 y 范围 "
-      f"{Hp[:,1].min():+.4f} .. {Hp[:,1].max():+.4f}")
+      f"{Hp[:, 1].min():+.4f} .. {Hp[:, 1].max():+.4f}")
 if len(Hp) < 50:
     print("🔴 头发顶点太少 ⇒ 停止")
     raise SystemExit(2)
@@ -93,7 +93,7 @@ for i in HAIR:
     new_tips[i] = tip
     nd.setdefault("extras", {}).setdefault("springBone", {})["tail"] = [float(x) for x in tip]
     print(f"  {names[joints[i]]:22s} 扇区 n={len(sel):6d} · 链尖 y {t0[1]:+.4f} → {tip[1]:+.4f}"
-          f"（新头发最低 {Hp[:,1].min():+.4f}）")
+          f"（新头发最低 {Hp[:, 1].min():+.4f}）")
 
 # 只改 JSON ⇒ 直接重打包（JSON 长度会变，必须重算 chunk 长度并补齐）
 body = bytearray(BIN)

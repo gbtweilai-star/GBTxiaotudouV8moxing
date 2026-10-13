@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """构建 V8：V7 基础上补齐八块缺口面板（镜像/大模型/心智/情报/安全/长程工具/创作吞噬/其余域）。"""
-import json
 import re
 import shutil
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 V7P = BASE / "V7 GBT小土豆V8-可交互原型.html"
 V8P = BASE / "V8 GBT小土豆V8-可交互原型.html"

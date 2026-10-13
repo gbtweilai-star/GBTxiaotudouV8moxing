@@ -289,3 +289,59 @@
     if (!ticking) { ticking = true; poll(); }
   }
 })();
+
+/* ── 活体取帧（主人令 2026-10-04：「触手视觉从来都不会传回触手视野画面，我需要的是这个视野画面」）
+     走壳 IPC 真调 `tentacle see`（DXGI 直读整帧）逐帧回传渲染 ⇒ **不需要另起取帧进程**。
+     护栏：失败如实报（不拿旧帧冒充）· 可随时停 · 帧只在内存（不落盘、不缓存）。 */
+(function () {
+  var api = window.gbtW3;
+  if (!api || typeof api.capFrame !== "function") return;   /* 不在壳里/口子没开：原样退化 */
+  var img = document.getElementById("shot");
+  var standby = document.getElementById("standby");
+  var dot = document.getElementById("signal-dot"), stext = document.getElementById("signal-text");
+  var osdClock = document.getElementById("osd-clock"), osdSeq = document.getElementById("osd-seq");
+  var detail = document.getElementById("detail");
+  var bar = document.getElementById("filmstrip");
+  if (!img) return;
+  var live = true, seq = 0, fails = 0;
+  var btn = document.createElement("button");
+  btn.type = "button";
+  btn.style.cssText = "cursor:pointer;border:1px solid #1d2635;border-radius:6px;background:#0e141d;color:#e7eef8;padding:3px 10px;margin:4px 0;font-size:12px";
+  btn.textContent = "● 实时取帧（开）";
+  if (bar && bar.parentNode) bar.parentNode.insertBefore(btn, bar);
+  btn.addEventListener("click", function () {
+    live = !live;
+    btn.textContent = live ? "● 实时取帧（开）" : "○ 实时取帧（停）";
+    if (live) tick();
+  });
+  function chip(t, color) { if (dot) dot.style.background = color; if (stext) stext.textContent = t; }
+  function tick() {
+    if (!live) return;
+    api.capFrame().then(function (r) {
+      if (r && r.ok && r.b64) {
+        seq += 1; fails = 0;
+        img.src = "data:image/" + (r.fmt === "png" ? "png" : "jpeg") + ";base64," + r.b64;
+        img.style.display = "block";
+        /* 🔴 实测坑：standby 的 CSS 是 display:flex，`hidden` 属性被它顶掉 ⇒ 覆盖层不退。
+           直接置 display:none 才是真的让路。 */
+        if (standby) standby.style.display = "none";
+        chip("实时 · " + (r.size ? r.size[0] + "×" + r.size[1] : "帧") + " · " + r.ms + "ms", "#34d399");
+        if (osdClock) osdClock.textContent = new Date().toTimeString().slice(0, 8);
+        if (osdSeq) osdSeq.textContent = "#" + String(seq).padStart(3, "0");
+        if (detail) detail.innerHTML =
+          "<p class='eye-note'>活体取帧：真调 <code>tentacle see</code>（DXGI 直读整帧）</p>" +
+          "<p class='eye-note'>本帧 " + (r.size ? r.size.join("×") : "—") + " · 耗时 " + r.ms + "ms · 帧序 #" + seq + "</p>";
+      } else {
+        fails += 1;
+        chip("取帧失败 ×" + fails, "#f87171");
+        if (detail) detail.innerHTML = "<p class='eye-note'>取帧失败（如实报，不拿旧帧冒充）：<code>" +
+          ((r && r.error) || "未知") + "</code></p>";
+      }
+      setTimeout(tick, fails ? 4000 : 1200);
+    }).catch(function () {
+      fails += 1; chip("取帧异常 ×" + fails, "#f87171");
+      setTimeout(tick, 4000);
+    });
+  }
+  tick();
+})();

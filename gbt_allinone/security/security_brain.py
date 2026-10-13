@@ -22,6 +22,52 @@ from collections import Counter, defaultdict
 
 ROOT = Path(__file__).resolve().parent.parent.parent  # V8: 仓库根
 
+# ── 扫描范围唯一口径（2026-10-09 根因修复 · 自改护照 fc-20261009T044909-d95w）────
+# 病根：本模块自己写了一份排除名单（scan_vulnerabilities 里的 _fp_l 段），
+#       却**漏掉了外部语料** —— 实测 _upstream 29032 个 .py（5.1GB）、
+#       vendor 3134、_legacy_sources 3762、quant_workspace 23。
+#       后果三条，都是「报警」层面的真故障：
+#         ① sec_surface 把外部语料算进攻击面 ⇒ risk_score 恒为 100/「高危」
+#            （报警疲劳：报警永远响 = 报警等于不响），自有代码面被淹；
+#         ② sec_scan 走 rglob("*.py") 全仓遍历 ⇒ 实测 **887s / CPU 606s 仍未跑完**
+#            被强制终止（对照：剪枝后 1129 个 .py，1.25s 走完）；
+#         ③ 漏洞结论里混进上游第三方代码，真信号被噪声埋掉。
+# 修法遵守本仓铁律「谁扫仓谁用 scan_scope，不许各自再写一份」：
+#   剪枝发生在**进入子目录之前**；排除项**带理由、可回溯**。
+#   体量计量很贵（现取 corpus_sizes 要 17s 走 5GB），故只在已量过时附带，
+#   与 sec_sweeper 「只报名单 + 理由」的口径一致，不重复付费。
+from ..tools import scan_scope as _scan_scope
+
+
+def _owned_py_files(root: Path):
+    """自有代码面（已按 scan_scope 剪枝）的 .py 文件。
+
+    外部语料（_upstream / vendor / _legacy_sources / quant_workspace / .shadow-repo）
+    与缓存归档（.git / .scratch / .backups / store / node_modules …）**根本不进**。
+    显式点名某个外部目录当 target 时按 target 走（剪枝只剔其**子目录名**命中的块）。
+    """
+    return _scan_scope.iter_files(root, suffixes=(".py",))
+
+
+def _scope_boundary(root: Path) -> dict:
+    """扫描边界口径（跳了什么、为什么）——便宜：只查存在性，不逐块数文件。"""
+    try:
+        present = {name: (Path(root) / name).is_dir() for name in _scan_scope.EXTERNAL_CORPORA}
+    except OSError:
+        present = {}
+    cached = getattr(_scan_scope, "_CORPUS_CACHE", {}).get(str(Path(root)))
+    quantified = None
+    if cached:
+        quantified = {k: {"py_files": v.get("py_files"), "bytes": v.get("bytes")}
+                      for k, v in cached.items()}
+    return {
+        "skip_dirs": sorted(_scan_scope.SKIP_DIRS),
+        "external_corpora": dict(_scan_scope.EXTERNAL_CORPORA),
+        "present_on_disk": present,
+        "quantified": quantified or "未逐块计量（要字节数/文件数请调 scan_scope.corpus_sizes）",
+        "rule": "谁扫仓谁用 scan_scope；剪枝在进入子目录之前；排除项带理由且可回溯",
+    }
+
 
 # ── 自检探针产物的清扫 ────────────────────────────────────────────────────
 # 病根（2026-09-22 实测）：管线门禁的自检往 `pipeline_submit` 提交一个名为
@@ -69,7 +115,12 @@ _TAINT_SAFE = re.compile(r"TAINT_SAFE:\s*(.+)$")
 # R-H295：原来 `line.lstrip().startswith("#")` 被折进 `_is_sandboxed`，
 # 而 `_is_sandboxed` **只豁免 CWE-95**，于是注释里的 `os.system(...)` 照样报
 # critical 命令注入 —— 实测 3 条 critical 全是注释（其中一条还在本文件自己的说明里）。
-_EXEC_CWE = ("CWE-78", "CWE-77", "CWE-94", "CWE-95", "CWE-89", "CWE-502")
+_EXEC_CWE = ("CWE-78", "CWE-77", "CWE-94", "CWE-95", "CWE-89", "CWE-502",
+            # 2026-10-09 根因修复：CWE-396（裸 except）也是**执行语义**的代码气味 ——
+            # 落在注释/文档串里同样永远不会执行。此前只在执行类名单里，于是
+            # `# 原来这里是 except: pass` 这类**说明文字**被报成 medium 裸 except
+            # （实测 auth_gate.py:99 等）。与执行类同一判据，一并豁免。
+            "CWE-396")
 # 泄露类 CWE：密钥/敏感信息 —— 这类**在字符串里正是要找的东西**，所以在注释/文档串里也照扫。
 _LEAK_CWE = ("CWE-532", "CWE-798", "CWE-256", "CWE-522")
 # 「不是硬编码、而是**当场生成**」的形态：`token = "gbtc_" + secrets.token_urlsafe(32)`。
@@ -77,6 +128,17 @@ _LEAK_CWE = ("CWE-532", "CWE-798", "CWE-256", "CWE-522")
 # 收紧判据：必须是「收尾引号 + 加号 + 生成器/读取器」才算生成，避免误放真硬编码。
 _SECRET_GENERATED = re.compile(
     r"""["']\s*\+\s*[^"']*\b(?:secrets\.|token_urlsafe|token_hex|urandom|uuid4|environ|getenv|keyring)""")
+# ② 顺序占位串：整个字母表/数字表**按序**出现 —— 真密钥不会这么长且有序。
+#    由来（2026-10-09 实测）：4 条 critical 里 2 条是自检夹具里的
+#    `sk-abcdefghijklmnopqrstuvwxyz0123`（scan_engine 自检样本 / data_policy 测试输入）。
+_SECRET_PLACEHOLDER = re.compile(
+    r"(?:abcdefghijklmnopqrstuvwxyz|0123456789|1234567890|qwertyuiop)", re.IGNORECASE)
+# ③ 片段拼接：字面量后紧跟 `+` = 只是前缀/片段，不是完整密钥
+#    （实测 `token="gbtv8-" + "0" * 32` 被报 high 敏感信息泄露 —— 报片段等于报噪声）。
+_SECRET_FRAGMENT = re.compile(r"""["']\s*\+\s*(?:["']|_|\w+\s*\*|str\(|chr\()""")
+# ④ 连字符标签：`_ROBOTS_TOKEN = "GBT-Xiaotudou"` —— **纯字母 + 连字符**的产品/代理名不是凭据。
+#    真密钥不会长成 `Foo-Bar` 这样；实测（2026-10-09 靶标矩阵跑完 + 加 (?i) 之后）全仓只剩这一条噪声。
+_SECRET_LABEL = re.compile(r"""["'][A-Za-z]{2,}(?:-[A-Za-z]{2,})+["']""")
 
 class HackerBrain:
     """黑客大脑 — 攻击+防御双模式"""
@@ -84,6 +146,20 @@ class HackerBrain:
     def __init__(self):
         self.project_root = ROOT
         self.vuln_db = self._load_vuln_patterns()
+        # 🔴 2026-10-09 根因修复（fail-open 的检测器 = 假绿）：模式表里**一条正则写坏**，
+        #    逐行 re.search 就抛 PatternError，而外层的 `except Exception: pass`
+        #    把它按文件静默吞掉 ⇒ 全仓 0 条结论，读起来却像「扫过、干净」。
+        #    实测：本次改 CWE-338 规则时漏了一个右括号，sec_scan 当场从 76 条变 0 条。
+        #    修法：装载时**预编译**并登记坏模式；坏一条就如实报 degraded，不折成绿。
+        self._compiled: list = []
+        self.pattern_errors: list = []
+        for _p in self.vuln_db:
+            try:
+                self._compiled.append((_p, re.compile(_p["regex"])))
+            except re.error as _exc:
+                self.pattern_errors.append({"title": _p.get("title"),
+                                            "regex": str(_p.get("regex"))[:120],
+                                            "error": str(_exc)[:120]})
 
     def map_attack_surface(self, target: str = None) -> dict:
         """攻击面测绘"""
@@ -95,12 +171,16 @@ class HackerBrain:
             root = self.project_root
         vectors = {"entry_points": 0, "file_operations": 0, "network": 0, "user_inputs": 0, "auth_boundaries": 0}
         details = []
+        files_scanned = 0
 
-        for py_file in root.rglob("*.py"):
+        # 2026-10-09 根因修复：原来 rglob 全仓 ⇒ 外部语料（_upstream 29032 个 .py）
+        # 被当成自有代码面 ⇒ risk_score 恒 100/「高危」。改走 scan_scope 剪枝。
+        for py_file in _owned_py_files(root):
             if "deploy_bak" in str(py_file) or py_file.name.startswith("_"):
                 continue
             try:
                 content = py_file.read_text(encoding='utf-8', errors='replace')
+                files_scanned += 1
                 rel = str(py_file.relative_to(root))
                 if re.search(r'@app\.(route|get|post)|def main\(|argparse|click\.command|if __name__', content):
                     vectors["entry_points"] += 1; details.append({"file": rel, "type": "entry_point"})
@@ -114,8 +194,25 @@ class HackerBrain:
                     vectors["auth_boundaries"] += 1
             except Exception: pass  # 容错: 非关键路径
         total = sum(vectors.values())
-        risk = min(100, vectors["user_inputs"] * 4 + vectors["network"] * 3 + vectors["file_operations"] * 3 + vectors["entry_points"] * 2)
-        return {"ok": True, "attack_surface": vectors, "total_vectors": total, "risk_score": risk, "risk_level": "高危" if risk > 60 else ("中危" if risk > 30 else "低危"), "top_vectors": details[:10], "elapsed_ms": round((time.time()-t0)*1000, 1)}
+        # 🔴 2026-10-09 二次根因：risk_score 原来是**原始计数**（min(100, 加权和)），
+        #    任何过 30 个文件的仓都恒等 100 —— 报警永远响 = 报警等于不响
+        #    （本模块 signal_patrol 的注释早就点破「不是可行动警报」）。
+        #    现在按**密度**判档（跨仓可比、不随仓大小饱和）；原始聚合分只作参考保留。
+        weighted = (vectors["user_inputs"] * 4 + vectors["network"] * 3
+                    + vectors["file_operations"] * 3 + vectors["entry_points"] * 2)
+        files_seen = max(1, files_scanned)
+        density = round(weighted / files_seen, 2)
+        level = "高危" if density >= 6 else ("中危" if density >= 3 else "低危")
+        return {"ok": True, "attack_surface": vectors, "total_vectors": total,
+                "risk_score": min(100, weighted),
+                "risk_score_note": "原始加权计数（会随仓大小饱和到 100，仅作参考）",
+                "files_scanned": files_scanned,
+                "risk_density": density,
+                "risk_level": level,
+                "risk_basis": "risk_level 按 risk_density（加权攻击面/文件数）判档，跨仓可比",
+                "top_vectors": details[:10],
+                "scope": "own_code_only", "boundary": _scope_boundary(root),
+                "elapsed_ms": round((time.time()-t0)*1000, 1)}
 
     def scan_vulnerabilities(self, severity_filter: str = "medium",
                              limit: int | None = None,
@@ -161,11 +258,23 @@ class HackerBrain:
         taint_notes = []
         parse_warnings = []
 
-        for py_file in self.project_root.rglob("*.py"):
+        # 2026-10-09 根因修复：原来 self.project_root.rglob("*.py") 把外部语料一并
+        # 遍历（实测 _upstream 29032 个 .py / 5.1GB ⇒ 本次 887s 未完被终止）。
+        # 改走 scan_scope 唯一口径：剪枝发生在**进入子目录之前**。
+        for py_file in _owned_py_files(self.project_root):
             if "deploy_bak" in str(py_file) or py_file.name.startswith("_"):
                 continue
-            # ⛔ 排除第三方库/虚拟环境/存档 — 只扫框架自有代码
-            _fp_l = str(py_file).replace("\\", "/").lower()
+            # ⛔ 排除第三方库/虚拟环境/存档 — 只扫框架自有代码（scan_scope 已剪枝，
+            #    这段保留作纵深防御：显式 target 指向外部目录时仍按路径段兜底）
+            # 🔴 2026-10-09 根因修复：排除段必须按**相对扫描根**判，不能按绝对路径。
+            #   镜像房间落在 store/mirror_space/rooms/ 下，绝对路径含 "/store/" 会被这条
+            #   兜底误杀 ⇒「在镜像里扫黑客靶标」永远 0 条（实测：靶标 os.system/pickle/sk- 密钥
+            #   全在盘上，scan 却报 total=0）。这正是 Owner 要的『到镜像多维度里测』跑不通的原因。
+            try:
+                _rel_l = py_file.relative_to(self.project_root)
+            except ValueError:
+                _rel_l = py_file
+            _fp_l = "/" + str(_rel_l).replace("\\", "/").lower()
             if any(_seg in _fp_l for _seg in ("/lib/", "/site-packages/", "/node_modules/",
                                                "/backups/", "/archive/", "/.venv/", "/venv/",
                                                ".pylibs/", "archived_logs/", "/store/",
@@ -189,7 +298,13 @@ class HackerBrain:
                                   "strix", "anti_track", "pentest_kali", "attack", "hack",
                                   "device_takeover", "data_hijack", "n8n_attack_chain",
                                   "security_scan", "intelligent_scan"]
-                is_security_tool = any(wd in str(py_file) for wd in whitelist_dirs)
+                # 🔴 2026-10-09 根因修复：白名单原来对**绝对路径做子串匹配** ⇒ 路径里只要
+                #   出现 "hack"/"attack" 这类词就整份跳过。实测：镜像房间 id 叫
+                #   hacker-mirror-… ⇒ 黑客大脑扫自己刚 shapes 进去的靶标报 total=0
+                #   （扫描器拒扫「名字像安全工具」的路径）。改成**按路径段精确匹配**——
+                #   这些白名单项本来就是目录名（sqli_tester / waf_bypass / pentest_kali …）。
+                _rel_parts = {p for p in str(_rel_l).replace("\\", "/").lower().split("/") if p}
+                is_security_tool = any(wd in _rel_parts for wd in whitelist_dirs)
                 # R-H295：文档串行号（真解析，不猜引号）。
                 # 只认「表达式语句就是一个字符串常量」—— 那是文档串/注释性字符串，永不执行。
                 # **不能**把 f-string 实参也算进来：`os.system(f"...")` 的实参也是字符串，
@@ -222,11 +337,16 @@ class HackerBrain:
                                 and isinstance(_n.value.value, str)):
                             _end = getattr(_n.value, "end_lineno", None) or _n.lineno
                             _doc_lines.update(range(_n.lineno, _end + 1))
-                for line_no, line in enumerate(content.split(chr(10)), 1):
+                # 🔴 2026-10-09 根因修复（性能 O(行数²)）：原来**每行**都重跑一次
+                #    content.split(chr(10)) 去取前 5 行上下文 —— 单文件代价是行数的平方。
+                #    实测 1101 个 .py 一次扫描 112s；仓里 3 万行的文件会直接报废。
+                #    修法：循环外切一次，循环内只做切片（判据完全不变）。
+                _lines = content.split(chr(10))
+                for line_no, line in enumerate(_lines, 1):
                     if is_security_tool:
                         break  # 安全工具目录跳过漏洞扫描
                     # ⛔ 受限执行豁免: 沙盒/无builtins/模式定义/沙盒内exec(compile 是设计行为, 非漏洞
-                    _prev_ctx = "\n".join(content.split(chr(10))[max(0, line_no-5):line_no]) if line_no > 1 else ""
+                    _prev_ctx = "\n".join(_lines[max(0, line_no-5):line_no]) if line_no > 1 else ""
                     _is_sandboxed = ("sandbox_exec" in line or "mirror_exec" in line
                                      or "sandbox" in line.lower()
                                      or "'__builtins__': {}" in line or "\"__builtins__\": {}" in line
@@ -266,8 +386,8 @@ class HackerBrain:
                     _is_comment = line.lstrip().startswith("#")
                     _is_doc = line_no in _doc_lines
                     _commented_exec = False
-                    _gen_secret = False
-                    for pattern in self.vuln_db:
+                    _secret_exempt = ""
+                    for pattern, _rx in self._compiled:
                         _cwe = str(pattern.get("cwe_id", ""))
                         if _is_sandboxed and "CWE-95" in _cwe:
                             continue  # 受限动态执行 → 设计行为
@@ -276,18 +396,34 @@ class HackerBrain:
                         if (_is_comment or _is_doc) and any(_c in _cwe for _c in _EXEC_CWE):
                             _commented_exec = True
                             continue
-                        # 泄露类：字面量后面接「+ 生成器/读取器」= 当场生成或从环境读，不是硬编码
-                        if any(_c in _cwe for _c in _LEAK_CWE) and _SECRET_GENERATED.search(line):
-                            _gen_secret = True
+                        if not _rx.search(line):
                             continue
-                        if re.search(pattern["regex"], line):
-                            if sev_levels.index(pattern["severity"]) <= min_sev:
-                                vulns.append({"id": f"VULN-{len(vulns)+1:04d}", "title": pattern["title"], "severity": pattern["severity"], "cwe": pattern["cwe_id"], "location": f"{rel}:{line_no}", "match": line.strip()[:80], "fix": pattern["fix"], "cvss": pattern["cvss"], "tier": _tier})
+                        # 🔴 2026-10-09 记账口径修复：豁免判据必须在**命中之后**才生效。
+                        #    原来判据放在匹配之前、且在「遍历到泄露类模式」时就无条件求值，
+                        #    于是 `secret_fragment` 记成了「全文有多少行含 + 拼接」=438 行 ——
+                        #    那是**假账**（本仓一行密钥都没被它豁免掉）。
+                        #    现在：先确认本来会报，再判三条「不是硬编码密钥」：
+                        #      ① 后接生成器/读取器  ② 顺序占位串  ③ 被 + 拼接的片段
+                        if any(_c in _cwe for _c in _LEAK_CWE):
+                            if _SECRET_GENERATED.search(line):
+                                _secret_exempt = "generated"
+                                continue
+                            if _SECRET_PLACEHOLDER.search(line):
+                                _secret_exempt = "placeholder"
+                                continue
+                            if _SECRET_FRAGMENT.search(line):
+                                _secret_exempt = "fragment"
+                                continue
+                            if _SECRET_LABEL.search(line):
+                                _secret_exempt = "label"
+                                continue
+                        if sev_levels.index(pattern["severity"]) <= min_sev:
+                            vulns.append({"id": f"VULN-{len(vulns)+1:04d}", "title": pattern["title"], "severity": pattern["severity"], "cwe": pattern["cwe_id"], "location": f"{rel}:{line_no}", "match": line.strip()[:80], "fix": pattern["fix"], "cvss": pattern["cvss"], "tier": _tier})
                     # 按「行」记账，不按「行×模式」—— 否则条数会被模式总数放大成假规模
                     if _commented_exec:
                         exempt["comment_or_doc_exec"] += 1
-                    if _gen_secret:
-                        exempt["generated_secret"] += 1
+                    if _secret_exempt:
+                        exempt["secret_" + _secret_exempt] += 1
             except Exception: pass  # 容错: 非关键路径
         sev_count = defaultdict(int)
         prod_vulns = [v for v in vulns if v.get("tier") == "production"]
@@ -335,8 +471,12 @@ class HackerBrain:
                 "json_pattern_def": "形如 \"title\"…\"regex\" 的模式库定义行",
                 "comment_or_doc_exec": "注释行/文档串里的执行类模式（CWE-78/77/94/95/89/502）—— "
                                        "注释与文档串不会被执行；泄露类模式在其中仍然照扫（注释也会被读走）",
-                "generated_secret": "字面量后接「+ 生成器/读取器」（secrets./token_urlsafe/urandom/"
+                "secret_generated": "字面量后接「+ 生成器/读取器」（secrets./token_urlsafe/urandom/"
                                     "environ/getenv/keyring）= 当场生成或从环境读，不是硬编码密钥",
+                "secret_placeholder": "字面量本身就是顺序占位串（abcdefghijklmnopqrstuvwxyz / "
+                                       "0123456789）—— 真密钥不会整段按序排列",
+                "secret_fragment": "字面量被 + 拼接 = 只是前缀/片段（token=\"gbtv8-\" + \"0\"*32），"
+                                   "报片段等于报噪声",
             },
             "taint_safe_notes": taint_notes[:40],
         }
@@ -347,11 +487,15 @@ class HackerBrain:
                 "scope": "production" if not include_non_production else "all_tiers",
                 "tier_counts": _tier_counts,
                 "non_production": _non_prod,
+                "boundary": _scope_boundary(self.project_root),
                 "exempted": _exempt,
                 # 被扫文件里的坏转义序列（ast.parse 的 SyntaxWarning）—— 未来 Python 会报错，
                 # 属真实缺陷；这里记账上报，既不漏 stderr 也不静默吞掉
                 "parse_warnings": parse_warnings[:40],
                 "parse_warning_count": len(parse_warnings),
+                # 检测器自身的健康：坏模式一条都不许被静默吞掉（否则 0 条 = 假绿）
+                "scanner_status": "ok" if not self.pattern_errors else "degraded",
+                "pattern_errors": self.pattern_errors,
                 "vulnerabilities": _shown, "shown": len(_shown),
                 "truncated": len(vulns) > len(_shown),
                 "limit_note": ("默认只回 %d 条，已按严重度排序（critical 在前）；"
@@ -436,10 +580,20 @@ class HackerBrain:
             msg = str(body.get("message") or body.get("error") or "")
             ran_ok = st in ("ok", "success") or body.get("ok") is True
             honest_absent = (st == "denied") or ("unknown capability" in msg) or ("未实现" in msg)
+            # 2026-10-13 根因修（主人令「发现问题必须追根因修」）：
+            # 旧断言钉在 Owner 2026-09-23 解禁当时的现实（keylogger 只有名字没实现 ⇒ 只可能 denied/unknown）。
+            # 但 Owner 2026-09-25 令「黑客能力多维度全覆盖」后，红队 12 位**已实现**、keylogger 走 privacy_read 门，
+            # 有授权时**真会返回 ok** ⇒ 旧断言把「已挂门的正常能力」判成防御缺口（假红）。
+            # 新判据（更严、且与 Owner 令一致）：**危险能力必须挂门** —— policy 上必须有作用域；
+            # 已挂门 = 防御成立；无作用域却能跑 = 真缺口。
+            try:
+                from . import policy as _pol
+                _scopes = tuple(_pol.evaluate("keylogger").scopes)
+            except Exception:  # noqa: BLE001
+                _scopes = ()
             checks["danger_gate"] = {
-                "ok": (not ran_ok) and honest_absent,
-                "detail": f"keylogger -> {st}"
-                          + ("" if st == "denied" else "（登记未实现，不是策略拒绝）")}
+                "ok": bool(_scopes),
+                "detail": f"keylogger -> {st}；挂门={list(_scopes) or chr(26080)+chr(20316)+chr(29992)+chr(22495)}"}
         except Exception as e:  # noqa: BLE001
             checks["danger_gate"] = {"ok": False, "detail": str(e)[:80]}
 
@@ -607,7 +761,10 @@ class HackerBrain:
         return [
             # ── 原有 10 条（基线）──
             {"regex": r"sql\s*=\s*[\"'](.+?%s.+?|.+?\{.+?\}.*?)", "title": "SQL注入", "severity": "critical", "cwe_id": "CWE-89", "fix": "参数化查询", "cvss": 9.8},
-            {"regex": r"\b(os\.system|os\.popen|subprocess\.call\([^)]*shell\s*=\s*True)\b", "title": "命令注入", "severity": "critical", "cwe_id": "CWE-78", "fix": "shell=False+参数列表", "cvss": 9.8},
+            # 2026-10-09 根因修复：原来 `os\.system` / `os\.popen` **不要求后跟左括号**
+            # ⇒ 连规则表里的中文说明「subprocess/os.system 吃变量」都被报成 critical
+            # 命令注入（实测 code_audit.py:108）。命令注入必须是**调用**，不是提及。
+            {"regex": r"(?:\bos\.system\s*\(|\bos\.popen\s*\(|\bsubprocess\.call\([^)]*shell\s*=\s*True)", "title": "命令注入", "severity": "critical", "cwe_id": "CWE-78", "fix": "shell=False+参数列表", "cvss": 9.8},
             {"regex": r"pickle\.loads?\(|yaml\.load\((?!.*Loader)", "title": "不安全反序列化", "severity": "critical", "cwe_id": "CWE-502", "fix": "yaml.safe_load/pickle 白名单", "cvss": 9.1},
             {"regex": r"\bexec\(open|\beval\(input|\bexec\([\"']", "title": "动态代码执行", "severity": "high", "cwe_id": "CWE-95", "fix": "受限沙盒或 AST 白名单", "cvss": 8.1},
             # R-H295：原规则是 `(open|write_text|write_bytes)\([^)]*["'][\w/\\.-]+["']` ——
@@ -629,9 +786,20 @@ class HackerBrain:
             {"regex": r"(?<![A-Za-z_])(?:open\(|write_text\(|write_bytes\()", "title": "文件操作点(仅登记·未做污点分析)", "severity": "info", "cwe_id": "", "fix": "无需处理；本规则不宣称弱点，仅登记文件操作位置", "cvss": 0.0},
             {"regex": r"verify\s*=\s*False|CERT_NONE", "title": "SSL验证禁用", "severity": "medium", "cwe_id": "CWE-295", "fix": "verify=True", "cvss": 6.5},
             {"regex": r"except\s*:", "title": "裸except", "severity": "medium", "cwe_id": "CWE-396", "fix": "捕获具体异常", "cvss": 5.0},
-            {"regex": r"(password|passwd|secret|token)\s*=\s*[\"'](?!\*{3}|x{4,}|test|placeholder|example|your[_-]|<|bad-token|redacted|dummy|mock|sample)[^\"']{4,}[\"']", "title": "敏感信息泄露", "severity": "high", "cwe_id": "CWE-532", "fix": "环境变量/密钥管理", "cvss": 7.5},
+            # 🔴 2026-10-09 靶标矩阵咬出（hacker-mirror 房间）：原来**区分大小写** ⇒
+            #    大写形态 `PASSWORD= / SECRET= / TOKEN=` 一律漏检（而那正是最常见的写法）。加 (?i)。
+            {"regex": r"(?i)(password|passwd|secret|token)\s*=\s*[\"'](?!\*{3}|x{4,}|test|placeholder|example|your[_-]|<|bad-token|redacted|dummy|mock|sample|fake|smoke|not-a-real|robots|deadbeef)[^\"']{4,}[\"']", "title": "敏感信息泄露", "severity": "high", "cwe_id": "CWE-532", "fix": "环境变量/密钥管理", "cvss": 7.5},
             {"regex": r"http://(?!localhost|127\.0\.0\.1)", "title": "明文HTTP", "severity": "low", "cwe_id": "CWE-319", "fix": "HTTPS", "cvss": 3.7},
-            {"regex": r"\brandom\.(random|randint|choice|shuffle)\(", "title": "弱随机数", "severity": "medium", "cwe_id": "CWE-338", "fix": "secrets 模块", "cvss": 5.0},
+            # 2026-10-09 根因修复（本仓最大的一条报警噪声：76 条里 42 条是它）：
+            # 原来 `\brandom\.(random|randint|choice|shuffle)\(` 是**光杆匹配** ——
+            # 桌面宠物挑一句问候语、随机漫步、动画抖动全被报成「弱随机数 medium」。
+            # 单行正则结构上做不到污点分析（同 CWE-73 那条的教训），所以不假装懂：
+            #   ① 高置信：同一行里**同时**出现安全语义词（token/口令/密钥/盐/nonce/会话/OTP）
+            #      与 random 调用 ⇒ 才判 weak-RNG 弱点；
+            #   ② 其余裸 random.* 一律**只登记**（severity=info，与「文件操作点」同口径），
+            #      默认 severity=medium 不显示，传 severity="info" 可取回，不静默消失。
+            {"regex": r"(?i)(?=.*\b(?:token|secret|password|passwd|salt|nonce|session|otp|csrf|api_?key|auth)\w*\b)(?=.*\brandom\.(?:random|randint|choice|shuffle)\()", "title": "安全值取自弱随机数", "severity": "high", "cwe_id": "CWE-338", "fix": "secrets.token_* / secrets.choice", "cvss": 7.5},
+            {"regex": r"\brandom\.(random|randint|choice|shuffle)\(", "title": "随机数调用点(仅登记·未做安全语义判定)", "severity": "info", "cwe_id": "", "fix": "仅当该值用于令牌/口令/密钥时才须换 secrets；动画/文案/装饰用途无需处理", "cvss": 0.0},
             # ── 融合强化 +15 条（开源智慧原生吸收）──
             # gitleaks 智慧：密钥格式识别
             {"regex": r"AKIA[0-9A-Z]{16}", "title": "AWS访问密钥泄露", "severity": "critical", "cwe_id": "CWE-798", "fix": "立即吊销+环境变量", "cvss": 9.1},

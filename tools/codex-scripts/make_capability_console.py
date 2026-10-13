@@ -24,7 +24,6 @@
 """
 from __future__ import annotations
 
-import html
 import json
 import math
 import sys
@@ -1077,5 +1076,3 @@ def check() -> int:
 if __name__ == "__main__":
     import sys as _sys
     raise SystemExit(check() if "--check" in _sys.argv else main())
-
-

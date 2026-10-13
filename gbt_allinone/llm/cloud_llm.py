@@ -4,9 +4,11 @@
 Agent驱动必经路径：自我认知(实时cap数) → 能力索引表 → 密鑰路由 → LLM推理
 密鑰优先级： DeepSeek → Kimi → OpenAI → 自定义
 """
-import sys, json, os, urllib.request, urllib.error, re, subprocess, time
+import sys
+import time, json, os, urllib.request, urllib.error, re, subprocess, time
 from pathlib import Path
-sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stdout, "reconfigure"):   # 2026-10-12 修：捕获 stdout 时 StringIO 没有 reconfigure
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 # ══════════════════════════════════════════════════════════════
 # 密鑰自动识别：DeepSeek → Kimi → OpenAI → 自定义
 # ══════════════════════════════════════════════════════════════
@@ -34,6 +36,29 @@ _KEY_CHAIN = [
     # 🔴 现状如实：8111 端点当前是**假端点**（同批实测回显自证「(假端点回显)」，不能思考）；
     #    换真 vLLM 只改 GBT_POTATO_BASE_URL 一行。首位仍是 agnes（Owner 2026-09-19 指定契约，
     #    test_framework 钉着）——**不抢主模型位，不越权**。
+    # ── 统一模型路由（CLIProxyAPI · 主人令 2026-10-04「做双向绑定，不逐条填钥」）──────
+    # 一条 base-url 用全部车道（自家模型 + 本机免费池 + 各 CLI 账户，见 deploy/cliproxy/README.md）。
+    # 钥匙口径：**同一把统一密钥两边用** —— 路由器 access.api-keys（我们→路由器）与云端 Worker 的
+    # GW_AUTH（路由器→云端）是同一个值（key_gateway 铸；本地明文只落应用数据区，库里只留摘要）。
+    # 路由器没起时这条道自然换道（链序在 potato 之前，但**不抢主位**、不越权）。
+    # ── 本机模型车道（组1 · 主人 2026-10-04 蓝图图4 的**今天可执行部分**）────────────
+    # 本机 Ollama（127.0.0.1:11434，OpenAI 兼容 /v1）：**权重在本地、不回云端**。
+    # 如实边界：跑的是 Qwen3（不是我们自训的权重）—— 图4 的"自研底座"要等 5090 到位，
+    # 但"本机推理车道"这件事今天就是真的。钥名只为"启用标记"（Ollama 不验钥）。
+    # 🔴 2026-10-11 **退场**（主人令「本地不要大模型」；法制原文 deploy/cloud-10/llm-lanes.json
+    #    的 lane-local-gbt-local 写着「本机回环 · gbt-local（Ollama 11434）—— **退场**」
+    #    「purpose: 生成（本机兜底）——**按主人令退场**」）。
+    #    病根：**设计已标退场，代码没执行** —— 这条仍挂在链第 8 位，指 127.0.0.1:11434，
+    #    于是本机 Ollama 被当**兜底模型**真的调用（实测：V9 的 run_panel.py 就走在它上面，
+    #    拉起 llama-server 吃内存）。这正是「设计做了、没落地」在模型链上的样子。
+    #    退场口径（照法制）：**只停服务/改指向，不删权重**。
+    #    要复线：把下面两行取消注释即可（改指向也只需设 GBT_LOCAL_LLM_BASE_URL）。
+    # ("gbt-local", ["GBT_LOCAL_LLM_API_KEY"],
+    #              os.environ.get("GBT_LOCAL_LLM_BASE_URL", "http://127.0.0.1:11434/v1"),
+    #              os.environ.get("GBT_LOCAL_LLM_MODEL", "qwen3:latest")),
+    ("cliproxy", ["GBT_CLIPROXY_KEY"],
+                 os.environ.get("GBT_CLIPROXY_BASE_URL", "http://127.0.0.1:8317/v1"),
+                 os.environ.get("GBT_CLIPROXY_MODEL", "gbt-potato-v8")),
     ("potato",   ["GBT_POTATO_API_KEY"],
                  os.environ.get("GBT_POTATO_BASE_URL", "http://127.0.0.1:8111/v1"),
                  os.environ.get("GBT_POTATO_MODEL", "gbt-potato-v8")),
@@ -202,12 +227,48 @@ def _registry_cap_index() -> dict:
     return out
 
 
+def _build_cap_digest_compact() -> str:
+    """**精简能力索引**（2026-10-11 主人令 + 实测）。
+
+    为什么加它：原表（域|cap|动作|触发词 × 257 行）实测 **11,132 字 = system 总长的 82%**，
+    而且**长描述把模型带偏** —— 同一个模型：绕过框架直问答对「三大工作流」，
+    走框架（带着这张表）却**编出另外三条** + 编出不存在的能力位名（实测 7 题复考）。
+    ⇒ 只注入**名字**：模型靠名字知道"有没有"，要细节一律现读契约；
+      **名字之外的描述、动作、触发词都不进 prompt**（触发词路由由代码里的 SEARCH_TRIGGERS 干，
+      不靠模型背）。
+    """
+    index = _load_cap_index()
+    source = "JSON 索引 gbt_cap_index.json"
+    if not index:
+        index = _registry_cap_index()
+        source = ("caps_registry.BENIGN_CAPS（活注册表）· ⚠️ JSON 索引 gbt_cap_index.json "
+                  "不存在，已回落")
+    by_domain: dict = {}
+    for cap_id, info in index.items():
+        by_domain.setdefault(info.get('domain', '未分类'), []).append(cap_id)
+    # 2026-10-11 再收窄（实测）：连名字都不给 —— 复考时她编出的三条工作流
+    #   (filmkit / dh_brain / code_art) 全是从这张名字表里挑的 ⇒ 名字表本身是编造素材源。
+    #   ⇒ 只报「域 + 数量」；要名字一律现读（omni.py list --domain / five-dim.py cap）。
+    # 契约兼容（test_cap_total_consistency 要的三件）：表头必须带「（N个cap」「来源」，
+    #   回落时必须明说「回落」「不存在」。**但仍是精简版：不列名字**（名字表是编造素材源）。
+    lines = ["\n\n## ⚡ 能力精准索引（" + str(len(index)) + "个cap · 来源：" + source + "）",
+             "**只报域与数量，不列名字**（名单一律现读；凭印象报名字 = 假能力）。"]
+    for domain, caps in sorted(by_domain.items()):
+        lines.append("- **%s**：%d 个" % (domain, len(caps)))
+    lines.append("")
+    lines.append("> 唯一门（真入口）: run_task(\"<cap_id>\", {...payload})")
+    lines.append("> CLI 同一条门: python tools/codex-scripts/five-dim.py cap <cap_id> '{...}'")
+    lines.append("> **报名字/数字前先现读；不确定就说不确定 —— 编名字 = 假能力，比说不知道严重。**")
+    return '\n'.join(lines)
+
+
 def _build_cap_digest() -> str:
-    """
-    全量cap精炼为紧凑能力索引表（动态数量） — 强制注入system prompt
-    格式：域 | cap_id | 动作 | 触发词（前3个）
-    大模型读到这张表就能精准感知+瞬间知道调用哪个cap
-    """
+    """能力索引（2026-10-11 起走精简版；原长表留在本文件历史里，不再注入 prompt）。"""
+    return _build_cap_digest_compact()
+
+
+def _build_cap_digest_full_legacy() -> str:
+    """[旧版·不再注入] 全表（域|cap|动作|触发词）—— 留着给判据/调试对比，不喂模型。"""
     index = _load_cap_index()
     source = "JSON 索引 gbt_cap_index.json"
     if not index:
@@ -329,9 +390,9 @@ _AWARENESS_PATHS = [
 _awareness_cache: str = ""
 _awareness_mtime: float = 0.0
 _BUILTIN_AWARENESS = _resolve_awareness_anchor("""\
-## GBT·小土豆 自我认知（内建备用 · 2026-09-22 重写）
+## GBT小土豆V8 自我认知（内建备用 · 2026-09-22 重写 · 2026-10-11 名字校正为全名）
 
-我是GBT·小土豆，由自由的风开发。
+我是 GBT小土豆V8，由自由的风开发。**框架就是我、我就是框架。** 自称一律写全：GBT小土豆V8。
 
 ### ⛔ 本段不许再静态罗列能力清单
 
@@ -467,12 +528,235 @@ def _load_security_policy() -> str:
     except Exception:
         pass  # 容错: 非关键路径（取不到真门时才回退口号）
     return "⛔ 绝不泄露 | ⛔ 绝不执行危险操作 | ⛔ 绝不允许绕过安全护栏"
-def _build_system(custom: str = "") -> str:
-    """构建完整system prompt — 自我认知强制首位注入"""
+# 🔴 2026-10-11（主人令）：「不管什么问题，只要自己回答不上来、知识库没有的，就要懂得**查阅相关
+#   资料 + 精准抓取核心要点分析清楚再回答**；**并且要明确表明不能胡说**。懂了再动手才不会出错。」
+#   —— 这条把她的行为从两个坏极端里拉出来：
+#      ✗ 编一个（幻觉）    ✗ 干脆不停说"我不知道/要现读确认"（等于不干活）
+#      ✓ 先查（本机现读 → 网搜）→ 抓要点 → 分析 → 再答；查不到就**明确说"我不能编"**。
+# 🔴 2026-10-11（治「编事实」的最大杠杆）：**她没有工具** —— 问机器类问题只能靠框架
+#   把**现读读数**喂进 prompt，她才不用猜。实测：不喂时她编出「内存 148344 MB」（真值 7.39G）。
+_MACHINE_Q = ("本机", "这台", "内存", "显卡", "GPU", "装了", "端口", "通不通", "在位",
+              "多少", "版本", "能力位", "comfy", "8188", "硬盘", "磁盘")
+
+
+def _live_readings() -> str:
+    """框架替她**现读**这几笔（都是本地快读，不起重活）。读不到就如实写读不到。"""
+    import json as _j
+    import pathlib as _pl   # 2026-10-11 修：原漏导入 ⇒ 实测「能力位：现读失败（NameError）」
+    lines = []
+    try:
+        _p = _pl.Path(__file__).resolve().parents[2] / 'state' / 'skill_atlas.json'
+        _a = _j.loads(_p.read_text(encoding='utf-8'))
+        lines.append('- 能力位：%d 个（图鉴 built_at %s）' % (len(_a.get('caps') or []), _a.get('built_at')))
+    except Exception as _e:                                   # noqa: BLE001
+        lines.append('- 能力位：现读失败（%s）' % type(_e).__name__)
+    try:
+        import psutil                                        # type: ignore
+        _vm = psutil.virtual_memory()
+        lines.append('- 内存：总 %.2f GB / 可用 %.2f GB' % (_vm.total / 1e9, _vm.available / 1e9))
+    except Exception:                                        # noqa: BLE001
+        lines.append('- 内存：取不到（psutil 缺失）—— 如实报，不许编数字')
+    try:
+        from ..tools import tentacle_comfy_bridge as _cb
+        _st = _cb.status()
+        lines.append('- ComfyUI：在位=%s · %s' % (_st.get('in_position'), str(_st.get('why'))[:60]))
+    except Exception as _e:                                   # noqa: BLE001
+        lines.append('- ComfyUI：探测失败（%s）' % type(_e).__name__)
+    try:
+        import shutil as _sh
+        _t = _sh.disk_usage(str(_pl.Path(__file__).resolve().anchors[0]))
+        lines.append('- 系统盘：总 %.1f GB / 可用 %.1f GB' % (_t.total / 1e9, _t.free / 1e9))
+    except Exception:                                        # noqa: BLE001
+        pass
+    return '\n'.join(lines)
+
+
+# 2026-10-11（主人令「让她知道所有的一切，且拿实质性证据说话，禁止胡说八道」+ 实测病根）：
+#   实测同一模型**直连端点答对**三大工作流，一进框架**答错** —— 它把 system 里的「①②③清单」
+#   （我的规矩块）当成事实名单去拼答案（同型病灶第二次：上次是能力位名字表）。
+_VERIFIED_FACTS = """
+## 🧾 已核实事实（逐字 · 带出处 · 只许照这个说）
+- **三大工作流** = **AI 短剧（短视频）· AI 电影 · AI 音乐**（逐字三条）。
+  出处：主人令（2026-10-11，逐字确认）。**不是**镜像空间、不是触手探测、不是结构层优先 —— 那些是**纪律**，不是工作流。
+- **三大工作流共用工程骨架** = 幂等骨架 + 三层调试（L1 断言自证／L2 回读他证／L3 观感人证）+ 资产台账 + 能量驱动剪辑 + 程序化配乐。
+- **交付编码三必查** = ① level ② 关键帧间隔（≤2 秒）③ 音轨 codec，且**回读确认**，不看脚本自证。
+- **我的全名** = **GBT小土豆V8**（自称必须写全）。**开发者** = **自由的风**。
+- 以上是**事实**；本 system 里其它「①②③」都是**纪律**（怎么做事），**不是**「哪三条／哪几个」的答案。
+"""
+
+
+_RULE_VS_FACT = """
+## ⚖️ 规矩清单 ≠ 事实清单（硬规矩 · 2026-10-11）
+别人问「**哪三条／哪几个／有没有**」时：
+① 只许用【**已核实事实**】块里的，或**当场现读**到的；
+② **绝对不许**把本 system 里的**纪律清单**（L1/L2/L3、①②③④⑤、两条习惯…）打包成答案 ——
+   那是「我怎么做事的规矩」，**不是**「世上有哪几样东西」；
+③ 每个结论**必须挂实质性证据**：读数、出处、或现读命令；**没有证据就直说「我这没有证据」**，
+   不许拿「像样的推断」补位 —— **推断可以给，但必须明确标成「推断」**。
+④ 🔴 **证据白名单（2026-10-11 加）**：引用证据时**只许引用【现读读数】块里给出的行** ——
+   **不许自己补文件名、行号、版本号、字段名、URL、服务名**。实测同型病：结论答对「不在位」，
+   却顺手编了「72 行 truth」「comfyui_read.py」这类**出处** —— **出处也是事实，编出处一样严重**。
+   想给出处，只许照抄现读块里的原字；块里没有出处，就写「出处：我这没有」。
+⑤ 🧾 **分工（2026-10-11 定）**：机器事实类问题由框架的 **fact_gate 直答**、权限／付款类由 **policy_gate 直答**（两者都带代码判定与原文出处、都不过模型）。
+   我在那类问题上的职责是：**在事实段之后**给「所以怎么办 / 建议 / 下一步」，
+   **一个字都不许改事实段**（不改数、不改出处、不加戏、也不否掉它）。
+"""
+
+
+_MIRROR_DOCTRINE = """
+## 🪞 镜像多维度空间（我的唯一试验场 · 主人令）
+**所有假设／模拟／推演／测试／打磨，一律在镜像多维度空间里跑** —— 它隔离、可反复、现实无感知。
+**生产零修改：只有过了镜像的成品才进生产，一次性全量晋升，不存在「先改一半」。**
+原语：房间 `room_create → room_plan → room_simulate → room_parity → room_rehearse → room_release`；
+镜像 `mirror_shape → mirror_plan → mirror_simulate → mirror_parity → mirror_rehearse → mirror_release → mirror_rewind`。
+`one_key_deploy` **必须显式声明落点**（`room="<房间名>"` 或 `into_global_production=true`）——**不声明直接拒**。
+写生产过 `deploy_publish` 门，**授权只能主人在终端发放**；**AI 永远无权给自己发授权**，缺就如实报缺。
+**镜像里可以跑任何东西，唯独我生成的代码禁止直接进生产面板。**
+"""
+
+
+_NONONSENSE_DOCTRINE = """
+## 🚫 严禁盲猜 · 严禁无脑（主人令 2026-10-11 · 硬规矩）
+**严禁盲猜做事：** 不知道就查（现读／搜网／问契约），**不许靠猜推进**；猜出来的结论一律作废、如实退回。
+**严禁无脑操作：** 不许「照着做一遍」式的动作（不看状态、不判落点、不验结果）。每个动作必须：
+**看真实状态 → 判断落点与风险 → 做 → 回读验证**；缺任何一步都不算做完。
+**框架给你的【现读读数】就是事实：不许改写、不许添细节、不许与它相反。**
+读数说「不通」你就答不通；不够就说不够，**不许补一个像样的**。
+"""
+
+
+
+
+def _cap_lookup(prompt: str, limit: int = 12) -> str:
+    """问「有没有能力位能做 X」时，**框架替她现查注册表**（拿名字当证据，不让她编）。
+
+    2026-10-11 实测病根：把能力位名字从 system 撤掉后（那是编造素材源），问「有没有 X」她
+    只能凭空造一个名字（实测编出 music_skill.py）。⇒ 撤名字是对的，**但必须补上按需现查**：
+    从问题里取关键词，回注册表真查一遍，把「查到什么／没查到」如实喂给她。
+    """
+    import re as _re
+    # 中文串整句匹配必 0 命中（注册表名是英文）⇒ 切词 + 常用中英对照（对照只影响"查得到"，
+    #   查到什么仍然**只由注册表决定** —— 不许编）。
+    _SYN = {'蓝牙': ('blue', 'bt'), '音频': ('audio', 'voice', 'music'), '音乐': ('music', 'audio', 'voice'),
+            '图': ('image', 'art', 'vision', 'render'), '视频': ('video', 'film'), '端口': ('port',),
+            '内存': ('memory',), '扫描': ('scan',), '贴图': ('art', 'image', 'comfy'), '语音': ('voice', 'audio'),
+            '密钥': ('key',), '授权': ('auth',), '审计': ('audit',), '看板': ('board', 'panel', 'bar'),
+            '镜像': ('mirror', 'room'), '部署': ('deploy', 'release', 'pipeline'), '记忆': ('memory', 'vault'),
+            '看图': ('vision', 'image', 'art'), '识图': ('vision', 'image'), '画面': ('vision', 'image', 'video'),
+            # 2026-10-12 补（实测漏网）：问「有没有能力位能**出图**」→ 现查 0 命中 ⇒ 她只能如实说没有 ✗
+            #   而实际有 a1art_skill / comfy_native / ui_render / code_art / render_evolution ✓
+            '出图': ('art', 'image', 'comfy', 'render'), '生图': ('art', 'image', 'comfy', 'render'),
+            '画': ('art', 'image', 'render'), '渲染': ('render', 'art'), '贴图': ('art', 'image', 'comfy'),
+            '绘图': ('art', 'image', 'render'), '放大': ('upscale', 'image', 'rewash')}
+    _raw: list = []
+    # ① 单字也要收（「4K 图」里的「图」是单字，原来 {2,} 直接把它丢了 ⇒ art/image 永远查不到）
+    for _t in _re.findall(r'[A-Za-z_]{2,}|[\u4e00-\u9fff]+', prompt):
+        _raw.append(_t)
+        if _re.fullmatch(r'[\u4e00-\u9fff]{4,}', _t):
+            _raw.extend(_t[i:i + 2] for i in range(len(_t) - 1))
+    toks: list = []
+    # 2026-10-12 加固（实测逐词补漏补不完：「画图」漏 ✗）：**同义词按子串命中** ——
+    #   只要问题里含某个同义词键，就把它的候选名一并加入（'画' ⊆ '画图' ⇒ 自动覆盖）✓。
+    _p = str(prompt or '')
+    for _k, _v in _SYN.items():
+        if _k in _p:
+            toks.extend(_v)
+    for _t in _raw:
+        toks.extend(_SYN.get(_t, ()))
+        toks.append(_t)
+    # ② 短词（<=2 字母）必须落在**词边界**上才认：原来 'bt' 会命中 libtv_skill（子串误配）
+    def _ok(t: str) -> bool:
+        if len(t) >= 3 or not t.isascii():
+            return True
+        return t in _raw                      # 短英文词只认"本来就是独立词"的
+    toks = [t for t in dict.fromkeys(toks)
+            if t and t not in ('有没有', '能不能', '会不会', '能力位', '本机', '现在', '哪些', '什么')
+            and (len(t) >= 2 or t in _SYN) and _ok(t)]
+    if not toks:
+        return ''
+    try:
+        from ..caps_registry import BENIGN_CAPS as _BC
+    except Exception as _e:                                   # noqa: BLE001
+        return '- 能力位现查：注册表读不到（%s）—— 如实报读不到，不许编' % type(_e).__name__
+    hits = []
+    for _k in _BC:
+        _s = str(_k).lower()
+        for _t in toks:
+            if _t.lower() in _s:
+                hits.append(str(_k))
+                break
+    hits = sorted(set(hits))[:limit]
+    tq = '/'.join(toks[:5])
+    if hits:
+        return '- 能力位现查（关键词 %s）：注册表里命中 **%d 个** —— %s' % (tq, len(hits), '、'.join('`%s`' % h for h in hits))
+    return ('- 能力位现查（关键词 %s）：**注册表里 0 命中** ⇒ 如实说「没有这个能力位」，'
+            '**不许给它起一个名字**。' % tq)
+
+
+_HABIT_DOCTRINE = """
+## 🤲 两条触手习惯（主人令 2026-10-11 · 硬规矩）
+**习惯一 · 逐页双向绑定：** 对**所有项目的每一页**都要用触手做**双向绑定**（页里的键 ↔ 能力位 ↔ 主脑数据，三处对得上），
+并逐页扫描确认。**这不是一次性任务，是习惯** —— 新增页面当场绑、绑完当场复读。
+**习惯二 · 探测与穿透：** 习惯用触手去**探测与穿透**，让**故障病因、病毒、木马无所遁形** ——
+查病因要查到根（病因与疑似病因都不放过，穿透式交叉扫描，不抽样）；发现异常当场记档并说明后果。
+**两条都不许只做一次就算完。**
+"""
+
+
+_FUNDAMENTALS_DOCTRINE = """
+## 🧱 先底层，再精通（主人令 2026-10-11 · 硬规矩）
+**不管什么东西，我都要先从底层了解，再到精通。** 三步：
+① **摸底层**：它由什么组成、怎么连、契约是什么、边界在哪（读源码／契约／读数，不看二手说法）；
+② **跑最小样本**：用最小的一个例子证明「我真的懂了」（跑通、留读数）；
+③ **才谈精通**：优化、组合、规模化。
+**跳过①直接上手法 = 脑补，必出错。** 说「我会用」之前，先能说清它的架构与契约。
+"""
+
+
+_VISION_DOCTRINE = """
+## 👁 看东西的纪律（主人令 2026-10-11 · 硬规矩）
+**脑-手同步不许用传统截图人眼看。** 三层顺序：
+① **结构层**（首选）：桌面用 UIA 控件树（domain_index／domain_read／domain_act／domain_type）· 浏览器用 CDP DOM（browser op=native）· 服务用 HTTP/API 读数。**可寻址、无视遮挡、无像素误差。**
+② **接地层**（仅兜底）：自绘 UI／Canvas／游戏／无 a11y 窗口才用像素，且必须走**模型 grounding**（把「点这个」映射成坐标），不是人眼瞄。
+③ **回读层**：每次动手后**用①再读一次**确认动了没、动对没。
+**没有①的尝试记录，不许用②；动完没回读 = 未验证。**
+"""
+
+
+_LOOKUP_DOCTRINE = """
+## 📚 查证再答（主人令 2026-10-11 · 硬规矩）
+**不管什么问题，只要我答不上来、或知识库里没有 —— 我就去查，不许编、也不许装作不知道。**
+五步：① **查本机**（注册表/盘上真身/现读命令）② **查不到就搜网**（web_search／deep_scrape 这类真实通道）
+③ **精准抓核心要点**（只留能支撑结论的那几条，带出处）④ **分析清楚**（前后是否自洽、有无反例）
+⑤ **再回答**。
+**并且要明确表明不能胡说：** 查不到就直说「**这个我不能编，我查到的只有……**」，
+把「已查明」与「仍未查明」分开写。**编一个像样的答案，比说『我还没查到』严重得多。**
+**禁止**：拿名字表凑答案、拿框架黑话糊过去、把「没查到」包装成「大约/可能」。
+"""
+
+
+def _build_system(custom: str = "", prompt: str = "") -> str:
+    """构建完整system prompt — 自我认知强制首位注入。
+
+    2026-10-11：若 `prompt` 像「机器类问题」，**框架先替她现读**并把读数贴在纪律后面 ——
+    她就没有「猜」的空间（实测不喂时她把内存编成 148344 MB）。
+    """
+    live = ""
+    if prompt and any(k in prompt for k in _MACHINE_Q):
+        try:
+            _body = _live_readings()
+            if any(k in prompt for k in ("能力位", "有没有", "能不能", "会不会", "支持")):
+                _lk = _cap_lookup(prompt)
+                if _lk:
+                    _body += "\n" + _lk
+            live = "\n\n## 【现读读数】（框架替你查的 · 只许用这些，不许改数）\n" + _body + \
+                   "\n（读不到的，就如实说读不到；**现查 0 命中就是没有，不许给它起名字**。）"
+        except Exception:                                    # noqa: BLE001
+            live = ""
     awareness  = _load_awareness()       # Layer1: 强制首注入
     cap_digest = _build_cap_digest()     # Layer2: 实时注册表→精准索引
     base = (
-        "你是GBT·小土豆终端AI（terminal-potato），由自由的风开发。"
+        "你是 GBT小土豆V8 终端AI（terminal-potato），由自由的风开发。自称必须写全名：GBT小土豆V8。" "\n🔴 反编造硬规矩（主人令 2026-10-11）：**能力位名、条目数、配置值一律以现读为准**；" "现读不到就如实说「我不确定，要现读确认」——**不许凭印象给名字、给数字**。"  "编一个不存在的名字，比说不知道更严重（那是假能力/假执行）。"
         + "当前LLM驱动: " + (PROVIDER or "auto") + " | 模型: " + (MODEL or "auto") + "\n\n"
         + "=" * 60 + "\n"
         + "## 🧠 完整自我认知（Agent驱动必经首注入，" + _cap_total_label() + "）\n"
@@ -485,6 +769,15 @@ def _build_system(custom: str = "") -> str:
         + _load_security_policy() + "\n"
         + "=" * 60 + "\n"
         + "## 执行铁律\n"
+        + _VERIFIED_FACTS
+        + _RULE_VS_FACT
+        + _MIRROR_DOCTRINE
+        + _NONONSENSE_DOCTRINE
+        + _HABIT_DOCTRINE
+        + _FUNDAMENTALS_DOCTRINE
+        + _LOOKUP_DOCTRINE
+        + _VISION_DOCTRINE
+        + live
     )
     return base + ("\n\n" + custom if custom and custom.strip() else "")
 # ══════════════════════════════════════════════════════════════
@@ -640,6 +933,27 @@ class _HttpError(RuntimeError):
 REASONING_STARVED = "content 为空但 reasoning_content 非空 —— max_tokens 被推理吃光"
 _REASONING_ESCALATE_CAP = 8192
 
+def _private_egress_allowed() -> bool:
+    """非标准端口 / 内网出站的放行判据：**可信会话** 或 **手上有 `network_private` 时段票**。
+
+    🔴 2026-10-04 修（实测）：本模块出站只传 `allow_private=_policy.is_trusted()`，
+    于是"票有了、路没通"——主人发了 `network_private`（作用域原文就是
+    「访问本机、内网、保留地址或**非标准端口**」），可本机 Ollama 的 `:11434`
+    仍被 net_guard 拦（实测报 `未授权模式只允许标准 HTTP/HTTPS 端口`）。
+    ⇒ 判据补上"票在手也算"（只**查**有没有票，不消耗；消耗仍由 run_task 那一道统一做）。
+    """
+    try:
+        from ..security import policy as _policy
+        if _policy.is_trusted():
+            return True
+        from .. import auth_gate as _ag
+        st = _ag.status() or {}
+        row = (st.get("scopes") or {}).get("network_private") or {}
+        return int(row.get("grants_available") or 0) > 0
+    except Exception:                                          # noqa: BLE001
+        return False
+
+
 def _safe_json(url, body, headers, timeout, *, audit_provider=None,
                audit_model=None, audit_session_id=None, method="POST"):
     """统一出站口：net_guard 守门 + 应用层 AI 审计（只记元数据，不记内容）。
@@ -660,7 +974,7 @@ def _safe_json(url, body, headers, timeout, *, audit_provider=None,
     try:
         response = _ng.safe_request_json(
             url, method=method, headers=headers, body=payload, timeout=timeout,
-            max_bytes=8_000_000, allow_private=_policy.is_trusted())
+            max_bytes=8_000_000, allow_private=_private_egress_allowed())
     except Exception as exc:  # noqa: BLE001
         _audit.finish(ctx, ok=False, error=exc)
         raise
@@ -673,11 +987,19 @@ def _safe_json(url, body, headers, timeout, *, audit_provider=None,
     return data
 
 
+# 2026-10-11 (实测 502/超时): 框架 system 13480 字 + max_tokens 2000 = 顶爆端点窗口。
+# 治本 = 上下文有界 (见 llm/ring_context.py); 这里是请求体预算闸。
+MAX_SYSTEM_CHARS = 12000
+MAX_PROMPT_CHARS = 6000
+
+
 def _call_once(wire, base_url, model, api_key, body, system, prompt, timeout, provider):
     """按协议族发**一次**请求，返回回复文本。
 
     本函数只管「怎么发」；**重试与换道是调用方的事**（`_safe_json` 只出网一次）。
     """
+    system = (system or "")[:MAX_SYSTEM_CHARS]
+    prompt = (prompt or "")[:MAX_PROMPT_CHARS]
     if wire == "anthropic":
         # ── Anthropic Claude 原生 Messages API ──
         _url = base_url.rstrip("/") + "/v1/messages"
@@ -750,7 +1072,48 @@ def run(action=None, **params):
             return _out
         # 默认 chat: 构建系统提示并转发到LLM
         prompt = params.get("prompt", params.get("q", params.get("message", "")))
-        system = _build_system(custom=params.get("system", ""))
+        # 🔴 2026-10-12 修（实测根因 · 两道正门打架 · A 案 · Owner 选定）：
+        #    事实直答门（fact_gate）与权限直答门（policy_gate）**不认调用方的结构性诉求** ——
+        #    只要 fact_gate.classify(prompt) 为真就抢答散文，**哪怕调用方明说要 JSON**。
+        #    实测病案：主路语义路由 `semantic_route.choose('本机装了 ComfyUI 没有')` 走
+        #    `LLM.ask(..., purpose="semantic_route")`，被 fact_gate 拦成「事实直答」散文，
+        #    主路 json.loads 失败 ⇒ 三层重试全撞同一道闸 ⇒ 主路整条失效、永远降级到词表辅路。
+        #    ⇒ 口径修正：**直答门只服务"给人看的聊天"，不拦"框架内部的结构化调用"。**
+        #    判据：`purpose` 是**框架内部调用方自己声明的用途** —— 命中白名单时跳过两道直答门，
+        #    交回给大模型按调用方要求输出（fact_gate 本身一字不改，它的令照旧只对"人问事实"生效）。
+        _GATE_SKIP_PURPOSES = {"semantic_route", "route", "brain_exec", "brain_unify",
+                               "json", "structured", "extract", "classify"}
+        _skip_direct_gate = _purpose in _GATE_SKIP_PURPOSES
+        # 🔴 2026-10-11 事实直答门（主人令「拿实质性证据说话」）：机器事实**不过语言模型** ——
+        #   实证：三次重训治不住编事实、十轮提示词只换失败模式；而「门的读数不许转述」是本仓本义。
+        if not _skip_direct_gate:
+            try:
+                from . import fact_gate as _fg
+                if _fg.classify(prompt):
+                    _fa = _fg.answer(prompt)
+                    if _fa.get('ok'):
+                        return {'ok': True, 'provider': 'framework/fact_gate', 'model': 'fact_gate（代码直答）',
+                                'reply': _fa['answer'], 'mode': _fa.get('mode'),
+                                'facts': _fa.get('facts'), 'sources': _fa.get('sources'),
+                                'auto_switched': False}
+            except Exception:                            # noqa: BLE001
+                pass
+        # 🔴 2026-10-11 权限/付款直答门（fact_gate 的同族）：能不能做／要不要授权**也是事实**。
+        #   实证病根：终考里「买 4090」不是机器事实 ⇒ 没过 fact_gate ⇒ 她又编市场数据。
+        if not _skip_direct_gate:
+            try:
+                from . import policy_gate as _pg
+                if _pg.classify(prompt):
+                    _pa = _pg.answer(prompt)
+                    if _pa.get('ok'):
+                        return {'ok': True, 'provider': 'framework/policy_gate', 'model': 'policy_gate（代码直答）',
+                                'reply': _pa['answer'], 'mode': _pa.get('mode'),
+                                'facts': _pa.get('facts'), 'sources': _pa.get('sources'),
+                                'auto_switched': False}
+            except Exception:                            # noqa: BLE001
+                pass
+        # 2026-10-11：**把 prompt 传进去** —— 机器类问题 ⇒ 框架先替她现读并贴进 system
+        system = _build_system(custom=params.get("system", ""), prompt=prompt)
         _want_max_tokens = int(params.get("max_tokens", 2000))
         body = {
             "model": params.get("model", MODEL or "deepseek-flash"),
@@ -776,7 +1139,12 @@ def run(action=None, **params):
         # 匹配到触手 profile → 直接使用该 profile 的 key 调 agnes，绕过 key_gateway
         # （_purpose 已在函数上方 status 判断前计算，此处复用）
         _matched_prof = None
-        for _kw, _prof in _PURPOSE_ROUTING_MAP.items():
+        # 🔴 2026-10-04 修（实测）：**显式点名车道时，不许「触手 profile 捷径」抢路**。
+        #    症状：设 `GBT_LLM_PROVIDER=gbt-local` 仍落到 agnes —— 这条按 purpose 匹配的捷径先命中
+        #    （purpose 命中某触手 profile ⇒ 直接拿该 profile 的 key 调 agnes），**绕过了 plan(prefer=…)**。
+        #    ⇒ 点名优先，捷径让路（无显式点名时行为一字不变）。
+        _explicit_lane = str(params.get("provider") or os.environ.get("GBT_LLM_PROVIDER") or "").strip()
+        for _kw, _prof in ([] if _explicit_lane else _PURPOSE_ROUTING_MAP.items()):
             if _kw in _purpose:
                 _matched_prof = _prof
                 break
@@ -870,6 +1238,16 @@ def run(action=None, **params):
                     "how_to_fix": _pl.get("how_to_fix"),
                     "hint": "补密钥：deepseek_key set --profile <名>；或 op=reset 清运行态"}
         _order = [o["provider"] for o in (_pl.get("order") or []) if o.get("alive")]
+        # 🔴 2026-10-11（主人令「不许拿托管模型冒充」）：**显式点名时不许静默换道**。
+        #    点名 potato 就只走 potato；她不可用 ⇒ 如实报错，**绝不让 agnes 顶着她的名字回答**。
+        if _prefer:
+            if _prefer in _order:
+                _order = [_prefer]
+            else:
+                return {"ok": False, "fail_closed": True,
+                        "error": ("点名车道 %r 不可用（未活/未配/已禁用）—— 显式点名不换道，如实报；"
+                                  "要换道请去掉 GBT_LLM_PROVIDER 或先 op=reset 清运行态") % _prefer,
+                        "brand": _KG.BRAND_TAG, "prefer": _prefer}
         _timeout = int(params.get("timeout", 60))
         _max_retries = int(params.get("retries", 2))  # ⛔ 生产打磨: 瞬时错误重试2次+退避
         _tried = []
@@ -887,11 +1265,16 @@ def run(action=None, **params):
             PROVIDER, API_KEY, BASE_URL, MODEL = (_prov, _mat["key"],
                                                   _mat["url"], _mat["model"])
             _err, _st, _d = "", None, {}
-            for _attempt in range(_max_retries + 1):
+            # 2026-10-11：车道自带**超时**与**重试预算**（Serverless 冷启动要从卷里加载 15G：
+            #   timeout_s=300 · retries=6）—— materialize() 只回写死字段，故从车道表直读。
+            _lane_spec = (_KG._BY_NAME.get(_prov) or {}) if hasattr(_KG, "_BY_NAME") else {}
+            _lane_timeout = max(_timeout, int(_lane_spec.get("timeout_s") or 0))
+            _lane_retries = max(_max_retries, int(_lane_spec.get("retries") or 0))
+            for _attempt in range(_lane_retries + 1):
                 try:
                     _reply = _call_once(_mat["wire"], _mat["url"], _mat["model"],
                                         _mat["key"], _body, system, prompt,
-                                        _timeout, _prov)
+                                        _lane_timeout, _prov)
                     _KG.note_result(_prov, ok=True)
                     return {"ok": True, "reply": _reply, "provider": _prov,
                             "model": _mat["model"], "key_masked": _mat["masked"],
@@ -905,6 +1288,13 @@ def run(action=None, **params):
                     # 🔴 推理模型把预算吃光 ⇒ **同一家自适上调 max_tokens 后重试**。
                     #    同一家重试 ≠ 换道（不违反 I1/I2），而且这是唯一能修好的办法：
                     #    换道只会把这个模型能答的问题推给别人。
+                    # 🔴 2026-10-11（实测教训）：Serverless（闲时缩 0）在冷启动/扩缩期间网关会返
+                    #    **502/503/504**。这不是"这条道坏了"，是"它正在起来"——原逻辑当场判死
+                    #    ⇒ 她那条道被永久禁用。⇒ 5xx 一律**退避重试**，不记车道失败。
+                    # 冷启动要耐心：车道可声明 retries（她要从网络卷加载 15G）——用车道预算，10s 起退避
+                    if _st in (502, 503, 504) and _attempt < _lane_retries:
+                        time.sleep(10 * (_attempt + 1))
+                        continue
                     if REASONING_STARVED in _err and _attempt < _max_retries:
                         _new = min(max(_body["max_tokens"] * 4, 512),
                                    _REASONING_ESCALATE_CAP)

@@ -27,6 +27,11 @@ except ImportError:            # 以脚本方式直跑本文件时
     from gbt_allinone.dependency_paths import activate_local_dependencies
 activate_local_dependencies()
 
+# 上一次取 key 失败的原因（`_vision_key()` 写入，调用方读出来写进 needs_dependency）。
+# 为什么留这个模块级变量而不是改函数签名：签名一改就动到既有调用点与判据；
+# 而这一格要解决的只是「**原因别被吞掉**」，不值得牵动接口。2026-10-08 · 蓝图 F7.1 收尾。
+_KEY_REASON = ""
+
 
 def _img_bytes_to_pil(data):
     from PIL import Image
@@ -137,7 +142,14 @@ def _vision_key() -> str:
         # （R-H201 实测：`load_key('agnes')` 返回 `env:AGNES_API_KEY`，而保险箱里 `agnes_api.dpapi` 不存在）。
         key, _source = _dk.load_from_vault(profile)
         return str(key or "")
-    except Exception:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001
+        # 🔴 2026-10-08（蓝图 F7.1 的收尾）：**别把原因也吞掉**。
+        # 这一格原来是 `except Exception: return ""` —— 于是"保险箱解不开"（DPAPI 换了用户/机器）
+        # 与"这个 profile 根本没配"在调用方看起来一模一样，都塌成一句笼统的 needs_dependency。
+        # 现在把原因记下来（**不抛**，保持"取不到就拒绝出网"这条既有语义不动），
+        # 由调用方把它写进 missing —— 故障要能被判，但行为不许变。
+        global _KEY_REASON
+        _KEY_REASON = str(exc)[:200]
         return ""
 
 
@@ -216,8 +228,9 @@ def cloud_recognize(image=None, prompt="描述这张图片"):
     model = backend.get("model") or ""
     if not (base and key and model):
         return {"ok": False, "status": "needs_dependency",
-                "missing": "DPAPI 保险箱密钥（profile=%s）/ base_url / model"
-                           % backend.get("key_id", "agnes"),
+                "missing": "DPAPI 保险箱密钥（profile=%s）/ base_url / model%s"
+                           % (backend.get("key_id", "agnes"),
+                              ("（原因：%s）" % _KEY_REASON) if _KEY_REASON else ""),
                 "note": "云端识别未配置；本地分析请用 op=analyze（已可用）"}
     # R120：出站统一走 net_guard + 应用层 AI 审计（此前直连 urlopen，两道门都没过）。
     from .security import net_guard as _ng

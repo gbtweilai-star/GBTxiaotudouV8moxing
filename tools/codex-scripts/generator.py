@@ -75,7 +75,7 @@ def cred_read(provider: str, inject: dict | None = None) -> dict:
     return {"provider": provider, "支持": kinds, "说明": desc, "可用": have,
             "环境变量": env_st, "保险箱": vault_st,
             "判据": ("**可用**（至少一处有）" if have else
-                     "**needs_key**：环境变量未设 · 保险箱也没有这个文件 ⇒ **拒出网**")}
+                   "**needs_key**：环境变量未设 · 保险箱也没有这个文件 ⇒ **拒出网**")}
 
 
 def providers_body() -> dict:
@@ -84,13 +84,13 @@ def providers_body() -> dict:
     return {
         "生成端 provider": rows,
         "合计": {"provider 数": len(rows),
-                 "有凭据的": [r["provider"] for r in rows if r.get("可用")],
-                 "缺凭据的": [r["provider"] for r in rows if not r.get("可用")]},
+               "有凭据的": [r["provider"] for r in rows if r.get("可用")],
+               "缺凭据的": [r["provider"] for r in rows if not r.get("可用")]},
         "保险箱现状": {"目录": str(VAULT.relative_to(ROOT)),
-                       "盘上的 .dpapi": sorted(p.name for p in VAULT.glob("*.dpapi"))
-                       if VAULT.is_dir() else "**目录不在**"},
+                  "盘上的 .dpapi": sorted(p.name for p in VAULT.glob("*.dpapi"))
+                  if VAULT.is_dir() else "**目录不在**"},
         "诚实提醒": "DPAPI 是**用户级绑定**：文件在不在我能判，解不解得开要主人的身份。"
-                    "所以这里**只判存在性**，不把『我解不开』念成『你没配』。",
+        "所以这里**只判存在性**，不把『我解不开』念成『你没配』。",
     }
 
 
@@ -115,8 +115,8 @@ def cmd_gen(a) -> int:
             "ok": False, "拒单": "**凭据闸拦住**：needs_key（fail-closed，绝对不拿空 key 打上游）",
             "provider": a.provider, "现读": cred,
             "怎么配": ["设环境变量 %s" % cred["环境变量"]["名"],
-                       "或把密钥落进 DPAPI 保险箱 %s（**要过 auth_gate，主人发授权**）"
-                       % cred["保险箱"]["路径"]],
+                    "或把密钥落进 DPAPI 保险箱 %s（**要过 auth_gate，主人发授权**）"
+                    % cred["保险箱"]["路径"]],
             "我不会做什么": "不编 key、不用假 key 试探、不绕过闸",
         }, ensure_ascii=False, indent=1))
         return 3
@@ -131,7 +131,7 @@ def cmd_gen(a) -> int:
             "ok": False, "拒单": "**花费闸拦住**：生成会出网并花钱，必须显式 --confirm-cost",
             "provider": a.provider, "kind": kind, "作业": a.job_id,
             "两条路": ["先问主人这次要花多少（本模块**不编价格**）",
-                       "主人点头后加 --confirm-cost 再跑"],
+                    "主人点头后加 --confirm-cost 再跑"],
             "为什么不自动跑": "花费与出网是主人的点头范围；我不替主人拍板",
         }, ensure_ascii=False, indent=1))
         return 4
@@ -172,7 +172,7 @@ def cmd_selftest(a) -> int:
     ck("正控·『缺凭据』与保险箱盘上事实一致（不把解不开念成没配）",
        set(body["合计"]["缺凭据的"]) == set(PROVIDERS) or bool(body["合计"]["有凭据的"]),
        "盘上 .dpapi %d 个 · 有凭据 %s" % (len(body["保险箱现状"]["盘上的 .dpapi"]),
-                                        body["合计"]["有凭据的"] or "无"))
+                                    body["合计"]["有凭据的"] or "无"))
     ck("正控·保险箱只判存在性（不把解不开念成没配）",
        all("身份无关" in r["保险箱"]["注"] for r in rows),
        "每条都写了身份边界")

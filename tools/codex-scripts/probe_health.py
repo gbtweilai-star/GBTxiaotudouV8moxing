@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, ".")
 sys.stdout.reconfigure(encoding="utf-8")
 
-import gbt_allinone as gbt
+import gbt_allinone as gbt  # noqa: E402
 
 r = gbt.run_task("selfscan", {}, stamp=False)
 b = r.get("gbt_result", r)["result"]

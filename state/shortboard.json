@@ -1,27 +1,13 @@
 {
- "at": "2026-10-03T19:15:09",
- "count": 5,
+ "at": "2026-10-13T23:24:00",
+ "count": 4,
  "top": [
   {
    "dim": "故障",
    "weight": 95,
-   "what": "未清故障 10 条：['F3', 'F5', 'F9', 'F11', 'F12']",
+   "what": "未清故障 6 条：['F3', 'F5', 'F9', 'F12', 'F19']",
    "src": "state/排查台账.json",
    "how": "逐条结项或改账（改账要说清为什么不该算故障）"
-  },
-  {
-   "dim": "能力位",
-   "weight": 80,
-   "what": "1 个能力位没进图鉴：['omni_web']",
-   "src": "state/skill_atlas.json",
-   "how": "跑 omni.py build 重建图鉴"
-  },
-  {
-   "dim": "永久记忆",
-   "weight": 72,
-   "what": "触手库 243/245（有触手没有独立库）",
-   "src": "state/obsidian_vaults.json",
-   "how": "obsidian_vault op=provision（补齐）"
   },
   {
    "dim": "未实现",
@@ -31,18 +17,24 @@
    "how": "能做的做掉；做不了的说清谁有权修"
   },
   {
+   "dim": "覆盖",
+   "weight": 50,
+   "what": "覆盖矩阵读数 28.95h 未更新",
+   "src": "state/coverage_matrix.json",
+   "how": "重跑 tools/coverage_matrix.py"
+  },
+  {
    "dim": "许可",
    "weight": 40,
-   "what": "66 个能力位属 owner 类（要主人逐项许可才可调）",
+   "what": "92 个能力位属 owner 类（要主人逐项许可才可调）",
    "src": "state/cap_tags.json",
    "how": "主人在终端发许可；我没许可的不许动"
   }
  ],
  "all_dims": {
   "故障": 95,
-  "能力位": 80,
-  "永久记忆": 72,
   "未实现": 60,
+  "覆盖": 50,
   "许可": 40
  },
  "_口径": "每条带 src（哪个读数文件）；权重=影响面×堵塞度，**不许凭印象**"

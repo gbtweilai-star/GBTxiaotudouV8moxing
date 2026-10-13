@@ -84,27 +84,78 @@ def denoise_table(**_kw) -> dict:
             "口径": "降噪强度=图生图的油门；数值越高越偏离原图"}
 
 
-def upscale(src: str = "", out: str = "", factor: float = 2.0, unsharp: float = 0.6, **_kw) -> dict:
-    """高清放大（**今天就能跑的那一环**）：lanczos 重采样 + unsharp 提锐。"""
-    deny = _gate("upscale")
-    if deny:
-        return deny
+_MAIN_LEG = "comfy_native.upscale_4k（PIL LANCZOS + USM）"
+
+
+def upscale(src: str = "", out: str = "", factor=None, unsharp: float = 0.6,
+            scale=None, size=None, sharpen=None, **_kw) -> dict:
+    """高清放大（**今天就能跑的那一环**）：lanczos 重采样 + unsharp 提锐。
+
+    🔴 **2026-10-13 收敛（主人令「每一个调节都要触手可控」）** —— 这一位是**历史腿**，
+    主腿是 `%s`。两条腿的旋钮**不是都同一个量纲**，所以收敛分两类做，**不搞假统一**：
+
+    | 旋钮 | 能不能统一 | 为什么 |
+    |---|---|---|
+    | `scale` ↔ 旧名 `factor` | ✅ **真统一**（同一个语义：放大**倍数**） | 都是 `iw*scale` |
+    | `size`（目标**绝对宽**） | ✅ **真统一**（算成倍数走同一条路） | 最终宽度是同一个语义 |
+    | `sharpen`（主腿）vs `unsharp`（本腿） | ❌ **不统一，而且显式拒** | 主腿是 **PIL USM 的 percent 比例**（0.6⇒60%%）；本腿是 **ffmpeg `unsharp` 滤镜的 amount**（`unsharp=5:5:0.6`）。**两个算法、两个量纲**，改同名＝假统一（"名字一样、效果不一样"更害人） |
+
+    ⇒ 传 `sharpen` 给本腿一律 **fail-closed 并指路主腿**；同名不同量纲这种事**不许含糊**。
+    """ % _MAIN_LEG
+    # 🔴 顺序（2026-10-13）：**先判参数、后过门** —— 参数不对就当场拒，
+    #    不消耗授权、也不给"门拒了所以你不知道参数错在哪"的糊涂账。
     if not src:
         return {"ok": False, "error": "需要 src=源图路径"}
+    # ── 旋钮统一闸（在跑 ffmpeg **之前**判，拒了就不许动盘）──────────────────
+    if sharpen is not None:
+        return {"ok": False, "fail_closed": True, "refused": True, "op": "upscale",
+                "error": "本腿（历史腿）**没有 `sharpen` 这个旋钮** —— 它只有 `unsharp`，"
+                         "而且两者**量纲不同**（主腿是 PIL USM 的 percent 比例；本腿是 ffmpeg "
+                         "`unsharp` 滤镜的 amount）⇒ 不许改名冒充同一个旋钮。",
+                "要锐化就走去主腿": _MAIN_LEG,
+                "本腿的锐化旋钮": "unsharp（ffmpeg unsharp amount，默认 0.6）",
+                "几何旋钮（两条腿同名同义）": ["scale / factor（倍数）", "size（目标绝对宽）"]}
+    if factor is not None and scale is not None and float(factor) != float(scale):
+        return {"ok": False, "fail_closed": True, "op": "upscale",
+                "error": "`factor`（旧名）与 `scale`（新名）**同时给了且不相等** ⇒ 不知道听谁的",
+                "factor": factor, "scale": scale, "口径": "两个名字是同一个旋钮，别各给一个值"}
+    f = float(scale if scale is not None else (factor if factor is not None else 2.0))
+    used = {"scale": f, "unsharp": float(unsharp)}
     s = Path(src) if Path(src).is_absolute() else ROOT / src
     if not s.is_file():
         return {"ok": False, "error": f"源图不存在：{s}"}
-    o = Path(out) if out else s.with_name(f"{s.stem}-x{factor:g}{s.suffix}")
+    if size is not None:                       # 目标绝对宽 ⇒ 算成倍数（同一个语义）
+        try:
+            from PIL import Image
+            with Image.open(s) as im:
+                w0 = im.size[0]
+        except Exception as e:                                 # noqa: BLE001
+            return {"ok": False, "op": "upscale", "error": "读不到源图宽（size 要用它换算）：%s"
+                                                           % str(e)[:120]}
+        if float(size) <= 0 or w0 <= 0:
+            return {"ok": False, "op": "upscale", "fail_closed": True,
+                    "error": "size 必须 > 0（收到 %s）" % size}
+        f = float(size) / float(w0)
+        used["size"] = int(size)
+        used["scale"] = round(f, 6)
+    deny = _gate("upscale")                    # 参数齐了才过门
+    if deny:
+        return deny
+    o = Path(out) if out else s.with_name(f"{s.stem}-x{f:g}{s.suffix}")
     if not o.is_absolute():
         o = ROOT / o
     o.parent.mkdir(parents=True, exist_ok=True)
-    vf = f"scale=iw*{factor}:ih*{factor}:flags=lanczos,unsharp=5:5:{unsharp}"
+    vf = f"scale=iw*{f:g}:ih*{f:g}:flags=lanczos,unsharp=5:5:{used['unsharp']:g}"
     r = subprocess.run(["ffmpeg", "-y", "-i", str(s), "-vf", vf, "-q:v", "2", str(o)],
                        capture_output=True, text=True, encoding="utf-8",
                        errors="replace", timeout=300, cwd=str(ROOT))
     ok = r.returncode == 0 and o.is_file() and o.stat().st_size > 0
     out_d = {"ok": ok, "op": "upscale", "src": str(s), "out": str(o),
              "bytes": o.stat().st_size if o.is_file() else 0, "vf": vf}
+    out_d.update({"leg": "历史腿（ffmpeg lanczos + unsharp 滤镜）", "main_leg": _MAIN_LEG,
+                  "knobs": used,
+                  "同名同义": ["scale（新名）/ factor（旧名）", "size（目标绝对宽）"],
+                  "不统一且显式拒": "sharpen（量纲不同：主腿 PIL USM percent vs 本腿 ffmpeg amount）"})
     if not ok:
         out_d["error"] = (r.stderr or "")[-200:]
     return out_d

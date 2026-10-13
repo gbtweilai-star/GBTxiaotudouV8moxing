@@ -1,0 +1,72 @@
+{
+ "cap": "local_brain",
+ "domain": "mind",
+ "desc": "本地原生脑（只读骨架·内调）：本地模型=脑皮层（可换）·主机=纪律层（不可换）；五层链路（模型只做意图解析与结果解释）；五条红线（不许直接执行命令/不可逆必卡/缺参不许猜/每次留痕/身份不许改写）",
+ "safe": true,
+ "ops": [
+  {
+   "op": "check_exec",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "check_identity",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "check_idle",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "check_irreversible",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "check_params",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "check_trace",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "hardware",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "layers",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "models",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "multi_model",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "plan_switch",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "redlines",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "route",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "status",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "static-heuristic",
+ "handler_file": "gbt_allinone\\tools\\local_brain.py",
+ "params": [],
+ "params_hint": "",
+ "handler": "local_brain",
+ "slot": "g1-01",
+ "group": 1,
+ "role": "自研原生大模型底座（图4 · Ninfer 式专用推理引擎 + 单卡）"
+}

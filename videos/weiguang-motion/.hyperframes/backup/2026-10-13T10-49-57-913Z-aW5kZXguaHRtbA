@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, height=1920">
+    <title>微光 · GBT小土豆V8</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        margin: 0;
+        overflow: hidden;
+        background: #0b1021;
+      }
+      #root {
+        width: 100%;
+        height: 100%;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+      #bg {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, #0b1021 0%, #141e33 100%);
+      }
+      /* 「微光」：一处径向辉光。只用模型给的第三个色，外加一层极淡的白芯 */
+      #glow {
+        position: absolute;
+        left: calc(50% - 760px);
+        top: calc(42% - 760px);
+        width: 1520px;
+        height: 1520px;
+        background: radial-gradient(
+          circle at 50% 50%,
+          rgba(255, 255, 255, 0.07) 0%,
+          rgba(255, 255, 255, 0.03) 9%,
+          rgba(28, 39, 64, 0.85) 30%,
+          rgba(28, 39, 64, 0.38) 52%,
+          rgba(20, 30, 51, 0) 72%
+        );
+      }
+      #line {
+        position: absolute;
+        left: calc(50% - 120px);
+        top: 44.6%;
+        width: 240px;
+        height: 2px;
+        background: rgba(168, 182, 204, 0.55);
+      }
+      .group {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        text-align: center;
+      }
+      .txt {
+        display: inline-block;
+        font-family: system-ui, sans-serif;
+        color: #ffffff;
+        white-space: nowrap;
+      }
+      #sc1 {
+        top: 30.5%;
+      }
+      #sc2 {
+        top: 47.2%;
+      }
+      #sc3 {
+        top: 85.5%;
+      }
+      #t1 {
+        font-size: 150px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+      }
+      #t2 {
+        font-size: 52px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        color: #d6dfec;
+      }
+      #t3 {
+        font-size: 34px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        color: #96a6bc;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-pd7f" id="root" data-composition-id="main" data-start="0" data-duration="10" data-fps="30" data-width="1080" data-height="1920">
+      <div data-hf-id="hf-cyer" id="stage" class="clip" data-start="0" data-duration="10" data-track-index="0">
+        <div data-hf-id="hf-2xc0" id="bg"></div>
+        <div data-hf-id="hf-afw3" id="glow" data-layout-allow-overflow=""></div>
+        <div data-hf-id="hf-6b3j" id="line"></div>
+        <div data-hf-id="hf-g4ym" id="sc1" class="group"><span data-hf-id="hf-wuq5" class="txt" id="t1">微光</span></div>
+        <div data-hf-id="hf-c6ul" id="sc2" class="group"><span data-hf-id="hf-044g" class="txt" id="t2">在数字时代看见温度</span></div>
+        <div data-hf-id="hf-bf6s" id="sc3" class="group"><span data-hf-id="hf-oesv" class="txt" id="t3">—— GBT小土豆V8 ——</span></div>
+      </div>
+    </div>
+
+    <script>
+      // 文案 / 色板 / 节奏来自我们自己的大模型（agnes-2.5-flash），此处只做动效与排版。
+      // 机制复用自目录块 caption-kinetic-slam：单条 paused timeline + 逐元素入场 + 结束时 seek(0)。
+      (function () {
+        var tl = gsap.timeline({ paused: true });
+
+        // 静默的呼吸：整条片子只做一件事 —— 微光极缓地胀大
+        gsap.set(["#t1", "#t2", "#t3"], { opacity: 0 });
+        gsap.set("#line", { opacity: 0, scaleX: 0, transformOrigin: "50% 50%" });
+        gsap.set("#glow", { scale: 0.97, opacity: 0.72, transformOrigin: "50% 50%" });
+
+        tl.fromTo(
+          "#glow",
+          { scale: 0.97, opacity: 0.72 },
+          { scale: 1.06, opacity: 1, duration: 10, ease: "none" },
+          0,
+        );
+
+        // Hook —— 0.8s 单字重击后留白
+        tl.fromTo(
+          "#t1",
+          { y: 90, scale: 0.985, opacity: 0 },
+          { y: 0, scale: 1, opacity: 1, duration: 1.2, ease: "power3.out" },
+          0.8,
+        );
+        tl.to("#t1", { opacity: 0, duration: 0.6, ease: "power2.inOut" }, 2.2);
+
+        // Build —— 细线自中心横向展开 + 副标匀速铺陈
+        tl.fromTo(
+          "#line",
+          { scaleX: 0, opacity: 0 },
+          { scaleX: 1, opacity: 1, duration: 0.9, ease: "power2.out" },
+          2.55,
+        );
+        tl.fromTo(
+          "#t2",
+          { y: 36, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.0, ease: "power3.out" },
+          2.9,
+        );
+        tl.to("#t2", { opacity: 0, duration: 0.6, ease: "power2.inOut" }, 4.7);
+
+        // Resolve —— 落款长停留，末段 0.5 倍速淡出至静默
+        tl.fromTo(
+          "#t3",
+          { y: 24, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.4, ease: "power2.out" },
+          5.4,
+        );
+        tl.to("#t3", { y: -14, opacity: 0, duration: 2.4, ease: "power1.inOut" }, 6.9);
+
+        tl.seek(0);
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

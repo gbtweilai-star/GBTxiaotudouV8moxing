@@ -68,8 +68,12 @@ def run(op: str = "list", **kw) -> dict:
         src = str(kw.get("src") or "")
         if not src:
             return {"ok": False, "error": "需要 src=源图路径"}
+        # 🔴 2026-10-13（主人令「每一个调节都要触手可控」）：`grain`（颗粒强度）原来**传不进来** ——
+        #    `grade_chain(spec, grain)` 支持它，但 preview 没暴露 ⇒ 颗粒永远吃默认 6。
+        #    现在从 op=preview 透传（不传 = None = 走原默认，行为不变）。
         return fg.preview(src, str(kw.get("look") or kw.get("intent") or "filmic"),
-                          out=str(kw.get("out") or ""))
+                          out=str(kw.get("out") or ""), grain=kw.get("grain"),
+                          adjust=kw.get("adjust"))       # 补光族独立旋钮（brightness/contrast/saturation/gamma）
     if op == "qc":
         film = str(kw.get("film") or "")
         if not film:

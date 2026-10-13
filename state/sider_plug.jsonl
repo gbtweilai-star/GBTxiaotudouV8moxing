@@ -1,0 +1,5 @@
+{"at": "2026-10-10T04:17:38", "抓": "sider.check", "登录态": "**没有 —— 要在可见窗口登一次**", "开页": "Error: BrowserType.launch_persistent_context: Executable doesn't exist at C:\\Users\\ADMIN\\AppData\\Local\\ms-playwright\\"}
+{"at": "2026-10-10T04:18:27", "抓": "sider.check", "登录态": "**没有 —— 要在可见窗口登一次**", "开页": "**被 Cloudflare 挑战**"}
+{"at": "2026-10-10T04:20:45", "抓": "sider.check", "CDP接管": true, "Sider": "未登录"}
+{"at": "2026-10-10T04:21:16", "抓": "sider.check", "CDP接管": true, "Sider": "未登录"}
+{"at": "2026-10-10T04:21:51", "抓": "sider.check", "CDP接管": true, "Sider": "未登录"}

@@ -185,7 +185,7 @@ def main() -> int:
         print("      判据：%s" % s["judge"])
         print("      policy 分支原文：%s" % (btext or "（policy 里查不到这个 kind）"))
         print("      本件声明：%s ｜ %s" % (list(expect) if expect is not None else "None（闸不在作用域）",
-                                          s["expect_note"]))
+                                      s["expect_note"]))
         print("      在注册表：%s ｜ %s" % ("是" if reg else ("否" if reg is False else "取不到"), verdict))
         print("      另需：%s" % s["gate_extra"])
         if not good:

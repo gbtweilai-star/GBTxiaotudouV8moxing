@@ -29,6 +29,12 @@ QC_LEDGER = ROOT / "state" / "film_qc.jsonl"
 # ── 外观库（一处定义 · 全线下发）──────────────────────────────────────
 # 每条 = 完整 -vf 链（可含 split/blend 内部分支；零逗号表达式）
 LOOKS: dict[str, dict] = {
+    # 2026-10-13 加（主人令「每一个调节都要触手可控」）：**只调旋钮、不套味道**的出口。
+    # 没有它的话，"只想提一点亮"会被迫连带套上某个味道 —— 那是**替用户加戏**。
+    "原样": {
+        "label": "原样（不套味道 · 只给补光旋钮用）",
+        "chain": "null",
+    },
     "filmic": {
         "label": "电影感（ACES 近似 · 默认）",
         "chain": ("curves=preset=medium_contrast,"
@@ -39,8 +45,11 @@ LOOKS: dict[str, dict] = {
     },
     "做旧": {
         "label": "做旧（《末班义庄》原味 · 潮湿阴冷老片）",
+        # 🔴 2026-10-13 修「每一个调节都要触手可控」：这条链里原来把颗粒**写死成 6**（`noise=alls=6`），
+        #    而别的味道都走 `{grain}` 占位符 ⇒ **「做旧」的颗粒根本不可调**（藏在代码里的常数）。
+        #    改成 `{grain}`：默认值仍是 `default_grain()=6` ⇒ **行为一字不变**，但现在能被旋钮调。
         "chain": ("eq=brightness='0.022*sin(2*PI*t/2.7)':eval=frame,"
-                  "noise=alls=6:allf=t,vignette=PI/5,eq=saturation=0.9:gamma_b=1.03"),
+                  "noise=alls={grain}:allf=t,vignette=PI/5,eq=saturation=0.9:gamma_b=1.03"),
     },
     "潮湿阴冷": {
         "label": "潮湿阴冷（雨夜/尸气 · 冷青压暗）",
@@ -91,6 +100,31 @@ def default_grain() -> int:
     return 6
 
 
+# ── 补光族：**可独立调的旋钮**（不整包走味道）────────────────────────────
+# 主人令 2026-10-13「每一个调节都要触手可控」：原来只想"提一点亮"也得整包换味道 ——
+# 没有独立旋钮 ＝ 那个调节不可控。这里给出四个，键名与 ffmpeg `eq` 同款（不另造词）。
+ADJUST_LIMITS = {"brightness": (-1.0, 1.0), "contrast": (0.0, 3.0),
+                 "saturation": (0.0, 3.0), "gamma": (0.1, 10.0)}
+
+
+def adjust_chain(adjust: dict | None = None) -> str:
+    """把 `{旋钮: 数值}` 编成 ffmpeg `eq` 片段。**只认那四个键**，越界/不认 ⇒ 抛（由调用方 fail-closed）。"""
+    a = dict(adjust or {})
+    if not a:
+        return ""
+    bad = sorted(k for k in a if k not in ADJUST_LIMITS)
+    if bad:
+        raise ValueError("adjust 里不认这些旋钮：%s（只认 %s）" % (bad, sorted(ADJUST_LIMITS)))
+    parts = []
+    for k, (lo, hi) in ADJUST_LIMITS.items():
+        if k in a and a[k] is not None:
+            v = float(a[k])
+            if not (lo <= v <= hi):
+                raise ValueError("adjust[%s]=%s 越界（只许 %s..%s）" % (k, v, lo, hi))
+            parts.append("%s=%g" % (k, v))
+    return ("eq=" + ":".join(parts)) if parts else ""
+
+
 def grade_chain(spec: str = "filmic", grain: int | None = None) -> str:
     """取外观链（**共用件入口**）：`spec` 可以是外观名，也可以是人话（自动取味）。"""
     name = pick(spec)
@@ -126,13 +160,19 @@ def looks_list() -> dict:
             "口径": "外观名或人话都能用：pick('潮湿阴冷') → 潮湿阴冷；词即指令"}
 
 
-def preview(src: str, spec: str = "filmic", out: str = "") -> dict:
+def preview(src: str, spec: str = "filmic", out: str = "", grain: int | None = None,
+            adjust: dict | None = None) -> dict:
     """**先看再定**：单帧出样（不盲拍）。给 src 图 + 外观（名或人话）→ 出一张样片。"""
     s = Path(src) if Path(src).is_absolute() else ROOT / src
     if not s.is_file():
         return {"ok": False, "error": f"源图不存在：{s}"}
     look = pick(spec)
-    chain = grade_chain(look)
+    g = default_grain() if grain is None else int(grain)
+    try:                                     # 补光族：味道链**后面**再追加独立旋钮
+        adj = adjust_chain(adjust)
+    except ValueError as e:                  # 越界/不认的键 ⇒ 当场拒（不许静默丢掉）
+        return {"ok": False, "error": str(e), "adjust": dict(adjust or {})}
+    chain = grade_chain(look, g) + (("," + adj) if adj else "")
     o = Path(out) if out else ROOT / "output" / f"look-preview-{look}.jpg"
     if not o.is_absolute():
         o = ROOT / o
@@ -142,7 +182,7 @@ def preview(src: str, spec: str = "filmic", out: str = "") -> dict:
                        encoding="utf-8", errors="replace", timeout=300, cwd=str(ROOT))
     ok = r.returncode == 0 and o.is_file() and o.stat().st_size > 0
     return {"ok": ok, "look": look, "label": LOOKS[look]["label"], "src": str(s),
-            "out": str(o), "how": pick_explain(spec)["how"],
+            "out": str(o), "grain": g, "adjust": dict(adjust or {}), "how": pick_explain(spec)["how"],
             "error": (r.stderr or "")[-200:] if not ok else ""}
 
 

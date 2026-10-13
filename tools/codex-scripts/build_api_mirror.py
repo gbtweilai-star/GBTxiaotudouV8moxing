@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """把 Arm B 契约落进镜像副本 api_mirror.py（生产 api.py 一行不动）。"""
-import ast, os, sys
+import ast
+import os
+import sys
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 SRC = r"gbt_allinone\api.py"
@@ -68,4 +70,4 @@ text = "\n".join(lines) + "\n"
 ast.parse(text)
 open(DST, "w", encoding="utf-8", newline="\n").write(text)
 print("mirror written:", DST, os.path.getsize(DST), "B; PARSE_OK")
-print("branch now at line", [i + 1 for i, l in enumerate(lines) if "codex_thread_new" in l][:3])
+print("branch now at line", [i + 1 for i, ln in enumerate(lines) if "codex_thread_new" in ln][:3])

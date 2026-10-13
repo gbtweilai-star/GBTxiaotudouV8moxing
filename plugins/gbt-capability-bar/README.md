@@ -1,177 +1,123 @@
-# GBT小土豆V8 · 能力栏（DSH 客户端插件）· 设计稿 v0.1
-
-> Owner 2026-09-22：
-> **「对话面板就使用我们对话这个，把能力栏设计上去，以及我们的品牌 GBT小土豆V8，
-> 最好是 3D 立体感强、视觉感强，展示出那种运行轨迹一眼就看懂的意思」**
-> **「不破坏环境，我们加装其他的而已」**
-> **「只要能力全部不丢失就行」**
-
----
-
-## 一 · 为什么这是"加装"而不是"破坏环境"
-
-**证据（全部从 DSH 自己的包里读出来的，不是推测）：**
-
-```
-dsh-host-plugin-inventory          "Read-only Remote projection of current Cordis Loader plugin state"
-dsh-client-ui-settings-plugins     ← 插件管理界面本来就有
-dsh-client-ui-settings-plugin-inventory
-cordis-plugin-loader / -hmr / -group   ← 插件加载与热重载是 DSH 的地基
-```
-
-**⇒ DSH 把"扩展它"设计成了一等公民。** 往插件位里放东西是它邀请的方式。
-
-**而且 `dev:web` 正在跑**（实测 PID 26472）⇒ **改了会热重载，不用重启、不用重装。**
-
-**本插件对 DSH 的接触面（只有三条公开路径）：**
-```
-ctx.sidebarRightTabs              登记一个页签定义
-sidebar.right.pane.tab            贡献页签主体
-sidebar.right.pane.tab.title      贡献页签标题条
-```
-**官方范本原话**：*"Nothing here reaches into the Sidebar's store, its panes, or its sequence."*
-
----
-
-## 二 · 插槽图（从 DSH 客户端源码全量扫出来的）
-
-| 插槽 | 命中次数 | 用途 |
-|---|---:|---|
-| `sidebar.right.pane.tab` | 7 | **右侧栏页签主体 ← 能力栏插这** |
-| `conversation.input.dock` | 6 | 输入区停靠位 |
-| **`conversation.view`** | 5 | **对话视图环 ← 运行轨迹在这级** |
-| `sidebar.right.tab.document` / `.guide` | 5 | 右侧栏具名页签 |
-| **`conversation.session.header`** | 3 | **会话头部 ← 品牌插这** |
-| `conversation.session.header.actions` | 5 | 头部动作位 |
-| `conversation.composer.bar` | 4 | 输入条 |
-| `settings.plugins.tab` | 4 | 设置里的插件页签 |
-| `sidebar.footer.action` | 3 | 侧栏底部动作 |
-| `conversation.input.plan` / `.overlay` / `.model` / `.attachments` | 3 | 输入区各段 |
-| `conversation.session.header.lineage` / `.utilities` / `.corner` | 3 | 头部各段 |
-| `tool.view.cordis` · `plan.header` | 2 | 工具视图 / 计划头 |
-
-**⇒ Owner 的三件，落点已经定了：**
-
-| 要什么 | 插哪 | 为什么 |
-|---|---|---|
-| **能力栏** | `sidebar.right.pane.tab` | 与"文件/文档"同级，不挤占对话区 |
-| **品牌 GBT小土豆V8** | `conversation.session.header` | 一眼看见 |
-| **运行轨迹（3D）** | `conversation.view` | **与 Trajectory 同一级** |
-
----
-
-## 三 · 🔴 一条重要发现：**运行轨迹 DSH 本来就有**
-
-`dsh-client-ui-trajectory/README.zh.md` 原文：
-
-> **「Trajectory 标签页让你以按轮次组织的事件记录表和交互式时间概览检查 agent 活动。
-> 它对用户、助手、工具、嵌套子工具和压缩记录分组，标示轮次与步骤边界，
-> 并为所选记录打开检查器，显示 token 用量、耗时、输入、输出、计时、图片和附件摘要。
-> 流式输出期间，视图会跟随尾部；进行中的记录只显示开始标记，**不会虚构耗时**。」**
-
-**⇒ 你要的「运行轨迹一眼就看懂」，DSH 已经做出来了。**
-
-**而最后那句「不会虚构耗时」—— 那是**反假执行**在同一条线上。别家会编个耗时数字，它不编。**
-
-**⇒ 所以"3D 运行轨迹"这件事，正确做法可能是：**在 Trajectory 之上加一层 3D 视觉**，
-而不是重造一个。**（这一点需要你定：是增强它，还是另起一个视图。）
-
----
-
-## 四 · 插件结构（照官方范本 `dsh-client-ui-sidebar-documentpreview`）
-
-```
-plugins/gbt-capability-bar/
-  package.json          ← dsh.client.inject + platform:"web"
-  lib/client.js         ← 浏览器半边：export inject / export apply(ctx)
-  lib/index.js          ← 宿主半边（本插件不需要，留空）
-```
-
-**`package.json` 关键段：**
-```json
-"dsh": {
-  "client": {
-    "inject": ["@deepseek-ai/dsh-client-ui-slots",
-               "@deepseek-ai/dsh-client-ui-sidebar-right",
-               "@deepseek-ai/dsh-client-locale"],
-    "platform": "web"
-  }
-}
-```
-
-**插件就两个导出（官方范本原话）：**
-```ts
-export declare const inject: string[];                     // 要什么服务
-export declare function apply(ctx: ClientContext): void;   // 干什么
-```
-
----
-
-## 五 · 🔴 三条**未验证**项（不许把草案当成品）
-
-| # | 未验 | 后果 |
-|---|---|---|
-| 1 | `ctx.sidebarRightTabs.register({...})` 的**真实签名** | 我是从**注释**推的，没读实现。可能不这样调 |
-| 2 | `ctx.slots.register(slot, id, factory)` 的**参数顺序与返回** | 同上 |
-| 3 | **组件形态**：已确认是 **React**（trajectory README 原文「只覆盖 **React** 可见窗口」），但 React 从哪来（全局 / DSH 转出 / 版本）**未验** | 我第一版误写了 Vue —— **已删并留证在此** |
-
-**⇒ 把这些未验项读源码确认之前，`lib/client.js` 不许被当成"能加载的插件"。**
-**它现在只注册一个"说真话的占位"（明写"注册 API 尚未验证"），不渲染假界面。**
-
----
-
-## 六 · 三条自律（这部分是定的）
-
-**① 不改 DSH 一行源码** —— 只走三条公开注册路径。
-
-**② 能力一个都不丢** —— 数据从**活源**读，**不在插件里硬编码任何能力名**。
-硬编码必然过期 —— 那正是今晚「自我认知失真」那个坑的同型（注入的 82 个能力名 82 个不在册）。
-
-**③ 拿不到数据就说拿不到** —— 显示「源未接」+ 怎么接，
-**绝不用一个空的漂亮界面冒充"能力栏已就绪"**。
-
----
-
-## 七 · 能力数据从哪来（三条源，按序试）
-
-```
-① window.__GBT_CAPS__            宿主注入（GBT 侧启动时挂上去）
-② GET /api/gbt/capabilities      本机能力目录端点（面板或轻量 sidecar 提供）
-③ 都拿不到 → 如实显示「源未接」+ 上面两条的接法
-```
-
-**为什么不直接读 `caps_registry.py`**：那是 Python，跑在服务端。
-**客户端要的是**已投影好的目录**。所以要在 GBT 侧开一个只读端点，
-**把它作为"能力目录的唯一出口"，客户端不复制第二份。**
-
----
-
-## 八 · 落地顺序（每步留痕）
-
-| 步 | 做什么 | 依赖 | 验证方式 |
-|---|---|---|---|
-| **1** | 读 `dsh-client-ui-sidebar-documentpreview/lib/client.js`（**实现**，不是注释），抄真实签名 | 无 | 能写出确切调用式 |
-| **2** | 写最小可加载插件（只一个空页签） | 步 1 | 刷新页面后右侧栏出现"能力栏"页签 |
-| **3** | GBT 侧开只读端点 `/api/gbt/capabilities` | 无（可用 python -m http 之类轻量方式） | curl 能拿到 158 项 |
-| **4** | 页签里渲染 158 项 + 30 域分组 | 步 2+3 | **数目对得上：158 / 30** |
-| **5** | 加 GBT小土豆V8 品牌（`conversation.session.header`） | 步 2 | 头部出现品牌 |
-| **6** | 3D 视觉（能力球那套手写 3D 搬进来） | 步 4 | 能转、能点、状态色对 |
-
-**⇒ 步 4 的验收判据就是 Owner 那句「能力全部不丢失」：**
-**界面上的能力数必须等于注册表里的能力数，一个不能少。少一个就是失败。**
-
----
-
-## 九 · 卡点（如实报）
-
-```
-内存 94.6% · 空闲 0.4 GB
-```
-**写插件不吃内存**（就是写文件）。
-**但步 2/4/5/6 的验证要刷新页面 = 起浏览器渲染。**
-⇒ **写可以现在写；验证要等内存腾出来。**
-
----
+# gbt-capability-bar · GBT小土豆V8 能力栏（DSH 本地插件 · A 腿）
 
 > 开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属
-> 设计稿 v0.1 · 2026-09-22 · 插槽图与插件结构均为 DSH 源码实测；三条未验项已单列
+>
+> **现役：`gbt-potato-capability-bar-v1` · 宿主 v1.0.0** —— 包名即 specifier（换代机关，见第五节）。
+> 本 README 取代 2026-09-22 的「设计稿 v0.1」（那份的三条"未验项"已全部落地：插槽写法照
+> `plugins/gbt-master` 的活样板，bundle 形态、`dsh.client.inject`、插槽 id 全部实测可用）。
+>
+> 页面本体（B 腿）在 `holo_pet_w3/capability-bar/index.html`（自包含 · 零外链 · 零远端取数）。
+> 本插件**只负责把它嵌进官方 APP**：左栏脚部一格 + `shell.overlay` 浮层 iframe（零开窗）。
+
+## 一 · 主人令与口径（2026-10-08）
+
+| 原话 | 落法 |
+|---|---|
+| 「记得能力栏精细设计一下」 | 页面五条精细设计（一屏可读 / 三态一色 / 数据新鲜度 / 零打扰 / 可点到处）逐条在 `docs/能力栏-精细设计.md` |
+| 「使用官方的 APP 来改造」 | 不另起界面：**加装**在 DSH 官方 APP 里 —— 左栏脚部一格 + 浮层内嵌；**不占品牌位、不动 gbt-master 的任何一格** |
+| 「只要能力全部不丢失就行」 | 页面把 **240 位一位一格**全画出来（三边零未绑），一个不落；"不丢失"的证据 = 绑定台账三边计数守恒 |
+| 「不破坏环境，我们加装其他的而已」 | 宿主半边**只读**（无写盘原语）；插件只注册两个插槽；不改 DSH 一行源码（只走 `webServer.register` 与公开插槽） |
+
+## 二 · 与 gbt-master（`plugins/gbt-master`）的关系 —— 加法，不加锁
+
+| 面 | gbt-master | 本件 | 会不会打架 |
+|---|---|---|---|
+| 左栏脚部 | `sidebar.footer.action`：`gbt-panels`(40) / `gbt-godview`(41) | 同槽 `gbt-capbar`(**42**) | **不会**：list 槽多占用，本件 order 排在它俩之后 |
+| 浮层 | `shell.overlay`：`gbt-panel-layer`(40) | 同槽 `gbt-capbar-layer`(**41**) | **不会**：id 不同、两层各自开关 |
+| 品牌位 | `sidebar.brand.mark/.name` + `conversation.hero.brand.mark` | **一格不碰** | — |
+| 首页注入 | `webServer.tapIndex`（自愈器 `heal.js`） | **不调 tapIndex** | **不会**：两家都注会变双份刷新源；本件只在**自己的页**里注入数据脚本 |
+| 自报诊断 | `POST /gbt-master/diag` | `POST /gbt-capability-bar/diag` | 各存各的内存，互不覆盖 |
+| 页面自愈戳 | `documentElement.dataset.gbtGen`（判据！） | **只写 `data-gbt-capbar`** | **🔴 关键**：写 `gbtGen` 会让对方的自愈器把整页判成"旧世代"而反复刷新 |
+| 静态白名单 | `/gbt-master/fs/*` 放行整套工作区面板 | `/gbt-capability-bar/fs/*` 只放行 **6 条**（见第四节） | 各走各的前缀 |
+
+## 三 · 文件
+
+| 文件 | 作用 |
+|---|---|
+| `package.json` | 包声明：`name=gbt-potato-capability-bar-v1`（包名即 specifier）；`main`=宿主半边；`exports["./client"]`=浏览器半边；`dsh.client.platform=web` |
+| `lib/host.js` | 宿主半边：目录 JSON / **现读数据件 `live.js`** / 页面包装注入 / 只读白名单静态路由 / 自报诊断。**只读**：无写盘原语、不碰 `~/.dsh`（判据 C9/C11 机检） |
+| `lib/client.js` | 浏览器半边（已构建 bundle：`window.__ModuleLoader__.load`）· 只 `require("react")` · 两个插槽 + 浮层组件 |
+| `tools/verify-host.mjs` | **进程外真跑**宿主（假 ctx 起真 apply，逐条路由打真请求；白名单含负对照） |
+| `tools/verify-client-apply.mjs` | **无头验收**浏览器半边（真 bundle 装进假装载器跑 apply + 渲染一层浮层读 iframe） |
+| `README.md` | 本文件 |
+
+## 四 · 只读白名单（默认拒绝，面比 gbt-master 窄得多）
+
+放行只有 **1 个前缀 + 5 个精确文件**：
+
+```
+holo_pet_w3/capability-bar/**                 ← 本页自身（index.html / run-evidence.js）
+holo_pet_w3/energy/index.html                 ← 详页：能量与绑定（240 条逐条）
+holo_pet_w3/energy/energy-data.js
+holo_pet_w3/capabilities/index.html           ← 详页：能力统计（326 项逐条）
+holo_pet_w3/capabilities/capabilities-data.js
+assets/brand/logo-potato-64.png               ← 品牌标
+```
+
+别的一律 404（含 `state/`、`memory/`、`gbt_allinone/`、`plugins/`、点开头文件、非白名单扩展名）。
+**负对照实测 9 条越界路径全 404**（含 `%2e%2e` 编码穿越、`../` 上级目录、`win.ini`、`.env`）。
+
+## 五 · 挂载（照 gbt-master 的实测路径；**本节改动一律「未执行」**）
+
+```powershell
+# ① 装进 web profile —— 必须用 file:（浏览器名册只扫树内包）
+node "$env:LOCALAPPDATA\npm-cache\_npx\1e7f6d9597241db0\node_modules\@deepseek-ai\dsh\lib\bin.js" `
+  plugin --profile web add "file:C:/Users/ADMIN/Desktop/GBT小土豆V8/plugins/gbt-capability-bar"
+
+# ② 组合行写进用户补丁层（该 profile 是 patchReload: live，存盘即热重组）
+#    ~/.dsh/profiles/web/cordis.patch.yml 第 63-68 行是 gbt-master 的 - insert: 项
+#    ⇒ 在**同一个 list 末尾**（第 68 行之后）增一项：
+#    - id: gbt-capability-bar
+#      name: 'gbt-potato-capability-bar-v1'
+#      config:
+#        workspace: 'C:/Users/ADMIN/Desktop/GBT小土豆V8'
+
+# ③ 浏览器 F5 一次（客户端模块随页面引导载荷入册；已开着的页面不会凭空多出一格）
+```
+
+**怎么判"接上没有"**（不用截图、一条 GET）：
+
+```powershell
+curl.exe -s http://127.0.0.1:3080/gbt-capability-bar     # 或浏览器直开同路径
+```
+
+- `ok:true` + `counts.caps:240` ⇒ 宿主半边在；
+- `clientDiag:null` ⇒ **还没在任何页面生效**（要一次 F5）；
+- `clientDiag.diag:["footBar:ok","overlay:ok"]` ⇒ 浏览器半边两格都注册上了。
+
+**换代 = 换 specifier**（DSH 把包元数据按 specifier 缓存到进程重启）：改宿主代码要换
+`package.json` 的 `name`（如 `-v2`）并同步组合行 `name`；旧 id 在 `lib/client.js` 顶部按
+gbt-master 的办法留**无副作用空壳**，重启后自然消失。
+
+## 六 · 撤销（两条都行）
+
+1. **只撤挂载**：把 `cordis.patch.yml` 里 `- id: gbt-capability-bar` 那一段删掉 → 热重组即卸载，官方 APP 回原样；
+2. **连包一起撤**：`node <dsh bin> plugin --profile web remove gbt-potato-capability-bar-v1`
+   （⚠️ 照 gbt-master §4.8 的教训：**删旧代之前先重启 DSH**，否则缓存还指着已删的包 ⇒ 整页红字）。
+
+## 七 · 判据（三条，全部可复跑）
+
+```powershell
+py -3.14 tools/codex-scripts/capability-bar-check.py refresh   # 重生成运行证据快照（近 24h 有界窗口）
+py -3.14 tools/codex-scripts/capability-bar-check.py --check   # 判据 11 条 + 负对照 8 条（退出码 0/1）
+node plugins/gbt-capability-bar/tools/verify-host.mjs          # 宿主进程外真跑 13 条（含白名单负对照）
+node plugins/gbt-capability-bar/tools/verify-client-apply.mjs  # 浏览器半边无头验收 13 条（含 3 条负对照）
+```
+
+现读（2026-10-08 本轮）：
+
+```
+判据 PASS 11 · FAIL 0 ｜ 负对照 PASS 8 · FAIL 0 ｜ 端到端(--live) PASS
+宿主进程外真跑：PASS 13 · FAIL 0
+浏览器半边无头验收：PASS 13 · FAIL 0
+```
+
+## 八 · 已知观察（**只记录，一件未动**）
+
+1. **gbt-master 的自愈器 `mounted()` 可能恒假**：`plugins/gbt-master/lib/heal.js` 里
+   `mounted()` 判的是 `.gbtm-gv`，而该 class 在其 `lib/client.js` 里**只出现在 CSS 段**
+   （grep 计数：3 处，全在样式字符串；v9 已把带该 class 的会话头按钮删掉）。
+   ⇒ 若非我漏看，`stamp() === gen && mounted()` 永远不会为真，页面可能被刷到 3 次上限。
+   **本件不动它**（那是 gbt-master 的件），只在本 README 与 `docs/能力栏-精细设计.md` 留档。
+2. `plugins/gbt-capability-bar/README.md` 的**旧版**（2026-09-22 设计稿 v0.1）已被本文件取代；
+   `lib/client.js` 的旧草案（自称"不许被当成能加载的插件"）同样已被真实实现取代。

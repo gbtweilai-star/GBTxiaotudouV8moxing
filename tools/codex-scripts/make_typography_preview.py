@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 OUT = BASE / "assets" / "brand" / "_preview-typography.png"
 
 PANEL = (8, 17, 31)
@@ -46,6 +46,7 @@ def MONO(sz):
 def atmosphere(size):
     w, h = size
     img = Image.new("RGBA", size, (4, 7, 15, 255))
+
     def rad(cx, cy, r, col, a0, stop=0.7):
         lay = Image.new("L", size, 0)
         px = lay.load()

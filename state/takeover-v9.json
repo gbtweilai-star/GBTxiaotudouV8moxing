@@ -1,0 +1,573 @@
+{
+ "at": "2026-10-10T03:40:04",
+ "外部件": {
+  "工作树": "C:\\Users\\ADMIN\\Desktop\\GBT小土豆V9",
+  "入口": "GBT小土豆V9-总控台.cmd",
+  "在盘": true,
+  "入口在": true
+ },
+ "她的AI位置": {
+  "文件": "core/brain.py",
+  "原口径": "OPENAI_BASE_URL 默认 http://127.0.0.1:8317/v1 · API_KEY tk-brain-000"
+ },
+ "换脑口径": {
+  "OPENAI_BASE_URL": "http://127.0.0.1:11434/v1",
+  "OPENAI_API_KEY": "ollama",
+  "BRAIN_MODELS": "qwen3:0.6b",
+  "OMNIVOICE_PORT": "3900"
+ },
+ "脑实测": {
+  "她的原口（未换脑）": {
+   "OPENAI_BASE_URL": "https://api.teamorouter.com/v1",
+   "OPENAI_API_KEY": "tk-brain-000",
+   "BRAIN_MODELS": "gpt-4o-mini",
+   "通": false,
+   "为什么": "HTTPError: HTTP Error 401: Unauthorized"
+  },
+  "我们的口（换脑用这个）": {
+   "OPENAI_BASE_URL": "http://127.0.0.1:11434/v1",
+   "OPENAI_API_KEY": "ollama",
+   "BRAIN_MODELS": "qwen3:0.6b",
+   "OMNIVOICE_PORT": "3900",
+   "通": true,
+   "回": "在线",
+   "秒": 8
+  }
+ },
+ "能力模块数": 133,
+ "能力逐条": [
+  {
+   "模块": "action_loop.py",
+   "字节": 10852
+  },
+  {
+   "模块": "actuator.py",
+   "字节": 16441
+  },
+  {
+   "模块": "agent_chat.py",
+   "字节": 17594
+  },
+  {
+   "模块": "alt_impl.py",
+   "字节": 23539
+  },
+  {
+   "模块": "avatar_face.py",
+   "字节": 21145
+  },
+  {
+   "模块": "avatar_meta.py",
+   "字节": 11690
+  },
+  {
+   "模块": "avatar_motion.py",
+   "字节": 15907
+  },
+  {
+   "模块": "avatar_rig.py",
+   "字节": 14162
+  },
+  {
+   "模块": "biz_ops.py",
+   "字节": 26048
+  },
+  {
+   "模块": "ble_audit.py",
+   "字节": 3536
+  },
+  {
+   "模块": "ble_control.py",
+   "字节": 10673
+  },
+  {
+   "模块": "blender.py",
+   "字节": 29625
+  },
+  {
+   "模块": "blindspot.py",
+   "字节": 10287
+  },
+  {
+   "模块": "blueprint.py",
+   "字节": 9981
+  },
+  {
+   "模块": "bone_binding.py",
+   "字节": 10301
+  },
+  {
+   "模块": "boot_scan.py",
+   "字节": 11697
+  },
+  {
+   "模块": "brain.py",
+   "字节": 4252
+  },
+  {
+   "模块": "browser_plug.py",
+   "字节": 10077
+  },
+  {
+   "模块": "cadgen.py",
+   "字节": 9867
+  },
+  {
+   "模块": "capability_map.py",
+   "字节": 24356
+  },
+  {
+   "模块": "capability_panels.py",
+   "字节": 19889
+  },
+  {
+   "模块": "channel_heal.py",
+   "字节": 15214
+  },
+  {
+   "模块": "chat_sessions.py",
+   "字节": 6054
+  },
+  {
+   "模块": "cloud_bind.py",
+   "字节": 9159
+  },
+  {
+   "模块": "cloud_plugin.py",
+   "字节": 8559
+  },
+  {
+   "模块": "cloud_plugins.py",
+   "字节": 48531
+  },
+  {
+   "模块": "cloud_runner.py",
+   "字节": 39760
+  },
+  {
+   "模块": "cloud_terminal.py",
+   "字节": 30660
+  },
+  {
+   "模块": "coder.py",
+   "字节": 5128
+  },
+  {
+   "模块": "cognition_system.py",
+   "字节": 21826
+  },
+  {
+   "模块": "commander.py",
+   "字节": 13754
+  },
+  {
+   "模块": "compute_router.py",
+   "字节": 12930
+  },
+  {
+   "模块": "console_hub.py",
+   "字节": 14365
+  },
+  {
+   "模块": "creator_watch.py",
+   "字节": 5989
+  },
+  {
+   "模块": "cross_scan_fleet.py",
+   "字节": 7266
+  },
+  {
+   "模块": "cutout.py",
+   "字节": 6079
+  },
+  {
+   "模块": "db_fleet.py",
+   "字节": 28640
+  },
+  {
+   "模块": "delivery_gate.py",
+   "字节": 6969
+  },
+  {
+   "模块": "deploy_ledger.py",
+   "字节": 11598
+  },
+  {
+   "模块": "detail_habit.py",
+   "字节": 7248
+  },
+  {
+   "模块": "dh_boot.py",
+   "字节": 6715
+  },
+  {
+   "模块": "dh_memory.py",
+   "字节": 7395
+  },
+  {
+   "模块": "dh_teach.py",
+   "字节": 5895
+  },
+  {
+   "模块": "eigenflux.py",
+   "字节": 9075
+  },
+  {
+   "模块": "excluded_models.py",
+   "字节": 2959
+  },
+  {
+   "模块": "expand.py",
+   "字节": 9951
+  },
+  {
+   "模块": "file_binding.py",
+   "字节": 16623
+  },
+  {
+   "模块": "film_studio.py",
+   "字节": 37559
+  },
+  {
+   "模块": "film_themes.py",
+   "字节": 5353
+  },
+  {
+   "模块": "fleet_live.py",
+   "字节": 6992
+  },
+  {
+   "模块": "full_power.py",
+   "字节": 6623
+  },
+  {
+   "模块": "gbtv9_cloud.py",
+   "字节": 10666
+  },
+  {
+   "模块": "gui_agent.py",
+   "字节": 27660
+  },
+  {
+   "模块": "gui_grant.py",
+   "字节": 5711
+  },
+  {
+   "模块": "gui_perception.py",
+   "字节": 14081
+  },
+  {
+   "模块": "hacker_brain_v9.py",
+   "字节": 7987
+  },
+  {
+   "模块": "hooks.py",
+   "字节": 8908
+  },
+  {
+   "模块": "isolated_bus.py",
+   "字节": 2527
+  },
+  {
+   "模块": "kit_packs.py",
+   "字节": 21794
+  },
+  {
+   "模块": "knowledge.py",
+   "字节": 12890
+  },
+  {
+   "模块": "lipsync.py",
+   "字节": 4751
+  },
+  {
+   "模块": "llm_roles.py",
+   "字节": 4846
+  },
+  {
+   "模块": "local_llm_probe.py",
+   "字节": 6147
+  },
+  {
+   "模块": "local_model.py",
+   "字节": 10236
+  },
+  {
+   "模块": "local_model_probe.py",
+   "字节": 7620
+  },
+  {
+   "模块": "local_secret.py",
+   "字节": 2571
+  },
+  {
+   "模块": "longrun.py",
+   "字节": 7770
+  },
+  {
+   "模块": "loop_graph.py",
+   "字节": 10687
+  },
+  {
+   "模块": "loop_verifier.py",
+   "字节": 15328
+  },
+  {
+   "模块": "mailbox_fleet.py",
+   "字节": 17793
+  },
+  {
+   "模块": "market_research.py",
+   "字节": 17548
+  },
+  {
+   "模块": "mesh.py",
+   "字节": 2554
+  },
+  {
+   "模块": "mic_io.py",
+   "字节": 15463
+  },
+  {
+   "模块": "mirror.py",
+   "字节": 8231
+  },
+  {
+   "模块": "modular_deploy.py",
+   "字节": 10446
+  },
+  {
+   "模块": "montage.py",
+   "字节": 10136
+  },
+  {
+   "模块": "native_browser.py",
+   "字节": 7113
+  },
+  {
+   "模块": "no_begging.py",
+   "字节": 4798
+  },
+  {
+   "模块": "octop_bridge.py",
+   "字节": 13825
+  },
+  {
+   "模块": "octop_fusion.py",
+   "字节": 18416
+  },
+  {
+   "模块": "octop_intake.py",
+   "字节": 8270
+  },
+  {
+   "模块": "operation_bindings.py",
+   "字节": 22565
+  },
+  {
+   "模块": "page_control.py",
+   "字节": 12856
+  },
+  {
+   "模块": "page_registry.py",
+   "字节": 18816
+  },
+  {
+   "模块": "persona.py",
+   "字节": 6638
+  },
+  {
+   "模块": "pipelines.py",
+   "字节": 21784
+  },
+  {
+   "模块": "playbooks.py",
+   "字节": 23317
+  },
+  {
+   "模块": "post_studio.py",
+   "字节": 17675
+  },
+  {
+   "模块": "proactive.py",
+   "字节": 7767
+  },
+  {
+   "模块": "production_gate.py",
+   "字节": 16710
+  },
+  {
+   "模块": "protected_assets.py",
+   "字节": 4149
+  },
+  {
+   "模块": "providers.py",
+   "字节": 6263
+  },
+  {
+   "模块": "provision.py",
+   "字节": 14077
+  },
+  {
+   "模块": "publish_platform.py",
+   "字节": 13804
+  },
+  {
+   "模块": "pulse.py",
+   "字节": 14433
+  },
+  {
+   "模块": "pulse_sandbox.py",
+   "字节": 11168
+  },
+  {
+   "模块": "refusal_router.py",
+   "字节": 10120
+  },
+  {
+   "模块": "repo_ways.py",
+   "字节": 11489
+  },
+  {
+   "模块": "retire.py",
+   "字节": 13563
+  },
+  {
+   "模块": "sandbox_emit.py",
+   "字节": 17619
+  },
+  {
+   "模块": "sandbox_exec.py",
+   "字节": 12676
+  },
+  {
+   "模块": "sched.py",
+   "字节": 7512
+  },
+  {
+   "模块": "self_learn.py",
+   "字节": 10758
+  },
+  {
+   "模块": "senses_gate.py",
+   "字节": 8751
+  },
+  {
+   "模块": "series.py",
+   "字节": 10530
+  },
+  {
+   "模块": "shot_gen.py",
+   "字节": 9627
+  },
+  {
+   "模块": "sider_plug.py",
+   "字节": 6519
+  },
+  {
+   "模块": "solidify.py",
+   "字节": 8580
+  },
+  {
+   "模块": "stigmergy.py",
+   "字节": 6140
+  },
+  {
+   "模块": "stop_policy.py",
+   "字节": 10864
+  },
+  {
+   "模块": "studio.py",
+   "字节": 15857
+  },
+  {
+   "模块": "swallow.py",
+   "字节": 2263
+  },
+  {
+   "模块": "takeover.py",
+   "字节": 8029
+  },
+  {
+   "模块": "tentacle_agent.py",
+   "字节": 10372
+  },
+  {
+   "模块": "tentacle_bootstrap.py",
+   "字节": 8880
+  },
+  {
+   "模块": "tentacle_equip.py",
+   "字节": 14202
+  },
+  {
+   "模块": "tentacle_fleet.py",
+   "字节": 48415
+  },
+  {
+   "模块": "tentacle_gui.py",
+   "字节": 6240
+  },
+  {
+   "模块": "tentacle_identity.py",
+   "字节": 14024
+  },
+  {
+   "模块": "tentacle_keys.py",
+   "字节": 7665
+  },
+  {
+   "模块": "tentacle_orders.py",
+   "字节": 8408
+  },
+  {
+   "模块": "tentacle_profession.py",
+   "字节": 18819
+  },
+  {
+   "模块": "tentacle_scale.py",
+   "字节": 8164
+  },
+  {
+   "模块": "tentacle_store.py",
+   "字节": 9035
+  },
+  {
+   "模块": "tool_bay.py",
+   "字节": 16392
+  },
+  {
+   "模块": "tripo.py",
+   "字节": 34133
+  },
+  {
+   "模块": "uia_control.py",
+   "字节": 6934
+  },
+  {
+   "模块": "ux_doctrine.py",
+   "字节": 14067
+  },
+  {
+   "模块": "vision_loop.py",
+   "字节": 8128
+  },
+  {
+   "模块": "voice_center.py",
+   "字节": 10306
+  },
+  {
+   "模块": "voice_control.py",
+   "字节": 12525
+  },
+  {
+   "模块": "witness_onboard.py",
+   "字节": 6626
+  },
+  {
+   "模块": "workflows.py",
+   "字节": 22955
+  }
+ ],
+ "口径": "**不改她一行**：只设环境变量把她的唯一 LLM 出口指到我们的口，然后原样调她的入口"
+}

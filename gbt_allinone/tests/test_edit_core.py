@@ -219,8 +219,13 @@ class TestTheTwoOutletsAgree(unittest.TestCase):
 
     def test_draft_marks_itself_unverified(self):
         d = ec.to_jianying_draft(self.tl, self.tmp / "draft2", "case")
-        self.assertFalse(d["verified"], "本机没有剪映 ⇒ 这条路必须自标**未验**")
+        # 🔴 2026-10-13 更新：加了**结构自检** ⇒ 自标从 `False` 变成 `"structure_only"`。
+        #    **但边界没变**：本机没有剪映 ⇒「剪映能不能真打开」**仍未验** —— 这一句必须还在。
+        self.assertEqual(d["verified"], "structure_only",
+                         "自检过了也只能标 structure_only（剪映打开未验）")
+        self.assertTrue(d["selfcheck"]["ok"], d.get("selfcheck"))
         self.assertIn("未验", d["note"])
+        self.assertIn("剪映", d["note"], "边界句不许丢：未验的到底是哪一件事要写清")
         names = sorted(p.name for p in (self.tmp / "draft2" / "case").iterdir())
         self.assertEqual(names, ["draft_content.json", "draft_meta_info.json"])
         c = json.loads((self.tmp / "draft2" / "case" / "draft_content.json")
@@ -252,6 +257,173 @@ class TestItPassesItsOwnDistilledRules(unittest.TestCase):
         self.assertEqual(r["mode"], "graph")
         self.assertTrue(any("变速" in w for w in r["why"]),
                         "重编码的理由必须写出来（不然就成了无理由的违规）：%r" % r["why"])
+
+
+class TestJianyingDraftStructureOnly(unittest.TestCase):
+    """（下面还有两条：失败不留半成品 + 渲前预算闸）"""
+
+    """剪映草稿出口：**结构自检**（2026-10-13 加）。
+
+    🔴 **边界如实**：本机**没装剪映** ⇒ 「剪映能不能真打开这份草稿」**没被验过**。
+    本判据只证**结构自洽**（文件在 / JSON 可解析 / canvas·fps·duration 与时间线对得上 /
+    时间是整数微秒 / 素材路径逐个在盘），**不许**把它念成"剪映能打开"。
+    """
+
+    def test_draft_passes_its_own_selfcheck(self):
+        # ⚠️ 落点必须**在仓内**（`projects/`·`outputs/`·`.scratch/`）—— 本能力位的写面是自钉的，
+        #    用 `tempfile`（仓外）会被 `write_guard` 当场拒（这也是判据在正常工作）。
+        import shutil
+        tmp = Path(".scratch") / "edit_core_draft_judge"
+        if tmp.exists():
+            shutil.rmtree(tmp, ignore_errors=True)
+        tmp.mkdir(parents=True, exist_ok=True)
+        clip = _mk_clip(tmp / "a.mp4", 1.5)
+        tl = {"name": "judge-draft", "canvas": {"w": 64, "h": 64, "fps": 30},
+              "tracks": {"video": [
+                  {"src": str(clip), "t0": 0.0, "dur": 1.0, "src_start": 0.0},
+                  {"src": str(clip), "t0": 1.0, "dur": 1.0, "src_start": 0.5,
+                   "transition_in": {"kind": "fade", "dur": 0.5}}],
+                  "text": [{"text": "甲", "t0": 0.2, "dur": 1.8}]}}
+        r = ec.run("draft", timeline=tl, out=str(tmp / "out"), name="judge-draft")
+        self.assertTrue(r["ok"], r)
+        self.assertEqual(r["verified"], "structure_only",
+                         "自检过了也只能标 structure_only（剪映打开未验）：%s" % r.get("verified"))
+        sc = r["selfcheck"]
+        self.assertTrue(sc["ok"], sc)
+        self.assertEqual(sc["failed"], [], sc)
+        d = Path(r["dir"])
+        c = json.loads((d / "draft_content.json").read_text(encoding="utf-8"))
+        # 与 **layout 单源**对得上（微秒）—— 这条是真判据，不是"文件在就算过"
+        self.assertEqual(c["duration"], int(ec.layout(tl)["duration"] * 1_000_000), c["duration"])
+        self.assertEqual(c["fps"], 30.0)
+        self.assertEqual(c["canvas_config"]["width"], 64)
+        self.assertEqual(len([t for t in c["tracks"] if t["type"] == "video"][0]["segments"]), 2)
+        for m in c["materials"]["videos"]:
+            self.assertTrue(Path(m["path"]).is_file(), "素材路径写错了：%s" % m["path"])
+        self.assertIn("draft_meta_info", "".join(r["files"]))
+
+    def test_selfcheck_really_bites(self):
+        """负控：把素材路径改成不存在的 ⇒ 自检必须**报红**（否则这自检就是摆设）。"""
+        tmp = Path(tempfile.mkdtemp(prefix="gbt_ec_draft_bad_"))
+        tl = {"name": "judge-bad", "canvas": {"w": 64, "h": 64, "fps": 30},
+              "tracks": {"video": [{"src": str(tmp / "并不存在.mp4"), "dur": 1.0}]}}
+        sc = ec._draft_selfcheck(tmp, tl, {"canvas_config": {"width": 64, "height": 64}, "fps": 30,
+                                          "duration": 1_000_000,
+                                          "tracks": [{"type": "video", "segments": [
+                                              {"target_timerange": {"start": 0, "duration": 1},
+                                               "source_timerange": {"start": 0, "duration": 1}}]}],
+                                          "materials": {"videos": [{"path": str(tmp / "并不存在.mp4")}]}},
+                                {"draft_id": "x", "draft_name": "", "draft_type": ""})
+        self.assertFalse(sc["ok"], "素材不在盘却自检通过 ⇒ 自检是摆设：%s" % sc)
+        self.assertIn("素材路径逐个在盘", sc["failed"])
+
+
+class TestFailureLeavesNoFakeArtifact(unittest.TestCase):
+    """（下面还有键集正控/负控两条）"""
+
+    """🔴 失败**不许**留一个「能播但短了」的半成品。
+
+    实测事故（2026-10-13）：1080×1920 + blur 那次 ENOMEM，盘上留下一个 **1.767s** 的 mp4
+    （片子应是 2.8s）—— 能播、播放器能开，长度却不对，**这正是"假绿"的物证形态**。
+    现在的规矩：失败一律把产物挪成 `*.partial`（留现场，但不许冒充成片）。
+    """
+
+    def test_encode_failure_quarantines_the_artifact(self):
+        import unittest.mock as mk
+        tmp = Path(".scratch") / "edit_core_fail_judge"
+        (tmp / "_work").mkdir(parents=True, exist_ok=True)
+        out = tmp / "fake.mp4"
+        out.write_bytes(b"NOT-A-REAL-MP4")          # 假装 ffmpeg 已经留了个半成品
+        tl = {"canvas": {"w": 64, "h": 64, "fps": 30},
+              "tracks": {"video": [{"src": str(_mk_clip(tmp / "a.mp4", 1.0)), "dur": 1.0}]}}
+
+        class _R:
+            returncode = -12
+            stderr = "Cannot allocate memory"
+
+        with mk.patch.object(ec.subprocess, "run", return_value=_R()):
+            r = ec.render(tl, out, workdir=str(tmp / "_work"))
+        self.assertFalse(r["ok"], r)
+        # 段名取决于模式：两段拼接走 `copy` ⇒ 失败在 `extract`；单条滤镜图走 `encode`。
+        # 不要写死段名（我第一版就写死了，被自己的断言咬）；要的是**失败一律隔离**。
+        self.assertIn(r["stage"], ("extract", "encode"), r)
+        self.assertIn("ENOMEM", r["why_failed"], r)
+        self.assertFalse(out.exists(), "半成品还留在当眼处（会冒充成片）：%s" % out)
+        self.assertTrue(str(r["partial"]).endswith(".partial"), r)
+
+    def test_budget_gate_blocks_before_running_ffmpeg(self):
+        """渲前预算闸：**没跑** ffmpeg 就先拒（而不是崩在半路留半成品）。"""
+        import unittest.mock as mk
+        tmp = Path(".scratch") / "edit_core_budget_judge"
+        (tmp / "_work").mkdir(parents=True, exist_ok=True)
+        out = tmp / "never.mp4"
+        tl = {"canvas": {"w": 1080, "h": 1920, "fps": 30},
+              "tracks": {"video": [{"src": str(_mk_clip(tmp / "a.mp4", 1.0)), "dur": 1.0}]}}
+        with mk.patch.object(ec, "_avail_mb", return_value=300.0), \
+                mk.patch.object(ec.subprocess, "run") as run:
+            r = ec.render(tl, out, workdir=str(tmp / "_work"))
+        self.assertFalse(r["ok"], r)
+        self.assertEqual(r["stage"], "budget", r)
+        self.assertTrue(r["blocked"], r)
+        run.assert_not_called()
+        self.assertFalse(out.exists(), "被预算闸拒了却还在盘上留了东西：%s" % out)
+
+    def test_budget_gate_stays_open_when_memory_unreadable(self):
+        """拿不到内存读数 ⇒ **不拦**（不许拿"读不到"当"内存不够"）。"""
+        import unittest.mock as mk
+        tmp = Path(".scratch") / "edit_core_budget_open"
+        (tmp / "_work").mkdir(parents=True, exist_ok=True)
+        tl = {"canvas": {"w": 64, "h": 64, "fps": 30},
+              "tracks": {"video": [{"src": str(_mk_clip(tmp / "a.mp4", 1.0)), "dur": 1.0}]}}
+        class _R:
+            returncode = 1
+            stderr = "stop-here"
+        with mk.patch.object(ec, "_avail_mb", return_value=-1.0), \
+                mk.patch.object(ec.subprocess, "run", return_value=_R()):
+            r = ec.render(tl, tmp / "x.mp4", workdir=str(tmp / "_work"))
+        self.assertNotEqual(r.get("stage"), "budget", "读不到内存时不该走预算闸：%s" % r)
+
+
+class TestDraftKeysCoverExternalTemplate(unittest.TestCase):
+    """🔴 **外部尺子**（2026-10-13）：产物顶层键集必须盖住 vendored 的外部模板（28 键）。
+
+    上一轮实测：我们自己手拼的只有 11 键 ⇒ 缺 16 个。现在改成「模板起手 + update 我们算得出的」。
+    """
+
+    def test_key_set_covers_the_external_template(self):
+        tmp = Path(".scratch") / "edit_core_keys_judge"
+        (tmp / "_work").mkdir(parents=True, exist_ok=True)
+        clip = _mk_clip(tmp / "a.mp4", 1.5)
+        tl = {"name": "judge-keys", "canvas": {"w": 64, "h": 64, "fps": 30},
+              "tracks": {"video": [{"src": str(clip), "dur": 1.0}]}}
+        d = ec.to_jianying_draft(tl, tmp, "keys")
+        self.assertTrue(d["ok"], d)
+        c = json.loads((Path(d["dir"]) / "draft_content.json").read_text(encoding="utf-8"))
+        tpl = ec._jy_template()
+        self.assertTrue(tpl, "vendored 模板不在盘（资产丢了？）")
+        miss = sorted(k for k in tpl if k not in c)
+        self.assertEqual(miss, [], "产物键集没盖住外部模板：缺 %s" % miss)
+        # 我们的算得出键必须**覆盖**模板的默认值（不能被模板冲掉）
+        self.assertEqual(c["canvas_config"]["width"], 64)
+        self.assertEqual(c["fps"], 30.0)
+
+    def test_selfcheck_bites_when_a_template_key_is_missing(self):
+        """负控：故意漏一个模板键 ⇒ 自检必须**报红**（否则那把外部尺子是摆设）。"""
+        tpl = ec._jy_template()
+        self.assertTrue(tpl, "模板不在盘 ⇒ 这条负控失去对象（不是通过）")
+        content = {k: tpl[k] for k in tpl}
+        content.update({"canvas_config": {"width": 64, "height": 64},
+                        "duration": 1000000, "fps": 30.0, "tracks": [], "materials": {}})
+        # ⚠️ 删的必须是**我们不回填**的那个键 —— 第一版删了 `canvas_config`，
+        #    而下面 `update` 又把它写回去了 ⇒ 键其实没缺，负控成了空装置（自查抓到）。
+        drop = "time_marks"
+        self.assertIn(drop, content, "模板里应有 %s（换一个键）" % drop)
+        content.pop(drop)
+        sc = ec._draft_selfcheck(Path(".scratch"), {"canvas": {"w": 64, "h": 64, "fps": 30}},
+                                 content, {"draft_id": "x", "draft_name": "", "draft_type": ""})
+        self.assertFalse(sc["ok"], "漏了模板键 %s 却自检通过 ⇒ 外部尺子是摆设：%s" % (drop, sc))
+        self.assertTrue(any("外部模板" in f for f in sc["failed"]),
+                        "失败清单里应点名外部键集：%s" % sc["failed"])
 
 
 if __name__ == "__main__":

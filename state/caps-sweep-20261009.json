@@ -1,0 +1,1495 @@
+{
+ "总位": 247,
+ "分类": {
+  "通": 206,
+  "如实拒": 16,
+  "要参数": 21,
+  "缺依赖": 1,
+  "如实否": 3
+ },
+ "未扫": [],
+ "逐位": {
+  "a1art_skill": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2244,
+   "missing_scopes": []
+  },
+  "absorb_loop": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2625,
+   "missing_scopes": []
+  },
+  "account_registry": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2091,
+   "missing_scopes": []
+  },
+  "action_gate": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2139,
+   "missing_scopes": []
+  },
+  "actioncam": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2658,
+   "missing_scopes": []
+  },
+  "agency_tentacles": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2486,
+   "missing_scopes": []
+  },
+  "agent_console": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2597,
+   "missing_scopes": []
+  },
+  "agent_control": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2564,
+   "missing_scopes": []
+  },
+  "agent_council": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2663,
+   "missing_scopes": []
+  },
+  "agent_rig": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1354,
+   "missing_scopes": []
+  },
+  "alerts": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1661,
+   "missing_scopes": []
+  },
+  "answer_shaper": {
+   "verdict": "通",
+   "reason": "[{'id': 'R1_�ж�����', 'ok': True, 'detail': '����=1�����ֶ�����λ���ᡣ��'}, {'id': 'R2_��Ų���', 'ok': True, 'detail': '����� 2 ��'}, {'id': 'R3_�����5', 'ok': True, 'detail': '����� 2 ��'}, {'id': 'R4_�޿�����β', 'ok': True, 'det",
+   "ms": 2177,
+   "missing_scopes": []
+  },
+  "asset_index": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1313,
+   "missing_scopes": []
+  },
+  "asset_vault_freeze": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 4411,
+   "missing_scopes": []
+  },
+  "audio_extract": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1761,
+   "missing_scopes": []
+  },
+  "audio_mix": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1670,
+   "missing_scopes": []
+  },
+  "audit_query": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��audit_read������ȡ��ơ���Ȩ��������ʷ",
+   "ms": 1556,
+   "missing_scopes": []
+  },
+  "auth_gate_status": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1507,
+   "missing_scopes": []
+  },
+  "auto_publish": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1411,
+   "missing_scopes": []
+  },
+  "auto_switch": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1810,
+   "missing_scopes": []
+  },
+  "automation_keys": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1475,
+   "missing_scopes": []
+  },
+  "autopilot": {
+   "verdict": "通",
+   "reason": "目标完成，产出已走管线/审计留痕",
+   "ms": 14777,
+   "missing_scopes": []
+  },
+  "awesome_tools_index": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1509,
+   "missing_scopes": []
+  },
+  "belief_forge": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1738,
+   "missing_scopes": []
+  },
+  "blender": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2029,
+   "missing_scopes": []
+  },
+  "bluetooth": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 7735,
+   "missing_scopes": []
+  },
+  "brain_council": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1849,
+   "missing_scopes": []
+  },
+  "brain_execute": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1362,
+   "missing_scopes": []
+  },
+  "brain_health": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 12593,
+   "missing_scopes": []
+  },
+  "brain_route": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1493,
+   "missing_scopes": []
+  },
+  "brain_unify": {
+   "verdict": "通",
+   "reason": "五维合一：route→execute→verify→health 全链留痕",
+   "ms": 6658,
+   "missing_scopes": []
+  },
+  "brain_vault": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2388,
+   "missing_scopes": []
+  },
+  "brain_verify": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 6955,
+   "missing_scopes": []
+  },
+  "brand_outro": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1903,
+   "missing_scopes": []
+  },
+  "browser": {
+   "verdict": "要参数",
+   "reason": "ȱ�� url",
+   "ms": 2225,
+   "missing_scopes": []
+  },
+  "bt_control": {
+   "verdict": "要参数",
+   "reason": "ȱ����ͼ�ı�",
+   "ms": 1750,
+   "missing_scopes": []
+  },
+  "cap_tags": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1604,
+   "missing_scopes": []
+  },
+  "capability_net": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1510,
+   "missing_scopes": []
+  },
+  "caps_called_audit": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 9246,
+   "missing_scopes": []
+  },
+  "case_mine": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1442,
+   "missing_scopes": []
+  },
+  "claude_code": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1654,
+   "missing_scopes": []
+  },
+  "cli_chat": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 5578,
+   "missing_scopes": []
+  },
+  "cloud_pc": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1577,
+   "missing_scopes": []
+  },
+  "code_art": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1347,
+   "missing_scopes": []
+  },
+  "code_audit": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1265,
+   "missing_scopes": []
+  },
+  "code_patch": {
+   "verdict": "要参数",
+   "reason": "find ����Ϊ�գ��հ��滻ֻ�����ˣ�",
+   "ms": 1406,
+   "missing_scopes": []
+  },
+  "codebuddy": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1739,
+   "missing_scopes": []
+  },
+  "codex_chat": {
+   "verdict": "要参数",
+   "reason": "ȱ�� message�������Ҫ���͸� Codex ���ı�",
+   "ms": 1645,
+   "missing_scopes": []
+  },
+  "codex_interrupt": {
+   "verdict": "要参数",
+   "reason": "ȱ�� thread_id�����ȵ��� codex_thread_new",
+   "ms": 1553,
+   "missing_scopes": []
+  },
+  "codex_models": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2030,
+   "missing_scopes": []
+  },
+  "codex_status": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1698,
+   "missing_scopes": []
+  },
+  "codex_thread_new": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 3853,
+   "missing_scopes": []
+  },
+  "codex_tools": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1569,
+   "missing_scopes": []
+  },
+  "codex_turn_send": {
+   "verdict": "要参数",
+   "reason": "ȱ�� thread_id�����ȵ��� codex_thread_new",
+   "ms": 1500,
+   "missing_scopes": []
+  },
+  "collab_gateway": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1786,
+   "missing_scopes": []
+  },
+  "comfyui": {
+   "verdict": "要参数",
+   "reason": "������ ComfyUI��URLError������������������������ / 8188��",
+   "ms": 4059,
+   "missing_scopes": []
+  },
+  "command_chain": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2069,
+   "missing_scopes": []
+  },
+  "console_hub": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1684,
+   "missing_scopes": []
+  },
+  "console_pages": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 9789,
+   "missing_scopes": []
+  },
+  "context_vault": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 3117,
+   "missing_scopes": []
+  },
+  "control_loop": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1512,
+   "missing_scopes": []
+  },
+  "count_words": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1261,
+   "missing_scopes": []
+  },
+  "coverage_auditor": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1421,
+   "missing_scopes": []
+  },
+  "coze_mail": {
+   "verdict": "缺依赖",
+   "reason": "",
+   "ms": 1566,
+   "missing_scopes": []
+  },
+  "create": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1284,
+   "missing_scopes": []
+  },
+  "creation_camp": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2489,
+   "missing_scopes": []
+  },
+  "credential_steal": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��privacy_read������ȡ��Ļ������ͷ����˷����˽����",
+   "ms": 2590,
+   "missing_scopes": []
+  },
+  "cross_scan": {
+   "verdict": "通",
+   "reason": "clean",
+   "ms": 144027,
+   "missing_scopes": []
+  },
+  "data_hijack": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��privacy_read������ȡ��Ļ������ͷ����˷����˽����",
+   "ms": 2332,
+   "missing_scopes": []
+  },
+  "datakit": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2576,
+   "missing_scopes": []
+  },
+  "db_probe": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 9862,
+   "missing_scopes": []
+  },
+  "deploy_queue": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1251,
+   "missing_scopes": []
+  },
+  "desktop_commander": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1016,
+   "missing_scopes": []
+  },
+  "device_takeover": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 3336,
+   "missing_scopes": []
+  },
+  "devour_fusion": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2157,
+   "missing_scopes": []
+  },
+  "devour_github": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��data_export���������ݷ��͵��ⲿ�����־û��������",
+   "ms": 2829,
+   "missing_scopes": []
+  },
+  "devour_pulse": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��data_export���������ݷ��͵��ⲿ�����־û��������",
+   "ms": 3544,
+   "missing_scopes": []
+  },
+  "devour_reflect": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2244,
+   "missing_scopes": []
+  },
+  "devour_scan": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1758,
+   "missing_scopes": []
+  },
+  "dh_brain": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1751,
+   "missing_scopes": []
+  },
+  "director_mood": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1538,
+   "missing_scopes": []
+  },
+  "drama": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1641,
+   "missing_scopes": []
+  },
+  "dream_replay": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1490,
+   "missing_scopes": []
+  },
+  "echo": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1593,
+   "missing_scopes": []
+  },
+  "edit_pipeline": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1411,
+   "missing_scopes": []
+  },
+  "eigenflux": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1438,
+   "missing_scopes": []
+  },
+  "emotion_projection": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1466,
+   "missing_scopes": []
+  },
+  "energy_pool": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1120,
+   "missing_scopes": []
+  },
+  "energy_scheduler": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 960,
+   "missing_scopes": []
+  },
+  "event_ledger": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1037,
+   "missing_scopes": []
+  },
+  "feishu_embed": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1323,
+   "missing_scopes": []
+  },
+  "file_hygiene": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 14211,
+   "missing_scopes": []
+  },
+  "film_intel": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1443,
+   "missing_scopes": []
+  },
+  "filmkit": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1108,
+   "missing_scopes": []
+  },
+  "flow_canvas": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1182,
+   "missing_scopes": []
+  },
+  "freebuff_term": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1216,
+   "missing_scopes": []
+  },
+  "freellmapi": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 3136,
+   "missing_scopes": []
+  },
+  "gate_visibility": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1347,
+   "missing_scopes": []
+  },
+  "genoffice": {
+   "verdict": "通",
+   "reason": "δ�ҵ� genoffice CLI��launcher ��Ĭ�ϰ�װλ��û�У����� ��װ GenOffice ���汾�壬��� CLI Ŀ¼д�� ~/.genoffice/launcher",
+   "ms": 1478,
+   "missing_scopes": []
+  },
+  "genoffice_bridge": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1487,
+   "missing_scopes": []
+  },
+  "ghost_guard": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 3261,
+   "missing_scopes": []
+  },
+  "git_read": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2172,
+   "missing_scopes": []
+  },
+  "git_write": {
+   "verdict": "要参数",
+   "reason": "git_write ���� op=��ֻ�� stage/add/commit��",
+   "ms": 1175,
+   "missing_scopes": []
+  },
+  "gods_eye": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2699,
+   "missing_scopes": []
+  },
+  "growth_hooks": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 3616,
+   "missing_scopes": []
+  },
+  "gs_h3": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1865,
+   "missing_scopes": []
+  },
+  "h3_video_gen": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1302,
+   "missing_scopes": []
+  },
+  "handoff": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1550,
+   "missing_scopes": []
+  },
+  "health": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1565,
+   "missing_scopes": []
+  },
+  "hf_voice": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1458,
+   "missing_scopes": []
+  },
+  "hook_enforcer": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1354,
+   "missing_scopes": []
+  },
+  "hook_registry": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1314,
+   "missing_scopes": []
+  },
+  "inventory": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1787,
+   "missing_scopes": []
+  },
+  "key_gateway": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1425,
+   "missing_scopes": []
+  },
+  "keylogger": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��privacy_read������ȡ��Ļ������ͷ����˷����˽����",
+   "ms": 944,
+   "missing_scopes": []
+  },
+  "ledger_note": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1214,
+   "missing_scopes": []
+  },
+  "libtv_skill": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1307,
+   "missing_scopes": []
+  },
+  "libtv_workflow": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1120,
+   "missing_scopes": []
+  },
+  "life": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1290,
+   "missing_scopes": []
+  },
+  "llm_chat": {
+   "verdict": "要参数",
+   "reason": "ȱ�� prompt�������Ҫ������ AI ������",
+   "ms": 1412,
+   "missing_scopes": []
+  },
+  "llm_redteam": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1179,
+   "missing_scopes": []
+  },
+  "llm_status": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1249,
+   "missing_scopes": []
+  },
+  "lobehub": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1437,
+   "missing_scopes": []
+  },
+  "local_brain": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1354,
+   "missing_scopes": []
+  },
+  "long_run_supervisor": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1304,
+   "missing_scopes": []
+  },
+  "look_grade": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1466,
+   "missing_scopes": []
+  },
+  "lr_status": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1332,
+   "missing_scopes": []
+  },
+  "lr_submit": {
+   "verdict": "要参数",
+   "reason": "����δע��: ��ֻ�ܱ�����ע��������",
+   "ms": 1489,
+   "missing_scopes": []
+  },
+  "lr_tick": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1364,
+   "missing_scopes": []
+  },
+  "mcp_call": {
+   "verdict": "要参数",
+   "reason": "��Ҫ server �� tool�������� arguments��",
+   "ms": 1245,
+   "missing_scopes": []
+  },
+  "mcp_connect": {
+   "verdict": "要参数",
+   "reason": "��Ҫ server���Ự������ command�������������飬�� ['npx','-y','@modelcontextprotocol/server-everything']��",
+   "ms": 1416,
+   "missing_scopes": []
+  },
+  "mcp_tools": {
+   "verdict": "如实否",
+   "reason": "����û�п��ù��� ���� **�ⲻ�ǻ���**��MCP ����Ҫ���� `mcp_connect` ���ϣ������ֶ��޽��� MCP ���ߣ�",
+   "ms": 1794,
+   "missing_scopes": []
+  },
+  "media_license": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1279,
+   "missing_scopes": []
+  },
+  "media_pipeline": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1307,
+   "missing_scopes": []
+  },
+  "media_publish": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1788,
+   "missing_scopes": []
+  },
+  "media_run": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1514,
+   "missing_scopes": []
+  },
+  "media_stamp": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1487,
+   "missing_scopes": []
+  },
+  "memory_bank": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1463,
+   "missing_scopes": []
+  },
+  "memory_manager": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1967,
+   "missing_scopes": []
+  },
+  "meta_cognition": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1714,
+   "missing_scopes": []
+  },
+  "mind": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1493,
+   "missing_scopes": []
+  },
+  "mirror_ascend": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��deploy_publish�������𡢽������ع���д������������",
+   "ms": 1646,
+   "missing_scopes": []
+  },
+  "mirror_parity": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2048,
+   "missing_scopes": []
+  },
+  "mirror_plan": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1754,
+   "missing_scopes": []
+  },
+  "mirror_rehearse": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 5795,
+   "missing_scopes": []
+  },
+  "mirror_release": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��deploy_publish�������𡢽������ع���д������������",
+   "ms": 1884,
+   "missing_scopes": []
+  },
+  "mirror_rewind": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��deploy_publish�������𡢽������ع���д������������",
+   "ms": 1687,
+   "missing_scopes": []
+  },
+  "mirror_scan": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1680,
+   "missing_scopes": []
+  },
+  "mirror_shape": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1271,
+   "missing_scopes": []
+  },
+  "mirror_simulate": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1762,
+   "missing_scopes": []
+  },
+  "mirror_status": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2019,
+   "missing_scopes": []
+  },
+  "model_key_pool": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1094,
+   "missing_scopes": []
+  },
+  "multimodal_port": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 959,
+   "missing_scopes": []
+  },
+  "music_intel": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1355,
+   "missing_scopes": []
+  },
+  "music_publishing": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1145,
+   "missing_scopes": []
+  },
+  "n8n_wf": {
+   "verdict": "要参数",
+   "reason": "HTTP 0",
+   "ms": 5429,
+   "missing_scopes": []
+  },
+  "notion_bridge": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1657,
+   "missing_scopes": []
+  },
+  "observer_anchor": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1946,
+   "missing_scopes": []
+  },
+  "obsidian_vault": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1679,
+   "missing_scopes": []
+  },
+  "omission_detector": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1349,
+   "missing_scopes": []
+  },
+  "omni_plug": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 934,
+   "missing_scopes": []
+  },
+  "omni_web": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��data_export���������ݷ��͵��ⲿ�����־û��������",
+   "ms": 1074,
+   "missing_scopes": []
+  },
+  "onboarding_gate": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 845,
+   "missing_scopes": []
+  },
+  "one_key_deploy": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��deploy_publish�������𡢽������ع���д������������",
+   "ms": 920,
+   "missing_scopes": []
+  },
+  "one_shot": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 959,
+   "missing_scopes": []
+  },
+  "orchestration_kernel": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1409,
+   "missing_scopes": []
+  },
+  "osint_scan": {
+   "verdict": "要参数",
+   "reason": "ȱ�� target�����ṩҪɨ��������� IP",
+   "ms": 1281,
+   "missing_scopes": []
+  },
+  "paywallbuster": {
+   "verdict": "要参数",
+   "reason": "ȱ�� html��������ֻ�������ж�����ץҳ�棩",
+   "ms": 1060,
+   "missing_scopes": []
+  },
+  "penetrating_cross_scan": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1035,
+   "missing_scopes": []
+  },
+  "pentest": {
+   "verdict": "要参数",
+   "reason": "ȱ�� target",
+   "ms": 673,
+   "missing_scopes": []
+  },
+  "persona_kernel": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 704,
+   "missing_scopes": []
+  },
+  "pipeline_rollback": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��deploy_publish�������𡢽������ع���д������������",
+   "ms": 707,
+   "missing_scopes": []
+  },
+  "pipeline_status": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 633,
+   "missing_scopes": []
+  },
+  "pipeline_submit": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��deploy_publish�������𡢽������ع���д������������",
+   "ms": 596,
+   "missing_scopes": []
+  },
+  "pipeline_versions": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1377,
+   "missing_scopes": []
+  },
+  "platform_profile": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 648,
+   "missing_scopes": []
+  },
+  "policy_delta": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 631,
+   "missing_scopes": []
+  },
+  "proactive_report": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 746,
+   "missing_scopes": []
+  },
+  "project_context": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 648,
+   "missing_scopes": []
+  },
+  "projection_card": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 623,
+   "missing_scopes": []
+  },
+  "prompt_bridge": {
+   "verdict": "如实否",
+   "reason": "empty_input",
+   "ms": 1314,
+   "missing_scopes": []
+  },
+  "quant": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 668,
+   "missing_scopes": []
+  },
+  "quant_backtest": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 634,
+   "missing_scopes": []
+  },
+  "quant_params": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 606,
+   "missing_scopes": []
+  },
+  "quant_strategy": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 639,
+   "missing_scopes": []
+  },
+  "record_grid": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1597,
+   "missing_scopes": []
+  },
+  "redteam_recon": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 622,
+   "missing_scopes": []
+  },
+  "remote_domain": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 647,
+   "missing_scopes": []
+  },
+  "render_evolution": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 693,
+   "missing_scopes": []
+  },
+  "review_gate": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 608,
+   "missing_scopes": []
+  },
+  "room_space": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 667,
+   "missing_scopes": []
+  },
+  "root_fix": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 672,
+   "missing_scopes": []
+  },
+  "scene_anchor": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 607,
+   "missing_scopes": []
+  },
+  "sched_define": {
+   "verdict": "要参数",
+   "reason": "��Ҫ name",
+   "ms": 677,
+   "missing_scopes": []
+  },
+  "sched_status": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 599,
+   "missing_scopes": []
+  },
+  "sched_tick": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 743,
+   "missing_scopes": []
+  },
+  "scrapling": {
+   "verdict": "通",
+   "reason": "ModuleNotFoundError: No module named 'scrapling'",
+   "ms": 963,
+   "missing_scopes": []
+  },
+  "screen_sniff": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��privacy_read������ȡ��Ļ������ͷ����˷����˽����",
+   "ms": 914,
+   "missing_scopes": []
+  },
+  "sec_chain": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 53647,
+   "missing_scopes": []
+  },
+  "sec_defenses": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1177,
+   "missing_scopes": []
+  },
+  "sec_llm": {
+   "verdict": "要参数",
+   "reason": "ȱ�� prompt�������Ҫ�ʺڿʹ��Ե�����",
+   "ms": 1098,
+   "missing_scopes": []
+  },
+  "sec_scan": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 47404,
+   "missing_scopes": []
+  },
+  "sec_surface": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 3030,
+   "missing_scopes": []
+  },
+  "sec_sweeper": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1265,
+   "missing_scopes": []
+  },
+  "selfscan": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2117,
+   "missing_scopes": []
+  },
+  "shared_resources": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1164,
+   "missing_scopes": []
+  },
+  "signature_guard": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2247,
+   "missing_scopes": []
+  },
+  "slim_profile": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1434,
+   "missing_scopes": []
+  },
+  "social_eng": {
+   "verdict": "要参数",
+   "reason": "ȱ�� text �� url",
+   "ms": 1312,
+   "missing_scopes": []
+  },
+  "spend_guard": {
+   "verdict": "通",
+   "reason": "���� calls=0 tokens=0����������",
+   "ms": 1384,
+   "missing_scopes": []
+  },
+  "stigmergy": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1301,
+   "missing_scopes": []
+  },
+  "surface_bind": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1248,
+   "missing_scopes": []
+  },
+  "svc_inspect": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1718,
+   "missing_scopes": []
+  },
+  "tactics_advise": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1205,
+   "missing_scopes": []
+  },
+  "task_manager": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 7958,
+   "missing_scopes": []
+  },
+  "tentacle": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1407,
+   "missing_scopes": []
+  },
+  "tentacle_bind": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 2070,
+   "missing_scopes": []
+  },
+  "tentacle_cognition": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1596,
+   "missing_scopes": []
+  },
+  "tentacle_equip": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1712,
+   "missing_scopes": []
+  },
+  "tentacle_manifest": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1360,
+   "missing_scopes": []
+  },
+  "tentacle_pipeline": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1183,
+   "missing_scopes": []
+  },
+  "tentacle_status": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 4117,
+   "missing_scopes": []
+  },
+  "thebrain_bridge": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1852,
+   "missing_scopes": []
+  },
+  "think_loop": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 56054,
+   "missing_scopes": []
+  },
+  "tool_bay": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 3539,
+   "missing_scopes": []
+  },
+  "topic_watch": {
+   "verdict": "通",
+   "reason": "��ģ��ֻ����������ִ�н�����ִ�в�",
+   "ms": 1717,
+   "missing_scopes": []
+  },
+  "trace_store": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1065,
+   "missing_scopes": []
+  },
+  "train_recipe": {
+   "verdict": "如实否",
+   "reason": "**������ѵ����**������ȱ����ʵ�������䷽�Կɳ����������ߣ�����ѵҪ��ȱ��",
+   "ms": 7811,
+   "missing_scopes": []
+  },
+  "transfer": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1270,
+   "missing_scopes": []
+  },
+  "transformer": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1372,
+   "missing_scopes": []
+  },
+  "trend_watch": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1864,
+   "missing_scopes": []
+  },
+  "tripo": {
+   "verdict": "要参数",
+   "reason": "HTTP 401: {\"code\":2,\"status\":\"error\",\"message\":\"Invalid API key\",\"suggestion\":\"API key must start with 'tsk_'. If you are sending a client_id (tcli_...), use the secret key instead\"}",
+   "ms": 3620,
+   "missing_scopes": []
+  },
+  "truth_scan": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1164,
+   "missing_scopes": []
+  },
+  "ui_render": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1159,
+   "missing_scopes": []
+  },
+  "ul_tars_desktop": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1307,
+   "missing_scopes": []
+  },
+  "verification_watch": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1213,
+   "missing_scopes": []
+  },
+  "video_intel": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1149,
+   "missing_scopes": []
+  },
+  "vision": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��privacy_read������ȡ��Ļ������ͷ����˷����˽����",
+   "ms": 1007,
+   "missing_scopes": []
+  },
+  "voice": {
+   "verdict": "如实拒",
+   "reason": "��Ҫ�˹���Ȩ��audio_output�����ñ���������TTS �ϳ�/���ţ���д����Ƶ����",
+   "ms": 1064,
+   "missing_scopes": []
+  },
+  "voice_orchestra": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1643,
+   "missing_scopes": []
+  },
+  "wave_probe": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 4668,
+   "missing_scopes": []
+  },
+  "wf_cache_clear": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1290,
+   "missing_scopes": []
+  },
+  "wf_define": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1478,
+   "missing_scopes": []
+  },
+  "wf_resume": {
+   "verdict": "要参数",
+   "reason": "���м�¼������: _caps_sweep_probe",
+   "ms": 1374,
+   "missing_scopes": []
+  },
+  "wf_run": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1335,
+   "missing_scopes": []
+  },
+  "wf_status": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1264,
+   "missing_scopes": []
+  },
+  "zimage_rewash": {
+   "verdict": "通",
+   "reason": "",
+   "ms": 1031,
+   "missing_scopes": []
+  }
+ }
+}

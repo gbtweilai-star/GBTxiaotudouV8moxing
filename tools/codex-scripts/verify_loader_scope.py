@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """验证收窄后的加载器：三种启动目录下的绑定行为。"""
-import os, re, pathlib, sys
+import os
+import re
+import pathlib
 
 SRC = r"C:\Python312\Lib\site-packages\sitecustomize.py"
 src = pathlib.Path(SRC).read_text(encoding="utf-8")

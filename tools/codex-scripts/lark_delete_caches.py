@@ -66,7 +66,7 @@ def main() -> int:
     print(f"云空间 · 缓存清理 · {'APPLY 真删' if a.apply else 'DRY-RUN 只验参'}")
     print("=" * 84)
     print(f"  目标 {len(targets)} 个目录（A 桶 __pycache__ + B 桶 .wrangler）")
-    print(f"  全部为工具可重建的缓存；不含文档 / 代码 / 素材\n")
+    print("  全部为工具可重建的缓存；不含文档 / 代码 / 素材\n")
 
     # ── 恢复边界：落快照 ──
     snap = {"taken_at": time.strftime("%Y-%m-%dT%H:%M:%S"),

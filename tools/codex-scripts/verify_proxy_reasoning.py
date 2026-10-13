@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 """独立复验代理 thinking-mode 修复：跑出真正的帧序，看上游还拒不拒。"""
-import json, urllib.request, urllib.error
+import json
+import urllib.request
+import urllib.error
 
 URL = "http://127.0.0.1:4446/responses"
 TOOLS = [{"type": "function", "function": {"name": "exec", "description": "Run a shell command.",
           "parameters": {"type": "object", "properties": {"command": {"type": "string"}}, "required": ["command"]}}}]
+
 
 def call(payload):
     req = urllib.request.Request(URL, data=json.dumps(payload).encode("utf-8"),
@@ -15,6 +18,7 @@ def call(payload):
     except urllib.error.HTTPError as e:
         return e.code, e.read().decode("utf-8", "replace")
 
+
 USER = {"type": "message", "role": "user",
         "content": [{"type": "input_text", "text": "Use the exec tool to run: echo PROXY-TOOL-OK . Do not answer in text."}]}
 
@@ -22,7 +26,8 @@ print("== T1 首轮：带工具声明 ==")
 st, body = call({"model": "deepseek-flash", "stream": False, "input": [USER], "tools": TOOLS})
 print("   HTTP", st)
 if isinstance(body, str):
-    print("  ", body[:400]); raise SystemExit(1)
+    print("  ", body[:400])
+    raise SystemExit(1)
 out = body.get("output", [])
 print("   output items:", [(o.get("type"), o.get("name") or o.get("status")) for o in out])
 fc = next((o for o in out if o.get("type") == "function_call"), None)
@@ -35,7 +40,8 @@ if not fc:
 print()
 print("== T2 回声复现（曾经 400 的帧序：reasoning + function_call + output）==")
 inp = [USER]
-if rs: inp.append(rs)
+if rs:
+    inp.append(rs)
 inp.append(fc)
 inp.append({"type": "function_call_output", "call_id": fc.get("call_id"), "output": "PROXY-TOOL-OK"})
 inp.append({"type": "message", "role": "user",

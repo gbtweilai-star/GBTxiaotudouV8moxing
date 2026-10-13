@@ -156,7 +156,7 @@ def cmd_extract(a):
            "keypoints": kp, "elapsed_s": round(time.time() - t0, 1),
            "include_hand": a.hand, "include_face": a.face,
            "_口径": ("**真检测器**（controlnet-aux + lllyasviel/Annotators body_pose_model.pth 209,267,595 B）"
-                     "⇒ 这条是「照片→骨架」，不再是手画骨架。decoded 数 < 18 说明该关节没检出（如实报）")}
+                   "⇒ 这条是「照片→骨架」，不再是手画骨架。decoded 数 < 18 说明该关节没检出（如实报）")}
     print(json.dumps(res, ensure_ascii=False, indent=1))
     return 0 if m.sum() > 100 else 5
 
@@ -183,7 +183,7 @@ def cmd_compare(a):
     d = np.array(dists) if dists else np.array([])
     res = {"ok": True, "status": "compared", "ref": a.ref, "test": a.test,
            "掩膜一致性": {"IoU": iou, "ref→test": ch, "test→ref": ch2,
-                          "骨架像素": [int(ma.sum()), int(mb.sum())]},
+                     "骨架像素": [int(ma.sum()), int(mb.sum())]},
            "关键点质心距离（**旁证，有偏**）": {
                "可对比关节数": len(pairs),
                "中位像素距离": round(float(np.median(d)), 1) if d.size else None,
@@ -191,8 +191,8 @@ def cmd_compare(a):
                "最大": round(float(d.max()), 1) if d.size else None},
            "逐关节": pairs,
            "_口径": ("判据以**掩膜一致性**为准（IoU + 单向 Chamfer 像素）；"
-                     "关键点质心**有偏**（肢体线用子关节颜色画，质心沿肢体偏）⇒ 只作旁证。"
-                     "对照的是**同一张 512 图内的像素**，不是真实世界尺度")}
+                   "关键点质心**有偏**（肢体线用子关节颜色画，质心沿肢体偏）⇒ 只作旁证。"
+                   "对照的是**同一张 512 图内的像素**，不是真实世界尺度")}
     print(json.dumps(res, ensure_ascii=False, indent=1))
     return 0
 
@@ -240,7 +240,7 @@ def cmd_joints(a):
                              "各轴": [round(dx, 1), round(dy, 1)]})
                 ds.append(d)
         arr = np.array(ds) if ds else np.array([])
-        arr_sorted = np.sort(arr) if arr.size else arr
+        np.sort(arr) if arr.size else arr
         res["关节级对齐"] = {
             "可对比关节数": len(rows),
             "中位像素误差": round(float(np.median(arr)), 1) if arr.size else None,
@@ -252,7 +252,7 @@ def cmd_joints(a):
             "最好 3 个": [r["关节"] + " " + str(r["像素误差"]) for r in
                        sorted(rows, key=lambda r: r["像素误差"])[:3]],
             "_口径": ("真值 = 内置预设 `%s`（经标准 L/R 正名）· 检出 = 检测器输出的**圆点质心**（无偏）；"
-                      "单位是**同一张 %dx%d 图内的像素**，不是真实世界尺度" % (a.truth, w, h))}
+                    "单位是**同一张 %dx%d 图内的像素**，不是真实世界尺度" % (a.truth, w, h))}
         res["逐关节"] = rows
     print(json.dumps(res, ensure_ascii=False, indent=1))
     return 0 if found else 5

@@ -2,7 +2,9 @@
 """面板档合成（分区 LOD）：**减面身体** + **高密度合格头** + 同一套 22 骨。
 判据：文件 <10MB（面板路由此前 61MB 会 500）· 体重算权重(和=1) · 头沿用 Head/Neck/HeadTop · 引用合法。
 从零重建 GLB：只带每件**自己的**贴图（避免把 4K 身体贴图也塞进头件）。"""
-import io, json, math, pathlib, struct
+import json
+import pathlib
+import struct
 import numpy as np
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
@@ -22,7 +24,8 @@ def load(p):
 
 
 def acc(J, BIN, i, comps):
-    a = J["accessors"][i]; bv = J["bufferViews"][a["bufferView"]]
+    a = J["accessors"][i]
+    bv = J["bufferViews"][a["bufferView"]]
     dt = {5126: np.float32, 5125: np.uint32, 5123: np.uint16}[a["componentType"]]
     return np.frombuffer(BIN, dt, a["count"] * comps, bv.get("byteOffset", 0)).reshape(a["count"], comps)
 
@@ -47,6 +50,7 @@ def cluster_decimate(V, N, UV, IDX, J4, W4, cell):
     key = np.floor(V / cell).astype(np.int64)
     _, inv, counts = np.unique(key, axis=0, return_inverse=True, return_counts=True)
     n = len(counts)
+
     def avg(A):
         out = np.zeros((n, A.shape[1]), np.float64)
         np.add.at(out, inv, A)
@@ -74,6 +78,7 @@ def qem_decimate(V, N, UV, IDX3, J4, W4, target_faces):
     tri = np.asarray(tri, np.int64)
     A, B, C = IDX3[tri, 0], IDX3[tri, 1], IDX3[tri, 2]
     # 面内重心坐标（投影到面平面）
+
     def bary(p, a, b, c):
         v0, v1, v2 = b - a, c - a, p - a
         d00, d01, d11 = v0 @ v0, v0 @ v1, v1 @ v1
@@ -90,7 +95,8 @@ def qem_decimate(V, N, UV, IDX3, J4, W4, target_faces):
     for i in range(len(V2)):
         ia, ib, ic = A[i], B[i], C[i]
         w = bary(V2[i], V[ia], V[ib], V[ic])
-        w = np.clip(w, 0, 1); w = w / max(w.sum(), 1e-9)
+        w = np.clip(w, 0, 1)
+        w = w / max(w.sum(), 1e-9)
         _uv = w[0] * UV[ia] + w[1] * UV[ib] + w[2] * UV[ic]
         _lo = np.minimum(np.minimum(UV[ia], UV[ib]), UV[ic]) - 1e-4
         _hi = np.maximum(np.maximum(UV[ia], UV[ib]), UV[ic]) + 1e-4
@@ -103,12 +109,15 @@ def qem_decimate(V, N, UV, IDX3, J4, W4, target_faces):
         top = sorted(acc.items(), key=lambda kv: -kv[1])[:4]
         s = sum(v for _, v in top) or 1.0
         for k, (j, ww) in enumerate(top):
-            J42[i, k] = j; W42[i, k] = ww / s
+            J42[i, k] = j
+            W42[i, k] = ww / s
     # ① 法线也重心插值（取面首顶点法线会让 QEM 后的面出现明暗碎片）
     N2 = np.zeros((len(V2), 3), np.float64)
     for i in range(len(V2)):
         ia, ib, ic = A[i], B[i], C[i]
-        w = bary(V2[i], V[ia], V[ib], V[ic]); w = np.clip(w, 0, 1); w = w / max(w.sum(), 1e-9)
+        w = bary(V2[i], V[ia], V[ib], V[ic])
+        w = np.clip(w, 0, 1)
+        w = w / max(w.sum(), 1e-9)
         nv = w[0] * N[ia] + w[1] * N[ib] + w[2] * N[ic]
         N2[i] = nv / max(np.linalg.norm(nv), 1e-9)
     return V2.astype(np.float32), N2.astype(np.float32), UV2.astype(np.float32), J42, W42, F2.astype(np.uint32), len(V2)
@@ -119,8 +128,10 @@ def smooth(V, IDX, iters=3, lam=0.5):
     e = np.concatenate([IDX[:, [0, 1]], IDX[:, [1, 2]], IDX[:, [2, 0]]])
     e = np.concatenate([e, e[:, ::-1]])
     for _ in range(iters):
-        acc = np.zeros_like(V); cnt = np.zeros(len(V), np.float32)
-        np.add.at(acc, e[:, 0], V[e[:, 1]]); np.add.at(cnt, e[:, 0], 1.0)
+        acc = np.zeros_like(V)
+        cnt = np.zeros(len(V), np.float32)
+        np.add.at(acc, e[:, 0], V[e[:, 1]])
+        np.add.at(cnt, e[:, 0], 1.0)
         avg = acc / np.maximum(cnt[:, None], 1e-6)
         V = (1 - lam) * V + lam * avg
     return V
@@ -159,8 +170,11 @@ world = {}
 for i in bone_idx:
     chain, cur, g = [], i, 0
     while cur is not None and cur not in world:
-        chain.append(cur); cur = parent_of.get(cur); g += 1
-        if g > 200: raise SystemExit("环")
+        chain.append(cur)
+        cur = parent_of.get(cur)
+        g += 1
+        if g > 200:
+            raise SystemExit("环")
     w = world[cur] if cur is not None else np.zeros(3)
     for nd in reversed(chain):
         w = w + np.array(nodes[nd].get("translation", [0, 0, 0]), np.float64)
@@ -180,10 +194,12 @@ def seg_d(V, a, b):
 
 D = np.stack([seg_d(PB, W3[k], tail[k]) for k in range(len(names))], axis=1)
 order = np.argsort(D, axis=1)[:, :4]
-Wa = np.zeros_like(D); rows = np.arange(len(PB))[:, None]
+Wa = np.zeros_like(D)
+rows = np.arange(len(PB))[:, None]
 Wa[rows, order] = 1.0 / np.power(D[rows, order] + 1e-4, 3)
 Wa /= Wa.sum(axis=1, keepdims=True)
-JB4 = order.astype(np.uint16); WB4 = Wa[rows, order].astype(np.float32)
+JB4 = order.astype(np.uint16)
+WB4 = Wa[rows, order].astype(np.float32)
 WB4 /= WB4.sum(axis=1, keepdims=True)
 print(f"体重算权重：和 {WB4.sum(axis=1).min():.4f}/{WB4.sum(axis=1).max():.4f}")
 
@@ -195,20 +211,27 @@ views, accessors = [], []
 def view(data, target=None):
     while len(out_bin) % 4:
         out_bin.append(0)
-    o = len(out_bin); out_bin.extend(data)
+    o = len(out_bin)
+    out_bin.extend(data)
     v = {"buffer": 0, "byteOffset": o, "byteLength": len(data)}
-    if target: v["target"] = target
-    views.append(v); return len(views) - 1
+    if target:
+        v["target"] = target
+    views.append(v)
+    return len(views) - 1
 
 
 def add_acc(arr, ct, typ, target=None, mm=False):
     vi = view(arr.tobytes(), target)
     a = {"bufferView": vi, "componentType": ct, "count": len(arr), "type": typ}
-    if mm: a.update({"min": [float(x) for x in arr.min(axis=0)], "max": [float(x) for x in arr.max(axis=0)]})
-    accessors.append(a); return len(accessors) - 1
+    if mm:
+        a.update({"min": [float(x) for x in arr.min(axis=0)], "max": [float(x) for x in arr.max(axis=0)]})
+    accessors.append(a)
+    return len(accessors) - 1
 
 
 imgs = []
+
+
 def recompress(data, mime, max_side=2048, q=88):
     """贴图压缩：超过 max_side 的缩到 max_side，统一 JPEG q88（面板档够用且省一半体积）"""
     try:
@@ -218,7 +241,8 @@ def recompress(data, mime, max_side=2048, q=88):
         if max(im.size) > max_side:
             r = max_side / max(im.size)
             im = im.resize((int(im.size[0] * r), int(im.size[1] * r)), Image.LANCZOS)
-        buf = _io.BytesIO(); im.convert("RGB").save(buf, format="JPEG", quality=q)
+        buf = _io.BytesIO()
+        im.convert("RGB").save(buf, format="JPEG", quality=q)
         return buf.getvalue(), "image/jpeg"
     except Exception:
         return data, mime
@@ -228,6 +252,7 @@ def add_img(data, mime):
     vi = view(data)
     imgs.append({"bufferView": vi, "mimeType": mime})
     return len(imgs) - 1
+
 
 body_tex, body_mat = slots_and_images(JB, BB, pb)
 head_tex, head_mat = slots_and_images(JH, BH, ph)
@@ -262,7 +287,7 @@ jnode = []
 for k, i in enumerate(bone_idx):
     par = parent_of.get(i)
     if par in bone_idx:
-        rel = np.array(nodes[i].get("translation", [0, 0, 0])) 
+        rel = np.array(nodes[i].get("translation", [0, 0, 0]))
     else:
         rel = np.array(nodes[i].get("translation", [0, 0, 0]))
     jnode.append({"name": names[k], "translation": [float(x) for x in rel], "children": []})
@@ -274,7 +299,8 @@ for k, i in enumerate(bone_idx):
 
 ibm = []
 for k, i in enumerate(bone_idx):
-    m = np.eye(4, dtype=np.float32); m[:3, 3] = -world[i]
+    m = np.eye(4, dtype=np.float32)
+    m[:3, 3] = -world[i]
     ibm.append(m.T.flatten())
 ibm = np.array(ibm, np.float32)
 a_ibm = add_acc(ibm, 5126, "MAT4")
@@ -283,7 +309,7 @@ G = {
     "asset": {"version": "2.0", "generator": "GBT小土豆V8 · 面板档（分区 LOD）"},
     "scene": 0, "scenes": [{"nodes": [0, base_node + len(bone_idx)]}],
     "nodes": [{"mesh": 0, "name": "panel_tier", "skin": 0}] + jnode +
-             [{"name": "Armature", "children": [base_node]}],
+    [{"name": "Armature", "children": [base_node]}],
     "meshes": [{"name": "panel_tier", "primitives": [
         {"attributes": {"POSITION": a_pb, "NORMAL": a_nb, "TEXCOORD_0": a_ub, "JOINTS_0": a_jb, "WEIGHTS_0": a_wb},
          "indices": a_ib, "material": 0},

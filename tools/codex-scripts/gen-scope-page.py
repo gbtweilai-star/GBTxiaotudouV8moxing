@@ -11,7 +11,6 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 #    在 `.scratch/` 时 `parents[1]` 是仓库根；搬来后必须 `parents[2]`，否则 ROOT 指到 `tools/`。
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from gbt_allinone import caps_registry as R          # noqa: E402
 from gbt_allinone.security import policy as POL      # noqa: E402
 
 acc = json.load(open(ROOT / "state" / "caps-probe-accum.json", encoding="utf-8"))

@@ -1,0 +1,29 @@
+{
+  "_comment": "GBT小土豆V8 · hooks.probe.json —— 端到端验证用的探针钩子配置（**已实测验通**，见 hooks.json 的 _probe_evidence）。",
+  "_scope": "两个钩子都只做『往磁盘追加一行标记』：不输出 stdout、不返回 decision、不附加上下文 ⇒ 对模型零影响、对工具零拦截。PreToolUse / PostToolUse 故意不在这里（那两处能拦/改工具调用）。",
+  "_measured_cost": "每次钩子调用起一次 pwsh：UserPromptSubmit 实测 13.3 秒、Stop 实测 8.4 秒。是真实延迟，别当零成本。",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "Add-Content -LiteralPath '.scratch/hook-probe.log' -Value 'UserPromptSubmit-fired'",
+            "timeout": 60
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "Add-Content -LiteralPath '.scratch/hook-probe-stop.log' -Value 'Stop-fired'",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

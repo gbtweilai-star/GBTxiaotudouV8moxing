@@ -654,7 +654,7 @@
   var WORKBENCH_ENTRIES = [
     ["代码台", "code-deck", "回路与门的读数"],
     ["执行面", "exec-deck", "账本与执行卡"],
-    ["对话", "dsh-chat", "DeepSeek Harness（DSH 的窗）"],
+    ["对话", "dsh-chat", "官方 APP 对话面（壳自拉 dsh web · 自动接上）"],
     ["神经工作台", "brain", "能力图与脉冲"],
   ];
 

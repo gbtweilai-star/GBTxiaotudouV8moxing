@@ -1,6 +1,6 @@
 {
   "note": "仓根树登记表 —— 每棵树是「什么 / 谁在用 / 动不动」。过闸：python tools/codex-scripts/tree-registry.py --check。改这张表要连着改事实，不许只改表。",
-  "updated": "2026-09-23",
+  "updated": "2026-10-12",
   "why_this_exists": [
     "负责人第 N 次说「确保源代码就一份」「整理好分类别在分岔了」。在这之前，谁是权威、谁是视图、谁是上游、谁是草稿，只能靠人记得。",
     "最贵的一条教训（第 40 轮，差一步就出事）：`vendor/pylibs` 与 `gbt_allinone/.pylibs` 文件数相同、逐字节相同，我判「vendor 是多余副本」——**反了**：`.pylibs` 是 junction，`vendor/pylibs` 才是实体。按那个结论清盘 = 删掉唯一那份第三方依赖树，numpy / PIL / comtypes 当场全断。",
@@ -37,6 +37,7 @@
     { "path": "agent-gvmz-gbtv8", "class": "他人工作区", "why": "另一个 agent 的工作区；scan_scope/gate_visibility 均声明「不是本框架源码面」。其 DELIVERY/ 是记录，保留；tmp/ 是草稿（已入 clean_residue 的 pages 档）。" },
     { "path": "generated-images", "class": "出图产物", "why": "小土豆AI桌宠-召唤编程面板.png。" },
     { "path": "video-out", "class": "视频产物", "why": "cut-demo.mp4 / motion.mp4。" },
+    { "path": "video-src", "class": "视频源码", "why": "motion 短片源码树（12 文件）：`motion/index.html` + `scenes/s1..s3.html` + `snapshots/`（逐帧 PNG + contact-sheet.jpg）。**是活引用**：`tools/video/hf-check.py:37` 把它当 PROJ 真读；`state/cross_scan_trace.jsonl` 一直按 `tree:video-src` 逐轮交叉扫描（units=12 / coverage=1.0）。2026-10-12 补登记（R1 未登记的唯一一条）。" },
     { "path": "infinite-canvas-output", "class": "技能产物", "why": "无限画布技能输出（SKILL.md + assets）。" },
     { "path": ".openclaw-attachments", "class": "附件", "why": "剪贴板图与粘贴文本（带日期）。" },
     { "path": ".openclaw", "class": "工具运行时", "why": "模板备份与工作区状态（tmp/ 已清）。" },
@@ -51,6 +52,30 @@
     { "path": ".backups", "class": "空树", "why": "空目录；clean_residue 的 backups 档管它的孩子，树本身留着。" },
     { "path": "data", "class": "空树", "why": "store 迁 `data/store/` 那次**搬失败已回滚**留下的空落点（见 delivery/20260922-源码分家方案.md §6.2）。留着或删都行，属 Owner 决定。" },
     { "path": "dist", "class": "构建产物", "why": "electron-builder 打出来的装机包：`dist/win-unpacked/GBT小土豆V8.exe`（224.8 MB · sha16 e1b93ac2c874dc68）· 整包 306 文件 / 360.8 MB · app 面 228 文件 / 3.7 MB · 8 扇窗含 `dsh-chat`。**是产物不是源码**，可重打：`cd holo_pet_w3 && npm run pack`。回执（机检 8 项）：`state/desktop-install-receipt.json`。" }
+,
+    { "path": ".aider-desk", "class": "技能安装面（视图）", "why": "skills/ 下 4 条 junction → .agents/skills（better-auth-best-practices / chrome-extensions / create-auth / modern-web-guidance）。视图不占盘，删=断入口（2026-10-08 补登记）。" },
+    { "path": ".augment", "class": "技能安装面（视图）", "why": "skills/ 下 4 条 junction → .agents/skills（同上四件）。2026-10-08 补登记。" },
+    { "path": ".autohand", "class": "技能安装面（视图）", "why": "skills/ 下 4 条 junction → .agents/skills（同上四件）。2026-10-08 补登记。" },
+    { "path": ".codebuddy", "class": "技能安装面（视图）", "why": "skills/ 下 4 条 junction → .agents/skills（同上四件）+ 1 个散件。2026-10-08 补登记。" },
+    { "path": ".fleet", "class": "集群作业面", "why": "T01-T05 + _preflight（19 文件）。gbt_allinone 侧点名：caps_registry.py / tentacle/desktop_commander.py / tools/agent_console.py / tools/agent_rig.py。2026-10-08 补登记。" },
+    { "path": ".freebuff", "class": "工具上下文", "why": "FreeBuff 连接上下文（project-id，1 文件）。gbt_allinone 四件点名（api.py / caps_registry.py / tests/test_freebuff_term.py / tools/agent_rig.py）。2026-10-08 补登记。" },
+    { "path": ".mimosa", "class": "安全扫描器状态", "why": "Mimosa 安全扫描插件的状态与报告历史（finding-ledger / history / hook-state / hook-status / reports，9.6 万文件）。由 ZCode mimosa 插件读写；不入清理（工具状态）。2026-10-08 补登记。" },
+    { "path": ".v2c", "class": "工具落点", "why": "video2code 插件落点（plugin_root，1 文件）。LAYOUT.md 与 memory/2026-09-27.md 点名。2026-10-08 补登记。" },
+    { "path": ".video_agent", "class": "工具落点", "why": "视频代理 hook_state / plugin_root（2 文件）。LAYOUT.md、out/report.md 点名。2026-10-08 补登记。" },
+    { "path": ".windsurf", "class": "技能安装面（视图）", "why": "skills/ 下 9 条 junction → .agents/skills（prisma-* 等）。2026-10-08 补登记。" },
+    { "path": ".workbuddy-ai", "class": "工具状态", "why": "WorkBuddy 状态（memory/，2 文件）。docs/WorkBuddy 系列与 state/排查台账.json 点名。2026-10-08 补登记。" },
+    { "path": ".wrangler", "class": "工具缓存", "why": "Cloudflare wrangler 缓存/状态（cache/state，10 文件）。deploy/cloud-10 线与 delivery/20260922-算力分层路由-设计.md 点名。2026-10-08 补登记。" },
+    { "path": ".zcode", "class": "工具运行状态", "why": "ZCode CLI 的 workflow-drafts / workflow-runs（20 文件）。.cluster/harness-evolution 与 gbt_allinone 三件点名。2026-10-08 补登记。" },
+    { "path": "_legacy_sources", "class": "历史归档", "why": "V7 时代各工作区 dump（16.5 万文件）+ brain//caps/ 两条 junction 指向仓外 Desktop/GBT小土豆。scan_scope.EXTERNAL_CORPORA 登记在册（别人的语料，引用即证据）。2026-10-08 补登记。" },
+    { "path": "auth-service", "class": "小服务", "why": "auth 服务（auth.ts / server.ts / package.json / prisma/，12 文件）。memory/2026-09-26.md 记载。2026-10-08 补登记。" },
+    { "path": "docs", "class": "文档面", "why": "40 个 .md（含并行任务的 DSH 普查 / AI 指挥手册 / 数字人 / 卡点三查等系列）。**任何 docs/*.md 不许删**（2026-10-08 作业令）。2026-10-08 补登记。" },
+    { "path": "out", "class": "工具产出", "why": "_local_pipeline.py / _local_render_qc.py / _render_pages.py + ingest / media 数据（166 文件）—— 是产物不是源码。2026-10-08 补登记。" },
+    { "path": "output", "class": "出图产物", "why": "jpg/png/pdf 散件（135 文件：思维导图、E1E3 修饰对比、试片帧）—— 产物。2026-10-08 补登记。" },
+    { "path": "prisma", "class": "配置", "why": "schema.prisma（1 文件），配 auth-service 用。2026-10-08 补登记。" },
+    { "path": "quant_workspace", "class": "工作区", "why": "01_量化收割引擎（46 文件）。gbt_allinone/adapters/workspace_adapter.py 与 quant_tech.py 真读。2026-10-08 补登记。" },
+    { "path": "store", "class": "近空落点", "why": "trace/ 1 文件。⚠️ 与 gbt_allinone/store 生产数据**不是一回事**，别混。2026-10-08 补登记。" },
+    { "path": "vaults", "class": "能力位库", "why": "810 文件（a1art_skill / absorb_loop / action_gate / …）。gbt_allinone 侧 caps_registry.py / llm/key_gateway.py / tools/code_audit.py 真读。2026-10-08 补登记。" },
+    { "path": "vercel-brand-protected", "class": "受保护件", "why": "品牌站受保护件（zip + tree/，7 文件）。deploy/vercel-brand/_protect.py 与 skills/gbt-native-growth 点名。2026-10-08 补登记。" }
   ],
   "forks": [
     {
@@ -70,6 +95,51 @@
       "glob": "skills/remotion-*",
       "target_glob": ".agents/skills/remotion-*",
       "why": "同上：仓库内 skills/ 一侧也是指向 .agents/skills 的视图。"
+    },
+    {
+      "glob": ".aider-desk/skills/*",
+      "target_glob": ".agents/skills/*",
+      "why": "4 条技能 junction → .agents/skills。视图不占盘、不许当重复清。（2026-10-08 补声明）"
+    },
+    {
+      "glob": ".augment/skills/*",
+      "target_glob": ".agents/skills/*",
+      "why": "同上（4 条）。2026-10-08 补声明。"
+    },
+    {
+      "glob": ".autohand/skills/*",
+      "target_glob": ".agents/skills/*",
+      "why": "同上（4 条）。2026-10-08 补声明。"
+    },
+    {
+      "glob": ".codebuddy/skills/*",
+      "target_glob": ".agents/skills/*",
+      "why": "同上（4 条）。2026-10-08 补声明。"
+    },
+    {
+      "glob": ".windsurf/skills/*",
+      "target_glob": ".agents/skills/*",
+      "why": "同上（9 条 prisma-*）。2026-10-08 补声明。"
+    },
+    {
+      "glob": ".claude/skills/*",
+      "target_glob": ".agents/skills/*",
+      "why": "除既有 remotion-* 族外的 13 条（prisma-* 9 + 四件套）也是 junction → .agents/skills。2026-10-08 补声明。"
+    },
+    {
+      "glob": "data/skills/*",
+      "target_glob": ".agents/skills/*",
+      "why": "4 条 junction → .agents/skills。⚠️ 事实变更：data/ 登记为『空树』（store 迁移回滚落点）已不准确 —— 现在长了 skills 视图；本族是加条不改行，待主人定夺是否改 data 行。2026-10-08 补声明。"
+    },
+    {
+      "glob": "_upstream/nanobrowser/node_modules/*",
+      "target_glob": "_upstream/nanobrowser/node_modules/.pnpm/*",
+      "why": "1661 条 pnpm 依赖视图（目标全在 .pnpm 仓内）。上游仓库自带，删=断其解析；我们不动。2026-10-08 补声明。"
+    },
+    {
+      "glob": "_legacy_sources/home_root_V7_dump_20261004/*",
+      "target_glob": "Desktop/GBT小土豆/*",
+      "why": "2 条 junction 指向仓外旧工作区（V7 快照时的记录痕迹），不是我们的件、也不动它。2026-10-08 补声明。"
     }
   ],
   "protected": [
@@ -87,6 +157,14 @@
     { "path": "holo_pet/node_modules/three", "why": "面板 importmap 直读，且被插件白名单显式放行", "source": "plugins/gbt-master/lib/host.js:37" }
   ],
   "pending_owner": [
+    "✅ **脉冲空转已解（2026-10-12 21:44）**：新写 `devour.py::absorb_own_innovations()` 接进脉冲喂料步 —— **15 条我们的创新已真进知识库**（`store/knowledge/raw/2026-10/` 15 件 · `techniques.jsonl` 15 行 · `own_voice.md` 生成 · `verify_seal` **sealed=true/checked=15/violations=[]** · energy 30）；吞噬吸收的 **12 条外部件一条没进**（封印）。⚠️ **但「消化彻底」卡在料不在链**：那 15 个胶囊的 `run.py` 是 **9 行空壳**（`def do_run(p): return 一个固定 ok 字典`）、`knowledge.json` 只有元数据 ⇒ 蒸馏出的要点为空（`code_blocks:0 · identifiers:[] · commands:[]`）。要真「化为己用」，得让创新引擎产出**带实现**的胶囊，再逐个走 `devour_fusion` 的三件齐（注册/分派/图鉴 + 触手标签 + 永久记忆页）。⚠️ 另一坑：知识库**无删除路径**且 dedup 按正文 sha ⇒ **`_capsule_text` 的文本形态已冻结**，改格式会让下次脉冲把这 15 条重投成 30 条；要改先定迁移方案。",
+    "🔴 待定（2026-10-12 `think_loop` 自诊断）：plan 阶段 **LLM→JSON 无容错** —— 一次「未输出可解析 JSON」就 `stopped`，无 retry/fallback，整条自动化链的健壮性绑在单次 LLM 生成上。改的是 `think_loop` 本体（**不碰门**），等你点头。",
+    "ℹ️ `data_export` 是**一次性消耗**：2026-10-12 已两次烧掉（21:36 与 21:44）。要再跑 `devour_pulse` / `devour_github`，需主人重发 `python -m gbt_allinone auth grant --scope data_export --ttl 600`。",
+    "🔴 **`sec_defenses` 是坏判据，不是坏对象**（`fault-sweep.py` 总扫现读红 2 之一）：它的 `danger_gate` 子检期望 `keylogger` 被**策略拒绝**，但主人 2026-09-23 令已把被拒名单清空 ⇒ 现在回的是「登记未实现」；同一份读里 `registry_integrity` 明写「被拒名单 0 项（0=已全部解开）✓」。**判据没跟上那条令。** 改判据要主人先点头（坏判据比坏对象更危险，不许自己抹）。",
+    "⚠️ **两处「记录只做到一半」**（同上自证现读）：① `caps_called_audit` 269 位里 **9 位零调用点**（`detail_habit` 本轮新长尚无调用方 · `page_scan` · `pulse_direct` · `recon_distill` · `repo_publish` · `ring_context` · `skill_watch` · `vision_grounding` · `warm_switch`）；② `trace_store` 五张表（wave_samples/traces/trace_links/promotes/obsessions）**全 0** —— 扫描痕落在 `state/cross_scan_trace.jsonl`（现 5315 行），**没落进 traces 库**。要不要把痕收进库、孤儿要不要接线，请主人定。",
+    "🔴 **`tentacle_scale` 的实体化/落盘那一半要主人开作用域**（2026-10-12 新长出的能力位之一，见 `docs/V8-V9-能力差集-20261012.md`）：本仓登记在册的坑是「新增能力位若不在 `security/policy.py` 挂作用域 = 零作用域」（门看不见它、可它照样会动），而 `policy.py` 只有主人能改。⇒ 我只做了只读那一半（寻址 `addr`/`parse`/`shard` + 密钥指纹 `key` + 自证 `space`），**不建目录、不写盘、不代生成主密钥**（主密钥不在就如实报「未配」）。要开请给 `tentacle_scale` 挂 `filesystem_write`。",
+    "同一批长出的另一件 `detail_habit`（细节化习惯）**只读、无写面**，不需要开作用域，已在册可用。",
+    "仓根散件三件（2026-10-08 那轮已列「待主人判」，2026-10-12 复核原样还在）：`test_localsystem.txt`（12 B · 未被 git 跟踪 · 全仓零引用）· `tmpwebapp-node-modulesprepare.log`（10-04 的 npm prepare 日志 · 零引用）· `config.toml.bak`（配置备份）。另有 `_main_shot.png` / `_w3_shot.png` 已被 git 跟踪（是入库件、不是残留，故只报不动）。这三件要不要进回收站，你一句话。",
     "deploy/index.html 是 V21 快照，仓根 `V22 GBT小土豆V8-可交互原型.html` 是手工演进的现行版 —— 两份同源不同代。同步属**外网写入**，按仓规必须先问你。**同一形态还有第二对**（第 41 轮 dup-pages 现扫出来、之前只登了原型页）：`deploy/canvas.html`(241 KB) vs 仓根 `V22 GBT小土豆V8-无限画布.html`(242 KB)。两对一起定：要么把 V22 同步过去，要么把 deploy 标记成冻结快照。",
     "`.scratch` 里几件我还没拿到「零引用」铁证的草稿（_hv 17.7 MB / _m3_oc_db 4.9 MB / _distill 1.7 MB / codex-schema 2.7 MB）：宁多留，等你一句话再清。（codex-schema 有被代码读取的记载，倾向留。）",
     "`data/` 空落点（store 迁移失败回滚留下的，见 delivery/20260922-源码分家方案.md §6.2）—— 留着还是清掉。",
@@ -95,6 +173,9 @@
   ],
   "done_log": [
     { "at": "2026-09-23", "what": "**打包上线第一次真跑通**。此前 `build` 配置写了但从没执行过 ⇒ 一跑就暴露两条错：① 注释键写在 `build` 里被严格 schema 拒（`unknown property '// files'` + `configuration.win should be one of these: null`）；② `electron: \"^43.0.0\"` 是区间而本壳不装 node_modules ⇒ 无人能解析。修法：注释挪出 `build`；显式 `electronVersion: \"43.0.0\"`（与 devDependencies 同值）；`electronDist` 指全局 electron 的 dist ⇒ **离线出包**。产物 `dist/win-unpacked/GBT小土豆V8.exe`（224.8 MB）· 装机回执 `state/desktop-install-receipt.json`（8 项机检 / 红 0）· 新增预检格 `K:ebconfig` 把这两类错钉死。", "how": "cd holo_pet_w3 && npm run pack  →  py -3.14 tools/codex-scripts/pack-receipt.py" },
-    { "at": "2026-09-23", "what": "vendor/node_modules 去重：13 个包（369.6 MB）进回收站。判据=与 holo_pet/node_modules 同名包**逐字节相同**（文件数+总字节都相同）且全仓零引用；且 Node 解析从 holo_pet/ 出发先命中 holo_pet/node_modules，**永远走不到** vendor/node_modules ⇒ 搬它不可能弄坏今天能跑的东西。工具 tools/codex-scripts/vendor-node-trim.py，可还原（回收站）。留下 three（生成器真读）与 .bin（0 字节收益，不动结构）。" }
+    { "at": "2026-09-23", "what": "vendor/node_modules 去重：13 个包（369.6 MB）进回收站。判据=与 holo_pet/node_modules 同名包**逐字节相同**（文件数+总字节都相同）且全仓零引用；且 Node 解析从 holo_pet/ 出发先命中 holo_pet/node_modules，**永远走不到** vendor/node_modules ⇒ 搬它不可能弄坏今天能跑的东西。工具 tools/codex-scripts/vendor-node-trim.py，可还原（回收站）。留下 three（生成器真读）与 .bin（0 字节收益，不动结构）。" },
+    { "at": "2026-10-08", "what": "**补登记 23 棵 R1 未登记树 + 9 族视图声明**（R3 1705→0）：树=工具落点/产物/工作区逐条一句话；视图族=agent 技能面 38 条 + data/skills 4 条 + nanobrowser pnpm 1661 条 + legacy 2 条。同时 5 个 __pycache__ 与 .backups/single-window-20261002 进回收站（回执 state/cleanup-receipt-20261008-1157.json）。", "how": "tree-registry.py --check 红 1736→8（余 R8=8 为既有红：历次作业动过 .scratch 8 件，见 2026-10-08 报告）" },
+    { "at": "2026-10-12", "what": "**补登记 `video-src`（R1 唯一未登记树）+ 清 20 个 __pycache__ 进回收站**。① 全仓卫生扫描：仓自带三把尺子（supersede-check 5 判据+8 负对照全绿 / file_hygiene clean / old-pages 被超越 0·现行 305）先跑了一遍，再按 LAYOUT 三分法逐层核。② 只清了唯一无争议的一类（铁律 3「零缓存入库」）：20 个 `__pycache__` 进回收站、失败 0；**刻意不碰** `_baseline_wt`（框架门基线 worktree，`restore_missing_caps.py` 真依赖）与 `_upstream` / `plugins` / `holo_pet`（别人的目录）。③ 顺带纠了一条我自己先前的误判：`.scratch/_baseline_wt` 看着像「整仓副本」，实为框架门基线——**引用底账说了算，不是看着像就能清**。", "how": "python tools/codex-scripts/tree-registry.py --check（红 9→8，余 8 条 R8）" },
+    { "at": "2026-10-12", "what": "**V8↔V9 能力差集：在自家树上长出 2 件（未搬 V9 一个字节）**。主人令：「对比一下把 V8 缺少的能力在自己项目树上生出，别去搬过来」。① 边界先立（照 V9 自己的 `docs/V8-V9-版本边界.md`）：严禁混用/只允许显式桥/**她的树一行不改** —— 本轮**没碰 V9 任何文件**。② 逐名核对（V8 注册表 269 位 ↔ V9 `docs/capabilities/` 30 篇 + `core/` 133 模块）：**真缺口 2 件**，其余 18 组是「名字不同、其实已有」（`no_begging`↔`ux_doctrine` · `keys_gate`↔`key_gateway` · `file_binding`↔`tentacle_bind` · `longrun`↔`long_run_supervisor` …）。③ 新写 `gbt_allinone/detail_habit.py`（细节化习惯：六件套/模糊词禁用/回读三件/一步产出≤3）与 `gbt_allinone/tentacle/scale.py`（亿万触手寻址：10^8 地址空间 + 1024 分片 + 每根钥匙 HMAC 派生），三处接线齐（注册表 + `api.py` 分派 + 绑定台账）。④ 两件都**只做只读那一半** —— 新增位无 policy 分支 = 零作用域（登记在册的坑），实体化/落盘交主人开作用域（见 pending_owner）。差集与读数全文：`docs/V8-V9-能力差集-20261012.md`。", "how": "py -3.14 tools/codex-scripts/capability-autobind.py apply（全链 7 步 · 收编 5 位 · 绑定判据 PASS 18/FAIL 0）" }
   ]
 }

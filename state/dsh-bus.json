@@ -1,0 +1,2204 @@
+{
+ "profiles": {
+  "gbt-official": {
+   "插件数": 157,
+   "字节": 19469
+  },
+  "web": {
+   "插件数": 154,
+   "字节": 19814
+  }
+ },
+ "逐条": [
+  {
+   "profile": "gbt-official",
+   "id": "timer",
+   "包": "'@deepseek-ai/cordis-plugin-timer'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "hmr",
+   "包": "'@deepseek-ai/cordis-plugin-hmr'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "llm",
+   "包": "'@deepseek-ai/dsh-llm'",
+   "档": "可直调",
+   "怎么调": "我们壳的对话面就是这条（dsh-embed.html 内嵌 web）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "deepseek-llm-api-extensions",
+   "包": "'@deepseek-ai/dsh-deepseek-llm-api-extensions'",
+   "档": "可直调",
+   "怎么调": "我们壳的对话面就是这条（dsh-embed.html 内嵌 web）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session",
+   "包": "'@deepseek-ai/dsh-session'",
+   "档": "可直调",
+   "怎么调": "走她的 session 面（我们壳从 web 形态读）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-log-deepseek",
+   "包": "'@deepseek-ai/dsh-session-log-deepseek'",
+   "档": "可直调",
+   "怎么调": "走她的 session 面（我们壳从 web 形态读）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "typert",
+   "包": "'@deepseek-ai/dsh-typert-registry'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "typert-loader",
+   "包": "'@deepseek-ai/dsh-typert-loader'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "typert-gateway",
+   "包": "'@deepseek-ai/dsh-api-gateway'",
+   "档": "需主人侧",
+   "怎么调": "涉凭据/审批 —— 只在她的界面里由主人操作"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-title",
+   "包": "'@deepseek-ai/dsh-session-title'",
+   "档": "可直调",
+   "怎么调": "走她的 session 面（我们壳从 web 形态读）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-title-llm",
+   "包": "'@deepseek-ai/dsh-session-title-first-prompt-llm'",
+   "档": "可直调",
+   "怎么调": "走她的 session 面（我们壳从 web 形态读）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "user-questions",
+   "包": "'@deepseek-ai/dsh-user-questions'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "agent",
+   "包": "'@deepseek-ai/dsh-agent'",
+   "档": "可直调",
+   "怎么调": "我们壳的对话面就是这条（dsh-embed.html 内嵌 web）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "plugin-package-inventory-deepseek",
+   "包": "'@deepseek-ai/dsh-plugin-package-inventory-deepseek'",
+   "档": "可直调",
+   "怎么调": "dsh plugin <sub>（转发她的插件管理）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "agent-default-model",
+   "包": "'@deepseek-ai/dsh-agent-default-model'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "jobs",
+   "包": "'@deepseek-ai/dsh-jobs-local'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "llm-retry",
+   "包": "'@deepseek-ai/dsh-llm-retry'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "settings",
+   "包": "'@deepseek-ai/dsh-settings-file'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "credentials",
+   "包": "'@deepseek-ai/dsh-credentials-local'",
+   "档": "需主人侧",
+   "怎么调": "涉凭据/审批 —— 只在她的界面里由主人操作"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "llm-pi-ai",
+   "包": "'@deepseek-ai/dsh-llm-pi-ai'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-persistence-jsonl",
+   "包": "'@deepseek-ai/dsh-session-persistence-jsonl'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "attachment-local",
+   "包": "'@deepseek-ai/dsh-attachment-local'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-query-sqlite",
+   "包": "'@deepseek-ai/dsh-session-query-sqlite'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-projection",
+   "包": "'@deepseek-ai/dsh-session-projection'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "storage",
+   "包": "'@deepseek-ai/dsh-storage'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "storage-json",
+   "包": "'@deepseek-ai/dsh-storage-json'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "storage-domain",
+   "包": "'@deepseek-ai/dsh-storage-domain'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-projection-cache",
+   "包": "'@deepseek-ai/dsh-session-projection-cache'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-telemetry-otel",
+   "包": "'@deepseek-ai/dsh-session-telemetry-otel'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "subprocess",
+   "包": "'@deepseek-ai/dsh-subprocess-local'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "sandbox",
+   "包": "'@deepseek-ai/dsh-sandbox-local'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "sandbox-policy",
+   "包": "'@deepseek-ai/dsh-sandbox-policy'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "bash-sandbox",
+   "包": "'@deepseek-ai/dsh-bash-sandbox'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "pwsh-sandbox",
+   "包": "'@deepseek-ai/dsh-pwsh-sandbox'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "approval",
+   "包": "'@deepseek-ai/dsh-user-approval'",
+   "档": "需主人侧",
+   "怎么调": "涉凭据/审批 —— 只在她的界面里由主人操作"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "permission",
+   "包": "'@deepseek-ai/dsh-permission-presets'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "shell-env",
+   "包": "'@deepseek-ai/dsh-shell-env'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-bash",
+   "包": "'@deepseek-ai/dsh-tool-bash'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-pwsh",
+   "包": "'@deepseek-ai/dsh-tool-pwsh'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-jobs",
+   "包": "'@deepseek-ai/dsh-tool-jobs'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "fs-observation-policy",
+   "包": "'@deepseek-ai/dsh-fs-observation-policy'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-fs",
+   "包": "'@deepseek-ai/dsh-tool-fs'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-fs-search",
+   "包": "'@deepseek-ai/dsh-tool-fs-search'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "agent-instructions",
+   "包": "'@deepseek-ai/dsh-agent-instructions'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "skill",
+   "包": "'@deepseek-ai/dsh-skill'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "skill-filesystem",
+   "包": "'@deepseek-ai/dsh-skill-filesystem'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "skill-badge",
+   "包": "'@deepseek-ai/dsh-skill-badge'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-skill",
+   "包": "'@deepseek-ai/dsh-tool-skill'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "commands",
+   "包": "'@deepseek-ai/dsh-commands'",
+   "档": "可直调",
+   "怎么调": "dsh web --help 看该命令；或在我们壳的对话面发同一句"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "command-feedback",
+   "包": "'@deepseek-ai/dsh-command-feedback'",
+   "档": "可直调",
+   "怎么调": "dsh web --help 看该命令；或在我们壳的对话面发同一句"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "goal",
+   "包": "'@deepseek-ai/dsh-goal'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "goal-round-driver",
+   "包": "'@deepseek-ai/dsh-goal-round-driver'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "command-goal",
+   "包": "'@deepseek-ai/dsh-command-goal'",
+   "档": "可直调",
+   "怎么调": "dsh web --help 看该命令；或在我们壳的对话面发同一句"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "plan-mode",
+   "包": "'@deepseek-ai/dsh-plan-mode'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "token-meter",
+   "包": "'@deepseek-ai/dsh-token-meter'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "compaction-basic",
+   "包": "'@deepseek-ai/dsh-compaction-basic'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "command-compact",
+   "包": "'@deepseek-ai/dsh-command-compact'",
+   "档": "可直调",
+   "怎么调": "dsh web --help 看该命令；或在我们壳的对话面发同一句"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "subagent",
+   "包": "'@deepseek-ai/dsh-subagent'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "subagent-spawn-in-process",
+   "包": "'@deepseek-ai/dsh-subagent-spawn-in-process'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "subagent-fork-in-process",
+   "包": "'@deepseek-ai/dsh-subagent-fork-in-process'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-subagent-control",
+   "包": "'@deepseek-ai/dsh-tool-subagent-control'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-subagent-list-agents",
+   "包": "'@deepseek-ai/dsh-tool-subagent-control/list-agents'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-subagent",
+   "包": "'@deepseek-ai/dsh-tool-subagent'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-subagent-fork",
+   "包": "'@deepseek-ai/dsh-tool-subagent'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "workflow-worker-thread",
+   "包": "'@deepseek-ai/dsh-workflow-worker-thread'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-workflow",
+   "包": "'@deepseek-ai/dsh-tool-workflow'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "timeout-policy",
+   "包": "'@deepseek-ai/dsh-tool-call-timeout-policy'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "spill-local",
+   "包": "'@deepseek-ai/dsh-spill-local'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "spill-policy",
+   "包": "'@deepseek-ai/dsh-spill-policy'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-checkpoint-policy",
+   "包": "'@deepseek-ai/dsh-session-checkpoint-policy'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-result-pruner",
+   "包": "'@deepseek-ai/dsh-compaction-tool-result-pruner'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-todo",
+   "包": "'@deepseek-ai/dsh-tool-todo'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-goal",
+   "包": "'@deepseek-ai/dsh-tool-goal'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-ralph",
+   "包": "'@deepseek-ai/dsh-tool-ralph'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "repeat-tool-reminder",
+   "包": "'@deepseek-ai/dsh-repeat-tool-reminder'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "web",
+   "包": "'@deepseek-ai/dsh-web'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "web-search-deepseek",
+   "包": "'@deepseek-ai/dsh-web-search-deepseek'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "web-fetch-http",
+   "包": "'@deepseek-ai/dsh-web-fetch-http'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tool-web",
+   "包": "'@deepseek-ai/dsh-tool-web'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "tools",
+   "包": "'@deepseek-ai/dsh-tools'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "system-prompt",
+   "包": "'@deepseek-ai/dsh-system-prompt'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "agent-loop",
+   "包": "'@deepseek-ai/dsh-agent-loop'",
+   "档": "可直调",
+   "怎么调": "我们壳的对话面就是这条（dsh-embed.html 内嵌 web）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "fs-sandbox",
+   "包": "'@deepseek-ai/dsh-fs-sandbox'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "llm-deepseek",
+   "包": "'@deepseek-ai/dsh-llm-deepseek'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "subagent-model-selection-settings",
+   "包": "'@deepseek-ai/dsh-tool-subagent/model-selection-settings'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "code-runtime",
+   "包": "'@deepseek-ai/dsh-code-runtime-worker-thread'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "message-feedback",
+   "包": "'@deepseek-ai/dsh-message-feedback'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-log-download",
+   "包": "'@deepseek-ai/dsh-session-log-export'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "open-in-app",
+   "包": "'@deepseek-ai/dsh-host-open-in-app'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-open-in-app",
+   "包": "'@deepseek-ai/dsh-client-ui-open-in-app'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "workspace",
+   "包": "'@deepseek-ai/dsh-workspace'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-reference",
+   "包": "'@deepseek-ai/dsh-session-reference'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "file-reference-local",
+   "包": "'@deepseek-ai/dsh-file-reference-local'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-stats",
+   "包": "'@deepseek-ai/dsh-session-stats'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-turn-outline",
+   "包": "'@deepseek-ai/dsh-session-turn-outline'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "directory-picker",
+   "包": "'@deepseek-ai/dsh-host-directory-picker-auto'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "plugin-inventory",
+   "包": "'@deepseek-ai/dsh-host-plugin-inventory'",
+   "档": "可直调",
+   "怎么调": "dsh plugin <sub>（转发她的插件管理）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "session-controller",
+   "包": "'@deepseek-ai/dsh-api-session-controller'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "workspace-files",
+   "包": "'@deepseek-ai/dsh-api-workspace-files'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "settings-controller",
+   "包": "'@deepseek-ai/dsh-api-settings-controller'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "workspace-controller",
+   "包": "'@deepseek-ai/dsh-api-workspace-controller'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "cordis-host-runner",
+   "包": "'@deepseek-ai/dsh-cordis-host-runner'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "web-startup",
+   "包": "'@deepseek-ai/dsh-web-app/startup'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "webserver",
+   "包": "'@deepseek-ai/dsh-host-webserver'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "web-runtime",
+   "包": "'@deepseek-ai/dsh-web-app'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "client-hmr",
+   "包": "'@deepseek-ai/dsh-client-hmr'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "modules",
+   "包": "'@deepseek-ai/dsh-client-modules'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "connection",
+   "包": "'@deepseek-ai/dsh-client-connection'",
+   "档": "需主人侧",
+   "怎么调": "涉凭据/审批 —— 只在她的界面里由主人操作"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "file-upload",
+   "包": "'@deepseek-ai/dsh-client-file-upload'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "api-remotes",
+   "包": "'@deepseek-ai/dsh-api-remotes'",
+   "档": "需主人侧",
+   "怎么调": "涉凭据/审批 —— 只在她的界面里由主人操作"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "cordis-client-runner",
+   "包": "'@deepseek-ai/dsh-cordis-client-runner'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-theme",
+   "包": "'@deepseek-ai/dsh-client-ui-theme'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "locale",
+   "包": "'@deepseek-ai/dsh-client-locale'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-layout",
+   "包": "'@deepseek-ai/dsh-client-ui-layout'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-renderer",
+   "包": "'@deepseek-ai/dsh-client-ui-renderer'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-session",
+   "包": "'@deepseek-ai/dsh-client-ui-session'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "resources",
+   "包": "'@deepseek-ai/dsh-client-resources'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-sidebar",
+   "包": "'@deepseek-ai/dsh-client-ui-sidebar'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-sidebar-right",
+   "包": "'@deepseek-ai/dsh-client-ui-sidebar-right'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-sidebar-documentpreview",
+   "包": "'@deepseek-ai/dsh-client-ui-sidebar-documentpreview'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-sidebar-files",
+   "包": "'@deepseek-ai/dsh-client-ui-sidebar-files'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-settings",
+   "包": "'@deepseek-ai/dsh-client-ui-settings'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-settings-general",
+   "包": "'@deepseek-ai/dsh-client-ui-settings-general'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-settings-models",
+   "包": "'@deepseek-ai/dsh-client-ui-settings-models'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-settings-plugin-inventory",
+   "包": "'@deepseek-ai/dsh-client-ui-settings-plugin-inventory'",
+   "档": "可直调",
+   "怎么调": "dsh plugin <sub>（转发她的插件管理）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-conversation",
+   "包": "'@deepseek-ai/dsh-client-ui-conversation'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-approval",
+   "包": "'@deepseek-ai/dsh-client-ui-approval'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-chat",
+   "包": "'@deepseek-ai/dsh-client-ui-chat'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-brand-official",
+   "包": "'@deepseek-ai/dsh-client-ui-brand-official'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-attachment",
+   "包": "'@deepseek-ai/dsh-client-ui-attachment'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-tool",
+   "包": "'@deepseek-ai/dsh-client-ui-tool'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-cordis",
+   "包": "'@deepseek-ai/dsh-client-ui-cordis'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-workflow-run",
+   "包": "'@deepseek-ai/dsh-client-ui-workflow-run'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-deliverables",
+   "包": "'@deepseek-ai/dsh-client-ui-deliverables'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-workspace",
+   "包": "'@deepseek-ai/dsh-client-ui-workspace'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-input-trigger",
+   "包": "'@deepseek-ai/dsh-client-ui-input-trigger'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-commands",
+   "包": "'@deepseek-ai/dsh-client-ui-commands'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-skill",
+   "包": "'@deepseek-ai/dsh-client-ui-skill'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-subagent",
+   "包": "'@deepseek-ai/dsh-client-ui-subagent'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-reference",
+   "包": "'@deepseek-ai/dsh-client-ui-reference'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-schedule",
+   "包": "'@deepseek-ai/dsh-client-ui-schedule'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-jobs",
+   "包": "'@deepseek-ai/dsh-client-ui-jobs'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-goal",
+   "包": "'@deepseek-ai/dsh-client-ui-goal'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-message-feedback",
+   "包": "'@deepseek-ai/dsh-client-ui-message-feedback'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-model-selection",
+   "包": "'@deepseek-ai/dsh-client-ui-model-selection'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-permission",
+   "包": "'@deepseek-ai/dsh-client-ui-permission-presets'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-agent-preset",
+   "包": "'@deepseek-ai/dsh-client-ui-agent-preset'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-settings-plugins",
+   "包": "'@deepseek-ai/dsh-client-ui-settings-plugins'",
+   "档": "可直调",
+   "怎么调": "dsh plugin <sub>（转发她的插件管理）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-plan",
+   "包": "'@deepseek-ai/dsh-client-ui-plan'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-user-questions",
+   "包": "'@deepseek-ai/dsh-client-ui-user-questions'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "ui-trajectory",
+   "包": "'@deepseek-ai/dsh-client-ui-trajectory'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "agent-presets",
+   "包": "'@deepseek-ai/dsh-agent-presets'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "gbt-master",
+   "包": "gbt-potato-master-v9",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "gbt-capability-bar",
+   "包": "gbt-potato-capability-bar-v1",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "schedule",
+   "包": "'@deepseek-ai/dsh-schedule'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "webhook-runtime",
+   "包": "'@deepseek-ai/dsh-webhook'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "gbt-official",
+   "id": "hooks-codex",
+   "包": "'@deepseek-ai/dsh-hooks-codex'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "timer",
+   "包": "'@deepseek-ai/cordis-plugin-timer'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "hmr",
+   "包": "'@deepseek-ai/cordis-plugin-hmr'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "llm",
+   "包": "'@deepseek-ai/dsh-llm'",
+   "档": "可直调",
+   "怎么调": "我们壳的对话面就是这条（dsh-embed.html 内嵌 web）"
+  },
+  {
+   "profile": "web",
+   "id": "deepseek-llm-api-extensions",
+   "包": "'@deepseek-ai/dsh-deepseek-llm-api-extensions'",
+   "档": "可直调",
+   "怎么调": "我们壳的对话面就是这条（dsh-embed.html 内嵌 web）"
+  },
+  {
+   "profile": "web",
+   "id": "session",
+   "包": "'@deepseek-ai/dsh-session'",
+   "档": "可直调",
+   "怎么调": "走她的 session 面（我们壳从 web 形态读）"
+  },
+  {
+   "profile": "web",
+   "id": "session-log-deepseek",
+   "包": "'@deepseek-ai/dsh-session-log-deepseek'",
+   "档": "可直调",
+   "怎么调": "走她的 session 面（我们壳从 web 形态读）"
+  },
+  {
+   "profile": "web",
+   "id": "typert",
+   "包": "'@deepseek-ai/dsh-typert-registry'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "typert-loader",
+   "包": "'@deepseek-ai/dsh-typert-loader'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "typert-gateway",
+   "包": "'@deepseek-ai/dsh-api-gateway'",
+   "档": "需主人侧",
+   "怎么调": "涉凭据/审批 —— 只在她的界面里由主人操作"
+  },
+  {
+   "profile": "web",
+   "id": "session-title",
+   "包": "'@deepseek-ai/dsh-session-title'",
+   "档": "可直调",
+   "怎么调": "走她的 session 面（我们壳从 web 形态读）"
+  },
+  {
+   "profile": "web",
+   "id": "session-title-llm",
+   "包": "'@deepseek-ai/dsh-session-title-first-prompt-llm'",
+   "档": "可直调",
+   "怎么调": "走她的 session 面（我们壳从 web 形态读）"
+  },
+  {
+   "profile": "web",
+   "id": "user-questions",
+   "包": "'@deepseek-ai/dsh-user-questions'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "agent",
+   "包": "'@deepseek-ai/dsh-agent'",
+   "档": "可直调",
+   "怎么调": "我们壳的对话面就是这条（dsh-embed.html 内嵌 web）"
+  },
+  {
+   "profile": "web",
+   "id": "plugin-package-inventory-deepseek",
+   "包": "'@deepseek-ai/dsh-plugin-package-inventory-deepseek'",
+   "档": "可直调",
+   "怎么调": "dsh plugin <sub>（转发她的插件管理）"
+  },
+  {
+   "profile": "web",
+   "id": "agent-default-model",
+   "包": "'@deepseek-ai/dsh-agent-default-model'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "jobs",
+   "包": "'@deepseek-ai/dsh-jobs-local'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "llm-retry",
+   "包": "'@deepseek-ai/dsh-llm-retry'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "settings",
+   "包": "'@deepseek-ai/dsh-settings-file'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "credentials",
+   "包": "'@deepseek-ai/dsh-credentials-local'",
+   "档": "需主人侧",
+   "怎么调": "涉凭据/审批 —— 只在她的界面里由主人操作"
+  },
+  {
+   "profile": "web",
+   "id": "llm-pi-ai",
+   "包": "'@deepseek-ai/dsh-llm-pi-ai'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "session-persistence-jsonl",
+   "包": "'@deepseek-ai/dsh-session-persistence-jsonl'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "attachment-local",
+   "包": "'@deepseek-ai/dsh-attachment-local'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "session-query-sqlite",
+   "包": "'@deepseek-ai/dsh-session-query-sqlite'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "session-projection",
+   "包": "'@deepseek-ai/dsh-session-projection'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "storage",
+   "包": "'@deepseek-ai/dsh-storage'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "storage-json",
+   "包": "'@deepseek-ai/dsh-storage-json'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "storage-domain",
+   "包": "'@deepseek-ai/dsh-storage-domain'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "session-projection-cache",
+   "包": "'@deepseek-ai/dsh-session-projection-cache'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "session-telemetry-otel",
+   "包": "'@deepseek-ai/dsh-session-telemetry-otel'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "subprocess",
+   "包": "'@deepseek-ai/dsh-subprocess-local'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "sandbox",
+   "包": "'@deepseek-ai/dsh-sandbox-local'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "sandbox-policy",
+   "包": "'@deepseek-ai/dsh-sandbox-policy'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "bash-sandbox",
+   "包": "'@deepseek-ai/dsh-bash-sandbox'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "pwsh-sandbox",
+   "包": "'@deepseek-ai/dsh-pwsh-sandbox'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "approval",
+   "包": "'@deepseek-ai/dsh-user-approval'",
+   "档": "需主人侧",
+   "怎么调": "涉凭据/审批 —— 只在她的界面里由主人操作"
+  },
+  {
+   "profile": "web",
+   "id": "permission",
+   "包": "'@deepseek-ai/dsh-permission-presets'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "shell-env",
+   "包": "'@deepseek-ai/dsh-shell-env'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-bash",
+   "包": "'@deepseek-ai/dsh-tool-bash'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-pwsh",
+   "包": "'@deepseek-ai/dsh-tool-pwsh'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-jobs",
+   "包": "'@deepseek-ai/dsh-tool-jobs'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "fs-observation-policy",
+   "包": "'@deepseek-ai/dsh-fs-observation-policy'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-fs",
+   "包": "'@deepseek-ai/dsh-tool-fs'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-fs-search",
+   "包": "'@deepseek-ai/dsh-tool-fs-search'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "agent-instructions",
+   "包": "'@deepseek-ai/dsh-agent-instructions'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "skill",
+   "包": "'@deepseek-ai/dsh-skill'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "skill-filesystem",
+   "包": "'@deepseek-ai/dsh-skill-filesystem'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "skill-badge",
+   "包": "'@deepseek-ai/dsh-skill-badge'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-skill",
+   "包": "'@deepseek-ai/dsh-tool-skill'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "commands",
+   "包": "'@deepseek-ai/dsh-commands'",
+   "档": "可直调",
+   "怎么调": "dsh web --help 看该命令；或在我们壳的对话面发同一句"
+  },
+  {
+   "profile": "web",
+   "id": "command-feedback",
+   "包": "'@deepseek-ai/dsh-command-feedback'",
+   "档": "可直调",
+   "怎么调": "dsh web --help 看该命令；或在我们壳的对话面发同一句"
+  },
+  {
+   "profile": "web",
+   "id": "goal",
+   "包": "'@deepseek-ai/dsh-goal'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "goal-round-driver",
+   "包": "'@deepseek-ai/dsh-goal-round-driver'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "command-goal",
+   "包": "'@deepseek-ai/dsh-command-goal'",
+   "档": "可直调",
+   "怎么调": "dsh web --help 看该命令；或在我们壳的对话面发同一句"
+  },
+  {
+   "profile": "web",
+   "id": "plan-mode",
+   "包": "'@deepseek-ai/dsh-plan-mode'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "token-meter",
+   "包": "'@deepseek-ai/dsh-token-meter'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "compaction-basic",
+   "包": "'@deepseek-ai/dsh-compaction-basic'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "command-compact",
+   "包": "'@deepseek-ai/dsh-command-compact'",
+   "档": "可直调",
+   "怎么调": "dsh web --help 看该命令；或在我们壳的对话面发同一句"
+  },
+  {
+   "profile": "web",
+   "id": "subagent",
+   "包": "'@deepseek-ai/dsh-subagent'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "subagent-spawn-in-process",
+   "包": "'@deepseek-ai/dsh-subagent-spawn-in-process'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "subagent-fork-in-process",
+   "包": "'@deepseek-ai/dsh-subagent-fork-in-process'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-subagent-control",
+   "包": "'@deepseek-ai/dsh-tool-subagent-control'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-subagent-list-agents",
+   "包": "'@deepseek-ai/dsh-tool-subagent-control/list-agents'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-subagent",
+   "包": "'@deepseek-ai/dsh-tool-subagent'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-subagent-fork",
+   "包": "'@deepseek-ai/dsh-tool-subagent'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "workflow-worker-thread",
+   "包": "'@deepseek-ai/dsh-workflow-worker-thread'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-workflow",
+   "包": "'@deepseek-ai/dsh-tool-workflow'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "timeout-policy",
+   "包": "'@deepseek-ai/dsh-tool-call-timeout-policy'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "spill-local",
+   "包": "'@deepseek-ai/dsh-spill-local'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "spill-policy",
+   "包": "'@deepseek-ai/dsh-spill-policy'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "session-checkpoint-policy",
+   "包": "'@deepseek-ai/dsh-session-checkpoint-policy'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-result-pruner",
+   "包": "'@deepseek-ai/dsh-compaction-tool-result-pruner'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-todo",
+   "包": "'@deepseek-ai/dsh-tool-todo'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-goal",
+   "包": "'@deepseek-ai/dsh-tool-goal'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-ralph",
+   "包": "'@deepseek-ai/dsh-tool-ralph'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "repeat-tool-reminder",
+   "包": "'@deepseek-ai/dsh-repeat-tool-reminder'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "web",
+   "包": "'@deepseek-ai/dsh-web'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "web-search-deepseek",
+   "包": "'@deepseek-ai/dsh-web-search-deepseek'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "web-fetch-http",
+   "包": "'@deepseek-ai/dsh-web-fetch-http'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tool-web",
+   "包": "'@deepseek-ai/dsh-tool-web'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "tools",
+   "包": "'@deepseek-ai/dsh-tools'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "system-prompt",
+   "包": "'@deepseek-ai/dsh-system-prompt'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "agent-loop",
+   "包": "'@deepseek-ai/dsh-agent-loop'",
+   "档": "可直调",
+   "怎么调": "我们壳的对话面就是这条（dsh-embed.html 内嵌 web）"
+  },
+  {
+   "profile": "web",
+   "id": "fs-sandbox",
+   "包": "'@deepseek-ai/dsh-fs-sandbox'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "llm-deepseek",
+   "包": "'@deepseek-ai/dsh-llm-deepseek'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "subagent-model-selection-settings",
+   "包": "'@deepseek-ai/dsh-tool-subagent/model-selection-settings'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "code-runtime",
+   "包": "'@deepseek-ai/dsh-code-runtime-worker-thread'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "message-feedback",
+   "包": "'@deepseek-ai/dsh-message-feedback'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "session-log-download",
+   "包": "'@deepseek-ai/dsh-session-log-export'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "open-in-app",
+   "包": "'@deepseek-ai/dsh-host-open-in-app'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-open-in-app",
+   "包": "'@deepseek-ai/dsh-client-ui-open-in-app'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "workspace",
+   "包": "'@deepseek-ai/dsh-workspace'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "session-reference",
+   "包": "'@deepseek-ai/dsh-session-reference'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "file-reference-local",
+   "包": "'@deepseek-ai/dsh-file-reference-local'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "session-stats",
+   "包": "'@deepseek-ai/dsh-session-stats'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "session-turn-outline",
+   "包": "'@deepseek-ai/dsh-session-turn-outline'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "directory-picker",
+   "包": "'@deepseek-ai/dsh-host-directory-picker-auto'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "plugin-inventory",
+   "包": "'@deepseek-ai/dsh-host-plugin-inventory'",
+   "档": "可直调",
+   "怎么调": "dsh plugin <sub>（转发她的插件管理）"
+  },
+  {
+   "profile": "web",
+   "id": "session-controller",
+   "包": "'@deepseek-ai/dsh-api-session-controller'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "workspace-files",
+   "包": "'@deepseek-ai/dsh-api-workspace-files'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "settings-controller",
+   "包": "'@deepseek-ai/dsh-api-settings-controller'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "workspace-controller",
+   "包": "'@deepseek-ai/dsh-api-workspace-controller'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "cordis-host-runner",
+   "包": "'@deepseek-ai/dsh-cordis-host-runner'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "web-startup",
+   "包": "'@deepseek-ai/dsh-web-app/startup'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "webserver",
+   "包": "'@deepseek-ai/dsh-host-webserver'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "web-runtime",
+   "包": "'@deepseek-ai/dsh-web-app'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "client-hmr",
+   "包": "'@deepseek-ai/dsh-client-hmr'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "modules",
+   "包": "'@deepseek-ai/dsh-client-modules'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "connection",
+   "包": "'@deepseek-ai/dsh-client-connection'",
+   "档": "需主人侧",
+   "怎么调": "涉凭据/审批 —— 只在她的界面里由主人操作"
+  },
+  {
+   "profile": "web",
+   "id": "file-upload",
+   "包": "'@deepseek-ai/dsh-client-file-upload'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "api-remotes",
+   "包": "'@deepseek-ai/dsh-api-remotes'",
+   "档": "需主人侧",
+   "怎么调": "涉凭据/审批 —— 只在她的界面里由主人操作"
+  },
+  {
+   "profile": "web",
+   "id": "cordis-client-runner",
+   "包": "'@deepseek-ai/dsh-cordis-client-runner'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-theme",
+   "包": "'@deepseek-ai/dsh-client-ui-theme'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "locale",
+   "包": "'@deepseek-ai/dsh-client-locale'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-layout",
+   "包": "'@deepseek-ai/dsh-client-ui-layout'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-renderer",
+   "包": "'@deepseek-ai/dsh-client-ui-renderer'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-session",
+   "包": "'@deepseek-ai/dsh-client-ui-session'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "resources",
+   "包": "'@deepseek-ai/dsh-client-resources'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-sidebar",
+   "包": "'@deepseek-ai/dsh-client-ui-sidebar'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-sidebar-right",
+   "包": "'@deepseek-ai/dsh-client-ui-sidebar-right'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-sidebar-documentpreview",
+   "包": "'@deepseek-ai/dsh-client-ui-sidebar-documentpreview'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-sidebar-files",
+   "包": "'@deepseek-ai/dsh-client-ui-sidebar-files'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-settings",
+   "包": "'@deepseek-ai/dsh-client-ui-settings'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-settings-general",
+   "包": "'@deepseek-ai/dsh-client-ui-settings-general'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-settings-models",
+   "包": "'@deepseek-ai/dsh-client-ui-settings-models'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-settings-plugin-inventory",
+   "包": "'@deepseek-ai/dsh-client-ui-settings-plugin-inventory'",
+   "档": "可直调",
+   "怎么调": "dsh plugin <sub>（转发她的插件管理）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-conversation",
+   "包": "'@deepseek-ai/dsh-client-ui-conversation'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-approval",
+   "包": "'@deepseek-ai/dsh-client-ui-approval'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-chat",
+   "包": "'@deepseek-ai/dsh-client-ui-chat'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-brand-official",
+   "包": "'@deepseek-ai/dsh-client-ui-brand-official'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-attachment",
+   "包": "'@deepseek-ai/dsh-client-ui-attachment'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-tool",
+   "包": "'@deepseek-ai/dsh-client-ui-tool'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-cordis",
+   "包": "'@deepseek-ai/dsh-client-ui-cordis'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-workflow-run",
+   "包": "'@deepseek-ai/dsh-client-ui-workflow-run'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-deliverables",
+   "包": "'@deepseek-ai/dsh-client-ui-deliverables'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-workspace",
+   "包": "'@deepseek-ai/dsh-client-ui-workspace'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-input-trigger",
+   "包": "'@deepseek-ai/dsh-client-ui-input-trigger'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-commands",
+   "包": "'@deepseek-ai/dsh-client-ui-commands'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-skill",
+   "包": "'@deepseek-ai/dsh-client-ui-skill'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-subagent",
+   "包": "'@deepseek-ai/dsh-client-ui-subagent'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-reference",
+   "包": "'@deepseek-ai/dsh-client-ui-reference'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-schedule",
+   "包": "'@deepseek-ai/dsh-client-ui-schedule'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-jobs",
+   "包": "'@deepseek-ai/dsh-client-ui-jobs'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-goal",
+   "包": "'@deepseek-ai/dsh-client-ui-goal'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-message-feedback",
+   "包": "'@deepseek-ai/dsh-client-ui-message-feedback'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-model-selection",
+   "包": "'@deepseek-ai/dsh-client-ui-model-selection'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-permission",
+   "包": "'@deepseek-ai/dsh-client-ui-permission-presets'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-agent-preset",
+   "包": "'@deepseek-ai/dsh-client-ui-agent-preset'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-settings-plugins",
+   "包": "'@deepseek-ai/dsh-client-ui-settings-plugins'",
+   "档": "可直调",
+   "怎么调": "dsh plugin <sub>（转发她的插件管理）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-plan",
+   "包": "'@deepseek-ai/dsh-client-ui-plan'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-user-questions",
+   "包": "'@deepseek-ai/dsh-client-ui-user-questions'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "ui-trajectory",
+   "包": "'@deepseek-ai/dsh-client-ui-trajectory'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "agent-presets",
+   "包": "'@deepseek-ai/dsh-agent-presets'",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "llm-qwen-local",
+   "包": "dsh-llm-qwen-local",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  },
+  {
+   "profile": "web",
+   "id": "gbt-master",
+   "包": "gbt-potato-master-v9",
+   "档": "随 profile 起",
+   "怎么调": "起该 profile 即随附（无单独调用口，如实标）"
+  }
+ ],
+ "总数": 158,
+ "分档": {
+  "可直调": 32,
+  "随 profile 起": 269,
+  "需主人侧": 10
+ },
+ "at": "2026-10-10T11:12:44",
+ "顶层命令面": {
+  "profile 树": "dsh --profile 名 --dump-config",
+  "插件管理": "dsh plugin <sub>",
+  "起 web": "dsh web",
+  "desktop": "Electron 独占（实测拒绝）"
+ }
+}

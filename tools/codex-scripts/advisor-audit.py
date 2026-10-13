@@ -18,10 +18,8 @@
 from __future__ import annotations
 
 import ast
-import json
 import re
 import sys
-import tempfile
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")

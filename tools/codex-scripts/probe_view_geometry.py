@@ -138,7 +138,7 @@ def main() -> int:
             for bd in m["bad"]:
                 rc = 1
                 allbad.append((label, bd))
-                print(f"     [!!BAD] {bd['kind']}  {bd.get('title','')} {bd.get('el','')} "
+                print(f"     [!!BAD] {bd['kind']}  {bd.get('title', '')} {bd.get('el', '')} "
                       f"{bd.get('hiddenPx') or bd.get('overPx')}px  {bd['why']}")
             if key == "cockpit":
                 t = m["times"]
@@ -149,7 +149,7 @@ def main() -> int:
         if allbad:
             print(f"发现 {len(allbad)} 处真版面缺陷（内容拿不到 / 溢出 / 横向滚动）：")
             for lbl, bd in allbad:
-                print(f"  · [{lbl}] {bd['kind']} {bd.get('title','')} — {bd['why']}")
+                print(f"  · [{lbl}] {bd['kind']} {bd.get('title', '')} — {bd['why']}")
         else:
             print("无 CLIP / OVERFLOW / HSCROLL 真缺陷。（SCROLL 是可滚动，非缺陷。）")
         print("=" * 78)

@@ -1,0 +1,358 @@
+{
+  "probe": "DSH 未启用 20 包逐个评估（只读盘：~/.dsh/profiles/node_modules/@deepseek-ai/<pkg>/package.json + README.zh.md；台账 state/dsh-census.json 只读引用）",
+  "date": "2026-10-08",
+  "author_actor": "ZCode/deepseek-flash（GBT小土豆V8 会话）",
+  "counterpart_doc": "docs/DSH未启用20包-逐个评估.md",
+  "summary": {
+    "total": 20,
+    "recommend_enable": 2,
+    "recommend_hold": 15,
+    "recommend_min_verify": 3,
+    "enable_first_two": ["dsh-mcp-client", "dsh-time-context"],
+    "note": "口径：接=建议启用（写清接法与回滚）；先做最小验证=有价值但需先在隔离面验证或先定归属（不动默认组合）；不接=无当期需求/与本平台现役路线重复/无独立价值。所有'接'的落地都要主人点头 + 走镜像多维度。"
+  },
+  "packages": [
+    {
+      "name": "dsh-mcp-client",
+      "pkg": "@deepseek-ai/dsh-mcp-client",
+      "version": "0.1.5-rc.3",
+      "family": "MCP 桥",
+      "what": "MCP 客户端桥：连 MCP server，把它们的工具注册进 ctx.tools，工具名成 mcp__<serverName>__<tool>（与 Claude Code / Codex 同形）。不支持 resources/prompts，只桥工具。",
+      "benefit": "240 位能力位从'经 pwsh 敲 CLI'升为官方 APP 里的第一等工具（有参数 schema、进工具目录、可被 @ 引用）：即甲方案本体，仓内件已成形+排练全绿。",
+      "blast_radius": "多一个 stdio 子进程与一条信任面：官方 APP 的模型能调它注册的工具。stdio 环境是清洗过的（删 *KEY|PASSWORD|SECRET|TOKEN* 与 DSH_*）；我方桥零凭据。风险=工具面本身（由我方桥的只读白名单+框架策略层双闸收口）。",
+      "recommendation": "接",
+      "if_enable": {
+        "file": "~/.dsh/.agent-presets/gbt-spine/agent.cordis.yml",
+        "line": "287（文件末尾追加，只加行）",
+        "change": "append 一段 `- id: mcp-gbt-bridge / name: '@deepseek-ai/dsh-mcp-client' / config: {serverName: gbt, transport: stdio, command: py, args: ['-3.14', 'C:/Users/ADMIN/Desktop/GBT小土豆V8/plugins/dsh-mcp-bridge/server.py', '--repo-root', 'C:/Users/ADMIN/Desktop/GBT小土豆V8'], cwd: 仓根, toolCallTimeoutMs: 120000, failOnStartupError: false}`（原文见 plugins/dsh-mcp-bridge/README.md §3）",
+        "rollback": "删掉这一段（append-only ⇒ 回滚也是删这几行）；restart 或让 patchReload 重挂；判据=工具列表里 mcp__gbt__* 消失",
+        "reverify": "新开会话或 F5，让模型调 mcp__gbt__alerts，返回体必须带 gbt_stamp.framework='GBT小土豆'（钢印法）；B2 守卫重记基线后回 PASS"
+      },
+      "evidence": "package.json desc 现读；README.zh.md「最小配置」+「工具命名与共存」；本次镜像排练六步全绿读数为旁证（那份排练验的是我方服务器，不是 DSH 侧挂载）"
+    },
+    {
+      "name": "dsh-time-context",
+      "pkg": "@deepseek-ai/dsh-time-context",
+      "version": "0.1.5-rc.3",
+      "family": "人设/提示/上下文/时间",
+      "what": "给模型一只时钟：符合条件的步骤上追加一条持久、带来源的读数（当前时间 + 浏览器时区 + 自上一模型可见消息起的经过时长）；refreshIntervalMs 可节流。",
+      "benefit": "补一个真实缺口：长程/跨天会话里模型不知道'现在几点'，只能靠猜（我们的 persona 也没给它时间）。时间正确性是长程监督、日志对账、'30 分钟后'这类指令的前置。",
+      "blast_radius": "低：只往上下文加一条 user 消息（每条 = token；节流后可忽略）。不写盘、不出网、不起进程、不碰凭据。",
+      "recommendation": "接",
+      "if_enable": {
+        "file": "~/.dsh/.agent-presets/gbt-spine/agent.cordis.yml",
+        "line": "287（文件末尾追加，只加行）",
+        "change": "append：`- id: time-context / name: '@deepseek-ai/dsh-time-context' / config: {timeZone: Asia/Shanghai, refreshIntervalMs: 60000}`（timeZone 与节流按需）",
+        "rollback": "删这两行；上下文恢复原样（历史里已注入的旧消息不会消失，属正常）",
+        "reverify": "开新会话问'现在几点、我这条消息距上一条多久'，返回必须带时区与 ISO 时间；ruler 里 token 涨幅可对照"
+      },
+      "evidence": "README.zh.md「配置」：最小挂载无需配置；正的 refreshIntervalMs 抑制过密注入；Schedule Web overlay 会挂它"
+    },
+    {
+      "name": "dsh-schedule",
+      "pkg": "@deepseek-ai/dsh-schedule",
+      "version": "0.1.5-rc.3",
+      "family": "作业/调度/消息/Webhook",
+      "what": "agent 域的持久提醒（after / at / 固定间隔）：到期后作为普通 follow-up 消息回到**同一 live 会话**；重启不丢；已关会话会让提醒逾期，不会发邮件/短信/推送。UI 面 dsh-client-ui-schedule 是只读目录（表头闹钟只是尽力指示）。",
+      "benefit": "长程任务能'自己回来'（例如'每小时检查一次构建'）；对无人值守监督层是天然的补充（我们现在是 lr_* / long_run_supervisor 轮询式，这是事件/时间驱动式）。",
+      "blast_radius": "中：会让机器**自己**按时间发消息（未经拍板不擅自让机器自己动；主人令已明确这条）。交付只在 live 会话内，不对外发通知（官方口径）。",
+      "recommendation": "先做最小验证",
+      "if_enable": {
+        "file": "独立 overlay（官方给的形式）：`dsh web --patch apps/cli/config/examples/schedule/cordis.yml`；等价的宿主行 = `dsh-schedule` + 浏览器行 `dsh-client-ui-schedule` + 所需设置 overlay",
+        "line": "不动默认组合；要么用 --patch 起一个临时会话，要么在 graft 的独立 profile 里加行",
+        "change": "先只在一个隔离会话里开 overlay，验证'提醒真的回来一次、能 cancel、重启后仍在'；确认后才考虑进默认 preset",
+        "rollback": "撤 overlay（--patch 不写盘；若加了行就删行）",
+        "reverify": "让模型'5 分钟后提醒我 X'，等它回来；再 cancel 一条验证 schedule_not_found 语义"
+      },
+      "evidence": "README.zh.md「启用 Schedule」：`dsh web --patch apps/cli/config/examples/schedule/cordis.yml`；「提醒何时触发」；dsh-client-ui-schedule package.json desc=只读目录"
+    },
+    {
+      "name": "dsh-hooks-codex",
+      "pkg": "@deepseek-ai/dsh-hooks-codex",
+      "version": "0.1.5-rc.3",
+      "family": "外部钩子桥",
+      "what": "把现成的 Codex hooks.json（SessionStart / UserPromptSubmit / PreToolUse / PostToolUse / Stop 五个点）跑在 DSH 的拦截缝上：钩子可**阻塞**提示词或工具调用、附加上下文、强制再走一步。",
+      "benefit": "给'外部配置'一个生效位：已有的 Codex 把关逻辑（工具白名单、危险命令拦截）无需重写即可复用。",
+      "blast_radius": "高：钩子能**拦/改工具调用**（PreToolUse 判 deny 即工具不执行）——等于把拦截权交给一份**外部 JSON + 外部命令**（钩子在会话工作区里跑命令）。归属不清就是后门面。",
+      "recommendation": "先做最小验证",
+      "if_enable": {
+        "file": "宿主面行（钩子是拦截缝的监听器，不是会话工具）⇒ 推荐放 graft 的独立 profile 或临时 --patch；真要进默认面才写 ~/.dsh/profiles/web/cordis.patch.yml 的 insert",
+        "line": "新增一段 `- id: hooks-codex / name: '@deepseek-ai/dsh-hooks-codex' / config: {configPath: <路径>, model: <可选>}`",
+        "change": "先定 hooks 文件归属（谁的、放哪、谁能改），再用一份**空 hooks.json** 验证能挂、能撤；之后才放开真钩子",
+        "rollback": "删这一段 + 停用 hooks 文件；校验钩子不再触发（hook/* 事件消失）",
+        "reverify": "用一条'总是 deny'的钩子验证 PreToolUse 真拦得住；撤钩子后同一工具恢复可执行"
+      },
+      "evidence": "README.zh.md「最小配置」「你的钩子能做什么」；package.json desc 现读"
+    },
+    {
+      "name": "dsh-hooks-claude-code",
+      "pkg": "@deepseek-ai/dsh-hooks-claude-code",
+      "version": "0.1.5-rc.3",
+      "family": "外部钩子桥",
+      "what": "同上，但跑的是 Claude Code 的 hooks.json / settings hook 配置。",
+      "benefit": "若将来吸收 Claude Code 侧的把关配置（主人本机装着 Claude Code 生态），这条是复用入口。",
+      "blast_radius": "同 dsh-hooks-codex（高）：外部配置获得工具拦截权。",
+      "recommendation": "先做最小验证",
+      "if_enable": {
+        "file": "同 dsh-hooks-codex（宿主面行 / 独立 profile）",
+        "line": "新增一段 `- id: hooks-claude-code / name: '@deepseek-ai/dsh-hooks-claude-code' / config: {configPath: <路径>}`",
+        "change": "与 codex 那条**不要同时**开（两条钩子桥叠加，拦截顺序与多重合并会变复杂）；先空配置验证可挂可撤",
+        "rollback": "删这一段",
+        "reverify": "同 codex：deny 钩子真拦、撤后恢复"
+      },
+      "evidence": "package.json desc 现读；README.zh.md 同族"
+    },
+    {
+      "name": "dsh-hook-protocol",
+      "pkg": "@deepseek-ai/dsh-hook-protocol",
+      "version": "0.1.5-rc.3",
+      "family": "外部钩子桥",
+      "what": "上面两个钩子桥**共用的线协议**（matcher 引擎、stdin/退出码/stdout 编解码、多钩子合并、hook/* 会话事件）。",
+      "benefit": "无独立收益：它是库件，被 dsh-hooks-* 依赖。",
+      "blast_radius": "不单独挂载 ⇒ 无面。",
+      "recommendation": "不接",
+      "if_enable": {
+        "file": "不适用",
+        "line": "不适用",
+        "change": "接钩子桥时它会被自动拉进依赖闭包，不要单独写行",
+        "rollback": "不适用",
+        "reverify": "不适用"
+      },
+      "evidence": "package.json desc 现读（Shared ... hook wire protocol）；census 标为 dormant 无行"
+    },
+    {
+      "name": "dsh-webhook",
+      "pkg": "@deepseek-ai/dsh-webhook",
+      "version": "0.1.5-rc.3",
+      "family": "Web 面",
+      "what": "Host 侧 ctx.webhookRuntime：受信任程序化 webhook 规则的注册表，唯一内置动作 = 在 Web Workspace 里**创建普通根 Session**（可指定 prompt/agentPreset/permissionPreset/model）。fire-and-forget，无队列、无重放、无去重、无完成结果。",
+      "benefit": "把外部事件（GitHub PR/issue、其他系统回调）变成会话：被动触发面（我们现在是主动拉取式 devour_github）。",
+      "blast_radius": "高：对外 HTTP 入口 → 能**以我们的权限起会话**（等于让外部事件喂 prompt 给模型）。需签名校验、来源限制、Workspace/权限档限定；无凭据就是裸奔。",
+      "recommendation": "不接",
+      "if_enable": {
+        "file": "宿主面（Web Host plane）+ 规则插件（规则要自己写，注入 webhookRuntime）",
+        "line": "新增 `- id: webhook / name: '@deepseek-ai/dsh-webhook'`，再在此之前挂 Agents/模型默认/presets/标题/Workspace 注册表；配一条自己的规则插件",
+        "change": "要接就得同时：①定调用方与来源②写规则（限 workspacePath/agentPreset/permissionPreset）③限端口与网络面",
+        "rollback": "删 webhook 行 + 规则插件行（已创建的会话不回收，要单独清理）",
+        "reverify": "本地自投递一条假事件 → 应创建一条会话且 header/preset 符合预期；未签名请求必须被拒"
+      },
+      "evidence": "README.zh.md「规则接口」「组合」「Known Limitations（仅限进程内 fire-and-forget / 无内置去重 / 无完成结果）」"
+    },
+    {
+      "name": "dsh-webhook-github",
+      "pkg": "@deepseek-ai/dsh-webhook-github",
+      "version": "0.1.5-rc.3",
+      "family": "Web 面",
+      "what": "给 webhook runtime 的签名 GitHub 适配器：在注入的 ctx.webServer 上注册一条精确 HTTP 路由，验 X-Hub-Signature-256（HMAC），400/401/405/413/415/503 语义明确，成功回 202（不代表建了会话）。",
+      "benefit": "GitHub 事件成为会话入口（PR 评审、issue 分诊自动化）。",
+      "blast_radius": "高：公网可达入口 + 需要 GitHub webhook 密钥（secretEnv 凭据引用）。202 只代表已分发，不代表规则匹配；规则写错会把任意仓库事件变成会话。",
+      "recommendation": "不接",
+      "if_enable": {
+        "file": "宿主面行（要 ctx.webServer 与 ctx.webhookRuntime）",
+        "line": "新增 `- id: webhook-github / name: '@deepseek-ai/dsh-webhook-github' / config: {source: primary-github, path: /hooks/github, secretEnv: env:GITHUB_WEBHOOK_SECRET, maxBodyBytes: 262144}`（凭据**只写引用**）",
+        "change": "先决条件：①dsh-webhook 已在②密钥主人自配③入口只在回环或受控反代后面④规则限定仓库/事件类型",
+        "rollback": "删这一行 + 撤 GitHub 侧 webhook 配置；旧入口立即 404",
+        "reverify": "用 GitHub 官方'redeliver'或本地 HMAC 自签一条投递：合法签名 202、错签名 401、非 JSON 415"
+      },
+      "evidence": "README.zh.md「配置」「HTTP 约定」（四字段全必填；每次请求重解析密钥引用）"
+    },
+    {
+      "name": "dsh-workflow",
+      "pkg": "@deepseek-ai/dsh-workflow",
+      "version": "0.1.5-rc.3",
+      "family": "工作流",
+      "what": "workflow 能力 **seam 本体**（ctx.workflowEngine 服务、运行词汇、workflow/* 事件）：只定义'谁来提供引擎'，不含引擎。",
+      "benefit": "无独立收益：默认会话里机制已通（preset 挂的 dsh-workflow-worker-thread 是**实现**、dsh-tool-workflow 是模型入口）。",
+      "blast_radius": "不单独挂载 ⇒ 无面。重复挂反而可能与 preset 里的隔离域打架（同一服务在两个域各一份 = 两套 run 词汇）。",
+      "recommendation": "不接",
+      "if_enable": {
+        "file": "不适用（要换引擎才写行：换 worker-thread 实现为别的实现）",
+        "line": "不适用",
+        "change": "不适用",
+        "rollback": "不适用",
+        "reverify": "不适用（现役 mcp__gbt__capability_status 可查 wf_* 位在场）"
+      },
+      "evidence": "package.json desc 现读；README.zh.md「概述」（调用方必须提供执行引擎）；census 工作流族：宿主行被禁是设计、preset 挂实现+工具"
+    },
+    {
+      "name": "dsh-bash-local",
+      "pkg": "@deepseek-ai/dsh-bash-local",
+      "version": "0.1.5-rc.3",
+      "family": "进程与终端",
+      "what": "POSIX 上的默认 Bash 执行器（每条命令新起 bash -c，不读 rc，无隔离；沙箱版是 dsh-bash-sandbox）。",
+      "benefit": "在 Windows 上**无收益**（本平台走 pwsh 一路；bash-sandbox 平台判据禁用）。",
+      "blast_radius": "若在 POSIX 上被挂：不做隔离（harness 权限直跑），这是官方明说的边界。",
+      "recommendation": "不接",
+      "if_enable": {
+        "file": "不适用（换平台才谈）",
+        "line": "不适用",
+        "change": "不适用",
+        "rollback": "不适用",
+        "reverify": "不适用"
+      },
+      "evidence": "README.zh.md「概述」（POSIX 默认 / 不做任何隔离）；现役平台=win32"
+    },
+    {
+      "name": "dsh-tool-bash-persistent",
+      "pkg": "@deepseek-ai/dsh-tool-bash-persistent",
+      "version": "0.1.5-rc.3",
+      "family": "模型工具",
+      "what": "面型持久 bash 工具：cwd/导出变量/后台任务跨调用保留（每 agent 一个隔离 shell，命令串行；PTY 后端）。",
+      "benefit": "长构建/需保持激活环境的工作流。Windows 上价值低（我们走 pwsh）。",
+      "blast_radius": "常驻终端保持状态 ⇒ 审计面变大（工具调用不再'一命令一世界'）；交互式命令可能挂到超时。",
+      "recommendation": "不接",
+      "if_enable": {
+        "file": "~/.dsh/.agent-presets/gbt-spine/agent.cordis.yml（会话面）",
+        "line": "末尾 append：`- id: tool-bash-persistent / name: '@deepseek-ai/dsh-tool-bash-persistent'`（另需 PTY 服务 dsh-terminal 家族在场）",
+        "change": "要接得先有可用 PTY 后端（Win 上要 bash）；建议先在隔离会话验证",
+        "rollback": "删行 + 重启会话",
+        "reverify": "连续两条命令验证 cd/export 跨调用保留"
+      },
+      "evidence": "README.zh.md「最小配置」（默认 shell 后端经 dsh-terminal-bash 起交互式 bash）；census：minimal preset 里它被 disabled"
+    },
+    {
+      "name": "dsh-tool-str-replace-editor",
+      "pkg": "@deepseek-ai/dsh-tool-str-replace-editor",
+      "version": "0.1.5-rc.3",
+      "family": "模型工具",
+      "what": "Claude Code 风格的单一编辑器工具 str_replace_editor（view/create/str_replace/insert，基于 ctx.fs，绝对路径）。",
+      "benefit": "给模型另一套编辑词汇（对熟悉 Claude Code 的模型更顺）。",
+      "blast_radius": "与现役 dsh-tool-fs（read/write/edit）**功能重复**：多一套写面 = 多一份审计面与策略面（改文件的路多一条）。",
+      "recommendation": "不接",
+      "if_enable": {
+        "file": "~/.dsh/.agent-presets/gbt-spine/agent.cordis.yml（会话面）",
+        "line": "末尾 append：`- id: tool-str-replace-editor / name: '@deepseek-ai/dsh-tool-str-replace-editor'`",
+        "change": "若将来模型反复抱怨 tool-fs 手感差再考虑；接前先算清'两条写路'的策略一致性",
+        "rollback": "删行",
+        "reverify": "view/create/str_replace/insert 四动作各来一次，并核对 fs 策略仍生效（越界路径被拒）"
+      },
+      "evidence": "README.zh.md「概述」「最小组合」（dsh-fs-local + 观察策略 + 本工具）"
+    },
+    {
+      "name": "dsh-tmux-context",
+      "pkg": "@deepseek-ai/dsh-tmux-context",
+      "version": "0.1.5-rc.3",
+      "family": "人设/提示/上下文/时间",
+      "what": "让模型知道自己的 agent 进程在 tmux 的哪个 session/window/pane（每轮首步注入，位置不变不注入）。",
+      "benefit": "在多窗终端里定位自己。本机是 Windows + Git Bash 环境，**无 tmux** ⇒ 收益为零。",
+      "blast_radius": "低（只读 tmux 状态、只加上下文）；但无 tmux 时它什么都不加（官方口径）。",
+      "recommendation": "不接",
+      "if_enable": {
+        "file": "~/.dsh/.agent-presets/gbt-spine/agent.cordis.yml（会话面）",
+        "line": "末尾 append：`- id: tmux-context / name: '@deepseek-ai/dsh-tmux-context'`",
+        "change": "只有将来进 tmux 工作流才接",
+        "rollback": "删行",
+        "reverify": "在 tmux 里开会话，看是否注入 pane 读数"
+      },
+      "evidence": "README.zh.md「概述」（本包需主动启用，且不含在随附 Web/无头 profile）"
+    },
+    {
+      "name": "dsh-headless",
+      "pkg": "@deepseek-ai/dsh-headless",
+      "version": "0.1.5-rc.3",
+      "family": "独立 profile 面（sdk/acp/headless）",
+      "what": "一次性任务 bundle：`dsh --profile headless \"<任务>\"` 跑一个任务、打印最终答案、退出（不开端口、不留后台）。",
+      "benefit": "自动化/CI 的第二条腿（无 GUI 无浏览器）；对我们的'无人值守'线是可用的**独立**入口。",
+      "blast_radius": "不进 web profile ⇒ **不碰 APP 面**；但它自己会起 agent（有模型与工具默认值），用它就跑真任务。",
+      "recommendation": "不接",
+      "if_enable": {
+        "file": "不适用（不改任何现有文件：首次 `dsh --profile headless ...` 会按官方 CLI 表自动初始化模板）",
+        "line": "不适用",
+        "change": "要用就直接独立命令起（零改动）；不要在 web profile 里加行",
+        "rollback": "不适用（不写盘就不需要回滚；模板目录若自动生成，删它即可）",
+        "reverify": "`dsh --profile headless \"echo hi\"` 退出码 0/1 + stdout 末行为最终答案"
+      },
+      "evidence": "README.zh.md「运行一次性任务」；package.json dsh.bundle.patch 现读"
+    },
+    {
+      "name": "dsh-sdk-app",
+      "pkg": "@deepseek-ai/dsh-sdk-app",
+      "version": "0.1.5-rc.3",
+      "family": "独立 profile 面（sdk/acp/headless）",
+      "what": "SDK stdio 应用 bundle：`dsh --profile sdk` 起 stdio JSON-RPC 服务（给进程外 SDK 客户端驱动会话），stdout 专供换行分隔 JSON-RPC 帧。",
+      "benefit": "把 DSH 当可编程运行时（进程外客户端）——做集成/联调/自动化面板时的正规接口。",
+      "blast_radius": "不进 web profile；起来后**整棵组合**在 stdio 上可被客户端驱动（谁连谁有控制权）。",
+      "recommendation": "不接",
+      "if_enable": {
+        "file": "不适用（独立 profile：由 sdk-app bundle 的 cordis.patch.yml 管理，别改包内）",
+        "line": "不适用",
+        "change": "要用就 `dsh --profile sdk`（可与 sdk-minimal 二选一，同名复用同一启动提供方）",
+        "rollback": "退出进程即可；配置层不动",
+        "reverify": "`dsh --profile sdk --help` 不占 stdin/stdout、立即退出"
+      },
+      "evidence": "README.zh.md「概述」「使用本包」；package.json dsh.bundle.patch 现读"
+    },
+    {
+      "name": "dsh-sdk-minimal",
+      "pkg": "@deepseek-ai/dsh-sdk-minimal",
+      "version": "0.1.5-rc.3",
+      "family": "独立 profile 面（sdk/acp/headless）",
+      "what": "最小独立 SDK profile bundle：JSON-RPC + 一个 DeepSeek 适配器 + 持久 shell + JSONL 会话（自带 profile 名）。",
+      "benefit": "最轻的'可编程运行时'：依赖少、面小，适合当自动化第二腿的第一选择。",
+      "blast_radius": "不进 web profile；起后同样把组合暴露在 stdio 上（面比 sdk-app 小）。",
+      "recommendation": "不接",
+      "if_enable": {
+        "file": "不适用（独立 profile）",
+        "line": "不适用",
+        "change": "要用就按其 README 的 profile 名独立起",
+        "rollback": "退出进程",
+        "reverify": "同样跑 --help + 一条最小任务，比对与 sdk-app 的差异"
+      },
+      "evidence": "package.json desc 现读（standalone minimal SDK profile bundle）；dsh-sdk-app README 提它复用同一启动提供方"
+    },
+    {
+      "name": "dsh-sdk-jsonrpc-server",
+      "pkg": "@deepseek-ai/dsh-sdk-jsonrpc-server",
+      "version": "0.1.5-rc.3",
+      "family": "独立 profile 面（sdk/acp/headless）",
+      "what": "进程外 SDK 客户端用的 stdio JSON-RPC **服务端插件**（sdk-app bundle 内的实现件）。",
+      "benefit": "无独立收益：随 sdk 面被拉起。",
+      "blast_radius": "不单独挂 ⇒ 无面。",
+      "recommendation": "不接",
+      "if_enable": {
+        "file": "不适用",
+        "line": "不适用",
+        "change": "不适用",
+        "rollback": "不适用",
+        "reverify": "不适用"
+      },
+      "evidence": "package.json desc 现读；dsh-sdk-app 的 dependencies 含它"
+    },
+    {
+      "name": "dsh-sdk-protocol",
+      "pkg": "@deepseek-ai/dsh-sdk-protocol",
+      "version": "0.1.5-rc.3",
+      "family": "独立 profile 面（sdk/acp/headless）",
+      "what": "SDK 运行时**共用线协议**（换行分隔 JSON-RPC stdio 传输 + 请求/结果/通知类型）。",
+      "benefit": "无独立收益：库件。",
+      "blast_radius": "不单独挂 ⇒ 无面。",
+      "recommendation": "不接",
+      "if_enable": {"file": "不适用", "line": "不适用", "change": "不适用", "rollback": "不适用", "reverify": "不适用"},
+      "evidence": "package.json desc 现读"
+    },
+    {
+      "name": "dsh-acp",
+      "pkg": "@deepseek-ai/dsh-acp",
+      "version": "0.1.5-rc.3",
+      "family": "独立 profile 面（sdk/acp/headless）",
+      "what": "Agent Client Protocol 服务端（JSON-RPC stdio）：给用 ACP 的编辑器/工具驱动 DSH agent。",
+      "benefit": "若有支持 ACP 的编辑器客户端，可直接把 DSH 接进去（生态入口）。",
+      "blast_radius": "不进 web profile；起来后同 sdk（stdio 控制面）。",
+      "recommendation": "不接",
+      "if_enable": {"file": "不适用（独立 profile：acp-app bundle）", "line": "不适用", "change": "要用就 `dsh --profile acp`", "rollback": "退出进程", "reverify": "`dsh --profile acp --help` 立即退出、不占 stdin/stdout"},
+      "evidence": "package.json desc 现读；dsh-acp-app README「使用本包」"
+    },
+    {
+      "name": "dsh-acp-app",
+      "pkg": "@deepseek-ai/dsh-acp-app",
+      "version": "0.1.5-rc.3",
+      "family": "独立 profile 面（sdk/acp/headless）",
+      "what": "ACP profile 的 bundle（automation-only JSON-RPC stdio + 进程生命周期，基于 dsh-base）。",
+      "benefit": "与 dsh-acp 同：独立命令线 `dsh --profile acp`。",
+      "blast_radius": "同 sdk/acp 一族：不进 web 面，无 APP 冲突。",
+      "recommendation": "不接",
+      "if_enable": {"file": "不适用", "line": "不适用", "change": "不适用", "rollback": "不适用", "reverify": "不适用"},
+      "evidence": "package.json desc 现读 + dsh.bundle.patch"
+    }
+  ]
+}

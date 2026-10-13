@@ -7,7 +7,10 @@
   ③ 与原法线混合：n' = normalize(n_xy + k·(dx,dy), n_z) → 归一化后编码回 RGB
 读数：原/新法线图的高频能量、平均扰动量（可证伪：能量必须上升，且不爆饱和）。
 """
-import io, json, pathlib, struct
+import io
+import json
+import pathlib
+import struct
 import numpy as np
 import cv2
 from PIL import Image
@@ -26,16 +29,21 @@ del raw
 
 mat = J["materials"][0]
 pbr = mat.get("pbrMetallicRoughness", {})
+
+
 def img_index_of(tex):
     return J["textures"][tex["index"]]["source"]
+
 
 bc_i = img_index_of(pbr["baseColorTexture"])
 nm_i = img_index_of(mat["normalTexture"])
 print(f"槽位解析：baseColor=image[{bc_i}] · normal=image[{nm_i}]")
 
+
 def read_img(i):
     bv = J["bufferViews"][J["images"][i]["bufferView"]]
     return bytes(BIN[bv.get("byteOffset", 0): bv.get("byteOffset", 0) + bv["byteLength"]])
+
 
 base = Image.open(io.BytesIO(read_img(bc_i))).convert("RGB")
 nrm = Image.open(io.BytesIO(read_img(nm_i))).convert("RGB")
@@ -71,10 +79,13 @@ for i, v in enumerate(views):
     while len(new_bin) % 4:
         new_bin.append(0)
     if i == nm_bv:
-        v["byteOffset"] = len(new_bin); v["byteLength"] = len(new_bytes); new_bin.extend(new_bytes)
+        v["byteOffset"] = len(new_bin)
+        v["byteLength"] = len(new_bytes)
+        new_bin.extend(new_bytes)
     else:
         o = v.get("byteOffset", 0)
-        v["byteOffset"] = len(new_bin); new_bin.extend(bytes(BIN[o:o + v["byteLength"]]))
+        v["byteOffset"] = len(new_bin)
+        new_bin.extend(bytes(BIN[o:o + v["byteLength"]]))
 J["images"][nm_i]["mimeType"] = "image/jpeg"
 while len(new_bin) % 4:
     new_bin.append(0)
@@ -83,6 +94,6 @@ js = json.dumps(J, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 while len(js) % 4:
     js += b" "
 GLB.write_bytes(b"glTF" + struct.pack("<II", 2, 12 + 8 + len(js) + 8 + len(new_bin))
-               + struct.pack("<I", len(js)) + b"JSON" + js
-               + struct.pack("<I", len(new_bin)) + b"BIN\x00" + bytes(new_bin))
+                + struct.pack("<I", len(js)) + b"JSON" + js
+                + struct.pack("<I", len(new_bin)) + b"BIN\x00" + bytes(new_bin))
 print(f"回写 {GLB.name} · {GLB.stat().st_size/1024/1024:.2f} MB（法线细节已烘进资产）")

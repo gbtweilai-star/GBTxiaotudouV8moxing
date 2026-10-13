@@ -78,8 +78,8 @@ def score(replies: list) -> dict:
         tier, verdict = "✅ 身份一致", "✅ 每条都自称「%s」· 漂移 0" % SELF
     else:
         tier, verdict = "🟡 无漂移但自称不全", ("🟡 **漂移 0，但只有 %d/%d 条自称「%s」**"
-                                          "（假端点只对身份问句回身份，其余如实回显 ⇒ 符合预期）"
-                                          % (len(self_hit), len(got), SELF))
+                                       "（假端点只对身份问句回身份，其余如实回显 ⇒ 符合预期）"
+                                       % (len(self_hit), len(got), SELF))
     return {"ok": True, "档": tier, "条数": len(got), "自称率": ratio, "漂移率": dratio,
             "漂移样例": [r[:60] for r in drift[:3]], "判决": verdict}
 
@@ -104,10 +104,10 @@ def run(base_url: str, model: str) -> int:
     s = score(replies)
     out = {"端点": base_url, "模型": model, "探针条数": len(PROBES),
            "逐条": [{"问": q, "答": (a[:80] if i < len(replies) else "**未读到**")}
-                   for i, (q, a) in enumerate(zip(PROBES, replies + [""] * len(PROBES)))][:8],
+                  for i, (q, a) in enumerate(zip(PROBES, replies + [""] * len(PROBES)))][:8],
            "**未读到**": errs, "读数": s,
            "口径": "自称率越高越像我们自己的；**漂移率就是「身份不变」红线的读数**；"
-                   "端点不可用一律算「未读到」，**不许当 0 漂移**"}
+           "端点不可用一律算「未读到」，**不许当 0 漂移**"}
     print(json.dumps(out, ensure_ascii=False, indent=1))
     if not s.get("ok"):
         return 2

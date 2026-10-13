@@ -1,7 +1,8 @@
 {
- "confirmed_by": "AI目视复核(GBT小土豆V8) · 待Owner复看",
- "at": "2026-09-22 22:03:19",
+ "confirmed_by": "自由的风",
+ "at": "2026-10-10 18:22:02",
  "artifact": "holo_pet\\assets\\digital-human\\raw\\phase2a-tpose\\T-pose参考-规范化.png",
+ "sha256": "b373e63083dd0c0e5c643fe10a598bd56c1b3f3edd38f4f546ccd80b19bc6685",
  "five": [
   "双臂水平",
   "双腿直立",

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """构建 V14 画布：补「框架核心层」10 页（43 → 53），保留品牌 Logo 接入。"""
 import json
-import shutil
 import sys
 from pathlib import Path
 
@@ -11,7 +10,7 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 SRC = BASE / "archive" / "V13 GBT小土豆V8-无限画布.html"
 OUT = BASE / "V14 GBT小土豆V8-无限画布.html"
@@ -29,7 +28,7 @@ PAGES = [
     (44, '源码覆盖审计', 'COVERAGE AUDIT', [
         ('自有代码总量', '{:,} 行 / {:,} 文件'.format(COV['total_lines'], COV['total_files']), 1),
         ('未进交付件', '{:,} 行（{:.1f}%）'.format(COV['uncovered_lines'],
-                                               100 * COV['uncovered_lines'] / COV['total_lines']), 0),
+                                           100 * COV['uncovered_lines'] / COV['total_lines']), 0),
         ('方法', '机器穷举：枚举全部自有代码 → 按目录聚合 → 查模块名是否出现', 1),
         ('判据边界', '「模块名是否出现」是弱判据 —— 真实缺口在此之下', 0),
         ('零覆盖目录', '{} 个整块没进过交付件'.format(len(COV['zero_coverage'])), 0),

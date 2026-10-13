@@ -176,7 +176,7 @@ def cmd_scan(roots: list[str], as_json: bool) -> int:
     rows, skipped, total = _scan_rows(roots)
     no_sel = [r["文件"] for r in rows if not r.get("有自检函数")]
     out = {"口径": "**候选清单，不是判决** —— 自检可以间接覆盖（断言输出里有没有『未读到』），"
-                   "所以候选必须人核；拼接出来的读数本工具识别不到",
+           "所以候选必须人核；拼接出来的读数本工具识别不到",
            "扫到带诚实读数的文件": len(rows), "候选合计": total,
            "没有自检函数的件": no_sel, "跳过的根": skipped, "逐件": rows}
     if as_json:

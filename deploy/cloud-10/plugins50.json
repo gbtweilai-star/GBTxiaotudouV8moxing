@@ -1,0 +1,797 @@
+{
+  "spec": "plugins50",
+  "made_by": "tools/codex-scripts/_gen_plugins50_spec.py",
+  "note": "主人 2026-10-04 蓝图：图3(CF Workers AI) 部署面 · 图4 自研底座&图6 Laya ⇒ 1 组 · 图5 三条工作流+按键 ⇒ 2 组 · 本机资产分类 ⇒ 3 组 · 4–5 备用。",
+  "groups": [
+    {
+      "id": 1,
+      "name": "自研模型组",
+      "carries": "图4 自研原生大模型底座 + 图6 Laya 决策引擎（**只这两类**）"
+    },
+    {
+      "id": 2,
+      "name": "工作流组",
+      "carries": "图5 三条工作流 + 全部操控/调节按键（按键双向绑定见 surface_bind）"
+    },
+    {
+      "id": 3,
+      "name": "本机资产组",
+      "carries": "本机文件/记忆/资产分类后入云"
+    },
+    {
+      "id": 4,
+      "name": "备用组 A",
+      "carries": "保留（不预置）"
+    },
+    {
+      "id": 5,
+      "name": "备用组 B",
+      "carries": "保留（不预置）"
+    }
+  ],
+  "binding": {
+    "rule": "每槽与其 49 槽双向互绑（组内组间同权，随时可调任一部位能力）",
+    "directed_expected": 2450,
+    "undirected_expected": 1225,
+    "self_loop_expected": 0
+  },
+  "modules": [
+    {
+      "seq": 1,
+      "group": 1,
+      "slot": "g1-01",
+      "role": "自研原生大模型底座（图4 · Ninfer 式专用推理引擎 + 单卡）",
+      "local_driver": "local_brain",
+      "driver_why": "底座权重与推理引擎自持",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c01@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 2,
+      "group": 1,
+      "slot": "g1-02",
+      "role": "决策引擎 Laya（图6 · 33ms 非自回归 · RL 训出）",
+      "local_driver": "control_loop",
+      "driver_why": "决策不动手：动作仍走门",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c02@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 3,
+      "group": 1,
+      "slot": "g1-03",
+      "role": "自研模型第二副本（热备/量化档）",
+      "local_driver": "llm_chat",
+      "driver_why": "副本走统一密钥链",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c03@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 4,
+      "group": 1,
+      "slot": "g1-04",
+      "role": "模型权重与检查点仓（版本化）",
+      "local_driver": "model_key_pool",
+      "driver_why": "只存引用与摘要",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c04@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 5,
+      "group": 1,
+      "slot": "g1-05",
+      "role": "推理路由（本地→云→CLI 车道）",
+      "local_driver": "brain_route",
+      "driver_why": "意图→能力动态路由；车道由统一密钥链承载",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c05@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 6,
+      "group": 1,
+      "slot": "g1-06",
+      "role": "模型评测台（基准与回归）",
+      "local_driver": "brain_health",
+      "driver_why": "五维自检评分",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c06@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 7,
+      "group": 1,
+      "slot": "g1-07",
+      "role": "训练/微调配方（就绪闸 + 七阶段）",
+      "local_driver": "train_recipe",
+      "driver_why": "没 src 不收",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c07@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 8,
+      "group": 1,
+      "slot": "g1-08",
+      "role": "安全卸载/审查面（abliteration 通道）",
+      "local_driver": "sec_llm",
+      "driver_why": "独立通道，不混统一链",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c08@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 9,
+      "group": 1,
+      "slot": "g1-09",
+      "role": "模型服务守护（探活/重启/用量）",
+      "local_driver": "svc_inspect",
+      "driver_why": "只看不动",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c09@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 10,
+      "group": 1,
+      "slot": "g1-10",
+      "role": "模型台账（谁在用、用量、成本）",
+      "local_driver": "event_ledger",
+      "driver_why": "账本单一真源",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c10@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 11,
+      "group": 2,
+      "slot": "g2-11",
+      "role": "AI 短剧工作流（脚本→分镜→素材→剪辑→成片）",
+      "local_driver": "media_run",
+      "driver_why": "三步一链，每步落真件",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c11@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 12,
+      "group": 2,
+      "slot": "g2-12",
+      "role": "AI 电影工作流（概念→剧本→镜头→声音→剪辑）",
+      "local_driver": "media_pipeline",
+      "driver_why": "镜像房间编排 + 自审",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c12@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 13,
+      "group": 2,
+      "slot": "g2-13",
+      "role": "AI 音乐工作流（词→编曲→音频→母带→发行）",
+      "local_driver": "audio_mix",
+      "driver_why": "两遍法 loudnorm",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c13@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 14,
+      "group": 2,
+      "slot": "g2-14",
+      "role": "剪辑引擎（时间线语义：轨/片/变速/转场）",
+      "local_driver": "edit_pipeline",
+      "driver_why": "真渲染 1080×1920",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c14@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 15,
+      "group": 2,
+      "slot": "g2-15",
+      "role": "动作镜头系统（10 运镜 × 4 机位）",
+      "local_driver": "actioncam",
+      "driver_why": "拍子表为唯一真相",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c15@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 16,
+      "group": 2,
+      "slot": "g2-16",
+      "role": "调色/外观库（词即指令）",
+      "local_driver": "look_grade",
+      "driver_why": "单帧试看→全片",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c16@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 17,
+      "group": 2,
+      "slot": "g2-17",
+      "role": "影片装配线（清单制·任意增删重制）",
+      "local_driver": "filmkit",
+      "driver_why": "manifest.json 唯一真相",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c17@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 18,
+      "group": 2,
+      "slot": "g2-18",
+      "role": "音轨抽取/音频件（8 格式）",
+      "local_driver": "audio_extract",
+      "driver_why": "产出即回读验证",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c18@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 19,
+      "group": 2,
+      "slot": "g2-19",
+      "role": "一句话→全链计划（节奏/帧率/调色/模板）",
+      "local_driver": "one_shot",
+      "driver_why": "只读：plan 不写盘",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c19@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 20,
+      "group": 2,
+      "slot": "g2-20",
+      "role": "素材许可账（无许可不进成品格）",
+      "local_driver": "media_license",
+      "driver_why": "source/license 空一律拒",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c20@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 21,
+      "group": 3,
+      "slot": "g3-21",
+      "role": "本机文档/表格/文本资产分类入云",
+      "local_driver": "datakit",
+      "driver_why": "只读转换，结果从返回给",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c21@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 22,
+      "group": 3,
+      "slot": "g3-22",
+      "role": "全树资产索引（软链真身去重）",
+      "local_driver": "asset_index",
+      "driver_why": "find 不扫盘（17–22ms）",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c22@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 23,
+      "group": 3,
+      "slot": "g3-23",
+      "role": "记忆库（FTS5 秒搜）",
+      "local_driver": "memory_manager",
+      "driver_why": "索引增量，不整表清空",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c23@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 24,
+      "group": 3,
+      "slot": "g3-24",
+      "role": "Obsidian 永久记忆（只追加）",
+      "local_driver": "obsidian_vault",
+      "driver_why": "无删除路径",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c24@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 25,
+      "group": 3,
+      "slot": "g3-25",
+      "role": "记忆来源印章（防篡改）",
+      "local_driver": "memory_bank",
+      "driver_why": "trace 比 sha",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c25@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 26,
+      "group": 3,
+      "slot": "g3-26",
+      "role": "上下文归档（索引+检索层）",
+      "local_driver": "context_vault",
+      "driver_why": "只引用不复制",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c26@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 27,
+      "group": 3,
+      "slot": "g3-27",
+      "role": "资产单点损失体检",
+      "local_driver": "asset_vault_freeze",
+      "driver_why": "不加密不冻结",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c27@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 28,
+      "group": 3,
+      "slot": "g3-28",
+      "role": "文件卫生（家规自检+归位）",
+      "local_driver": "file_hygiene",
+      "driver_why": "散落/空壳/越界/缓存",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c28@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 29,
+      "group": 3,
+      "slot": "g3-29",
+      "role": "仓库读写面（万能触手·Web 六态）",
+      "local_driver": "omni_web",
+      "driver_why": "读源码/改文件（过门）",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c29@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 30,
+      "group": 3,
+      "slot": "g3-30",
+      "role": "资产↔触手穿透绑定（台账只增）",
+      "local_driver": "tentacle_bind",
+      "driver_why": "红点只剩断连一种",
+      "email": {
+        "needed": true,
+        "kind": "永久邮箱（注册用）",
+        "value": "c30@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "spec"
+    },
+    {
+      "seq": 31,
+      "group": 4,
+      "slot": "g4-31",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c31@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 32,
+      "group": 4,
+      "slot": "g4-32",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c32@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 33,
+      "group": 4,
+      "slot": "g4-33",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c33@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 34,
+      "group": 4,
+      "slot": "g4-34",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c34@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 35,
+      "group": 4,
+      "slot": "g4-35",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c35@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 36,
+      "group": 4,
+      "slot": "g4-36",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c36@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 37,
+      "group": 4,
+      "slot": "g4-37",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c37@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 38,
+      "group": 4,
+      "slot": "g4-38",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c38@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 39,
+      "group": 4,
+      "slot": "g4-39",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c39@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 40,
+      "group": 4,
+      "slot": "g4-40",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c40@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 41,
+      "group": 5,
+      "slot": "g5-41",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c41@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 42,
+      "group": 5,
+      "slot": "g5-42",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c42@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 43,
+      "group": 5,
+      "slot": "g5-43",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c43@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 44,
+      "group": 5,
+      "slot": "g5-44",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c44@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 45,
+      "group": 5,
+      "slot": "g5-45",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c45@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 46,
+      "group": 5,
+      "slot": "g5-46",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c46@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 47,
+      "group": 5,
+      "slot": "g5-47",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c47@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 48,
+      "group": 5,
+      "slot": "g5-48",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c48@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 49,
+      "group": 5,
+      "slot": "g5-49",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c49@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    },
+    {
+      "seq": 50,
+      "group": 5,
+      "slot": "g5-50",
+      "role": "备用槽位（待主人指派承载）",
+      "local_driver": "",
+      "driver_why": "保留：不预置、不编用途",
+      "email": {
+        "needed": false,
+        "kind": "备用槽（暂不注册）",
+        "value": "c50@gbtxiaotudou.com",
+        "status": "created"
+      },
+      "status": "reserve"
+    }
+  ],
+  "email_plane": {
+    "domain": "gbtxiaotudou.com",
+    "forward_to": "lopaycn@gmail.com",
+    "created": 50,
+    "how": "Cloudflare Email Routing 自定义地址（永久、免费）",
+    "made_at": "2026-10-04"
+  }
+}

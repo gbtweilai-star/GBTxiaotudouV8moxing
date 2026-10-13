@@ -38,6 +38,7 @@ from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[2]
 _MANIFEST = _ROOT / "state" / "comfyui_surface.json"
+_OBJECT_INFO = _ROOT / "state" / "comfyui_object_info.json"
 _LEDGER = _ROOT / "state" / "comfyui_ops.jsonl"
 MIN_NODES = 900                     # 实测 966，阈值留余量
 
@@ -223,6 +224,29 @@ def interrupt(**_kw) -> dict:
     return {"ok": bool(r.get("ok")), "op": "interrupt", "error": r.get("error")}
 
 
+def _persist_object_info(data: dict, path=None) -> dict:
+    """把 `/object_info` **原样落盘** —— 这就是「**节点配置**」那一格。
+
+    🔴 2026-10-13 补（主人令：「把秋叶版ComfyUI，**全部能力以及节点配置**精准抓取」）：
+      此前 `surface()` 只把**节点类名**（966 个字符串）写进清单，**每个节点的配置没落盘**
+      ⇒ 要回答"我们的排布是不是跟它一样"，缺的正是这一格（输入/输出类型 + 默认值都在这里面）。
+    纯函数：**不联网、不起进程**（喂 dict 即可）—— 自检就靠它，本体没开也能验。
+    """
+    import hashlib
+    p = Path(path) if path is not None else _OBJECT_INFO
+    p.parent.mkdir(parents=True, exist_ok=True)
+    nodes = data if isinstance(data, dict) else {}
+    blob = json.dumps(nodes, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    tmp = p.with_name(p.name + ".tmp")
+    tmp.write_bytes(blob)
+    os.replace(tmp, p)
+    one = next(iter(sorted(nodes)), "")
+    return {"path": str(p), "bytes": len(blob),
+            "sha16": hashlib.sha256(blob).hexdigest()[:16], "nodes": len(nodes),
+            "样例节点": one, "样例字段": sorted((nodes.get(one) or {}).keys())[:8] if one else [],
+            "_口径": "原样落盘（不裁字段）；sha16 进账 ⇒ 本体一变就看得出来"}
+
+
 def surface(rescan: bool = True, **_kw) -> dict:
     """可控制面清单：966 节点 + 端点 + 模型家族 + 启动开关；与上次对比（节点消失=断连）。"""
     prev = {}
@@ -235,6 +259,7 @@ def surface(rescan: bool = True, **_kw) -> dict:
     if not r.get("ok"):
         return {"ok": False, "op": "surface", **r}
     node_names = sorted(r["data"])
+    oi = _persist_object_info(r["data"])          # 「节点配置」那一格（2026-10-13 补）
     gone = sorted(set(prev.get("nodes") or []) - set(node_names))
     added = sorted(set(node_names) - set(prev.get("nodes") or []))
     fam = (models().get("families") or {})
@@ -244,15 +269,24 @@ def surface(rescan: bool = True, **_kw) -> dict:
                     "models": sum(v.get("count", 0) for v in fam.values())},
          "endpoints": [{"path": p, "why": w, "kind": k} for p, w, k in API_ENDPOINTS],
          "launch_flags": LAUNCH_FLAGS, "gone": gone[:200], "added": added[:200],
+         "节点配置": oi,
          "_口径": "**让 ComfyUI 自己报**（/object_info，只许本机 8188）；节点消失=断连"}
     _MANIFEST.parent.mkdir(parents=True, exist_ok=True)
     tmp = _MANIFEST.with_name(_MANIFEST.name + ".tmp")
     tmp.write_text(json.dumps(m, ensure_ascii=False, indent=1), encoding="utf-8")
     os.replace(tmp, _MANIFEST)
-    _log({"event": "surface", **m["counts"], "gone": len(gone), "added": len(added)})
+    _log({"event": "surface", **m["counts"], "gone": len(gone), "added": len(added),
+          "object_info_bytes": oi["bytes"], "object_info_sha16": oi["sha16"]})
+    # 🔴 2026-10-13 修（自检抓出来的）：清单被指到**仓外**（临时靶 / 隔离 store）时
+    #    `relative_to` 会抛 ValueError ⇒ 按本仓既有口径：**不在仓里就给全路径，不抛**。
+    try:
+        _mpath = str(_MANIFEST.relative_to(_ROOT))
+    except ValueError:                                          # noqa: PERF203
+        _mpath = str(_MANIFEST)
     return {"ok": True, "op": "surface", "counts": m["counts"], "gone_total": len(gone),
             "added_total": len(added), "gone_sample": gone[:5],
-            "manifest": str(_MANIFEST.relative_to(_ROOT))}
+            "节点配置": oi,
+            "manifest": _mpath}
 
 
 def verify(**_kw) -> dict:

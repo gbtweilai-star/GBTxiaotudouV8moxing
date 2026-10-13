@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Phase 1 前置 v2：去背 + **只留最大连通块（人）** + 紧贴居中 1024²。
 v1 的问题：虚线/标签框残留把包围盒撑大，人物只占 13% —— 不合格，重做。"""
-import pathlib, shutil
+import pathlib
+import shutil
 from collections import deque
 from PIL import Image, ImageDraw
 import numpy as np
@@ -27,18 +28,23 @@ def largest_component(mask):
         for sx in range(w):
             if not mask[sy, sx] or seen[sy, sx]:
                 continue
-            q = deque([(sy, sx)]); seen[sy, sx] = True; comp = []
+            q = deque([(sy, sx)])
+            seen[sy, sx] = True
+            comp = []
             while q:
-                y, x = q.popleft(); comp.append((y, x))
+                y, x = q.popleft()
+                comp.append((y, x))
                 for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                     ny, nx = y + dy, x + dx
                     if 0 <= ny < h and 0 <= nx < w and mask[ny, nx] and not seen[ny, nx]:
-                        seen[ny, nx] = True; q.append((ny, nx))
+                        seen[ny, nx] = True
+                        q.append((ny, nx))
             if len(comp) > best_size:
                 best_size, best = len(comp), comp
     out = np.zeros_like(mask, dtype=bool)
     if best:
-        ys = np.array([p[0] for p in best]); xs = np.array([p[1] for p in best])
+        ys = np.array([p[0] for p in best])
+        xs = np.array([p[1] for p in best])
         out[ys, xs] = True
     return out
 
@@ -50,7 +56,7 @@ def clean(src, frac, out_png, out_cmp, tag):
     crop = im.crop(box)
 
     work = crop.copy()
-    d = ImageDraw.Draw(work)
+    ImageDraw.Draw(work)
     key = (255, 0, 255)
     for xy in [(0, 0), (work.width - 1, 0), (0, work.height - 1), (work.width - 1, work.height - 1)]:
         ImageDraw.floodfill(work, xy, key, thresh=42)
@@ -88,7 +94,8 @@ def clean(src, frac, out_png, out_cmp, tag):
         for xx in range(hw, hw * 2, 24):
             if ((xx // 24) + (yy // 24)) % 2 == 0:
                 dd.rectangle([xx, yy, xx + 23, yy + 23], fill=(28, 34, 50))
-    sheet.paste(left, (0, 44)); sheet.paste(right, (hw, 44), right)
+    sheet.paste(left, (0, 44))
+    sheet.paste(right, (hw, 44), right)
     dd.text((8, 14), tag + " · 左：裁切原图", fill=(232, 236, 248))
     dd.text((hw + 8, 14), "右：清后（只留主体 · 居中 1024²）", fill=(0, 229, 255))
     sheet.save(out_cmp)
@@ -96,7 +103,8 @@ def clean(src, frac, out_png, out_cmp, tag):
 
 for tag, src, frac in SAMPLES:
     if not src.exists():
-        print("缺素材:", tag); continue
+        print("缺素材:", tag)
+        continue
     shutil.copyfile(src, DST / (tag + "-原图.png"))
     clean(src, frac, DST / (tag + "-清图.png"), DST / (tag + "-对照.png"), tag)
 print("\n输出:", DST)

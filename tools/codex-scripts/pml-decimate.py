@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """用 pymeshlab 的 **带纹理/缝保护的 QEM** 简化头部（正是我们自写近似做不好的那一层）。
 用法：python tools/codex-scripts/pml-decimate.py <in.glb> <out.glb> <target_faces>"""
-import pathlib, sys
+import pathlib
+import sys
 import pymeshlab as ml
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")

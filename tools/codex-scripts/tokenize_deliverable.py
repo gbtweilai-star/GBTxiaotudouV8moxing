@@ -124,7 +124,8 @@ def tokenize(text: str, cfg: dict) -> tuple[str, dict]:
         if not tok:
             stats["skipped_no_token"].append(m.group().lower())
             continue
-        out.append(text[last:i]); out.append(f"var({tok})")
+        out.append(text[last:i])
+        out.append(f"var({tok})")
         last = m.end()
         stats["replaced"] += 1
     out.append(text[last:])
@@ -168,7 +169,6 @@ def main() -> int:
         print(f"   未获令牌（如有）: {sorted(set(st['skipped_no_token'])) or '无'}")
         print(f"   不动区分布: {st['untouched_zones']}")
         # 自检：替换后漂移区应清零
-        drift_left = set()
         for m in TC.HEX.finditer(new):
             i = m.start()
             for mm in re.finditer(r"([^{}]*\{)\s*([^{}]*?)\}", new):

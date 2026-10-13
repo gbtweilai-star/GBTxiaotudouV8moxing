@@ -6,7 +6,10 @@
 贴图：512×512 程序化图集 —— 木纹(左上) / 铁(右上) / 金(右下)，采样器 CLAMP 防串色
 自证：写完立刻回读 GLB（JSON 块 + 访问器计数 + 图片字节），不合格就报错退出。
 """
-import json, math, pathlib, struct
+import json
+import math
+import pathlib
+import struct
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
@@ -81,7 +84,7 @@ groups = {"wood": [], "iron": [], "gold": []}
 
 def box(grp, x0, y0, z0, x1, y1, z1, region, tile=(1, 1)):
     """轴对齐盒子，6 面各 2 三角形，每面独立顶点（平面着色）。"""
-    P, N, U, I = [], [], [], []
+    P, N, U, ii = [], [], [], []
     faces = [
         ((x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1), (0, 0, 1)),    # +Z
         ((x1, y0, z0), (x0, y0, z0), (x0, y1, z0), (x1, y1, z0), (0, 0, -1)),   # -Z
@@ -94,14 +97,16 @@ def box(grp, x0, y0, z0, x1, y1, z1, region, tile=(1, 1)):
         base = len(P)
         uvs = [uv_in(region, 0, 0), uv_in(region, tile[0], 0), uv_in(region, tile[0], tile[1]), uv_in(region, 0, tile[1])]
         for pt, uv in zip((a, b, c, dd), uvs):
-            P.append(pt); N.append(n); U.append(uv)
-        I += [base, base + 1, base + 2, base, base + 2, base + 3]
-    groups[grp].append((P, N, U, I))
+            P.append(pt)
+            N.append(n)
+            U.append(uv)
+        ii += [base, base + 1, base + 2, base, base + 2, base + 3]
+    groups[grp].append((P, N, U, ii))
 
 
 def arc_band(grp, x0, x1, radius, y_center, segs, thick, region, vspan=0.5):
     """半圆盖上的弧形铁箍（单面 ribbon，材质双面渲染）。"""
-    P, N, U, I = [], [], [], []
+    P, N, U, ii = [], [], [], []
     for s in range(segs):
         t0, t1 = math.pi * s / segs, math.pi * (s + 1) / segs
         y0, z0 = y_center + radius * math.sin(t0), radius * math.cos(t0)
@@ -110,18 +115,19 @@ def arc_band(grp, x0, x1, radius, y_center, segs, thick, region, vspan=0.5):
         for pt in ((x0, y0, z0), (x1, y0, z0), (x1, y1, z1), (x0, y1, z1)):
             P.append(pt)
             n = (0, math.sin((t0 + t1) / 2), math.cos((t0 + t1) / 2))
-            N.append(n); U.append(uv_in(region, 0 if len(P) % 2 else 0.5, 0))
+            N.append(n)
+            U.append(uv_in(region, 0 if len(P) % 2 else 0.5, 0))
         U[base + 0] = uv_in(region, 0, vspan * t0 / math.pi)
         U[base + 1] = uv_in(region, 1, vspan * t0 / math.pi)
         U[base + 2] = uv_in(region, 1, vspan * t1 / math.pi)
         U[base + 3] = uv_in(region, 0, vspan * t1 / math.pi)
-        I += [base, base + 1, base + 2, base, base + 2, base + 3]
-    groups[grp].append((P, N, U, I))
+        ii += [base, base + 1, base + 2, base, base + 2, base + 3]
+    groups[grp].append((P, N, U, ii))
 
 
 def half_cylinder(grp, x0, x1, radius, y_center, segs, region):
     """低模半圆盖：弧面 5 段 + 两端扇形封口。"""
-    P, N, U, I = [], [], [], []
+    P, N, U, ii = [], [], [], []
     for s in range(segs):
         t0, t1 = math.pi * s / segs, math.pi * (s + 1) / segs
         y0, z0 = y_center + radius * math.sin(t0), radius * math.cos(t0)
@@ -130,11 +136,13 @@ def half_cylinder(grp, x0, x1, radius, y_center, segs, region):
         P += [(x0, y0, z0), (x1, y0, z0), (x1, y1, z1), (x0, y1, z1)]
         N += [(0, math.sin(t0), math.cos(t0))] * 2 + [(0, math.sin(t1), math.cos(t1))] * 2
         U += [uv_in(region, 0, vspan) for vspan in (t0 / math.pi, t0 / math.pi, t1 / math.pi, t1 / math.pi)]
-        I += [base, base + 1, base + 2, base, base + 2, base + 3]
+        ii += [base, base + 1, base + 2, base, base + 2, base + 3]
     for x in (x0, x1):                                   # 两端扇形封口
         base = len(P)
         ctr = (x, y_center, 0.0)
-        P.append(ctr); N.append((-1 if x == x0 else 1, 0, 0)); U.append(uv_in(region, 0.5, 0.5))
+        P.append(ctr)
+        N.append((-1 if x == x0 else 1, 0, 0))
+        U.append(uv_in(region, 0.5, 0.5))
         for s in range(segs):
             t0, t1 = math.pi * s / segs, math.pi * (s + 1) / segs
             P.append((x, y_center + radius * math.sin(t0), radius * math.cos(t0)))
@@ -145,10 +153,10 @@ def half_cylinder(grp, x0, x1, radius, y_center, segs, region):
                   uv_in(region, 0.5 + 0.35 * math.cos(t1), 0.5 - 0.35 * math.sin(t1))]
             i0 = base + 1 + s * 2
             if x == x0:
-                I += [base, i0, i0 + 1]
+                ii += [base, i0, i0 + 1]
             else:
-                I += [base, i0 + 1, i0]
-    groups[grp].append((P, N, U, I))
+                ii += [base, i0 + 1, i0]
+    groups[grp].append((P, N, U, ii))
 
 
 X0, X1 = -0.50, 0.50
@@ -196,12 +204,17 @@ def add_acc(arr, comp_type, type_str, target=None, minmax=False):
 MATS = [("wood", 0.0, 0.85), ("iron", 0.55, 0.50), ("gold", 0.60, 0.35)]   # (组名, 金属度, 粗糙度)
 # 注：metallic 不能给 1.0 —— 没有环境贴图时全金属会渲染成黑色（金锁扣就栽在这）
 for gi, (grp, metal, rough) in enumerate(MATS):
-    P, N, U, I = [], [], [], []
+    P, N, U, ii = [], [], [], []
     for gp, gn, gu, gind in groups[grp]:
         off = len(P)
-        P += gp; N += gn; U += gu; I += [i + off for i in gind]
-    p = np.array(P, np.float32); n = np.array(N, np.float32); u = np.array(U, np.float32)
-    idx = np.array(I, np.uint32)
+        P += gp
+        N += gn
+        U += gu
+        ii += [i + off for i in gind]
+    p = np.array(P, np.float32)
+    n = np.array(N, np.float32)
+    u = np.array(U, np.float32)
+    idx = np.array(ii, np.uint32)
     ap = add_acc(p, 5126, "VEC3", 34962, True)
     an = add_acc(n, 5126, "VEC3", 34962)
     au = add_acc(u, 5126, "VEC2", 34962)

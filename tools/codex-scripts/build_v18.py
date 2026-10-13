@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """构建 V18：能力广场改为「源码驱动」（140 能力逐条追到实现模块与 op 表）。"""
-import json
 import re
 import shutil
 import sys
@@ -12,7 +11,7 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 V17P = BASE / "V17 GBT小土豆V8-可交互原型.html"
 V18P = BASE / "V18 GBT小土豆V8-可交互原型.html"
@@ -87,7 +86,7 @@ src = src.replace(old_foot, new_foot, 1)
 V18P.write_text(src, encoding="utf-8")
 
 # ⑥ 收刻度（新面板里若抄进离群 gap，一并收到 2px 刻度）
-import collections
+import collections  # noqa: E402
 _t = V18P.read_text(encoding="utf-8")
 _c = collections.Counter()
 for _bad, _good in (("5px", "4px"), ("7px", "8px"), ("9px", "8px"),

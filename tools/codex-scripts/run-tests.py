@@ -107,14 +107,14 @@ def main(argv: list[str]) -> int:
                 bad_roots.append(disp(r))
                 out, rc = "", -1
                 break
-            tail_try = [l for l in out.strip().splitlines() if l.strip()][-1] if out.strip() else ""
+            tail_try = [ln for ln in out.strip().splitlines() if ln.strip()][-1] if out.strip() else ""
             if not ((rc == 5) or ("passed" not in tail_try and "failed" not in tail_try)):
                 break
             if attempt == 1:
                 print("  ⚠ %-28s 第 1 次**空收集**（0 项）⇒ 自动重试一次" % disp(r))
         if rc == -1:
             continue
-        tail = [l for l in out.strip().splitlines() if l.strip()][-1] if out.strip() else ""
+        tail = [ln for ln in out.strip().splitlines() if ln.strip()][-1] if out.strip() else ""
         counts = {k: int(v) for v, k in SUM.findall(tail)}
         for k in totals:
             totals[k] += counts.get(k, 0)

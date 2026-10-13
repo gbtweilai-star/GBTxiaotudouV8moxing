@@ -65,6 +65,49 @@ def _probe(kind: str) -> dict:
             "install_hint": spec["install"]}
 
 
+
+# ── 只读查最新发布版（npm registry）────────────────────────────────────────────
+# 🔴 2026-10-09 修：`cli_chat.agents()` 一直在调 `ca._latest(kind)`，而本模块**从来没有这个函数**
+#    ⇒ `cap cli_chat` 整条崩（AttributeError: module 'gbt_allinone.cli_agents' has no attribute '_latest'）。
+#    这是**接线断了一头**，不是「要参数」。现在把这一头补上：真去只读查，查不到就如实说查不到。
+_NPM_PKG = {
+    "claude_code": "@anthropic-ai/claude-code",
+    "codebuddy": "",            # 本仓没登记它的 npm 包名 ⇒ 不编，如实说查不到
+    "ul_tars_desktop": "",      # 图形应用，不是 npm 包
+}
+
+
+def _npm_pkg(kind: str) -> str:
+    """包名从登记表现推（install 提示里写了 `npm i -g <pkg>` 才能推出来）。"""
+    import re
+    pk = _NPM_PKG.get(kind)
+    if pk:
+        return pk
+    inst = str((_AGENTS.get(kind) or {}).get("install") or "")
+    m = re.search(r"npm\s+i(?:nstall)?\s+-g\s+([@\w./-]+)", inst)
+    return m.group(1) if m else ""
+
+
+def _latest(kind: str, timeout: int = 8) -> dict:
+    """只读查最新发布版（过 security/net_guard 的出网边界）。**查不到就说查不到，绝不编。**"""
+    pkg = _npm_pkg(kind)
+    if not pkg:
+        return {"ok": False, "kind": kind,
+                "reason": "这一位没登记 npm 包名（或不是 npm 包），本机无法只读查 latest"}
+    url = "https://registry.npmjs.org/%s/latest" % pkg
+    try:
+        from .security import net_guard as _ng
+        r = _ng.safe_request_json(url, timeout=timeout)
+        js = r.get("json") or {}
+        v = str(js.get("version") or "")
+        if int(r.get("status") or 0) == 200 and v:
+            return {"ok": True, "kind": kind, "pkg": pkg, "latest": v}
+        return {"ok": False, "kind": kind, "pkg": pkg, "reason": "npm 回 %s" % r.get("status")}
+    except Exception as exc:                                       # noqa: BLE001
+        return {"ok": False, "kind": kind, "pkg": pkg,
+                "reason": ("%s: %s" % (type(exc).__name__, exc))[:140]}
+
+
 def _version(exe: str, timeout: int = 20) -> dict:
     """真跑一次 --version。跑不起来也如实返回，不吞。"""
     for flag in ("--version", "-v", "version"):

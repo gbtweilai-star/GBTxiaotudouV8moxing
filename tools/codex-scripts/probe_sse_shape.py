@@ -47,7 +47,7 @@ time.sleep(2.0)
 # 触发一次能力调用
 body = json.dumps({"kind": "coverage_auditor", "payload": {}, "confirm": True}).encode()
 req = urllib.request.Request("http://127.0.0.1:8765/api/capability", data=body,
-                            headers={"Content-Type": "application/json"}, method="POST")
+                             headers={"Content-Type": "application/json"}, method="POST")
 with urllib.request.urlopen(req, timeout=20) as r:
     posted = json.loads(r.read().decode())
 print("POST 返回:", json.dumps(posted, ensure_ascii=False))

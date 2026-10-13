@@ -72,25 +72,31 @@
     <code>py -3.14 holo_pet/panel_server.py --host 127.0.0.1 --port 8765</code></p>
 
   <div class="why" style="margin-top: 22px">
-    <b>高级 · DSH 对话面（原功能原样保留）：</b>这不是壳坏了，是 DSH 的设计 ——
+    <b>高级 · DSH 对话面（自动接上中…；起不来才手贴）：</b>本窗一开，壳就会
+    <b>自己拉起 <code>dsh web</code> 并自动接上</b>（<code>auto_dsh</code>，2026-10-07 起）——
+    接上后本窗会直接切到官方界面，那时你根本看不到这一页；<b>一直停在本页，才需要下面这条手贴兜底</b>。
+    <br />为什么平时必须带 token：这不是壳坏了，是 DSH 的设计 ——
     实测（2026-09-23）：<code>GET http://127.0.0.1:3080/</code> 回 <b>HTTP 401</b>，正文原文 ——
     <br /><code>dsh web authentication required; reopen the URL printed by dsh web.</code>
   </div>
 
   <ol>
-    <li>去看 <b>启动 <code>dsh web</code> 的那个终端</b>，它会打印一条<b>带 token 的完整 URL</b>。</li>
-    <li>把那条 URL 粘进下面这个框，按「接上对话面」。</li>
+    <li><b>先等自动接：</b>壳替你把 <code>dsh web</code> 拉起来（3080 已被占就另起一个端口，绝不打扰已有进程），
+        就绪行里带 token 的 URL <b>只在内存里</b>交给本窗 —— 你什么都不用做。</li>
+    <li><b>起不来才手贴：</b>去看 <b>启动 <code>dsh web</code> 的那个终端</b>，复制它打印的<b>带 token 的完整 URL</b>，
+        粘进下面这个框，按「接上对话面」。</li>
     <li>URL <b>只留在内存</b>，壳<b>不落盘、不回显</b> —— 返回值只给你 <code>host</code>。</li>
   </ol>
 
   <div class="row">
     <input id="u" class="u" type="text" spellcheck="false" autocomplete="off"
-           placeholder="http://127.0.0.1:3080/?token=…（从 dsh web 的终端里复制）" />
+           placeholder="起不来才贴：http://127.0.0.1:3080/?token=…（从 dsh web 的终端里复制）" />
     <button id="go" class="go" type="button">接上对话面</button>
     <span id="msg" class="msg"></span>
   </div>
 
-  <p class="warn">⚠️ 本页<b>故意不提供</b>「自动找到 token」的功能：那等于替你翻凭据。</p>
+  <p class="warn">⚠️ 本页<b>故意不提供</b>「自动找到 token」的功能：那等于替你翻凭据（自动接上走的是
+    壳**自己拉起**的那条就绪行，不是替你翻任何东西）。</p>
   <p class="ok">✅ 在此之前，对话面照常在浏览器里用 —— 本壳<b>没有动过 DSH 一个字节</b>（有守卫脚本为证）。</p>
 
   <div class="foot">
@@ -128,14 +134,21 @@
     })
     .catch(() => { gmsg.textContent = '面板桥离线（按上面命令起）'; gmsg.style.color = C_FAULT; });
 
+  /* 🔴 页面固定（主人令 2026-10-04）：本窗**不上跳** —— 显式意图走「在浏览器打开」，
+     不动这扇窗一页。窗内导航另有壳级上锁（will-navigate），这里不给它添乱。 */
   document.getElementById('gbtgo').addEventListener('click', async () => {
-    try {
-      const r = await fetch('http://127.0.0.1:8765/api/state', { method: 'GET' });
-      const d = await r.json();
-      if (d && d.ok) { location.href = GBT_HOME; return; }
-      gmsg.textContent = '面板桥异常（ok=' + d.ok + '）'; gmsg.style.color = C_FAULT;
-    } catch (e) {
-      gmsg.textContent = '面板桥离线：先跑 panel_server 再点'; gmsg.style.color = C_FAULT;
+    const api = window.gbtW3;
+    if (!api || typeof api.openExternal !== 'function') {
+      gmsg.textContent = '壳动作口没加载（preload?）—— 手动在浏览器打开 ' + GBT_HOME;
+      gmsg.style.color = C_FAULT;
+      return;
+    }
+    const r = await api.openExternal({ url: GBT_HOME });
+    if (r && r.ok) {
+      gmsg.textContent = '已在你的浏览器打开工作空间（' + (r.host || '') + '）· 本窗保持不动';
+      gmsg.style.color = C_OK;
+    } else {
+      gmsg.textContent = '打开失败：' + ((r && r.error) || '未知'); gmsg.style.color = C_FAULT;
     }
   });
 

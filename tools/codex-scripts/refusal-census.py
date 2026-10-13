@@ -93,6 +93,20 @@ def _is_gate_surface(rel: str) -> bool:
 #    不在表里 ⇒ 闸红（`**未认领**` 非空）。新增一处硬拒，就必须在这一行给出处置。
 #    处置三档：`保留（防护）` · `保留（主人红线）` · `假阳性（不是拒法）`。
 CLAIMS = {
+    # 🔴 2026-10-10 补（体检 rc=1 追根因：这两处"新增门面硬拒"没认领）：
+    "gbt_allinone/security/redteam.py|remote_domain": {
+        "处置": "改（2026-10-13）：从「公网一律拒」改成「**终端 YES 授权才放行**」",
+        "谁定的": "Owner 2026-10-13（「技术层面不能给她有限制只保留人工授权护栏即可」·"
+                "「直接改成终端YES才能使用就好了有时候我需要用到的啊」）",
+        "为什么": "公网 endpoint **默认照旧拒**；但当主人在**终端**发**专用一次性钥匙** `deploy_force`"
+                 "（提示符敲 YES）、调用方再显式 `owner_override=true` ⇒ 才登记，"
+                 "且登记行里留 `override/override_reason/override_note` 三件（谁放的、什么理由，事后查得出）",
+        "放开的后果": "带主人授权的公网中继会被登记（≠ 无门槛：没那把钥匙，一个字都进不来）"},
+    "gbt_allinone/security/redteam.py|_pentest_plan": {
+        "处置": "假阳性（不是拒法）", "谁定的": "判据自查（2026-10-10）",
+        "为什么": "_pentest_plan(target, rec) **正常返回一份五阶段计划**（ok 为 True）——"
+                 "它是「出计划」不是「拒动作」；扫描器把非拒绝的返回路径也匹配进来了",
+        "放开的后果": "无（它本来就不是拒绝：没有它挡着任何东西）"},
     "gbt_allinone/file_operation.py|_write_root_checked": {
         "处置": "保留（防护）", "谁定的": "框架既有纪律",
         "为什么": "进程已隔离 store 时不许写进生产 `outputs/`",
@@ -122,21 +136,34 @@ CLAIMS = {
         "为什么": "计划里不许存**真密钥值**，只写环境变量名",
         "放开的后果": "凭据落进计划文件"},
     "gbt_allinone/deployment_rehearsal.py|release": {
-        "处置": "保留（主人红线）", "谁定的": "Owner 2026-09-19（镜像多维度）",
-        "为什么": "生产前排练未全绿 ⇒ 不许晋升",
-        "放开的后果": "未经镜像排练的东西能直接进生产 —— **要放开须主人一句话**"},
+        "处置": "改（2026-10-13）：未全绿从「死限」改成「终端 YES 授权才放行」",
+        "谁定的": "Owner 2026-10-13（同上两条主人令）",
+        "为什么": "**默认一字不变**：排练未全绿仍 return blocked，并给出「怎么放行」；"
+                 "主人在终端发**专用一次性钥匙** `deploy_force`（YES）+ 调用方显式 `owner_override=true` "
+                 "⇒ 放行，并写审计 `mirror_release_overridden`（含 blockers 与理由）",
+        "放开的后果": "未全绿也能晋升生产 —— 但每放一次都要主人**单独**发一把 force 钥匙（与正常发布钥匙分开）"},
     "gbt_allinone/mirror_space.py|ascend": {
-        "处置": "保留（主人红线）", "谁定的": "Owner 2026-09-19",
-        "为什么": "验证未全绿 ⇒ 不许晋升",
-        "放开的后果": "同上（镜像这条线整体失效）"},
+        "处置": "改（2026-10-13）：验证未全绿从「死限」改成「终端 YES 授权才放行」",
+        "谁定的": "Owner 2026-10-13（同上两条主人令）",
+        "为什么": "**默认一字不变**：仍 return blocked（并给 `如何放行`）；终端发**专用一次性钥匙** `deploy_force`（YES）"
+                 "+ 显式 `owner_override=true` ⇒ 放行，写审计 `deploy_promote_overridden`，"
+                 "并把「未绿的检查项 + 放行理由」刻进部署护照的 `override` 字段",
+        "放开的后果": "未全绿的镜像也能晋升 —— 每次放行都留审计与护照凭据，不是静默的"},
     "gbt_allinone/room_space.py|release": {
-        "处置": "保留（主人红线）", "谁定的": "Owner 2026-09-19",
-        "为什么": "房间排练未全绿 ⇒ 不许写入房间现实区",
-        "放开的后果": "房间隔离失效（排练=现实的最后一道）"},
+        "处置": "改（2026-10-13）：两关（排练未全绿 / 门禁未过）都改成「终端 YES 授权才放行」",
+        "谁定的": "Owner 2026-10-13（同上两条主人令）",
+        "为什么": "**默认一字不变**：两处仍各自 return blocked；终端发**专用一次性钥匙** `deploy_force`（YES）"
+                 "+ 显式 `owner_override=true` ⇒ 放行，写审计 `room_release_overridden`"
+                 "（`blocked_by` 标明卡在哪一关）",
+        "放开的后果": "房间排练未过也能写房间现实区 —— 每次都留审计、且要主人先发授权"},
     "gbt_allinone/qiankun.py|one_key_deploy": {
-        "处置": "保留（主人红线）", "谁定的": "Owner 2026-09-19 · 写进 AGENTS.md",
-        "为什么": "未声明落点 ⇒ 不许把项目堆进全局生产面",
-        "放开的后果": "任何代码都可能被送进生产 —— **这是本仓唯一的生产落点保护**"},
+        "处置": "改（2026-10-13）：未声明落点从「直接拒」改成「终端 YES 授权才放行」",
+        "谁定的": "Owner 2026-10-13（同上两条主人令）",
+        "为什么": "**默认一字不变**：仍 return blocked，并给出「怎么放行」；终端发**专用一次性钥匙** `deploy_force`（YES）"
+                 "+ 显式 `owner_override=true` ⇒ 按「全局生产」放行，"
+                 "写审计 `one_key_deploy_landing_overridden`，返回里 `steps.landing_override.route` 明示落点",
+        "放开的后果": "不声明落点也可能写**全局生产**面 —— 本仓唯一的生产落点保护，"
+                    "放行前必须看清 `steps.landing_override.route`（AGENTS.md 那句旧口径见护照备注）"},
     "gbt_allinone/api.py|_run_benign": {
         "处置": "保留（防护）", "谁定的": "框架既有纪律",
         "为什么": "`wf_define` 的 file 只许仓内 `state/` 相对路径",
@@ -338,8 +365,8 @@ def scan_roots(roots: list[str], scopes: tuple, surface_only: bool = False) -> d
             module_auth = module_uses_auth(ast.parse(src))
             for h in hard:
                 h["授权能绕过吗"] = ("函数里有授权线索" if not h["档"].startswith("硬拒")
-                                else ("模块里有授权通道（可能可授权）" if module_auth
-                                      else "**授权也绕不过**（函数与模块都没有授权线索）"))
+                               else ("模块里有授权通道（可能可授权）" if module_auth
+                                     else "**授权也绕不过**（函数与模块都没有授权线索）"))
             row = {"文件": relf, "域": rel, "会拒函数": r["会拒的函数"], "硬拒型": hard}
             if on_gate:
                 gate_hard += len(hard)
@@ -351,7 +378,7 @@ def scan_roots(roots: list[str], scopes: tuple, surface_only: bool = False) -> d
     rail_rows.sort(key=lambda x: (-len(x["硬拒型"]), x["文件"]))
     claims = claim_report(_fps(gate_rows))
     return {"口径": "**授权型 = 门（主人授权可过）· 门面上的硬拒 = 谁都过不去（这才是要清的）· "
-                   "护栏 = 质量判据（拦产物合规性，不算限制）**；只看函数粒度、只认字面量 ⇒ 底账不是判决",
+            "护栏 = 质量判据（拦产物合规性，不算限制）**；只看函数粒度、只认字面量 ⇒ 底账不是判决",
             "扫的根": roots, "现读作用域名数": len(scopes),
             "**未读到（读不开的件/根）**": unread,
             "会拒的函数（合计）": func_total,

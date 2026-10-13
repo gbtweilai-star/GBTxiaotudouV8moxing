@@ -1,0 +1,93 @@
+{
+ "基线": "2026-09-25T07:21:08",
+ "变坏": [
+  {
+   "类": "D2 文本子串判据",
+   "基线": 275,
+   "现在": 309,
+   "多": 34
+  },
+  {
+   "类": "D6 自指判据（高危）",
+   "基线": 56,
+   "现在": 76,
+   "多": 20
+  },
+  {
+   "类": "D3 用0冒充",
+   "基线": 79,
+   "现在": 171,
+   "多": 92
+  },
+  {
+   "类": "D5 判据与自己比",
+   "基线": 0,
+   "现在": 1,
+   "多": 1
+  },
+  {
+   "类": "D7 位置型存在性判据",
+   "基线": 2,
+   "现在": 3,
+   "多": 1
+  },
+  {
+   "类": "合计",
+   "基线": 425,
+   "现在": 560,
+   "多": 135
+  }
+ ],
+ "变好": [
+  {
+   "类": "D1 恒真判据",
+   "基线": 13,
+   "现在": 0,
+   "少": 13
+  }
+ ],
+ "现计数": {
+  "D1 恒真判据": 0,
+  "D2 文本子串判据": 309,
+  "D6 自指判据（高危）": 76,
+  "D3 用0冒充": 171,
+  "D4 死代码": 0,
+  "D5 判据与自己比": 1,
+  "D7 位置型存在性判据": 3,
+  "合计": 560
+ },
+ "判决": "🔴 **判据质量变坏了**",
+ "点名对差（按指纹）": {
+  "消失": [
+   "D1 恒真判据|gbt_allinone\\tools\\scan_engine.py|or True",
+   "D1 恒真判据|tools\\codex-scripts\\merge-4k-rig.py|or True",
+   "D1 恒真判据|tools\\codex-scripts\\verify_v11.py|or True",
+   "D1 恒真判据|tools\\codex-scripts\\verify_v12.py|or True",
+   "D1 恒真判据|tools\\codex-scripts\\verify_v13.py|or True",
+   "D1 恒真判据|tools\\codex-scripts\\verify_v14.py|or True",
+   "D1 恒真判据|tools\\codex-scripts\\verify_v15.py|or True",
+   "D1 恒真判据|tools\\codex-scripts\\verify_v16.py|or True",
+   "D1 恒真判据|tools\\codex-scripts\\verify_v17.py|or True",
+   "D1 恒真判据|tools\\codex-scripts\\verify_v18.py|or True",
+   "D1 恒真判据|tools\\codex-scripts\\verify_v19.py|or True",
+   "D1 恒真判据|tools\\codex-scripts\\verify_v20.py|or True"
+  ],
+  "消失条数": 13,
+  "新增": [
+   "D2 文本子串判据|gbt_allinone\\tools\\agent_console.py|\"isatty\" not in src",
+   "D2 文本子串判据|gbt_allinone\\tools\\blender_surface.py|\"__GBTBPY__\" in out",
+   "D2 文本子串判据|gbt_allinone\\tools\\blender_surface.py|\"__GBTDATA__\" in out",
+   "D2 文本子串判据|gbt_allinone\\tools\\blender_surface.py|\"__GBTNAMES__\" in out",
+   "D2 文本子串判据|gbt_allinone\\tools\\blender_surface.py|\"__GBTSURF__\" not in out",
+   "D2 文本子串判据|gbt_allinone\\tools\\console_pages.py|\"prefers-reduced-motion\" not in txt",
+   "D2 文本子串判据|gbt_allinone\\tools\\llm_redteam.py|\"ROLES\" in txt",
+   "D2 文本子串判据|gbt_allinone\\tools\\llm_redteam.py|\"may_not\" in txt",
+   "D2 文本子串判据|gbt_allinone\\tools\\media_stamp.py|\"不可篡改归属\" in blob",
+   "D2 文本子串判据|gbt_allinone\\tools\\media_stamp.py|\"自由的风\" in blob",
+   "D2 文本子串判据|gbt_allinone\\tools\\n8n_wf_cap.py|\"__HTTP__\" in out",
+   "D2 文本子串判据|gbt_allinone\\tools\\pulse.py|\"ok\" in s"
+  ],
+  "新增条数": 129,
+  "口径": "按**指纹**（检测器|文件|代码片段）对差 ⇒ **检测器改措辞不会造成假差异**"
+ }
+}

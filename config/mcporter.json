@@ -37,6 +37,16 @@
       ],
       "env": {}
     },
+    "blender": {
+      "enabled": true,
+      "type": "stdio",
+      "command": "C:\\Users\\ADMIN\\.local\\bin\\uvx.exe",
+      "args": [
+        "mcp-for-blender"
+      ],
+      "env": {},
+      "_comment": "blender 桥（AI → bpy）。🔴 2026-10-11 按**服务器侧自己的指引**改的：老的 blender-mcp 已改名为 mcp-for-blender，它自己打印「When convenient, update your MCP client config to: uvx mcp-for-blender」——本机 uvx 在 C:\\Users\\ADMIN\\.local\\bin\\uvx.exe（老的兼容壳 C:\\Python312\\Scripts\\blender-mcp.exe 仍在，没删）。Blender 侧：插件 blender_mcp_addon 实体在 %APPDATA%\\Blender Foundation\\Blender\\4.2\\scripts\\addons\\、**并已启用**（addon_utils.check=(True,True)，已 save_userpref）。⚠️ 用之前要**把 Blender 开着**，否则桥那头没人接。无凭据、纯本地。"
+    },
     "adp": {
       "enabled": true,
       "type": "stdio",

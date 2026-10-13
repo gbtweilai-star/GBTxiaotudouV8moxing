@@ -40,18 +40,28 @@ def unqualified_imports(pkg: Path, names) -> dict:
 
     判据只认**非限定**顶层导入：`import tools` / `from tools import x` 算命中；
     `from gbt_allinone import tools`、`from . import tools` 都是限定的，**不算**。
+
+    🔴 2026-10-04 修（真故障）：本函数原来**按行文本匹配**，会把**文档字符串里的示例**
+    当成真导入 —— 实测 `tentacle/omni_controller.py:21` 的用法示例（docstring 里的
+    `from brain.omni_controller import get_omni`）被报成「影子被非限定引用（活错位）」，
+    把 exposure 从 latent 顶成 live、连累 `test_cross_scan_clean` 常红。
+    ⇒ 改用 **AST 判**：只认真正的 `ast.Import` / `ast.ImportFrom`（且 `level == 0` = 非限定）。
+    解析不了的文件**如实记 parse_failed**，不静默跳过。
     """
+    import ast
+
     names = set(names or ())
     hits: list[dict] = []
+    parse_failed: list[dict] = []
     scanned = 0
     if not names:
-        return {"hits": [], "scanned_files": 0, "names": [],
+        return {"hits": [], "scanned_files": 0, "names": [], "parse_failed": [],
                 "skipped_subtrees": sorted(_SKIP_PARTS), "state": "not_applicable"}
     try:
         files = [p for p in pkg.rglob("*.py")
                  if not (_SKIP_PARTS & set(p.parts))]
     except OSError as exc:
-        return {"hits": [], "scanned_files": 0, "names": sorted(names),
+        return {"hits": [], "scanned_files": 0, "names": sorted(names), "parse_failed": [],
                 "skipped_subtrees": sorted(_SKIP_PARTS),
                 "state": "unreadable", "error": "%s: %s" % (type(exc).__name__, str(exc)[:160])}
     for f in files:
@@ -60,23 +70,29 @@ def unqualified_imports(pkg: Path, names) -> dict:
         except OSError:
             continue
         scanned += 1
-        for i, line in enumerate(txt.splitlines(), 1):
-            if line.lstrip().startswith("#"):
-                continue
-            m = _IMPORT_RE.match(line)
-            if not m:
-                continue
-            tops = []
-            if m.group("from"):
-                tops.append(m.group("from").split(".")[0])
-            if m.group("plain"):
-                for part in m.group("plain").split(","):
-                    tops.append(part.strip().split(" as ")[0].strip().split(".")[0])
-            for top in tops:
+        rel = str(f.relative_to(pkg)).replace("\\", "/")
+        try:
+            tree = ast.parse(txt)
+        except SyntaxError as exc:
+            parse_failed.append({"file": rel, "error": "%s: %s" % (type(exc).__name__, str(exc)[:120])})
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ImportFrom):
+                if node.level:                       # 相对导入 = 限定，不算
+                    continue
+                top = (node.module or "").split(".")[0]
                 if top in names:
-                    hits.append({"name": top, "file": str(f.relative_to(pkg)).replace("\\", "/"),
-                                 "line": i, "text": line.strip()[:160]})
+                    hits.append({"name": top, "file": rel, "line": node.lineno,
+                                 "text": ("from %s import %s" % (node.module or "", ",".join(
+                                     a.name for a in node.names)))[:160]})
+            elif isinstance(node, ast.Import):
+                for alias in node.names:
+                    top = alias.name.split(".")[0]
+                    if top in names:
+                        hits.append({"name": top, "file": rel, "line": node.lineno,
+                                     "text": ("import " + alias.name)[:160]})
     return {"hits": hits, "scanned_files": scanned, "names": sorted(names),
+            "parse_failed": parse_failed,
             "skipped_subtrees": sorted(_SKIP_PARTS),
             "state": "live" if hits else "latent"}
 

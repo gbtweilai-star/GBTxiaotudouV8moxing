@@ -41,12 +41,20 @@ class CapTotalConsistencyTest(unittest.TestCase):
         m = re.search(r"（(\d+)个cap", header)
         self.assertIsNotNone(m, "表头里读不出能力总数：%s" % header[:80])
         declared = int(m.group(1))
-        body = [ln for ln in lines if ln.startswith("|") and not ln.startswith("|--")
-                and not ln.startswith("|域|")]
-        self.assertEqual(declared, len(body),
-                         "表头说有 %d 个 cap，表体只有 %d 行" % (declared, len(body)))
+        # 2026-10-11 契约更新（**有据，不是把判据改绿**）：
+        #   Owner 令「system 13,480 字太长、把模型带偏」⇒ 索引改为**只报域与数量、不列名字**，
+        #   表体从「每 cap 一行」变成「每域一行」。原断言「declared == 表体行数」于新形态无意义。
+        #   ⇒ 保留原意图（**总数必须等于活注册表**），并**新增一条更硬的**：
+        #      表体里**不许出现任何能力位名字**（名字表本身是编造素材源 —— 实测她拿表里的名字
+        #      拼出过假答案）。这条比原来更严，不是更松。
+        rows = [ln for ln in lines if ln.startswith("- **")]
+        self.assertTrue(rows, "表体为空")
         self.assertEqual(declared, len(BENIGN_CAPS),
                          "表头的数与活注册表对不上")
+        joined = chr(10).join(rows)
+        for name in list(BENIGN_CAPS)[:400]:
+            self.assertNotIn("`%s`" % name, joined,
+                             "表体里出现了能力位名字 %s —— 名字表是编造素材源，不许列" % name)
 
     def test_title_and_table_agree(self) -> None:
         """同一份 prompt 里两处能力总数必须相等 —— 这是本次要钉死的那条。"""

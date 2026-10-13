@@ -612,7 +612,7 @@ def cmd_readiness(as_json: bool, do_live: bool = True) -> int:
 
     # 判决走纯函数（两条诚实分支在那里，自检能真触发）
     v = readiness_verdict(text, who_out, inv, live=do_live, caveat_src=caveat_src)
-    ph = v["template"]["active_items"]
+    v["template"]["active_items"]
 
     out = {
         "wrangler": {"path": ver.get("exe"), "version": version, "rc": ver.get("rc")},
@@ -785,7 +785,7 @@ def collect_live(base: str, timeout: float = 20.0, expect_llm: bool = False, exp
         msg = ((t1.get("choices") or [{}])[0].get("message") or {})
         calls = msg.get("tool_calls") or []
         c0 = (calls[0] if calls else {})
-        args = ((c0.get("function") or {}).get("arguments")) or "{}"
+        ((c0.get("function") or {}).get("arguments")) or "{}"
         probes["tool_turn2"] = http_json(b + "/v1/chat/completions", method="POST", payload={
             "model": "gbt-potato-v8", "max_tokens": 512,
             "messages": [
@@ -1350,4 +1350,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

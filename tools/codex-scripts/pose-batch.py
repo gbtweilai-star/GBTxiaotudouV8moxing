@@ -169,8 +169,8 @@ def main():
             "姿势": poses, "提示词条数": len(prompts),
             "尺寸": a.size, "步数": a.steps, "采样器": a.sampler, "调度器": a.scheduler,
             "_口径": ("本机是 **CPU 出图**：单张秒是按 8 步实测 1366–1546 s 折算的**预估**，"
-                      "不是承诺；'无限生产'在本机不成立，本件只做'按预算排队跑'。"
-                      "出图 ≠ 姿势对 ≠ 审美合格。")}
+                    "不是承诺；'无限生产'在本机不成立，本件只做'按预算排队跑'。"
+                    "出图 ≠ 姿势对 ≠ 审美合格。")}
     if a.dry_run:
         plan["ok"] = True
         plan["status"] = "dry_run"
@@ -181,7 +181,7 @@ def main():
         plan["ok"] = False
         plan["status"] = "over_budget"
         plan["_结论"] = ("预估 %.1f 分钟 > 预算 %.1f 分钟 ⇒ **拒跑**。"
-                         "要么加 --max-minutes，要么减 --limit，要么等有 GPU／用云腿。" % (est_min, a.max_minutes))
+                       "要么加 --max-minutes，要么减 --limit，要么等有 GPU／用云腿。" % (est_min, a.max_minutes))
         print(json.dumps(plan, ensure_ascii=False, indent=1))
         return 3
 
@@ -291,7 +291,7 @@ def main():
         manifest.open("a", encoding="utf-8").write(json.dumps(row, ensure_ascii=False) + "\n")
         results.append(row)
         print("   ✅ %s（%.1fs）⇒ %s" % (saved[0]["sha256_head"] if saved else "无产物",
-                                        row["elapsed_s"], saved[0]["file"] if saved else "-"))
+                                      row["elapsed_s"], saved[0]["file"] if saved else "-"))
 
     ok_n = sum(1 for r in results if r.get("ok"))
     print(json.dumps({"ok": ok_n == len(results) and bool(results), "status": "batch_done",

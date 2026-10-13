@@ -173,7 +173,16 @@ def snapshot(eye, region=None, ttl=60):
             for k in sorted(cache, key=lambda k: cache[k].get("ts", 0))[:100]:
                 cache.pop(k, None)
         _STORE.mkdir(parents=True, exist_ok=True)
-        cache_file.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
+        # 🔴 2026-10-13 修（selfscan P0 的根因 · 治本那一刀）：
+        #    实测残件 `store/transfer_cache.json` 尾部多出 **3 个 `}`**（"合法 JSON + 多余数据"）。
+        #    本句用的是 `json.dumps`，本身不会多括号 ⇒ 真因是**同一个缓存文件被两处各读-改-写**
+        #    （`engine.py:_CACHE_FILE` 与 `vision_bus.py` 共用一份），无锁并发下写出"半截 + 残留"。
+        #    修法两条一起上：① **原子写**（先写 .tmp 再 os.replace，读者永远看不到半截）；
+        #    ② **写完读回自证**（fail-closed：读不回就抛，由下面的 except 记 cached=None，不糊弄）。
+        _tmp = cache_file.with_name(cache_file.name + ".tmp")
+        _tmp.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
+        json.loads(_tmp.read_text(encoding="utf-8"))       # 读回自证：解析不了就当场抛
+        _tmp.replace(cache_file)                            # 原子替换（Path.replace，本文件没 import os）
         result["cached"] = False
     except Exception:
         result["cached"] = None

@@ -179,8 +179,8 @@ for i, im in enumerate(J2["images"]):
         bad.append(f"image{i} 读不回（{type(e).__name__}）")
 if not bad:
     pic = Image.open(io.BytesIO(B2[J2["bufferViews"][J2["images"][nm_idx]["bufferView"]].get("byteOffset", 0):
-                                     J2["bufferViews"][J2["images"][nm_idx]["bufferView"]].get("byteOffset", 0) +
-                                     J2["bufferViews"][J2["images"][nm_idx]["bufferView"]]["byteLength"]]))
+                                   J2["bufferViews"][J2["images"][nm_idx]["bufferView"]].get("byteOffset", 0) +
+                                   J2["bufferViews"][J2["images"][nm_idx]["bufferView"]]["byteLength"]]))
     print(f"自检：{len(J2['images'])} 张图全部读回 OK · 法线现在 {pic.size[0]}²")
 if bad:
     print("🔴 自检不过：" + "；".join(bad))

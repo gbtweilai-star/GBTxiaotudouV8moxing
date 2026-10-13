@@ -1,0 +1,50 @@
+{
+  "style": "赛博霓虹 · 冷蓝基底，紫青只走管道液体；分段调色由该镜情绪决定（集间接点共享同一调色）",
+  "hook_video": false,
+  "share_shot": 4,
+  "share_text": "你好，新版本。",
+  "att_copyright": true,
+  "att_safety": true,
+  "att_owner": true,
+  "series": {
+    "series": "醒来",
+    "episode": 1,
+    "prev_episode": null,
+    "tail_handoff": true,
+    "head_handoff": false
+  },
+  "shots": [
+    {
+      "no": 1,
+      "render": "静帧（配运镜）",
+      "eyeline": "俯视水面倒影",
+      "depth": "浅景深（锐面：睫毛与水面交界）",
+      "reason": "首镜 5 秒内让观众认出主角是物件，俯视倒影一次给全",
+      "duration": 5
+    },
+    {
+      "no": 2,
+      "render": "静帧（配运镜）",
+      "eyeline": "贴地跟随爬行方向",
+      "depth": "深景深",
+      "reason": "贴地跟拍才能把管道读成血管，深景深保住两侧液体连续性",
+      "duration": 5
+    },
+    {
+      "no": 3,
+      "render": "静帧（配运镜）",
+      "eyeline": "过肩看控制台",
+      "depth": "深景深",
+      "reason": "过肩把影子放进画面又不让人看清，留下一秒错认",
+      "duration": 5
+    },
+    {
+      "no": 4,
+      "render": "静帧（配运镜）",
+      "eyeline": "俯视自己倒影",
+      "depth": "浅景深",
+      "reason": "本镜是**接点**：必须与第 2 集首镜同调色同场景，后拉留出接续空间",
+      "duration": 5
+    }
+  ]
+}

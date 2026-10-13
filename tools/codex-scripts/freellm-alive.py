@@ -69,9 +69,9 @@ def key():
 def probe_one(model, timeout=90):
     body = {"model": model, "input": "ping", "max_output_tokens": 16}
     req = urllib.request.Request(BASE + "/responses", method="POST",
-                                data=json.dumps(body).encode(),
-                                headers={"Authorization": "Bearer %s" % (key() or ""),
-                                         "Content-Type": "application/json"})
+                                 data=json.dumps(body).encode(),
+                                 headers={"Authorization": "Bearer %s" % (key() or ""),
+                                          "Content-Type": "application/json"})
     t0 = time.time()
     try:
         r = urllib.request.urlopen(req, timeout=timeout)
@@ -113,7 +113,7 @@ def cmd_probe(a):
     out = {"探测时间": time.strftime("%Y-%m-%dT%H:%M:%S"), "逐个": res,
            "活着的": alive, "死了的": [m for m in res if m not in alive],
            "_口径": "每个模型只发一次 max_output_tokens=16 的极小请求；死活以网关回包为准，"
-                    "不看 /v1/models 名单（名单里有 ≠ 能用）。"}
+           "不看 /v1/models 名单（名单里有 ≠ 能用）。"}
     STATE.parent.mkdir(parents=True, exist_ok=True)
     STATE.write_text(json.dumps(out, ensure_ascii=False, indent=1), "utf-8")
     print("\n活着的 %d 个：%s" % (len(alive), "、".join(alive) or "（一个都没有 ⇒ 等配额恢复）"))
@@ -182,11 +182,15 @@ def cmd_pin(a):
 def main():
     ap = argparse.ArgumentParser(description="网关活体探测 + 把 Codex 钉到活的模型上")
     sub = ap.add_subparsers(dest="cmd")
-    p = sub.add_parser("probe"); p.add_argument("--model", nargs="*", default=[])
+    p = sub.add_parser("probe")
+    p.add_argument("--model", nargs="*", default=[])
     p.add_argument("--sample", type=int, default=0, help="从 /v1/models 里等距抽样 N 个")
     p.set_defaults(fn=cmd_probe)
-    p = sub.add_parser("status"); p.set_defaults(fn=cmd_status)
-    p = sub.add_parser("pin"); p.add_argument("--model", default=""); p.set_defaults(fn=cmd_pin)
+    p = sub.add_parser("status")
+    p.set_defaults(fn=cmd_status)
+    p = sub.add_parser("pin")
+    p.add_argument("--model", default="")
+    p.set_defaults(fn=cmd_pin)
     a = ap.parse_args()
     if not getattr(a, "fn", None):
         ap.print_help()

@@ -77,7 +77,7 @@ bc = np.asarray(bc_im).astype(np.float64)
 L = bc[:, :, 0] * 0.299 + bc[:, :, 1] * 0.587 + bc[:, :, 2] * 0.114
 skin = (bc[:, :, 0] > bc[:, :, 1] + 6) & (bc[:, :, 1] >= bc[:, :, 2]) & (bc[:, :, 0] > 110)
 print(f"皮肤区：{skin.mean()*100:.1f}% 纹素 · 皮肤平均色 "
-      f"({bc[skin][:,0].mean():.0f},{bc[skin][:,1].mean():.0f},{bc[skin][:,2].mean():.0f})"
+      f"({bc[skin][:, 0].mean():.0f},{bc[skin][:, 1].mean():.0f},{bc[skin][:, 2].mean():.0f})"
       f" · 平均亮度 {L[skin].mean():.0f}")
 
 # ── ② 压高光：把烘进底色的镜面压平 ────────────────────────────────────────
@@ -105,8 +105,8 @@ motf = np.asarray(Image.fromarray(((mot * 0.5 + 0.5) * 255).astype(np.uint8)).re
 blush = np.dstack([motf * 7.0, motf * 2.5, motf * 1.0])          # 偏红的斑驳
 out = np.where(m, out + blush * K, out)
 out = np.clip(out, 0, 255)
-print(f"上血色：向 (1.00:0.80:0.70) 混合 58% + 低频斑驳 ±7（σ=22 可平铺）")
-print(f"  → 皮肤平均色 ({out[skin][:,0].mean():.0f},{out[skin][:,1].mean():.0f},{out[skin][:,2].mean():.0f})")
+print("上血色：向 (1.00:0.80:0.70) 混合 58% + 低频斑驳 ±7（σ=22 可平铺）")
+print(f"  → 皮肤平均色 ({out[skin][:, 0].mean():.0f},{out[skin][:, 1].mean():.0f},{out[skin][:, 2].mean():.0f})")
 
 bc_new = io.BytesIO()
 Image.fromarray(out.astype(np.uint8)).save(bc_new, format="JPEG", quality=94)
@@ -161,7 +161,7 @@ for vi, ii, data in views:
     newoff = len(nb)
     nb.extend(data)
     bv = J["bufferViews"][vi]
-    print(f"  image{ii}: 旧偏移 {bv.get('byteOffset',0)} → 新偏移 {newoff} · "
+    print(f"  image{ii}: 旧偏移 {bv.get('byteOffset', 0)} → 新偏移 {newoff} · "
           f"{bv['byteLength']} → {len(data)} 字节")
     bv["byteOffset"] = newoff
     bv["byteLength"] = len(data)

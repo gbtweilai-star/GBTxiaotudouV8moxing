@@ -29,7 +29,6 @@ from __future__ import annotations
 import argparse
 import json
 import re
-import subprocess
 import sys
 from collections import Counter
 from pathlib import Path
@@ -204,7 +203,7 @@ def caps_source_patch(text: str, now: dict) -> tuple:
     new_obj = {x: src[x] for x in order if x in src}
     lines = json.dumps(new_obj, ensure_ascii=False, indent=1).splitlines()
     lines[0] = "{"                                     # 首行的 `{` 与 `"caps_source": ` 同行
-    new_blk = "\n".join(("  " if n else "") + l for n, l in enumerate(lines))
+    new_blk = "\n".join(("  " if n else "") + ln for n, ln in enumerate(lines))
     notes = []
     for key in ("benign", "disabled", "domains"):
         if str(old.get(key)) != str(src[key]):
@@ -215,7 +214,7 @@ def caps_source_patch(text: str, now: dict) -> tuple:
     if changed:
         notes.append("caps_source.domain_dist: %d 个域不对（%s…）"
                      % (len(changed), "、".join("%s %s->%s" % (d, a, b)
-                                                for d, (a, b) in sorted(changed.items())[:6])))
+                                               for d, (a, b) in sorted(changed.items())[:6])))
     if not notes:
         return text, []
     return text[:j] + new_blk + text[k + 1:], notes
@@ -243,10 +242,14 @@ def main(argv=None) -> int:
     ok0, why0 = blob_is_valid(text)
     print("改前嵌数据：%s（%s）" % ("合法" if ok0 else "**不合法**", why0))
     notes = []
-    text, n0 = repair_orphans(text); notes += n0
-    text, n1 = meta_patch(text, now); notes += n1
-    text, n2 = caps_source_patch(text, now); notes += n2
-    text, n3 = clause_patch(text); notes += n3
+    text, n0 = repair_orphans(text)
+    notes += n0
+    text, n1 = meta_patch(text, now)
+    notes += n1
+    text, n2 = caps_source_patch(text, now)
+    notes += n2
+    text, n3 = clause_patch(text)
+    notes += n3
     ok1, why1 = blob_is_valid(text)
     print("改后嵌数据：%s（%s）" % ("合法" if ok1 else "**不合法**", why1))
     if not ok1:

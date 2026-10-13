@@ -26,18 +26,23 @@ def largest_component(mask):
         for sx in range(w):
             if not mask[sy, sx] or seen[sy, sx]:
                 continue
-            q = deque([(sy, sx)]); seen[sy, sx] = True; comp = []
+            q = deque([(sy, sx)])
+            seen[sy, sx] = True
+            comp = []
             while q:
-                y, x = q.popleft(); comp.append((y, x))
+                y, x = q.popleft()
+                comp.append((y, x))
                 for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                     ny, nx = y + dy, x + dx
                     if 0 <= ny < h and 0 <= nx < w and mask[ny, nx] and not seen[ny, nx]:
-                        seen[ny, nx] = True; q.append((ny, nx))
+                        seen[ny, nx] = True
+                        q.append((ny, nx))
             if len(comp) > best_size:
                 best_size, best = len(comp), comp
     out = np.zeros_like(mask, dtype=bool)
     if best:
-        ys = np.array([p[0] for p in best]); xs = np.array([p[1] for p in best])
+        ys = np.array([p[0] for p in best])
+        xs = np.array([p[1] for p in best])
         out[ys, xs] = True
     return out
 
@@ -53,7 +58,8 @@ def find_separators(arr):
         if is_sep[x] and start is None:
             start = x
         elif not is_sep[x] and start is not None:
-            spans.append((start, x - 1)); start = None
+            spans.append((start, x - 1))
+            start = None
     if start is not None:
         spans.append((start, w - 1))
     # 只保留内部、宽度 < 8% 画宽的分隔
@@ -100,17 +106,20 @@ def fill_holes(mask):
     for x in range(w):
         for y in (0, h - 1):
             if inv[y, x] and not reach[y, x]:
-                reach[y, x] = True; q.append((y, x))
+                reach[y, x] = True
+                q.append((y, x))
     for y in range(h):
         for x in (0, w - 1):
             if inv[y, x] and not reach[y, x]:
-                reach[y, x] = True; q.append((y, x))
+                reach[y, x] = True
+                q.append((y, x))
     while q:
         y, x = q.popleft()
         for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             ny, nx = y + dy, x + dx
             if 0 <= ny < h and 0 <= nx < w and inv[ny, nx] and not reach[ny, nx]:
-                reach[ny, nx] = True; q.append((ny, nx))
+                reach[ny, nx] = True
+                q.append((ny, nx))
     return mask | (inv & ~reach)
 
 
@@ -126,7 +135,8 @@ def background_mask(arr):
       高光过曝处会被误判成背景，但那属于**封闭洞**，用 fill_holes 补回来。
     """
     a = arr.astype(np.int16)
-    mx = a.max(axis=2); mn = a.min(axis=2)
+    mx = a.max(axis=2)
+    mn = a.min(axis=2)
     chroma = mx - mn
     lum = a.mean(axis=2)
     return (chroma < 24) & (lum > 85)
@@ -137,7 +147,6 @@ def clean_view(crop, tag):
     m = ~background_mask(arr)
     m = fill_holes(m)
     m = largest_component(m)
-    dropped = 0
     m, cut_px = drop_platform(m)
 
     rgba = np.dstack([arr, (m * 255).astype(np.uint8)])
@@ -198,7 +207,8 @@ if finals:
         top.paste(t.crop((0, 0, hw, min(hw, t.height))), (i * hw, 0))
         bot.paste(f.resize((hw, hw), Image.LANCZOS), (i * hw, 0))
     sheet = Image.new("RGB", (hw * len(finals), hw * 2 + 30), (18, 22, 34))
-    sheet.paste(top, (0, 24)); sheet.paste(bot, (0, hw + 30))
+    sheet.paste(top, (0, 24))
+    sheet.paste(bot, (0, hw + 30))
     d = ImageDraw.Draw(sheet)
     d.text((8, 6), "上：原图裁切", fill=(232, 236, 248))
     d.text((8, hw + 12), "下：去背 · 只留主体 · 居中 1024²", fill=(0, 229, 255))

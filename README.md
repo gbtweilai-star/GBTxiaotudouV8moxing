@@ -55,13 +55,20 @@ powershell -ExecutionPolicy Bypass -File launch-gui.ps1
 
 安装依赖：`pip install -r requirements.txt`（customtkinter / darkdetect / dnspython）
 
-## 安全边界（只禁一小撮，不提供绕过入口）
+## 能力边界（现读口径 · 2026-10-12 更正）
 
-危险/破解类能力（付费墙绕过、数据/会话劫持、无授权远控、键鼠监控、设备接管、
-渗透攻击、资产冻结要挟、凭证窃取、社工钓鱼）按名禁用，返回 denied，无执行路径。
-其余技术能力（含 OSINT 公开信息扫描、量化分析、回测、账本、钱包、AI 编排）正常可用。
-OSINT 扫描默认拒绝本机/内网/保留地址，扫描自有内网资产时显式传 `allow_private: true`。
+**先纠正一句旧话**：本仓曾把这一节写成"禁止类能力"的口径 —— 那是**过期描述**，
+现读事实与此不符，已按盘上真身改写（Owner 2026-09-23「把禁止全部解开」仍生效）。
 
+- **没有"按名禁用"的能力**：`DISABLED_CAPS = 0`。历史上那 11 个名字只登记在
+  `UNIMPLEMENTED_CAPS`，**只有名字、没有实现** —— 调用得到的是 `unknown capability`，
+  **不是"被安全策略挡住"**（两者差别很大，别念错）。
+- **真正把关的是"授权门"**：`gbt_allinone/security/policy.py` 的 15 个作用域
+  （付款／隐私／生产写入／远控／发声／出网…）。授权**只能主人在终端发放**：
+  `python -m gbt_allinone auth grant --scope <作用域> --ttl <秒>`；
+  **AI 永远无权给自己发授权**，缺哪个就如实报哪个。
+- **门是"主人的开关"，不是"技术限制"**：门开着，技术全在。
+- 只读类（`mirror_scan` / `mirror_status` 等）不需要授权。
 ## 数据后台（可追踪）
 
 - `gbt_allinone/store/audit.jsonl`：call / ok / error / denied 全程落盘。
@@ -193,7 +200,8 @@ V8 立场：框架内不依赖子代理。脑子只有一份（SOUL + run_task�
 ## 文件家规与自愈
 
 - \LAYOUT.md\：文件组织宪法（每样东西有唯一的位置，八条铁律）
-- \ile_hygiene\ 能力：按家规自检乱放 + 自动归位 + 审计留痕——她自己收拾自己的家
+- \
+ile_hygiene\ 能力：按家规自检乱放 + 自动归位 + 审计留痕——她自己收拾自己的家
 - 日常：\g.run_task('file_hygiene', {'fix': True})
 ## 万能插极限操控（六轮阶梯压测）
 

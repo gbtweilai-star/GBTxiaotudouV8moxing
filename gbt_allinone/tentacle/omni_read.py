@@ -147,8 +147,7 @@ class OmniReadMixin:
                                         "w": _cr["w"], "h": _cr["h"], "count": _cr["h"],
                                         "text": _ft[:8000]}
                                 try:
-                                    from brain.tentacle_transmission import transmit as _tx
-                                    _tx({"text": _ft[:1500], "count": _cr["h"], "scope": scope, "ok": True},
+                                    _tx_send({"text": _ft[:1500], "count": _cr["h"], "scope": scope, "ok": True},
                                         source="omni_tentacle.read_text_fast[console]", channel="visual", priority="high")
                                 except Exception as _e:
                                     _record_swallow(_e, "omni_read")
@@ -194,8 +193,7 @@ class OmniReadMixin:
                           "text": chr(10).join(texts[:300])[:8000]}
                 # ⛔ 2026-08-07 打磨: 秒级读屏穿透 → 大脑实时感知屏幕文字(快速通道)
                 try:
-                    from brain.tentacle_transmission import transmit as _tx
-                    _tx({"text": result.get("text", "")[:1500], "count": result.get("count", 0),
+                    _tx_send({"text": result.get("text", "")[:1500], "count": result.get("count", 0),
                          "scope": scope, "ok": True},
                         source="omni_tentacle.read_text_fast", channel="visual",
                         priority="high")
@@ -236,8 +234,7 @@ class OmniReadMixin:
                               "full_text": chr(10).join(b["text"] for b in blocks[:200])[:8000]}
                     # ⛔ 2026-08-04 触手→大脑: 读屏结果穿透传输 (大脑实时感知屏幕文字)
                     try:
-                        from brain.tentacle_transmission import transmit as _tx
-                        _tx({"text": result.get("full_text", "")[:1500],
+                        _tx_send({"text": result.get("full_text", "")[:1500],
                              "count": result.get("count", 0),
                              "text_blocks": result.get("text_blocks", [])[:40],
                              "ok": True},
@@ -270,8 +267,7 @@ class OmniReadMixin:
                                 "text_blocks": _blocks[:200], "full_text": _ft[:8000],
                                 "w": _cr["w"], "h": _cr["h"]}
                         try:
-                            from brain.tentacle_transmission import transmit as _tx
-                            _tx({"text": _ft[:1500], "count": len(_blocks), "ok": True},
+                            _tx_send({"text": _ft[:1500], "count": len(_blocks), "ok": True},
                                 source="omni_tentacle.read_text[console]", channel="visual", priority="high")
                         except Exception as _e:
                             _record_swallow(_e, "omni_read")
@@ -334,11 +330,50 @@ class OmniReadMixin:
             _r = _rc(pid=pid, title=title, text=text)
             if _r.get("ok"):
                 try:
-                    from brain.tentacle_transmission import transmit as _tx
-                    _tx({"text": _r.get("full_text", "")[:1500], "w": _r["w"], "h": _r["h"], "ok": True},
+                    _tx_send({"text": _r.get("full_text", "")[:1500], "w": _r["w"], "h": _r["h"], "ok": True},
                         source="omni_tentacle.read_console", channel="visual", priority="high")
                 except Exception as _e:
                     _record_swallow(_e, "omni_read")
             return _r
         except Exception as e:
             return refusal("action_failed", f"控制台直读失败: {str(e)[:100]}", ())
+
+# ── 遥测转发（2026-10-04 修）：**包内相对优先，退绝对导入** ─────────────────────
+# 病灶：把导入改成包内相对后，omni_read 被**单独加载**（非包上下文）时相对导入抛
+# "attempted relative import with no known parent package"，外层 except 把它**吞成一行提示**
+# （实测见 `吞错[backend_unavailable]`）—— 遥测丢了不打紧，但**原因不许无痕吞掉**。
+# ⇒ 统一取一次（缓存）+ 两条路都试 + 原因留在 TRANSMIT_LAST_ERR。
+_TRANSMIT = None
+TRANSMIT_LAST_ERR = ""
+
+
+def _get_transmit():
+    global _TRANSMIT, TRANSMIT_LAST_ERR
+    if _TRANSMIT is not None:
+        return _TRANSMIT
+    try:
+        from .brain.tentacle_transmission import transmit as _t      # 包内（正常路径）
+        _TRANSMIT, TRANSMIT_LAST_ERR = _t, ""
+        return _t
+    except Exception as _e1:                                     # noqa: BLE001
+        try:
+            from gbt_allinone.tentacle.brain.tentacle_transmission import transmit as _t
+            _TRANSMIT, TRANSMIT_LAST_ERR = _t, ""
+            return _t
+        except Exception as _e2:                                 # noqa: BLE001
+            TRANSMIT_LAST_ERR = "relative: %s | absolute: %s" % (str(_e1)[:60], str(_e2)[:60])
+            return None
+
+
+def _tx_send(payload, **kw):
+    """转发一次遥测；取不到 transmit ⇒ False + 原因留痕（不无痕吞）。"""
+    global TRANSMIT_LAST_ERR
+    _t = _get_transmit()
+    if _t is None:
+        return False
+    try:
+        _t(payload, **kw)
+        return True
+    except Exception as _e:                                      # noqa: BLE001
+        TRANSMIT_LAST_ERR = "call: %s" % str(_e)[:80]
+        return False

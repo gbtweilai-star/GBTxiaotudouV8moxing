@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """把嫁接件拆成「身体」与「头」两个 GLB（分区减面的前提）。
 身体件 = 原身体 primitive（含 4K 材质）；头件 = 嫁接头 primitive（含胸像 2K 材质）。"""
-import json, pathlib, struct
+import json
+import pathlib
+import struct
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
 DH = WS / "holo_pet/assets/digital-human"

@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-10-05T06:42:00+08:00",
+  "task": "VoiceStudio 接道验收（主人令「下一步」）",
+  "upstream": {
+    "repo": "debpalash/VoiceStudio",
+    "license": "AGPL-3.0（本地自用；再分发须合规，模型各自许可另计）",
+    "clone_dir": "_upstream/VoiceStudio",
+    "stars_at_intake": 53139,
+    "form": "headless 后端（不装桌面 Electron 壳）"
+  },
+  "service": {
+    "base": "http://127.0.0.1:3900",
+    "version": "0.5.6",
+    "device": "cpu",
+    "pid": 17476,
+    "mcp": "/mcp 已挂载",
+    "telemetry": "OMNIVOICE_ANALYTICS_DISABLED=1（硬杀，随 spawn 下发）",
+    "data_dir": "C:\\Users\\ADMIN\\AppData\\Roaming\\OmniVoice",
+    "hf_cache": "C:\\Users\\ADMIN\\AppData\\Local\\OmniVoice\\hf_cache（模型合计 3.7 GB）",
+    "env_also": ["OMNIVOICE_MCP_OUTPUT_MODE=files", "OMNIVOICE_MCP_BASE_PATH=state/voicestudio/out"]
+  },
+  "models": {
+    "k2-fsa/OmniVoice": {"size_gb": 2.4, "required": true, "installed": true},
+    "OpenMOSS-Team/MOSS-TTS-Nano-100M": {"size_gb": 0.4, "installed": true, "engine_venv": "一键装 sidecar（钉版提交 + 独立 venv）"}
+  },
+  "legs": [
+    {"id": "backend_health", "ok": true, "evidence": "/health -> {status:ok, device:cpu, version:0.5.6}"},
+    {"id": "omnivoice_first_speech", "ok": true, "evidence": "vs-t1791156318.wav 462764B 9.6s 24kHz；总 678.7s（首载 ~510s + 合成 156.9s + 水印 9.4s）"},
+    {"id": "clone_profile", "ok": true, "evidence": "POST /profiles -> profile_id 10c42c17「GBT冒烟-可删」（参考音=第一句 9.6s WAV）"},
+    {"id": "clone_speak", "ok": true, "evidence": "vs-t1791156823.wav 356684B 7.4s（合成 281s，与其他任务争 CPU）"},
+    {"id": "moss_cold", "ok": true, "evidence": "vs-t1791156994.wav 560684B 5.8s 48kHz；总 85.7s（合成 77.1s）"},
+    {"id": "moss_warm", "ok": true, "evidence": "vs-t1791157047.wav 399404B；总 18.2s（热启动）"},
+    {"id": "launcher_down_up", "ok": true, "evidence": "down 停 pid 18092（taskkill rc=0）→ up 起 pid 17476 健康绿"},
+    {"id": "framework_voice_cap", "ok": true, "evidence": "voice_cap.voicestudio_tts(engine=moss-tts-nano) -> vs-3f50c43d.wav 537644B；gen 54.47s；音频 5.6s"},
+    {"id": "gate_invocation", "ok": false, "reason": "run_task 门内调用未测：audio_output 票已消耗，需主人终端发新票", "evidence": null}
+  ],
+  "wiring": {
+    "launcher": "tools/codex-scripts/voicestudio.py（status/up/down/speak/clone/voices/transcribe/models）",
+    "cmd": "voicestudio.cmd（双击=status）",
+    "framework": "voice_cap.tts(backend='voicestudio' | voice='vs:<profile_id>', engine=...)；voice_orchestra.status.local_services 活体探测",
+    "security": "出站四重校验（协议/主机白名单/解析后 IP 回环/禁重定向）；无凭据；gitignore state/voicestudio/"
+  },
+  "machine": {"ram_total_gb": 7.9, "note": "OmniVoice 首载把机器挤到交换（上游自打 Low memory 警告）⇒ 本机日常档=moss-tts-nano（热 18.2s），质量/克隆档=omnivoice"},
+  "honest_gaps": [
+    "门内（run_task + audio_output 票）调用未测",
+    "MOSS 未接克隆（克隆走 omnivoice）",
+    "transcribe / 视频配音腿已通但未逐一实测",
+    "桌面 UI 未接（未装 Electron 壳）"
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "kind": "short_video",
+  "label": "短视频",
+  "product": {
+    "file": "projects/short-video/05-publish/20261009-short-video-醒来-05export.mp4",
+    "sha256": "9baf63be97efbd42079ff7a535d6a5ac0d977974806b351bedb13da76e7cb24e",
+    "bytes": 12286915
+  },
+  "license": {
+    "file": "projects/short-video/05-publish/20261009-short-video-醒来-05export.mp4",
+    "sha256": "9baf63be97efbd42079ff7a535d6a5ac0d977974806b351bedb13da76e7cb24e",
+    "source": "本仓 ffmpeg 自产：三方向工作流自检（short_video 步 export）",
+    "license": "自有（本机 ffmpeg 自产，无第三方素材，零出网）"
+  },
+  "metadata": {
+    "title": "醒来",
+    "desc": "三方向工作流自检件（彩排件；正式发布前请去掉 -rehearsal）",
+    "tags": [
+      "selftest",
+      "short_video"
+    ],
+    "cover": null,
+    "note": "标题/简介/标签先落模板；平台侧字段各平台不同，提交时再按平台整形"
+  },
+  "targets": [
+    {
+      "name": "抖音",
+      "class": "国内主平台",
+      "earn": "创作者激励 / 星图 / 直播 / 小店",
+      "needs": "实名 + 创作者账号 + 授权",
+      "verified": false
+    },
+    {
+      "name": "快手",
+      "class": "国内主平台",
+      "earn": "创作者激励 / 快分销",
+      "needs": "实名 + 授权",
+      "verified": false
+    },
+    {
+      "name": "视频号",
+      "class": "国内主平台",
+      "earn": "创作分成 / 直播",
+      "needs": "微信生态账号 + 授权",
+      "verified": false
+    },
+    {
+      "name": "B 站",
+      "class": "国内主平台",
+      "earn": "激励计划 / 充电",
+      "needs": "实名 + 创作激励开通",
+      "verified": false
+    },
+    {
+      "name": "小红书",
+      "class": "国内主平台",
+      "earn": "薯条 / 商单",
+      "needs": "专业号 + 授权",
+      "verified": false
+    },
+    {
+      "name": "YouTube Shorts",
+      "class": "海外主平台",
+      "earn": "Shorts 分成（需入 YPP）",
+      "needs": "频道 + 1000 订阅/门槛 + 授权",
+      "verified": false
+    },
+    {
+      "name": "TikTok",
+      "class": "海外主平台",
+      "earn": "Creator Rewards",
+      "needs": "地区资质 + 授权",
+      "verified": false
+    }
+  ],
+  "preflight": {
+    "license_registered": true,
+    "naming_compliant": true,
+    "rehearsal": false,
+    "note": "**彩排件不要发布** —— 这一栏是给主人看的，不替你判；正式件请去掉 -rehearsal。"
+  },
+  "gate": {
+    "required_scope": "deploy_publish",
+    "how": "python -m gbt_allinone auth grant --scope deploy_publish --ttl 600",
+    "why": "发布不可逆 + 零凭据 ⇒ 必须主人一次性授权"
+  },
+  "at": "2026-10-09T11:36:53"
+}

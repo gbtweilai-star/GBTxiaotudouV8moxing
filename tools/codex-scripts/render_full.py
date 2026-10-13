@@ -4,13 +4,12 @@
 """
 import json
 import re
-import sys
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 OUT = BASE / ".scratch" / "render"
 CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 PROTO = BASE / "V21 GBT小土豆V8-可交互原型.html"
@@ -95,25 +94,30 @@ with sync_playwright() as pw:
                 shots.append({"i": i, "key": key, "label": label, "file": name, **info})
         # 上帝视角 + 亮色
         if tag == "desktop":
-            page.click("#godBtn"); page.wait_for_timeout(1500)
+            page.click("#godBtn")
+            page.wait_for_timeout(1500)
             page.screenshot(path=str(OUT / "panels" / "98_god.png"))
-            page.click("#godClose"); page.wait_for_timeout(400)
-            page.click("#themeBtn"); page.wait_for_timeout(800)
-            page.click('[data-nav="brain"]'); page.wait_for_timeout(800)
+            page.click("#godClose")
+            page.wait_for_timeout(400)
+            page.click("#themeBtn")
+            page.wait_for_timeout(800)
+            page.click('[data-nav="brain"]')
+            page.wait_for_timeout(800)
             page.screenshot(path=str(OUT / "panels" / "99_light_brain.png"))
-            page.click("#themeBtn"); page.wait_for_timeout(500)
+            page.click("#themeBtn")
+            page.wait_for_timeout(500)
         page.screenshot(path=str(OUT / ("viewport_%s.png" % tag)))
         page.close()
     browser.close()
 
 rep = {"shots": shots, "problems": problems, "uicheck": uicheck}
 (OUT / "report.json").write_text(json.dumps(rep, ensure_ascii=False, indent=1), encoding="utf-8")
-print("\n" + "=" * 86)
+print("\n" + "=" * 86)  # noqa: E402
 print("面板截图 %d 张 · 问题 %d 条 · UI-check 命中面板 %d 个" %
       (len(shots), len(problems), len(uicheck)))
 for k, m in problems[:12]:
     print("  [%s] %s" % (k, m))
-import collections
+import collections  # noqa: E402
 c = collections.Counter(i["kind"] for u in uicheck for i in u["issues"])
 print("  UI-check 明细:", dict(c) or "无")
 for u in uicheck[:6]:

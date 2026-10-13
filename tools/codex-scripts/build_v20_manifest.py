@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
@@ -123,7 +123,7 @@ man["social"]["graph"] = {
 (S / "v20_manifest.json").write_text(json.dumps(man, ensure_ascii=False, indent=1), encoding="utf-8")
 
 print("好友 %d 位（官方 %d · 有动态往来 %d）" % (len(nodes), man["social"]["graph"]["n_official"],
-                                        man["social"]["graph"]["n_active"]))
+                                     man["social"]["graph"]["n_active"]))
 print("\n节点（按建交时间）：")
 for x in nodes:
     print("  %-22s r=%-4s %-9s 帖%-2d  %s" % (x["name"][:20], x["r"], x["color"], x["posts"],

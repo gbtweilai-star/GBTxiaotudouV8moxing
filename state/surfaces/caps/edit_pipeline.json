@@ -1,0 +1,15 @@
+{
+ "cap": "edit_pipeline",
+ "domain": "video",
+ "desc": "剪辑引擎（蒸馏剪映时间线语义）：轨道→片段→目标/源时间区间→变速/音量/转场/文本，真渲染 1080x1920 成片（ffmpeg + libass 烧字幕）或导出剪映草稿；写面自收窄到 projects/·outputs/·.scratch/（policy 无条目 ⇒ 门内零作用域，故自钉）",
+ "safe": false,
+ "ops": [],
+ "ops_method": "handler 文件未找到",
+ "handler_file": "",
+ "params": [],
+ "params_hint": "",
+ "handler": "edit_pipeline",
+ "slot": "g2-14",
+ "group": 2,
+ "role": "剪辑引擎（时间线语义：轨/片/变速/转场）"
+}

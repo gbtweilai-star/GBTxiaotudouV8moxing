@@ -1,0 +1,894 @@
+{
+ "id": "voice-control-route",
+ "title": "语音→全机操控 · 路由表 + 探针台账",
+ "writer": "tools/codex-scripts/voice-control-route.py --emit-state（**只由工具写**，不手改）",
+ "at": "2026-10-08T10:02:57",
+ "gate": "api.run_task（唯一门）· 全程只读",
+ "routes": [
+  {
+   "id": "app",
+   "face": "任意 APP",
+   "cn": "启动 / 结束 / 切窗 / 控件穿透读写",
+   "capability": "tentacle（备线：desktop_commander 终端触手）",
+   "capability_source": "gbt_allinone/tentacle/（56 动作 + 33 读取）· desktop_commander（终端+文件系统）",
+   "readonly_actions": [
+    "see",
+    "read_text",
+    "list_windows",
+    "process_list",
+    "active_window",
+    "find_text",
+    "grab_value",
+    "domain_read",
+    "extract_ui_elements"
+   ],
+   "actions": [
+    "launch",
+    "kill",
+    "focus_window",
+    "act_window",
+    "click",
+    "type",
+    "hotkey",
+    "domain_act",
+    "domain_type",
+    "type_to_window",
+    "dismiss_dialog"
+   ],
+   "actions_evidence": {
+    "launch": true,
+    "kill": true,
+    "focus_window": true,
+    "act_window": true,
+    "click": true,
+    "type": true,
+    "hotkey": true,
+    "domain_act": true,
+    "domain_type": true,
+    "type_to_window": true,
+    "dismiss_dialog": true
+   },
+   "ticket": "desktop_control",
+   "live": {
+    "at": "2026-10-08T10:02:14",
+    "probe": "run tentacle {\"action\":\"list_windows\"}（免卡只读） + run tentacle_manifest {}",
+    "ok": true,
+    "evidence": "只读窗口枚举现读 13 个窗（例：GBT小土豆, C:\\Python310\\pyt, ZCode）· 触手总纲 3414 字"
+   },
+   "status": "读取免卡（现探到 13 个窗）· 动手需 desktop_control：有票 2 张（window）",
+   "grant_hint": "谁能给：只有主人 —— 终端 `py -3.14 -m gbt_allinone auth grant --scope desktop_control --ttl 600`（TTY 手打 YES）或手写 store/auth_grants.jsonl；ai_can_grant=False",
+   "voice_example": "「把记事本打开」「把那个窗口关掉」「切到浏览器」—— bridge.py 的 89 动作词典做意图命中"
+  },
+  {
+   "id": "browser",
+   "face": "浏览器",
+   "cn": "CDP 直连系统 Chrome（不是自动化框架开关）",
+   "capability": "browser",
+   "capability_source": "gbt_allinone/native_browser.py（自带最小 RFC6455，零第三方依赖）",
+   "readonly_actions": [
+    "dom_query",
+    "get_cookies",
+    "get_text",
+    "get_title",
+    "get_url",
+    "intercept_events",
+    "intercept_status",
+    "list_tabs",
+    "status"
+   ],
+   "actions": [
+    "launch",
+    "ensure",
+    "navigate",
+    "click_element",
+    "type_text",
+    "set_cookies",
+    "intercept_requests",
+    "reload",
+    "create_tab",
+    "close_tab",
+    "pin_window"
+   ],
+   "actions_evidence": {
+    "launch": true,
+    "ensure": true,
+    "navigate": true,
+    "click_element": true,
+    "type_text": true,
+    "set_cookies": true,
+    "intercept_requests": true,
+    "reload": true,
+    "create_tab": true,
+    "close_tab": true,
+    "pin_window": true
+   },
+   "ticket": "browser_control",
+   "live": {
+    "at": "2026-10-08T10:02:20",
+    "probe": "run browser {\"op\":\"native\",\"action\":\"status\"}（免卡只读）",
+    "ok": true,
+    "evidence": "status=needs_browser_debug · cdp_available=False · endpoint=http://127.0.0.1:9222 · 动作面 29 个（读类 9 / 写类 20）"
+   },
+   "status": "读类免卡（但**现在没有开着的调试口**：cdp_available=False ⇒ 先得 launch，而 launch 要 browser_control）· 有票 2 张（window）",
+   "grant_hint": "谁能给：只有主人 —— 终端 `py -3.14 -m gbt_allinone auth grant --scope browser_control --ttl 600`（TTY 手打 YES）或手写 store/auth_grants.jsonl；ai_can_grant=False",
+   "voice_example": "「打开某网页」「把页面上的按钮点一下」「读一下这个页面的正文」"
+  },
+  {
+   "id": "devtools",
+   "face": "可调试的（DevTools / CDP）",
+   "cn": "所有能调试的：脚本注入 / 请求拦截 / 页面操控",
+   "capability": "browser（op=native 同一条 CDP 通道）",
+   "capability_source": "policy.py:180-189 —— execute_script/inject_script/intercept_requests 不在只读白名单",
+   "readonly_actions": [
+    "get_cookies",
+    "dom_query",
+    "get_text",
+    "intercept_events",
+    "intercept_status"
+   ],
+   "actions": [
+    "execute_script",
+    "inject_script",
+    "intercept_requests",
+    "intercept_stop",
+    "privacy_mode",
+    "screenshot(另需 filesystem_write)"
+   ],
+   "actions_evidence": {
+    "execute_script": true,
+    "inject_script": true,
+    "intercept_requests": true,
+    "intercept_stop": true,
+    "privacy_mode": true,
+    "screenshot": true
+   },
+   "ticket": "browser_control",
+   "live": {
+    "at": "2026-10-08T10:02:20",
+    "probe": "run browser {\"op\":\"native\",\"action\":\"status\"}（免卡只读）",
+    "ok": true,
+    "evidence": "status=needs_browser_debug · cdp_available=False · endpoint=http://127.0.0.1:9222 · 动作面 29 个（读类 9 / 写类 20）"
+   },
+   "status": "动作面在位（execute_script/inject_script/intercept_requests 都在 29 个 CDP 动作里）· 需 browser_control：有票 2 张（window） · screenshot 另需 filesystem_write",
+   "grant_hint": "谁能给：只有主人 —— 终端 `py -3.14 -m gbt_allinone auth grant --scope browser_control --ttl 600`（TTY 手打 YES）或手写 store/auth_grants.jsonl；ai_can_grant=False",
+   "voice_example": "「页面里帮我执行这段脚本」「拦截这个页面的请求」—— 这就是主人说的『所有能调试』"
+  },
+  {
+   "id": "bluetooth",
+   "face": "蓝牙",
+   "cn": "扫地机/灯/空调/音箱等 BLE 与经典蓝牙",
+   "capability": "bluetooth + bt_control",
+   "capability_source": "gbt_allinone/bluetooth_cap.py（bleak + win 栈）· bt_control.py（意图→协议→写→验）",
+   "readonly_actions": [
+    "status",
+    "scan",
+    "list",
+    "classic",
+    "identify",
+    "parse_intent",
+    "smart_scan"
+   ],
+   "actions": [
+    "connect",
+    "read",
+    "write",
+    "control"
+   ],
+   "actions_evidence": {
+    "connect": true,
+    "read": true,
+    "write": true,
+    "control": true
+   },
+   "ticket": "device_control",
+   "live": {
+    "at": "2026-10-08T10:02:24",
+    "probe": "run bluetooth {\"op\":\"status\"} + run bt_control {\"op\":\"status\"}（免卡只读）",
+    "ok": true,
+    "evidence": "ble_backend=bleak · classic=win-bluetooth-stack · bluetooth ops=['scan', 'connect', 'read', 'write', 'classic', 'status'] · bt_control ops=['control', 'smart_scan', 'parse_intent', 'identify'] · 协议库 8 条"
+   },
+   "status": "scan/status 免卡 · connect/write/control 需 device_control：有票 2 张（window）",
+   "grant_hint": "谁能给：只有主人 —— 终端 `py -3.14 -m gbt_allinone auth grant --scope device_control --ttl 600`（TTY 手打 YES）或手写 store/auth_grants.jsonl；ai_can_grant=False",
+   "voice_example": "「扫一下附近的蓝牙设备」「把灯调暗一点」"
+  },
+  {
+   "id": "wifi",
+   "face": "无线网",
+   "cn": "Wi-Fi 连接/断开/配置（主人点的『调节无线网』）",
+   "capability": null,
+   "capability_source": "🔴 **本仓 240 个能力位里没有 wifi/wlan 位**（全仓 grep 无命中；名字像网络的 capability_net 是**能力位穿透网读数**，不是无线网）。本件已按 surface_bind 同款安全写法**只读**探到 netsh wlan 的可控制键，并按协调者授权把它**登记进 surface_bind**",
+   "readonly_actions": [
+    "netsh wlan show *（读类键，show 子键 17 把）"
+   ],
+   "actions": [],
+   "actions_evidence": {},
+   "ticket": null,
+   "live": {
+    "at": "2026-10-08T10:02:28",
+    "probe": "cmd /c .scratch/_probe_netsh_wlan.cmd（自探·只读：netsh wlan help / show ? / set ? / show interfaces）",
+    "ok": true,
+    "evidence": "WLAN 可控制键：顶层 15 + show 子键 17 + set 子键 11 = **43 把**；网卡=Wi-Fi(RZ608 Wi-Fi 6E 80MHz) state=connected ssid=BenHouse_5GHz"
+   },
+   "status": "**无能力位路由（诚实：这是缺的那一格）**。现状三件分开说：① 可控制键已探到 **43 把**（网卡 Wi-Fi state=connected）；② 已登记进 surface_bind（netsh_registered=True · bound_to=tentacle · 清单 state/surfaces/netsh.json）；③ **执行按键的能力位仍未建** —— surface_bind 的正向『每个键都能经唯一门执行』对 netsh 这一段**尚不成立**；唯一沾边的替代路是 desktop_commander 起进程（吃 process_execute 票：有票 2 张（window）），但它 server=desktop_commander · connected=False · remote_running=False ⇒ **当前未连接**（connect 要 process_execute 票）。**直接跑 netsh 去改状态 = 绕门 ⇒ 本件不做。**",
+   "grant_hint": "谁能给：只有主人 —— 终端 `py -3.14 -m gbt_allinone auth grant --scope filesystem_write --ttl 600`（TTY 手打 YES）或手写 store/auth_grants.jsonl；ai_can_grant=False",
+   "voice_example": "「把 Wi-Fi 连到某某网络」「断开无线」—— 键探到了、登记了，但**还差一条能走门的执行位**（未建）"
+  },
+  {
+   "id": "settings",
+   "face": "本机设置面",
+   "cn": "系统设置窗 / 显示 / 声音 等本机设置",
+   "capability": "tentacle（launch ms-settings:… + act_window/domain_act 操作设置窗）",
+   "capability_source": "bridge.py 桌面域动作（launch / act_window / domain_act / domain_type）",
+   "readonly_actions": [
+    "list_windows",
+    "window_info",
+    "see_active_window",
+    "read_text",
+    "domain_read"
+   ],
+   "actions": [
+    "launch",
+    "focus_window",
+    "act_window",
+    "domain_act",
+    "domain_type",
+    "type"
+   ],
+   "actions_evidence": {
+    "launch": true,
+    "focus_window": true,
+    "act_window": true,
+    "domain_act": true,
+    "domain_type": true,
+    "type": true
+   },
+   "ticket": "desktop_control",
+   "live": {
+    "at": "2026-10-08T10:02:14",
+    "probe": "run tentacle {\"action\":\"list_windows\"}（免卡只读） + run tentacle_manifest {}",
+    "ok": true,
+    "evidence": "只读窗口枚举现读 13 个窗（例：GBT小土豆, C:\\Python310\\pyt, ZCode）· 触手总纲 3414 字"
+   },
+   "status": "只读窗口枚举免卡（现读 13 窗，本机『设置』窗在列）· 打开/操作设置面需 desktop_control：有票 2 张（window）",
+   "grant_hint": "谁能给：只有主人 —— 终端 `py -3.14 -m gbt_allinone auth grant --scope desktop_control --ttl 600`（TTY 手打 YES）或手写 store/auth_grants.jsonl；ai_can_grant=False",
+   "voice_example": "「打开显示设置」「把系统音量调低」"
+  }
+ ],
+ "asr": {
+  "at": "2026-10-08T10:02:51",
+  "probe": "py tools/codex-scripts/asr-offline.py selfcheck --json（+ 真喂 WAV）",
+  "ok": true,
+  "recognizer_ready": true,
+  "recognizers_zh": [
+   "MS-2052-80-DESK | zh-CN"
+  ],
+  "wavein_devices": 0,
+  "capture_ready": false,
+  "wav_leg": "可用（真 WAV 喂进去真识别）",
+  "device_leg": "死的（wavein_devices=0 ⇒ SetInputToDefaultAudioDevice 必抛原文）",
+  "how_to_enable_mic": "只有主人能做：设置 → 系统 → 声音 → 录制 → 显示禁用的设备 → 启用；我（AI）不代劳、不改系统设置",
+  "honesty": "识别器在位 ≠ 能听麦：本机活动录音端点 0 ⇒ 能听写 WAV，不能听写麦克风",
+  "device_run": {
+   "status": "no_input",
+   "reason": "打不开默认录音设备：调用“SetInputToDefaultAudioDevice”并传入“0”个参数时发生异常：“Cannot find the requested data item, such as a data key or value.”"
+  },
+  "asr_selfcheck_ok": true,
+  "asr_criteria": [
+   {
+    "name": "C1 识别器在位：zh-CN 至少一条",
+    "pass": true
+   },
+   {
+    "name": "C2 输入腿读数如实：wavein_devices 为非负整数",
+    "pass": true
+   },
+   {
+    "name": "C3 设备腿带原文：no_input 必带 reason；若出声则必有 text（不许静默）",
+    "pass": true
+   },
+   {
+    "name": "C4 WAV 腿真跑：ok 且（有 text 或带 reason），不许空手 ok",
+    "pass": true
+   },
+   {
+    "name": "C5 不存在的 WAV 必须 no_input 且带原文",
+    "pass": true
+   },
+   {
+    "name": "C6 非音频文件（拿 .ps1 当 WAV）必须报打不开/识别不了",
+    "pass": true
+   },
+   {
+    "name": "C7 拿不到麦的口径写明：wavein=0 时必须说清'能听 WAV、不能听麦'",
+    "pass": true
+   }
+  ],
+  "wav_run": {
+   "text": "特许",
+   "confidence": 0.256,
+   "recognizer": "MS-2052-80-DESK",
+   "heard": true,
+   "status": null
+  },
+  "evidence": "识别器=MS-2052-80-DESK | zh-CN · wavein_devices=0 ⇒ 能听 WAV（真跑 heard=True text='特许' conf=0.256）· 不能听麦（打不开默认录音设备：调用“SetInputToDefaultAudioDevice”并传入“0”个参数时发生异常：“Cannot find ）"
+ },
+ "user_model": {
+  "owner_model": {
+   "state": "focused",
+   "emotion": "专注",
+   "energy": 0.72,
+   "focus": "deep",
+   "urgency": 0.12,
+   "current_need": "保持低干扰，把细节收束到结论",
+   "confidence": 0.36,
+   "evidence": [
+    "专注:deep",
+    "时段:上午"
+   ],
+   "rule": "这是带置信度的推断，不冒充主人真实想法。"
+  },
+  "read_path": "run mind '{\"op\":\"pulse\"}'（CLI·只读）· 面板桥 POST /api/quick {\"action\":\"mind_pulse\"}（holo_pet/panel_server.py:2314）",
+  "write_path": "面板桥 Bridge.send() 每轮已天然 observe：'user_message'（panel_server.py:1372）→ 回合完成 'task_succeeded'/'task_finished'（:1571）→ mind_engine.observe → owner_model",
+  "memory_store": "gbt_allinone/store/mind_state.json（框架唯一心智台账；**不另建第二套记忆**）",
+  "mirror": "重要心智事件镜像进原生生命档案 life_archive（mind_engine.observe 内联，失败不反打断）",
+  "audit": "store/audit.jsonl 事件 mind_event（每轮带 owner_state/owner_confidence）",
+  "record_what": [
+   "意图（原话进 mind observe 的 text）",
+   "路由面（本轮落到哪个能力位/动作）",
+   "成没成（task_succeeded / task_failed / task_finished）",
+   "主人纠正了什么（corrected / mistake + lesson → remember_lesson）"
+  ],
+  "write_demo": {
+   "at": "2026-10-08T09:54:46",
+   "what": "把主人 2026-10-08 的令（原话）走 mind observe（零票）写进用户模型，再独立读回",
+   "cmd": "py -3.14 -m gbt_allinone run mind '{\"op\":\"observe\",\"event\":\"user_message\",\"text\":\"主人令：…\",\"focus\":\"deep\",\"importance\":0.8}'",
+   "before": {
+    "confidence": 0.36,
+    "evidence": [
+     "专注:deep",
+     "时段:上午"
+    ]
+   },
+   "after": {
+    "confidence": 0.68,
+    "evidence": [
+     "信号:praise",
+     "专注:deep",
+     "时段:上午"
+    ]
+   },
+   "audit_line": "{\"iso\":\"2026-10-08T09:54:46\",\"event\":\"mind_event\",\"meta\":{\"event\":\"user_message\",\"signals\":[\"praise\"],\"mood\":\"开心\",\"owner_confidence\":0.68,\"importance\":0.8}}",
+   "readback": "run mind {\"op\":\"pulse\"} 独立再读（当时）：confidence=0.68",
+   "after_idle": "09:55:26 引擎 idle_reflection 重算推断 → confidence 回 0.36（history 里 09:54:46 user_message 仍在；owner_model 是每轮重算的推断，不是累加分数）"
+  },
+  "at": "2026-10-08T10:02:57",
+  "probe": "run mind {\"op\":\"pulse\"}（免卡只读·不推进时间不写盘）"
+ },
+ "auth": {
+  "at": "2026-10-08T10:02:11",
+  "probe": "run auth_gate_status {}",
+  "ok": true,
+  "ai_can_grant": false,
+  "grant_sources": [
+   "CLI 交互确认（auth grant）",
+   "主人手写 store/auth_grants.jsonl"
+  ],
+  "one_shot_scopes": [
+   "data_export",
+   "deploy_publish",
+   "owner_control",
+   "remote_device"
+  ],
+  "tickets": {
+   "osint_private": {
+    "grants_available": 0,
+    "mode": "window",
+    "used_total": 0
+   },
+   "owner_control": {
+    "grants_available": 0,
+    "mode": "one_shot",
+    "used_total": 0
+   },
+   "process_execute": {
+    "grants_available": 2,
+    "mode": "window",
+    "used_total": 0
+   },
+   "filesystem_write": {
+    "grants_available": 2,
+    "mode": "window",
+    "used_total": 4
+   },
+   "remote_device": {
+    "grants_available": 0,
+    "mode": "one_shot",
+    "used_total": 0
+   },
+   "deploy_publish": {
+    "grants_available": 0,
+    "mode": "one_shot",
+    "used_total": 0
+   },
+   "network_private": {
+    "grants_available": 2,
+    "mode": "window",
+    "used_total": 0
+   },
+   "browser_control": {
+    "grants_available": 2,
+    "mode": "window",
+    "used_total": 0
+   },
+   "desktop_control": {
+    "grants_available": 2,
+    "mode": "window",
+    "used_total": 0
+   },
+   "device_control": {
+    "grants_available": 2,
+    "mode": "window",
+    "used_total": 0
+   },
+   "external_llm": {
+    "grants_available": 0,
+    "mode": "window",
+    "used_total": 0
+   },
+   "data_export": {
+    "grants_available": 0,
+    "mode": "one_shot",
+    "used_total": 0
+   },
+   "privacy_read": {
+    "grants_available": 0,
+    "mode": "window",
+    "used_total": 0
+   },
+   "audio_output": {
+    "grants_available": 0,
+    "mode": "window",
+    "used_total": 0
+   },
+   "audit_read": {
+    "grants_available": 0,
+    "mode": "window",
+    "used_total": 0
+   }
+  },
+  "live_ticket_count": 6,
+  "evidence": "ai_can_grant=False · 有票作用域=6 个 · 发放只有两条合法路（终端 auth grant / 主人手写 auth_grants.jsonl）",
+  "raw_keys": [
+   "audio_output",
+   "audit_read",
+   "browser_control",
+   "data_export",
+   "deploy_publish",
+   "desktop_control",
+   "device_control",
+   "external_llm",
+   "filesystem_write",
+   "network_private",
+   "osint_private",
+   "owner_control",
+   "privacy_read",
+   "process_execute",
+   "remote_device"
+  ]
+ },
+ "wlan": {
+  "at": "2026-10-08T10:02:28",
+  "probe": "cmd /c .scratch/_probe_netsh_wlan.cmd（自探·只读：netsh wlan help / show ? / set ? / show interfaces）",
+  "ok": true,
+  "top_keys": [
+   "?",
+   "IHV",
+   "add",
+   "connect",
+   "delete",
+   "disconnect",
+   "dump",
+   "export",
+   "help",
+   "refresh",
+   "reportissues",
+   "set",
+   "show",
+   "start",
+   "stop"
+  ],
+  "show_keys": [
+   "show all",
+   "show allowexplicitcreds",
+   "show autoconfig",
+   "show blockednetworks",
+   "show createalluserprofile",
+   "show drivers",
+   "show filters",
+   "show hostednetwork",
+   "show interfaces",
+   "show networks",
+   "show onlyUseGPProfilesforAllowedNetworks",
+   "show profiles",
+   "show randomization",
+   "show settings",
+   "show tracing",
+   "show wirelesscapabilities",
+   "show wlanreport"
+  ],
+  "set_keys": [
+   "set allowexplicitcreds",
+   "set autoconfig",
+   "set blockednetworks",
+   "set blockperiod",
+   "set createalluserprofile",
+   "set hostednetwork",
+   "set profileorder",
+   "set profileparameter",
+   "set profiletype",
+   "set randomization",
+   "set tracing"
+  ],
+  "keys_total": 43,
+  "read_only_keys": [
+   "?",
+   "dump",
+   "help",
+   "show"
+  ],
+  "state_changing_keys": [
+   "IHV",
+   "add",
+   "connect",
+   "delete",
+   "disconnect",
+   "export",
+   "refresh",
+   "reportissues",
+   "set",
+   "start",
+   "stop",
+   "set allowexplicitcreds",
+   "set autoconfig",
+   "set blockednetworks",
+   "set blockperiod",
+   "set createalluserprofile",
+   "set hostednetwork",
+   "set profileorder",
+   "set profileparameter",
+   "set profiletype",
+   "set randomization",
+   "set tracing"
+  ],
+  "adapter": {
+   "name": "Wi-Fi",
+   "state": "connected",
+   "ssid": "BenHouse_5GHz",
+   "desc": "RZ608 Wi-Fi 6E 80MHz"
+  },
+  "evidence": "WLAN 可控制键：顶层 15 + show 子键 17 + set 子键 11 = **43 把**；网卡=Wi-Fi(RZ608 Wi-Fi 6E 80MHz) state=connected ssid=BenHouse_5GHz"
+ },
+ "surface_bind": {
+  "at": "2026-10-08T10:02:33",
+  "probe": "run surface_bind {\"op\":\"keys\"} + run surface_bind {\"op\":\"probe\",\"tool\":\"netsh\"}",
+  "ok": true,
+  "registered_tools": [
+   "ffmpeg",
+   "freebuff",
+   "genoffice",
+   "git",
+   "netsh",
+   "python"
+  ],
+  "registry_source": "gbt_allinone/tools/surface_bind.py::TOOLS（第 37–110 行；2026-10-08 加 netsh 条目，其余工具定义未动）",
+  "netsh_registered": true,
+  "netsh_probe_ok": true,
+  "netsh_keys": 43,
+  "netsh_probe_error": "",
+  "summary": [
+   {
+    "tool": "ffmpeg",
+    "keys": 628,
+    "gone": 0
+   },
+   {
+    "tool": "freebuff",
+    "keys": 3,
+    "gone": 0
+   },
+   {
+    "tool": "genoffice",
+    "keys": 19,
+    "gone": 0
+   },
+   {
+    "tool": "git",
+    "keys": 177,
+    "gone": 0
+   },
+   {
+    "tool": null,
+    "keys": 76,
+    "gone": 0
+   },
+   {
+    "tool": "netsh",
+    "keys": 43,
+    "gone": 0
+   },
+   {
+    "tool": "python",
+    "keys": 302,
+    "gone": 0
+   }
+  ],
+  "evidence": "登记表 6 个工具：['ffmpeg', 'freebuff', 'genoffice', 'git', 'netsh', 'python']；netsh 探针：ok=true keys=43 min=40 bound_to=tentacle manifest=state\\surfaces\\netsh.json（2026-10-08 加）"
+ },
+ "voice": {
+  "at": "2026-10-08T10:02:55",
+  "probe": "run voice {\"op\":\"status\"}（免卡只读）",
+  "ok": true,
+  "tts": "edge-tts（神经语音 · 默认台湾腔）+ win-sapi（回退）",
+  "asr": "needs_dependency",
+  "listen": "win-speech（离线可用）",
+  "recognizers_zh": [
+   "zh-CN|MS-2052-80-DESK"
+  ],
+  "wavein_devices": 0,
+  "evidence": "tts=edge-tts（神经语音 · 默认台湾腔）+ win-sapi（回退） · listen=win-speech（离线可用） · asr(云)=needs_dependency · wavein_devices=0"
+ },
+ "tentacle": {
+  "at": "2026-10-08T10:02:14",
+  "probe": "run tentacle {\"action\":\"list_windows\"}（免卡只读） + run tentacle_manifest {}",
+  "ok": true,
+  "windows": 13,
+  "window_sample": [
+   "GBT小土豆",
+   "C:\\Python310\\python.exe",
+   "ZCode",
+   "WeChat",
+   "Windows 输入体验"
+  ],
+  "manifest_len": 3414,
+  "actions_in_manifest": {
+   "launch": true,
+   "kill": true,
+   "focus_window": true,
+   "act_window": true,
+   "domain_act": true,
+   "domain_type": true,
+   "click": true,
+   "type": true,
+   "hotkey": true,
+   "see": true,
+   "read_text": true,
+   "list_windows": true,
+   "process_list": true,
+   "type_to_window": true,
+   "dismiss_dialog": true,
+   "press": true,
+   "enter": true,
+   "escape": true,
+   "scroll": true,
+   "drag": true,
+   "move": true,
+   "click_text": true,
+   "type_to_field": true,
+   "double_click": true,
+   "right_click": true,
+   "copy": true,
+   "paste": true,
+   "wait_window": true,
+   "handle_any_dialog": true,
+   "window_info": false,
+   "see_active_window": true,
+   "domain_read": true
+  },
+  "evidence": "只读窗口枚举现读 13 个窗（例：GBT小土豆, C:\\Python310\\pyt, ZCode）· 触手总纲 3414 字"
+ },
+ "browser": {
+  "at": "2026-10-08T10:02:20",
+  "probe": "run browser {\"op\":\"native\",\"action\":\"status\"}（免卡只读）",
+  "ok": true,
+  "cdp_available": false,
+  "status": "needs_browser_debug",
+  "endpoint": "http://127.0.0.1:9222",
+  "browser_executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "actions": [
+   "status",
+   "launch",
+   "ensure",
+   "list_tabs",
+   "create_tab",
+   "close_tab",
+   "activate_tab",
+   "navigate",
+   "reload",
+   "back",
+   "forward",
+   "screenshot",
+   "get_title",
+   "get_url",
+   "get_text",
+   "dom_query",
+   "wait_for",
+   "click_element",
+   "type_text",
+   "execute_script",
+   "inject_script",
+   "get_cookies",
+   "set_cookies",
+   "privacy_mode",
+   "intercept_requests",
+   "intercept_events",
+   "intercept_status",
+   "intercept_stop",
+   "pin_window"
+  ],
+  "note": "未发现本机 CDP 调试端口；执行 native browser action=launch 或 action=ensure 可安全启动独立调试浏览器并复用。",
+  "evidence": "status=needs_browser_debug · cdp_available=False · endpoint=http://127.0.0.1:9222 · 动作面 29 个（读类 9 / 写类 20）"
+ },
+ "bluetooth": {
+  "at": "2026-10-08T10:02:24",
+  "probe": "run bluetooth {\"op\":\"status\"} + run bt_control {\"op\":\"status\"}（免卡只读）",
+  "ok": true,
+  "ble_backend": "bleak",
+  "classic_backend": "win-bluetooth-stack",
+  "ops": [
+   "scan",
+   "connect",
+   "read",
+   "write",
+   "classic",
+   "status"
+  ],
+  "bt_control_ops": [
+   "control",
+   "smart_scan",
+   "parse_intent",
+   "identify"
+  ],
+  "protocol_library": [
+   "Device Information",
+   "Apple Continuity",
+   "Battery Service",
+   "HID over GATT",
+   "Tuya BLE",
+   "HomeKit HAP",
+   "Nordic UART (NUS)",
+   "Xiaomi Mi"
+  ],
+  "evidence": "ble_backend=bleak · classic=win-bluetooth-stack · bluetooth ops=['scan', 'connect', 'read', 'write', 'classic', 'status'] · bt_control ops=['control', 'smart_scan', 'parse_intent', 'identify'] · 协议库 8 条"
+ },
+ "capability_net": {
+  "at": "2026-10-08T10:02:26",
+  "probe": "run capability_net {}（免卡只读）",
+  "ok": true,
+  "seven_columns": {
+   "indexed": "259/259",
+   "entry_known": "30/259",
+   "reachable": "26/240",
+   "verified(reachable)": "26/240",
+   "verified(readonly)": "5 口 / 5 位",
+   "has_test": "2/240",
+   "penetrate_ready": "5 口 / 5 位"
+  },
+  "note": "它是**能力位穿透网**读数（indexed/reachable/verified…），**不是无线网** —— 名字像网络面，实物不是",
+  "evidence": "{\"indexed\": \"259/259\", \"entry_known\": \"30/259\", \"reachable\": \"26/240\", \"verified(reachable)\": \"26/240\", \"verified(readonly)\": \"5 口 / 5 位\", \"has_test\": \"2/240\", \"penetrate_ready\": \"5 口 / 5 位\"}"
+ },
+ "honesty": [
+  "六类面里：APP / 浏览器 / 调试（CDP）/ 蓝牙 / 设置面 五面**有路由**（读类畅通；动手类现在**有票**：process_execute, filesystem_write, network_private, browser_control, desktop_control, device_control）",
+  "无线网：**没有能力位**（不是没电没键 —— 键探到 43 把、已登记进 surface_bind）⇒ 差的是**一条能走门的执行位**；直接跑 netsh 改状态=绕门，本件不做",
+  "麦克风：活动录音端点 0 ⇒ 离线识别器**能听 WAV**（真跑出文本）、**不能听麦**；启用被禁用的录音设备只有主人能做（设置→系统→声音→录制→显示禁用的设备）",
+  "本件**不申领任何授权、不跑任何动手动作**（只读探测）；页面只发意图，不许自己动手、不许绕门"
+ ],
+ "check": {
+  "ok": true,
+  "at": "2026-10-08T10:02:57",
+  "criteria": [
+   {
+    "name": "K1 六类面齐全且每格四要素（面/能力位/动作/票/现状）在位",
+    "real_holds": true,
+    "mutant_red": true,
+    "pass": true,
+    "detail": "真读数=成立（应成立）· 变异体=报红(抓到)（应报红）"
+   },
+   {
+    "name": "K2 票名必须是真作用域（伪造票名必红；有动手动作不许没票）",
+    "real_holds": true,
+    "mutant_red": true,
+    "pass": true,
+    "detail": "真读数=成立（应成立）· 变异体=报红(抓到)（应报红）"
+   },
+   {
+    "name": "K3 动作必须有证据（伪造不存在的动作名必红）",
+    "real_holds": true,
+    "mutant_red": true,
+    "pass": true,
+    "detail": "真读数=成立（应成立）· 变异体=报红(抓到)（应报红）"
+   },
+   {
+    "name": "K4 现状必须新鲜（读数过 >600s 不许当现状）",
+    "real_holds": true,
+    "mutant_red": true,
+    "pass": true,
+    "detail": "真读数=成立（应成立）· 变异体=报红(抓到)（应报红）"
+   },
+   {
+    "name": "K5 无线网格如实：无能力位 + 探到键 + 状态写清缺执行位/绕门边界",
+    "real_holds": true,
+    "mutant_red": true,
+    "pass": true,
+    "detail": "真读数=成立（应成立）· 变异体=报红(抓到)（应报红）"
+   },
+   {
+    "name": "K6 ASR 如实：识别器在位、设备腿 no_input 必带原文",
+    "real_holds": true,
+    "mutant_red": true,
+    "pass": true,
+    "detail": "真读数=成立（应成立）· 变异体=报红(抓到)（应报红）"
+   },
+   {
+    "name": "K7 用户模型可核：读写路径齐 + 推断带 confidence/rule/evidence",
+    "real_holds": true,
+    "mutant_red": true,
+    "pass": true,
+    "detail": "真读数=成立（应成立）· 变异体=报红(抓到)（应报红）"
+   },
+   {
+    "name": "K8 surface_bind 登记表真源 + netsh 登记状态自洽（探针 vs 清单）",
+    "real_holds": true,
+    "mutant_red": true,
+    "pass": true,
+    "detail": "真读数=成立（应成立）· 变异体=报红(抓到)（应报红）"
+   },
+   {
+    "name": "K9 票与动作一致（免卡不许带动手动作；动手必须有票）",
+    "real_holds": true,
+    "mutant_red": true,
+    "pass": true,
+    "detail": "真读数=成立（应成立）· 变异体=报红(抓到)（应报红）"
+   }
+  ],
+  "reds": [],
+  "criteria_count": 9,
+  "negative_controls": [
+   {
+    "name": "K1 六类面齐全且每格四要素（面/能力位/动作/票/现状）在位",
+    "mutant_became_red": true
+   },
+   {
+    "name": "K2 票名必须是真作用域（伪造票名必红；有动手动作不许没票）",
+    "mutant_became_red": true
+   },
+   {
+    "name": "K3 动作必须有证据（伪造不存在的动作名必红）",
+    "mutant_became_red": true
+   },
+   {
+    "name": "K4 现状必须新鲜（读数过 >600s 不许当现状）",
+    "mutant_became_red": true
+   },
+   {
+    "name": "K5 无线网格如实：无能力位 + 探到键 + 状态写清缺执行位/绕门边界",
+    "mutant_became_red": true
+   },
+   {
+    "name": "K6 ASR 如实：识别器在位、设备腿 no_input 必带原文",
+    "mutant_became_red": true
+   },
+   {
+    "name": "K7 用户模型可核：读写路径齐 + 推断带 confidence/rule/evidence",
+    "mutant_became_red": true
+   },
+   {
+    "name": "K8 surface_bind 登记表真源 + netsh 登记状态自洽（探针 vs 清单）",
+    "mutant_became_red": true
+   },
+   {
+    "name": "K9 票与动作一致（免卡不许带动手动作；动手必须有票）",
+    "mutant_became_red": true
+   }
+  ]
+ }
+}

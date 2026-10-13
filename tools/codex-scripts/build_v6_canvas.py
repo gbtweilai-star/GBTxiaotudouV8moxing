@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """V6 画布：在 V5 场景上加「语音」「蓝牙」两页，重建无限画布。"""
-import re
 import shutil
 from pathlib import Path
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 TPL = BASE / "infinite-canvas-output" / "assets" / "infinite-canvas-template.html"
 OUT = BASE / "V6 GBT小土豆V8-无限画布.html"

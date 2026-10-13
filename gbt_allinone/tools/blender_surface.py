@@ -43,6 +43,7 @@ from pathlib import Path
 _ROOT = Path(__file__).resolve().parents[2]
 _MANIFEST = _ROOT / "state" / "blender_surface.json"
 _OPS_LEDGER = _ROOT / "state" / "blender_ops.jsonl"
+_CFG = None          # **各自配置**控制面（懒加载，见 _configs()）
 _MAX_OUT = 6000
 _MAX_TIMEOUT = 600
 _FALLBACKS = [Path(r"C:\Program Files\Blender Foundation\Blender 4.2\blender.exe")]
@@ -261,11 +262,57 @@ def verify(**_kw) -> dict:
             "_口径": "阈值比实测留余量（实测 76/2409/49）；**消失的键=断连**，要解释或修"}
 
 
+def _configs() -> dict:
+    """**各自配置**的控制面（每个算子的参数：名/类型/默认值/说明）。
+
+    🔴 2026-10-10 补（主人令同日再点一次这条：「把触手绑定 Blender 上面的所有控制按键
+    **和各自配置**」）：既有件把**可控制键**做全了（2409 算子 + 双向绑定 + 升级对比），
+    但**没暴露每个键的各自配置** —— bpy 口是**盲传参数**的（参数名写错也不拦）。
+    本件补齐这一半：现读自 Blender 自己的 RNA（算子 rna_type 的 properties），
+    实测 **2409 算子 · 5842 条参数配置**，落 state/surfaces/blender-ops.json。
+    """
+    global _CFG
+    if _CFG is None:
+        p = _ROOT / "state" / "surfaces" / "blender-ops.json"
+        _CFG = (json.loads(p.read_text(encoding="utf-8")) if p.is_file()
+                else {"总数": 0, "参数总数": 0, "逐条": []})
+    return _CFG
+
+
+def config(op: str = "", find: str = "", mod: str = "", limit: int = 60, **_kw) -> dict:
+    """**各自配置**：查某个算子的参数清单 / 按关键词搜 / 按模块列。
+
+    这就是「所有控制按键**和各自配置**」里的后半句 —— 光能按下去不算绑好，
+    还得知道**每个键有哪些旋钮、默认值是多少**。
+    """
+    d = _configs()
+    rows = d.get("逐条", [])
+    if op:
+        for r in rows:
+            if r["op"] == op or r["op"].endswith("." + op):
+                return {"ok": True, "op": "config", "算子": r["op"], "参数数": r.get("参数数"),
+                        "参数": r.get("参数", []), "说明": r.get("说明", ""),
+                        "口径": "参数名可**直接喂给 bpy 口**"}
+        return {"ok": False, "fail_closed": True, "error": "控制面里没有这个算子：%s" % op,
+                "提示": "先用 config find=关键词 找"}
+    if find:
+        q = find.lower()
+        hits = [{"op": r["op"], "参数数": r.get("参数数"), "说明": (r.get("说明") or "")[:80]}
+                for r in rows if q in (r["op"] + " " + (r.get("说明") or "")).lower()]
+        return {"ok": True, "op": "config", "find": find, "命中": len(hits), "逐条": hits[:limit]}
+    if mod:
+        hit = [{"op": r["op"], "参数数": r.get("参数数")} for r in rows if r["op"].startswith(mod + ".")]
+        return {"ok": True, "op": "config", "模块": mod, "条数": len(hit), "逐条": hit[:limit]}
+    return {"ok": True, "op": "config", "算子总数": d.get("总数"), "参数配置总数": d.get("参数总数"),
+            "用法": "config op='mesh.bevel' 看单个完整配置 · config find='bevel' 搜 · config mod='mesh' 按模块列",
+            "口径": "**能按下去**（bpy）+ **知道每个键有哪些旋钮**（本件）= 才算绑全"}
+
+
 def run_op(op: str = "keys", **params) -> dict:
     op = (op or "keys").lower()
     for name, fn in (("surface", surface), ("keys", keys), ("bpy", bpy),
-                     ("data", data), ("verify", verify)):
+                     ("data", data), ("verify", verify), ("config", config)):
         if op == name:
             return fn(**params)
     return {"ok": False, "fail_closed": True,
-            "error": f"未知 op:{op}（surface/keys/bpy/data/verify）"}
+            "error": f"未知 op:{op}（surface/keys/bpy/data/verify/config）"}

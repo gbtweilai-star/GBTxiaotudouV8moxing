@@ -179,7 +179,7 @@ def gates(txt, rows, table, errs, fired):
         ("纯卦位串 = 该卦三爻叠两次",
          all(b == SYM_BITS[v["lower_sym"]] * 2 for b, v in pure.items()),
          ", ".join("%s=%s" % (v["name"], b) for b, v in sorted(pure.items(),
-                                                              key=lambda kv: kv[1]["n"]))),
+                                                               key=lambda kv: kv[1]["n"]))),
         ("卦名互不相同", len(set(names)) == 64, "%d 个不同名" % len(set(names))),
         ("卦名长度都在 %s" % (NAME_LEN,), not bad_len, "越界: %s" % (bad_len or "无")),
         ("繁→简：输出无繁体残留", not survived,

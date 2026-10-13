@@ -1169,6 +1169,103 @@ def get_devourer() -> DevourTentacle:
     return _devourer
 
 
+# ═══════════ 消化：把我们**自己生成的创新胶囊**收进知识库（Owner 2026-10-12）═══════════
+# 病灶（2026-10-12 全机自证现读）：脉冲的 knowledge_base 段自报
+#     productive=false · reason=「库里还没有任何原始条目」，
+#   而 `store/devoured/` 里躺着 27 个胶囊（其中 15 个 innovation=true = **我们创新引擎生成的**）
+#   ⇒ **料在那头，链子没接上**。这一节就是那根链子。
+#
+# 边界（最要紧的一条，不许松）：**只投 innovation=true 的**。
+#   吞噬吸收来的外部件（bandit / gitleaks / semgrep / slugify 等）**一条都不投** ——
+#   知识库的封印写着「只放我们的」（SEPARATE_FROM=("devoured",)·FOREIGN_SOURCES 首位就是 "devour"），
+#   投进去就是**跨树污染**，正是 verify_seal() 要抓的东西。宁可一条不收，不脏库。
+OWN_INNOVATION_SOURCE = "gbt_allinone"   # 白名单里「框架模块直接投递」那一条（不是 codex/owner）
+
+
+def capsule_index() -> dict:
+    """清点胶囊：**我们生成的创新** / **吞进来的外部件**（只读，不写盘）。"""
+    own: list = []
+    foreign: list = []
+    if not CAPS_DIR.is_dir():
+        return {"own": own, "foreign": foreign}
+    for d in sorted(CAPS_DIR.glob("*")):
+        if not d.is_dir():
+            continue
+        kj = d / "knowledge.json"
+        if not kj.is_file():
+            continue
+        try:
+            meta = json.loads(kj.read_text(encoding="utf-8-sig"))
+        except Exception as _e:                              # noqa: BLE001
+            foreign.append({"name": d.name, "dir": d.name,
+                            "why": "knowledge.json 读不出来: %s" % type(_e).__name__})
+            continue
+        row = {"name": str(meta.get("name") or d.name),
+               "dir": d.name,
+               "category": str(meta.get("category") or ""),
+               "description": str(meta.get("description") or ""),
+               "innovated_from": str(meta.get("innovated_from") or ""),
+               "has_run": (d / "run.py").is_file()}
+        if meta.get("innovation") is True:
+            own.append(row)
+        else:
+            foreign.append(dict(row, why="非我们生成（吞噬吸收的外部件）"))
+    return {"own": own, "foreign": foreign}
+
+
+def _capsule_text(meta: dict, d, head_lines: int = 60) -> str:
+    """把胶囊摊成可蒸馏的文本。**只描述它是什么**，不替它编内容。"""
+    parts = ["胶囊：%s" % (meta.get("name") or d.name),
+             "类别：%s" % (meta.get("category") or "未标"),
+             "来源域：%s" % (meta.get("innovated_from") or "未标"),
+             "说明：%s" % (meta.get("description") or ""),
+             "动作：%s" % ", ".join(sorted((meta.get("actions") or {}).keys()))]
+    rp = d / "run.py"
+    if rp.is_file():
+        body = rp.read_text(encoding="utf-8", errors="replace").splitlines()
+        if body:
+            parts.append("实现（run.py 头 %d 行）：\n%s" % (head_lines, "\n".join(body[:head_lines])))
+    return "\n".join(parts)
+
+
+def absorb_own_innovations(dry_run: bool = False) -> dict:
+    """把自己生成的创新胶囊投进知识库（**外部件一条不收**）。
+
+    dry_run=True 只清点、不动盘（用来在授权前对边界）。
+    """
+    idx = capsule_index()
+    if dry_run:
+        return {"ok": True, "dry_run": True,
+                "将投": len(idx["own"]), "将拒_外部件": len(idx["foreign"]),
+                "将投名单": [r["name"] for r in idx["own"]],
+                "将拒名单": [r["name"] for r in idx["foreign"]]}
+    from .knowledge_base import deposit as _kb_deposit
+    done: list = []
+    deduped: list = []
+    refused: list = []
+    for r in idx["own"]:
+        d = CAPS_DIR / r["dir"]
+        try:
+            meta = json.loads((d / "knowledge.json").read_text(encoding="utf-8-sig"))
+        except Exception as _e:                              # noqa: BLE001
+            refused.append({"name": r["name"], "why": "读不出 knowledge.json: %s" % type(_e).__name__})
+            continue
+        res = _kb_deposit({"source": OWN_INNOVATION_SOURCE,
+                           "text": _capsule_text(meta, d),
+                           "model": "吞天创新引擎"})
+        if res.get("ok") and res.get("deduped"):
+            deduped.append(r["name"])
+        elif res.get("ok"):
+            done.append(r["name"])
+        else:
+            refused.append({"name": r["name"], "why": str(res.get("reason") or "")[:100]})
+    return {"ok": True, "投进": len(done), "去重已在库": len(deduped),
+            "新收名单": done, "去重名单": deduped,
+            "拒收_外部件": len(idx["foreign"]),
+            "拒收名单": [{"name": f["name"], "why": f["why"]} for f in idx["foreign"]] + refused,
+            "口径": "只投 innovation=true（我们的）；外部件一条不进（封印）"}
+
+
 def devour_pulse() -> dict:
     """吞噬脉冲 — 完整认知循环 v3
 
@@ -1215,6 +1312,15 @@ def devour_pulse() -> dict:
     #   原始技术输出 -> 蒸馏要点 -> 衍生我们自己的输出方式 -> 数能源（可证伪）
     # 纪律：只**增加**返回字段，不动前五段的契约；这里挂了也不中断整轮，
     #       但必须写进 stage_errors —— 不许和"真的没产出"长得一样。
+    # 先喂料：把我们**自己生成的创新胶囊**投进知识库（外部件一条不收）。
+    # 没有这一步，knowledge_base 永远是空转 —— 2026-10-12 实测它自报
+    # 「库里还没有任何原始条目」，而 store/devoured/ 里躺着 15 个我们的创新。
+    try:
+        absorb_result = absorb_own_innovations()
+    except Exception as _e:                                  # noqa: BLE001
+        absorb_result = {"ok": False, "error": "%s: %s" % (type(_e).__name__, str(_e)[:120])}
+        stage_errors["absorb_own"] = str(absorb_result["error"])
+
     try:
         from .knowledge_base import pulse as _kb_pulse
         kb_result = _kb_pulse()
@@ -1246,6 +1352,7 @@ def devour_pulse() -> dict:
         "digest":{"caps_digested":digest_result.get("digested",0),"cross_references":digest_result.get("cross_references",0)},
         "recombine":{"processed":min(len(reflect_result.get("potential_pairs",[])),3),"created":recombine_count},
         "innovate":{"created":innovate_result.get("created",0),"concepts":innovate_result.get("concepts_found",0)},
+        "absorb_own": absorb_result,
         "knowledge_base": kb_result,
     }
 

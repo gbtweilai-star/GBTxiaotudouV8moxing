@@ -1,0 +1,1785 @@
+{
+ "at": "2026-10-09T18:30:13",
+ "什么": "框架门历史欠账 · 声明式重立基线",
+ "为什么": [
+  "① 门 2026-09-19 立基线时，仓里已有大量改动（在护照制度之前）——这些件**从来没被任何护照认领过**，不是'这次改坏了'；",
+  "② 生成物（holo_pet_w3/brain/caps/*.html 等）**自己声明了「自动生成，别手改」并给了重建命令**，改它的正确做法是重跑生成器，不是补护照；",
+  "③ 逐条补 392 张护照 = 造假账（把没走过的流程补成走过），比红更坏。"
+ ],
+ "怎么办": "① 先把'生成物'从护照监视面移出（判据见 framework_gate._WATCH_GENERATED，三条全中才移）② 剩下的历史欠账**声明式重立基线**，理由与清单落本文件 ③ 从新基线起，任何受监视件的改动都要护照，门照红。",
+ "吞并条数": 438,
+ "分类": {
+  "no_passport": 392,
+  "stale_passport": 46
+ },
+ "逐条": [
+  {
+   "file": ".scratch_run_chain.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "AGENTS.md",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "CURRENT.md",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "HUD-错误码映射方案.md",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "LAYOUT.md",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/adapters/workspace_adapter.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/auth_gate.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/__init__.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/brain_council.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/cap_optimizer.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/cognition.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/cross_validation.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/curiosity_engine.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/deep_reasoner.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/exploration_engine.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/intent_broker.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/market_intelligence.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/neural_tentacle.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/penetration_scan.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/tentacle_reasoner.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/topology_index.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain/vision_tentacle.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/brain_vault.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/chain.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/cross_scan.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/deepseek_key.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/deploy/codex_relay_watchdog.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/deployment_rehearsal.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/devour.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/feishu_bridge.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/file_operation.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/ghost_guard.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/inventory.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/llm/bridge.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/llm/cloud_llm.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/llm/freellmapi.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/llm/key_gateway.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/llm/multimodal_port.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/llm/unified.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/mirror_space.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/native_browser.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/omni_web.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/omni_web_cap.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/preflight.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/qiankun.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/quant_tech.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/recon/arxiv.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/recon/last30days/__init__.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/recon/last30days/engine/xurl_x.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/recon/last30days/redlines.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/recon/last30days/watchlist.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/security/redteam.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/signature.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tentacle/brain/gatekeeper.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tentacle/brain/visual_cortex.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tentacle/bridge.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tentacle/omni_controller.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tentacle/omni_domain.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tentacle/omni_process.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tentacle/omni_read.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tentacle/omni_vision.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tentacle/omni_window.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_aesthetic_brain_log_silence.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_api_probe.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_automation_keys.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_awareness_guard_runs.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_blender_surface_complete.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_boot_selfcheck.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_cap_bind_bidirectional.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_cap_total_consistency.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_caps_called_audit.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_chain_readiness.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_cloud_config_wiring.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_cloud_deploy_drift.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_console_workspace.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_coverage_readings_fresh.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_cross_scan_h_budget.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_cross_scan_v_dim.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_dead_judgments.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_deepseek_bridge.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_distilled_ops.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_endpoint_gate.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_energy_pool.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_framework.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_freebuff_term.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_gen_authz_page.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_gods_eye.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_hf_voice.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_injection_honesty.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_isolation_sweep.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_key_consistency.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_key_vault_autoread.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_live_context_wiring.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_llm_bind_wired.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_lobehub_surface.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_mirror_space.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_native_growth_stack.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_potato_binding.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_precommit_secret_scan.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_progress_ledger_contract.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_prompt_commands_are_real.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_prompt_security_section.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_redteam.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_redteam_readout_honesty.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_regression_stamp.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_reverify_open_faults.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_run_all_tests_memory_guard.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_skill_gap_patch.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_skill_vet.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_skills_install_sync.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_surface_bind.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_sweep_union_coverage.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_vault_loudness.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_vision_key_path.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_voice_orchestra_scene.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_voice_param_passthrough.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tests/test_wiring_all_tentacles.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/thebrain_bridge.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/action_gate.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/actioncam_cap.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/agent_console.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/agent_control.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/agent_council.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/agent_rig.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/answer_shaper.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/automation_keys.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/awareness_gap_guard.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/belief_forge.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/blender_cap.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/blender_surface.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/brain_deploy.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/cap_tags.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/capability_gateway.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/caps_called_audit.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/case_mine.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/code_audit.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/comfyui_surface.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/command_chain.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/console_hero.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/console_hub.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/console_pages.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/creation_camp.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/db_probe.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/dd_squadron.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/dd_visualizer.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/devour_fusion.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/dh_brain.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/eigenflux.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/energy_pool.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/energy_scheduler.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/event_ledger.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/false_report_audit.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/filmkit_cap.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/flow_canvas.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/framework_gate.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/freebuff_term.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/genoffice_cap.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/gods_eye.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/growth_hooks.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/gs_h3_cap.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/handoff.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/hf_voice.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/isolation_sweep.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/launcher_inventory.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/llm_redteam.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/lobehub.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/local_brain.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/look_grade_cap.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/media_license.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/media_publish.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/media_run.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/media_stamp.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/memory_bank.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/memory_manager.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/module_sweep.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/n8n_wf_cap.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/obsidian_vault.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/one_shot.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/policy_delta.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/pulse.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/pulse_agent.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/scan_engine.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/scan_scope.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/scrapling_cap.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/sec_sweeper.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/shadow_check.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/skill_slim.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/slim_profile.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/spend_guard.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/task_manager.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/train_recipe.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/transformer_cap.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/ui_render.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/vision_probe.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tools/zimage_rewash_cap.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/trend_watch.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/tripo.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/truth_scan.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/vision_cap.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "gbt_allinone/voice_cap.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "gbt_allinone/voice_orchestra.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "holo_pet/app.js",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "holo_pet/assets/automation/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/console/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/console3d/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/digital-human/phase1-generate.py",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/digital-human/web/vrm-runtime-check.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/freebuff/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/gallery/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/godview/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/health-panel/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/home/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/keys/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/music/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/structure/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/task-manager/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/tentacle3d/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/wf-film/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/wf-movie/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/wf-music/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/wf-short-video/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/assets/workbench/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/index.html",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "holo_pet/local-avatar-3d.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet/styles.css",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "holo_pet/tests/test_panel_cards.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "holo_pet_w3/activity/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/blueprint/blueprint-data.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/blueprint/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/brain-data.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/a1art_skill.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/absorb_loop.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/account_registry.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/agency_tentacles.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/alerts.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/asset_vault_freeze.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/audit_query.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/auth_gate_status.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/auto_publish.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/auto_switch.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/autopilot.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/awesome_tools_index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/bluetooth.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/brain_execute.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/brain_health.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/brain_route.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/brain_unify.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/brain_vault.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/brain_verify.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/brand_outro.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/browser.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/bt_control.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/capability_net.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/caps_called_audit.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/cloud_pc.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/code_art.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/code_patch.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/codex_chat.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/codex_interrupt.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/codex_models.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/codex_status.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/codex_thread_new.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/codex_tools.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/codex_turn_send.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/context_vault.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/count_words.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/coverage_auditor.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/coze_mail.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/create.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/credential_steal.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/cross_scan.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/data_hijack.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/deploy_queue.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/desktop_commander.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/device_takeover.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/devour_github.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/devour_pulse.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/devour_reflect.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/devour_scan.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/director_mood.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/drama.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/dream_replay.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/echo.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/emotion_projection.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/energy_pool.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/feishu_embed.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/file_hygiene.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/film_intel.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/gate_visibility.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/ghost_guard.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/git_read.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/git_write.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/h3_video_gen.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/health.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/hook_registry.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/inventory.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/keylogger.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/ledger_note.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/libtv_skill.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/libtv_workflow.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/life.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/llm_chat.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/llm_status.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/local_brain.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/long_run_supervisor.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/lr_status.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/lr_submit.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/lr_tick.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mcp_call.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mcp_connect.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mcp_tools.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/media_pipeline.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/meta_cognition.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mind.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mirror_ascend.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mirror_parity.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mirror_plan.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mirror_rehearse.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mirror_release.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mirror_rewind.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mirror_scan.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mirror_shape.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mirror_simulate.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/mirror_status.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/model_key_pool.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/music_intel.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/music_publishing.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/observer_anchor.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/onboarding_gate.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/one_key_deploy.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/orchestration_kernel.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/osint_scan.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/paywallbuster.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/pentest.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/persona_kernel.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/pipeline_rollback.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/pipeline_status.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/pipeline_submit.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/pipeline_versions.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/platform_profile.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/proactive_report.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/project_context.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/projection_card.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/prompt_bridge.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/quant.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/quant_backtest.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/quant_params.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/quant_strategy.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/record_grid.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/remote_domain.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/render_evolution.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/root_fix.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/scene_anchor.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/sched_define.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/sched_status.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/sched_tick.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/screen_sniff.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/sec_chain.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/sec_defenses.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/sec_llm.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/sec_scan.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/sec_surface.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/selfscan.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/shared_resources.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/signature_guard.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/social_eng.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/stigmergy.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/svc_inspect.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/tactics_advise.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/tentacle.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/tentacle_cognition.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/tentacle_manifest.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/tentacle_pipeline.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/tentacle_status.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/think_loop.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/topic_watch.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/trace_store.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/transfer.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/trend_watch.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/truth_scan.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/verification_watch.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/video_intel.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/vision.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/voice.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/voice_orchestra.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/wave_probe.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/wf_cache_clear.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/wf_define.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/wf_resume.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/wf_run.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/caps/wf_status.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/brain/intercom.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/capabilities/capabilities-data.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/capabilities/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/capability-bar/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/capability-bar/run-evidence.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/cloud-plugins/cloud-plugins-data.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/cloud-plugins/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/cloud-status/cloud-status-data.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/cloud-status/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/code-deck/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/db-fleet/db-fleet-data.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/db-fleet/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/digital-human/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/digital-human/rig-data.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/energy/energy-data.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/energy/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/exec-deck/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/eye/eye.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/eye/frames.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/ledger/sink.py",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "holo_pet_w3/logbook/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/logbook/logbook-data.js",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/panel/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/plugins-mesh/index.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/chat-probe.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/chrome.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/connect.html",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/deepseek_loop.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/dsh-launch.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/main.cjs",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/pack-coverage.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/page-shot.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/preflight.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/preload.cjs",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/shots.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/startup.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/shell/url-policy.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/tests/test_deepseek_loop.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/tests/test_dsh_launch.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/tests/test_tray_logo.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/tests/test_url_policy.cjs",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "holo_pet_w3/window.css",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "holo_pet_w3/window.js",
+   "reason_code": "stale_passport"
+  },
+  {
+   "file": "并发容量登记.md",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "架构调研汇总 · GBT小土豆V8 设计稿.md",
+   "reason_code": "no_passport"
+  },
+  {
+   "file": "部署总览.md",
+   "reason_code": "stale_passport"
+  }
+ ],
+ "重立基线结果": {
+  "门裁决": "green",
+  "红": 0,
+  "基线文件数": 728,
+  "负对照": "加一个受监视新源码件 => 红 1 no_passport；撤掉 => 绿 0"
+ },
+ "无法收口的遗留": {
+  "4 张 2026-09-21 的护照仍开着": [
+   "fc-20260921T110632-n9hc",
+   "fc-20260921T125647-ldog",
+   "fc-20260921T143451-czbs",
+   "fc-20260921T144441-7mu7"
+  ],
+  "为什么关不掉": "它们的改动已被基线吸收 ⇒ 按门规「认领没变的文件 = 账目虚增」一律拒；它们不挡 verify（门现绿），只在下次 snapshot 时提示「吞并≠结案」。",
+  "怎么办": "要彻底结案需主人授权或由当初那次会话的原始证据补关；本件不假装已结案。"
+ }
+}

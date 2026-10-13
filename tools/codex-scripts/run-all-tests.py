@@ -268,7 +268,7 @@ def main() -> int:
     print()
 
     rows = []
-    t_all = time.time()
+    time.time()
     for i, f in enumerate(files, 1):
         r = run_one(f, args.timeout, env)
         rows.append(r)

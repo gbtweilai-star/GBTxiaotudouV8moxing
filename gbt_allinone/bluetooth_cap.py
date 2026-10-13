@@ -161,7 +161,8 @@ def _classic_status():
             ["powershell", "-NoProfile", "-Command",
              "Get-PnpDevice -Class Bluetooth -ErrorAction SilentlyContinue | "
              "Select-Object Status,FriendlyName | ConvertTo-Json -Compress"],
-            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=30)
+            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=30,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         import json
         devs = json.loads(r.stdout) if r.stdout.strip() else []
         if isinstance(devs, dict):

@@ -1,0 +1,464 @@
+{
+ "generated_by": "capability-family-deepscan.py probe",
+ "results": {
+  "system": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=health event=ok iso=2026-10-08T18:09:07",
+     "result_ok": true,
+     "kind": "health",
+     "rc": 0,
+     "tail": " 'ok', 'kind': 'health', 'result': {'platform': 'Windows-11-10.0.26200-SP0', 'python': '3.14.5', 'time': '2026-10-08T18:09:07'}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=caps_called_audit event=ok iso=2026-10-08T18:09:34",
+     "result_ok": true,
+     "kind": "caps_called_audit",
+     "rc": 0,
+     "tail": ": 'external', 'spend_guard': 'external', 'thebrain_bridge': 'external', 'review_gate': 'external'}, 'default_type': 'internal'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "llm": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=llm_status event=ok iso=2026-10-08T18:09:36",
+     "result_ok": true,
+     "kind": "llm_status",
+     "rc": 0,
+     "tail": "': 9, 'total': 13, 'active': 'agnes', 'switches': 17, 'service': ['agnes', 'deepseek', 'nvidia-flash', 'gbt-local', 'potato']}}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=brain_health event=ok iso=2026-10-08T18:09:50",
+     "result_ok": true,
+     "kind": "brain_health",
+     "rc": 0,
+     "tail": "t__.py'> INFO:comtypes.client._code_cache:Using writeable comtypes cache directory: 'C:\\Users\\ADMIN\\AppData\\Roaming\\Python\\Python314\\site-packages\\comtypes\\gen'"
+    }
+   ]
+  },
+  "pipeline": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=pipeline_status event=ok iso=2026-10-08T18:09:54",
+     "result_ok": true,
+     "kind": "pipeline_status",
+     "rc": 0,
+     "tail": " 'count': 20, 'total': 474, 'limit': 20, 'truncated': True, 'count_note': 'count=本页条数；total=记录总数；**本次被 limit 截断**（还有 454 条没列）'}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=ghost_guard event=ok iso=2026-10-08T18:10:02",
+     "result_ok": true,
+     "kind": "ghost_guard",
+     "rc": 0,
+     "tail": "dings': [], 'scanned': 500, 'scanned_files': 500, 'unreadable': [], 'unreadable_count': 0, 'checked_at': '2026-10-08T18:10:02'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "mind": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=local_brain event=ok iso=2026-10-08T18:10:04",
+     "result_ok": true,
+     "kind": "local_brain",
+     "rc": 0,
+     "tail": "本地模型 = **原生脑皮层**（可换）；主机 = **纪律层**（门禁/审计/身份内核，不可换）', 'model_steps': [2, 8], 'layers': 8, 'note': '**模型只做第 ② 和第 ⑧ 步**；中间全走原生能力栈'}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=meta_cognition event=ok iso=2026-10-08T18:10:06",
+     "result_ok": true,
+     "kind": "meta_cognition",
+     "rc": 0,
+     "tail": "al_scopes', 'reflect', 'reflections', 'short_boards', 'decide', 'persist'], 'non_readonly_op': 'persist（会写 root_fix.work_log）'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "video": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=libtv_skill event=ok iso=2026-10-08T18:10:08",
+     "result_ok": true,
+     "kind": "libtv_skill",
+     "rc": 0,
+     "tail": "False, 'source': 'tools/libtv_skill.py 取证（.scratch/_rh204_libtv_forensics.py）'}, 'note': '技能包与密钥均**未接**（取证：libtv 命中 0 · 密钥未配）'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "tentacle": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=tentacle_status event=ok iso=2026-10-08T18:10:17",
+     "result_ok": true,
+     "kind": "tentacle_status",
+     "rc": 0,
+     "tail": "ty': 'see'}, '安全域': {'methods': 6, 'key_capability': 'trace_source'}}, 'eye_ready': True, 'truth': '所有邻域皆触手所化。触手每一次强化=全邻域提升。'}}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=tentacle_manifest event=ok iso=2026-10-08T18:10:20",
+     "result_ok": true,
+     "kind": "tentacle_manifest",
+     "rc": 0,
+     "tail": "先看再动 ②动后等稳定 ③找不到就滚 ④遇弹窗必关 ⑤每步亲眼验证 ⑥不确定就对比前后截图\\n你是全感知AI。触手就是你的眼睛和双手。**不要假想你做不到的事 —— 上面那份缺口清单就是\"做不到\"的边界。**\\n', 'eye_ready': True}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "recon": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=verification_watch event=ok iso=2026-10-08T18:10:21",
+     "result_ok": true,
+     "kind": "verification_watch",
+     "rc": 0,
+     "tail": ", 'register_pending'], 'red_line': '不绕验证，是『新人类』和『伪人类』的分界线：平台设验证是为了防伪人类；我们不是伪人类，不需要绕。', 'note': '骨架期：三部门各一张空台账 —— 空就是空，不许假装已调研'}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=film_intel event=ok iso=2026-10-08T18:10:23",
+     "result_ok": true,
+     "kind": "film_intel",
+     "rc": 0,
+     "tail": "待核实'}], 'cells_total': 6, 'filled': 0, 'unfilled': 6, 'confidence_floor': 0.6, 'note': '骨架期：结构在、情报不在 —— 所有格子一律『待核实』，不许把结构读成情报'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "data": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=echo event=ok iso=2026-10-08T18:10:24",
+     "result_ok": true,
+     "kind": "echo",
+     "rc": 0,
+     "tail": "ho': {}}}, 'ok_source': 'status', 'ok': True, 'kind': 'echo', 'result': {'status': 'ok', 'kind': 'echo', 'result': {'echo': {}}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=db_probe event=ok iso=2026-10-08T18:10:31",
+     "result_ok": true,
+     "kind": "db_probe",
+     "rc": 0,
+     "tail": " 'state\\\\deliver_ladder.jsonl', 'kb': 5.2}], 'n_sqlite': 10, 'n_jsonl': 77, '_口径': '只列本机（store/state）；外部库连接不在本件范围（要驱动+凭据=主人面）'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "tools": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=capability_net event=ok iso=2026-10-08T18:10:32",
+     "result_ok": true,
+     "kind": "capability_net",
+     "rc": 0,
+     "tail": "ocal': 241, 'external': 19}, 'honest_boundary': '穿透网只保证『能力位可路由』，不保证『每个能力位都可穿透』；『在索引里』不等于『能穿透』，『能穿透』不等于『已核实能穿透』，『已核实』不等于『已授权』。'}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=awesome_tools_index event=ok iso=2026-10-08T18:10:34",
+     "result_ok": true,
+     "kind": "awesome_tools_index",
+     "rc": 0,
+     "tail": "掉**（把主人这次的话当噪音 ⇒ 证据丢）⇒ 两条都不许，只能**并排记** + 写清「**已在**哪儿」；⚠️ 判据卡在真问题上：条目说「已在」，就必须**真的在盘上按整段找得到**（用包含比对会把「Trae 等」也算成「Trae」⇒ 假命中）。'}}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "devour": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=devour_fusion event=ok iso=2026-10-08T18:10:36",
+     "result_ok": true,
+     "kind": "devour_fusion",
+     "rc": 0,
+     "tail": "lse}, 'tentacle_valid': False, 'vault_note': False, 'fused': False}], '_口径': '**已融合 = 三件齐在盘上算出来的**，不看台账里写的 status（写的可以吹，算的不会）'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "finance": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=quant_strategy event=ok iso=2026-10-08T18:10:37",
+     "result_ok": true,
+     "kind": "quant_strategy",
+     "rc": 0,
+     "tail": "E_POSITION', 'CIS_MAX_POSITION', 'INITIAL_CAPITAL', 'RISK_PER_TRADE', 'BINANCE_WS_URL', 'UPDATE_INTERVAL']}], 'bytes': 28498}}}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=quant_params event=ok iso=2026-10-08T18:10:39",
+     "result_ok": true,
+     "kind": "quant_params",
+     "rc": 0,
+     "tail": "IS_BASE_POSITION': 0.1, 'CIS_MAX_POSITION': 0.3, 'INITIAL_CAPITAL': 100000.0, 'RISK_PER_TRADE': 0.02, 'UPDATE_INTERVAL': 5.0}}}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "engine": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=wf_status event=ok iso=2026-10-08T18:10:42",
+     "result_ok": true,
+     "kind": "wf_status",
+     "rc": 0,
+     "tail": "a-evolve', 'params': {}, 'status': 'ok', 'nodes': {'evolve': 'ok'}, 'elapsed_s': 0.106, 'finished_at': '2026-10-08T14:38:05'}]}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=sched_status event=ok iso=2026-10-08T18:10:44",
+     "result_ok": true,
+     "kind": "sched_status",
+     "rc": 0,
+     "tail": "456326.47671, 'last_status': 'ok', 'last_run_at': '2026-10-08T17:45:29', 'last_run_id': 'truth-wf-1791456329384'}}, 'count': 2}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "longrun": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=lr_status event=ok iso=2026-10-08T18:10:46",
+     "result_ok": true,
+     "kind": "lr_status",
+     "rc": 0,
+     "tail": "max_attempts': 1, 'attempts': 1, 'status': 'done', 'fingerprints': [], 'last_error': '', 'created_at': '2026-10-08T10:08:41'}]}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=tactics_advise event=ok iso=2026-10-08T18:10:50",
+     "result_ok": true,
+     "kind": "tactics_advise",
+     "rc": 0,
+     "tail": "达：结论先行，依据跟上，下一步明确', 'require': ['结论先行', '依据可核', '下一步明确'], 'honesty': ['只调表达分寸，不改任何事实与结论', '坏消息如实到达，不隐藏不稀释', '识别到困难必须带方案，不空安抚']}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "project": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=platform_profile event=ok iso=2026-10-08T18:10:52",
+     "result_ok": true,
+     "kind": "platform_profile",
+     "rc": 0,
+     "tail": "GBT小土豆V8\\\\quant_workspace', 'exists': True, 'top_level_dirs': ['01_量化收割引擎'], 'quant_py': 23, 'py_total': 23, 'py_excluded': {}}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=project_context event=ok iso=2026-10-08T18:10:56",
+     "result_ok": true,
+     "kind": "project_context",
+     "rc": 0,
+     "tail": "SER.md', 'memory/YYYY-MM-DD.md', 'LAYOUT.md', 'CODING_DISCIPLINE.md'], 'rule': '蓝图是项目和架构的事实索引，不是主人指令的替代品。实现前先检索相关上下文，验证后更新蓝图。'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "voice": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=voice_orchestra event=ok iso=2026-10-08T18:10:59",
+     "result_ok": true,
+     "kind": "voice_orchestra",
+     "rc": 0,
+     "tail": " gbt_allinone/docs/语音中枢v2.0-实测与部署.md。local_services 是活体探测（只读 TCP 连接）；VoiceStudio 起停/说话/克隆走 tools/codex-scripts/voicestudio.py'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "brain": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=absorb_loop event=ok iso=2026-10-08T18:11:03",
+     "result_ok": true,
+     "kind": "absorb_loop",
+     "rc": 0,
+     "tail": "store/devoured', 'gbt_allinone/store'], 'evidence': 'devour.py 无清理逻辑（grep 0 命中）；devoured 产物目录实测已留 .deploy_bak', 'red_lines': 5}}, 'error': None, 'status': 'ok'}"
+    },
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=dream_replay event=ok iso=2026-10-08T18:11:07",
+     "result_ok": true,
+     "kind": "dream_replay",
+     "rc": 0,
+     "tail": ": True, 'steps': [{'primitive': '日间念', 'count': 0}], 'consolidated': 0, 'note': '没有念 ⇒ 没有梦（无源之梦不成立）', 'external_action': False}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "collab": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=stigmergy event=ok iso=2026-10-08T18:11:15",
+     "result_ok": true,
+     "kind": "stigmergy",
+     "rc": 0,
+     "tail": "only': {'ok': True, 'readonly': True, 'append_only': True, 'writer': 'locked_append_text', 'checked': '本模块源码静态核（不许删行 / 不许覆写）'}}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "desktop": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=control_loop event=ok iso=2026-10-08T18:11:39",
+     "result_ok": true,
+     "kind": "control_loop",
+     "rc": 0,
+     "tail": "KED（不许硬猜）\\n  ✅ 升级慢脑后仍被 DONE 证据闸挡住：DONE 缺独立验证证据 ⇒ 拒绝（不许自己宣布成功）\\n\\n自检结论：全过\\n\", 'note': '6 路反向自检：枚举外动作/过期观测/遮挡/DONE 无证据/预算闸/慢脑升级'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "comms": {
+   "probe": [
+    {
+     "kind": "coze_mail",
+     "rc": null,
+     "verdict": "超时",
+     "why": "30s 未回（按超时如实报）",
+     "side_effect": null,
+     "result_ok": null,
+     "tail": ""
+    }
+   ]
+  },
+  "framework": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=gate_visibility event=ok iso=2026-10-08T18:12:32",
+     "result_ok": true,
+     "kind": "gate_visibility",
+     "rc": 0,
+     "tail": "tore']}, 'core': '门必须知道自己看不见什么（坑册 §60）', 'read_from': 'framework_gate 的常量（**本模块不复刻范围表**）', 'doc': 'gbt_allinone/docs/门盲区清单.md'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "image_video": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=a1art_skill event=ok iso=2026-10-08T18:12:47",
+     "result_ok": true,
+     "kind": "a1art_skill",
+     "rc": 0,
+     "tail": "lse, 'source': 'tools/a1art_skill.py 取证（.scratch/_rh206_a1art_forensics.py）'}, 'note': '接口文档不在盘上、密钥未配（取证实测）⇒ 『能调』是**待接**，不是现状'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "infra": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=cloud_pc event=ok iso=2026-10-08T18:12:50",
+     "result_ok": true,
+     "kind": "cloud_pc",
+     "rc": 0,
+     "tail": ": True, 'key_present': False, 'gate_trace': {'ok': True, 'readonly': True, 'trace_ref': 'cloud_pc', 'source_kind': 'cloud_pc'}}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "life": {
+   "probe": [
+    {
+     "kind": "life",
+     "rc": null,
+     "verdict": "超时",
+     "why": "30s 未回（按超时如实报）",
+     "side_effect": null,
+     "result_ok": null,
+     "tail": ""
+    }
+   ]
+  },
+  "social": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=auto_publish event=ok iso=2026-10-08T18:13:26",
+     "result_ok": true,
+     "kind": "auto_publish",
+     "rc": 0,
+     "tail": " 把「全自动」理解成「连发布也不问」，就是把不可逆当可逆'}, 'gate_trace': {'ok': True, 'readonly': True, 'trace_ref': 'publish', 'source_kind': 'publish'}}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "integration": {
+   "probe": [
+    {
+     "verdict": "真执行·ok",
+     "why": "返回非空非占位 + 账本落痕",
+     "side_effect": "账本新落痕 kind=feishu_embed event=ok iso=2026-10-08T18:13:51",
+     "result_ok": true,
+     "kind": "feishu_embed",
+     "rc": 0,
+     "tail": "shu.cn', 'from': '主人提供'}, {'host': 'kjpt2h5ekoxy.jp.larksuite.com', 'from': '主人提供'}], 'note': '面板卡⑥：只呈现 + 走浏览器触手打开；**本刀不改面板**'}}, 'error': None, 'status': 'ok'}"
+    }
+   ]
+  },
+  "creation": {
+   "probe": [
+    {
+     "kind": "console_pages",
+     "rc": null,
+     "verdict": "超时",
+     "why": "30s 未回（按超时如实报）",
+     "side_effect": null,
+     "result_ok": null,
+     "tail": ""
+    }
+   ]
+  },
+  "security": {
+   "probe": [],
+   "note": "安全族真调归**另一条线**（本表不重跑；只出绑定/页面/神经轴）"
+  }
+ }
+}

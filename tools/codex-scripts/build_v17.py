@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """构建 V17：补 5 个面板（原生浏览器 / 云电脑独立窗口 / 万能插工具集 / 编排内核 / 严格覆盖审计）。
 Refinement，视觉层沿用 V16；只加内容与一处导航分组。"""
-import json
 import re
 import shutil
 import sys
@@ -13,7 +12,7 @@ except Exception:  # noqa: BLE001
     pass
 
 BASE = next(p for p in Path(__file__).resolve().parents
-           if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
+            if (p / "gbt_allinone").is_dir())   # 修：原 `.parent.parent` 只到 tools/（少一层）
 S = BASE / ".scratch"
 V16P = BASE / "V16 GBT小土豆V8-可交互原型.html"
 V17P = BASE / "V17 GBT小土豆V8-可交互原型.html"
@@ -150,6 +149,8 @@ print("面板修复: %d 处（recon 优先级 · bar 钳位 · 攻击面分母�
 V17P.write_text(src, encoding="utf-8")
 
 # ── 6. 收刻度：新加的面板里若抄进了离群 gap，一并收到 2px 刻度 ──
+
+
 def snap_gaps(path):
     t = path.read_text(encoding="utf-8")
     import collections

@@ -1,0 +1,95 @@
+{
+ "_契约": "伤感歌 + 5 分钟运镜背景片 · 分镜表（第 0 步：先落表再渲染）",
+ "_口径": "每镜字段固定：id/源/秒数/关键帧prompt/运镜/SVD/转场。**总长自校验**：Σ镜长 − Σ转场重叠 ≥ 300s；不足加镜，不许拿黑屏凑数。",
+ "_做法": "12 个真 SVD 片段（每个 2.3s 真动作）× 两种用镜（正放 / 倒放镜像）= 24 镜；每镜用 ffmpeg zoompan 拉成 14s 并叠运镜 ⇒ 长镜 + 慢缓动，符合伤感曲节奏。",
+ "_剪辑规范（专业导演口径 · 主人令 2026-10-13「剪辑一定要拼接好，画面要对齐」）": {
+  "① 先出节拍图": "拿歌之后 first 跑 librosa.beat_track ⇒ tempo 与**每拍时刻**；剪辑点从节拍图**反推**，不拍脑袋。",
+  "② 镜长由拍决定": "每镜长度 = **整数拍数**（8/12/16 拍）；tempo 变，镜长跟着变 ⇒ 表里的「秒数」由节拍图**回填**（本表写的是预设，最终以回填值为准）。",
+  "③ 切点必须落在拍上": "每个切点与最近拍的差 **≤ 0.15s**；`dip_to_black` 只落在**乐句收束**（每 4 小节）——不许拿转场遮跳切。",
+  "④ 运动匹配": "相邻镜运镜方向要接得上（同向接同向，或 push↔pull 成对）；不许无动机硬切。",
+  "⑤ 色彩连续": "全片**同一底座 + 同一 negative + 同一套调色**（ffmpeg eq/curves 同一条曲线）；每镜中间帧 RGB 均值与全片均值的偏差 **≤ 8/255**。",
+  "⑥ 音画同长": "|视频长 − 音频长| **≤ 0.2s**；结尾 2s 音画**同时**淡出。"
+ },
+ "_成品输出契约（主人令 2026-10-13：「成品的输出等你使用触手手搓的时候就可以完美出片」）": {
+ "_v2·自然度调整（主人令 2026-10-13：「视频看起来不够自然，调整一下」 · 诊断在先）": {
+  "病根（现读，不是感觉）": [
+   "① **慢放过头**：SVD 每段真动作只有 ~2.3s（14 帧 @6fps），上一版用 `setpts=6×` 拉成 14s ⇒ 动作黏、像车祸慢镜。",
+   "② **每镜都在动**：zoompan 线性推/拉，没呼吸点 ⇒ 机械感。",
+   "③ **相邻镜是同一段镜像翻转**（S01 与 S01 的 hflip 紧挨）⇒ 翻转跳变。",
+   "④ **色彩没统一**（判据②还没过读数）⇒ 镜间跳色。"
+  ],
+  "v2 硬参数": {
+   "慢放比例": "`setpts=2.5×`（不再 6×）⇒ 每段 2.3s 拉到 ~5.8s，接近真实速度",
+   "镜长/镜数": "**每镜 7.5s · 48 镜**：把 24 个 14s 段各切成**前后两个 7.5s 半段**，两半用**不同裁剪与不同缓动**（左半推 / 右半摇）⇒ 零 GPU 成本、节奏更碎更活",
+   "运镜": "幅度收小（缩放 1.00→1.06，位移 ±30px）· 缓动改 `ease_in_out`（`sin` 曲线）· **每 4 镜插 1 个 static 静镜**当呼吸点",
+   "相邻镜规则": "**同一源片段的镜像/倒放版本不许紧挨**（隔 ≥3 镜才可再用同源）",
+   "调色": "全片**同一条** `eq=contrast=1.03:saturation=0.96:brightness=-0.02` + `curves=vintage` 轻档 ⇒ 统一冷调（服务判据②）",
+   "转场": "crossfade 1.2s（跨在拍边界）· 每 4 镜 dip_to_black 0.6s"
+  },
+  "总长自校验": "48 × 7.5 − 47 × 1.2 = 360 − 56.4 = **303.6s ≥ 300s** ✓",
+  "机检（v2 出片必须过）": "② 每镜中间帧 RGB 均值与全片均值差 ≤8/255 · ③ 转场中点帧亮度 >12 · ④ 每镜首/中/尾三帧像素差 > 阈值（静镜除外，静镜另记）· ⑥ 净长 ≥300s",
+  "成本": "**GPU 零成本**（复用已渲 12 段 + 24 个扩展段，只重切重拼）"
+ },
+  "一句话": "交付的**不是一条 mp4**，而是「**可复现的一套件**」——下次用触手手搓时，照着这套件能一次次出同样的片。",
+  "必带七件": [
+   "① 成片 mp4（含歌）＋无歌版 mp4（两版都给）",
+   "② 分镜表（本文件：镜/秒数/关键帧 prompt/运镜/SVD 参数/转场）",
+   "③ 节拍图 beats.json（tempo ＋ 每拍时刻；成片切点由它回填）",
+   "④ 原料：12 个源片段 ＋ 12 张关键帧（逐件 sha256）",
+   "⑤ 参数全量：底座/负向词/尺寸/帧数/fps/seed/motion_bucket_id/编码口径",
+   "⑥ 判据读数：六条逐条 ＋ 拍对齐最大偏差 ＋ 色彩最大偏差",
+   "⑦ 落点与账：`outputs/cloud/` 路径 ＋ logbook/台账条目"
+  ],
+  "手搓口径": "全流程**只准走我们自己的位**（`tentacle_comfy_bridge` / `comfy_native` / `music_forge` / `pod_link` / 万能插门），**不留 ad-hoc shell 步骤** —— 下次手搓 = **调位 ＋ 填契约**，不是重新摸索。",
+  "可复现判据": "同一份契约 ＋ 同一批 seed ⇒ 重跑得到**同类**成片（六条判据必须同样全过）；若固定 seed 且采样器确定性，则追求逐帧可复现。"
+ },
+ "_逐项机检判据（任一不过就不算成片）": [
+  "① 节拍对齐：全部切点与最近拍的差 ≤ 0.15s（逐点现算落账）",
+  "② 色彩连续：每镜中间帧 RGB 均值与全片均值偏差 ≤ 8/255",
+  "③ 无意外黑帧/花帧：每段转场中点帧亮度 > 12（设计好的 dip 除外）",
+  "④ 每镜真有运镜：首/中/尾三帧像素差 > 阈值",
+  "⑤ 音画同长：|视频 − 音频| ≤ 0.2s",
+  "⑥ 总长 ≥ 300s（不足加镜，不许黑屏凑）"
+ ],
+ "meta": {
+  "title": "雨停之后（伤感背景片 · 5 分钟）",
+  "target_sec": 300,
+  "fps": 7,
+  "resolution": [1024, 576],
+  "audio": {
+   "model": "ACE-Step-v1-3.5B",
+   "prompt": "sad, emotional, slow piano, strings pad, soft female vocal, rain ambience, minor key, 60 bpm",
+   "target_sec": 300,
+   "补足规则": "生成不足 5:00 ⇒ 用 ffmpeg 无缝循环补到 300s + 结尾 2s 淡出（不许留空白）"
+  },
+  "节奏": "长镜 14s · 缓动 ease_in_out · 转场 1.5s 溶解 · 每 4 镜一次 dip_to_black 呼吸点(0.6s)"
+ },
+ "shots": [
+  {"id": "S01", "src": 1, "variant": "normal", "秒数": 14, "keyframe_prompt": "rain streaking down a window pane at dusk, empty street blurred outside, cold blue light, cinematic", "运镜": {"类型": "push_in", "起缩放": 1.00, "止缩放": 1.12, "起位移": [0, 0], "止位移": [0, 0], "缓动": "ease_in_out"}, "SVD": {"motion_bucket_id": 70, "frames": 14, "fps": 6}, "转场": {"类型": "crossfade", "秒": 1.5}},
+  {"id": "S02", "src": 2, "variant": "normal", "秒数": 14, "keyframe_prompt": "a lone bench in an empty park under grey sky, wet leaves on the ground, melancholic, cinematic wide shot with subject on the left third", "运镜": {"类型": "pan_r", "起缩放": 1.08, "止缩放": 1.08, "起位移": [-60, 0], "止位移": [60, 0], "缓动": "ease_in_out"}, "SVD": {"motion_bucket_id": 65, "frames": 14, "fps": 6}, "转场": {"类型": "crossfade", "秒": 1.5}},
+  {"id": "S03", "src": 3, "variant": "normal", "秒数": 14, "keyframe_prompt": "wilted white flowers in a glass vase on a dark wooden table, single soft window light, moody still life", "运镜": {"类型": "pull_out", "起缩放": 1.14, "止缩放": 1.00, "起位移": [0, 0], "止位移": [0, 0], "缓动": "ease_in_out"}, "SVD": {"motion_bucket_id": 60, "frames": 14, "fps": 6}, "转场": {"类型": "crossfade", "秒": 1.5}},
+  {"id": "S04", "src": 4, "variant": "normal", "秒数": 14, "keyframe_prompt": "view through a train window of rainy countryside at dusk, reflections on glass, lonely atmosphere, cinematic", "运镜": {"类型": "tilt_up", "起缩放": 1.06, "止缩放": 1.06, "起位移": [0, 40], "止位移": [0, -40], "缓动": "ease_in_out"}, "SVD": {"motion_bucket_id": 75, "frames": 14, "fps": 6}, "转场": {"类型": "dip_to_black", "秒": 1.5}},
+  {"id": "S05", "src": 5, "variant": "normal", "秒数": 14, "keyframe_prompt": "a single candle burning low in a dark room, warm flame against cold shadows, intimate and sad, shallow depth of field", "运镜": {"类型": "push_in", "起缩放": 1.00, "止缩放": 1.16, "起位移": [0, 0], "止位移": [0, 0], "缓动": "ease_in_out"}, "SVD": {"motion_bucket_id": 55, "frames": 14, "fps": 6}, "转场": {"类型": "crossfade", "秒": 1.5}},
+  {"id": "S06", "src": 6, "variant": "normal", "秒数": 14, "keyframe_prompt": "empty city street after rain at night, neon reflections in puddles, no people, melancholic cinematic wide, subject right third", "运镜": {"类型": "pan_l", "起缩放": 1.10, "止缩放": 1.10, "起位移": [60, 0], "止位移": [-60, 0], "缓动": "ease_in_out"}, "SVD": {"motion_bucket_id": 80, "frames": 14, "fps": 6}, "转场": {"类型": "crossfade", "秒": 1.5}},
+  {"id": "S07", "src": 7, "variant": "normal", "秒数": 14, "keyframe_prompt": "an old handwritten letter on a desk beside a cold cup of tea, dust in the light, nostalgic and sad, close-up", "运镜": {"类型": "push_in", "起缩放": 1.00, "止缩放": 1.10, "起位移": [10, 0], "止位移": [-10, 0], "缓动": "ease_in_out"}, "SVD": {"motion_bucket_id": 55, "frames": 14, "fps": 6}, "转场": {"类型": "crossfade", "秒": 1.5}},
+  {"id": "S08", "src": 8, "variant": "normal", "秒数": 14, "keyframe_prompt": "autumn leaves falling in a quiet graveyard path, grey overcast light, solemn and melancholic, slow cinematic", "运镜": {"类型": "tilt_up", "起缩放": 1.05, "止缩放": 1.05, "起位移": [0, 30], "止位移": [0, -30], "缓动": "ease_in_out"}, "SVD": {"motion_bucket_id": 70, "frames": 14, "fps": 6}, "转场": {"类型": "dip_to_black", "秒": 1.5}},
+  {"id": "S09", "src": 9, "variant": "normal", "秒数": 14, "keyframe_prompt": "a phone screen glowing in a dark bedroom, unanswered message, tear on pillow edge, intimate sad scene", "运镜": {"类型": "pull_out", "起缩放": 1.18, "止缩放": 1.00, "起位移": [0, 0], "止位移": [0, 0], "缓动": "ease_in_out"}, "SVD": {"motion_bucket_id": 60, "frames": 14, "fps": 6}, "转场": {"类型": "crossfade", "秒": 1.5}},
+  {"id": "S10", "src": 10, "variant": "normal", "秒数": 14, "keyframe_prompt": "a projector beam in a dark room playing an old family film, dust motes, warm but sad nostalgia", "运镜": {"类型": "push_in", "起缩放": 1.00, "止缩放": 1.12, "起位移": [0, 0], "止位移": [0, 0], "缓动": "ease_in_out"}, "SVD": {"motion_bucket_id": 65, "frames": 14, "fps": 6}, "转场": {"类型": "crossfade", "秒": 1.5}},
+  {"id": "S11", "src": 11, "variant": "normal", "秒数": 14, "keyframe_prompt": "a lone figure with umbrella walking away down a wet road at dusk, back view, wide lonely composition, subject left third", "运镜": {"类型": "pan_r", "起缩放": 1.08, "止缩放": 1.08, "起位移": [-50, 0], "止位移": [50, 0], "缓动": "ease_in_out"}, "SVD": {"motion_bucket_id": 85, "frames": 14, "fps": 6}, "转场": {"类型": "crossfade", "秒": 1.5}},
+  {"id": "S12", "src": 12, "variant": "normal", "秒数": 14, "keyframe_prompt": "first light of dawn over an empty pier, calm sea, solitary and quiet, cinematic ending shot", "运镜": {"类型": "pull_out", "起缩放": 1.10, "止缩放": 1.00, "起位移": [0, 10], "止位移": [0, -10], "缓动": "ease_in_out"}, "SVD": {"motion_bucket_id": 50, "frames": 14, "fps": 6}, "转场": {"类型": "dip_to_black", "秒": 1.5}}
+ ],
+ "_第二遍（镜像倒放同一批片段，省 GPU 但换视感）": {
+  "规则": "S13–S24 = S12–S01 逐镜取同源片段，variant=reverse_mirror（ffmpeg hflip + reverse），运镜类型换成与第一遍互补的那个；转场照表。",
+  "镜长秒数": 14,
+  "转场": {"类型": "crossfade", "秒": 1.5}
+ },
+ "self_check": {
+  "镜数": 24,
+  "Σ镜长": 336.0,
+  "Σ转场重叠": 34.5,
+  "净长": 301.5,
+  "达标(≥300s)": true,
+  "SVD 渲染次数": 12,
+  "为什么不是 48 镜": "12 个真片段 × 两种用法 = 24 镜；每镜 14s 已是伤感曲该有的长镜，再多会重复观感。"
+ }
+}

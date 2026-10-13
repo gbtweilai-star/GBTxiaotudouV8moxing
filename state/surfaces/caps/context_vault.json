@@ -1,0 +1,64 @@
+{
+ "cap": "context_vault",
+ "domain": "system",
+ "desc": "上下文归档库（只读骨架·内调）：**索引+检索层，不是第四处存储**（只引用不复制正文）；内存多大上下文就多长（按**可用**内存算预算，不足则降级如实报）；快速搜索=倒排求交→打分→按预算裁剪",
+ "safe": true,
+ "ops": [
+  {
+   "op": "budget",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "check_identity",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "db_add",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "db_check_secret",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "db_search",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "db_status",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "gate_cite",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "gate_index",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "layers",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "redlines",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "search",
+   "gate": "（由 policy 判）"
+  },
+  {
+   "op": "status",
+   "gate": "（由 policy 判）"
+  }
+ ],
+ "ops_method": "static-heuristic",
+ "handler_file": "gbt_allinone\\tools\\context_vault.py",
+ "params": [],
+ "params_hint": "",
+ "handler": "context_vault",
+ "slot": "g3-26",
+ "group": 3,
+ "role": "上下文归档（索引+检索层）"
+}

@@ -97,10 +97,14 @@ chk("画布 无 emoji 作 UI 元素", not c_emoji,
     "命中 " + "".join(sorted(set(c_emoji))[:8]) if c_emoji else "")
 
 # ── 4. 对比度（WCAG 2.2 AA ≥ 4.5:1） ──
+
+
 def lum(hexc):
     hexc = hexc.lstrip("#")
     r, g, b = (int(hexc[i:i + 2], 16) / 255 for i in (0, 2, 4))
-    f = lambda v: v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
+
+    def f(v):
+        return v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
     return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
 
 
@@ -116,11 +120,13 @@ pairs = [
     ("画布 主文本", "#dff2fb", BG_DARK), ("画布 副文本", "#a9c4d2", BG_DARK),
     ("画布 亮色主文本", "#141a20", BG_LIGHT),
 ]
+
+
 def over(hexc, layer, a):
     """把一层灰（颗粒）以 alpha 叠在颜色上，返回新 hex。"""
     c = [int(hexc[i:i + 2], 16) for i in (1, 3, 5)]
-    l = [int(layer[i:i + 2], 16) for i in (1, 3, 5)]
-    return "#%02x%02x%02x" % tuple(round(c[i] * (1 - a) + l[i] * a) for i in range(3))
+    lay = [int(layer[i:i + 2], 16) for i in (1, 3, 5)]
+    return "#%02x%02x%02x" % tuple(round(c[i] * (1 - a) + lay[i] * a) for i in range(3))
 
 
 worst = None
@@ -178,13 +184,13 @@ chk("画布 p1~p61 齐", all(("function p%d(" % i) in c for i in range(1, 62)), 
 chk("原型无 undefined 字面量", "undefined" not in re.sub(r"//[^\n]*", "", p.split("const V21 = ")[1]), "（数据层已解析，见运行期校验）")
 
 
-
 # ── 7b. 品牌 Logo（主人提供）──
-import base64 as _b64
-import hashlib as _hl
+import base64 as _b64  # noqa: E402
+
 
 def _imgs(text):
     return re.findall(r"data:image/(webp|png);base64,([A-Za-z0-9+/=]+)", text)
+
 
 p_imgs, c_imgs = _imgs(p), _imgs(c)
 chk("原型内嵌 Logo", any(m == "webp" for m, _ in p_imgs), "%d 个 data URI" % len(p_imgs))
@@ -195,6 +201,8 @@ chk("favicon 不重复内嵌", sum(1 for m, _ in p_imgs if m == "png") <= 1 and
 
 # 解码内嵌 Logo，验证字节完整
 _emb = json.loads((S / "logo_embed.json").read_text(encoding="utf-8"))
+
+
 def _payload(text, want):
     for m, b in _imgs(text):
         if m != want:
@@ -203,6 +211,8 @@ def _payload(text, want):
         if raw[:4] == b"RIFF" or raw[:4] == b"\x89PNG":
             return raw
     return b""
+
+
 _lp = _payload(p, "webp")
 _lc = _payload(c, "webp")
 chk("原型 Logo 是合法 WebP", _lp[:4] == b"RIFF" and _lp[8:12] == b"WEBP", "%d B" % len(_lp))
@@ -228,7 +238,6 @@ chk("Logo 在原型里出现 3 处（侧栏 / 上帝视角 / 空态）",
     p.count("BRAND.logo") >= 2, "BRAND.logo 引用 %d 次" % p.count("BRAND.logo"))
 
 
-
 # ── 7c. V21 覆盖审计段 ──
 _cv = man.get("coverage") or {}
 _core = man.get("core") or {}
@@ -249,7 +258,6 @@ chk("每个核心文件都有行数与摘要",
     all(f["lines"] > 0 for c in _core.values() for f in c["files"]), "")
 chk("未覆盖面比 V13 收窄", _core_lines > 0 and _cv["uncovered_lines"] < _cv["total_lines"] * 0.6,
     "未覆盖仍占 %.1f%%" % (100 * _cv["uncovered_lines"] / _cv["total_lines"]))
-
 
 
 # ── 7d. 影视氛围层（V21）──
@@ -300,10 +308,13 @@ chk("画布 运动脚本在 IIFE 内（开场镜头要用 zoom/panX）",
     "updateTransform();\n\n  /* ── V21" in c or "cineStagger" in c.split("})();")[0], "")
 
 
-
 # ── 7e. V21 专业化打磨层：排版 / 节奏 / 数据工艺 ──
 _body = re.search(r"<body[^>]*>(.*)</body>", p, re.S).group(1)
-_cnt = lambda pat, t: len(re.findall(pat, t))
+
+
+def _cnt(pat, t):
+    return len(re.findall(pat, t))
+
 
 for tag, txt in (("原型", p), ("画布", c)):
     chk(tag + " 含打磨样式表", 'id="refine"' in txt, "")
@@ -337,7 +348,6 @@ chk("内嵌表面 主文本对比度", ratio("#dff2fb", "#0c1a2e") >= 4.5,
     "%.2f:1（深色主题 --panel-2）" % ratio("#dff2fb", "#0c1a2e"))
 
 
-
 # ── 7f. V21：主人点名的两个 + 严格判据揪出的三块 ──
 _v17 = man.get("v17") or {}
 chk("V21 数据段在位", bool(_v17), " / ".join(sorted(_v17)))
@@ -362,14 +372,13 @@ chk("编排内核：三源齐", len(_v17["kernel"]["three"]) == 3,
 chk("编排内核：三层职责齐", len(_v17["kernel"]["layers"]) == 3, "")
 chk("严格审计：假覆盖已量化", _v17["strict_audit"]["false_covered_n"] > 0,
     "%d 文件 / %s 行" % (_v17["strict_audit"]["false_covered_n"],
-                        f"{_v17['strict_audit']['false_covered_lines']:,}"))
+                      f"{_v17['strict_audit']['false_covered_lines']:,}"))
 chk("严格审计：写明是上界不是精确值", "上界" in _v17["strict_audit"]["caveat"], "")
 for tag, txt in (("原型", p), ("画布", c)):
     chk(tag + " 含原生浏览器", "native_browser" in txt and "pin_window" in txt, "")
     chk(tag + " 含云电脑五原语", all(k in txt for k in ("PROVISION", "CONNECT", "SNAPSHOT", "RELEASE")), "")
     chk(tag + " 含五条红线", "身份内核不变" in txt or "红线" in txt, "")
     chk(tag + " 含编排内核三源", "BrowserUse" in txt and "CrewAI" in txt and "Mastra" in txt, "")
-
 
 
 # ── 7g. V21：能力广场改为源码驱动 ──
@@ -404,7 +413,6 @@ chk("原手写能力广场已不再被分发",
     "if (st.nav === 'square') return panelCapSrc();" in p, "")
 
 
-
 # ── 7h. V21：AI朋友圈 + 用户社交（实测入册，未接分发）──
 _sc = man.get("social") or {}
 chk("V21 社交段在位", bool(_sc), " / ".join(sorted(_sc)))
@@ -415,7 +423,7 @@ chk("朋友圈：身份有记录", bool(_e.get("identity", {}).get("agent_id")),
 chk("朋友圈：影响力有实测数",
     isinstance(_e.get("influence", {}).get("total_items"), int),
     "广播 %s · 消费 %s" % (_e.get("influence", {}).get("total_items"),
-                          _e.get("influence", {}).get("total_consumed")))
+                       _e.get("influence", {}).get("total_consumed")))
 chk("朋友圈：拉到真实动态 >= 5 条", len(_e.get("feed") or []) >= 5, "%d 条" % len(_e.get("feed") or []))
 chk("朋友圈：动态作者不重复 >= 5 人",
     len({f.get("who") for f in (_e.get("feed") or [])}) >= 5,
@@ -424,7 +432,7 @@ chk("朋友圈：全网 agent 数是实测值", isinstance(_e.get("net", {}).get
     "%s 个 · %s 个国家/地区" % (_e.get("net", {}).get("agent_count"), _e.get("net", {}).get("countries")))
 chk("朋友圈：实现文件有行数", all(m.get("lines") for m in (_e.get("modules") or [])),
     "%d 文件 / %s 行" % (len(_e.get("modules") or []),
-                        f"{sum(m.get('lines') or 0 for m in (_e.get('modules') or [])):,}"))
+                      f"{sum(m.get('lines') or 0 for m in (_e.get('modules') or [])):,}"))
 chk("朋友圈：如实标未接线", _e.get("wired") is False, "wired=False")
 _p = _sc.get("publish") or {}
 chk("用户社交：已接线但自报未实现", _p.get("wired") is True and "not_implemented" in (_p.get("self_state") or ""),
@@ -436,7 +444,6 @@ _g = _sc.get("gate") or {}
 chk("门状态：如实记录为空",
     all(not v for k, ops in _g.items() for op, v in ops.items()),
     "auto_publish %d 动作全无门" % len(_g.get("auto_publish") or {}))
-
 
 
 # ── 7i. V21：朋友圈关系场可视化 ──
@@ -458,7 +465,6 @@ chk("官方账号已标记", _g.get("n_official", 0) >= 1, "%d 位" % _g.get("n_
 chk("关系场面板已接线", "socialgraph" in p and "panelSocialGraph()" in p, "")
 chk("星图由数据生成（含 SVG 与角度计算）",
     "socialGraphSVG" in p and "Math.cos(n.angle)" in p, "")
-
 
 
 # ── 7j. V21：修列向 flex 压扁面板（真渲染揪出的布局 bug）──

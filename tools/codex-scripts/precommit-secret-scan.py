@@ -34,6 +34,21 @@ import subprocess
 import sys
 from pathlib import Path
 
+# 🔴 2026-10-10 修（**同族编码缺陷，第三次撞上**）：本件在 **GBK 控制台**上不带 -X utf8 调用时**当场崩**。
+#    实测真因（不是猜）：gbt_allinone/tests/test_precommit_secret_scan.py 第 118 行调本件用的是
+#        subprocess.run([PY, str(TOOL), "--selftest", "--json"], ...)     # PY = sys.executable
+#    —— **没带 -X utf8**；本件打印含 U+21D2（⇒）时抛
+#        UnicodeEncodeError: 'gbk' codec can't encode character U+21D2
+#    ⇒ stdout/stderr 空 ⇒ 它的自检判据 test_selftest_is_green 判 rc != 0 ⇒ 恒红。
+#    同族先例（同日）：audit-dead-judgments.py · cloud-config-wiring.py —— 三件一个病。
+#    全仓扫描：tools/codex-scripts 下会印非 ASCII 的 .py 里，**已有 307 件带守门、143 件还没带**
+#    （本件是其中之一，现补上）。
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8")   # type: ignore[attr-defined]
+    except Exception:
+        pass
+
 ROOT = Path(__file__).resolve().parents[2]
 
 # 形状扫描用的候选长串：够长、单行、不含空格。
@@ -117,7 +132,7 @@ def scan(diff: str, keys: dict[str, str], *, failed: list[str] | None = None,
     if exact:
         problems.append("① 逐字比对命中明文：%s"
                         % "、".join("%s(%s)×%d" % (h["profile"], h["masked"], h["count"])
-                                    for h in exact))
+                                   for h in exact))
     ok = not problems
     return {
         "ok": ok,

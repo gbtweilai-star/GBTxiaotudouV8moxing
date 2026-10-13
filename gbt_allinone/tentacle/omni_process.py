@@ -165,7 +165,7 @@ class OmniProcessMixin:
             result = {"ok": True, "count": len(procs), "processes": procs[:30]}
             # ⛔ 2026-08-04 触手→大脑: 进程感知穿透传输 (高CPU/高内存 → critical)
             try:
-                from brain.tentacle_transmission import transmit as _tx
+                from .brain.tentacle_transmission import transmit as _tx
                 _top = [p for p in procs[:5]]
                 _heavy = [p for p in procs[:30] if p.get("cpu", 0) > 80]
                 _tx({"processes": _top, "count": result["count"],

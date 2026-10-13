@@ -42,7 +42,11 @@ for _s in (sys.stdout, sys.stderr):
 #    （报 `tools\tools\codex-scripts\...` 打不开）。**搬文件会改 `parents[N]` 的含义。**
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 S = ROOT / "tools" / "codex-scripts"
-PY = [sys.executable]
+# 🔴 2026-10-09 根因修复：原来 PY 只有 [sys.executable]，**不带 -X utf8** ⇒
+#    子进程在 GBK 控制台上打中文就崩（UnicodeEncodeError: 'gbk' codec can't encode），
+#    于是一大批闸报 rc≠0 —— **那是假故障**（脚本单跑都是好的，实测对比过）。
+#    utf8 模式是进程级的总开关，一处修好，所有子进程都干净。
+PY = [sys.executable, "-X", "utf8"]
 
 
 def _steps() -> list[tuple[str, list[str], str]]:
@@ -195,6 +199,79 @@ def _steps() -> list[tuple[str, list[str], str]]:
         ("本机图像端点（OpenAI 兼容）", PY + [str(S / "local-image-endpoint.py"), "selftest"],
          "rc=0（复用同一份节点图 · ComfyUI 没起必须 503 未读到 · 配置可调）"),
         ("刷新一页单", PY + [str(S / "gen-scope-page.py")], "rc=0（已重出）"),
+        # 🔴 2026-10-09 补挂（主人令「每天重启之后自动排查是否有故障和报警」·「生产面板禁止有任何污点」·
+        #    「每一个能力必须单独跑通闭环」·「设计好架构和蓝图，后面使用我们自己独有的模块式部署」）：
+        #    把这轮新造的四层判据**全部挂进每日体检**。
+        #    依据是本仓自己的原话：**自检不进体检 = 自检等于没写**（2026-09-24 那条教训）。
+        ("执行动作台账自检（L1）", PY + [str(S / "action-ledger.py"), "--selftest"],
+         "rc=0（幂等查重/同 idem 点名/重启报告 三类负控都咬）"),
+        ("重启守卫（L4·读账别重做）", PY + [str(S / "action-ledger.py"), "boot"],
+         "rc=0（今天做过的 · 已完成别重做 · 未闭合接着做 · 疑似无脑重做点名 · 报警现读）"),
+        ("框架门（L2·改框架要有护照）", PY + ["-m", "gbt_allinone.tools.framework_gate", "verify"],
+         "rc=0（verdict=green · 无 no_passport / stale_passport）"),
+        ("靶标矩阵判据（hacker-mirror 房间）", PY + [str(S / "hacker_matrix_check.py")],
+         "rc=0（12 份靶标逐件咬到 · 漏一类即红 · 负对照会红）"),
+        ("四层蓝图判据", PY + [str(S / "blueprint-check.py")],
+         "rc=0（L1/L2/L3/L4 逐层现跑现证 · 对不上即红）"),
+        # 🔴 2026-10-09 补挂（主人令「在框架里面出来必须要用户求助帮忙的其他全部禁止掉……你开口要求
+        #    用户的时候你就输了」「每次停下要么是项目部署完成，要么就是真正需要用户来操作的可以停下」）：
+        #    不开口闸 + 敷衍闸 + 停点闸，三件合一挂进每日体检。
+        # 🔴 2026-10-09 补挂（主人令「上帝视角也是一个超级导航和给你意见和建议也是一种给项目增加的定心丸」）：
+        #    上帝视角的**导航**与**建议**都要能现跑 —— 导航不许给假候选，建议不许没依据。
+        ("上帝视角自检（导航/建议/不反问）",
+         PY + [str(ROOT / "gbt_allinone" / "tests" / "test_god_view.py")],
+         "rc=0（导航命中对应族 · 没命中如实报 · 建议必带依据 · 自己的输出不许要用户做事）"),
+        # 🔴 2026-10-09 补挂（主人令「看整体没完善就不停工，除非用户要求停止」）：
+        #    整体完善度 = 五处现读（报警/禁交付/未闭合/门/蓝图）；不完善就不许停工。
+        ("不停工判据（整体完善度五处现读）",
+         PY + [str(ROOT / "gbt_allinone" / "tests" / "test_never_stop.py")],
+         "rc=0（五处现读都带读数与怎么查 · 局部完成不等于能停 · 主人喊停优先级最高）"),
+        # 🔴 2026-10-09 补挂（主人令「神经系统部署法：每一页做好双向绑定，扫描即穿透」+
+        #    「所有编程职业在一页上做出每个 AI 的任务可视化面板」）：
+        ("页级双向绑定（神经系统部署法）", PY + [str(S / "page-bindings.py"), "--check"],
+         "rc=0（每页三方向齐：正向 页→能力位 · 反向 能力位→页 · 真源在盘非空）"),
+        # 🔴 2026-10-09 补挂（主人令「绑骨就是用类似触手的框架以线条的形式固定好驱动，
+        #    直接使用触手扫空身体」）：数字人**骨级触手绑定** —— 每根骨可寻址+有线+有驱动，零死角。
+        #    负对照：拔掉全部动画 ⇒ 必须冒出 19 个死角。
+        # 🔴 2026-10-09 补挂（主人令「视觉每次都要跟手分开去使用传统的瞎子操作……钉死在上面」+
+        #    「她每次执行任务就是瞎还没脑」+「还有耳，嘴」）：四觉闭环 —— 眼耳嘴手缺一觉就拒动/拒说。
+        # 🔴 2026-10-09 补挂（主人令「把这条『扫空身体』扩到整个框架 —— 每一页/每个能力位/
+        #    每根触手都按同一套『寻址+线条+驱动+双向绑定』扫一遍」）：通法扫空，四平面一起判。
+        ("通法扫空（四平面×四列）", PY + [str(S / "neural-scan.py"), "--check"],
+         "rc=0（页/能力位/触手域/骨 四平面同一套四列模型；死角合计 0）"),
+        ("原生四觉闭环（眼耳嘴手·缺一觉拒动）",
+         PY + [str(ROOT / "gbt_allinone" / "tests" / "test_vision_loop.py")],
+         "rc=0（四觉齐 · 看不到不动 · 没脑不动 · 没内容不说 · 门与内层同口径）"),
+        ("视觉钉死闸（没有眼睛就没有手）", PY + [str(S / "vision-pinned-check.py")],
+         "rc=0（凡 desktop_control 必须同时有 privacy_read；瞎子缝 0）"),
+        ("骨级触手绑定（扫空身体·无死角）",
+         PY + [str(ROOT / "tools" / "digihuman" / "bone-tentacle-bind.py"), "--check"],
+         "rc=0（19 骨逐根：寻址/线条/驱动三件齐；有死角即红）"),
+        # 🔴 2026-10-10 补挂（主人截图暴露：跑的是旧打包件 ⇒ 新页一样没进包）：
+        #    electron-builder 的 build.files 是**手工白名单**，新建一页就要人肉补一行 ⇒ 迟早漏。
+        # 🔴 2026-10-10 补挂（主人令「你都不审查，不登记的吗？不调用跑一遍全部能力那里有问题就一目了然了」）：
+        #    框架总账 = 六本子账汇总成一页（真坏/缺依赖/未配置，每条带根因与该谁给）。
+        ("框架总账（六本子账汇总·一目了然）", PY + [str(S / "health-ledger.py"), "--check"],
+         "rc=0（每条都有状态与归属；真坏 = 我的活没干完，其余 = 等票但已逐条登记）"),
+        # 🔴 2026-10-10 补挂（主人令「下一轮」：把这套判据挂进每日体检，让哑片和响度不达标**开机就报警**）：
+        #    这两件是抓样本定合格线时追出来的 —— 现有片场 7 支哑片、我那条片响度比样本低 12dB，
+        #    都是**我抓样本时才撞见**的。挂进体检 ⇒ 以后开机就报，不用等撞。
+        # 🔴 2026-10-10 补挂（主人给的 3D 权威口径：Khronos glTF 2.0 / Tripo 检查单 / Game-Ready 2026）：
+        #    十道工序落成机检 —— 能机检的一律机检，机检不了的如实标「未检」（明写不装会）。
+        ("3D 资产机检（十道工序）", PY + [str(S / "verify-3d-asset.py")],
+         "rc=0（在役件都检到；面数/包围盒/关节/NORMAL/UV/蒙皮权重归一/动画逐条真读）"),
+        ("影片音轨（哑片不许出厂）", PY + [str(S / "film-audio-guard.py")],
+         "rc=0（出厂面凡有视频却 0 音轨即红；中间件允许无音轨但要标明；彩排/演示件不判但必须标出来）"),
+        ("样本合格线（时长/响度对样本区间）", PY + [str(S / "sample-baseline.py")],
+         "rc=0（合格线=真样本读数区间；越界即红；**音轨不在这里判**——那是上一道的活）"),
+        ("打包白名单（新增页不许漏出包）", PY + [str(S / "pack-files-check.py")],
+         "rc=0（面板 PAGES 里落在 holo_pet_w3/ 下的页，其目录必须被 build.files 覆盖）"),
+        ("AI 工作面板现读", PY + [str(S / "ai-board.py")],
+         "rc=0（30 职位逐位带状态与最近动作；报警如实显示）"),
+        ("不开口闸（严禁要用户做事）", PY + [str(S / "no-ask-check.py")],
+         "rc=0（违规 0；5 句要用户做事必须全拦 + 身份登录/商量架构放行 + 停点闸只许两种理由）"),
+        ("交付闸（每能力单独闭环才准交付）", PY + ["-m", "gbt_allinone.delivery_gate", "audit"],
+         "rc=0（禁交付 0；要参数/缺依赖/真坏/未扫 ⇒ 禁交付）"),
     ]
 
 
@@ -230,12 +307,41 @@ def _self_check(steps: list | None = None) -> dict:
     #    **判据比对象窄 = 假红**（与"判据比对象宽 = 假绿"同族）：脚本后缀要按**现读**认，
     #    不能按"我这仓里全是 python"认。认的后缀写在一处，加新后缀只改这一行。
     SCRIPT_SUFFIXES = (".py", ".mjs", ".cjs", ".js")
-    missing = [n for n, c, _ in steps
-               if not any(str(x).endswith(SCRIPT_SUFFIXES) and pathlib.Path(x).is_file() for x in c)]
+
+    def _has_target(c) -> bool:
+        """这条命令有没有**可验的真实靶**（文件脚本 **或** 「-m 模块」形式）。
+
+        🔴 2026-10-10 第三修（体检 rc=1：体检器自检 自己红）：原来**只认文件后缀** ⇒
+            本仓有多步是 **py -m 模块** 形式（框架门 / 交付闸 都是我挂的），
+            它们**没有文件参数** ⇒ 被判「缺脚本」 ⇒ **假红**。
+            这与上面 2026-09-25 那次「只认 .py ⇒ 把存在的 .mjs 报缺」**同族**：
+            **判据比对象窄 = 假红**。⇒ 按 **importlib 现读解析模块**，不按后缀/位置猜。
+        """
+        xs = [str(x) for x in c]
+        if any(x.endswith(SCRIPT_SUFFIXES) and pathlib.Path(x).is_file() for x in xs):
+            return True
+        if "-m" in xs:
+            i = xs.index("-m")
+            if i + 1 < len(xs):
+                mod = xs[i + 1]
+                # ① 路径回退（**最稳**：不依赖 sys.path 与导入副作用）
+                rel = mod.replace(".", "/")
+                if ((ROOT / (rel + ".py")).is_file()
+                        or (ROOT / rel / "__init__.py").is_file()):
+                    return True
+                # ② 再试 importlib（仓根不在 sys.path 时 find_spec 会解析不到 —— 实测撞过）
+                try:
+                    import importlib.util as _iu
+                    return _iu.find_spec(mod) is not None
+                except Exception:                            # noqa: BLE001
+                    return False
+        return False
+
+    missing = [n for n, c, _ in steps if not _has_target(c)]
     return {"ok": bool(ok and not missing), "步数": len(steps),
             "步骤": [n for n, _, _ in steps], "缺脚本": missing,
             "口径": "**只验架子，不重跑体检** —— 否则 nerve selftest → checkup → nerve selftest 无限递归；"
-                    "**步数不写死**（写死过一次 ⇒ 末梢长期假痛）"}
+            "**步数不写死**（写死过一次 ⇒ 末梢长期假痛）"}
 
 
 def _selftest() -> int:
@@ -374,7 +480,7 @@ def main() -> int:
            "> 生成器：`tools/codex-scripts/checkup.py`（它不装计划任务、不自动修东西）", ""]),
         encoding="utf-8")
     print(json.dumps({"判决": report["判决"], "落盘": [str(out_p.relative_to(ROOT)),
-                                                   str(md.relative_to(ROOT))],
+                                                 str(md.relative_to(ROOT))],
                       "逐条 rc": {x["步骤"]: x["rc"] for x in rows},
                       "总耗时秒": report["总耗时秒"]}, ensure_ascii=False, indent=1))
     return worst

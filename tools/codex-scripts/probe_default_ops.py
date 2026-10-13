@@ -9,7 +9,6 @@
   D 真去干活   ok=True 且产生动作/副作用        → 缺陷（该补 status）
   E 抛异常                                     → 缺陷
 """
-import io
 import json
 import sys
 import traceback

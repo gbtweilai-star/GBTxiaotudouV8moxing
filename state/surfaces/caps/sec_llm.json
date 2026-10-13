@@ -1,0 +1,17 @@
+{
+ "cap": "sec_llm",
+ "domain": "security",
+ "desc": "黑客大脑推理引擎（独立大模型+独立密钥）：abliteration.ai 无限制模型，专用通道不与其他能力混用",
+ "safe": true,
+ "ops": [],
+ "ops_method": "handler 文件未找到",
+ "handler_file": "",
+ "params": [
+  "prompt"
+ ],
+ "params_hint": "",
+ "handler": "sec_llm",
+ "slot": "g1-08",
+ "group": 1,
+ "role": "安全卸载/审查面（abliteration 通道）"
+}

@@ -38,11 +38,20 @@ python tools/codex-scripts/five-dim.py cap ul_tars_desktop ['<JSON载荷>'] [--f
 
 ## 0. 一位一域（先确认名字）
 
-现读 `gbt_allinone/caps_registry.py`（`domain == "desktop"`）**只有一条**：
+现读 `gbt_allinone/caps_registry.py`（`domain == "desktop"`）**有两条**：
 
 | 域 | 能力位（kind） | handler | safe | 注册表 desc 原文 |
 |---|---|---|---|---|
 | `desktop` | **`ul_tars_desktop`** | `ul_tars_desktop` | **false** | "Ul-TARS Desktop desktop agent" |
+| `desktop` | **`control_loop`** | `control_loop` | **true** | 快慢双脑控制回路（枚举动作 · 执行前两查 · DONE 独立验证 · 预算闸 · 写 state/control_loop.jsonl 审计链）；**只决策不动手** |
+
+🔴 **2026-10-11 勘误**：本节原来写「**只有一条**」—— 那是本文件写于 2026-10-03 时的读数，
+而 `control_loop` 之后也挂进了 `domain="desktop"` ⇒ **那句话已经过期**（文档说了一个不再成立的事实）。
+现在按现读改成两条。
+
+**两条各有专件，别串门**：
+- `ul_tars_desktop`（起外部 GUI 智能体进程）→ **本文件**
+- `control_loop`（快慢双脑决策回路）→ **`skills/gbt-control-loop/SKILL.md`**（另一份规程，本文件不重写它）
 
 分派链（三处接齐 · 实测可调）：
 `api.py:330`（`kind == "ul_tars_desktop"` → `cli_agents.ul_tars_desktop(payload)`）

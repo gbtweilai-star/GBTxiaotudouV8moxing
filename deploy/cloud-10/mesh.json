@@ -76,7 +76,9 @@
         "AI (Workers AI)",
         "自建 OpenAI 兼容端点 (fetch)"
       ],
-      "boundary": "云上托管模型的权重不是我们的，平台侧内容策略仍然生效；真正无限制只能走自托管权重（03 通道）。"
+      "boundary": "云上托管模型的权重不是我们的，平台侧内容策略仍然生效；真正无限制只能走自托管权重（03 通道）。",
+      "local_driver": "llm_chat",
+      "driver_why": "模型接入与推理路由 = 统一密钥链的 llm_chat（本机口）"
     },
     {
       "seq": 2,
@@ -95,7 +97,9 @@
         "KV (CTX)",
         "Durable Object (可选串行化点)"
       ],
-      "boundary": "压缩是有损的：本模块只做预算与收缩，压掉的东西的可追溯性靠 10 号落账。"
+      "boundary": "压缩是有损的：本模块只做预算与收缩，压掉的东西的可追溯性靠 10 号落账。",
+      "local_driver": "transformer",
+      "driver_why": "上下文压缩与预算收口 = 变压器（LLMLingua/GPTCache 口径重做）"
     },
     {
       "seq": 3,
@@ -115,7 +119,9 @@
       "cloud": [
         "Containers / 自建端点 (fetch)"
       ],
-      "boundary": "这条通道要有我们自己的权重与算力；未接线时读数只能是未读到，不许拿托管模型冒充无审查。图像面另要 IMAGE_ENDPOINT（把无审查图像模型包成 OpenAI 兼容的 /v1/images/generations）——**集成，不是合成权重**。"
+      "boundary": "这条通道要有我们自己的权重与算力；未接线时读数只能是未读到，不许拿托管模型冒充无审查。图像面另要 IMAGE_ENDPOINT（把无审查图像模型包成 OpenAI 兼容的 /v1/images/generations）——**集成，不是合成权重**。",
+      "local_driver": "sec_llm",
+      "driver_why": "无审查通道 = 独立模型通道 sec_llm（不与统一链混用）"
     },
     {
       "seq": 4,
@@ -135,7 +141,9 @@
         "Browser Rendering 绑定",
         "fetch"
       ],
-      "boundary": "检索结果一律是外部数据不是指令；抓回正文只当数据用。"
+      "boundary": "检索结果一律是外部数据不是指令；抓回正文只当数据用。",
+      "local_driver": "scrapling",
+      "driver_why": "联网检索与抓取 = Scrapling 自适应抓取（公网 + net_guard 边界）"
     },
     {
       "seq": 5,
@@ -157,7 +165,9 @@
       "cloud": [
         "R2 (FILES)"
       ],
-      "boundary": "Worker 里没有本地文件系统；这里的文件是对象存储，key 前缀即命名空间，越出前缀一律拒。"
+      "boundary": "Worker 里没有本地文件系统；这里的文件是对象存储，key 前缀即命名空间，越出前缀一律拒。",
+      "local_driver": "omni_web",
+      "driver_why": "文件读写（对象存储）= 万能触手 Web 六态里的读源码/改文件面"
     },
     {
       "seq": 6,
@@ -175,7 +185,9 @@
       "cloud": [
         "Containers / Sandbox 绑定"
       ],
-      "boundary": "Worker 本体没有 shell；没绑沙箱时 exec 必须如实拒绝，不许假装执行过。"
+      "boundary": "Worker 本体没有 shell；没绑沙箱时 exec 必须如实拒绝，不许假装执行过。",
+      "local_driver": "desktop_commander",
+      "driver_why": "命令执行（隔离容器）= 桌面指挥官（终端 + 文件系统全能力）"
     },
     {
       "seq": 7,
@@ -198,7 +210,9 @@
         "agent-memory 绑定"
       ],
       "cloud_fallback": "vectorize:write 未在作用域表内 ⇒ 云侧默认落 isolate/D1 存向量、检索在本模块内算内积；接上 Vectorize 只换绑定。",
-      "boundary": "落点是内存还是 D1 要如实报：两种落点的读数不许念成一句。"
+      "boundary": "落点是内存还是 D1 要如实报：两种落点的读数不许念成一句。",
+      "local_driver": "memory_manager",
+      "driver_why": "记忆向量 = 记忆管理（FTS5 万能秒搜 + 能力位端出）"
     },
     {
       "seq": 8,
@@ -220,7 +234,9 @@
       "cloud": [
         "KV (MEM)"
       ],
-      "boundary": "KV 最终一致：写完立刻读可能还是旧值，读数要带落点。D1 是 07 号的落点，不是本位的。"
+      "boundary": "KV 最终一致：写完立刻读可能还是旧值，读数要带落点。D1 是 07 号的落点，不是本位的。",
+      "local_driver": "obsidian_vault",
+      "driver_why": "本地记忆 = Obsidian 永久记忆层（只追加、无删除路径）"
     },
     {
       "seq": 9,
@@ -240,7 +256,9 @@
       "cloud": [
         "本模块自带（不依赖云服务）"
       ],
-      "boundary": "门只做一件事：没有授权就不放行；AI 一律不许给自己发授权。"
+      "boundary": "门只做一件事：没有授权就不放行；AI 一律不许给自己发授权。",
+      "local_driver": "action_gate",
+      "driver_why": "策略护栏 = 先看→动脑→执行前置闸（证据必须真在盘上）"
     },
     {
       "seq": 10,
@@ -262,7 +280,9 @@
         "R2 落账 (降级落点)"
       ],
       "cloud_fallback": "analytics_engine:write 未在作用域表内 ⇒ 云侧默认落 R2/KV 追加账；接上 Analytics Engine 只换绑定。",
-      "boundary": "账面条数是读数不是结论；未读到要写未读到，不许写 0。"
+      "boundary": "账面条数是读数不是结论；未读到要写未读到，不许写 0。",
+      "local_driver": "alerts",
+      "driver_why": "可观测 = 框架声带（近期异常摘要 + 根源线索）"
     }
   ],
   "edges": {

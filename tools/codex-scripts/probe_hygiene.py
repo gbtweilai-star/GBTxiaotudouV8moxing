@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, ".")
 sys.stdout.reconfigure(encoding="utf-8")
 
-import gbt_allinone as gbt
+import gbt_allinone as gbt  # noqa: E402
 
 for kind, payload in (("file_hygiene", {}), ("ghost_guard", {})):
     r = gbt.run_task(kind, payload, stamp=False)

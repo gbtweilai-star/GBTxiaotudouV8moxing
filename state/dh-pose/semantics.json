@@ -1,0 +1,93 @@
+{
+  "_口径": "逐动作语义表：意图 → 骨/轴/符号。轴系来自 calibrate_axes2.py 的**旋转轴探针**实测（v2）。",
+  "_铁律": "脊柱链的**自转（转身/扭头/转腰）＝局部 Y**（实测 Y→世界Z 竖轴）；v1 拿「骨末端位移」当探针时 Y 恒为 0 —— 那是因为骨末端正好在自转轴上，**不是没驱动，是量错了地方**。",
+  "_v1_遗留": "抬放/屈伸类用 v1 的位移探针更直观（X=抬放、Z=前后摆），本表两者并用。",
+  "转身": {"bones": ["Hips", "Spine", "Spine2"], "axis": "Y", "sign": 1,
+           "scale": [0.45, 0.3, 0.25]},
+  "转腰": {"bones": ["Spine", "Spine2"], "axis": "Y", "sign": 1, "scale": [0.55, 0.45]},
+  "扭头": {"bones": ["Neck", "Head"], "axis": "Y", "sign": 1, "scale": [0.4, 0.6]},
+  "仰头": {"bones": ["Neck", "Head"], "axis": "X", "sign": -1, "scale": [0.5, 1.0]},
+  "偏头": {"bones": ["Neck", "Head"], "axis": "Z", "sign": 1, "scale": [0.4, 0.6]},
+  "耸肩": {"bones": ["LeftShoulder", "RightShoulder"], "axis": "X", "sign": 1},
+  "抱胸": {"bones": ["Arm"], "axis": "X", "sign": -1, "extra": "屈肘 70"},
+  "摊手": {"bones": ["Hand"], "axis": "Z", "sign": 1},
+  "张指": {"bones": ["HandIndex", "HandMiddle", "HandPinky", "HandRing"],
+           "joints": [1], "axis": "Z", "sign": 1},
+  "抬腿": {"bones": ["UpLeg"], "axis": "X", "sign": 1},
+  "踢腿": {"bones": ["UpLeg", "Leg"], "axis": "X", "sign": 1, "scale": [1.0, 0.4]},
+  "踮脚": {"bones": ["Foot"], "axis": "X", "sign": -1},
+  "落脚跟": {"bones": ["Foot"], "axis": "X", "sign": 1},
+  "俯身": {"bones": ["Spine", "Spine1", "Spine2"], "axis": "X", "sign": 1,
+           "scale": [0.5, 0.35, 0.15]},
+  "侧身": {"bones": ["Spine", "Spine2"], "axis": "Z", "sign": 1, "scale": [0.6, 0.4]},
+  "伸懒腰": {"bones": ["Arm", "Spine"], "axis": "X", "sign": 1, "scale": [1.0, 0.1]},
+  "挥手": {"bones": ["Arm"], "axis": "X", "sign": 1},
+  "指向前方": {"bones": ["Arm"], "axis": "X", "sign": 1, "extra": "屈肘 15"},
+  "握手": {"bones": ["Arm", "ForeArm"], "axis": "X", "sign": 1, "scale": [0.6, 0.5]},
+  "敬礼": {"bones": ["Arm", "ForeArm"], "axis": "X", "sign": 1, "scale": [1.0, 0.6]},
+  "叉腰": {"bones": ["Arm"], "axis": "X", "sign": -1, "extra": "屈肘 34"},
+  "抱拳": {"bones": ["Arm", "ForeArm"], "axis": "X", "sign": 1, "scale": [0.7, 0.8]},
+  "坐下": {"bones": ["UpLeg", "Leg"], "axis": "X", "sign": 1, "scale": [1.0, -1.2],
+           "_口径": "大腿前抬 + 小腿反折（负号来自实测：小腿 X 正向是把脚跟往后再往上）"},
+  "站直": {"bones": ["Spine", "Spine1", "Spine2"], "axis": "X", "sign": -1,
+           "scale": [0.3, 0.3, 0.2]},
+  "歪头": {"bones": ["Head"], "axis": "Z", "sign": 1},
+  "低头": {"bones": ["Neck", "Head"], "axis": "X", "sign": 1, "scale": [0.6, 1.0]},
+  "看左边": {"bones": ["Head"], "axis": "Y", "sign": 1},
+  "看右边": {"bones": ["Head"], "axis": "Y", "sign": -1},
+  "挺身": {"bones": ["Spine", "Spine2"], "axis": "X", "sign": 1, "scale": [0.4, 0.3]},
+  "收腹": {"bones": ["Spine"], "axis": "X", "sign": -1},
+  "抬臂": {"bones": ["Arm"], "axis": "X", "sign": 1},
+  "垂臂": {"bones": ["Arm"], "axis": "X", "sign": -1},
+  "前摆臂": {"bones": ["Arm"], "axis": "Z", "sign": 1, "side_sign": {"R": -1}},
+  "屈肘": {"bones": ["ForeArm"], "axis": "X", "sign": 1, "side_sign": {"R": 1}},
+  "屈指": {"bones": ["HandIndex", "HandMiddle", "HandPinky", "HandRing", "HandThumb"],
+           "joints": [1, 2, 3], "axis": "X", "sign": 1, "scale": [0.6, 0.75, 1.0]},
+  "展指": {"bones": ["HandIndex", "HandPinky"], "joints": [1], "axis": "Z", "sign": 1},
+  "点头": {"bones": ["Neck", "Head"], "axis": "X", "sign": 1, "scale": [0.5, 1.0]},
+  "侧弯": {"bones": ["Spine", "Spine2"], "axis": "Z", "sign": 1},
+  "弯腰": {"bones": ["Spine", "Spine1", "Spine2"], "axis": "X", "sign": 1,
+           "scale": [0.45, 0.35, 0.2]},
+  "翘趾": {"bones": ["ToeBase"], "axis": "X", "sign": 1},
+  "迈步": {"bones": ["UpLeg"], "axis": "X", "sign": 1},
+  "屈膝": {"bones": ["Leg"], "axis": "X", "sign": 1},
+  "_已补": "2026-10-13：换「旋转轴探针」后，转身/扭头/转腰/看左看右 全部补入（走 Y 轴）。"
+  ,"_自由度覆盖": "2026-10-13 主人令「要所有的肢体动作都要能实现」⇒ 按解剖自由度补齐词汇：肩(4) 肘(2) 腕(4) 髋(6) 膝(2) 踝(4) 趾(2) 指(5)。骨级通路本就全开（实测 65 根骨全可驱动），这一层只是给运动起名。"
+  ,"肩前平举": {"bones": ["Arm"], "axis": "X", "sign": 1}
+  ,"肩后摆": {"bones": ["Arm"], "axis": "X", "sign": -1}
+  ,"肩外展": {"bones": ["Arm"], "axis": "Z", "sign": 1}
+  ,"肩内收": {"bones": ["Arm"], "axis": "Z", "sign": -1}
+  ,"伸肘": {"bones": ["ForeArm"], "axis": "X", "sign": -1}
+  ,"腕屈": {"bones": ["Hand"], "axis": "X", "sign": 1}
+  ,"腕伸": {"bones": ["Hand"], "axis": "X", "sign": -1}
+  ,"腕内偏": {"bones": ["Hand"], "axis": "Z", "sign": 1}
+  ,"腕外偏": {"bones": ["Hand"], "axis": "Z", "sign": -1}
+  ,"髋后伸": {"bones": ["UpLeg"], "axis": "X", "sign": -1}
+  ,"髋外展": {"bones": ["UpLeg"], "axis": "Z", "sign": 1}
+  ,"髋内收": {"bones": ["UpLeg"], "axis": "Z", "sign": -1}
+  ,"髋内旋": {"bones": ["UpLeg"], "axis": "Y", "sign": 1}
+  ,"髋外旋": {"bones": ["UpLeg"], "axis": "Y", "sign": -1}
+  ,"伸膝": {"bones": ["Leg"], "axis": "X", "sign": -1}
+  ,"踝背屈": {"bones": ["Foot"], "axis": "X", "sign": -1}
+  ,"踝跖屈": {"bones": ["Foot"], "axis": "X", "sign": 1}
+  ,"踝内翻": {"bones": ["Foot"], "axis": "Z", "sign": 1}
+  ,"踝外翻": {"bones": ["Foot"], "axis": "Z", "sign": -1}
+  ,"屈趾": {"bones": ["ToeBase"], "axis": "X", "sign": -1}
+  ,"伸指": {"bones": ["HandIndex", "HandMiddle", "HandPinky", "HandRing", "HandThumb"],
+            "joints": [1, 2, 3], "axis": "X", "sign": -1}
+  ,"并指": {"bones": ["HandIndex", "HandMiddle", "HandPinky", "HandRing"],
+            "joints": [1], "axis": "Z", "sign": -1}
+  ,"拇指外展": {"bones": ["HandThumb"], "joints": [1], "axis": "Z", "sign": 1}
+  ,"食指独立屈": {"bones": ["HandIndex"], "joints": [1, 2, 3], "axis": "X", "sign": 1}
+  ,"中指独立屈": {"bones": ["HandMiddle"], "joints": [1, 2, 3], "axis": "X", "sign": 1}
+  ,"无名指独立屈": {"bones": ["HandRing"], "joints": [1, 2, 3], "axis": "X", "sign": 1}
+  ,"小指独立屈": {"bones": ["HandPinky"], "joints": [1, 2, 3], "axis": "X", "sign": 1}
+  ,"挥拳": {"bones": ["Arm", "ForeArm"], "axis": "Z", "sign": 1, "scale": [0.4, 0.9]}
+  ,"甩臂": {"bones": ["Arm"], "axis": "Z", "sign": 1}
+  ,"环转肩": {"bones": ["Arm"], "axis": "X", "sign": 1}
+  ,"拱背": {"bones": ["Spine", "Spine1", "Spine2"], "axis": "X", "sign": -1,
+            "scale": [0.4, 0.4, 0.2]}
+  ,"转髋": {"bones": ["Hips"], "axis": "Y", "sign": 1}
+  ,"提肩": {"bones": ["LeftShoulder", "RightShoulder"], "axis": "X", "sign": 1}
+  ,"落肩": {"bones": ["LeftShoulder", "RightShoulder"], "axis": "X", "sign": -1}
+}

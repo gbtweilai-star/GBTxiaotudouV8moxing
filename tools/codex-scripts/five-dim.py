@@ -31,6 +31,49 @@
    不主动进信封就永远是 `synced:false`。实测 `brainless_ratio 0.9926`（2289 次只 17 次在内）。
 
 口径：cap 一律走 gbt_allinone.run_task（唯一门）；被门拒绝就**如实报缺什么作用域**，不绕路。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔴🔴 **框架的护栏（主人令 2026-10-10，逐字）—— 只有三道，除此外一律放行**
+
+  ① **黑客全能力使用** ⇒ 要**人工授权**
+  ② **付款**           ⇒ 要**人工授权**
+  ③ **镜像多维度空间可以跑任何东西** —— 唯独**「生成代码」禁止入生产面板**
+
+  🔴 而这三道**之外**：**所有的规则都是人定的。我自己的规则，我们自己定。**
+     这一句**必须出现在万能插的解释里** —— 因为它是**解释的一部分，不是免责声明**：
+     **主人操作自己的东西，不需要任何人管。**
+     （与既有律并不冲突：**AI 永远无权给自己发授权** —— 那条也是主人定的规则之一。
+       护栏只有三道，是因为其余的事**本就该由主人说了算**，而不是因为门可以绕。）
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔴🔴 **部署法制（同一次主人令）—— 只出品生产，不出品废物**
+
+  · **不管多大的项目，拆开模块化部署**
+  · 一个模块 ⇒ **先在镜像多维度空间跑通闭环** ⇒ **跑通了才落盘**
+  · ⇒ 用户看到的是 **V8 一次性部署直接生产**，
+      而**不是到处涂改、搞得一片混乱**
+
+  🔴 **镜像多维度空间的最大能力：只出品生产，不出品废物。**
+     落点：mirror_shape → scan → plan → simulate → parity → rehearse → **release/ascend（一次性全量，需主人发 deploy_publish）**
+     房间（room_space）是**隔离排练现实**：假设/推演/打磨全在房间里跑，**不覆盖全局 mirror_space/reality**。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔴🔴 **交付律（主人令 2026-10-10，逐字）—— 没有亲自跑通的东西不许交付**
+
+  「所有的验证我只看**实质性跑通闭环证据**，**不接受任何口述说完成了**」
+  「把这个验证方式也给框架绑死了，**没有亲自跑通的东西不许交付**」
+
+  · **每一项交付声明，都必须带一条「可复跑的命令」与「期望读数」** ⇒ 落 state/delivery-claims.jsonl
+  · 判据 tools/codex-scripts/proof-of-run-check.py：**当场复跑**那条命令并比对读数
+      ① 只有口述、没带命令/期望读数  ⇒ 🔴 红（口述不算证据）
+      ② 带了命令、复跑跑不通        ⇒ 🔴 红（没跑通就是没跑通）
+      ③ 复跑通过且读数一致          ⇒ ✅ 绿（亲自跑通了）
+  · 已接进开机自检（boot-selfcheck.py 的 EXTRA_JUDGMENTS）
+  · 自检带**真植入负控**：口述必红 · 命令跑不通必红 · 读数对不上必红
+
+  🔴 而这条律**自己就咬过我一次**（实证）：我把「恒真判据」那条声明写成不带隔离 store 的命令，
+     复跑当场红 —— 本仓守卫**拒绝在绑定生产 store 的进程里跑测试**。
+     ⇒ 正是「在**不等价条件**下验证过」这种假交付，被它抓出来。
 """
 import json
 import sys
@@ -246,7 +289,7 @@ def _multi_digest(kind, res):
             return {"op": "run", "kind_of_work": inner.get("kind"), "work": inner.get("work"),
                     "步骤状态分布": st,
                     "ran 的步": [x.get("step") for x in rep
-                                if isinstance(x, dict) and x.get("status") == "ran"]}
+                               if isinstance(x, dict) and x.get("status") == "ran"]}
         if "chains" in inner:
             chains = inner.get("chains") or {}
             rn = inner.get("runnable_steps") or {}
@@ -431,7 +474,7 @@ def main(argv):
                              "（同进程 %d · 继承标记 %d ｜ 默认同步 %d · 主动信封 %d · 未分格 %d）"
                              % (ins, tot, via["ctx"], via["env"],
                                 ent["auto"], ent["outer"], ent["unknown"])) if tot
-                            else "★ 钩子装好后还没有新的能力调用",
+                    else "★ 钩子装好后还没有新的能力调用",
                 }
             else:
                 out_r["since_hook"] = {"since": None,
@@ -439,7 +482,7 @@ def main(argv):
         except Exception:                                            # noqa: BLE001
             out_r["since_hook"] = {"note": "★ 现读覆盖算不出来（如实报缺，不猜）"}
         out_r["_口径"] = ("brainless_ratio 是**全史**（窗口内全部调用）；"
-                          "since_hook 是**装钩子之后**的现读。两个一起看才不会被历史误导。")
+                        "since_hook 是**装钩子之后**的现读。两个一起看才不会被历史误导。")
         print(json.dumps(out_r, ensure_ascii=False, indent=1))
         return 0
 
@@ -488,9 +531,11 @@ def main(argv):
         i = 2
         while i < len(head):
             if head[i] == "--contains" and i + 1 < len(head):
-                contains = head[i + 1]; i += 2
+                contains = head[i + 1]
+                i += 2
             elif head[i] == "--argv-has" and i + 1 < len(head):
-                argv_has.append(head[i + 1]); i += 2
+                argv_has.append(head[i + 1])
+                i += 2
             else:
                 i += 1
         expect = {"contains": contains, "argv_contains": argv_has}
@@ -549,11 +594,13 @@ def main(argv):
         workers = 0
         if "--workers" in a:
             i = a.index("--workers")
-            workers = int(a[i + 1]); del a[i:i + 2]
+            workers = int(a[i + 1])
+            del a[i:i + 2]
         raw = None
         if "--file" in a:
             i = a.index("--file")
-            raw = Path(a[i + 1]).read_text(encoding="utf-8"); del a[i:i + 2]
+            raw = Path(a[i + 1]).read_text(encoding="utf-8")
+            del a[i:i + 2]
         elif a:
             raw = a[0]
         if not raw:
@@ -648,7 +695,7 @@ def main(argv):
             print()
             print(json.dumps({"ok": False, "refused": True, "reason": "写面冲突（隔离规矩 fail-closed）",
                               "conflicts": conflicts, "isolation": {"jobs": len(jobs),
-                              "isolated": len(jobs), "mirror_isolation": False}},
+                                                                    "isolated": len(jobs), "mirror_isolation": False}},
                              ensure_ascii=False, indent=1))
             return 2
 
@@ -688,7 +735,7 @@ def main(argv):
         print("  ⏱ 墙钟 %.3fs ｜ 各件耗时之和 %.3fs ｜ 峰值并发 **%d**" % (wall, serial_sum, peak))
         print("  两两重叠：%s"
               % "、".join("%s %+.3fs%s" % (p["对"], p["重叠秒"], "✅同时" if p["同时"] else "—")
-                          for p in pairs))
+                         for p in pairs))
         # ── 判据（含反向对照）─────────────────────────────────────────────
         want_peak = 1 if serial else len(jobs)
         crit = {
@@ -716,7 +763,7 @@ def main(argv):
                             ("label", "kind", "status", "denied", "elapsed", "ok", "error")}
                            for r in recs],
                "_口径": ("峰值并发用扫描线算；同名时刻先算结束再算开始 ⇒ 只是相碰不算重叠。"
-                        "`--serial` 是反向对照，它的期望峰值是 1。")}
+                       "`--serial` 是反向对照，它的期望峰值是 1。")}
         print()
         print(json.dumps(out, ensure_ascii=False, indent=1, default=str))
         return 0 if out["ok"] else 1
@@ -833,7 +880,7 @@ def main(argv):
             out["result"] = _summarize(out.get("result"))
             out["_truncated"] = {"原始字符数": len(body), "默认上限": LIMIT,
                                  "说明": "为让输出**始终是合法 JSON**，这里把 result 收窄成摘要；"
-                                         "要全量请加 `--full`，或收窄 payload（例如指定 op/domain）"}
+                                 "要全量请加 `--full`，或收窄 payload（例如指定 op/domain）"}
             body = json.dumps(out, ensure_ascii=False, indent=1, default=str)
         print(body)
         return 0 if out["status"] in ("ok", "success") else 1

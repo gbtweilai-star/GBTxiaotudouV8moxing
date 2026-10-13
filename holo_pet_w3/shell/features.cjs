@@ -266,6 +266,20 @@ function buildCarriers(input) {
         reason: pyReason,
         note: Number(i.models) > 0 ? (Number(i.models) + " 个形象在库") : null,
       },
+      /* 🔴 2026-10-10（主人令）**补一格：面板桥自己没人拉**。
+         主人实测：「打开 APP 里面还是一大堆没连接没配置」—— 真探后真因不是一堆配置，
+         而是**面板桥 :8765 没在跑**（capability-audit 那两条断连 bridge.panel-8765 /
+         svc.panel-bridge-raw 其实是同一件事）。
+         而本件上面早就写好了一句「本地面板 :8765 未就绪」—— **它知道，但什么都不做**。
+         （open-full-panel.bat 会自己探+拉，所以走那个入口看不到；走的入口不同，结果不同。）
+         ⇒ 把「拉桥」补成一条载体，由引导链在建窗前召唤。**只出命令，真 spawn 仍在 main.cjs。** */
+      {
+        id: "panel-bridge",
+        title: "本地面板桥 :8765（launch_panel.py）",
+        ready: true,      /* 只用仓内 launch_panel.py + stdlib；幂等（先探再起） */
+        reason: "幂等：已在跑则直接返回 0；起法 = py -3.14 holo_pet/launch_panel.py --host 127.0.0.1 --port 8765 --no-browser",
+        note: panelReachable ? "当前已在听 :8765" : "当前未在听 :8765 —— 建窗前应由壳拉起",
+      },
     ],
   };
 }
@@ -287,6 +301,19 @@ function summonPlan(input) {
       cwd: path.join(root, "holo_pet"),
       detached: true,
       reason: "起独立桌面窗口（无边框 · 置顶 · 可拖动）",
+    };
+  }
+  if (carrier === "panel-bridge") {
+    /* 🔴 2026-10-10（主人令）：面板桥（127.0.0.1:8765）**没人负责拉起** ——
+       壳的 windows.json 写着「它正在 8765 跑」，但壳自己不拉 ⇒ 直接开壳时面板一片「未连接」。
+       --no-browser：壳拉起时不弹浏览器；launch_panel.py 本身幂等（先探，已在跑就返回 0）。 */
+    return {
+      ok: true, carrier: carrier, exe: String(i.pythonExe || "py"),
+      argv: ["-3.14", path.join(root, "holo_pet", "launch_panel.py"),
+             "--host", "127.0.0.1", "--port", "8765", "--no-browser"],
+      cwd: path.join(root, "holo_pet"),
+      detached: true,
+      reason: "起本地面板桥 :8765（幂等：先探再起；只为数字人壳有页可加载）",
     };
   }
   if (carrier === "live2d-pet") {

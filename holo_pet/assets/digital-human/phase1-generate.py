@@ -10,7 +10,14 @@
   · 每步都打印读数；**任何一步失败就停并如实报**，不产生半成品；
   · 产物落 raw/，并写 phase1.json（task_id / url / 字节 / sha256 / 时间），再更新 STATUS.json。
 """
-import hashlib, json, os, pathlib, subprocess, sys, time, urllib.request
+import hashlib
+import json
+import os
+import pathlib
+import subprocess
+import sys
+import time
+import urllib.request
 
 WS = pathlib.Path(r"C:\Users\ADMIN\Desktop\GBT小土豆V8")
 DH = WS / "holo_pet/assets/digital-human"

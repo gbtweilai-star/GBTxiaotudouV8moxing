@@ -204,7 +204,82 @@ def pack():
     return ok
 
 
+def selftest() -> int:
+    """S10 门的负控：**造合规/不合规的合成 VRM 各试一遍**，真件当正例。
+
+    🔴 2026-10-10 补。起因：judge-map 逐阶段清点负控出处，S7/S10/S11 三格是空的。
+    S10 这道门管"四段扩展是否合规"（extensionsUsed · specVersion · humanBones · meta · springBone 链），
+    原文没有负控 ⇒ **证明不了它遇到不合规的件会红**。
+    做法：先用一个**最小合规件**当正例（必须过），再**逐项破坏**它造负例（每项必须红）。
+    """
+    import tempfile
+    fails, n = [], [0]
+
+    def check1(name, got, want):
+        n[0] += 1
+        ok = (got == want)
+        print("  %-56s %s" % (name, "✅" if ok else "❌ 期望 %s 得到 %s" % (want, got)))
+        if not ok:
+            fails.append(name)
+
+    def make(comply: dict) -> dict:
+        """按 comply 的开关键造一个 VRM 结构（默认全合规）。"""
+        J = {
+            "asset": {"version": "2.0"},
+            "extensionsUsed": ([ "VRMC_vrm", "VRMC_springBone" ]
+                               if comply.get("used", True) else []),
+            "extensions": {
+                "VRMC_vrm": {
+                    "specVersion": ("1.0" if comply.get("vrmver", True) else "0.0"),
+                    "humanoid": {"humanBones": ({b: {"node": 0} for b in VRM_REQUIRED}
+                                                if comply.get("bones", True) else {})},
+                    "meta": {"name": "selftest", "authors": ["selftest"],
+                             "licenseUrl": ("https://vrm.dev/licenses/1.0/"
+                                            if comply.get("lic", True) else "https://example.com/x")},
+                },
+                "VRMC_springBone": {
+                    "specVersion": "1.0",
+                    "springs": ([{"name": "s1",
+                                  "joints": [{"node": 0, "stiffness": 1, "dragForce": 1,
+                                              "gravityPower": 1, "hitRadius": 1}, {"node": 1}]}]
+                                if comply.get("chain2", True) else [{"name": "s1", "joints": [{"node": 0}]}]),
+                },
+            },
+            "nodes": [{"name": "a"}, {"name": "b"}],
+            # write() 会写 buffers[0].byteLength ⇒ 合成件也必须带这一段（我第一版漏了就 KeyError）
+            "buffers": [{"byteLength": 0}],
+        }
+        return J
+
+    with tempfile.TemporaryDirectory() as td:
+        t = pathlib.Path(td)
+        check1("check 负例·缺件 ⇒ 红", check(t / "_nope.vrm")[0], False)
+        # 正例：最小合规件必须过 —— **正例不过，后面的负例就都没意义**
+        good = t / "good.vrm"
+        write(good, make({}), b"")
+        check1("check 正例·最小合规件 ⇒ 过", check(good)[0], True)
+        # 逐项破坏 —— 每一项都必须红
+        for key, label in (("used", "extensionsUsed 缺扩展"),
+                           ("vrmver", "specVersion≠1.0"),
+                           ("bones", "humanoid 缺必需骨"),
+                           ("lic", "licenseUrl 不是 VRM 1.0 地址"),
+                           ("chain2", "单关节链（VRM 里无效）")):
+            bad = t / ("bad_%s.vrm" % key)
+            write(bad, make({key: False}), b"")
+            check1("check 负例·%s ⇒ 红" % label, check(bad)[0], False)
+    # 真件正例（有就拿真 avatar.vrm 过一遍）
+    real = RIG / "avatar.vrm"
+    if real.is_file():
+        check1("check 正例·真 avatar.vrm ⇒ 过", check(real)[0], True)
+    print()
+    print("vrm-pack 自检: %s（%d 条）"
+          % ("**全部通过**" if not fails else "**%d 条失败**" % len(fails), n[0]))
+    return 0 if not fails else 1
+
+
 if __name__ == "__main__":
+    if "selftest" in sys.argv:
+        raise SystemExit(selftest())
     if "--check" in sys.argv:
         ok, note = check(OUT)
         print(f"S10 门: {'✅' if ok else '❌'} {note}")

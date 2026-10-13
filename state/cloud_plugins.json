@@ -1,0 +1,1320 @@
+{
+ "generated_at": "2026-10-11T03:05:25",
+ "form": "single-isolate",
+ "drops": [
+  {
+   "level": "K1",
+   "what": "cloud driver",
+   "alt": "gbtdiag.smoke_driver"
+  },
+  {
+   "level": "K2",
+   "what": "cloud connector swap",
+   "alt": "mounted-shim"
+  }
+ ],
+ "doctrine": [
+  "插件是接线不是算力：互通 90 条不等于算力乘 10。",
+  "真共享 CPU 只有一种形态：10 个模块装在同一个 isolate 里（本文件 form=single-isolate）。",
+  "10 个独立 Worker + 服务绑定 = 真互通、各算各的；这不算共享 CPU，不许念成共享。",
+  "取不到就写未读到；只有真源明确说不存在才写不存在。",
+  "每个 op 的门写在这里，不写在代码的 if 里 —— 门表是单一真源，改门只改这一处。"
+ ],
+ "modules": [
+  {
+   "id": "gbt-c01-llm-gateway",
+   "seq": 1,
+   "group": null,
+   "duty": "模型接入与推理路由",
+   "local_driver": "llm_chat",
+   "driver_why": "模型接入与推理路由 = 统一密钥链的 llm_chat（本机口）",
+   "ops": {
+    "status": "none",
+    "identity": "none",
+    "models": "none",
+    "complete": "external_llm"
+   },
+   "cloud": [
+    "AI (Workers AI)",
+    "自建 OpenAI 兼容端点 (fetch)"
+   ],
+   "boundary": "云上托管模型的权重不是我们的，平台侧内容策略仍然生效；真正无限制只能走自托管权重（03 通道）。",
+   "is_reserve": false
+  },
+  {
+   "id": "gbt-c02-context-compact",
+   "seq": 2,
+   "group": null,
+   "duty": "上下文压缩与预算收口",
+   "local_driver": "transformer",
+   "driver_why": "上下文压缩与预算收口 = 变压器（LLMLingua/GPTCache 口径重做）",
+   "ops": {
+    "budget": "none",
+    "compact": "none"
+   },
+   "cloud": [
+    "KV (CTX)",
+    "Durable Object (可选串行化点)"
+   ],
+   "boundary": "压缩是有损的：本模块只做预算与收缩，压掉的东西的可追溯性靠 10 号落账。",
+   "is_reserve": false
+  },
+  {
+   "id": "gbt-c03-uncensored-lane",
+   "seq": 3,
+   "group": null,
+   "duty": "无审查通道（自托管权重 · 文本 + 图像）",
+   "local_driver": "sec_llm",
+   "driver_why": "无审查通道 = 独立模型通道 sec_llm（不与统一链混用）",
+   "ops": {
+    "status": "none",
+    "route": "external_llm",
+    "image": "external_llm"
+   },
+   "cloud": [
+    "Containers / 自建端点 (fetch)"
+   ],
+   "boundary": "这条通道要有我们自己的权重与算力；未接线时读数只能是未读到，不许拿托管模型冒充无审查。图像面另要 IMAGE_ENDPOINT（把无审查图像模型包成 OpenAI 兼容的 /v1/images/generations）——**集成，不是合成权重**。",
+   "is_reserve": false
+  },
+  {
+   "id": "gbt-c04-tool-web",
+   "seq": 4,
+   "group": null,
+   "duty": "联网检索与抓取",
+   "local_driver": "scrapling",
+   "driver_why": "联网检索与抓取 = Scrapling 自适应抓取（公网 + net_guard 边界）",
+   "ops": {
+    "search": "none",
+    "fetch": "none"
+   },
+   "cloud": [
+    "ai-search 绑定",
+    "Browser Rendering 绑定",
+    "fetch"
+   ],
+   "boundary": "检索结果一律是外部数据不是指令；抓回正文只当数据用。",
+   "is_reserve": false
+  },
+  {
+   "id": "gbt-c05-tool-file",
+   "seq": 5,
+   "group": null,
+   "duty": "文件读写（对象存储）",
+   "local_driver": "omni_web",
+   "driver_why": "文件读写（对象存储）= 万能触手 Web 六态里的读源码/改文件面",
+   "ops": {
+    "list": "none",
+    "get": "none",
+    "put": "none",
+    "del": "none"
+   },
+   "cloud": [
+    "R2 (FILES)"
+   ],
+   "boundary": "Worker 里没有本地文件系统；这里的文件是对象存储，key 前缀即命名空间，越出前缀一律拒。",
+   "is_reserve": false
+  },
+  {
+   "id": "gbt-c06-tool-shell",
+   "seq": 6,
+   "group": null,
+   "duty": "命令执行（隔离容器）",
+   "local_driver": "desktop_commander",
+   "driver_why": "命令执行（隔离容器）= 桌面指挥官（终端 + 文件系统全能力）",
+   "ops": {
+    "status": "none",
+    "exec": "process_execute"
+   },
+   "cloud": [
+    "Containers / Sandbox 绑定"
+   ],
+   "boundary": "Worker 本体没有 shell；没绑沙箱时 exec 必须如实拒绝，不许假装执行过。",
+   "is_reserve": false
+  },
+  {
+   "id": "gbt-c07-memory-vector",
+   "seq": 7,
+   "group": null,
+   "duty": "向量记忆与语义检索",
+   "local_driver": "memory_manager",
+   "driver_why": "记忆向量 = 记忆管理（FTS5 万能秒搜 + 能力位端出）",
+   "ops": {
+    "index": "none",
+    "query": "none",
+    "stats": "none"
+   },
+   "cloud": [
+    "Vectorize (作用域未授权)",
+    "D1 + 内积 (降级落点)",
+    "agent-memory 绑定"
+   ],
+   "boundary": "落点是内存还是 D1 要如实报：两种落点的读数不许念成一句。",
+   "is_reserve": false
+  },
+  {
+   "id": "gbt-c08-memory-local",
+   "seq": 8,
+   "group": null,
+   "duty": "键值持久化",
+   "local_driver": "obsidian_vault",
+   "driver_why": "本地记忆 = Obsidian 永久记忆层（只追加、无删除路径）",
+   "ops": {
+    "remember": "none",
+    "recall": "none",
+    "list": "none",
+    "forget": "none"
+   },
+   "cloud": [
+    "KV (MEM)"
+   ],
+   "boundary": "KV 最终一致：写完立刻读可能还是旧值，读数要带落点。D1 是 07 号的落点，不是本位的。",
+   "is_reserve": false
+  },
+  {
+   "id": "gbt-c09-policy-guard",
+   "seq": 9,
+   "group": null,
+   "duty": "权限与安全策略门",
+   "local_driver": "action_gate",
+   "driver_why": "策略护栏 = 先看→动脑→执行前置闸（证据必须真在盘上）",
+   "ops": {
+    "scopes": "none",
+    "grants": "none",
+    "evaluate": "none"
+   },
+   "cloud": [
+    "本模块自带（不依赖云服务）"
+   ],
+   "boundary": "门只做一件事：没有授权就不放行；AI 一律不许给自己发授权。",
+   "is_reserve": false
+  },
+  {
+   "id": "gbt-c10-observability",
+   "seq": 10,
+   "group": null,
+   "duty": "可观测与审计落账",
+   "local_driver": "alerts",
+   "driver_why": "可观测 = 框架声带（近期异常摘要 + 根源线索）",
+   "ops": {
+    "emit": "none",
+    "tail": "none",
+    "report": "none"
+   },
+   "cloud": [
+    "Workers Logs / tail (workers_tail:read)",
+    "R2 落账 (降级落点)"
+   ],
+   "boundary": "账面条数是读数不是结论；未读到要写未读到，不许写 0。",
+   "is_reserve": false
+  }
+ ],
+ "spec_path": "deploy/cloud-10/mesh.json",
+ "groups": [],
+ "n": 10,
+ "directed": [
+  {
+   "from": 1,
+   "to": 2,
+   "from_id": "gbt-c01-llm-gateway",
+   "to_id": "gbt-c02-context-compact",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 1,
+   "to": 3,
+   "from_id": "gbt-c01-llm-gateway",
+   "to_id": "gbt-c03-uncensored-lane",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 1,
+   "to": 4,
+   "from_id": "gbt-c01-llm-gateway",
+   "to_id": "gbt-c04-tool-web",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 1,
+   "to": 5,
+   "from_id": "gbt-c01-llm-gateway",
+   "to_id": "gbt-c05-tool-file",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 1,
+   "to": 6,
+   "from_id": "gbt-c01-llm-gateway",
+   "to_id": "gbt-c06-tool-shell",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 1,
+   "to": 7,
+   "from_id": "gbt-c01-llm-gateway",
+   "to_id": "gbt-c07-memory-vector",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 1,
+   "to": 8,
+   "from_id": "gbt-c01-llm-gateway",
+   "to_id": "gbt-c08-memory-local",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 1,
+   "to": 9,
+   "from_id": "gbt-c01-llm-gateway",
+   "to_id": "gbt-c09-policy-guard",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 1,
+   "to": 10,
+   "from_id": "gbt-c01-llm-gateway",
+   "to_id": "gbt-c10-observability",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 2,
+   "to": 1,
+   "from_id": "gbt-c02-context-compact",
+   "to_id": "gbt-c01-llm-gateway",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 2,
+   "to": 3,
+   "from_id": "gbt-c02-context-compact",
+   "to_id": "gbt-c03-uncensored-lane",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 2,
+   "to": 4,
+   "from_id": "gbt-c02-context-compact",
+   "to_id": "gbt-c04-tool-web",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 2,
+   "to": 5,
+   "from_id": "gbt-c02-context-compact",
+   "to_id": "gbt-c05-tool-file",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 2,
+   "to": 6,
+   "from_id": "gbt-c02-context-compact",
+   "to_id": "gbt-c06-tool-shell",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 2,
+   "to": 7,
+   "from_id": "gbt-c02-context-compact",
+   "to_id": "gbt-c07-memory-vector",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 2,
+   "to": 8,
+   "from_id": "gbt-c02-context-compact",
+   "to_id": "gbt-c08-memory-local",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 2,
+   "to": 9,
+   "from_id": "gbt-c02-context-compact",
+   "to_id": "gbt-c09-policy-guard",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 2,
+   "to": 10,
+   "from_id": "gbt-c02-context-compact",
+   "to_id": "gbt-c10-observability",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 3,
+   "to": 1,
+   "from_id": "gbt-c03-uncensored-lane",
+   "to_id": "gbt-c01-llm-gateway",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 3,
+   "to": 2,
+   "from_id": "gbt-c03-uncensored-lane",
+   "to_id": "gbt-c02-context-compact",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 3,
+   "to": 4,
+   "from_id": "gbt-c03-uncensored-lane",
+   "to_id": "gbt-c04-tool-web",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 3,
+   "to": 5,
+   "from_id": "gbt-c03-uncensored-lane",
+   "to_id": "gbt-c05-tool-file",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 3,
+   "to": 6,
+   "from_id": "gbt-c03-uncensored-lane",
+   "to_id": "gbt-c06-tool-shell",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 3,
+   "to": 7,
+   "from_id": "gbt-c03-uncensored-lane",
+   "to_id": "gbt-c07-memory-vector",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 3,
+   "to": 8,
+   "from_id": "gbt-c03-uncensored-lane",
+   "to_id": "gbt-c08-memory-local",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 3,
+   "to": 9,
+   "from_id": "gbt-c03-uncensored-lane",
+   "to_id": "gbt-c09-policy-guard",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 3,
+   "to": 10,
+   "from_id": "gbt-c03-uncensored-lane",
+   "to_id": "gbt-c10-observability",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 4,
+   "to": 1,
+   "from_id": "gbt-c04-tool-web",
+   "to_id": "gbt-c01-llm-gateway",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 4,
+   "to": 2,
+   "from_id": "gbt-c04-tool-web",
+   "to_id": "gbt-c02-context-compact",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 4,
+   "to": 3,
+   "from_id": "gbt-c04-tool-web",
+   "to_id": "gbt-c03-uncensored-lane",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 4,
+   "to": 5,
+   "from_id": "gbt-c04-tool-web",
+   "to_id": "gbt-c05-tool-file",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 4,
+   "to": 6,
+   "from_id": "gbt-c04-tool-web",
+   "to_id": "gbt-c06-tool-shell",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 4,
+   "to": 7,
+   "from_id": "gbt-c04-tool-web",
+   "to_id": "gbt-c07-memory-vector",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 4,
+   "to": 8,
+   "from_id": "gbt-c04-tool-web",
+   "to_id": "gbt-c08-memory-local",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 4,
+   "to": 9,
+   "from_id": "gbt-c04-tool-web",
+   "to_id": "gbt-c09-policy-guard",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 4,
+   "to": 10,
+   "from_id": "gbt-c04-tool-web",
+   "to_id": "gbt-c10-observability",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 5,
+   "to": 1,
+   "from_id": "gbt-c05-tool-file",
+   "to_id": "gbt-c01-llm-gateway",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 5,
+   "to": 2,
+   "from_id": "gbt-c05-tool-file",
+   "to_id": "gbt-c02-context-compact",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 5,
+   "to": 3,
+   "from_id": "gbt-c05-tool-file",
+   "to_id": "gbt-c03-uncensored-lane",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 5,
+   "to": 4,
+   "from_id": "gbt-c05-tool-file",
+   "to_id": "gbt-c04-tool-web",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 5,
+   "to": 6,
+   "from_id": "gbt-c05-tool-file",
+   "to_id": "gbt-c06-tool-shell",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 5,
+   "to": 7,
+   "from_id": "gbt-c05-tool-file",
+   "to_id": "gbt-c07-memory-vector",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 5,
+   "to": 8,
+   "from_id": "gbt-c05-tool-file",
+   "to_id": "gbt-c08-memory-local",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 5,
+   "to": 9,
+   "from_id": "gbt-c05-tool-file",
+   "to_id": "gbt-c09-policy-guard",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 5,
+   "to": 10,
+   "from_id": "gbt-c05-tool-file",
+   "to_id": "gbt-c10-observability",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 6,
+   "to": 1,
+   "from_id": "gbt-c06-tool-shell",
+   "to_id": "gbt-c01-llm-gateway",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 6,
+   "to": 2,
+   "from_id": "gbt-c06-tool-shell",
+   "to_id": "gbt-c02-context-compact",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 6,
+   "to": 3,
+   "from_id": "gbt-c06-tool-shell",
+   "to_id": "gbt-c03-uncensored-lane",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 6,
+   "to": 4,
+   "from_id": "gbt-c06-tool-shell",
+   "to_id": "gbt-c04-tool-web",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 6,
+   "to": 5,
+   "from_id": "gbt-c06-tool-shell",
+   "to_id": "gbt-c05-tool-file",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 6,
+   "to": 7,
+   "from_id": "gbt-c06-tool-shell",
+   "to_id": "gbt-c07-memory-vector",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 6,
+   "to": 8,
+   "from_id": "gbt-c06-tool-shell",
+   "to_id": "gbt-c08-memory-local",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 6,
+   "to": 9,
+   "from_id": "gbt-c06-tool-shell",
+   "to_id": "gbt-c09-policy-guard",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 6,
+   "to": 10,
+   "from_id": "gbt-c06-tool-shell",
+   "to_id": "gbt-c10-observability",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 7,
+   "to": 1,
+   "from_id": "gbt-c07-memory-vector",
+   "to_id": "gbt-c01-llm-gateway",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 7,
+   "to": 2,
+   "from_id": "gbt-c07-memory-vector",
+   "to_id": "gbt-c02-context-compact",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 7,
+   "to": 3,
+   "from_id": "gbt-c07-memory-vector",
+   "to_id": "gbt-c03-uncensored-lane",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 7,
+   "to": 4,
+   "from_id": "gbt-c07-memory-vector",
+   "to_id": "gbt-c04-tool-web",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 7,
+   "to": 5,
+   "from_id": "gbt-c07-memory-vector",
+   "to_id": "gbt-c05-tool-file",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 7,
+   "to": 6,
+   "from_id": "gbt-c07-memory-vector",
+   "to_id": "gbt-c06-tool-shell",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 7,
+   "to": 8,
+   "from_id": "gbt-c07-memory-vector",
+   "to_id": "gbt-c08-memory-local",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 7,
+   "to": 9,
+   "from_id": "gbt-c07-memory-vector",
+   "to_id": "gbt-c09-policy-guard",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 7,
+   "to": 10,
+   "from_id": "gbt-c07-memory-vector",
+   "to_id": "gbt-c10-observability",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 8,
+   "to": 1,
+   "from_id": "gbt-c08-memory-local",
+   "to_id": "gbt-c01-llm-gateway",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 8,
+   "to": 2,
+   "from_id": "gbt-c08-memory-local",
+   "to_id": "gbt-c02-context-compact",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 8,
+   "to": 3,
+   "from_id": "gbt-c08-memory-local",
+   "to_id": "gbt-c03-uncensored-lane",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 8,
+   "to": 4,
+   "from_id": "gbt-c08-memory-local",
+   "to_id": "gbt-c04-tool-web",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 8,
+   "to": 5,
+   "from_id": "gbt-c08-memory-local",
+   "to_id": "gbt-c05-tool-file",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 8,
+   "to": 6,
+   "from_id": "gbt-c08-memory-local",
+   "to_id": "gbt-c06-tool-shell",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 8,
+   "to": 7,
+   "from_id": "gbt-c08-memory-local",
+   "to_id": "gbt-c07-memory-vector",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 8,
+   "to": 9,
+   "from_id": "gbt-c08-memory-local",
+   "to_id": "gbt-c09-policy-guard",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 8,
+   "to": 10,
+   "from_id": "gbt-c08-memory-local",
+   "to_id": "gbt-c10-observability",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 9,
+   "to": 1,
+   "from_id": "gbt-c09-policy-guard",
+   "to_id": "gbt-c01-llm-gateway",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 9,
+   "to": 2,
+   "from_id": "gbt-c09-policy-guard",
+   "to_id": "gbt-c02-context-compact",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 9,
+   "to": 3,
+   "from_id": "gbt-c09-policy-guard",
+   "to_id": "gbt-c03-uncensored-lane",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 9,
+   "to": 4,
+   "from_id": "gbt-c09-policy-guard",
+   "to_id": "gbt-c04-tool-web",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 9,
+   "to": 5,
+   "from_id": "gbt-c09-policy-guard",
+   "to_id": "gbt-c05-tool-file",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 9,
+   "to": 6,
+   "from_id": "gbt-c09-policy-guard",
+   "to_id": "gbt-c06-tool-shell",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 9,
+   "to": 7,
+   "from_id": "gbt-c09-policy-guard",
+   "to_id": "gbt-c07-memory-vector",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 9,
+   "to": 8,
+   "from_id": "gbt-c09-policy-guard",
+   "to_id": "gbt-c08-memory-local",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 9,
+   "to": 10,
+   "from_id": "gbt-c09-policy-guard",
+   "to_id": "gbt-c10-observability",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 10,
+   "to": 1,
+   "from_id": "gbt-c10-observability",
+   "to_id": "gbt-c01-llm-gateway",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 10,
+   "to": 2,
+   "from_id": "gbt-c10-observability",
+   "to_id": "gbt-c02-context-compact",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 10,
+   "to": 3,
+   "from_id": "gbt-c10-observability",
+   "to_id": "gbt-c03-uncensored-lane",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 10,
+   "to": 4,
+   "from_id": "gbt-c10-observability",
+   "to_id": "gbt-c04-tool-web",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 10,
+   "to": 5,
+   "from_id": "gbt-c10-observability",
+   "to_id": "gbt-c05-tool-file",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 10,
+   "to": 6,
+   "from_id": "gbt-c10-observability",
+   "to_id": "gbt-c06-tool-shell",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 10,
+   "to": 7,
+   "from_id": "gbt-c10-observability",
+   "to_id": "gbt-c07-memory-vector",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 10,
+   "to": 8,
+   "from_id": "gbt-c10-observability",
+   "to_id": "gbt-c08-memory-local",
+   "gate": "none",
+   "kind": "互绑"
+  },
+  {
+   "from": 10,
+   "to": 9,
+   "from_id": "gbt-c10-observability",
+   "to_id": "gbt-c09-policy-guard",
+   "gate": "none",
+   "kind": "互绑"
+  }
+ ],
+ "undirected": [
+  {
+   "a": 1,
+   "b": 2,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c02-context-compact"
+  },
+  {
+   "a": 1,
+   "b": 3,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c03-uncensored-lane"
+  },
+  {
+   "a": 1,
+   "b": 4,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c04-tool-web"
+  },
+  {
+   "a": 1,
+   "b": 5,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c05-tool-file"
+  },
+  {
+   "a": 1,
+   "b": 6,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c06-tool-shell"
+  },
+  {
+   "a": 1,
+   "b": 7,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c07-memory-vector"
+  },
+  {
+   "a": 1,
+   "b": 8,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c08-memory-local"
+  },
+  {
+   "a": 1,
+   "b": 9,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c09-policy-guard"
+  },
+  {
+   "a": 1,
+   "b": 10,
+   "a_id": "gbt-c01-llm-gateway",
+   "b_id": "gbt-c10-observability"
+  },
+  {
+   "a": 2,
+   "b": 3,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c03-uncensored-lane"
+  },
+  {
+   "a": 2,
+   "b": 4,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c04-tool-web"
+  },
+  {
+   "a": 2,
+   "b": 5,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c05-tool-file"
+  },
+  {
+   "a": 2,
+   "b": 6,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c06-tool-shell"
+  },
+  {
+   "a": 2,
+   "b": 7,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c07-memory-vector"
+  },
+  {
+   "a": 2,
+   "b": 8,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c08-memory-local"
+  },
+  {
+   "a": 2,
+   "b": 9,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c09-policy-guard"
+  },
+  {
+   "a": 2,
+   "b": 10,
+   "a_id": "gbt-c02-context-compact",
+   "b_id": "gbt-c10-observability"
+  },
+  {
+   "a": 3,
+   "b": 4,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c04-tool-web"
+  },
+  {
+   "a": 3,
+   "b": 5,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c05-tool-file"
+  },
+  {
+   "a": 3,
+   "b": 6,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c06-tool-shell"
+  },
+  {
+   "a": 3,
+   "b": 7,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c07-memory-vector"
+  },
+  {
+   "a": 3,
+   "b": 8,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c08-memory-local"
+  },
+  {
+   "a": 3,
+   "b": 9,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c09-policy-guard"
+  },
+  {
+   "a": 3,
+   "b": 10,
+   "a_id": "gbt-c03-uncensored-lane",
+   "b_id": "gbt-c10-observability"
+  },
+  {
+   "a": 4,
+   "b": 5,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c05-tool-file"
+  },
+  {
+   "a": 4,
+   "b": 6,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c06-tool-shell"
+  },
+  {
+   "a": 4,
+   "b": 7,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c07-memory-vector"
+  },
+  {
+   "a": 4,
+   "b": 8,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c08-memory-local"
+  },
+  {
+   "a": 4,
+   "b": 9,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c09-policy-guard"
+  },
+  {
+   "a": 4,
+   "b": 10,
+   "a_id": "gbt-c04-tool-web",
+   "b_id": "gbt-c10-observability"
+  },
+  {
+   "a": 5,
+   "b": 6,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c06-tool-shell"
+  },
+  {
+   "a": 5,
+   "b": 7,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c07-memory-vector"
+  },
+  {
+   "a": 5,
+   "b": 8,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c08-memory-local"
+  },
+  {
+   "a": 5,
+   "b": 9,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c09-policy-guard"
+  },
+  {
+   "a": 5,
+   "b": 10,
+   "a_id": "gbt-c05-tool-file",
+   "b_id": "gbt-c10-observability"
+  },
+  {
+   "a": 6,
+   "b": 7,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c07-memory-vector"
+  },
+  {
+   "a": 6,
+   "b": 8,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c08-memory-local"
+  },
+  {
+   "a": 6,
+   "b": 9,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c09-policy-guard"
+  },
+  {
+   "a": 6,
+   "b": 10,
+   "a_id": "gbt-c06-tool-shell",
+   "b_id": "gbt-c10-observability"
+  },
+  {
+   "a": 7,
+   "b": 8,
+   "a_id": "gbt-c07-memory-vector",
+   "b_id": "gbt-c08-memory-local"
+  },
+  {
+   "a": 7,
+   "b": 9,
+   "a_id": "gbt-c07-memory-vector",
+   "b_id": "gbt-c09-policy-guard"
+  },
+  {
+   "a": 7,
+   "b": 10,
+   "a_id": "gbt-c07-memory-vector",
+   "b_id": "gbt-c10-observability"
+  },
+  {
+   "a": 8,
+   "b": 9,
+   "a_id": "gbt-c08-memory-local",
+   "b_id": "gbt-c09-policy-guard"
+  },
+  {
+   "a": 8,
+   "b": 10,
+   "a_id": "gbt-c08-memory-local",
+   "b_id": "gbt-c10-observability"
+  },
+  {
+   "a": 9,
+   "b": 10,
+   "a_id": "gbt-c09-policy-guard",
+   "b_id": "gbt-c10-observability"
+  }
+ ],
+ "counts": {
+  "plugins": 10,
+  "directed": 90,
+  "undirected": 45,
+  "self_loop": 0,
+  "matrix_cells": 100
+ },
+ "shared": {
+  "AI (Workers AI)": [
+   1
+  ],
+  "Browser Rendering 绑定": [
+   4
+  ],
+  "Containers / Sandbox 绑定": [
+   6
+  ],
+  "Containers / 自建端点 (fetch)": [
+   3
+  ],
+  "D1 + 内积 (降级落点)": [
+   7
+  ],
+  "Durable Object (可选串行化点)": [
+   2
+  ],
+  "KV (CTX)": [
+   2
+  ],
+  "KV (MEM)": [
+   8
+  ],
+  "R2 (FILES)": [
+   5
+  ],
+  "R2 落账 (降级落点)": [
+   10
+  ],
+  "Vectorize (作用域未授权)": [
+   7
+  ],
+  "Workers Logs / tail (workers_tail:read)": [
+   10
+  ],
+  "agent-memory 绑定": [
+   7
+  ],
+  "ai-search 绑定": [
+   4
+  ],
+  "fetch": [
+   4
+  ],
+  "本模块自带（不依赖云服务）": [
+   9
+  ],
+  "自建 OpenAI 兼容端点 (fetch)": [
+   1
+  ]
+ },
+ "deploy_layers": [
+  {
+   "layer": "云端 mesh10",
+   "where": "Cloudflare Worker · 形态 A：10 模块**同一 isolate**",
+   "carries": [
+    "模块 ops（status/identity/models/complete…，门表见 op_gates）",
+    "跨模块 ctx.call 边（90 条有向）",
+    "KV/R2/AI 绑定访问（mesh10/ 命名空间）"
+   ],
+   "not_carries": [
+    "本机 217 能力位与工作流编排（那是本机框架的活）",
+    "本机文件系统（Worker 无本地盘；文件是对象存储 R2）",
+    "我们的模型权重（c01 明写 weights_ours:false；无审查 c03 需自托管权重才算数）"
+   ]
+  },
+  {
+   "layer": "本机 GBT 框架",
+   "where": "本机（217 能力位 · 工作流 · 决策/执行门 · 记忆）",
+   "carries": [
+    "能力调用与门（run_task/policy）",
+    "工作流引擎（wf/sched）",
+    "记忆与台账"
+   ],
+   "not_carries": [
+    "云端模块的 isolate 内状态"
+   ]
+  },
+  {
+   "layer": "外部枢纽",
+   "where": "模型枢纽（FreeLLMAPI / agnes 等，经统一密钥链）",
+   "carries": [
+    "模型推理（托管权重）"
+   ],
+   "not_carries": [
+    "mesh 互绑（不经 ctx.call；密钥链与插件互绑是两册）"
+   ]
+  }
+ ],
+ "mechanism": {
+  "source": [
+   "deploy/cloud-10/src/modules.js:5",
+   "deploy/cloud-10/src/modules.js:254",
+   "deploy/cloud-10/src/worker.js:10",
+   "deploy/cloud-10/src/worker.js:191-219"
+  ],
+  "splice": "跨模块一律走 ctx.call(peerId, op, args)（记边）；不许直接抓别人的内部状态",
+  "ctx_contract": "ctx = { env, state, call(peerId, op, args), record(edge) }",
+  "share": "形态 A：10 模块装在**同一 isolate** ⇒ CPU/内存真共用；共享同一批 binder（KV/R2/AI），键加 mesh10/ 前缀（不碰主人原有键）",
+  "no_keys": "**插件互绑不做密钥连接** —— 边就是 ctx.call 调用关系；密钥（GW_AUTH / 统一密钥链）属另一册，只护网关路由与出网，不参与插件互绑",
+  "live": "云端 GET /edges 现读：90 条边矩阵 + 自环/对称/条数三项核对 + **已观测边数**（splice_exercised）"
+ }
+}

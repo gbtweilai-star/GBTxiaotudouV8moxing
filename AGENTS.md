@@ -28,6 +28,12 @@ Do not ask permission. Just do it.
 - 🔴 **不许把项目默认堆进全局生产面**。`one_key_deploy` 必须**显式声明落点**：
   `room="<房间名>"`（只写房间，生产分毫不动）或 `into_global_production=true`
   （写全局生产，必须人工授权）。不声明落点 = 直接拒绝，**任何代码都别想溜进生产**。
+  > 🔴 2026-10-13 补（主人令逐字：「**技术层面不能给她有限制只保留人工授权护栏即可**」·
+  > 「**直接改成终端YES才能使用就好了有时候我需要用到的啊**」）：**上面那句"直接拒绝"仍是不带钥匙时的默认行为**，
+  > 但它**不是技术层的死限** —— 放行口 = 主人在终端发**专用一次性钥匙** `deploy_force`
+  > （`python -m gbt_allinone auth grant --scope deploy_force --ttl 600`，提示符敲 YES）
+  > + 调用方**显式**声明 `owner_override=true`。放行会写审计 `one_key_deploy_landing_overridden`，
+  > 返回值里 `steps.landing_override.route` **明示它去了全局生产**。⇒ 不声明落点也能放行，**但放行从不静默**。
 
 ### 二、门只有一处，绕过去就是违规
 
@@ -37,6 +43,9 @@ Do not ask permission. Just do it.
   就是这么绕出来的，功能生效但**纪律上是未经授权的生产写入**。
 - 需要授权的作用域：`mirror_ascend` / `mirror_release` / `one_key_deploy` / `pipeline_submit` /
   `pipeline_rollback` / `mirror_rewind` / `room_release` → **`deploy_publish`**；
+  **带 `owner_override` 的放行路径**（`mirror_ascend` / `mirror_release` / `one_key_deploy` / `room_release`，
+  以及 `remote_domain` 的公网中继登记）→ 改要**专用一次性钥匙 `deploy_force`**（与正常发布钥匙分开，
+  主人可以只发"正常发布"而不发"强制放行"；**旗标本身不带授权**，模型无法自我解锁）；
   `mirror_rehearse` / `room_rehearse` → `process_execute` + `filesystem_write`；
   `mirror_shape` / `room_shape` / `mirror_plan` / `mirror_simulate` / `mirror_parity` → `filesystem_write`。
   `mirror_scan` / `mirror_status` 只读，不需授权。
@@ -61,6 +70,34 @@ Do not ask permission. Just do it.
   `python -m gbt_allinone.tools.regression_stamp run --expect-python 3.14 --store fresh -- <命令>`。
   本仓声明口径是 **3.14.5 / cpython-314**。跨口径（换解释器 / 换 store / 换身份）时工具打
   `not_comparable`，**红集差异不得直接判为"代码坏了"**，只允许逐名比对。
+
+---
+
+## 🪞 开口前先照镜子（R1 卡点三查 · R2 能力自知 · Owner 2026-10-08 定 · 开工先读这一节）
+
+主人令（2026-10-08，逐字）：「**给框架也注入遇到卡点要懂得查资料以及自身能力自知，别跟个傻逼是的**」。
+**背景（今天真栽的跟头）**：本会话探到「浏览器 `enumerateDevices` 0 个 `audioinput` + `getUserMedia` 抛 `NotFoundError` +
+WASAPI 活动录音端点 0」，就下了「这台机器没有可用的麦 / 只有主人能启用设备」的结论**并停了**；主人一句
+「白龙马开源项目的麦克风这么部署的你不看的吗」—— 去查才发现白龙马 `electron/main.cjs` 第 779-787 行**显式给 media 放行**、
+采集端 `src/ui/brain-ui/voice-core.js` 有**约束 + deviceId 回退链 + 显式采样率 + Worklet→ScriptProcessor 双路径**；
+**真因首先是"我们壳没放媒体权限"，不是"没麦"**。口径全文 / 正反例 / 机检说明：`gbt_allinone/docs/卡点三查与能力自知.md`。
+
+**R1 · 卡点三查**（任何「做不到 / 不支持 / 没有 / 无法 / 只能靠主人」结论之前，必须查完三次并留痕）：
+查①（本机既有实现）`py -3.14 -m gbt_allinone list`（现读能力位名册）· `run tentacle_manifest`（触手总纲）·
+`state/surfaces/*.json`（可控制面键表）· 全仓 `grep` 同族能力位 / 既有脚本；
+查②（上游 / 参照项目）**主人点过名的那个开源项目里同类功能怎么做** —— `gh api .../contents/<path>` **现读原文、带行**
+（仓外文件写「第 N-M 行」，**别写 `文件:N`**，那会被锚审计按仓内路径解析、凭空造红）；
+查③（官方文档 / 本机 API 清单）`--help` · 官方 README · 系统 API 能力与设备现状（设备端点状态 / GPU / 已装工具）。
+**留痕格式（写死）**：`查①…(出处) · 查②…(出处) · 查③…(出处) → 结论：<做不到|能做到，怎么做>` —— **写在正文段落里**。
+🔴 **没有三查出处的「做不到」，不许写进任何交付物或回报**。机械闸：`py -3.14 tools/codex-scripts/blocker-research-check.py`
+（正例绿 / 负例红 / 未知格式 fail-closed；用法见口径全文 §5）。
+
+**R2 · 能力自知**（回答"能不能做"之前，先现读四张镜子 + 本机现状，再开口）：
+`py -3.14 -m gbt_allinone list`（能力位名册）· `run tentacle_manifest`（触手十域）· `state/cap-bindings.json`（三边绑定）·
+`state/surfaces/*.json`（可控制面键表）+ **本机现状**（设备 / GPU / 已装工具）。
+**三档口径（写死，三选一）**：① 能力位里有 ⇒ 说「**有**」并给**调用法**；② 没有但有本机工具（例：`netsh wlan` 43 把键已探到、
+只差"按 Wi-Fi 键"的能力位）⇒ 说「**可建**」并给**建法**；③ 都没有 ⇒ 才说「**没有**」，并写清**缺什么、谁有权给**。
+🔴 三档之外不许出第四种说法（"大概不行""也许没有""应该要主人"）—— 骑墙＝没查完。
 
 ---
 
@@ -425,3 +462,26 @@ Call tools with: `mcporter --config C:\Users\ADMIN\Desktop\GBT小土豆V8\config
 Available MCP tools:
 - No MCP tools are currently healthy.
 <!-- /autoclaw:mcp-tools-guidance -->
+
+## 新增即清旧（能力 / 页面 / 工具 · 主人令 2026-10-08）
+
+**规矩原文**：「以后只要设计新的，旧的顺手当场拉回收站 —— 自己造垃圾会把自己弄迷糊；
+**重启后绝不许把旧的当新的**（细节习惯要养起来）。」
+
+操作口径（机器判据，不是口号）：
+
+1. **设计新的 = 同一步清旧**：新增能力位 / 新生成器 / 新页面 时，**同一轮**把被它取代的旧件
+   （旧版脚本、旧页面、`.bak`/`.old`/`_backup` 散件）**送回收站**（不硬删），并在 `state/logbook.jsonl`
+   记一条短句（`logbook.py append --kind change --what "短句"`，**--what 写短**）。
+2. **机器判据**：`py -3.14 tools/codex-scripts/supersede-check.py --check`
+   —— 扫四类（① 同功能两份 ② 被超越未回收 ③ 指针仍指旧版 ④ 证据目录与在役件混淆），
+   **有旧件就非零退出**；负对照（合成四类各报一次红 + 全空不虚报）保证它真能响。
+3. **回收一律走回收站**：`py -3.14 tools/codex-scripts/supersede-check.py --recycle`
+   （复用 `clean_residue.py` 的 `SendToRecycleBin` 批次）；还原用 `restore_from_recyclebin.py`。
+   **默认只报**，`--recycle` 需显式；**别人的目录一律不碰**（V9 / `_upstream` / `plugins` / `holo_pet`）。
+4. **重启后不许把旧的当新的**：canonical 名（启动件 `*.cmd`/`*.bat`、`AGENTS.md`/`INDEX.md` 的指针）
+   不许再指向被判「被超越」的件 —— 这条由判据第 ③ 类咬住。
+5. **一体两面**：新增能力位走 `capability-autobind.py apply`（自动分型→承载/通道→刷页→跑判据→记账→如实报）；
+   清旧走 `supersede-check.py`。**两者是一件事的两面**：只新增不清旧 = 违规。
+
+<!-- 本条的机器判据：tools/codex-scripts/supersede-check.py · 回滚：删掉本 `## 新增即清旧` 小节即恢复（本行以下均由 2026-10-08 追加，未改任何既有章节） -->

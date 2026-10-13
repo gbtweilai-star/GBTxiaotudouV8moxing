@@ -19,7 +19,6 @@ import os
 import platform
 import subprocess
 import sys
-import webbrowser
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -164,7 +163,7 @@ def register_single_tentacle(tentacle_key: str) -> bool:
 
     # 等待用户完成注册
     print(f"  注册完成后，请访问: {AGNES_API_KEYS_URL}")
-    print(f"  在 Dashboard 中创建新的 API Key，并复制完整 Key")
+    print("  在 Dashboard 中创建新的 API Key，并复制完整 Key")
     print()
 
     # 输入 API Key
@@ -252,7 +251,7 @@ def verify_routing() -> None:
     try:
         from gbt_allinone.llm import cloud_llm
         routing_map = cloud_llm._PURPOSE_ROUTING_MAP
-        print(f"\n路由映射验证：")
+        print("\n路由映射验证：")
         for kw, prof in routing_map.items():
             from gbt_allinone.deepseek_key import _secret_file
             exists = _secret_file(prof).exists()
@@ -320,15 +319,15 @@ def main():
     subparsers.add_parser("all", help="交互式配置全部四根触手")
 
     for key in TENTACLE_MAP:
-        subparsers.add_parser(key, help=f"仅配置{ TENTACLE_MAP[key]['display']}")
+        subparsers.add_parser(key, help=f"仅配置{TENTACLE_MAP[key]['display']}")
 
     # status 子命令
-    status_parser = subparsers.add_parser("status", help="显示配置状态")
+    subparsers.add_parser("status", help="显示配置状态")
 
     # set-key 子命令（非交互）
     setkey_parser = subparsers.add_parser("set-key", help="直接设置单个触手的 API Key")
     setkey_parser.add_argument("tentacle", choices=list(TENTACLE_MAP.keys()),
-                                help="触手名称")
+                               help="触手名称")
     setkey_parser.add_argument("api_key", help="Agnes API Key")
 
     parser.add_argument(

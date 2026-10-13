@@ -196,8 +196,8 @@ def cmd_ls(a) -> int:
         idx = _jidx(ra, a.job_id)
         print(json.dumps({"job_id": a.job_id, "帧数": len(idx),
                           "帧": [{"name": k, "bytes": v.get("bytes"),
-                                  "sha256_前16": str(v.get("sha256"))[:16], "at": v.get("at")}
-                                 for k, v in sorted(idx.items())]},
+                                 "sha256_前16": str(v.get("sha256"))[:16], "at": v.get("at")}
+                                for k, v in sorted(idx.items())]},
                          ensure_ascii=False, indent=1))
         return 0
     j = _jobs(ra)
@@ -332,9 +332,9 @@ def main() -> int:
     g.add_argument("name")
     g.add_argument("--out", required=True)
     g.set_defaults(func=cmd_get)
-    l = sub.add_parser("ls")
-    l.add_argument("job_id", nargs="?", default="")
-    l.set_defaults(func=cmd_ls)
+    ln = sub.add_parser("ls")
+    ln.add_argument("job_id", nargs="?", default="")
+    ln.set_defaults(func=cmd_ls)
     v = sub.add_parser("verify")
     v.add_argument("job_id", nargs="?", default="")
     v.set_defaults(func=cmd_verify)

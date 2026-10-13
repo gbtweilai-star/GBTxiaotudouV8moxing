@@ -76,10 +76,36 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 #   ③ 图纸面**显式不纳**：`gbt_allinone/docs/*.md` 是设计文档/报告，改了不改运行时行为 ⇒
 #      不占门的监视成本（但走 git / 待落刀登记，不是"没人管"）。声明见 docs/门盲区清单.md。
 #   判据始终一句：**凡是"改了它，系统行为就会变"的源码面，都必须在可见范围内。**
+# 🔴 2026-10-09 L2 口径（主人令「选择开始扫清所有故障和疑是故障的全部追踪根因彻底排查」）：
+#   **生成物不由护照管，由「生成器 + 陈旧检测」管。**
+#   判据（三条全中才算生成物，缺一条不许排除）：
+#     ① 文件**自己声明**了「自动生成，别手改」；
+#     ② 声明里给了**重建命令**（生成器在盘上、可复跑）；
+#     ③ 它被 capability-audit 的 ARTIFACTS/陈旧检测覆盖（改了会被"陈旧"咬住）。
+#   为什么这条不是"静默收窄"：门**每次 verify 都要把排除面与依据打出来**（见 verify 的
+#   「生成物已排除」一栏）—— 范围看得见，才敢收。真源码（改了行为就变）一条都不许出圈。
+_WATCH_GENERATED = (
+    # (路径前缀, 生成器, 依据)
+    ("holo_pet_w3/brain/caps/", "py -3.14 tools/codex-scripts/cap-pages.py",
+     "页头自声明「自动生成，别手改」；一能力一页（94 页）"),
+    ("holo_pet_w3/eye/frames.js", "py -3.14 tools/codex-scripts/eye-feed.py --loop",
+     "页头自声明「由 eye-feed.py 生成 · 不要手改：下一次抓帧就覆盖」；"
+     "**运行中的抓帧环持续改写它**，不排除则门永远红（这不是变更，是心跳）"),
+)
 _WATCH_DIRS = ("gbt_allinone", "holo_pet", "holo_pet_w3", "potato_pet")
 _WATCH_SUFFIX = (".py", ".js", ".cjs", ".html", ".css", ".bat", ".ps1")
 # 显式单文件：不在 _WATCH_DIRS 里、也不吃后缀规则，但**被代码真读**、改了行为就变。
-_WATCH_EXTRA_FILES = (".cluster/dd_squad/toolchain_manifest.json",)
+#
+# 🔴 2026-10-13 补（**踩出来的盲区**）：`tools/` 从来不在 `_WATCH_DIRS` 里 ⇒
+#    `tools/codex-scripts/boot-selfcheck.py`（**开机自检本体**）改了门看不见。
+#    现场：主人令把自检改成并发+面板，改完才发现**护照无文件可认领、关不上** ——
+#    这正是本文件自己的判据「凡是『改了它，系统行为就会变』的源码面，都必须在可见范围内」
+#    在打自己的脸。**全量纳入 `tools/` 会把 500+ 个既有件一次算成"新增变动"⇒ 假红**，
+#    所以按既有机制走**显式单文件**，先纳**自检机件**这一件（其余待主人点头再逐个纳）。
+_WATCH_EXTRA_FILES = (
+    ".cluster/dd_squad/toolchain_manifest.json",
+    "tools/codex-scripts/boot-selfcheck.py",
+)
 # 根级**指令文件**：它们改一个字就能改系统行为，比源码更该留账（R-H99 第二刀）。
 # 不含 USER.md / MEMORY.md —— 那两份是主人自己的记忆载体，另有归属规则，不属于"框架自改"。
 _WATCH_ROOT_FILES = ("AGENTS.md", "HEARTBEAT.md", "CHARTER.md", "SOUL.md", "CODING_DISCIPLINE.md")
@@ -164,6 +190,35 @@ def _sha(p: Path) -> str:
     return h.hexdigest()
 
 
+# 生成物的**自声明标记**：文件头自己写着"别手改/自动生成"才算（不是我们替它认领）。
+_GEN_MARK = ("自动生成", "生成产物", "不要手改", "不许手改", "别手改")
+_GEN_CMD = ("重生成", "重建", "render", "--loop", "生成：", "由 ")
+
+
+def _is_generated(rel: str, path: Path = None) -> tuple:
+    """这条是不是**生成物**（是 ⇒ 返回 (True, 生成器, 依据)）。
+
+    🔴 判据看**文件自声明**，不是维护一张越来越长的路径表（2026-10-09 打地鼠教训：
+       先列了 caps 页、又冒出 frames.js、再冒出 logbook-data.js —— 按路径列永远列不完）。
+    三条全中才算（缺一条不许排除）：
+      ① 文件头**自声明**「自动生成/生成产物/别手改」；
+      ② 同一段里给了**重建/生成命令**字样；
+      ③ 它由**运行中的生成器覆盖**（由 ①② 的存在证明；显式表 _WATCH_GENERATED 为兜底）。
+    """
+    for pref, gen, why in _WATCH_GENERATED:
+        if rel.startswith(pref):
+            return True, gen, why
+    if path is not None and path.is_file() and rel.endswith(_WATCH_SUFFIX):
+        try:
+            head = path.read_text(encoding="utf-8", errors="replace")[:600]
+        except OSError:
+            return False, "", ""
+        if any(m in head for m in _GEN_MARK) and any(c in head for c in _GEN_CMD):
+            first = next((l.strip()[:80] for l in head.splitlines() if any(m in l for m in _GEN_MARK)), "")
+            return True, "（自声明）", "文件头自声明生成物：" + first
+    return False, "", ""
+
+
 def _watched(root: Path) -> list:
     out = []
     for name in _WATCH_ROOT_FILES:
@@ -189,8 +244,13 @@ def _watched(root: Path) -> list:
         for dirpath, dirnames, filenames in os.walk(base):
             dirnames[:] = [d for d in dirnames if d not in _SKIP_DIRS]
             for name in filenames:
-                if name.lower().endswith(_WATCH_SUFFIX):
-                    out.append(Path(dirpath) / name)
+                if not name.lower().endswith(_WATCH_SUFFIX):
+                    continue
+                p = Path(dirpath) / name
+                gen, _g, _w = _is_generated(p.relative_to(root).as_posix(), p)
+                if gen:
+                    continue          # 生成物：由生成器+陈旧检测管（理由与生成器名见 _WATCH_GENERATED）
+                out.append(p)
     return sorted(out)
 
 

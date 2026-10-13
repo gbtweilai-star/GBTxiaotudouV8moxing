@@ -193,7 +193,7 @@ def main() -> int:
               "本器只判 addon 的裸名 —— 入口库残留计数为 0 才算过。")
         return 1
     print("  %s：%d 件%s" % ("已写入" if a.write else "可写（加 --write 落盘）",
-                             wrote if a.write else len(FILES), "" if a.write else "，全部无裸名"))
+                           wrote if a.write else len(FILES), "" if a.write else "，全部无裸名"))
     print("  落地 %s" % DST)
     return 0
 

@@ -75,8 +75,8 @@ axis_arm = 0 if ext[0] >= ext[2] else 2
 axis_dep = 2 if axis_arm == 0 else 0
 # 肩带（头模的"肩"在很下面：胸像底部）
 sh_band = P[np.abs(P[:, 1] - (y0 + 0.10 * H)) < 0.03 * H]
-print(f"肩带 x跨 {sh_band[:,0].max()-sh_band[:,0].min():.4f} · "
-      f"z跨 {sh_band[:,2].max()-sh_band[:,2].min():.4f} ⇒ 肩轴 {'X' if axis_arm==0 else 'Z'}")
+print(f"肩带 x跨 {sh_band[:, 0].max()-sh_band[:, 0].min():.4f} · "
+      f"z跨 {sh_band[:, 2].max()-sh_band[:, 2].min():.4f} ⇒ 肩轴 {'X' if axis_arm == 0 else 'Z'}")
 
 
 def nose_dir(PP, tag):
@@ -106,9 +106,8 @@ def nose_dir(PP, tag):
             width = float(slab[:, axis_arm].max() - slab[:, axis_arm].min())
             cands.append((d, s, width, e))
     cands.sort(key=lambda t: t[2])
-    tag_axis = "XZ"
     for d, s, w, e in cands:
-        print(f"[{tag}] 候选 轴={'XZ'[d//2]} 向={'+' if s>0 else '-'} · 脊宽 {w:.4f} · 外沿 {e:+.4f}")
+        print(f"[{tag}] 候选 轴={'XZ'[d//2]} 向={'+' if s > 0 else '-'} · 脊宽 {w:.4f} · 外沿 {e:+.4f}")
     if not cands:
         return None, None, None
     # 🔴 选法修正：**不能取"全局最窄"** —— 那样会选到与深度无关的那根轴
@@ -132,8 +131,8 @@ def nose_dir(PP, tag):
     ratio, d, lst = scored[0]
     s, w, e = lst[0]                      # 较窄的一向 = 正面
     print(f"[{tag}] 深度轴判定：{'XZ'[d//2]} 轴 正反脊宽 "
-          f"{lst[0][1]:.4f}(向{'+' if lst[0][0]>0 else '-'}) / "
-          f"{lst[1][1]:.4f}(向{'+' if lst[1][0]>0 else '-'}) · 比值 {ratio:.2f}"
+          f"{lst[0][1]:.4f}(向{'+' if lst[0][0] > 0 else '-'}) / "
+          f"{lst[1][1]:.4f}(向{'+' if lst[1][0] > 0 else '-'}) · 比值 {ratio:.2f}"
           f"（次选轴比值 {scored[1][0]:.2f}）" if len(scored) > 1 else "")
     vec = np.zeros(3)
     vec[d] = s
@@ -149,7 +148,7 @@ if widths[1] is not None and widths[2] < 2.0:
     print(f"🔴 **判据不确定**：深度轴比值仅 {widths[2]:.2f}（要求 ≥2.0）"
           f" ⇒ 按上一轮教训**停下来**，不硬选一边")
     raise SystemExit(1)
-print(f"[归一前] 鼻尖朝 {'+' if vec_before[dep_before]>0 else '-'}{'XZ'[dep_before//2]}"
+print(f"[归一前] 鼻尖朝 {'+' if vec_before[dep_before] > 0 else '-'}{'XZ'[dep_before//2]}"
       f" · 深度轴比值 {widths[2]:.2f}")
 axis_dep = dep_before
 

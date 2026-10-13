@@ -1,0 +1,12 @@
+{
+ "编号": "07",
+ "模块": "assemble",
+ "运行地": "cloud",
+ "依赖编号": [
+  "06"
+ ],
+ "版本": "2026-09-24.1",
+ "状态": "已验",
+ "证据": "py -3.14 tools/codex-scripts/assemble.py run demo-005 --fps 30 --slot T01 --apply => ok:true · 云上 3 帧 → 成片真解出 3 帧（nb_read_frames=3）· 11813 字节 · 往返 ✅ 拉回逐字节一致 · 状态已回写 · 隔离位 state/tentacle-slots/T01/assemble/demo-005; 自检 6/6。诚实范围：执行在本地触手（云函数未授权），数据面在云",
+ "at": "2026-09-24T23:59:15"
+}

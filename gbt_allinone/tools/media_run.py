@@ -1302,6 +1302,554 @@ def _synth_clip(path: Path, secs: int = 3, size: str = "1080x1920", label: str =
     return rc == 0
 
 
+# ══ 🔴 2026-10-09 质量接线（护照 fc-20261009T093626-0a66）══════════════════════
+# 病根：闭环虽通，机器步产的是**占位件** —— `testsrc2` 3 秒彩条 + 440/660Hz 正弦；
+#       而 `drama.parse_timed` 验过的**脚本时长**、《夜航》验过的 **MIDI 编曲**，
+#       一个都没进成品 ⇒「跑通」与「有作品」之间差着**整条内容接线**。
+# 三条修法：① 成片时长由**脚本**定（不再写死 3s）；② 画面是设计过的动效 + 烧进标题/字幕；
+#          ③ 音乐由 **MIDI 编曲真渲染**（不是正弦）。
+# ⚠️ 这里存**未转义**的原生路径 —— 转义由 `_design_clip.esc()` 统一做。
+#    实测踩坑：常量里先写了 `C\:`，esc 又把 `\` 换成 `/` ⇒ 变成 `C/:/Windows/...`，
+#    drawtext 拿着畸形字体路径**直接 ACCESS_VIOLATION**（rc=0xC0000005），不是报错而是崩。
+_FONT_BOLD = "C:/Windows/Fonts/msyhbd.ttc"
+_FONT_REG = "C:/Windows/Fonts/msyh.ttc"
+# 程序号 → (衰减常数秒, 谐波权重)。粗分三族：键盘 / 拨弦 / 低音。
+_INSTR = {0: (0.55, (1.0, 0.45, 0.22, 0.10)), 4: (0.85, (1.0, 0.35, 0.12)),
+          24: (0.45, (1.0, 0.50, 0.25, 0.12, 0.06)), 25: (0.45, (1.0, 0.50, 0.25, 0.12)),
+          32: (1.10, (1.0, 0.28, 0.09)), 48: (1.30, (1.0, 0.40, 0.15))}
+
+
+def _midi_events(raw: bytes):
+    """解析 Standard MIDI File 的**音符事件**（`_parse_midi` 只回计数，渲染要用事件）。"""
+    import struct as _st
+    if raw[:4] != b"MThd":
+        return None
+    fmt, ntrk, div = _st.unpack(">HHH", raw[8:14])
+    pos, tempo = 14, 500000
+    notes, programs = [], {}
+    for _ in range(ntrk):
+        if raw[pos:pos + 4] != b"MTrk":
+            break
+        ln = _st.unpack(">I", raw[pos + 4:pos + 8])[0]
+        end, i, t, status = pos + 8 + ln, pos + 8, 0, 0
+        live = {}
+        while i < end:
+            d = 0
+            while i < end:
+                b = raw[i]; i += 1
+                d = (d << 7) | (b & 0x7F)
+                if not (b & 0x80):
+                    break
+            t += d
+            if i >= end:
+                break
+            b0 = raw[i]
+            if b0 == 0xFF:
+                typ, ln2 = raw[i + 1], raw[i + 2]
+                data = raw[i + 3:i + 3 + ln2]; i += 3 + ln2
+                if typ == 0x51 and len(data) == 3:
+                    tempo = (data[0] << 16) | (data[1] << 8) | data[2]
+                continue
+            if b0 in (0xF0, 0xF7):
+                i += 2 + raw[i + 1]
+                continue
+            if b0 & 0x80:
+                status = b0; i += 1
+            hi, ch = status & 0xF0, status & 0x0F
+            if hi in (0x80, 0x90, 0xA0, 0xB0, 0xE0):
+                p1, p2 = raw[i], raw[i + 1]; i += 2
+            elif hi in (0xC0, 0xD0):
+                p1, p2 = raw[i], 0; i += 1
+            else:
+                break
+            if hi == 0x90 and p2 > 0:
+                live[(ch, p1)] = t
+            elif hi in (0x80, 0x90):
+                st = live.pop((ch, p1), None)
+                if st is not None:
+                    notes.append((ch, p1, st, max(1, t - st)))
+            elif hi == 0xC0:
+                programs[ch] = p1
+        pos = end
+    return {"format": fmt, "division": div or 480, "tempo": tempo,
+            "notes": notes, "programs": programs}
+
+
+def _render_arrangement(mid_path, out_path) -> dict:
+    """把**验过的 MIDI 编曲**真渲染成音频（numpy 加法合成 → 16bit 立体声 WAV）。"""
+    import numpy as _np
+    import wave as _wave
+    raw = Path(mid_path).read_bytes()
+    m = _midi_events(raw)
+    if not m or not m["notes"]:
+        return {"ok": False, "error": "MIDI 解析不出音符事件"}
+    sr = 44100
+    spb = m["tempo"] / 1e6                          # 秒/拍（tempo 存的是 µs/拍）
+    tps = spb / m["division"]                       # 秒/tick
+    end = max(s + d for _c, _p, s, d in m["notes"]) * tps + 1.6
+    n = int(end * sr)
+    buf = _np.zeros((n, 2), dtype=_np.float64)
+    for ch, pitch, s, d in m["notes"]:
+        tau, harm = _INSTR.get(m["programs"].get(ch, 0), (0.6, (1.0, 0.4, 0.15)))
+        freq = 440.0 * 2 ** ((pitch - 69) / 12.0)
+        i0 = int(s * tps * sr); i1 = min(n, int((s + d) * tps * sr) + int(0.7 * sr))
+        if i1 <= i0:
+            continue
+        tt = _np.arange(i1 - i0) / sr
+        env = _np.exp(-tt / tau) * _np.minimum(1.0, tt / 0.012)
+        w = _np.zeros_like(tt)
+        for k, amp in enumerate(harm, start=1):
+            w += amp * _np.sin(2 * _np.pi * freq * k * tt)
+        w *= env
+        pan = 0.5 + 0.30 * (0.5 - (ch % 3) / 2.0)
+        buf[i0:i1, 0] += w * (1.0 - pan)
+        buf[i0:i1, 1] += w * pan
+    peak = float(_np.max(_np.abs(buf))) or 1.0
+    buf = _np.tanh(buf / peak * 1.15) * 0.89
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+    with _wave.open(str(out_path), "wb") as f:
+        f.setnchannels(2); f.setsampwidth(2); f.setframerate(sr)
+        f.writeframes((buf * 32767).astype("<i2").tobytes())
+    return {"ok": True, "out": str(out_path), "seconds": round(end, 2),
+            "notes": len(m["notes"]), "bpm": round(60_000_000.0 / m["tempo"], 1),
+            "programs": m["programs"]}
+
+
+def _script_lines(rel_path) -> list:
+    """从**定时分镜稿**里取每镜的小标题做字幕（取不到退回描述前 18 字）。"""
+    try:
+        txt = (_ROOT / str(rel_path)).read_text(encoding="utf-8", errors="replace")
+        from .. import drama as _drama
+        r = _drama.parse_timed(txt)
+        out = []
+        for s in (r.get("shots") or []):
+            t = str(s.get("title") or "").strip() or " ".join(str(s.get("desc") or "").split())[:18]
+            if t:
+                out.append(t)
+        return out
+    except Exception:                                              # noqa: BLE001
+        return []
+
+
+def _ambient_bed(path: Path, secs: float) -> dict:
+    """给电影声轨铺一条**有时长的和声垫**（不是 4 秒正弦）—— A 小调开放和弦 + 缓慢呼吸。"""
+    import numpy as _np
+    import wave as _wave
+    sr = 44100
+    n = max(sr, int(float(secs) * sr))
+    tt = _np.arange(n) / sr
+    sig = _np.zeros(n)
+    for k, (f, a) in enumerate(((110.0, 1.0), (164.81, 0.55), (220.0, 0.42), (329.63, 0.26))):
+        sig += a * _np.sin(2 * _np.pi * f * tt + k * 0.7)
+    breath = 0.72 + 0.28 * _np.sin(2 * _np.pi * tt / 7.5)
+    sig = _np.tanh(sig * breath / 1.8) * 0.82
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    with _wave.open(str(path), "wb") as f:
+        f.setnchannels(2); f.setsampwidth(2); f.setframerate(sr)
+        st = _np.stack([sig, sig * 0.94], axis=1)
+        f.writeframes((st * 32767).astype("<i2").tobytes())
+    return {"ok": True, "seconds": round(float(secs), 2), "out": str(path)}
+
+
+# ── U0001f534 集间首尾相连（主人令 2026-10-09）──────────────────────────
+# 主人原话：「短视频记得每一集首尾相连对齐」。
+# 口径：第 N+1 集的**首镜必须接着第 N 集尾镜的调色**（不是另起一个色）；
+# 集内/集间一律**硬切**，只有整部系列的首集才淡入。尾镜调色落
+# `.scratch/_media_run_series.json`，下一集读它当 anchor —— 机器判据，不是口头承诺。
+_SERIES_MEM = _ROOT / ".scratch" / "_media_run_series.json"
+
+
+def _ep_prev(work: str):
+    """从「<...>-epNN」推出上一集名；不是系列集则 None。"""
+    m = re.search(r"-ep(\d{1,3})$", str(work or ""))
+    if not m:
+        return None, 0
+    n = int(m.group(1))
+    return ((str(work)[:m.start()] + "-ep%02d" % (n - 1)) if n > 1 else None), n
+
+
+def _series_read() -> dict:
+    import json as _json
+    try:
+        return _json.loads(_SERIES_MEM.read_text(encoding="utf-8")) or {}
+    except Exception:                                              # noqa: BLE001
+        return {}
+
+
+def _series_remember(work: str, tail) -> None:
+    import json as _json
+    mem = _series_read()
+    mem[str(work)] = {"tail_palette": list(tail or []), "at": time.strftime("%Y-%m-%dT%H:%M:%S")}
+    try:
+        _SERIES_MEM.parent.mkdir(parents=True, exist_ok=True)
+        _SERIES_MEM.write_text(_json.dumps(mem, ensure_ascii=False, indent=1), encoding="utf-8")
+    except OSError:
+        pass
+
+
+def _ep_anchor(work: str) -> dict:
+    """给当前集算出：上一集尾调色（anchor）· 是不是首集（淡入）。"""
+    prev, n = _ep_prev(work)
+    mem = _series_read()
+    anc = (mem.get(prev) or {}).get("tail_palette") if prev else None
+    return {"episode": n or None, "prev": prev, "anchor": anc,
+            "is_first": bool(n == 1), "remembered": bool(anc)}
+
+
+# U0001f534 2026-10-09 第 2 轮（交付 QC 红在这里）：原调色对**太暗**，
+#    `blackdetect=pix_th=0.06` 把 luma<15 的像素算黑（默认 98% 像素黑就判整帧黑），
+#    而 #080D1A / #0A1018 这些基色连亮度 15 都不到 ⇒ 整片被判「黑帧」。
+#    不是判据太严 —— 是**曝光不合格**（正常成片不该整帧贴着黑）。现把基色提到 luma 30+ 区间，
+#    同时保留「冷蓝为底、情绪决定偏色」的设计口径。
+_EMO_PAL = {
+    "好奇": ("0x14243C", "0x2E5480"), "紧张": ("0x2A1830", "0x5A2A50"),
+    "压抑": ("0x18202E", "0x2E4258"), "震惊": ("0x301A28", "0x6A2A48"),
+    "温柔": ("0x2A2038", "0x5A3A66"), "兴奋": ("0x30240E", "0x7A5220"),
+    "平静": ("0x18222E", "0x3A5068"), "温暖": ("0x302610", "0x6A4E24"),
+    "悲伤": ("0x1A1E2E", "0x36405A"), "愤怒": ("0x301410", "0x6A2820"),
+    "恐惧": ("0x181428", "0x3A2452"),
+    "默认": ("0x1A2436", "0x36506E"),
+}
+
+
+def _script_shots(rel_path) -> list:
+    """从定时分镜稿取**逐镜**字段（标题/景别/运镜/情绪/起止）。"""
+    try:
+        txt = (_ROOT / str(rel_path)).read_text(encoding="utf-8", errors="replace")
+        from .. import drama as _drama
+        r = _drama.parse_timed(txt)
+        out = []
+        for s in (r.get("shots") or []):
+            out.append({"title": str(s.get("title") or "").strip() or "镜%s" % s.get("idx"),
+                        "t0": float(s.get("t0") or 0), "t1": float(s.get("t1") or 0),
+                        "shot_size": str(s.get("shot_size") or ""),
+                        "camera": str(s.get("camera") or ""),
+                        "emotion": str(s.get("emotion") or "")})
+        return out
+    except Exception:                                              # noqa: BLE001
+        return []
+
+
+def _design_clip(path: Path, secs: float, size: str, title: str, lines=None,
+                 shots=None, anchor=None, fade_in=False, fade_out=False, plates=None) -> dict:
+    """设计版动效成片（**逐镜段**）。
+
+    两种模式：
+      · 分镜化（给了 shots）：每一镜一段——底色由该镜的**情绪**决定，
+        渐变方向逐镜变化，底部字幕是该镜小标题，上方标「景别·运镜」。
+      · 退化模式（只有 lines）：单片渐变 + 逐行字幕（保留兼容）。
+
+    🔴 集间首尾相连（主人令 2026-10-09）：
+      · anchor = 上一集尾镜的调色对 [c0, c1]；给了就让**本集首镜**接着它。
+      · fade_in / fade_out 默认 False：集内与集间一律**硬切**，只有整部系列的首/末集才淡入淡出。
+      · 返回里带 tail_palette，给下一集当 anchor 用。
+    """
+    w, h = (int(x) for x in str(size).lower().split("x"))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tdir = _ROOT / ".scratch" / "_media_run_txt"
+    tdir.mkdir(parents=True, exist_ok=True)
+    esc = lambda s: str(s).replace("\\", "/").replace(":", "\\:")   # noqa: E731
+    _seq = [0]
+
+    def _tf(text):
+        _seq[0] += 1
+        f = tdir / ("t%04d.txt" % _seq[0])
+        f.write_text(text, encoding="utf-8")
+        return esc(f)
+
+    def _dt(text, px, y, color="0xEAF2FF", bold=True, enable=None):
+        if not str(text or "").strip():
+            return ""
+        return ("drawtext=fontfile='%s':textfile='%s':fontcolor=%s:fontsize=%d:"
+                "x=(w-text_w)/2:y=%s%s"
+                % (esc(_FONT_BOLD if bold else _FONT_REG), _tf(text), color, px, y,
+                   (":enable='%s'" % enable) if enable else ""))
+
+    if shots:
+        tmpd = path.parent / ("_work_%s" % path.stem[:20])
+        tmpd.mkdir(parents=True, exist_ok=True)
+        total = len(shots)
+        durs, segs, tail, head, detail = [], [], None, None, []
+        for i, sh in enumerate(shots):
+            dur = max(1.2, float(sh.get("t1") or 0) - float(sh.get("t0") or 0))
+            durs.append(dur)
+            if i == 0 and anchor and len(anchor) == 2:
+                c0, c1 = str(anchor[0]), str(anchor[1])
+            else:
+                c0, c1 = _EMO_PAL.get(sh.get("emotion") or "", ("0x080D1A", "0x1B2C4A"))
+            if i == 0:
+                head = [c0, c1]
+            tail = [c0, c1]
+            # 逐镜底片必须在**用到它之前**取好：下面淡入那句会引用 _plate
+            # （实测只炸第一集：只有它 fade_in=True，短路求值才没提前暴露这个顺序错）。
+            _plate = None
+            if plates and i < len(plates) and plates[i]:
+                _p = _ROOT / str(plates[i])
+                if _p.is_file():
+                    _plate = _p
+            ang = [(w, h), (0, h), (w, 0), (0, 0)][i % 4]
+            vf = [_dt(title, max(26, int(h * 0.070)), "h*0.14"),
+                  _dt(sh.get("title"), max(20, int(h * 0.042)), "h*0.80", "0xCFE0F5", False),
+                  _dt(" · ".join(x for x in (sh.get("shot_size"), sh.get("camera")) if x),
+                      max(16, int(h * 0.028)), "h*0.90", "0x8FA8C4", False)]
+            # U0001f534 「每一个维度都要细节化」——**每一镜都要有运动**：
+            #    静止渐变在本仓自己的交付 QC 里就是「卡帧」（实测 freezedetect 报 8 次）。
+            #    逐镜加一次极轻推拉（奇偶镜方向相反）⇒ 每一镜都有真运动，也是节奏细节。
+            # U0001f534 第 2 轮：原来用 `min(1+0.0011*on,1.12)` ——**会饱和**：
+            #    推到 1.12 之后帧就不再变 ⇒ freezedetect 在尾部咬上（实测 19.03s）。
+            #    改成**按本镜帧数线性**：从头到尾一直在动，永不饱和。
+            _frames = max(2, int(round(dur * 30)))
+            # U0001f534 第 2 轮二修：幅度**必须随本镜时长走**（0.012/秒）。
+            #    固定 0.06 时，5s 镜每帧动 0.0004（过），12s 镜只动 0.00017 ⇒
+            #    实测电影 26–38s 那一镜 freeze 咬了 5 次。改成恒定**每帧变化率**。
+            _amp = round(0.012 * dur, 4)
+            _zexpr = (("1+%s*on/%d" % (_amp, _frames)) if i % 2 == 0
+                      else ("%s-%s*on/%d" % (round(1 + _amp, 4), _amp, _frames)))
+            vf.append("zoompan=z='%s':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=%dx%d:fps=30"
+                      % (_zexpr, w, h))
+            vf = [v for v in vf if v]
+            # 🔴 第 2 轮：`fade` 默认从**纯黑**入 ⇒ blackdetect 在 0–0.2s 咬上；淡入改从**本镜底色**起。
+            #    底片模式下**禁淡入**：底片本来就不是黑场，集间又要求硬切 ⇒ 直接硬起。
+            if i == 0 and fade_in and _plate is None:
+                vf.append("fade=t=in:st=0:d=0.5:color=%s" % c0)
+            if i == total - 1 and fade_out:
+                vf.append("fade=t=out:st=%.2f:d=0.7" % max(0.1, dur - 0.7))
+            seg = tmpd / ("seg%02d.mp4" % i)
+            # 🔴 2026-10-09：有**真 3D 底片**（Blender 逐镜出图）就用底片，没有才退回渐变。
+            #    底片走 `-loop 1` 当静帧源，前面先 scale+crop 铺满画布，再叠字幕/推拉。
+            if _plate is not None:
+                ins = ["-loop", "1", "-framerate", "30", "-t", "%.2f" % dur, "-i", str(_plate)]
+                vf.insert(0, "scale=%d:%d:force_original_aspect_ratio=increase,crop=%d:%d" % (w, h, w, h))
+            else:
+                ins = ["-f", "lavfi", "-i",
+                       ("gradients=s=%dx%d:d=%.2f:c0=%s:c1=%s:x0=0:y0=0:x1=%d:y1=%d:type=linear:rate=30"
+                        % (w, h, dur, c0, c1, ang[0], ang[1]))]
+            rc, _o, e = _run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error"] + ins +
+                              ["-vf", ",".join(vf),
+                               "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+                               "-pix_fmt", "yuv420p", "-t", "%.2f" % dur, str(seg)], 900)
+            if rc != 0 or not seg.exists():
+                return {"ok": False, "rc": rc,
+                        "error": "第 %d 镜渲染失败：%s" % (i + 1, (e or "")[:120])}
+            segs.append(seg)
+            # U0001f534 「每一个维度都要细节化」：**逐镜**记下每一维（时间/景别/运镜/情绪/
+            #    调色/字幕/色纪录），落副本侧车 JSON —— 不是只给一个合计数。
+            detail.append({"no": i + 1, "t0": round(float(sh.get("t0") or 0), 2),
+                           "t1": round(float(sh.get("t1") or 0), 2), "dur": round(dur, 2),
+                           "title": sh.get("title") or "", "shot_size": sh.get("shot_size") or "",
+                           "camera": sh.get("camera") or "", "emotion": sh.get("emotion") or "",
+                           "palette": [c0, c1], "gradient_axis": [ang[0], ang[1]],
+                           "subtitle": sh.get("title") or "",
+                           "corner_label": " · ".join(x for x in (sh.get("shot_size"), sh.get("camera")) if x),
+                           "anchored_from_prev": bool(i == 0 and anchor),
+                            "plate": (str(_plate) if _plate else None)})
+        lst = tmpd / "list.txt"
+        # ⚠️ concat demuxer 把 `file` 路径当**相对于清单文件所在目录**解析 ——
+        #    用相对路径会拼成 `.scratch/_work_x/.scratch/_work_x/seg00.mp4`（实测报
+        #    Impossible to open）。必须给**绝对路径**（配 -safe 0）。
+        lst.write_text("".join("file '%s'\n" % s.resolve().as_posix() for s in segs), encoding="utf-8")
+        rc, _o, e = _run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                          "-f", "concat", "-safe", "0", "-i", str(lst), "-c", "copy", str(path)], 900)
+        for s in segs:
+            try:
+                s.unlink()
+            except OSError:
+                pass
+        try:
+            lst.unlink(); tmpd.rmdir()
+        except OSError:
+            pass
+        # ⚠️ 侧车不能落抽屉：抽屉有命名家规（`\d{8}-<方向>-<作品>-<NN工序>.<ext>`），
+        #    `x.mp4.shots.json` 不合规 ⇒ 会被闸门当成不合格件。放 `.scratch/`，详情本身不变。
+        side = _ROOT / ".scratch" / "_media_run_shots" / (path.stem + ".shots.json")
+        try:
+            side.parent.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            side = None
+        try:
+            import json as _json
+            side.write_text(_json.dumps({"schema": "gbt-media-shots/v1", "clip": path.name,
+                                         "title": title, "segments": detail},
+                                        ensure_ascii=False, indent=1), encoding="utf-8")
+        except OSError:
+            side = None
+        return {"ok": rc == 0 and path.exists(), "out": str(path),
+                "shots_manifest": (str(side) if side else None),
+                "shots": detail,
+                "seconds": round(sum(durs), 2), "title": title,
+                "segments": total, "mode": "per_shot",
+                "head_palette": head, "tail_palette": tail, "concat_err": (e or "")[:200],
+                "anchored": bool(anchor), "fade_in": bool(fade_in),
+                "fade_out": bool(fade_out), "rc": rc}
+
+    vf = [_dt(title, max(28, int(h * 0.075)), "h*0.18")]
+    n_lines = max(1, len(lines or []))
+    step = float(secs) / n_lines
+    for i, ln in enumerate(lines or []):
+        vf.append(_dt(ln, max(20, int(h * 0.040)), "h*0.80", "0xCFE0F5", False,
+                      "between(t,%.2f,%.2f)" % (i * step, (i + 1) * step)))
+    vf.append("fade=t=in:st=0:d=0.6,fade=t=out:st=%.2f:d=0.8" % max(0.1, float(secs) - 0.8))
+    src = ("gradients=s=%dx%d:d=%.2f:c0=0x080D1A:c1=0x1B2C4A:x0=0:y0=0:x1=%d:y1=%d:"
+           "type=linear:rate=30" % (w, h, float(secs), w, h))
+    rc, _o, _e = _run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                       "-f", "lavfi", "-i", src, "-vf", ",".join([v for v in vf if v]),
+                       "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+                       "-pix_fmt", "yuv420p", "-t", "%.2f" % float(secs), str(path)], 1800)
+    return {"ok": rc == 0, "out": str(path), "seconds": round(float(secs), 2),
+            "title": title, "subtitle_lines": len(lines or []), "mode": "single", "rc": rc}
+
+
+# ══ 🔴 2026-10-09 · 音视频**钢印**（objective 要的「带钢印」在媒体上落不了地）══════════
+# 病根：本仓 `signature` 钢印只覆盖文本页（.md/.html/.htm/.txt/.csv）；音视频**不在它范围内**。
+#       实测三件成品 `ffprobe format_tags` 只有 `encoder=Lavf…` ⇒ **作品没有出处**。
+#       钢印纪律是「不可伪造归属、不可移除出处」，它必须同样落在媒体上。
+# 做法：把署名写进容器元数据（title/artist/album/comment/description），并**回读校验**——
+#       不是许愿：`verified` 是 ffprobe 真读回来的。
+_SIG_LINE = "开发者：自由的风 · GBT小土豆V8 · 本署名不可删除、不可篡改归属"
+_STAMPABLE = (".mp4", ".mov", ".mkv", ".wav", ".flac", ".mp3", ".m4a", ".aac", ".ogg", ".opus")
+
+
+def _quintet(step: str, cap, got, v, res, rel, upstream) -> dict:
+    """逐步细节化·五问（习惯的机器化落点，由 `tools/codex-scripts/detail-check.py` 咬）。
+
+    输入 / 动作 / 明细 / 判据 / 接点 —— **明细一律逐项**，不许只报合计。
+    """
+    r = res or {}
+    if got:
+        return {"输入": {"件": got, "类型": "人填真件（输入口）"},
+                "动作": "收下真件" + ("，过一遍契约判据" if v else "（无校验器：只判在场 + 命名合家规）"),
+                "明细": (v or {}).get("criteria") or [{"项": "件在场且命名合家规", "值": got}],
+                "判据": {"过": bool((v or {}).get("ok", True)),
+                          "出处": (v or {}).get("validator") or "NAME_RE + 真件在场"},
+                "接点": got}
+    detail = []
+    if r.get("shots"):
+        detail = [{"镜": x.get("no"), "秒": x.get("dur"), "景别": x.get("shot_size"),
+                   "运镜": x.get("camera"), "情绪": x.get("emotion"), "调色": x.get("palette"),
+                   "字幕": x.get("subtitle")} for x in (r.get("shots") or [])]
+    elif r.get("dimensions"):
+        import json as _json
+        detail = [{"维": k, "值": _json.dumps(vv, ensure_ascii=False)[:200]}
+                  for k, vv in (r.get("dimensions") or {}).items() if vv]
+    elif r.get("render"):
+        rr = r["render"]
+        detail = [{"音符": rr.get("notes"), "BPM": rr.get("bpm"), "秒": rr.get("seconds")},
+                  {"来源编曲": r.get("from_arrangement")}]
+    elif r.get("gbt_stamp"):
+        detail = [{"标签": k, "值": str(vv)[:90]}
+                  for k, vv in ((r.get("gbt_stamp") or {}).get("tags") or {}).items()]
+    elif r.get("package"):
+        detail = [{"发布包": r.get("package"), "产物": r.get("product"),
+                  "预检": (r.get("preflight") or {})}]
+    if not detail:
+        detail = [{"产物": rel, "cap": cap, "字节": r.get("bytes")}]
+    return {"输入": {"上游": upstream or "本仓自产（ffmpeg）"},
+            "动作": str(cap or "人工") + ("（" + str(v.get("validator")) + "）" if v else ""),
+            "明细": detail,
+            "判据": {"过": bool(r.get("ok", v.get("ok") if v else True)),
+                      "出处": (v or {}).get("validator") or ("step=%s（自报 ok）" % step)},
+            "接点": rel}
+
+
+def _style_intent(rel_path) -> str:
+    """从分镜契约的 `style` 字段取「意图」——灯光/调色的输入。取不到就给 filmic。"""
+    try:
+        import json as _json
+        d = _json.loads((_ROOT / str(rel_path)).read_text(encoding="utf-8", errors="replace"))
+        return str(d.get("style") or "").strip() or "filmic"
+    except Exception:                                              # noqa: BLE001
+        return "filmic"
+
+
+def _apply_grade(path, intent: str) -> dict:
+    """**灯光师·调色师 + 修饰师**：把人话交给共用外观库 `filmgrade`，全片过一遍外观链。
+
+    ⚠️ 这是**真调色**：`filmgrade.LOOKS` 每条都是完整 ffmpeg 滤镜图
+    （curves/colorbalance/eq → cas 锐化 → gblur+blend 辉光 → vignette 暗角 → noise 颗粒），
+    不是给画面贴个标签。读数全部现算：哪个味、怎么取的味、修饰五科目在不在、QC 结果。
+    """
+    try:
+        from importlib.util import module_from_spec, spec_from_file_location
+        _spec = spec_from_file_location("gbt_filmgrade", _ROOT / "tools" / "filmgrade.py")
+        fg = module_from_spec(_spec)
+        _spec.loader.exec_module(fg)
+    except Exception as e:                                          # noqa: BLE001
+        return {"ok": False, "error": "filmgrade 装不上：%s" % str(e)[:90]}
+    ex = fg.pick_explain(intent)
+    look = ex["look"]
+    chain = fg.grade_chain(look)
+    from pathlib import Path as _P
+    p = _P(str(path))
+    tmp = p.with_name(p.stem + ".__grade" + p.suffix)
+    rc, _o, err = _run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", str(p),
+                        "-vf", chain, "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+                        "-pix_fmt", "yuv420p", "-c:a", "copy", str(tmp)], 900)
+    if rc != 0 or not tmp.exists() or tmp.stat().st_size == 0:
+        try:
+            tmp.unlink()
+        except OSError:
+            pass
+        return {"ok": False, "look": look, "error": (err or "调色失败")[:140]}
+    tmp.replace(p)
+    finish = {"sharpen_cas": "cas=" in chain,
+              "bloom": ("gblur" in chain and "blend" in chain),
+              "vignette": "vignette" in chain,
+              "grain": "noise=" in chain,
+              "grain_amount": (fg.default_grain() if "noise=" in chain else 0),
+              "contrast_curve": "curves=" in chain,
+              "color_balance": "colorbalance=" in chain}
+    try:
+        q = fg.qc(p, label=p.name)
+    except Exception as e:                                          # noqa: BLE001
+        q = {"ok": False, "error": str(e)[:90]}
+    return {"ok": True, "intent": intent, "look": look, "how": ex["how"],
+            "chain": chain[:220], "finish": finish, "qc": q, "bytes": p.stat().st_size}
+
+
+def _read_media_tags(path) -> dict:
+    """ffprobe 现读容器标签（钢印校验的唯一依据，不是我自己记的）。"""
+    import json as _json
+    rc, out, _err = _run(["ffprobe", "-v", "error", "-show_entries", "format_tags",
+                          "-of", "json", str(path)], 60)
+    if rc != 0:
+        return {}
+    try:
+        return (_json.loads(out or "{}").get("format") or {}).get("tags") or {}
+    except Exception:                                              # noqa: BLE001
+        return {}
+
+
+def _stamp_media(path, work: str, kind: str, step: str) -> dict:
+    """给音视频产物打 GBT 钢印（写容器元数据 + 回读校验）。非可打类型如实返回 skipped。"""
+    from pathlib import Path as _P
+    p = _P(str(path))
+    if p.suffix.lower() not in _STAMPABLE:
+        return {"ok": False, "skipped": True, "why": "该类型不打容器钢印：%s" % p.suffix}
+    tmp = p.with_name(p.stem + ".__stamp" + p.suffix)
+    meta = ["-metadata", "title=%s" % work,
+            "-metadata", "artist=自由的风 · GBT小土豆V8",
+            "-metadata", "album=GBT小土豆V8 · %s" % kind,
+            "-metadata", "comment=%s" % _SIG_LINE,
+            "-metadata", "description=%s" % ("%s/%s · %s" % (kind, step, _SIG_LINE))]
+    # ⚠️ `-map_metadata -1` 先**清掉旧标签**再写 —— 否则 FLAC/Vorbis 会把新 comment 追加到旧的后面
+    #    （实测变成 `music/export · 开发者…;开发者…`），既不是幂等也读不准。
+    rc, _o, err = _run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", str(p),
+                        "-map", "0", "-c", "copy", "-map_metadata", "-1"] + meta + [str(tmp)], 300)
+    if rc != 0 or not tmp.exists() or tmp.stat().st_size == 0:
+        try:
+            tmp.unlink()
+        except OSError:
+            pass
+        return {"ok": False, "error": (err or "ffmpeg 打钢印失败")[:140]}
+    tmp.replace(p)
+    tags = _read_media_tags(p)
+    # ⚠️ 判据是「**读回来的标签里有钢印**」，不是「comment 以它开头」：
+    #    实测 FLAC 会把 description 并进 comment（`a;b`），startswith 会假红。
+    _blob = " ".join(str(v) for v in tags.values())
+    verified = "开发者：自由的风" in _blob and "不可篡改归属" in _blob
+    return {"ok": verified, "verified": verified, "tags": tags,
+            "bytes": p.stat().st_size}
+
 def _register(path: Path, kind: str, step: str, src_note: str) -> dict:
     return lic_run("register", file=str(path),
                    source=src_note,
@@ -1330,6 +1878,7 @@ def _run_chain(kind: str, work: str, keep_stems: bool = True,
     stem_dir = STEM_DIR
     report = []
     ctx = {}
+    last_out = ""          # 五问的「输入」用它：上一步真落的件
     for idx, s in enumerate(steps, 1):
         step, drawer, ext, cap = s["step"], s["drawer"], s["ext"], s["cap"]
         if not cap:
@@ -1372,8 +1921,10 @@ def _run_chain(kind: str, work: str, keep_stems: bool = True,
                                                   % (src, v.get("error") or "判据未通过")})
                             continue
                         ctx[step] = got
+                        ctx[step + "_v"] = v          # 判据读数留给下游（时长/字幕要用它）
                         report.append({"step": step, "status": "ran", "input": got,
                                        "validation": v,
+                                       "详细": _quintet(step, None, got, v, None, got, last_out),
                                        "note": "输入已就位**且过了它的判据**（来源：%s）" % src})
                         continue
                     ctx[step] = got
@@ -1384,6 +1935,13 @@ def _run_chain(kind: str, work: str, keep_stems: bool = True,
                                "drawer": "projects/%s/%s" % (DIR_NAME.get(kind, kind), drawer),
                                "expect": _expect_name(kind, work, idx, step, ext),
                                "fields": s.get("fields") or [],
+                               # 红步也要答满五问（习惯不挑状态）：明细就是**缺哪些字段**，逐条列
+                               "详细": {"输入": {"抽屉": "projects/%s/%s" % (DIR_NAME.get(kind, kind), drawer),
+                                                  "期望件": _expect_name(kind, work, idx, step, ext)},
+                                        "动作": "没做 —— 这一步是**输入口**，等真件",
+                                        "明细": [{"缺字段": f} for f in (s.get("fields") or [])] or [{"缺": "真件"}],
+                                        "判据": {"过": False, "出处": "NAME_RE + 真件在场（抽屉里没有合规件）"},
+                                        "接点": _expect_name(kind, work, idx, step, ext)},
                                "scaffold_cmd": "media_run template kind=%s step=%s" % (kind, step),
                                "why": s.get("why", "")})
                 continue
@@ -1400,11 +1958,20 @@ def _run_chain(kind: str, work: str, keep_stems: bool = True,
                 continue
             from .media_publish import run as mp_run
             pr = mp_run("prepare", kind=kind, product=prev, title=work,
-                        desc="三方向工作流自检件（彩排件；正式发布前请去掉 -rehearsal）",
+                        desc="三方向工作流自检件（彩排件；正式件不带 -rehearsal）",
                         tags=["selftest", kind])
             sr = mp_run("submit", kind=kind, package=pr.get("package") or "")
             report.append({"step": step,
                            "status": "prepared" if pr.get("ok") else "failed",
+                           "详细": {"输入": {"上游": prev},
+                                    "动作": "备发布包 + 走 submit（**恒停在主人授权门**）",
+                                    "明细": [{"发布包": pr.get("package")}, {"产物": prev},
+                                              {"预检": pr.get("preflight")},
+                                              {"闸": {"blocked": sr.get("blocked"),
+                                                      "reason": sr.get("reason")}}],
+                                    "判据": {"过": bool(pr.get("ok")),
+                                            "出处": "media_publish.prepare + submit(blocked)"},
+                                    "接点": pr.get("package")},
                            "cap": cap, "package": pr.get("package"),
                            "product": prev,
                            "ready_for_owner_review": pr.get("ready_for_owner_review"),
@@ -1434,8 +2001,44 @@ def _run_chain(kind: str, work: str, keep_stems: bool = True,
                 ok = _synth_tone(dst, 440, 4)
                 res = {"ok": ok, "out": rel}
             elif cap == "ffmpeg.lavfi":
-                ok = _synth_clip(dst, 3, "1080x1920" if kind == "short_video" else "1920x1080")
-                res = {"ok": ok, "out": rel}
+                # 🔴 2026-10-09 质量接线（护照 fc-20261009T093626-0a66）：时长取**脚本判据
+                #    读出的 total_dur**，画面换成设计版动效 + 烧进标题/逐镜字幕
+                #    （原来写死 3 秒 `testsrc2` 彩条 —— 那不是作品，是占位）。
+                sv = ctx.get("script_v") or {}
+                secs = float(sv.get("total_dur") or 0) or 6.0
+                size = "1080x1920" if kind == "short_video" else "1920x1080"
+                lines = _script_lines(ctx.get("script") or "")
+                shots = _script_shots(ctx.get("script") or "")
+                ep = _ep_anchor(work)
+                # 逐镜底片（Blender 出图）：`projects/<方向>/_plates/<作品>/shotNN.png`
+                _pdir = _ROOT / "projects" / DIR_NAME.get(kind, kind) / "_plates" / work
+                _plates = (["projects/%s/_plates/%s/shot%02d.png"
+                            % (DIR_NAME.get(kind, kind), work, i + 1) for i in range(len(shots))]
+                           if (shots and _pdir.is_dir()) else None)
+                res = _design_clip(dst, secs, size, work, lines, shots=shots or None,
+                                   anchor=ep.get("anchor"), fade_in=bool(ep.get("is_first")),
+                                   fade_out=False, plates=_plates)
+                ok = bool(res.get("ok"))
+                if ok:
+                    ctx["clip_secs"] = res.get("seconds") or secs
+                    res["script_secs"] = secs
+                    res["subtitle_source"] = ctx.get("script") or ""
+                    res["episode"] = ep
+                    if res.get("tail_palette"):
+                        _series_remember(work, res["tail_palette"])   # 为下一集留接点
+            elif (cap == "audio_mix.mix" and kind == "music"
+                  and str(ctx.get("arrangement") or "").lower().endswith((".mid", ".midi"))):
+                # 🔴 2026-10-09 质量接线：音乐链的 audio 步**必须把验过的 MIDI 编曲真渲染出来**。
+                #    原来这一步产的是 440/660Hz 正弦 —— 编曲判据 A1–A7 过了，声音里却**一个音都没有**。
+                rendered = stem_dir / ("arr-%s-%s.wav" % (kind, work))
+                rr = _render_arrangement(_ROOT / ctx["arrangement"], rendered)
+                if not rr.get("ok"):
+                    raise RuntimeError("编曲渲染失败：%s" % rr.get("error"))
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                dst.write_bytes(rendered.read_bytes())
+                ok = dst.stat().st_size > 0
+                res = {"ok": ok, "out": rel, "from_arrangement": ctx["arrangement"],
+                       "render": rr, "bytes": dst.stat().st_size}
             elif cap == "audio_mix.mix":
                 # 🔴 第 104 轮修：这两个基础轨原名**写死**（`stem-a.wav` / `stem-b.wav`），
                 #    而这个目录是**共享**的，`audio_mix.mix` 又是 **music 的 audio 步与
@@ -1443,13 +2046,19 @@ def _run_chain(kind: str, work: str, keep_stems: bool = True,
                 #    最坏的不是报错，而是**"看着对、其实错"**：合成件各自独立，
                 #    **产物读数完全看不出来**（第 102 轮没报错，那是运气 —— 真正的风险是读到半个文件）。
                 #    ⇒ 按 `kind + work` 分名；同方向同作品并发才可能撞，而那本来就是**同一个活**。
+                # 🔴 2026-10-09：电影声轨改铺**有时长的和声垫**（对齐镜头时长），不再 4 秒正弦。
                 tag = "%s-%s" % (kind, work)
+                bed_secs = float(ctx.get("clip_secs") or 4.0)
+                bed = stem_dir / ("bed-%s.wav" % tag)
+                bb = _ambient_bed(bed, bed_secs)
+                if not bb.get("ok"):
+                    raise RuntimeError("和声垫合成失败")
                 a = stem_dir / ("stem-a-%s.wav" % tag)
-                b = stem_dir / ("stem-b-%s.wav" % tag)
-                if not _synth_tone(a, 440) or not _synth_tone(b, 660):
+                if not _synth_tone(a, 220, max(4, int(bed_secs))):
                     raise RuntimeError("自产基础轨合成失败")
-                res = amix_run("mix", sources=[str(a), str(b)], volumes=[0.7, 0.4],
+                res = amix_run("mix", sources=[str(a), str(bed)], volumes=[0.22, 0.78],
                                format="wav", out=rel)
+                res["bed_seconds"] = bb.get("seconds")
                 ok = bool(res.get("ok"))
             elif cap == "audio_mix.master":
                 src = ctx.get("master_src") or ctx.get("audio")
@@ -1468,7 +2077,10 @@ def _run_chain(kind: str, work: str, keep_stems: bool = True,
                       "canvas": {"w": 1080 if kind == "short_video" else 1920,
                                  "h": 1920 if kind == "short_video" else 1080,
                                  "fps": 30, "bg": "black"},
-                      "tracks": {"video": [{"src": str(_ROOT / clip), "t0": 0.0, "dur": 3.0,
+                      "tracks": {"video": [{"src": str(_ROOT / clip), "t0": 0.0,
+                                            # 🔴 2026-10-09：时长取**素材真时长**（原来写死 3s，
+                                            #    与脚本 60s/72s 对不上 ⇒ 成片被截成 3 秒）。
+                                            "dur": float(ctx.get("clip_secs") or 3.0),
                                             "src_start": 0.0, "fit": "cover"}]}}
                 v = EC.run("validate", timeline=tl)
                 if not v.get("ok"):
@@ -1503,6 +2115,22 @@ def _run_chain(kind: str, work: str, keep_stems: bool = True,
                             except Exception as ce:                      # noqa: BLE001
                                 res["cleaned_intermediates"] = {"error": str(ce)[:120],
                                                                 "names": [p.name for p in targets]}
+                        # U0001f534 2026-10-09 主人指出的缺口：**灯光师 / 调色 / 修饰全没进工作流**。
+                        #    本机其实有共用外观库 `tools/filmgrade.py`（7 种味道 + 词即指令 + QC），
+                        #    但三方向链**一次都没调过它** ⇒ 成片是「没打灯、没修过」的原始渲染。
+                        #    现在：编辑之后过一遍外观链，并把**每一维的真读数**（哪个味、怎么取的味、
+                        #    链长什么样、修饰五科目各自在不在、QC 读数）写进报告。
+                        if ok:
+                            grade = _apply_grade(dst, _style_intent(ctx.get("storyboard")))
+                            res["color_grade"] = grade
+                            res["dimensions"] = {
+                                "edit": {"engine": "edit_core.render",
+                                         "dur": tl["tracks"]["video"][0]["dur"]},
+                                "color_grade": {k: grade.get(k) for k in ("intent", "look", "how", "chain")},
+                                "finish": grade.get("finish"),
+                                "qc": grade.get("qc"),
+                            }
+                            ok = bool(grade.get("ok"))
             elif cap == "copy.of_edit":
                 src = ctx.get("edit") or ctx.get("shots")
                 if not src:
@@ -1516,10 +2144,19 @@ def _run_chain(kind: str, work: str, keep_stems: bool = True,
                 res, ok = {"ok": False, "error": "执行器不认的 cap：%s" % cap}, False
         except Exception as e:                                    # noqa: BLE001
             res, ok = {"ok": False, "error": "%s: %s" % (type(e).__name__, str(e)[:120])}, False
+        # 🔴 2026-10-09：**先打钢印再登记许可** —— 否则登记的 sha 是打钢印**之前**的字节，
+        #    账↔盘当场对不上（`media_license check` 会报 sha 不一致）。
+        if ok:
+            res["gbt_stamp"] = _stamp_media(dst, work, kind, step)
+            ok = bool(res["gbt_stamp"].get("ok")) or bool(res["gbt_stamp"].get("skipped"))
         entry = {"step": step, "status": "ran" if ok else "failed", "cap": cap, "out": rel,
+                 # U0001f534 习惯·逐步细节化：每一步都要答满五问（由 detail-check.py 咬）
+                 "详细": _quintet(step, cap, None, None, res, rel,
+                                     last_out),
                  "secs": round(time.time() - t0, 1), "result": res}
         if ok:
             ctx[step] = rel
+            last_out = rel
             if step == "master":
                 ctx["master_src"] = rel
             lic = _register(dst, kind, step, "本仓 ffmpeg 自产：三方向工作流自检（%s 步 %s）" % (kind, step))

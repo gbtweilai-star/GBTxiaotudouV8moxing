@@ -1,0 +1,54 @@
+{
+  "_文件是什么": "运镜语言表（机器可吃）—— 景别 × 运动 × 焦段 → 提示词修饰 / SVD motion_bucket / 数字运镜滤镜。生产件读它，不读散文。",
+  "_来历": "主人令 2026-10-13：「必须给触手配置专业化触手职业知识，要不生产出来的视频运镜很垃圾，歪到哪儿都不懂」。",
+  "_口径": "每条都是**可执行映射**：往提示词里加什么、motion 给多少、后期加什么滤镜。写不出映射的条目不收。",
+  "shot_sizes": {
+    "EWS": {"zh": "大远景", "prompt": "extreme wide shot, subject tiny in vast environment, establishing"},
+    "WS": {"zh": "全景", "prompt": "wide shot, full body visible, environment readable"},
+    "MS": {"zh": "中景", "prompt": "medium shot, waist up"},
+    "MCU": {"zh": "中近景", "prompt": "medium close-up, chest up"},
+    "CU": {"zh": "近景", "prompt": "close-up shot, face fills the frame"},
+    "ECU": {"zh": "大特写", "prompt": "extreme close-up, eyes and detail only"}
+  },
+  "moves": {
+    "static": {"zh": "固定机位", "prompt": "static locked-off camera, tripod", "motion": 35, "digital": null},
+    "push_in": {"zh": "推", "prompt": "slow dolly in toward the subject", "motion": 70, "digital": "zoom_in"},
+    "pull_out": {"zh": "拉", "prompt": "slow dolly out revealing the environment", "motion": 70, "digital": "zoom_out"},
+    "pan_left": {"zh": "左摇", "prompt": "camera pans left", "motion": 85, "digital": "pan_left"},
+    "pan_right": {"zh": "右摇", "prompt": "camera pans right", "motion": 85, "digital": "pan_right"},
+    "tilt_up": {"zh": "上摇", "prompt": "camera tilts up", "motion": 75, "digital": "tilt_up"},
+    "tilt_down": {"zh": "下摇", "prompt": "camera tilts down", "motion": 75, "digital": "tilt_down"},
+    "track": {"zh": "移动跟拍", "prompt": "tracking shot, camera moves with the subject", "motion": 95, "digital": "pan_right"},
+    "crane_up": {"zh": "升", "prompt": "crane shot rising slowly", "motion": 80, "digital": "tilt_down"},
+    "orbit": {"zh": "环绕", "prompt": "camera orbits around the subject", "motion": 100, "digital": "zoom_in"},
+    "handheld": {"zh": "手持", "prompt": "handheld shot, subtle shake, documentary feel", "motion": 110, "digital": null}
+  },
+  "lenses": {
+    "wide": {"zh": "广角 24mm", "prompt": "24mm wide angle lens, deep focus"},
+    "normal": {"zh": "标准 50mm", "prompt": "50mm lens, natural perspective"},
+    "tele": {"zh": "长焦 85mm", "prompt": "85mm lens, shallow depth of field, compressed background"}
+  },
+  "digital": {
+    "_说明": "数字运镜 = 后期在成片上做的等效机位运动（zoompan）。W/H 是输出分辨率；N 是帧数。",
+    "zoom_in": "zoompan=z='min(1+0.0012*on,1.12)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=WxH",
+    "zoom_out": "zoompan=z='max(1.12-0.0012*on,1.0)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=WxH",
+    "pan_left": "zoompan=z='1.10':x='(iw-iw/zoom)*(1-on/(N-1))':y='ih/2-(ih/zoom/2)':d=1:s=WxH",
+    "pan_right": "zoompan=z='1.10':x='(iw-iw/zoom)*(on/(N-1))':y='ih/2-(ih/zoom/2)':d=1:s=WxH",
+    "tilt_up": "zoompan=z='1.10':x='iw/2-(iw/zoom/2)':y='(ih-ih/zoom)*(1-on/(N-1))':d=1:s=WxH",
+    "tilt_down": "zoompan=z='1.10':x='iw/2-(iw/zoom/2)':y='(ih-ih/zoom)*(on/(N-1))':d=1:s=WxH"
+  },
+  "rules": [
+    "一场之内相邻镜头景别必须**跳级**（WS→CU 可以；MS→MCU 贴太近，剪起来像跳帧）",
+    "**不许越轴**：同一场里人物运动方向与视线方向保持一致，保持在同一侧 180 度线内",
+    "**视线留白**：人物朝左看，左侧留空间；朝右看，右侧留空间",
+    "**一个镜头只允许一个主导运动**：推加摇混用=糊；要换运动就换镜头",
+    "推/拉用于情绪递进与揭示；摇/移/环绕用于交代空间关系；固定用于让信息自己说话",
+    "每 3-5 秒换一次镜头，长于 5 秒的固定镜头必须有信息更新，否则观众走神",
+    "开场用大景别交代环境，情绪高点用近景/大特写，收尾回到大景别或留白"
+  ],
+  "recipe_由短剧到电影": {
+    "AI短剧_1015秒": "4-6 镜 · 至少一个近景一个全景 · 每镜 3 秒 · 首镜交代环境 · 末镜留钩子",
+    "AI电影_长片": "按场次规划：每场开头一个环境镜（WS/EWS）+ 若干中近景动作镜 + 情绪镜（CU/ECU）",
+    "AI音乐_MTV": "跟着音乐段落走：前奏用移/摇交代环境，主歌用中景，副歌用近景加快切"
+  }
+}

@@ -304,7 +304,7 @@ def run(home: Path, profile: str, route: str, pi_ai_types: Path | None, model_id
     if not isinstance(patch_obj, list):
         rep["**判决**"] = "形状不对"
         rep["为什么"] = ("patch 层必须是**顶层 YAML 数组**（官方注释的口径），"
-                        "现读到的是 %s" % type(patch_obj).__name__)
+                      "现读到的是 %s" % type(patch_obj).__name__)
         rep["ok"] = False
         rep["退出码口径"] = 2
         return rep
@@ -314,15 +314,15 @@ def run(home: Path, profile: str, route: str, pi_ai_types: Path | None, model_id
     known_provs, _ = read_known_providers(pi_ai_types)
     rep["协议名单判据"] = api_note
     rep["pi-ai 认识「自己人」吗"] = ("是（%s 在 KnownProvider 里）" % route
-                                    if known_provs and route in known_provs
-                                    else "否（自定义路由名，靠 config 声明即可）")
+                             if known_provs and route in known_provs
+                             else "否（自定义路由名，靠 config 声明即可）")
 
     row = find_route_row(patch_obj, route)
     rep["承载行"] = row["行 id"]
     if row["provider"] is None:
         rep["**判决**"] = "路由不在 patch 里"
         rep["为什么"] = ("patch 里没有任何 `config.providers.%s`（路由的唯一活载路径就是这里；"
-                        "只写 settings.yaml **不生效** —— 宿主只在启动读，且服务会重写那个文件）" % route)
+                      "只写 settings.yaml **不生效** —— 宿主只在启动读，且服务会重写那个文件）" % route)
         rep["ok"] = False
         rep["退出码口径"] = 1
         return rep
@@ -434,8 +434,8 @@ def live_check(rep: dict, home: Path, timeout: float = 60.0) -> dict:
     bad, reading = judge_live(m_no, m_yes, c_no, c_yes, ids)
     reading.update({"live 落点": root, "问题": bad, "ok": not bad,
                     "口径": ("① 带钥匙两条路都必须 200 · ② 每条路自己两态（不带钥匙 200=公开面 / "
-                            "401=令牌面，别的码一律「说不清」）· ③ 端点自报 `auth_scope` 时"
-                            "**自报必须与实测一致** · ④ 带钥匙那一发必须真出字")})
+                           "401=令牌面，别的码一律「说不清」）· ③ 端点自报 `auth_scope` 时"
+                           "**自报必须与实测一致** · ④ 带钥匙那一发必须真出字")})
     return reading
 
 
@@ -504,11 +504,11 @@ def judge_live(m_no: dict, m_yes: dict, c_no: dict, c_yes: dict, ids) -> tuple:
 
     reading = {"① 带钥匙 · `/v1/models`": {"http": m_yes.get("http"), "自报模型数": len(ids_seen)},
                "② 带钥匙 · `/v1/chat/completions`": {"http": c_yes.get("http"), "正文": content,
-                                                    "字数": (len(content) if content else None),
-                                                    "上游": gbt.get("upstream"),
-                                                    "权重是我们的吗": gbt.get("weights_ours")},
+                                                  "字数": (len(content) if content else None),
+                                                  "上游": gbt.get("upstream"),
+                                                  "权重是我们的吗": gbt.get("weights_ours")},
                "③ 不带钥匙 · `/v1/models`": {"http": m_no.get("http"), "判成": face_models,
-                                            "自报 auth": gbt.get("auth")},
+                                         "自报 auth": gbt.get("auth")},
                "④ 不带钥匙 · `/v1/chat/completions`": {
                    "http": c_no.get("http"), "判成": face_chat,
                    "回包": ((c_no.get("json") or {}).get("error") or {})},
@@ -817,7 +817,7 @@ def selftest() -> int:
 
         # ⑨f 负控：`live_check` 在**没钥匙**时「带钥匙那一发」要如实记「未读到钥匙」而不是抛异常
         fake_rep = {"provider 读数": {"baseURL": "http://127.0.0.1:1/v1", "模型 id": ["x"],
-                                      "apiKeyEnv": "GBTSELFTEST_NO_SUCH_KEY"}}
+                                    "apiKeyEnv": "GBTSELFTEST_NO_SUCH_KEY"}}
         live9f = live_check(fake_rep, td / "没有这个家", timeout=2.0)
         ck("**负控：没钥匙时 `live` 如实记「未读到钥匙」，不许崩**",
            live9f.get("ok") is False and "live 落点" in live9f,

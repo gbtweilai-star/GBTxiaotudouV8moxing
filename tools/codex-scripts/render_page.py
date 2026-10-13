@@ -77,6 +77,7 @@ def main() -> int:
                             device_scale_factor=2, java_script_enabled=not a.no_js)
         page = ctx.new_page()
         # ── 禁网：只放行 file:，其余一律拦掉并记名 ──
+
         def _route(route):
             u = route.request.url
             if u.startswith("file:") or u.startswith("data:") or u.startswith("blob:"):

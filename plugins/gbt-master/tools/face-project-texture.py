@@ -10,7 +10,10 @@
 
 读数：正面方向 / 头部 2D 框 / 命中三角形数 / 写入 texel 数 / 覆盖率 / 新图字节。
 """
-import io, json, math, pathlib, struct, sys
+import io
+import json
+import pathlib
+import struct
 import numpy as np
 import cv2
 from PIL import Image
@@ -53,13 +56,17 @@ m = N[head].mean(axis=0)
 front = np.array([m[0], 0.0, m[2]])
 front /= (np.linalg.norm(front) + 1e-9)
 up = np.array([0.0, 1.0, 0.0])
-right = np.cross(up, front); right /= (np.linalg.norm(right) + 1e-9)
+right = np.cross(up, front)
+right /= (np.linalg.norm(right) + 1e-9)
 print(f"头部顶点 {int(head.sum())} · 正面方向 = ({front[0]:.3f}, {front[1]:.3f}, {front[2]:.3f}) · 右向量 = ({right[0]:.3f}, {right[2]:.3f})")
 
 hc = P[head].mean(axis=0)
+
+
 def to2d(v):
     d = v - hc
     return np.stack([d @ right, d @ up], axis=-1)
+
 
 h2d = to2d(P[head])
 x0, x1 = h2d[:, 0].min(), h2d[:, 0].max()
@@ -97,7 +104,8 @@ for tri in IDX:
         continue
     picked += 1
     uv = UV[tri]                                      # (3,2)
-    u = uv[:, 0] * TW; v = uv[:, 1] * TH
+    u = uv[:, 0] * TW
+    v = uv[:, 1] * TH
     umin, umax = int(max(0, np.floor(u.min()))), int(min(TW - 1, np.ceil(u.max())))
     vmin, vmax = int(max(0, np.floor(v.min()))), int(min(TH - 1, np.ceil(v.max())))
     if umax < umin or vmax < vmin:
@@ -115,7 +123,8 @@ for tri in IDX:
         continue
     pos = (w0[..., None] * P[tri[0]] + w1[..., None] * P[tri[1]] + w2[..., None] * P[tri[2]])
     d = pos - hc
-    px = d @ right; py = d @ up
+    px = d @ right
+    py = d @ up
     sx = rb[0] + (px - x0) / max(1e-9, (x1 - x0)) * (rb[2] - rb[0])
     sy = rb[3] - (py - y0) / max(1e-9, (y1 - y0)) * (rb[3] - rb[1])   # 图像 y 向下
     ok = ins & (sx >= 0) & (sx < ra.shape[1] - 1) & (sy >= 0) & (sy < ra.shape[0] - 1)

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>数字人形象 · 候选看板</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B1120; --surface:#111827; --border:#1E3A5F; --border-subtle:#162035;
+  --amber:#FFB800; --cyan:#00D4FF; --fg:#E8F0FE; --fg2:#8BA3C7; --fg3:#4A6080;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.65;
+     padding:56px 28px 96px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto}
+.kicker{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;
+        letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:14px}
+.kicker::before{content:"";width:22px;height:1px;background:var(--amber)}
+h1{font-size:34px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+h1 em{display:block;font-style:normal;font-weight:400;font-size:15px;color:var(--fg2);margin-top:10px}
+h2{font-size:15px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--fg2);
+   margin:52px 0 16px;padding-bottom:10px;border-bottom:1px solid var(--border-subtle)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px}
+.card img{display:block;width:100%;height:auto;border-radius:2px}
+.card p{margin-top:12px;font-size:13px;color:var(--fg2);line-height:1.7}
+.card b{color:var(--fg);font-weight:500}
+.card code{font-family:var(--mono);font-size:12px;color:var(--cyan);
+           background:rgba(0,212,255,.08);padding:1px 5px;border-radius:2px}
+.note{margin-top:14px;padding:14px 16px;border:1px solid rgba(255,184,0,.35);
+      background:rgba(255,184,0,.08);border-radius:4px;font-size:13.5px;color:var(--fg2);line-height:1.75}
+.note b{color:var(--amber);font-weight:600}
+ol{margin:14px 0 0 20px;font-size:13.5px;color:var(--fg2);line-height:1.9}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13.5px}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--border-subtle);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+   color:var(--fg3);font-weight:500}
+td:first-child{font-family:var(--mono);color:var(--cyan);white-space:nowrap}
+td{color:var(--fg2)}
+footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--border-subtle);
+       font-family:var(--mono);font-size:11px;color:var(--fg3);letter-spacing:.06em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="kicker">Avatar Review · 2026-10-09</span>
+  <h1>
+    数字人形象 · 候选看板
+    <em>先看现在这一版长什么样，再决定要不要换。下面每张都是真渲染出来的图，不是示意。</em>
+  </h1>
+
+  <h2>一 · 现在装进原型里的样子</h2>
+  <div class="card">
+    <img src="./avatar-big.png" alt="当前数字人形象，放大渲染" />
+    <p>
+      <b>现状：小尺寸够用，放大就露怯。</b>
+      头是一个球、脖子是一截桩、身子一整块，没有手臂，那三道结构线放大看像划痕 ——
+      整体更像棋子或花瓶，不太像「人」。缩到 App 里的 110–180px 还能看，
+      但一出场放大到大尺寸，问题就藏不住了。
+    </p>
+  </div>
+
+  <h2>二 · 四个方向（同一套配色，只换骨架）</h2>
+  <div class="card">
+    <img src="./avatar-variants.png" alt="数字人形象四个方向对比：A 现版胸像、B 带手臂剪影、C 线框面孔、D 组合" />
+  </div>
+  <table>
+    <tr><th>方向</th><th>长什么样</th><th>好处</th><th>代价</th></tr>
+    <tr>
+      <td>A 胸像</td>
+      <td>现在这一版</td>
+      <td>干净、结构简单，缩到 110px 还认得出</td>
+      <td>放大像棋子；没手脚，编不了动作</td>
+    </tr>
+    <tr>
+      <td>B 剪影</td>
+      <td>带手臂的站姿剪影</td>
+      <td>一眼就是「人」；抬手、鞠躬、走路都好编</td>
+      <td>脸是空白的，本质是剪影</td>
+    </tr>
+    <tr>
+      <td>C 线框面孔</td>
+      <td>有五官、耳朵、下颌的线框头 ＋ 肩</td>
+      <td>最像「数字人」，未来感最强，脸在里面</td>
+      <td>正脸固定，转不了头</td>
+    </tr>
+    <tr>
+      <td>D 组合</td>
+      <td>C 的头 ＋ B 的身子</td>
+      <td>认得出脸、身上有手脚，最完整</td>
+      <td>元素最多，缩到最小尺寸会有点糊</td>
+    </tr>
+  </table>
+
+  <h2>三 · 一个你可能忘了的选项：仓库里已有的 3D 数字人</h2>
+  <div class="card">
+    <img src="./avatar-3d-portrait.png" alt="仓库中已有的 3D 数字人上身裁切" />
+    <p>
+      <b>这不是我画的，是你自己项目里已经绑好骨、渲好帧的那个模型。</b>
+      工程在 <code>projects/digital-human/out/dh_rigged.glb</code>，
+      另外还有六段现成动作的渲染帧与成片：呼吸 / 打招呼 / 走 / 转身 / 蹲 / 伸展。
+      也就是说「她从黑屏里走出来」这一段，可以不是动画，而是真让她走一下。
+    </p>
+  </div>
+  <div class="note">
+    <b>她的优势是压倒性的</b>：真模型、真脸、有现成动作。<br>
+    <b>代价也说清楚</b>：得先把影棚背景抠干净；而且这一身皮装加武器带，
+    跟「台湾腔温柔女声」的气质搭不搭，只有你能定。
+  </div>
+
+  <h2>四 · 我的建议</h2>
+  <ol>
+    <li><b>App 里日常那个常驻形象 → 用 C。</b>小尺寸最清晰、最未来，线框也经得起缩放。</li>
+    <li><b>「出场」那一段 → 用第三部分那个真 3D 素材。</b>她真走一步出来，冲击力是纯 CSS 比不了的。</li>
+    <li>两者不冲突：一个管「她一直在你身边」，一个管「你们第一次见面」。</li>
+  </ol>
+
+  <footer>开发者：自由的风 · GBT小土豆V8 · 本页为形象评审用，不是最终交付物</footer>
+</div>
+</body>
+</html>

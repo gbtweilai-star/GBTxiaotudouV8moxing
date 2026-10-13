@@ -162,16 +162,34 @@ def status() -> dict:
         alive = False
     pid = _read_pid()
     remote_alive = _pid_alive(pid) or bool(_remote_proc and _remote_proc.poll() is None)
+    try:
+        from .remote_confinement import ttl_state
+        ttl = ttl_state()
+    except Exception:                                              # noqa: BLE001
+        ttl = {"ok": False}
     return {"ok": True, "server": SERVER_KEY, "connected": alive,
             "remote_running": remote_alive, "remote_pid": (pid or None),
+            "ttl": ttl,
             "npx": shutil.which("npx"), "remote_log": str(_REMOTE_LOG)}
 
 
-def remote_start(wait=16) -> dict:
+def remote_start(wait=16, *, profile: str = "", ttl_s: int = 0,
+                 acknowledge_host_execution: bool = False, grant=None) -> dict:
     """启动 remote 设备（后台、脱离父进程），输出落 store/dc_remote.log，PID 落盘。
 
     用 node 直跑 dist/index.js（避开 npx/cmd 的 stdout 缓冲）——日志即时可读。
+
+    🔴 2026-10-09（主人点破「执行的人没被关进沙箱」）：本函数**先过隔离闸**——
+       未隔离 + 无 remote_device 票 ⇒ **一律拒启**（fail-closed），并如实说清怎么才能开。
+       闸在 tentacle/remote_confinement.py；本函数不自判、不自授权。
     """
+    from .remote_confinement import (guard_start, mark_started, DEFAULT_TTL_S)
+    _g = guard_start(profile=profile, grant=grant, ttl_s=(ttl_s or DEFAULT_TTL_S),
+                     acknowledge_host_execution=acknowledge_host_execution)
+    if not _g.get("ok"):
+        _audit("dc_remote_start_blocked", {"reason": _g.get("reason"),
+                                           "why": str(_g.get("why"))[:200]})
+        return {"ok": False, "blocked": True, "拒绝": _g}
     global _remote_proc
     pid = _read_pid()
     if _pid_alive(pid) or (_remote_proc and _remote_proc.poll() is None):
@@ -189,7 +207,8 @@ def remote_start(wait=16) -> dict:
     except Exception as e:  # noqa: BLE001
         return {"ok": False, "error": f"{type(e).__name__}: {e}"[:160]}
     _write_pid(_remote_proc.pid)
-    _audit("dc_remote_start", {"pid": _remote_proc.pid})
+    mark_started(_remote_proc.pid, _g.get("profile") or "unknown", ttl_s or DEFAULT_TTL_S)  # TTL 看门狗
+    _audit("dc_remote_start", {"pid": _remote_proc.pid, "profile": _g.get("profile")})
     time.sleep(wait)  # 等握手：连接云端 + 恢复会话 + 标记在线
     return {"ok": True, "pid": _remote_proc.pid, "log": str(_REMOTE_LOG),
             "tail": remote_status().get("tail", "")}

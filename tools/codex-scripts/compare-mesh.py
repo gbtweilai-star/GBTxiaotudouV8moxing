@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 """对比两个 GLB 的几何与贴图，判断能否**直接移植骨架**（顶点顺序一致才可）。
 用法: python tools/codex-scripts/compare-mesh.py <A.glb> <B.glb>"""
-import hashlib, io, json, pathlib, struct, sys
+import hashlib
+import io
+import json
+import pathlib
+import struct
+import sys
 from PIL import Image
+
 
 def load(p):
     raw = pathlib.Path(p).read_bytes()
@@ -12,18 +18,26 @@ def load(p):
     bl, = struct.unpack_from("<I", raw, off)
     return J, raw[off + 8: off + 8 + bl], len(raw)
 
+
 def acc_bytes(J, BIN, i):
-    a = J["accessors"][i]; bv = J["bufferViews"][a["bufferView"]]
+    a = J["accessors"][i]
+    bv = J["bufferViews"][a["bufferView"]]
     o = bv.get("byteOffset", 0)
     return bytes(BIN[o:o + bv["byteLength"]])
 
+
 def slots(J):
-    m = J["materials"][0]; pbr = m.get("pbrMetallicRoughness", {})
+    m = J["materials"][0]
+    pbr = m.get("pbrMetallicRoughness", {})
     out = {}
-    if "baseColorTexture" in pbr: out["baseColor"] = J["textures"][pbr["baseColorTexture"]["index"]]["source"]
-    if "normalTexture" in m: out["normal"] = J["textures"][m["normalTexture"]["index"]]["source"]
-    if "metallicRoughnessTexture" in pbr: out["metalRough"] = J["textures"][pbr["metallicRoughnessTexture"]["index"]]["source"]
+    if "baseColorTexture" in pbr:
+        out["baseColor"] = J["textures"][pbr["baseColorTexture"]["index"]]["source"]
+    if "normalTexture" in m:
+        out["normal"] = J["textures"][m["normalTexture"]["index"]]["source"]
+    if "metallicRoughnessTexture" in pbr:
+        out["metalRough"] = J["textures"][pbr["metallicRoughnessTexture"]["index"]]["source"]
     return out
+
 
 for p in sys.argv[1:]:
     J, BIN, size = load(p)
@@ -39,7 +53,8 @@ for p in sys.argv[1:]:
         bv = J["bufferViews"][J["images"][idx]["bufferView"]]
         data = bytes(BIN[bv.get("byteOffset", 0): bv.get("byteOffset", 0) + bv["byteLength"]])
         try:
-            im = Image.open(io.BytesIO(data)); info = f"{im.size[0]}×{im.size[1]} {im.format}"
+            im = Image.open(io.BytesIO(data))
+            info = f"{im.size[0]}×{im.size[1]} {im.format}"
         except Exception:
             info = "?"
         print(f"  {slot:11s} image[{idx}] {info} · {len(data)/1024:.0f} KB")

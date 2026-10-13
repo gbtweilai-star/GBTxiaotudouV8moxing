@@ -150,16 +150,19 @@ def list_energies() -> List[dict]:
             # ⚠️ 盘上没有免费/付费字段 ⇒ **如实标 unknown**，不编
             "tier": "unknown",
         })
+    # ── 本地原生端点（土豆大模型 · 双向互绑 2026-09-26 主人令）──
+    # ⚠️ 2026-10-04 修 F20：本仓能源的**统一模型**是「可用 ⟺ key_ref 在盘」，本地端点也照走 ——
+    # 不给第三态「接线态」（实测它会穿透 `derive_client_code` 的 `缺key` 拦门 ⇒ 为一条没凭据的
+    # 能源生成调用代码）。凭据文件（如放行令牌）落进 store/secrets 之前，一律如实报「缺key」。
+    _ql = "qwen_local.dpapi"
     out.append({
-        # ── 本地原生端点（土豆大模型 · 双向互绑 2026-09-26 主人令）──
-        # 无密钥本地能源：on_disk 对它无意义 ⇒ 如实 False，不冒充「凭据在盘」。
         "name": "qwen-local",
-        "key_ref": "",
+        "key_ref": "%s/%s" % (SECRETS_DIR, _ql),
         "env": "GBT_LLM_API_KEY",
-        "on_disk": False,
+        "on_disk": (sdir / _ql).is_file(),
         "tier": "unknown",
         "endpoint": "http://127.0.0.1:8111/v1",
-        "status": "接线态",
+        "status": "可用" if (sdir / _ql).is_file() else "缺key",
     })
     return sorted(out, key=lambda x: x["name"])
 
@@ -297,16 +300,21 @@ def build_sources() -> List[EnergySource]:
             status="可用" if has_key else "缺key",
         ))
     # ── 本地原生端点（土豆大模型 · 双向互绑 2026-09-26 主人令）────────────────
-    # 无密钥本地端点：endpoint 指向本机 dsh-llm-qwen-local 假端点（preflight 已验收
-    # 「可以接真端点」，真 vLLM 换 baseURL 一行即成）。key_ref 留空 —— 本地算力不走
-    # DPAPI，「只收 DPAPI 引用」的登记闸只拦带明文钥匙的，不拦无钥匙的本地能源。
+    # 无密钥本地端点：endpoint 指向本机 dsh-llm-qwen-local（preflight 已验收「可以接真
+    # 端点」，真 vLLM 换 baseURL 一行即成）。
+    # ⚠️ 2026-10-04 修 F20：本地端点也必须走**同一条不变量**（可用 ⟺ key_ref 在盘）——
+    # 原来报第三态「接线态」，实测它会穿透 NativeDeriver 的 `缺key` 拦门（为没凭据的
+    # 能源生成调用代码），且三条判据 + 复验器 probe_f20 都钉这条不变量。
+    # 要让它「可用」：落一把 `store/secrets/qwen_local.dpapi`（放行令牌/占位凭据）即可。
+    _ql = "qwen_local.dpapi"
+    _ql_on_disk = (sdir / _ql).is_file()
     out.append(EnergySource(
         source_id="qwen-local",
         grade="未知", kind="未知",          # 盘上没有档位字段 ⇒ 如实「未知」，不编
         endpoint="http://127.0.0.1:8111/v1",
-        key_ref="",
+        key_ref="%s/%s" % (SECRETS_DIR, _ql),
         capability=("text",),               # multimodal 待真端点起来再实测升级，不预支
-        status="接线态",                    # 假端点已验形、服务未常驻 —— 如实，不称「可用」
+        status="可用" if _ql_on_disk else "缺key",   # 凭据不在盘 ⇒ 如实报缺，不谎报可用
     ))
     return sorted(out, key=lambda s: s.source_id)
 
