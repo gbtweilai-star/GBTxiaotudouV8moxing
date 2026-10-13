@@ -1,3 +1,33 @@
+<p align="center">
+  <a href="https://github.com/gbtweilai-star/GBTxiaotudouV8moxing">
+    <img src="assets/brand/repo-banner.png" alt="GBT小土豆V8 · 独立数字人框架" width="100%">
+  </a>
+</p>
+
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-%E2%89%A5_3.10-7C4DFF">
+  <img alt="核心依赖" src="https://img.shields.io/badge/Core-stdlib_only-22C55E">
+  <img alt="能力位" src="https://img.shields.io/badge/Caps-295-F5B041">
+  <img alt="职业域" src="https://img.shields.io/badge/Domains-30-00E5FF">
+  <img alt="测试用例" src="https://img.shields.io/badge/Tests-2640-3F4759">
+  <img alt="语言" src="https://img.shields.io/badge/Lang-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-9AA4C4">
+</p>
+
+<p align="center">
+  <b>独立数字人框架</b>：统一入口 <code>run_task</code> · 全行为落审计账 · 能力位现读可核<br>
+  <sub>开发者：自由的风 · 本署名不可删除、不可篡改归属</sub>
+</p>
+
+<p align="center">
+  <a href="#快速开始">快速开始</a> ·
+  <a href="#结构">结构</a> ·
+  <a href="#测试">测试</a> ·
+  <a href="docs/">文档</a> ·
+  <a href="#开发者署名（每一页，禁止删除）">署名</a>
+</p>
+
+---
+
 # GBT小土豆V8 · 独立私人框架
 
 > V8.0.0 · 独立私人框架，与任何企业公司无关。
@@ -54,6 +84,27 @@ powershell -ExecutionPolicy Bypass -File launch-gui.ps1
 ```
 
 安装依赖：`pip install -r requirements.txt`（customtkinter / darkdetect / dnspython）
+
+## 并发实测（≥20000 根触手 · 零失败）
+
+<img src="assets/brand/concurrency-card.png" alt="并发容量实测读数卡：1024→20000 根，六级零失败" width="100%">
+
+上面这张是**读数卡**（脚本渲染，不是终端截图）—— 数字全部来自 `state/concurrency-last.json`，
+而那个 JSON 由测试脚本自己落盘：
+
+```bash
+py -3.14 -X utf8 tools/codex-scripts/concurrency-capacity-test.py \
+    --levels 1024,4096,8192,10000,16384,20000 --json state/concurrency-last.json
+py -3.14 -X utf8 tools/codex-scripts/render-concurrency-card.py     # 由读数渲染证据卡
+```
+
+口径（写死的三条）：① 单位动作是**真实过门的一次能力位调用**（`comfy_native` 的只读 `status`），
+`probe=True` 只是**不写审计台账**，用来先量"纯调度上限"；② 线程池一次开满 N —— **"首次建线程"的成本
+落在第一个大批量那一行**，所以看后面的行才是稳态；③ **失败就是失败**，列样例，不折叠成"波动"。
+
+**当前读数**（宿主可用内存只有 **1.86 GB**）：`20000/20000 成功 · 墙钟 4,295 ms · 单发中位 0.2 ms ·
+可用内存 1.91→1.78 GB` —— 20,000 根同发**零失败**，内存基本不动。
+容量登记与历次读数见 [`docs/并发容量登记.md`](docs/并发容量登记.md)。
 
 ## 能力边界（现读口径 · 2026-10-12 更正）
 

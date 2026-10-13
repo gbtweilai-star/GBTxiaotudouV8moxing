@@ -54301,5 +54301,27 @@
   ],
   "note": "autobind",
   "bound_at": "2026-10-14T02:16:01"
+ },
+ "tools/codex-scripts/make-repo-banner.py": {
+  "tentacles": [
+   "pod_link"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-14T02:53:45"
+ },
+ "tools/codex-scripts/concurrency-capacity-test.py": {
+  "tentacles": [
+   "llm_chat"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-14T02:59:37"
+ },
+ "tools/codex-scripts/render-concurrency-card.py": {
+  "tentacles": [
+   "llm_chat",
+   "git_write"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-14T02:59:37"
  }
 }

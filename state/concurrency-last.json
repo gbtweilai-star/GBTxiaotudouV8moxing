@@ -1,0 +1,75 @@
+{
+ "at": "2026-10-14T02:58:58",
+ "python": "3.14.5",
+ "kind": "comfy_native",
+ "probe": true,
+ "levels": [
+  {
+   "n": 1024,
+   "ok": 1024,
+   "wall_ms": 4523.1,
+   "median_ms": 4224.0,
+   "max_ms": 4436.61,
+   "mem_before_gb": 1.86,
+   "mem_after_gb": 1.86,
+   "mem_used_pct": 76,
+   "fail_samples": []
+  },
+  {
+   "n": 4096,
+   "ok": 4096,
+   "wall_ms": 941.3,
+   "median_ms": 0.18,
+   "max_ms": 1.07,
+   "mem_before_gb": 1.86,
+   "mem_after_gb": 1.82,
+   "mem_used_pct": 77,
+   "fail_samples": []
+  },
+  {
+   "n": 8192,
+   "ok": 8192,
+   "wall_ms": 1701.2,
+   "median_ms": 0.16,
+   "max_ms": 0.39,
+   "mem_before_gb": 1.82,
+   "mem_after_gb": 1.81,
+   "mem_used_pct": 77,
+   "fail_samples": []
+  },
+  {
+   "n": 10000,
+   "ok": 10000,
+   "wall_ms": 1969.2,
+   "median_ms": 0.15,
+   "max_ms": 0.45,
+   "mem_before_gb": 1.81,
+   "mem_after_gb": 1.78,
+   "mem_used_pct": 78,
+   "fail_samples": []
+  },
+  {
+   "n": 16384,
+   "ok": 16384,
+   "wall_ms": 3352.1,
+   "median_ms": 0.15,
+   "max_ms": 116.06,
+   "mem_before_gb": 1.78,
+   "mem_after_gb": 1.92,
+   "mem_used_pct": 76,
+   "fail_samples": []
+  },
+  {
+   "n": 20000,
+   "ok": 20000,
+   "wall_ms": 4295.5,
+   "median_ms": 0.16,
+   "max_ms": 0.71,
+   "mem_before_gb": 1.91,
+   "mem_after_gb": 1.78,
+   "mem_used_pct": 78,
+   "fail_samples": []
+  }
+ ],
+ "host_mem_total_gb": 7.93
+}

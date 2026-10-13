@@ -2,20 +2,20 @@
  * 重生成：py -3.14 tools/codex-scripts/logbook.py render
  * 口径：只追加 + 自链哈希；数字全部现算自 state/logbook.jsonl。 */
 window.GBT_LOGBOOK = {
- "generated_at": "2026-10-14T03:12:49+08:00",
+ "generated_at": "2026-10-14T04:00:45+08:00",
  "regen": "py -3.14 tools/codex-scripts/logbook.py render",
  "source": "state/logbook.jsonl（只追加 · 自链哈希）",
  "chain": {
   "ok": true,
-  "detail": "链自洽：451 条记录，末条 hash=sha256:64e5273028b1389",
-  "records": 451
+  "detail": "链自洽：453 条记录，末条 hash=sha256:289b6a9f80c234e",
+  "records": 453
  },
  "totals": {
-  "records": 451,
+  "records": 453,
   "scans": 21,
-  "changes": 343,
+  "changes": 344,
   "decisions": 18,
-  "delivers": 56
+  "delivers": 57
  },
  "scans": [
   {
@@ -884,30 +884,6 @@ window.GBT_LOGBOOK = {
   }
  ],
  "records": [
-  {
-   "n": 152,
-   "ts": "2026-10-08T16:50:42+08:00",
-   "kind": "change",
-   "actor": "unknown",
-   "what": "数字人第三轮头姿全量: 01正负0.1 02为-6.9 03正负0.7 04为+36.8 05为-2.0 06为-68.6 度; 04低头像鞠躬的根因=第二轮只换 hips 关键帧, 脊链相对键仍按旧父位算, 残留前倾36.8度",
-   "where": [
-    "(未点名)"
-   ],
-   "hash": "sha256:ee1f5e7e266db61",
-   "prev": "sha256:6cfb8f5a90edbdf"
-  },
-  {
-   "n": 153,
-   "ts": "2026-10-08T16:50:43+08:00",
-   "kind": "change",
-   "actor": "unknown",
-   "what": "数字人第三轮04重渲: neck/head 绕横轴抬回(颈不超8头不超6) head 36.77到6.05度; 10帧1080x1350 EEVEE256共120秒; 新片段 clips-v2/act-04-turn.mp4 406348字节 2.000秒; 旧版备份 act-04-turn-r2.mp4",
-   "where": [
-    "(未点名)"
-   ],
-   "hash": "sha256:54a72098d0ea5b8",
-   "prev": "sha256:ee1f5e7e266db61"
-  },
   {
    "n": 154,
    "ts": "2026-10-08T16:50:43+08:00",
@@ -4542,6 +4518,32 @@ window.GBT_LOGBOOK = {
    ],
    "hash": "sha256:64e5273028b1389",
    "prev": "sha256:62478370e6a6bc8"
+  },
+  {
+   "n": 452,
+   "ts": "2026-10-14T04:00:45+08:00",
+   "kind": "change",
+   "actor": "codex",
+   "what": "v24 上生产端点：清空网络卷后放入合并件（4分片+索引齐·抽检sha一致），模板 DTYPE 改 bfloat16；端点烟测未打成（provider=potato 落 agnes）如实记未验",
+   "where": [
+    "memory/在办清单.md"
+   ],
+   "hash": "sha256:49093ceca5fee12",
+   "prev": "sha256:64e5273028b1389"
+  },
+  {
+   "n": 453,
+   "ts": "2026-10-14T04:00:45+08:00",
+   "kind": "deliver",
+   "actor": "codex",
+   "what": "开源仓门面重做（横幅+6徽章+描述+8主题）+ 并发复测到 20000 根零失败并把证据卡挂进 README",
+   "where": [
+    "README.md",
+    "assets/brand/concurrency-card.png",
+    "docs/并发容量登记.md"
+   ],
+   "hash": "sha256:289b6a9f80c234e",
+   "prev": "sha256:49093ceca5fee12"
   }
  ]
 };
