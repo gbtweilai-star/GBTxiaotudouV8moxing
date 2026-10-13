@@ -31,11 +31,16 @@ EXPECTED_MODEL = "agnes-2.5-flash"
 
 
 def ask(prompt, system="", model=None, temperature=0.7, max_tokens=2000,
-        timeout=60, purpose="generic", **_ignored):
+        timeout=60, purpose="generic", provider=None, **_ignored):
     """统一调用口。返回与旧 `bridge.chat` 同形（ok/reply/provider/model），多一个 `path`。
 
     审计只落**元数据**（谁调的、哪个 provider/model、多少字符、耗时、成没成），
     **不落提示词与回复正文** —— 与"正文不入档"的既有纪律一致。
+
+    🔴 2026-10-14 修（与下面 purpose 那次同源的断点）：`provider` 原先落进 `**_ignored`
+    ⇒ **框架入口点名车道从来没通过**（实测 `cap llm_chat` 点名 potato 仍落 agnes，
+    回执 `expected=agnes`）。现在显式接住并透传给 `bridge.chat`（它再给 cloud_llm 的 `_prefer`）。
+    不点名（None）时下游 params 不带该键 ⇒ 行为与改动前一致。
     """
     from . import bridge as LB
     t0 = time.time()
@@ -49,7 +54,7 @@ def ask(prompt, system="", model=None, temperature=0.7, max_tokens=2000,
     #    断点只在这一处，故只补这一处，不另做第二份实现。
     r = LB.chat(prompt, system=system, model=model, temperature=temperature,
                 max_tokens=max_tokens, timeout=timeout,
-                purpose=purpose or "generic")
+                purpose=purpose or "generic", provider=provider)
     if not isinstance(r, dict):
         r = {"ok": False, "error": f"桥返回非 dict: {type(r).__name__}"}
     # 漂移如实报：统一大模型说好是 agnes-2.5-flash，落到别人身上要看得见（不静默降级）。

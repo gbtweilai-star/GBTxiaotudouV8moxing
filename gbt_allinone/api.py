@@ -390,6 +390,7 @@ def _run_benign(kind, payload, policy_decision=None):
                        model=p.get("model"), temperature=float(p.get("temperature", 0.7)),
                        max_tokens=int(p.get("max_tokens", 2000)), timeout=int(p.get("timeout", 60)),
                        purpose="llm_chat",
+                       provider=p.get("provider"),        # 🔴 点名车道：一条断点（见 unified.ask 注释）
                        _coding_discipline=p.get("_coding_discipline"))
     if kind == "llm_status":
         from .llm import bridge as LB

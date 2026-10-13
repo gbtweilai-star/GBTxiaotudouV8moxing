@@ -28530,7 +28530,8 @@
    "dh_pose",
    "comfy_cloud",
    "code_patch",
-   "mcp_connect"
+   "mcp_connect",
+   "llm_chat"
   ],
   "note": "autobind",
   "bound_at": "2026-10-04T20:07:59"
@@ -54323,5 +54324,12 @@
   ],
   "note": "autobind",
   "bound_at": "2026-10-14T02:59:37"
+ },
+ "gbt_allinone/tests/test_llm_provider_lane.py": {
+  "tentacles": [
+   "llm_chat"
+  ],
+  "note": "autobind",
+  "bound_at": "2026-10-14T03:07:27"
  }
 }

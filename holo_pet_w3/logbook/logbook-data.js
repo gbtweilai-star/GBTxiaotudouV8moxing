@@ -2,18 +2,18 @@
  * 重生成：py -3.14 tools/codex-scripts/logbook.py render
  * 口径：只追加 + 自链哈希；数字全部现算自 state/logbook.jsonl。 */
 window.GBT_LOGBOOK = {
- "generated_at": "2026-10-14T04:03:40+08:00",
+ "generated_at": "2026-10-14T04:09:09+08:00",
  "regen": "py -3.14 tools/codex-scripts/logbook.py render",
  "source": "state/logbook.jsonl（只追加 · 自链哈希）",
  "chain": {
   "ok": true,
-  "detail": "链自洽：454 条记录，末条 hash=sha256:4d7af7cfd5bec85",
-  "records": 454
+  "detail": "链自洽：455 条记录，末条 hash=sha256:195447ecb8f8bef",
+  "records": 455
  },
  "totals": {
-  "records": 454,
+  "records": 455,
   "scans": 21,
-  "changes": 344,
+  "changes": 345,
   "decisions": 18,
   "delivers": 58
  },
@@ -884,18 +884,6 @@ window.GBT_LOGBOOK = {
   }
  ],
  "records": [
-  {
-   "n": 155,
-   "ts": "2026-10-08T16:53:24+08:00",
-   "kind": "change",
-   "actor": "unknown",
-   "what": "数字人第三轮意外与恢复: 15:51 dh_rigged.blend 被外部进程写成空场景(10.4MB 无对象); 从 _v1_backup 恢复, md5 回到 00399da43361c541d88d76c2728f08e0; 空文件留证 _diag_r3/evidence_empty_dh_rigged_1551.blend",
-   "where": [
-    "(未点名)"
-   ],
-   "hash": "sha256:a10311ffb5514b5",
-   "prev": "sha256:0237ca3614dabef"
-  },
   {
    "n": 156,
    "ts": "2026-10-08T16:53:25+08:00",
@@ -4544,6 +4532,20 @@ window.GBT_LOGBOOK = {
    ],
    "hash": "sha256:4d7af7cfd5bec85",
    "prev": "sha256:289b6a9f80c234e"
+  },
+  {
+   "n": 455,
+   "ts": "2026-10-14T04:09:09+08:00",
+   "kind": "change",
+   "actor": "codex",
+   "what": "修通『点名车道』三层断线（api/unified/bridge 各补一处）：cap llm_chat 点名 potato 真打到自己的端点，答『我是 GBT小土豆V8』；护照 fc-20261014T030621-1kt5 关账，判据件 4 例全过",
+   "where": [
+    "gbt_allinone/llm/unified.py",
+    "gbt_allinone/llm/bridge.py",
+    "gbt_allinone/api.py"
+   ],
+   "hash": "sha256:195447ecb8f8bef",
+   "prev": "sha256:4d7af7cfd5bec85"
   }
  ]
 };
