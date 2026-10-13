@@ -2,20 +2,20 @@
  * 重生成：py -3.14 tools/codex-scripts/logbook.py render
  * 口径：只追加 + 自链哈希；数字全部现算自 state/logbook.jsonl。 */
 window.GBT_LOGBOOK = {
- "generated_at": "2026-10-14T04:00:45+08:00",
+ "generated_at": "2026-10-14T04:03:40+08:00",
  "regen": "py -3.14 tools/codex-scripts/logbook.py render",
  "source": "state/logbook.jsonl（只追加 · 自链哈希）",
  "chain": {
   "ok": true,
-  "detail": "链自洽：453 条记录，末条 hash=sha256:289b6a9f80c234e",
-  "records": 453
+  "detail": "链自洽：454 条记录，末条 hash=sha256:4d7af7cfd5bec85",
+  "records": 454
  },
  "totals": {
-  "records": 453,
+  "records": 454,
   "scans": 21,
   "changes": 344,
   "decisions": 18,
-  "delivers": 57
+  "delivers": 58
  },
  "scans": [
   {
@@ -884,18 +884,6 @@ window.GBT_LOGBOOK = {
   }
  ],
  "records": [
-  {
-   "n": 154,
-   "ts": "2026-10-08T16:50:43+08:00",
-   "kind": "decision",
-   "actor": "unknown",
-   "what": "数字人第三轮右臂重姿判不可行: 手扶头发处熔接(源 armR 与 torso 跨区面2824/代理249面) + 烘焙姿势肘腕无 landmark(骨按左臂镜像下垂位) + 拆壳封边本轮实测留可见碎片",
-   "where": [
-    "(未点名)"
-   ],
-   "hash": "sha256:0237ca3614dabef",
-   "prev": "sha256:54a72098d0ea5b8"
-  },
   {
    "n": 155,
    "ts": "2026-10-08T16:53:24+08:00",
@@ -4544,6 +4532,18 @@ window.GBT_LOGBOOK = {
    ],
    "hash": "sha256:289b6a9f80c234e",
    "prev": "sha256:49093ceca5fee12"
+  },
+  {
+   "n": 454,
+   "ts": "2026-10-14T04:03:40+08:00",
+   "kind": "deliver",
+   "actor": "codex",
+   "what": "端点烟测验成：qnnqf9w8xcefj8 现服务 v24 本人（HTTP200/5.6s，答『我是 GBT小土豆V8 本身』），部署闭环；训练卡已停(EXITED)",
+   "where": [
+    "memory/在办清单.md"
+   ],
+   "hash": "sha256:4d7af7cfd5bec85",
+   "prev": "sha256:289b6a9f80c234e"
   }
  ]
 };
